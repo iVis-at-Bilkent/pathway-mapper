@@ -1,0 +1,28 @@
+{
+  "name": "8BitWebPage",
+  "version": "0.0.0",
+  "description": "Main web page for 8Bit",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-js": "browserify public/js/main.js -o public/base.js",
+    "build-css": "node-sass public/css/sass/base.scss public/base.css",
+    "build-min-js": "browserify public/js/main.js | uglifyjs -o public/base.min.js",
+    "build-min-css": "node-sass public/css/sass/base.scss | cleancss -o public/base.min.css",
+    "watch-js": "nodemon -e js -w public/js/ -x 'npm run build-js'",
+    "watch-css": "nodemon -e scss -w public/css/sass -x 'npm run build-css'",
+    "watch-server": "nodemon app.js",
+    "release-build": "npm run build-min-js & npm run build-min-css",
+    "debug-build": "npm run watch-js & npm run watch-css & npm run watch-server"
+  },
+  "author": "Istemi Bahceci",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "jquery": "~2.2.2",
+    "underscore": "~1.8.3",
+    "backbone": "~1.3.2",
+    "bootstrap": "~3.3.6",
+    "express": "~4.13.4",
+    "helmet": "~1.3.0"
+  }
+}
