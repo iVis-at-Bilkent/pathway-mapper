@@ -1,0 +1,17 @@
+body {
+  font: 14px helvetica neue, helvetica, arial, sans-serif; }
+
+.cyContainer {
+  border: 1px solid #e3e3e3;
+  height: 768px; }
+
+#cy {
+  height: 100%; }
+
+#info {
+  color: #c88;
+  font-size: 1em;
+  position: absolute;
+  z-index: -1;
+  left: 1em;
+  top: 1em; }

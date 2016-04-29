@@ -1,0 +1,30 @@
+body {
+  font: 14px helvetica neue, helvetica, arial, sans-serif;
+}
+
+$appContentHeight: 768px;
+
+
+.sideBar{
+}
+
+.cyContainer{
+  border: 1px solid rgb(227, 227, 227);
+  height: $appContentHeight;
+}
+
+#cy
+{
+  height: 100%;
+  // width: 100%;
+}
+
+#info
+{
+  color: #c88;
+  font-size: 1em;
+  position: absolute;
+  z-index: -1;
+  left: 1em;
+  top: 1em;
+}

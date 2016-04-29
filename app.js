@@ -6,6 +6,7 @@ var app = express();
 app.use(helmet());
 app.use(express.static('public'));
 app.use('/node_modules/bootstrap', express.static(__dirname + '/node_modules/bootstrap/'));
+app.use('/node_modules/cytoscape-panzoom', express.static(__dirname + '/node_modules/cytoscape-panzoom/'));
 
 var APP_PORT = 3000;
 
