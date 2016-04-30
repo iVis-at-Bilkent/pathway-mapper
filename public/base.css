@@ -1,6 +1,17 @@
 body {
   font: 14px helvetica neue, helvetica, arial, sans-serif; }
 
+.hiddenfile {
+  width: 0px;
+  height: 0px;
+  overflow: hidden; }
+
+.buttonContainer {
+  text-align: center;
+  margin-bottom: 5px; }
+  .buttonContainer button {
+    width: 100%; }
+
 .cyContainer {
   border: 1px solid #e3e3e3;
   height: 768px; }

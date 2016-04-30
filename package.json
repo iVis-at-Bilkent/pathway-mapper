@@ -1,7 +1,7 @@
 {
-  "name": "8BitWebPage",
+  "name": "",
   "version": "0.0.0",
-  "description": "Main web page for 8Bit",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -27,6 +27,9 @@
     "cytoscape": "~2.6.9",
     "cytoscape-panzoom": "~2.2.3",
     "cytoscape-cxtmenu": "~2.6.1",
-    "cytoscape-edgehandles": "~2.3.2"
+    "cytoscape-edgehandles": "~2.3.2",
+    "filesaverjs": "~0.2.2",
+    "body-parser": "~1.15.0",
+    "simple-bodyparser": "0.0.4"
   }
 }

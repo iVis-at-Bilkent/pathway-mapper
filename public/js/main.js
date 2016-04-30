@@ -63,7 +63,7 @@ var edgeHandleDefaults =
   }
 };
 
-
+var cy;
 //Wait all components to load
 $(window).load(function()
 {
@@ -73,7 +73,7 @@ $(window).load(function()
     edgehandles( cytoscape, $ ); // register extension
 
 
-    var cy = window.cy = cytoscape(
+    cy = window.cy = cytoscape(
     {
       container: document.querySelector('#cy'),
 
@@ -143,7 +143,7 @@ $(window).load(function()
           content: '<span class="fa fa-flash fa"></span>delete node(s)',
           select: function(ele)
           {
-            cy.$(':selected').remove();
+            cy.nodes(':selected').remove();
             ele.remove();
           }
         },
@@ -151,22 +151,24 @@ $(window).load(function()
           content: '<span class="fa fa-star"></span> create compound',
           select: function(ele)
           {
+            var selectedNodes = cy.nodes(':selected').size() > 0 ? cy.$(':selected') : ele;
+            var compNode = cy.add({group: "nodes"})[0];
+            var compId = compNode.id();
+            selectedNodes.move({parent: compId});
+          }
+        }
+      ]
+    });
 
-            var selectedNodes = cy.$(':selected').size() > 0 ? cy.$(':selected') : ele;
-            var compId = cy.add({group: "nodes"})[0].id();
-            var newNodes = [];
-            var newEdges = selectedNodes.connectedEdges();
-
-            selectedNodes.forEach(function( ele ){
-              var node = {group: 'nodes', data: ele._private.data};
-              node.data.parent = compId;
-              newNodes.push(node);
-            });
-
-            selectedNodes.remove();
-            cy.add(newNodes);
-            cy.add(newEdges);
-            cy.layout({name:'cose', padding: 50});
+    cy.cxtmenu({
+      selector: 'edge',
+      commands: [
+        {
+          content: '<span class="fa fa-flash fa"></span>delete edge(s)',
+          select: function(ele)
+          {
+            cy.edges(':selected').remove();
+            ele.remove();
           }
         }
       ]
@@ -187,6 +189,45 @@ $(window).load(function()
       }
     });
 });
+
+$('#saveGraphBtn').on('click', function(evt)
+{
+  var blob = new Blob([JSON.stringify(cy.json())], {type: "text/plain;charset=utf-8"});
+  saveAs(blob, "grahp.json");
+});
+
+$('#loadGraphBtn').on('click', function(evt)
+{
+  $('#fileinput').trigger('click');
+});
+
+//TODO server side integration needed because of CORS
+$('#fileinput').on('change', function()
+{
+  var file = this.files[0];
+  // // Create a new FormData object.
+  // var formData = new FormData();
+  // formData.append('graphFile', file);
+  // var request = new XMLHttpRequest();
+  // request.onreadystatechange = function ()
+  // {
+  //   if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+  //     console.log(request.responseText);
+  // };
+  // request.open("POST", "/loadGraph");
+  // request.send(formData);
+
+  var reader = new FileReader();
+  reader.onload = function(){
+    var text = reader.result;
+    cy.json(JSON.parse(text));
+  };
+  reader.readAsText(file);
+});
+
+
+
+
 
 $('.input-group').on('focus', '.form-control', function () {
   $(this).closest('.input-group, .form-group').addClass('focus');

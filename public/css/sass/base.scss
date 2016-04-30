@@ -4,6 +4,22 @@ body {
 
 $appContentHeight: 768px;
 
+.hiddenfile
+{
+ width: 0px;
+ height: 0px;
+ overflow: hidden;
+}
+
+.buttonContainer{
+  text-align: center;
+  margin-bottom: 5px;
+
+  button{
+    width: 100%;
+  }
+}
+
 
 .sideBar{
 }

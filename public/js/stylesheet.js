@@ -16,13 +16,15 @@ var styleSheet = cytoscape.stylesheet()
   .selector('node:parent')
         .css({
           'background-color': '#ffffff',
-          'border-color': '#963d14',
+          'border-color': '#000000',
           'border-width': 2
   })
   .selector(':selected')
     .css({
       'background-color': '#f99b70',
-      'border-color': '#f99b70'
+      'border-color': '#f99b70',
+      'line-color': '#f99b70',
+      'target-arrow-color': '#f99b70'
     })
   .selector('.faded')
     .css({
