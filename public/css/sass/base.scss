@@ -4,6 +4,21 @@ body {
 
 $appContentHeight: 768px;
 
+.pnl{
+  background-color: #eff0f2;
+  padding: 25px 30px 25px 30px;
+  border-radius: 6px;
+}
+
+.customMargins{
+  margin-left: 5% !important;
+  margin-right: 5% !important;
+}
+
+.leftPanelFix{
+  padding-left: 0;
+}
+
 .hiddenfile
 {
  width: 0px;

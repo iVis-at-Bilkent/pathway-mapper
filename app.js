@@ -1,12 +1,10 @@
 var express = require('express');
 var path = require('path');
 var helmet = require('helmet');
-var bodyparser = require('simple-bodyparser');
 
 var app = express();
 app.use(helmet());
 app.use(express.static('public'));
-app.use(bodyparser());
 app.use('/node_modules/bootstrap', express.static(__dirname + '/node_modules/bootstrap/'));
 app.use('/node_modules/cytoscape-panzoom', express.static(__dirname + '/node_modules/cytoscape-panzoom/'));
 app.use('/node_modules/filesaverjs', express.static(__dirname + '/node_modules/filesaverjs/'));

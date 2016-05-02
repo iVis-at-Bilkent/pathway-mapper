@@ -42751,25 +42751,6 @@ return jQuery;
 }.call(this));
 
 },{}],21:[function(require,module,exports){
-//Import node modules here !
-var $ = window.$ = window.jQuery = require('jquery');
-var _ = window._ = require('underscore');
-var Backbone = window.Backbone = require('backbone');
-Backbone.$ = $;
-require('bootstrap');
-
-//Cytoscape related requires !
-var cytoscape =  window.cytoscape = require('cytoscape');
-var panzoom = require('cytoscape-panzoom');
-var cxtmenu = require('cytoscape-cxtmenu');
-var edgehandles = require('cytoscape-edgehandles');
-
-//Panzoom options
-panzoomOpts = require('./panzoomUtils.js');
-styleSheet = require('./stylesheet.js');
-
-var edgeAddingMode = false;
-
 // the default values of each option are outlined below:
 var edgeHandleDefaults =
 {
@@ -42816,11 +42797,33 @@ var edgeHandleDefaults =
   }
 };
 
+module.exports = edgeHandleDefaults;
+
+},{}],22:[function(require,module,exports){
+//Import node modules here !
+var $ = window.$ = window.jQuery = require('jquery');
+var _ = window._ = require('underscore');
+var Backbone = window.Backbone = require('backbone');
+Backbone.$ = $;
+require('bootstrap');
+
+//Cytoscape related requires !
+var cytoscape =  window.cytoscape = require('cytoscape');
+var panzoom = require('cytoscape-panzoom');
+var cxtmenu = require('cytoscape-cxtmenu');
+var edgehandles = require('cytoscape-edgehandles');
+
+//Panzoom options
+panzoomOpts = require('./panzoomUtils.js');
+styleSheet = require('./stylesheet.js');
+edgeHandleOpts = require('./edgeHandlingUtils.js');
+
+var edgeAddingMode = false;
+
 var cy;
 //Wait all components to load
 $(window).load(function()
 {
-
     panzoom( cytoscape, $ );  // register extension
     cxtmenu( cytoscape, $ ); // register extension
     edgehandles( cytoscape, $ ); // register extension
@@ -42862,9 +42865,9 @@ $(window).load(function()
     });
 
     cy.panzoom( panzoomOpts );
-    cy.nodeadd( {container: $('#simpleNodeDiv'), explanationText: 'Simple Node', icon: 'fa fa-circle-o'} );
+    cy.nodeadd( {container: $('#simpleNodeDiv'), explanationText: 'Simple Node', icon: 'fa fa-square-o'} );
     // cy.nodeadd( {container: $('#compoundNodeDiv'), explanationText: 'Compound Node', icon: 'fa fa-square-o'} );
-    cy.edgehandles( edgeHandleDefaults );
+    cy.edgehandles( edgeHandleOpts );
 
 
     cy.cxtmenu({
@@ -42943,6 +42946,7 @@ $(window).load(function()
     });
 });
 
+//Jquery handles
 $('#saveGraphBtn').on('click', function(evt)
 {
   var blob = new Blob([JSON.stringify(cy.json())], {type: "text/plain;charset=utf-8"});
@@ -42979,16 +42983,14 @@ $('#fileinput').on('change', function()
 });
 
 
-
-
-
+//Flat UI fix for highlights
 $('.input-group').on('focus', '.form-control', function () {
   $(this).closest('.input-group, .form-group').addClass('focus');
 }).on('blur', '.form-control', function () {
   $(this).closest('.input-group, .form-group').removeClass('focus');
 });
 
-},{"./panzoomUtils.js":22,"./stylesheet.js":23,"backbone":1,"bootstrap":2,"cytoscape":18,"cytoscape-cxtmenu":15,"cytoscape-edgehandles":16,"cytoscape-panzoom":17,"jquery":19,"underscore":20}],22:[function(require,module,exports){
+},{"./edgeHandlingUtils.js":21,"./panzoomUtils.js":23,"./stylesheet.js":24,"backbone":1,"bootstrap":2,"cytoscape":18,"cytoscape-cxtmenu":15,"cytoscape-edgehandles":16,"cytoscape-panzoom":17,"jquery":19,"underscore":20}],23:[function(require,module,exports){
 var panzoomOptions =
 {
   // the default values of each option are outlined below:
@@ -43014,7 +43016,7 @@ var panzoomOptions =
 
 module.exports = panzoomOptions;
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 var cytoscape = require('cytoscape');
 
 var styleSheet = cytoscape.stylesheet()
@@ -43022,13 +43024,20 @@ var styleSheet = cytoscape.stylesheet()
     .css({
       'content': 'data(name)',
       'text-valign': 'center',
-      'color': 'white',
-      'text-outline-width': 2,
-      'text-outline-color': '#888'
+      'color': '#000000',
+      'width': 80,
+      'height': 40,
+      'background-color': 'white',
+      'shape': 'roundrectangle',
+      'border-width': 1,
+      'border-color': '#3e3e3e',
+      'font-size': 9
     })
   .selector('edge')
     .css({
-      'target-arrow-shape': 'triangle'
+      'curve-style': 'bezier',
+      'target-arrow-shape': 'tee',
+      'line-color': '#35aef2',
     })
   .selector('node:parent')
         .css({
@@ -43038,7 +43047,6 @@ var styleSheet = cytoscape.stylesheet()
   })
   .selector(':selected')
     .css({
-      'background-color': '#f99b70',
       'border-color': '#f99b70',
       'line-color': '#f99b70',
       'target-arrow-color': '#f99b70'
@@ -43051,4 +43059,4 @@ var styleSheet = cytoscape.stylesheet()
 
 module.exports = styleSheet;
 
-},{"cytoscape":18}]},{},[21]);
+},{"cytoscape":18}]},{},[22]);
