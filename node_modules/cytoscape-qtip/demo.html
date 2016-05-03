@@ -1,0 +1,133 @@
+<!DOCTYPE>
+
+<html>
+
+	<head>
+		<title>[cytoscape.js-qtip.js] Cytoscape.js qTip</title>
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+		<link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.css">
+
+		<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.js"></script>
+		<script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
+		<!-- <script src="../cytoscape.js/build/cytoscape.js"></script> -->
+		<script src="cytoscape-qtip.js"></script>
+
+		<style>
+			body {
+				font-family: helvetica;
+				font-size: 14px;
+				width: 100%;
+				height: 100%;
+			}
+
+			#cy {
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				left: 0;
+				top: 0;
+				z-index: 999;
+			}
+
+			h1 {
+				opacity: 0.5;
+				font-size: 1em;
+			}
+		</style>
+
+		<script>
+			$(function(){
+
+				var cy = window.cy = cytoscape({
+					container: document.getElementById('cy'),
+
+					ready: function(){
+					},
+
+					style: [
+						{
+							selector: 'node',
+							css: {
+								'content': 'data(name)'
+							}
+						},
+
+						{
+							selector: 'edge',
+							css: {
+								'target-arrow-shape': 'triangle'
+							}
+						}
+					],
+
+					elements: {
+						nodes: [
+							{ data: { id: 'j', name: 'Jerry' } },
+							{ data: { id: 'e', name: 'Elaine' } },
+							{ data: { id: 'k', name: 'Kramer' } },
+							{ data: { id: 'g', name: 'George' } }
+						],
+						edges: [
+							{ data: { source: 'j', target: 'e' } },
+							{ data: { source: 'j', target: 'k' } },
+							{ data: { source: 'j', target: 'g' } },
+							{ data: { source: 'e', target: 'j' } },
+							{ data: { source: 'e', target: 'k' } },
+							{ data: { source: 'k', target: 'j' } },
+							{ data: { source: 'k', target: 'e' } },
+							{ data: { source: 'k', target: 'g' } },
+							{ data: { source: 'g', target: 'j' } }
+						]
+					},
+				});
+
+				// just use the regular qtip api but on cy elements
+				cy.elements().qtip({
+					content: function(){ return 'Example qTip on ele ' + this.id() },
+					position: {
+						my: 'top center',
+						at: 'bottom center'
+					},
+					style: {
+						classes: 'qtip-bootstrap',
+						tip: {
+							width: 16,
+							height: 8
+						}
+					}
+				});
+
+				// call on core
+				cy.qtip({
+					content: 'Example qTip on core bg',
+					position: {
+						my: 'top center',
+						at: 'bottom center'
+					},
+					show: {
+						cyBgOnly: true
+					},
+					style: {
+						classes: 'qtip-bootstrap',
+						tip: {
+							width: 16,
+							height: 8
+						}
+					}
+				});
+
+			});
+		</script>
+	</head>
+
+	<body>
+		<h1>[cytoscape.js-qtip.js] Cytoscape.js qTip Demo</h1>
+
+		<div id="cy"></div>
+
+	</body>
+
+</html>

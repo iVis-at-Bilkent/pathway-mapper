@@ -30,6 +30,7 @@
     "cytoscape-edgehandles": "~2.3.2",
     "filesaverjs": "~0.2.2",
     "body-parser": "~1.15.0",
-    "simple-bodyparser": "0.0.4"
+    "simple-bodyparser": "0.0.4",
+    "cytoscape-qtip": "~2.3.0"
   }
 }

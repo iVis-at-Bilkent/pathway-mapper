@@ -10,6 +10,7 @@ var cytoscape =  window.cytoscape = require('cytoscape');
 var panzoom = require('cytoscape-panzoom');
 var cxtmenu = require('cytoscape-cxtmenu');
 var edgehandles = require('cytoscape-edgehandles');
+var cyqtip = require('cytoscape-qtip');
 
 //Panzoom options
 panzoomOpts = require('./panzoomUtils.js');
@@ -25,6 +26,7 @@ $(window).load(function()
     panzoom( cytoscape, $ );  // register extension
     cxtmenu( cytoscape, $ ); // register extension
     edgehandles( cytoscape, $ ); // register extension
+    cyqtip( cytoscape, $ ); // register extension
 
 
     cy = window.cy = cytoscape(
