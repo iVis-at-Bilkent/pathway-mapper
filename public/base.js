@@ -43151,6 +43151,75 @@ return jQuery;
 }.call(this));
 
 },{}],22:[function(require,module,exports){
+;
+module.exports = (function(cy)
+{
+  "use strict";
+  var edgeAddingMode = false;
+
+  cy.cxtmenu({
+    selector: 'core',
+    commands: [
+      {
+        content: '<span class="fa fa-flash fa"></span>perform layout',
+        select: function(ele)
+        {
+          cy.layout({name:'cose', padding: 50, animate: 'true'});
+        }
+      },
+      {
+        content: '<span class="fa fa-star"></span> Toggle Edge Addition Mode',
+        select: function(ele)
+        {
+          edgeAddingMode = !edgeAddingMode;
+          var flag = edgeAddingMode ? 'drawon' : 'drawoff';
+          cy.edgehandles(flag);
+        }
+      }
+    ]
+  });
+
+  cy.cxtmenu({
+    selector: 'node',
+    commands: [
+      {
+        content: '<span class="fa fa-flash fa"></span>delete node(s)',
+        select: function(ele)
+        {
+          cy.nodes(':selected').remove();
+          ele.remove();
+        }
+      },
+      {
+        content: '<span class="fa fa-star"></span> create compound',
+        select: function(ele)
+        {
+          var selectedNodes = cy.nodes(':selected').size() > 0 ? cy.$(':selected') : ele;
+          var compNode = cy.add({group: "nodes"})[0];
+          var compId = compNode.id();
+          selectedNodes.move({parent: compId});
+        }
+      }
+    ]
+  });
+
+  cy.cxtmenu({
+    selector: 'edge',
+    commands: [
+      {
+        content: '<span class="fa fa-flash fa"></span>delete edge(s)',
+        select: function(ele)
+        {
+          cy.edges(':selected').remove();
+          ele.remove();
+        }
+      }
+    ]
+  });
+}(window.cy));
+
+},{}],23:[function(require,module,exports){
+;
 // the default values of each option are outlined below:
 var edgeHandleDefaults =
 {
@@ -43199,7 +43268,7 @@ var edgeHandleDefaults =
 
 module.exports = edgeHandleDefaults;
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 //Import node modules here !
 var $ = window.$ = window.jQuery = require('jquery');
 var _ = window._ = require('underscore');
@@ -43214,14 +43283,13 @@ var cxtmenu = require('cytoscape-cxtmenu');
 var edgehandles = require('cytoscape-edgehandles');
 var cyqtip = require('cytoscape-qtip');
 
+
 //Panzoom options
-panzoomOpts = require('./panzoomUtils.js');
-styleSheet = require('./stylesheet.js');
-edgeHandleOpts = require('./edgeHandlingUtils.js');
+var panzoomOpts = require('./panzoomUtils.js');
+var styleSheet = require('./stylesheet.js');
+var edgeHandleOpts = require('./edgeHandlingUtils.js');
 
-var edgeAddingMode = false;
 
-var cy;
 //Wait all components to load
 $(window).load(function()
 {
@@ -43271,67 +43339,6 @@ $(window).load(function()
     // cy.nodeadd( {container: $('#compoundNodeDiv'), explanationText: 'Compound Node', icon: 'fa fa-square-o'} );
     cy.edgehandles( edgeHandleOpts );
 
-
-    cy.cxtmenu({
-      selector: 'core',
-      commands: [
-        {
-          content: '<span class="fa fa-flash fa"></span>perform layout',
-          select: function(ele)
-          {
-            cy.layout({name:'cose', padding: 50});
-          }
-        },
-        {
-          content: '<span class="fa fa-star"></span> Toggle Edge Addition Mode',
-          select: function(ele)
-          {
-            edgeAddingMode = !edgeAddingMode;
-            var flag = edgeAddingMode ? 'enable' : 'disable';
-            cy.edgehandles(flag);
-          }
-        }
-      ]
-    });
-
-    cy.cxtmenu({
-      selector: 'node',
-      commands: [
-        {
-          content: '<span class="fa fa-flash fa"></span>delete node(s)',
-          select: function(ele)
-          {
-            cy.nodes(':selected').remove();
-            ele.remove();
-          }
-        },
-        {
-          content: '<span class="fa fa-star"></span> create compound',
-          select: function(ele)
-          {
-            var selectedNodes = cy.nodes(':selected').size() > 0 ? cy.$(':selected') : ele;
-            var compNode = cy.add({group: "nodes"})[0];
-            var compId = compNode.id();
-            selectedNodes.move({parent: compId});
-          }
-        }
-      ]
-    });
-
-    cy.cxtmenu({
-      selector: 'edge',
-      commands: [
-        {
-          content: '<span class="fa fa-flash fa"></span>delete edge(s)',
-          select: function(ele)
-          {
-            cy.edges(':selected').remove();
-            ele.remove();
-          }
-        }
-      ]
-    });
-
     cy.on('tap', 'node', function(e){
       // var node = e.cyTarget;
       // var neighborhood = node.neighborhood().add(node);
@@ -43346,6 +43353,16 @@ $(window).load(function()
         cy.elements().removeClass('faded');
       }
     });
+
+    cy.on('add', 'node', function(event)
+    {
+      addQtipToElements(event.cyTarget);
+    });
+
+    var qTipModule = require('./qTipModule.js');
+    var cxMenuModule = require('./contextMenuModule.js');
+
+    addQtipToElements(cy.nodes());
 });
 
 //Jquery handles
@@ -43392,7 +43409,7 @@ $('.input-group').on('focus', '.form-control', function () {
   $(this).closest('.input-group, .form-group').removeClass('focus');
 });
 
-},{"./edgeHandlingUtils.js":22,"./panzoomUtils.js":24,"./stylesheet.js":25,"backbone":1,"bootstrap":2,"cytoscape":19,"cytoscape-cxtmenu":15,"cytoscape-edgehandles":16,"cytoscape-panzoom":17,"cytoscape-qtip":18,"jquery":20,"underscore":21}],24:[function(require,module,exports){
+},{"./contextMenuModule.js":22,"./edgeHandlingUtils.js":23,"./panzoomUtils.js":25,"./qTipModule.js":26,"./stylesheet.js":27,"backbone":1,"bootstrap":2,"cytoscape":19,"cytoscape-cxtmenu":15,"cytoscape-edgehandles":16,"cytoscape-panzoom":17,"cytoscape-qtip":18,"jquery":20,"underscore":21}],25:[function(require,module,exports){
 var panzoomOptions =
 {
   // the default values of each option are outlined below:
@@ -43418,52 +43435,110 @@ var panzoomOptions =
 
 module.exports = panzoomOptions;
 
-},{}],25:[function(require,module,exports){
-var cytoscape = require('cytoscape');
+},{}],26:[function(require,module,exports){
+;
+module.exports = (function(cy,$)
+{
+  "use strict";
 
-var styleSheet = cytoscape.stylesheet()
-.selector('node')
-.css({
-  'content': 'data(name)',
-  'text-valign': 'center',
-  'color': '#1e2829',
-  'width': 80,
-  'height': 40,
-  'background-color': '#fff',
-  'shape': 'roundrectangle',
-  'border-width': 1,
-  'border-color': '#1e2829',
-  'font-size': 9
-})
-.selector('edge')
-.css({
-  'curve-style': 'bezier',
-  'target-arrow-shape': 'triangle',
-  'width': 2,
-  'line-color': '#898d98',
-  'target-arrow-color': '#898d98',
-  'opacity': 0.8
-})
-.selector('node:parent')
-.css({
-  'background-color': '#fff',
-  'border-color': '#000000',
-  'border-width': 2
-})
-.selector('node:selected')
-.css({
-})
-.selector(':selected')
-.css({
-  'shadow-color' : '#faff0e',
-  'shadow-opacity': 0.8
-})
-.selector('.faded')
-.css({
-  'opacity': 0.25,
-  'text-opacity': 0
-});
+  function generateQtipContentHTML(elementData)
+  {
+    var row = $('<div class="row">\
+                 <div class="col-xs-4">Name:</div>\
+                 <div class="col-xs-8">' + elementData.name + '</div>\
+              </div>');
+    return row;
+  }
+
+  window.addQtipToElements = function(eles)
+  {
+    // just use the regular qtip api but on cy nodes
+    eles.qtip(
+    {
+      content:
+      {
+        text:  function()
+        {
+          var nodeData = this.data();
+          return generateQtipContentHTML(nodeData);
+        },
+        title: function()
+        {
+            return 'Node Details';
+        }
+      },
+      position: {
+        my: 'top center',
+        at: 'bottom center'
+      },
+      style: {
+        classes: 'qtip-dark qtip-rounded',
+        width: 200
+      }
+    });
+  }
+
+}(window.cy, window.$));
+
+},{}],27:[function(require,module,exports){
+var styleSheet = [
+{
+      selector: 'node',
+      style:
+      {
+        'content': 'data(name)',
+        'text-valign': 'center',
+        'color': '#1e2829',
+        'width': 50,
+        'height': 20,
+        'background-color': '#fff',
+        'shape': 'roundrectangle',
+        'border-width': 0.5,
+        'border-color': '#1e2829',
+        'font-size': 7
+      }
+    },
+    {
+        selector: 'node:parent',
+        style:
+        {
+          'background-color': '#fff',
+          'border-color': '#000000',
+          'border-width': 2
+        }
+    },
+    {
+      selector: 'edge',
+      style:
+      {
+        'curve-style': 'bezier',
+        'target-arrow-shape': 'triangle',
+        'width': 0.5,
+        'line-color': '#898d98',
+        'target-arrow-color': '#898d98',
+        'opacity': 0.8
+      }
+  },
+  // {
+  //     selector: 'edge.segments',
+  //     style:
+  //     {
+  //       'curve-style': 'segments',
+  //       'segment-distances': '0 100',
+  //       'segment-weights': '0 1'
+  //     }
+  // },
+  {
+    selector: ':selected',
+    style:
+    {
+      'shadow-color' : '#faff0e',
+      'shadow-opacity': 0.8
+    }
+  }
+];
+
 
 module.exports = styleSheet;
 
-},{"cytoscape":19}]},{},[23]);
+},{}]},{},[24]);

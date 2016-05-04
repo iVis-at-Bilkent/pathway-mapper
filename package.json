@@ -31,6 +31,7 @@
     "filesaverjs": "~0.2.2",
     "body-parser": "~1.15.0",
     "simple-bodyparser": "0.0.4",
-    "cytoscape-qtip": "~2.3.0"
+    "cytoscape-qtip": "~2.3.0",
+    "qtip2": "~3.0.2"
   }
 }

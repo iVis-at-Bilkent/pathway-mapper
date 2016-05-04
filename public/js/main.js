@@ -12,14 +12,13 @@ var cxtmenu = require('cytoscape-cxtmenu');
 var edgehandles = require('cytoscape-edgehandles');
 var cyqtip = require('cytoscape-qtip');
 
+
 //Panzoom options
-panzoomOpts = require('./panzoomUtils.js');
-styleSheet = require('./stylesheet.js');
-edgeHandleOpts = require('./edgeHandlingUtils.js');
+var panzoomOpts = require('./panzoomUtils.js');
+var styleSheet = require('./stylesheet.js');
+var edgeHandleOpts = require('./edgeHandlingUtils.js');
 
-var edgeAddingMode = false;
 
-var cy;
 //Wait all components to load
 $(window).load(function()
 {
@@ -69,67 +68,6 @@ $(window).load(function()
     // cy.nodeadd( {container: $('#compoundNodeDiv'), explanationText: 'Compound Node', icon: 'fa fa-square-o'} );
     cy.edgehandles( edgeHandleOpts );
 
-
-    cy.cxtmenu({
-      selector: 'core',
-      commands: [
-        {
-          content: '<span class="fa fa-flash fa"></span>perform layout',
-          select: function(ele)
-          {
-            cy.layout({name:'cose', padding: 50});
-          }
-        },
-        {
-          content: '<span class="fa fa-star"></span> Toggle Edge Addition Mode',
-          select: function(ele)
-          {
-            edgeAddingMode = !edgeAddingMode;
-            var flag = edgeAddingMode ? 'enable' : 'disable';
-            cy.edgehandles(flag);
-          }
-        }
-      ]
-    });
-
-    cy.cxtmenu({
-      selector: 'node',
-      commands: [
-        {
-          content: '<span class="fa fa-flash fa"></span>delete node(s)',
-          select: function(ele)
-          {
-            cy.nodes(':selected').remove();
-            ele.remove();
-          }
-        },
-        {
-          content: '<span class="fa fa-star"></span> create compound',
-          select: function(ele)
-          {
-            var selectedNodes = cy.nodes(':selected').size() > 0 ? cy.$(':selected') : ele;
-            var compNode = cy.add({group: "nodes"})[0];
-            var compId = compNode.id();
-            selectedNodes.move({parent: compId});
-          }
-        }
-      ]
-    });
-
-    cy.cxtmenu({
-      selector: 'edge',
-      commands: [
-        {
-          content: '<span class="fa fa-flash fa"></span>delete edge(s)',
-          select: function(ele)
-          {
-            cy.edges(':selected').remove();
-            ele.remove();
-          }
-        }
-      ]
-    });
-
     cy.on('tap', 'node', function(e){
       // var node = e.cyTarget;
       // var neighborhood = node.neighborhood().add(node);
@@ -144,6 +82,16 @@ $(window).load(function()
         cy.elements().removeClass('faded');
       }
     });
+
+    cy.on('add', 'node', function(event)
+    {
+      addQtipToElements(event.cyTarget);
+    });
+
+    var qTipModule = require('./qTipModule.js');
+    var cxMenuModule = require('./contextMenuModule.js');
+
+    addQtipToElements(cy.nodes());
 });
 
 //Jquery handles

@@ -1,3 +1,4 @@
+;
 // the default values of each option are outlined below:
 var edgeHandleDefaults =
 {
