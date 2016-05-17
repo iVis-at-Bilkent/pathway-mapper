@@ -1,6 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
-//     Backbone.js 1.3.2
+//     Backbone.js 1.3.3
 
 //     (c) 2010-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 //     Backbone may be freely distributed under the MIT license.
@@ -46,7 +46,7 @@
   var slice = Array.prototype.slice;
 
   // Current version of the library. Keep in sync with `package.json`.
-  Backbone.VERSION = '1.3.2';
+  Backbone.VERSION = '1.3.3';
 
   // For Backbone's purposes, jQuery, Zepto, Ender, or My Library (kidding) owns
   // the `$` variable.
@@ -19392,21 +19392,27 @@ BRp.recalculateNodeLabelProjection = function( node ){
   if( !content || content.match(/^\s+$/) ){ return; }
 
   var textX, textY;
-  var nodeWidth = node.outerWidth();
-  var nodeHeight = node.outerHeight();
-  var nodePos = node._private.position;
-  var textHalign = node._private.style['text-halign'].strValue;
-  var textValign = node._private.style['text-valign'].strValue;
-  var rs = node._private.rscratch;
-  var rstyle = node._private.rstyle;
+  var _p = node._private;
+  var style = node._private.style;
+  var nodeWidth = node.width();
+  var nodeHeight = node.height();
+  var paddingLeft = style['padding-left'].pfValue;
+  var paddingRight = style['padding-right'].pfValue;
+  var paddingTop = style['padding-top'].pfValue;
+  var paddingBottom = style['padding-bottom'].pfValue;
+  var nodePos = _p.position;
+  var textHalign = style['text-halign'].strValue;
+  var textValign = style['text-valign'].strValue;
+  var rs = _p.rscratch;
+  var rstyle = _p.rstyle;
 
   switch( textHalign ){
     case 'left':
-      textX = nodePos.x - nodeWidth / 2;
+      textX = nodePos.x - nodeWidth / 2 - paddingLeft;
       break;
 
     case 'right':
-      textX = nodePos.x + nodeWidth / 2;
+      textX = nodePos.x + nodeWidth / 2 + paddingRight;
       break;
 
     default: // e.g. center
@@ -19415,11 +19421,11 @@ BRp.recalculateNodeLabelProjection = function( node ){
 
   switch( textValign ){
     case 'top':
-      textY = nodePos.y - nodeHeight / 2;
+      textY = nodePos.y - nodeHeight / 2 - paddingTop;
       break;
 
     case 'bottom':
-      textY = nodePos.y + nodeHeight / 2;
+      textY = nodePos.y + nodeHeight / 2 + paddingBottom;
       break;
 
     default: // e.g. middle
@@ -20609,6 +20615,7 @@ BRp.getCachedImage = function(url, onLoad) {
 
   var image = cache.image = new Image();
   image.addEventListener('load', onLoad);
+  image.crossOrigin = 'Anonymous'; // prevent tainted canvas
   image.src = url;
 
   return image;
@@ -20716,6 +20723,10 @@ BRp.notify = function(params) {
     r.updateElementsCache();
   }
 
+  if( has.style ){
+    r.updateCachedZSortedEles();
+  }
+
   if( has.viewport ){
     r.redrawHint('select', true);
   }
@@ -20775,9 +20786,10 @@ module.exports = BR;
 },{"../../../is":77,"../../../util":94,"./arrow-shapes":54,"./cached-eles":55,"./coord-ele-math":56,"./images":57,"./load-listeners":59,"./node-shapes":60,"./redraw":61}],59:[function(_dereq_,module,exports){
 'use strict';
 
-var is = _dereq_('../../../is');
-var util = _dereq_('../../../util');
-var Event = _dereq_('../../../event');
+var is = _dereq_( '../../../is' );
+var util = _dereq_( '../../../util' );
+var math = _dereq_( '../../../math' );
+var Event = _dereq_( '../../../event' );
 var Collection = _dereq_('../../../collection');
 
 var BRp = {};
@@ -21364,28 +21376,29 @@ BRp.load = function() {
         select[4] == 1 && (down == null || down.isEdge())
     ){
 
-      if( !r.hoverData.dragging && cy.boxSelectionEnabled() && ( multSelKeyDown || !cy.panningEnabled() || !cy.userPanningEnabled() ) ){
-        r.data.bgActivePosistion = undefined;
-        r.hoverData.selecting = true;
+      if( isOverThresholdDrag ){
 
-        r.redrawHint('select', true);
-        r.redraw();
+        if( !r.hoverData.dragging && cy.boxSelectionEnabled() && ( multSelKeyDown || !cy.panningEnabled() || !cy.userPanningEnabled() ) ){
+          r.data.bgActivePosistion = undefined;
+          r.hoverData.selecting = true;
 
-      } else if( !r.hoverData.selecting && cy.panningEnabled() && cy.userPanningEnabled() ){
-        r.hoverData.dragging = true;
-        r.hoverData.justStartedPan = true;
-        select[4] = 0;
+          r.redrawHint('select', true);
+          r.redraw();
 
-        r.data.bgActivePosistion = {
-          x: pos[0],
-          y: pos[1]
-        };
+        } else if( !r.hoverData.selecting && cy.panningEnabled() && cy.userPanningEnabled() ){
+          r.hoverData.dragging = true;
+          r.hoverData.justStartedPan = true;
+          select[4] = 0;
 
-        r.redrawHint('select', true);
-        r.redraw();
+          r.data.bgActivePosistion = math.array2point( mdownPos );
+
+          r.redrawHint('select', true);
+          r.redraw();
+        }
+
+        if( down && down.isEdge() && down.active() ){ down.unactivate(); }
+
       }
-
-      if( down && down.isEdge() && down.active() ){ down.unactivate(); }
 
     } else {
       if( down && down.isEdge() && down.active() ){ down.unactivate(); }
@@ -21446,7 +21459,7 @@ BRp.load = function() {
                 if( justStartedDrag ){
                   var dragDelta = r.hoverData.dragDelta;
 
-                  if( updatePos && is.number(dragDelta[0]) && is.number(dragDelta[1]) ){
+                  if( updatePos && dragDelta && is.number(dragDelta[0]) && is.number(dragDelta[1]) ){
                     dPos.x += dragDelta[0];
                     dPos.y += dragDelta[1];
                   }
@@ -22189,7 +22202,7 @@ BRp.load = function() {
       if (e.touches[1]) { var pos = r.projectIntoViewport(e.touches[1].clientX, e.touches[1].clientY); now[2] = pos[0]; now[3] = pos[1]; }
       if (e.touches[2]) { var pos = r.projectIntoViewport(e.touches[2].clientX, e.touches[2].clientY); now[4] = pos[0]; now[5] = pos[1]; }
 
-    } else if (e.touches[0]) {
+    } else if ( capture && e.touches[0] ){
       var start = r.touchData.start;
       var last = r.touchData.last;
       var near = near || r.findNearestElement(now[0], now[1], true, true);
@@ -22318,10 +22331,7 @@ BRp.load = function() {
             start.unactivate();
 
             if( !r.data.bgActivePosistion ){
-              r.data.bgActivePosistion = {
-                x: now[0],
-                y: now[1]
-              };
+              r.data.bgActivePosistion = math.array2point( r.touchData.startPosition );
             }
 
             r.redrawHint('select', true);
@@ -22677,7 +22687,7 @@ BRp.load = function() {
 
 module.exports = BRp;
 
-},{"../../../collection":23,"../../../event":42,"../../../is":77,"../../../util":94}],60:[function(_dereq_,module,exports){
+},{"../../../collection":23,"../../../event":42,"../../../is":77,"../../../math":79,"../../../util":94}],60:[function(_dereq_,module,exports){
 'use strict';
 
 var math = _dereq_('../../../math');
@@ -26022,7 +26032,7 @@ var cytoscape = function( options ){ // jshint ignore:line
 };
 
 // replaced by build system
-cytoscape.version = '2.6.9';
+cytoscape.version = '2.6.12';
 
 // try to register w/ jquery
 if( window && window.jQuery ){
@@ -26295,6 +26305,13 @@ module.exports = registerJquery;
 'use strict';
 
 var math = {};
+
+math.array2point = function( arr ){
+  return {
+    x: arr[0],
+    y: arr[1]
+  };
+};
 
 math.signum = function(x){
   if( x > 0 ){
@@ -28334,6 +28351,7 @@ styfn.apply = function( eles ){
     var cxtStyle = self.getContextStyle( cxtMeta );
     var app = self.applyContextStyle( cxtMeta, cxtStyle, ele );
 
+    self.enforceCompoundSizing( ele );
     self.updateTransitions( ele, app.diffProps );
     self.updateStyleHints( ele );
 
@@ -28499,6 +28517,17 @@ styfn.applyContextStyle = function( cxtMeta, cxtStyle, ele ){
   return {
     diffProps: retDiffProps
   };
+};
+
+// because a node can become and unbecome a parent, it's safer to enforce auto sizing manually
+// (i.e. the style context diff could be empty, meaning the autosizing is stale)
+styfn.enforceCompoundSizing = function(ele){
+  var self = this;
+
+  if( ele.isParent() ){
+    self.applyParsedProperty( ele, self.parse('width', 'auto') );
+    self.applyParsedProperty( ele, self.parse('height', 'auto') );
+  }
 };
 
 styfn.updateStyleHints = function(ele){
@@ -31758,7 +31787,7 @@ module.exports = ( typeof window === 'undefined' ? null : window );
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},"/node_modules/cytoscape/dist")
 },{}],20:[function(require,module,exports){
 /*!
- * jQuery JavaScript Library v2.2.2
+ * jQuery JavaScript Library v2.2.3
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -31768,7 +31797,7 @@ module.exports = ( typeof window === 'undefined' ? null : window );
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2016-03-17T17:51Z
+ * Date: 2016-04-05T19:26Z
  */
 
 (function( global, factory ) {
@@ -31824,7 +31853,7 @@ var support = {};
 
 
 var
-	version = "2.2.2",
+	version = "2.2.3",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -41234,7 +41263,7 @@ jQuery.fn.load = function( url, params, callback ) {
 		// If it fails, this function gets "jqXHR", "status", "error"
 		} ).always( callback && function( jqXHR, status ) {
 			self.each( function() {
-				callback.apply( self, response || [ jqXHR.responseText, status, jqXHR ] );
+				callback.apply( this, response || [ jqXHR.responseText, status, jqXHR ] );
 			} );
 		} );
 	}
@@ -43155,7 +43184,7 @@ return jQuery;
 module.exports = (function(cy)
 {
   "use strict";
-  var edgeAddingMode = false;
+  window.edgeAddingMode = false;
 
   cy.cxtmenu({
     selector: 'core',
@@ -43167,21 +43196,13 @@ module.exports = (function(cy)
           cy.layout({name:'cose', padding: 50, animate: 'true'});
         }
       },
-      {
-        content: '<span class="fa fa-star"></span> Toggle Edge Addition Mode',
-        select: function(ele)
-        {
-          edgeAddingMode = !edgeAddingMode;
-          var flag = edgeAddingMode ? 'drawon' : 'drawoff';
-          cy.edgehandles(flag);
-        }
-      }
     ]
   });
 
   cy.cxtmenu({
     selector: 'node',
-    commands: [
+    commands:
+    [
       {
         content: '<span class="fa fa-flash fa"></span>delete node(s)',
         select: function(ele)
@@ -43258,8 +43279,23 @@ var edgeHandleDefaults =
   start: function( sourceNode ) {
     // fired when edgehandles interaction starts (drag on handle)
   },
-  complete: function( sourceNode, targetNodes, addedEntities ) {
-    // fired when edgehandles is done and entities are added
+  complete: function( sourceNode, targetNodes, addedEntities )
+  {
+      var type;
+      if (window.edgeAddingMode == 1)
+      {
+        type = 'IN_SAME_COMPONENT';
+      }
+      else if (window.edgeAddingMode == 2)
+      {
+        type = 'REACTS_WITH';
+      }
+      else if (window.edgeAddingMode == 3)
+      {
+        type = 'STATE_CHANGE';
+      }
+      cy.add({group:'edges', data:{source: sourceNode.id(), target: targetNodes[0].id(), type: type}});
+
   },
   stop: function( sourceNode ) {
     // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
@@ -43295,9 +43331,10 @@ $(window).load(function()
 {
     panzoom( cytoscape, $ );  // register extension
     cxtmenu( cytoscape, $ ); // register extension
-    edgehandles( cytoscape, $ ); // register extension
+    // edgehandles( cytoscape, $ ); // register extension
     cyqtip( cytoscape, $ ); // register extension
 
+    window.edgeAddingMode = 0;
 
     cy = window.cy = cytoscape(
     {
@@ -43310,22 +43347,24 @@ $(window).load(function()
 
       elements: {
         nodes: [
-          { data: { id: 'j', name: 'Jerry' } },
-          { data: { id: 'e', name: 'Elaine' } },
-          { data: { id: 'k', name: 'Kramer' } },
-          { data: { id: 'g', name: 'George' } }
+          { data: { id: 'j', name: 'TP53' } },
+          { data: { id: 'e', name: 'MDM2' } },
+          { data: { id: 'k', name: 'MDM4' } },
+          { data: { id: 'g', name: 'IGFR' } }
         ],
         edges: [
-          { data: { source: 'j', target: 'e' } },
-          { data: { source: 'j', target: 'k' } },
-          { data: { source: 'j', target: 'g' } },
-          { data: { source: 'e', target: 'j' } },
-          { data: { source: 'e', target: 'k' } },
-          { data: { source: 'k', target: 'j' } },
-          { data: { source: 'k', target: 'e' } },
-          { data: { source: 'k', target: 'g' } },
-          { data: { source: 'g', target: 'j' } }
+          { data: { source: 'j', target: 'e', type: 'IN_SAME_COMPONENT' } },
+          { data: { source: 'j', target: 'k' , type: 'REACTS_WITH'} },
+          { data: { source: 'e', target: 'k' , type: 'IN_SAME_COMPONENT'} },
+          { data: { source: 'g', target: 'j' ,type: 'REACTS_WITH'} }
         ]
+      },
+      ready: function(){
+
+        // var selectedNodes = this.nodes();
+        // var compNode = this.add({group: "nodes"})[0];
+        // var compId = compNode.id();
+        // selectedNodes.move({parent: compId});
       },
 
       layout: {
@@ -43335,7 +43374,7 @@ $(window).load(function()
     });
 
     cy.panzoom( panzoomOpts );
-    cy.nodeadd( {container: $('#simpleNodeDiv'), explanationText: 'Simple Node', icon: 'fa fa-square-o'} );
+    cy.nodeadd( {container: $('#simpleNodeDiv'), explanationText: 'Gene', icon: 'fa fa-square-o'} );
     // cy.nodeadd( {container: $('#compoundNodeDiv'), explanationText: 'Compound Node', icon: 'fa fa-square-o'} );
     cy.edgehandles( edgeHandleOpts );
 
@@ -43368,8 +43407,47 @@ $(window).load(function()
 //Jquery handles
 $('#saveGraphBtn').on('click', function(evt)
 {
-  var blob = new Blob([JSON.stringify(cy.json())], {type: "text/plain;charset=utf-8"});
-  saveAs(blob, "grahp.json");
+  var graphJSON = cy.json();
+  var nodes = graphJSON.elements.nodes;
+  var edges = graphJSON.elements.edges;
+
+  console.log(nodes);
+  console.log(edges);
+
+  var returnString = '--NODE_NAME\tPARENTID\tPOSX\tPOSY\tNODE_ID'+'\n';
+
+  for (var i = 0; i < nodes.length; i++)
+  {
+    var nodeName = nodes[i].data.name;
+    var parentID = nodes[i].data.parent;
+
+    if (nodes[i].data.parent)
+    {
+      parentID = nodes[i].data.parent;
+    }
+    else
+    {
+      parentID = -1;
+    }
+
+    var pos = nodes[i].position;
+    returnString +=  nodeName + '\t' + parentID + '\t' + nodes[i].position.x + '\t' + nodes[i].position.y + '\t' + nodes[i].data.id + '\n';
+  }
+
+  returnString += '\n';
+  returnString += '--EDGE_TYPE \t SOURCE \t TARGET \t\n';
+
+  for (var i = 0; i < edges.length; i++)
+  {
+    var edgeType = edges[i].data.type;
+    var source = edges[i].data.source;
+    var target = edges[i].data.target;
+
+    returnString += edgeType + '\t' + source + '\t' + target + '\n';
+  }
+
+  var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
+  saveAs(blob, "grahp.txt");
 });
 
 $('#loadGraphBtn').on('click', function(evt)
@@ -43394,13 +43472,72 @@ $('#fileinput').on('change', function()
   // request.send(formData);
 
   var reader = new FileReader();
-  reader.onload = function(){
+  reader.onload = function()
+  {
+    cy.remove(cy.elements());
     var text = reader.result;
-    cy.json(JSON.parse(text));
+
+    var allEles = [];
+
+    // By lines
+    var lines = this.result.split('\n');
+
+    var edgesStartIndex = -1;
+
+    // start from first line skip node meta data
+    for(var i =1; i < lines.length; i++)
+    {
+      if (lines[i].length == 0)
+      {
+        edgesStartIndex = i + 2;
+        break;
+      }
+
+      var lineData = lines[i].split('\t');
+
+      var newNode;
+      if (lineData[1] == '-1')
+      {
+        newNode = {group: 'nodes', data:{id: lineData[4], name:lineData[0]} ,position:{x: parseFloat(lineData[2]), y:parseFloat(lineData[3])}};
+      }
+      else {
+        newNode = {group: 'nodes', data:{id: lineData[4],name:lineData[0], parent:lineData[1]} ,position:{x: parseFloat(lineData[2]), y:parseFloat(lineData[3])}};
+      }
+      allEles.push(newNode);
+    }
+
+    for(var i = edgesStartIndex; i < lines.length; i++)
+    {
+      if (lines[i].length == 0)
+      {
+        break;
+      }
+
+      var lineData = lines[i].split('\t');
+      newEdge = {group: 'edges', data:{type: lineData[0], source: lineData[1], target: lineData[2]}};
+      allEles.push(newEdge);
+    }
+
+    cy.add(allEles);
+    cy.layout({name:'cose', padding: 50, animate: 'true'});
   };
   reader.readAsText(file);
 });
 
+
+//Selected element on dropdown
+$(".edgePaletteWrapper li a").click(function(){
+
+  $(".edgePaletteWrapper .btn:first-child").text($(this).text());
+  $(".edgePaletteWrapper .btn:first-child").val($(this).text());
+  $(".edgePaletteWrapper .btn:first-child").append('<span class="caret"></span>');
+
+  console.log($(this).attr('dropDownIndex'));
+  window.edgeAddingMode = $(this).attr('dropDownIndex');
+  var flag = (window.edgeAddingMode != 0) ? 'drawon' : 'drawoff';
+  cy.edgehandles(flag);
+
+});
 
 //Flat UI fix for highlights
 $('.input-group').on('focus', '.form-control', function () {
@@ -43441,12 +43578,22 @@ module.exports = (function(cy,$)
 {
   "use strict";
 
-  function generateQtipContentHTML(elementData)
+  function generateQtipContentHTML(ele)
   {
+    var nodeData = ele.data();
+    var textInput = $('<div class="col-xs-8"><input type="text" class="form-control" nodeid="' + ele.id() + '" value="' + nodeData.name + '"></div>');
+    textInput.change(function()
+    {
+      var nodeID = $(this).find('input').attr('nodeid');
+
+      cy.$('#'+nodeID)[0]._private.data['name'] = $(this).find('input').val();
+      cy.$('#'+nodeID)[0].css('content', $(this).find('input').val());
+    });
+
     var row = $('<div class="row">\
                  <div class="col-xs-4">Name:</div>\
-                 <div class="col-xs-8">' + elementData.name + '</div>\
               </div>');
+    row.append(textInput);
     return row;
   }
 
@@ -43459,8 +43606,7 @@ module.exports = (function(cy,$)
       {
         text:  function()
         {
-          var nodeData = this.data();
-          return generateQtipContentHTML(nodeData);
+          return generateQtipContentHTML(this);
         },
         title: function()
         {
@@ -43499,6 +43645,12 @@ var styleSheet = [
       }
     },
     {
+      selector: "node.changeContent",
+      style:{
+        'content': 'data(name)'
+      }
+    },
+    {
         selector: 'node:parent',
         style:
         {
@@ -43512,10 +43664,19 @@ var styleSheet = [
       style:
       {
         'curve-style': 'bezier',
-        'target-arrow-shape': 'triangle',
-        'width': 0.5,
-        'line-color': '#898d98',
-        'target-arrow-color': '#898d98',
+        'target-arrow-shape': function( ele )
+        {
+            return 'none';
+        },
+        'width': 1,
+        'line-color': function( ele )
+        {
+            return edgeColorHandler(ele);
+        },
+        'target-arrow-color': function( ele )
+        {
+            return edgeColorHandler(ele);
+        },
         'opacity': 0.8
       }
   },
@@ -43537,6 +43698,24 @@ var styleSheet = [
     }
   }
 ];
+
+var edgeColorHandler = function( ele )
+{
+  switch (ele._private.data['type']){
+    case "IN_SAME_COMPONENT": return "#904930"; break;
+    case "REACTS_WITH": return "#7B7EF7"; break;
+    case "STATE_CHANGE": return "#67C1A9"; break;
+    default: return "#989898"; break;
+  }
+}
+
+var edgeArrowColorHandler = function( ele )
+{
+  switch (ele._private.data['type']){
+    case "STATE_CHANGE": return "triangle"; break;
+    default: return "none"; break;
+  }
+}
 
 
 module.exports = styleSheet;

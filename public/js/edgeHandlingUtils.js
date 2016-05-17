@@ -37,8 +37,23 @@ var edgeHandleDefaults =
   start: function( sourceNode ) {
     // fired when edgehandles interaction starts (drag on handle)
   },
-  complete: function( sourceNode, targetNodes, addedEntities ) {
-    // fired when edgehandles is done and entities are added
+  complete: function( sourceNode, targetNodes, addedEntities )
+  {
+      var type;
+      if (window.edgeAddingMode == 1)
+      {
+        type = 'IN_SAME_COMPONENT';
+      }
+      else if (window.edgeAddingMode == 2)
+      {
+        type = 'REACTS_WITH';
+      }
+      else if (window.edgeAddingMode == 3)
+      {
+        type = 'STATE_CHANGE';
+      }
+      cy.add({group:'edges', data:{source: sourceNode.id(), target: targetNodes[0].id(), type: type}});
+
   },
   stop: function( sourceNode ) {
     // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)

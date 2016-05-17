@@ -16,6 +16,12 @@ var styleSheet = [
       }
     },
     {
+      selector: "node.changeContent",
+      style:{
+        'content': 'data(name)'
+      }
+    },
+    {
         selector: 'node:parent',
         style:
         {
@@ -29,10 +35,19 @@ var styleSheet = [
       style:
       {
         'curve-style': 'bezier',
-        'target-arrow-shape': 'triangle',
-        'width': 0.5,
-        'line-color': '#898d98',
-        'target-arrow-color': '#898d98',
+        'target-arrow-shape': function( ele )
+        {
+            return 'none';
+        },
+        'width': 1,
+        'line-color': function( ele )
+        {
+            return edgeColorHandler(ele);
+        },
+        'target-arrow-color': function( ele )
+        {
+            return edgeColorHandler(ele);
+        },
         'opacity': 0.8
       }
   },
@@ -54,6 +69,24 @@ var styleSheet = [
     }
   }
 ];
+
+var edgeColorHandler = function( ele )
+{
+  switch (ele._private.data['type']){
+    case "IN_SAME_COMPONENT": return "#904930"; break;
+    case "REACTS_WITH": return "#7B7EF7"; break;
+    case "STATE_CHANGE": return "#67C1A9"; break;
+    default: return "#989898"; break;
+  }
+}
+
+var edgeArrowColorHandler = function( ele )
+{
+  switch (ele._private.data['type']){
+    case "STATE_CHANGE": return "triangle"; break;
+    default: return "none"; break;
+  }
+}
 
 
 module.exports = styleSheet;

@@ -2,6 +2,13 @@ body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
   background-color: #fff; }
 
+.edgePaletteWrapper {
+  text-align: center; }
+
+footer {
+  background-color: #eeeeee;
+  color: #393939; }
+
 footer {
   height: 100%; }
 
