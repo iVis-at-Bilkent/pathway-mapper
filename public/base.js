@@ -43211,13 +43211,28 @@ module.exports = (function(cy)
           ele.remove();
         }
       },
+      // {
+      //   content: '<span class="fa fa-star"></span> create compound',
+      //   select: function(ele)
+      //   {
+      //     var selectedNodes = cy.nodes(':selected').size() > 0 ? cy.$(':selected') : ele;
+      //     var compNode = cy.add({group: "nodes"})[0];
+      //     var compId = compNode.id();
+      //     selectedNodes.move({parent: compId});
+      //   }
+      // },
       {
-        content: '<span class="fa fa-star"></span> create compound',
+        content: '<span class="fa fa-star"></span> Add Selected Into This Node',
         select: function(ele)
         {
-          var selectedNodes = cy.nodes(':selected').size() > 0 ? cy.$(':selected') : ele;
-          var compNode = cy.add({group: "nodes"})[0];
-          var compId = compNode.id();
+          //Do nothing if node is not a compound or family node
+          if (ele._private.data['type'] === 'GENE' || cy.nodes(':selected').size() < 1)
+          {
+            return;
+          }
+
+          var selectedNodes = cy.nodes(':selected');
+          var compId = ele.id();
           selectedNodes.move({parent: compId});
         }
       }
@@ -43347,16 +43362,16 @@ $(window).load(function()
 
       elements: {
         nodes: [
-          { data: { id: 'j', name: 'TP53' } },
-          { data: { id: 'e', name: 'MDM2' } },
-          { data: { id: 'k', name: 'MDM4' } },
-          { data: { id: 'g', name: 'IGFR' } }
+          { data: { id: 'TP53',type:'GENE' } },
+          { data: { id: 'MDM2',type:'GENE'}},
+          { data: { id: 'MDM4' ,type:'GENE'}},
+          { data: { id: 'IGFR',type:'GENE'}}
         ],
         edges: [
-          { data: { source: 'j', target: 'e', type: 'IN_SAME_COMPONENT' } },
-          { data: { source: 'j', target: 'k' , type: 'REACTS_WITH'} },
-          { data: { source: 'e', target: 'k' , type: 'IN_SAME_COMPONENT'} },
-          { data: { source: 'g', target: 'j' ,type: 'REACTS_WITH'} }
+          { data: { source: 'TP53', target: 'MDM2', type: 'IN_SAME_COMPONENT' } },
+          { data: { source: 'MDM4', target: 'IGFR' , type: 'REACTS_WITH'} },
+          { data: { source: 'MDM2', target: 'MDM4' , type: 'IN_SAME_COMPONENT'} },
+          { data: { source: 'IGFR', target: 'TP53' ,type: 'REACTS_WITH'} }
         ]
       },
       ready: function(){
@@ -43374,8 +43389,33 @@ $(window).load(function()
     });
 
     cy.panzoom( panzoomOpts );
-    cy.nodeadd( {container: $('#simpleNodeDiv'), explanationText: 'Gene', icon: 'fa fa-square-o'} );
-    // cy.nodeadd( {container: $('#compoundNodeDiv'), explanationText: 'Compound Node', icon: 'fa fa-square-o'} );
+
+    //Node Add initialization
+    cy.nodeadd(
+    {
+        //Once the explanationText is cast to uppercase they will be node types
+        components:
+        [
+            {
+              container: $('#simpleNodeDiv'),
+              explanationText: 'Gene',
+              icon: 'fa fa-square-o'
+            },
+            {
+              container: $('#familyNodeDiv'),
+              explanationText: 'Family',
+              icon: 'fa fa-square-o'
+            },
+            {
+              container: $('#compartmentNodeDiv'),
+              explanationText: 'Compartment',
+              icon: 'fa fa-square-o'
+            }
+        ]
+
+    });
+
+    //Edge Handles initialization
     cy.edgehandles( edgeHandleOpts );
 
     cy.on('tap', 'node', function(e){
@@ -43632,28 +43672,50 @@ var styleSheet = [
       selector: 'node',
       style:
       {
-        'content': 'data(name)',
-        'text-valign': 'center',
+        'content': function(ele){
+            return contentFunction(ele);
+        },
+        'text-valign': function(ele)
+        {
+          return 'center';
+        },
         'color': '#1e2829',
         'width': 50,
         'height': 20,
         'background-color': '#fff',
-        'shape': 'roundrectangle',
-        'border-width': 0.5,
-        'border-color': '#1e2829',
+        'shape': function(ele)
+        {
+            return parentNodeShapeFunc( ele );
+        },
+        'border-width': function(ele)
+        {
+            return borderWidthFunction( ele );
+        },
+        'border-color': function(ele)
+        {
+          return nodeColorFunction(ele);
+        },
         'font-size': 7
       }
     },
     {
-      selector: "node.changeContent",
-      style:{
-        'content': 'data(name)'
+      selector: ':parent',
+      style:
+      {
+        'shape': function(ele)
+        {
+            return parentNodeShapeFunc( ele );
+        }
       }
     },
     {
         selector: 'node:parent',
         style:
         {
+          'text-valign': function(ele)
+          {
+            return 'bottom';
+          },
           'background-color': '#fff',
           'border-color': '#000000',
           'border-width': 2
@@ -43698,6 +43760,62 @@ var styleSheet = [
     }
   }
 ];
+
+
+var contentFunction = function( ele )
+{
+  if (ele.id())
+  {
+    return ele.id();
+  }
+  else {
+    return "";
+  }
+}
+
+var vTextPositionFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": 'center'; break;
+    case "FAMILY": 'top'; break;
+    case "COMPARTMENT": 'top'; break;
+    default: return 'center'; break;
+  }
+}
+
+var borderWidthFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return 0.5; break;
+    case "FAMILY": return 2; break;
+    case "COMPARTMENT": return 2; break;
+    default: return 0.5; break;
+  }
+}
+
+var parentNodeShapeFunc = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return "roundrectangle"; break;
+    case "FAMILY": return "roundrectangle"; break;
+    case "COMPARTMENT": return "rectangle"; break;
+    default: return "roundrectangle"; break;
+  }
+}
+
+var nodeColorFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return "#616161"; break;
+    case "FAMILY": return "#000000"; break;
+    case "COMPARTMENT": return "#000000"; break;
+    default: return "#000000"; break;
+  }
+}
 
 var edgeColorHandler = function( ele )
 {

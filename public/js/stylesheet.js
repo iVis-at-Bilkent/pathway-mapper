@@ -3,28 +3,50 @@ var styleSheet = [
       selector: 'node',
       style:
       {
-        'content': 'data(name)',
-        'text-valign': 'center',
+        'content': function(ele){
+            return contentFunction(ele);
+        },
+        'text-valign': function(ele)
+        {
+          return 'center';
+        },
         'color': '#1e2829',
         'width': 50,
         'height': 20,
         'background-color': '#fff',
-        'shape': 'roundrectangle',
-        'border-width': 0.5,
-        'border-color': '#1e2829',
+        'shape': function(ele)
+        {
+            return parentNodeShapeFunc( ele );
+        },
+        'border-width': function(ele)
+        {
+            return borderWidthFunction( ele );
+        },
+        'border-color': function(ele)
+        {
+          return nodeColorFunction(ele);
+        },
         'font-size': 7
       }
     },
     {
-      selector: "node.changeContent",
-      style:{
-        'content': 'data(name)'
+      selector: ':parent',
+      style:
+      {
+        'shape': function(ele)
+        {
+            return parentNodeShapeFunc( ele );
+        }
       }
     },
     {
         selector: 'node:parent',
         style:
         {
+          'text-valign': function(ele)
+          {
+            return 'bottom';
+          },
           'background-color': '#fff',
           'border-color': '#000000',
           'border-width': 2
@@ -69,6 +91,62 @@ var styleSheet = [
     }
   }
 ];
+
+
+var contentFunction = function( ele )
+{
+  if (ele.id())
+  {
+    return ele.id();
+  }
+  else {
+    return "";
+  }
+}
+
+var vTextPositionFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": 'center'; break;
+    case "FAMILY": 'top'; break;
+    case "COMPARTMENT": 'top'; break;
+    default: return 'center'; break;
+  }
+}
+
+var borderWidthFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return 0.5; break;
+    case "FAMILY": return 2; break;
+    case "COMPARTMENT": return 2; break;
+    default: return 0.5; break;
+  }
+}
+
+var parentNodeShapeFunc = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return "roundrectangle"; break;
+    case "FAMILY": return "roundrectangle"; break;
+    case "COMPARTMENT": return "rectangle"; break;
+    default: return "roundrectangle"; break;
+  }
+}
+
+var nodeColorFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return "#616161"; break;
+    case "FAMILY": return "#000000"; break;
+    case "COMPARTMENT": return "#000000"; break;
+    default: return "#000000"; break;
+  }
+}
 
 var edgeColorHandler = function( ele )
 {

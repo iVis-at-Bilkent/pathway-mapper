@@ -29,13 +29,28 @@ module.exports = (function(cy)
           ele.remove();
         }
       },
+      // {
+      //   content: '<span class="fa fa-star"></span> create compound',
+      //   select: function(ele)
+      //   {
+      //     var selectedNodes = cy.nodes(':selected').size() > 0 ? cy.$(':selected') : ele;
+      //     var compNode = cy.add({group: "nodes"})[0];
+      //     var compId = compNode.id();
+      //     selectedNodes.move({parent: compId});
+      //   }
+      // },
       {
-        content: '<span class="fa fa-star"></span> create compound',
+        content: '<span class="fa fa-star"></span> Add Selected Into This Node',
         select: function(ele)
         {
-          var selectedNodes = cy.nodes(':selected').size() > 0 ? cy.$(':selected') : ele;
-          var compNode = cy.add({group: "nodes"})[0];
-          var compId = compNode.id();
+          //Do nothing if node is not a compound or family node
+          if (ele._private.data['type'] === 'GENE' || cy.nodes(':selected').size() < 1)
+          {
+            return;
+          }
+
+          var selectedNodes = cy.nodes(':selected');
+          var compId = ele.id();
           selectedNodes.move({parent: compId});
         }
       }

@@ -1,5 +1,6 @@
 ;
-(function($, $$) {
+(function($, $$)
+{
     var defaults = {
         height: 30,   //height of the icon container
         width: 30,    //width of the icon container
@@ -27,76 +28,80 @@
 
                 $this.find(".ui-cytoscape-nodeadd").remove();
             },
-            init: function() {
-                return $(this).each(function() {
-                    var $container = $(this);
-                    var dragContainer = options.container;
-                    var explanationText = options.explanationText;
+            init: function()
+            {
+                return $(this).each(function()
+                {
+                    var components = options.components;
+                    for (var index in components)
+                    {
+                      var component = components[index];
+                      var dragContainer = component.container;
+                      var explanationText = component.explanationText;
 
-                    var $nodeadd = $('<div class="ui-cytoscape-nodeadd"></div>');
-                    dragContainer.append($nodeadd);
+                      var $nodeadd = $('<div class="ui-cytoscape-nodeadd"></div>');
+                      dragContainer.append($nodeadd);
 
-                    var $nodeDragHandle = $('<div class="ui-cytoscape-nodeadd-nodediv"> \
-                                              <span id="ui-cytoscape-nodeadd-icon" class="draggable icon ' + options.icon + '">\
-                                              <span  class="">'+explanationText+'</span>\
-                                              </span>\
-                                            </div>');
-                    $nodeadd.append($nodeDragHandle);
+                      var $nodeDragHandle = $('<div class="ui-cytoscape-nodeadd-nodediv"> \
+                                                <span id="ui-cytoscape-nodeadd-icon" class="draggable icon ' + options.icon + '">\
+                                                <span  class="">'+explanationText+'</span>\
+                                                </span>\
+                                              </div>');
+                      $nodeadd.append($nodeDragHandle);
 
-                    function setUpUI() {
-                          dragContainer.find(".ui-cytoscape-nodeadd-nodediv").css({
-                            background: options.backgroundColorDiv,
-                            border: options.borderWidthDiv + ' solid ' + options.borderColorDiv,
-                            'border-radius': options.borderRadiusDiv
-                        });
-                    }
-                    setUpUI();
-
-                    function initDraggable() {
-                        dragContainer.find("#ui-cytoscape-nodeadd-icon").draggable({
-                            helper: "clone",
-                            cursor: "pointer"
-                        });
-                    }
-                    initDraggable();
-
-                    function initDroppable() {
-                        $container.droppable({
-                            activeClass: "ui-state-highlight",
-                            // accept: "#ui-cytoscape-nodeadd-icon",
-                            drop: function(event, ui) {
-                                $container.removeClass("ui-state-highlight");
-
-                                var currentOffset = $container.offset();
-                                var relX = event.pageX - currentOffset.left;
-                                var relY = event.pageY - currentOffset.top;
-
-                                var cy = $container.cytoscape("get");
-                                cy.add($.extend(true,{
-                                    group: "nodes",
-                                    renderedPosition: {
-                                        x: relX,
-                                        y: relY
-                                    }
-                                }, options.nodeParams()));
-
-                            }
-                        });
-                    }
-                    initDroppable();
-
-                    $nodeDragHandle.bind("mousedown", function(e) {
-                        handler(e);
-                    });
-
-                    var handler = function(e) {
+                      $nodeDragHandle.bind("mousedown", function(e)
+                      {
                         e.stopPropagation(); // don't trigger dragging of nodeadd
                         e.preventDefault(); // don't cause text selection
-                    };
+                      });
+
+                      //Setup UI
+                      dragContainer.find(".ui-cytoscape-nodeadd-nodediv").css({
+                        background: options.backgroundColorDiv,
+                        border: options.borderWidthDiv + ' solid ' + options.borderColorDiv,
+                        'border-radius': options.borderRadiusDiv
+                      });
+
+                      //Init Draggable
+                      dragContainer.find("#ui-cytoscape-nodeadd-icon").draggable({
+                          helper: "clone",
+                          cursor: "pointer"
+                      });
+                    }
+
+                    var $container = $(this);
+                    //Init Droppable
+                    $container.droppable({
+                        activeClass: "ui-state-highlight",
+                        // accept: "#ui-cytoscape-nodeadd-icon",
+                        drop: function(event, ui) {
+                            $container.removeClass("ui-state-highlight");
+
+                            var currentOffset = $container.offset();
+                            var relX = event.pageX - currentOffset.left;
+                            var relY = event.pageY - currentOffset.top;
+
+                            var nodeType = $(ui.helper).find('span').text().toUpperCase();
+
+                            var cy = $container.cytoscape("get");
+                            cy.add(
+                            {
+                                group: "nodes",
+                                data: {type: nodeType},
+                                renderedPosition:
+                                {
+                                    x: relX,
+                                    y: relY
+                                }
+                            });
+
+                        }
+                    });
 
                 });
             }
         };
+
         if (functions[fn]) {
             return functions[fn].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof fn == 'object' || !fn) {

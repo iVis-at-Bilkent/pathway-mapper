@@ -40,16 +40,16 @@ $(window).load(function()
 
       elements: {
         nodes: [
-          { data: { id: 'j', name: 'TP53' } },
-          { data: { id: 'e', name: 'MDM2' } },
-          { data: { id: 'k', name: 'MDM4' } },
-          { data: { id: 'g', name: 'IGFR' } }
+          { data: { id: 'TP53',type:'GENE' } },
+          { data: { id: 'MDM2',type:'GENE'}},
+          { data: { id: 'MDM4' ,type:'GENE'}},
+          { data: { id: 'IGFR',type:'GENE'}}
         ],
         edges: [
-          { data: { source: 'j', target: 'e', type: 'IN_SAME_COMPONENT' } },
-          { data: { source: 'j', target: 'k' , type: 'REACTS_WITH'} },
-          { data: { source: 'e', target: 'k' , type: 'IN_SAME_COMPONENT'} },
-          { data: { source: 'g', target: 'j' ,type: 'REACTS_WITH'} }
+          { data: { source: 'TP53', target: 'MDM2', type: 'IN_SAME_COMPONENT' } },
+          { data: { source: 'MDM4', target: 'IGFR' , type: 'REACTS_WITH'} },
+          { data: { source: 'MDM2', target: 'MDM4' , type: 'IN_SAME_COMPONENT'} },
+          { data: { source: 'IGFR', target: 'TP53' ,type: 'REACTS_WITH'} }
         ]
       },
       ready: function(){
@@ -67,8 +67,33 @@ $(window).load(function()
     });
 
     cy.panzoom( panzoomOpts );
-    cy.nodeadd( {container: $('#simpleNodeDiv'), explanationText: 'Gene', icon: 'fa fa-square-o'} );
-    // cy.nodeadd( {container: $('#compoundNodeDiv'), explanationText: 'Compound Node', icon: 'fa fa-square-o'} );
+
+    //Node Add initialization
+    cy.nodeadd(
+    {
+        //Once the explanationText is cast to uppercase they will be node types
+        components:
+        [
+            {
+              container: $('#simpleNodeDiv'),
+              explanationText: 'Gene',
+              icon: 'fa fa-square-o'
+            },
+            {
+              container: $('#familyNodeDiv'),
+              explanationText: 'Family',
+              icon: 'fa fa-square-o'
+            },
+            {
+              container: $('#compartmentNodeDiv'),
+              explanationText: 'Compartment',
+              icon: 'fa fa-square-o'
+            }
+        ]
+
+    });
+
+    //Edge Handles initialization
     cy.edgehandles( edgeHandleOpts );
 
     cy.on('tap', 'node', function(e){
