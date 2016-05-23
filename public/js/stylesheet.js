@@ -11,8 +11,8 @@ var styleSheet = [
           return 'center';
         },
         'color': '#1e2829',
-        'width': 50,
-        'height': 20,
+        'width': 30,
+        'height': 15,
         'background-color': '#fff',
         'shape': function(ele)
         {
@@ -47,6 +47,7 @@ var styleSheet = [
           {
             return 'bottom';
           },
+          'padding-top': 10,
           'background-color': '#fff',
           'border-color': '#000000',
           'border-width': 2
@@ -59,7 +60,7 @@ var styleSheet = [
         'curve-style': 'bezier',
         'target-arrow-shape': function( ele )
         {
-            return 'none';
+            return edgeTargetArrowTypeHandler(ele);
         },
         'width': 1,
         'line-color': function( ele )
@@ -69,6 +70,10 @@ var styleSheet = [
         'target-arrow-color': function( ele )
         {
             return edgeColorHandler(ele);
+        },
+        'line-style': function(ele)
+        {
+            return edgeLineTypeHandler(ele);
         },
         'opacity': 0.8
       }
@@ -95,13 +100,10 @@ var styleSheet = [
 
 var contentFunction = function( ele )
 {
-  if (ele.id())
-  {
-    return ele.id();
+  if (ele._private.data.name) {
+    return ele._private.data.name;
   }
-  else {
-    return "";
-  }
+  return "newNode";
 }
 
 var vTextPositionFunction = function( ele )
@@ -120,6 +122,7 @@ var borderWidthFunction = function( ele )
   switch (ele._private.data['type'])
   {
     case "GENE": return 0.5; break;
+    case "PROCESS": return 0; break;
     case "FAMILY": return 2; break;
     case "COMPARTMENT": return 2; break;
     default: return 0.5; break;
@@ -131,8 +134,9 @@ var parentNodeShapeFunc = function( ele )
   switch (ele._private.data['type'])
   {
     case "GENE": return "roundrectangle"; break;
-    case "FAMILY": return "roundrectangle"; break;
-    case "COMPARTMENT": return "rectangle"; break;
+    case "PROCESS": return "roundrectangle"; break;
+    case "FAMILY": return "rectangle"; break;
+    case "COMPARTMENT": return "roundrectangle"; break;
     default: return "roundrectangle"; break;
   }
 }
@@ -141,7 +145,7 @@ var nodeColorFunction = function( ele )
 {
   switch (ele._private.data['type'])
   {
-    case "GENE": return "#616161"; break;
+    case "GENE": return "#000000"; break;
     case "FAMILY": return "#000000"; break;
     case "COMPARTMENT": return "#000000"; break;
     default: return "#000000"; break;
@@ -150,20 +154,39 @@ var nodeColorFunction = function( ele )
 
 var edgeColorHandler = function( ele )
 {
-  switch (ele._private.data['type']){
-    case "IN_SAME_COMPONENT": return "#904930"; break;
-    case "REACTS_WITH": return "#7B7EF7"; break;
-    case "STATE_CHANGE": return "#67C1A9"; break;
-    default: return "#989898"; break;
-  }
+  // switch (ele._private.data['type']){
+  //   case "ACTIVATES": return "#904930"; break;
+  //   case "INHIBITS": return "#7B7EF7"; break;
+  //   case "INDUCES": return "#ad47c2"; break;
+  //   case "REPRESSES": return "#67C1A9"; break;
+  //   case "BINDS": return "#67C1A9"; break;
+  //   default: return "#989898"; break;
+  // }
+  return "#1b1b1b";
 }
 
-var edgeArrowColorHandler = function( ele )
+var edgeTargetArrowTypeHandler = function( ele )
 {
-  switch (ele._private.data['type']){
-    case "STATE_CHANGE": return "triangle"; break;
-    default: return "none"; break;
-  }
+    switch (ele._private.data['type']){
+      case "ACTIVATES": return "triangle"; break;
+      case "INHIBITS": return "tee"; break;
+      case "INDUCES": return "triangle"; break;
+      case "REPRESSES": return "tee"; break;
+      case "BINDS": return "none"; break;
+      default: return "none"; break;
+    }
+}
+
+var edgeLineTypeHandler = function( ele )
+{
+    switch (ele._private.data['type']){
+      case "ACTIVATES": return "solid"; break;
+      case "INHIBITS": return "solid"; break;
+      case "INDUCES": return "dashed"; break;
+      case "REPRESSES": return "dashed"; break;
+      case "BINDS": return "solid"; break;
+      default: return "solid"; break;
+    }
 }
 
 

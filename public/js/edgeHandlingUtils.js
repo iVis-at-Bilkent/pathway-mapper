@@ -42,16 +42,25 @@ var edgeHandleDefaults =
       var type;
       if (window.edgeAddingMode == 1)
       {
-        type = 'IN_SAME_COMPONENT';
+        type = 'ACTIVATES';
       }
       else if (window.edgeAddingMode == 2)
       {
-        type = 'REACTS_WITH';
+        type = 'INHIBITS';
       }
       else if (window.edgeAddingMode == 3)
       {
-        type = 'STATE_CHANGE';
+        type = 'INDUCES';
       }
+      else if (window.edgeAddingMode == 4)
+      {
+        type = 'REPRESSES';
+      }
+      else if (window.edgeAddingMode == 5)
+      {
+        type = 'BINDS';
+      }
+
       cy.add({group:'edges', data:{source: sourceNode.id(), target: targetNodes[0].id(), type: type}});
 
   },

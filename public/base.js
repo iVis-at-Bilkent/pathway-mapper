@@ -43299,16 +43299,25 @@ var edgeHandleDefaults =
       var type;
       if (window.edgeAddingMode == 1)
       {
-        type = 'IN_SAME_COMPONENT';
+        type = 'ACTIVATES';
       }
       else if (window.edgeAddingMode == 2)
       {
-        type = 'REACTS_WITH';
+        type = 'INHIBITS';
       }
       else if (window.edgeAddingMode == 3)
       {
-        type = 'STATE_CHANGE';
+        type = 'INDUCES';
       }
+      else if (window.edgeAddingMode == 4)
+      {
+        type = 'REPRESSES';
+      }
+      else if (window.edgeAddingMode == 5)
+      {
+        type = 'BINDS';
+      }
+
       cy.add({group:'edges', data:{source: sourceNode.id(), target: targetNodes[0].id(), type: type}});
 
   },
@@ -43340,6 +43349,8 @@ var panzoomOpts = require('./panzoomUtils.js');
 var styleSheet = require('./stylesheet.js');
 var edgeHandleOpts = require('./edgeHandlingUtils.js');
 
+var SaveLoadUtilities = require('./saveLoadUtils.js');
+
 
 //Wait all components to load
 $(window).load(function()
@@ -43362,16 +43373,18 @@ $(window).load(function()
 
       elements: {
         nodes: [
-          { data: { id: 'TP53',type:'GENE' } },
-          { data: { id: 'MDM2',type:'GENE'}},
-          { data: { id: 'MDM4' ,type:'GENE'}},
-          { data: { id: 'IGFR',type:'GENE'}}
+          { data: { id: 'TP53', name:'TP53', type:'GENE' } },
+          { data: { id: 'MDM2', name:'MDM2',type:'GENE'}},
+          { data: { id: 'MDM4', name:'MDM4',type:'GENE'}},
+          { data: { id: 'IGFR', name:'IGFR',type:'GENE'}},
+          { data: { id: 'Process',name:'Process', type:'PROCESS'}}
         ],
         edges: [
-          { data: { source: 'TP53', target: 'MDM2', type: 'IN_SAME_COMPONENT' } },
-          { data: { source: 'MDM4', target: 'IGFR' , type: 'REACTS_WITH'} },
-          { data: { source: 'MDM2', target: 'MDM4' , type: 'IN_SAME_COMPONENT'} },
-          { data: { source: 'IGFR', target: 'TP53' ,type: 'REACTS_WITH'} }
+          { data: { source: 'TP53', target: 'MDM2', type: 'ACTIVATES' } },
+          { data: { source: 'MDM4', target: 'IGFR' , type: 'INDUCES'} },
+          { data: { source: 'MDM2', target: 'MDM4' , type: 'BINDS'} },
+          { data: { source: 'IGFR', target: 'TP53' ,type: 'REPRESSES'} },
+          { data: { source: 'TP53', target: 'Process' ,type: 'BINDS'} }
         ]
       },
       ready: function(){
@@ -43409,6 +43422,11 @@ $(window).load(function()
             {
               container: $('#compartmentNodeDiv'),
               explanationText: 'Compartment',
+              icon: 'fa fa-square-o'
+            },
+            {
+              container: $('#processNodeDiv'),
+              explanationText: 'Process',
               icon: 'fa fa-square-o'
             }
         ]
@@ -43448,46 +43466,9 @@ $(window).load(function()
 $('#saveGraphBtn').on('click', function(evt)
 {
   var graphJSON = cy.json();
-  var nodes = graphJSON.elements.nodes;
-  var edges = graphJSON.elements.edges;
-
-  console.log(nodes);
-  console.log(edges);
-
-  var returnString = '--NODE_NAME\tPARENTID\tPOSX\tPOSY\tNODE_ID'+'\n';
-
-  for (var i = 0; i < nodes.length; i++)
-  {
-    var nodeName = nodes[i].data.name;
-    var parentID = nodes[i].data.parent;
-
-    if (nodes[i].data.parent)
-    {
-      parentID = nodes[i].data.parent;
-    }
-    else
-    {
-      parentID = -1;
-    }
-
-    var pos = nodes[i].position;
-    returnString +=  nodeName + '\t' + parentID + '\t' + nodes[i].position.x + '\t' + nodes[i].position.y + '\t' + nodes[i].data.id + '\n';
-  }
-
-  returnString += '\n';
-  returnString += '--EDGE_TYPE \t SOURCE \t TARGET \t\n';
-
-  for (var i = 0; i < edges.length; i++)
-  {
-    var edgeType = edges[i].data.type;
-    var source = edges[i].data.source;
-    var target = edges[i].data.target;
-
-    returnString += edgeType + '\t' + source + '\t' + target + '\n';
-  }
-
+  var returnString = SaveLoadUtilities.exportGraph(graphJSON);
   var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
-  saveAs(blob, "grahp.txt");
+  saveAs(blob, "pathway.txt");
 });
 
 $('#loadGraphBtn').on('click', function(evt)
@@ -43515,49 +43496,7 @@ $('#fileinput').on('change', function()
   reader.onload = function()
   {
     cy.remove(cy.elements());
-    var text = reader.result;
-
-    var allEles = [];
-
-    // By lines
-    var lines = this.result.split('\n');
-
-    var edgesStartIndex = -1;
-
-    // start from first line skip node meta data
-    for(var i =1; i < lines.length; i++)
-    {
-      if (lines[i].length == 0)
-      {
-        edgesStartIndex = i + 2;
-        break;
-      }
-
-      var lineData = lines[i].split('\t');
-
-      var newNode;
-      if (lineData[1] == '-1')
-      {
-        newNode = {group: 'nodes', data:{id: lineData[4], name:lineData[0]} ,position:{x: parseFloat(lineData[2]), y:parseFloat(lineData[3])}};
-      }
-      else {
-        newNode = {group: 'nodes', data:{id: lineData[4],name:lineData[0], parent:lineData[1]} ,position:{x: parseFloat(lineData[2]), y:parseFloat(lineData[3])}};
-      }
-      allEles.push(newNode);
-    }
-
-    for(var i = edgesStartIndex; i < lines.length; i++)
-    {
-      if (lines[i].length == 0)
-      {
-        break;
-      }
-
-      var lineData = lines[i].split('\t');
-      newEdge = {group: 'edges', data:{type: lineData[0], source: lineData[1], target: lineData[2]}};
-      allEles.push(newEdge);
-    }
-
+    var allEles = SaveLoadUtilities.parseGraph(reader.result);
     cy.add(allEles);
     cy.layout({name:'cose', padding: 50, animate: 'true'});
   };
@@ -43566,17 +43505,32 @@ $('#fileinput').on('change', function()
 
 
 //Selected element on dropdown
-$(".edgePaletteWrapper li a").click(function(){
+$(".edge-palette a").click(function(event)
+{
+  event.preventDefault();
 
-  $(".edgePaletteWrapper .btn:first-child").text($(this).text());
-  $(".edgePaletteWrapper .btn:first-child").val($(this).text());
-  $(".edgePaletteWrapper .btn:first-child").append('<span class="caret"></span>');
+  if ($(event.target).hasClass('active'))
+  {
+    cy.edgehandles('drawoff');
+    $('.edge-palette a').blur().removeClass('active');
+  }
+  else 
+  {
+    $('.edge-palette a').blur().removeClass('active');
+    $(event.target).toggleClass('active');
+    window.edgeAddingMode = $(event.target).attr('edgeTypeIndex');
+    cy.edgehandles('drawon');
+  }
 
-  console.log($(this).attr('dropDownIndex'));
-  window.edgeAddingMode = $(this).attr('dropDownIndex');
-  var flag = (window.edgeAddingMode != 0) ? 'drawon' : 'drawoff';
-  cy.edgehandles(flag);
+});
 
+
+$(".edgePanel").click(function(event)
+{
+  // $('.edge-palette a').removeClass('active');
+  // console.log('here');
+  // window.edgeAddingMode = -1;
+  // cy.edgehandles('drawoff');
 });
 
 //Flat UI fix for highlights
@@ -43586,7 +43540,7 @@ $('.input-group').on('focus', '.form-control', function () {
   $(this).closest('.input-group, .form-group').removeClass('focus');
 });
 
-},{"./contextMenuModule.js":22,"./edgeHandlingUtils.js":23,"./panzoomUtils.js":25,"./qTipModule.js":26,"./stylesheet.js":27,"backbone":1,"bootstrap":2,"cytoscape":19,"cytoscape-cxtmenu":15,"cytoscape-edgehandles":16,"cytoscape-panzoom":17,"cytoscape-qtip":18,"jquery":20,"underscore":21}],25:[function(require,module,exports){
+},{"./contextMenuModule.js":22,"./edgeHandlingUtils.js":23,"./panzoomUtils.js":25,"./qTipModule.js":26,"./saveLoadUtils.js":27,"./stylesheet.js":28,"backbone":1,"bootstrap":2,"cytoscape":19,"cytoscape-cxtmenu":15,"cytoscape-edgehandles":16,"cytoscape-panzoom":17,"cytoscape-qtip":18,"jquery":20,"underscore":21}],25:[function(require,module,exports){
 var panzoomOptions =
 {
   // the default values of each option are outlined below:
@@ -43667,6 +43621,127 @@ module.exports = (function(cy,$)
 }(window.cy, window.$));
 
 },{}],27:[function(require,module,exports){
+var SaveLoadUtils = {
+  //Exports given json graph(based on cy.export()) into a string
+  exportGraph: function(graphJSON)
+  {
+    //Get nodes and edges
+    var nodes = graphJSON.elements.nodes;
+    var edges = graphJSON.elements.edges;
+
+    //Prepare Meta Line
+    var returnString = '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY--'+'\n';
+
+    for (var i = 0; i < nodes.length; i++)
+    {
+      //Node specific data fields
+      var nodeName = nodes[i].data.name;
+      var parentID = nodes[i].data.parent;
+      var nodeID = nodes[i].data.id;
+      var pos = nodes[i].position;
+      var nodeType = nodes[i].data.type;
+
+      //Check if node has a parent, if not set parent id -1
+      if (nodes[i].data.parent)
+      {
+        parentID = nodes[i].data.parent;
+      }
+      else
+      {
+        parentID = -1;
+      }
+
+      // Write a line for a node
+      returnString +=  nodeName + '\t' +
+                       nodeID + '\t' +
+                       nodeType + '\t' +
+                       parentID + '\t' +
+                       parseInt(nodes[i].position.x) + '\t' +
+                       parseInt(nodes[i].position.y) + '\t\n';
+    }
+
+    //Put a blank line between nodes and edges
+    returnString += '\n';
+    returnString += '--SOURCE \t TARGET \tEDGE_TYPE\n';
+
+    //Write edges
+    for (var i = 0; i < edges.length; i++)
+    {
+      var edgeType = edges[i].data.type;
+      var source = edges[i].data.source;
+      var target = edges[i].data.target;
+
+      returnString += source + '\t' +
+                      target + '\t' +
+                      edgeType + '\n';
+    }
+
+    //Finally return a string that includes whole graph lovely and peacefully :)
+    return returnString;
+  },
+  parseGraph: function(graphText)
+  {
+    var allEles = [];
+
+
+    // By lines
+    var lines = graphText.split('\n');
+    var edgesStartIndex = -1;
+
+    // start from first line skip node meta data
+    for(var i =1; i < lines.length; i++)
+    {
+      // If we encounter a blank line, that means we need to parse edges from now on !
+      // so skip blank line and edge meta line
+      if (lines[i].length == 0)
+      {
+        edgesStartIndex = i + 2;
+        break;
+      }
+
+      //Fetch a line for nodes
+      var lineData = lines[i].split('\t');
+      var nodeName = lineData[0];
+      var nodeID = lineData[1];
+      var nodeType = lineData[2];
+      var parentID = lineData[3];
+      var posX = lineData[4];
+      var posY = lineData[5];
+
+      var newNode = {group: 'nodes', data:{id: nodeID, name: nodeName, type:nodeType} ,position:{x: parseInt(posX), y:parseInt(posY)}};
+
+      if ( parentID != '-1')
+      {
+        newNode.data.parent = parentID;
+      }
+      allEles.push(newNode);
+    }
+
+    //Read edges
+    for(var i = edgesStartIndex; i < lines.length; i++)
+    {
+      //If we reach EOF we break loop
+      if (lines[i].length == 0)
+      {
+        break;
+      }
+
+      var lineData = lines[i].split('\t');
+      var edgeSource = lineData[0];
+      var edgeTarget = lineData[1];
+      var edgeType = lineData[2];
+
+      newEdge = {group: 'edges', data:{type: edgeType, source: edgeSource, target: edgeTarget}};
+      allEles.push(newEdge);
+    }
+
+    return allEles;
+  }
+}
+
+module.exports = SaveLoadUtils;
+
+},{}],28:[function(require,module,exports){
 var styleSheet = [
 {
       selector: 'node',
@@ -43680,8 +43755,8 @@ var styleSheet = [
           return 'center';
         },
         'color': '#1e2829',
-        'width': 50,
-        'height': 20,
+        'width': 30,
+        'height': 15,
         'background-color': '#fff',
         'shape': function(ele)
         {
@@ -43716,6 +43791,7 @@ var styleSheet = [
           {
             return 'bottom';
           },
+          'padding-top': 10,
           'background-color': '#fff',
           'border-color': '#000000',
           'border-width': 2
@@ -43728,7 +43804,7 @@ var styleSheet = [
         'curve-style': 'bezier',
         'target-arrow-shape': function( ele )
         {
-            return 'none';
+            return edgeTargetArrowTypeHandler(ele);
         },
         'width': 1,
         'line-color': function( ele )
@@ -43738,6 +43814,10 @@ var styleSheet = [
         'target-arrow-color': function( ele )
         {
             return edgeColorHandler(ele);
+        },
+        'line-style': function(ele)
+        {
+            return edgeLineTypeHandler(ele);
         },
         'opacity': 0.8
       }
@@ -43764,13 +43844,10 @@ var styleSheet = [
 
 var contentFunction = function( ele )
 {
-  if (ele.id())
-  {
-    return ele.id();
+  if (ele._private.data.name) {
+    return ele._private.data.name;
   }
-  else {
-    return "";
-  }
+  return "newNode";
 }
 
 var vTextPositionFunction = function( ele )
@@ -43789,6 +43866,7 @@ var borderWidthFunction = function( ele )
   switch (ele._private.data['type'])
   {
     case "GENE": return 0.5; break;
+    case "PROCESS": return 0; break;
     case "FAMILY": return 2; break;
     case "COMPARTMENT": return 2; break;
     default: return 0.5; break;
@@ -43800,8 +43878,9 @@ var parentNodeShapeFunc = function( ele )
   switch (ele._private.data['type'])
   {
     case "GENE": return "roundrectangle"; break;
-    case "FAMILY": return "roundrectangle"; break;
-    case "COMPARTMENT": return "rectangle"; break;
+    case "PROCESS": return "roundrectangle"; break;
+    case "FAMILY": return "rectangle"; break;
+    case "COMPARTMENT": return "roundrectangle"; break;
     default: return "roundrectangle"; break;
   }
 }
@@ -43810,7 +43889,7 @@ var nodeColorFunction = function( ele )
 {
   switch (ele._private.data['type'])
   {
-    case "GENE": return "#616161"; break;
+    case "GENE": return "#000000"; break;
     case "FAMILY": return "#000000"; break;
     case "COMPARTMENT": return "#000000"; break;
     default: return "#000000"; break;
@@ -43819,20 +43898,39 @@ var nodeColorFunction = function( ele )
 
 var edgeColorHandler = function( ele )
 {
-  switch (ele._private.data['type']){
-    case "IN_SAME_COMPONENT": return "#904930"; break;
-    case "REACTS_WITH": return "#7B7EF7"; break;
-    case "STATE_CHANGE": return "#67C1A9"; break;
-    default: return "#989898"; break;
-  }
+  // switch (ele._private.data['type']){
+  //   case "ACTIVATES": return "#904930"; break;
+  //   case "INHIBITS": return "#7B7EF7"; break;
+  //   case "INDUCES": return "#ad47c2"; break;
+  //   case "REPRESSES": return "#67C1A9"; break;
+  //   case "BINDS": return "#67C1A9"; break;
+  //   default: return "#989898"; break;
+  // }
+  return "#1b1b1b";
 }
 
-var edgeArrowColorHandler = function( ele )
+var edgeTargetArrowTypeHandler = function( ele )
 {
-  switch (ele._private.data['type']){
-    case "STATE_CHANGE": return "triangle"; break;
-    default: return "none"; break;
-  }
+    switch (ele._private.data['type']){
+      case "ACTIVATES": return "triangle"; break;
+      case "INHIBITS": return "tee"; break;
+      case "INDUCES": return "triangle"; break;
+      case "REPRESSES": return "tee"; break;
+      case "BINDS": return "none"; break;
+      default: return "none"; break;
+    }
+}
+
+var edgeLineTypeHandler = function( ele )
+{
+    switch (ele._private.data['type']){
+      case "ACTIVATES": return "solid"; break;
+      case "INHIBITS": return "solid"; break;
+      case "INDUCES": return "dashed"; break;
+      case "REPRESSES": return "dashed"; break;
+      case "BINDS": return "solid"; break;
+      default: return "solid"; break;
+    }
 }
 
 
