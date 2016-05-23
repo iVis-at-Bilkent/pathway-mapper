@@ -1,3 +1,20 @@
+.modal {
+  text-align: center; }
+  .modal .modal-body .aboutImageContent {
+    margin-bottom: 15px; }
+  .modal .modal-body .adressText {
+    margin-bottom: 15px; }
+    .modal .modal-body .adressText p {
+      margin-bottom: 0px !important; }
+  .modal .modal-footer {
+    text-align: center; }
+
+#edge_legend_modal .modal-body img {
+  width: 500px; }
+
+#node_legend_modal .modal-body img {
+  width: 600px; }
+
 body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
   background-color: #fff; }
@@ -22,7 +39,8 @@ footer {
   position: absolute;
   /* float: right; */
   top: 14px;
-  right: 65px; }
+  right: 65px;
+  z-index: 100; }
 
 .pnl {
   margin-bottom: 15px;

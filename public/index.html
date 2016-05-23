@@ -13,6 +13,74 @@
 </head>
 <body>
 
+<div id='aboutModal' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h3 class="modal-title">About</h3>
+    </div>
+    <div class="modal-body">
+      <div class="aboutImageContent">
+        <img src="./assets/i-vis.png" alt="" />
+      </div>
+      <div class="aboutImageContent">
+        <img src="./assets/cbio.png" alt="" />
+      </div>
+      <div class="adressText">
+        <p>i-Vis information Visualization Group</p>
+        <p>Bilkent University, Ankara, Turkey</p>
+      </div>
+      <div class="adressText">
+        <p>Memorial Sloan-Kettering Cancer Center</p>
+        <p>New York, USA</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="">
+        <a href="mailto:ivis@cs.bilkent.edu.tr">ivis@cs.bilkent.edu.tr</a>
+      </div>
+      <div class="">
+        <a href="https://github.com/istemi-bahceci/TCGAViz.git">https://github.com/istemi-bahceci/TCGAViz.git</a>
+      </div>
+    </div>
+  </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id='edge_legend_modal' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h3 class="modal-title">Edge Legend</h3>
+    </div>
+    <div class="modal-body">
+        <img src="./assets/edge_legend.png" alt="" />
+    </div>
+    <div class="modal-footer">
+
+    </div>
+  </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id='node_legend_modal' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h3 class="modal-title">Node Legend</h3>
+    </div>
+    <div class="modal-body">
+      <img src="./assets/gene_legend.png" alt="" />
+    </div>
+    <div class="modal-footer">
+    </div>
+  </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <div class="pageContentWrapper">
   <div class="customMargins">
     <div class="row">
@@ -21,19 +89,19 @@
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
             <span class="sr-only">Toggle navigation</span>
           </button>
-          <a class="navbar-brand" class="active">TCGAViz</a>
+          <a class="navbar-brand" class="active">TCGA Curation Tool</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-01">
-          <!-- <form id="searchForm" class="navbar-form navbar-right" action="#" role="search">
-           <div class="form-group">
-             <div class="input-group">
-               <input class="form-control" id="searchName" type="search" placeholder="Search">
-               <span class="input-group-btn">
-                 <button type="submit" class="btn"><i class="fa fa-search"></i></button>
-               </span>
-             </div>
-           </div>
-         </form> -->
+          <ul class="nav navbar-nav pull-right">
+            <li class="dropdown aboutDropDown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a role="node_legend" href="#">Node Legend</a></li>
+                  <li><a role="edge_legend" href="#">Edge Legend</a></li>
+                  <li><a role="about" href="#">About</a></li>
+                </ul>
+              </li>
+          </ul>
         </div><!-- /.navbar-collapse -->
       </nav><!-- /navbar -->
     </div>
@@ -47,12 +115,12 @@
             <div class="pnl-body">
               <div class="buttonContainer">
                 <button id="saveGraphBtn" type="button" class="btn btn-primary btn-lg">
-                  <i class="fui-folder"></i> Save Graph
+                  <i class="fui-folder"></i> Save
                 </button>
               </div>
               <div class="buttonContainer">
                 <button id="loadGraphBtn" type="button" class="btn btn-primary btn-lg">
-                  <i class="fui-upload"></i> Load Graph
+                  <i class="fui-upload"></i> Load
                 </button>
               </div>
             </div>

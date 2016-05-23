@@ -1,3 +1,6 @@
+@import 'aboutModal';
+
+
 body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
   background-color: #fff;
@@ -31,6 +34,7 @@ footer{
   /* float: right; */
   top: 14px;
   right: 65px;
+  z-index: 100;
 }
 
 .pnl

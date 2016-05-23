@@ -1,0 +1,42 @@
+
+.modal
+{
+  text-align: center;
+
+  .modal-body
+  {
+    .aboutImageContent
+    {
+      margin-bottom: 15px;
+    }
+    .adressText
+    {
+      margin-bottom: 15px;
+      p{
+        margin-bottom: 0px !important;
+      }
+    }
+  }
+
+  .modal-footer{
+    text-align: center;
+  }
+}
+
+#edge_legend_modal{
+  .modal-body{
+    img
+    {
+      width: 500px;
+    }
+  }
+}
+
+#node_legend_modal{
+  .modal-body{
+    img
+    {
+      width: 600px;
+    }
+  }
+}

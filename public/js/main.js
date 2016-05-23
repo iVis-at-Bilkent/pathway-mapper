@@ -183,7 +183,7 @@ $(".edge-palette a").click(function(event)
     cy.edgehandles('drawoff');
     $('.edge-palette a').blur().removeClass('active');
   }
-  else 
+  else
   {
     $('.edge-palette a').blur().removeClass('active');
     $(event.target).toggleClass('active');
@@ -194,12 +194,22 @@ $(".edge-palette a").click(function(event)
 });
 
 
-$(".edgePanel").click(function(event)
+$(".aboutDropDown li a").click(function(event)
 {
-  // $('.edge-palette a').removeClass('active');
-  // console.log('here');
-  // window.edgeAddingMode = -1;
-  // cy.edgehandles('drawoff');
+  event.preventDefault();
+  var dropdownLinkRole = $(event.target).attr('role');
+
+  if (dropdownLinkRole == 'about')
+  {
+    $('#aboutModal').modal('show');
+  }
+  else if (dropdownLinkRole == 'edge_legend')
+  {
+    $('#edge_legend_modal').modal('show');
+  }else if (dropdownLinkRole == 'node_legend')
+  {
+    $('#node_legend_modal').modal('show');
+  }
 });
 
 //Flat UI fix for highlights
