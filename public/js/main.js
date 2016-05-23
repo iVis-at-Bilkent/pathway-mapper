@@ -193,7 +193,7 @@ $(".edge-palette a").click(function(event)
 
 });
 
-
+//About drop down handler
 $(".aboutDropDown li a").click(function(event)
 {
   event.preventDefault();

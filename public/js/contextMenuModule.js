@@ -49,7 +49,7 @@ module.exports = (function(cy)
             return;
           }
 
-          var selectedNodes = cy.nodes(':selected');
+          var selectedNodes = cy.elements(':selected');
           var compId = ele.id();
           selectedNodes.move({parent: compId});
         }
