@@ -43231,9 +43231,39 @@ module.exports = (function(cy)
             return;
           }
 
-          var selectedNodes = cy.elements(':selected');
+
           var compId = ele.id();
-          selectedNodes.move({parent: compId});
+          var selectedNodes = cy.nodes(':selected');
+          var selectedEdges = selectedNodes.neighborhood();
+          var copyNodes = selectedNodes.clone();
+          var newCollection = cy.collection();
+          selectedNodes.remove();
+
+          function traverseSelected(nodes)
+          {
+            nodes.forEach(function(node, i)
+            {
+                var children = node.children();
+                if (children.length > 0)
+                {
+                    newCollection = newCollection.add(children);
+                    traverseSelected(children)
+                }
+            });
+          }
+
+          traverseSelected(selectedNodes);
+
+          copyNodes.forEach(function(node, i)
+          {
+              node._private.data.parent = compId;
+          });
+
+
+          // console.log(selectedNodes.parents());
+          cy.add(copyNodes.union(selectedEdges));
+          newCollection.restore();
+          cy.nodes().updateCompoundBounds();
         }
       }
     ]
@@ -43765,7 +43795,7 @@ var styleSheet = [
           return 'center';
         },
         'color': '#1e2829',
-        'width': 60,
+        'width': 30,
         'height': 15,
         'background-color': '#fff',
         'shape': function(ele)

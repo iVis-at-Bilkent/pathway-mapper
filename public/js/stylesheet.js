@@ -11,7 +11,7 @@ var styleSheet = [
           return 'center';
         },
         'color': '#1e2829',
-        'width': 60,
+        'width': 30,
         'height': 15,
         'background-color': '#fff',
         'shape': function(ele)
