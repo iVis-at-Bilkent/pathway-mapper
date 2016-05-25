@@ -4,6 +4,67 @@ module.exports = (function(cy)
   "use strict";
   window.edgeAddingMode = false;
 
+  var lockedNodes = {};
+
+  function isChildren(node, queryNode)
+  {
+    var parent = queryNode.parent()[0];
+    while(parent)
+    {
+        if (parent.id() == node.id()) {
+          return true;
+        }
+        parent = parent.parent()[0];
+    }
+    return false;
+  }
+
+  function removeNodes(nodes)
+  {
+    //Get removed edges first
+    var removedEles = nodes.connectedEdges().remove();
+    var children = nodes.children();
+
+    if (children != null && children.length > 0)
+    {
+      children.forEach(function(childNode, i)
+      {
+            lockedNodes[childNode.id()] = true;
+      });
+
+      removedEles = removedEles.union(removeNodes(children));
+    }
+
+    removedEles = removedEles.union(nodes.remove());
+    cy.nodes().updateCompoundBounds();
+    return removedEles;
+  }
+
+  function changeParent(nodes, newParentId)
+  {
+    var removedNodes = removeNodes(nodes);
+
+    for (var i = 0; i < removedNodes.length; i++)
+    {
+      var removedNode = removedNodes[i];
+      var parentId = removedNode._private.data.parent;
+
+      //Just alter the parent id of corresponding nodes !
+      if (removedNode.isEdge() || lockedNodes[removedNode.id()])
+      {
+        continue;
+      }
+
+      removedNode._private.data.parent = newParentId;
+      if(removedNode._private.parent){
+        delete removedNode._private.parent;
+      }
+    }
+
+    cy.add(removedNodes);
+    cy.nodes().updateCompoundBounds();
+  }
+
   cy.cxtmenu({
     selector: 'core',
     commands: [
@@ -43,45 +104,41 @@ module.exports = (function(cy)
         content: '<span class="fa fa-star"></span> Add Selected Into This Node',
         select: function(ele)
         {
+          var selectedNodes = cy.nodes(':selected');
+
+
           //Do nothing if node is not a compound or family node
-          if (ele._private.data['type'] === 'GENE' || cy.nodes(':selected').size() < 1)
+          if (ele._private.data['type'] === 'GENE' || selectedNodes.size() < 1)
           {
             return;
           }
-
-
-          var compId = ele.id();
-          var selectedNodes = cy.nodes(':selected');
-          var selectedEdges = selectedNodes.neighborhood();
-          var copyNodes = selectedNodes.clone();
-          var newCollection = cy.collection();
-          selectedNodes.remove();
-
-          function traverseSelected(nodes)
+          else
           {
-            nodes.forEach(function(node, i)
-            {
-                var children = node.children();
-                if (children.length > 0)
-                {
-                    newCollection = newCollection.add(children);
-                    traverseSelected(children)
-                }
-            });
+
+              var isChild = false;
+              selectedNodes.forEach(function(tmpNode, i)
+              {
+                  if (tmpNode.isParent())
+                  {
+                    isChild = isChildren(tmpNode, ele);
+                    if (isChild)
+                    {
+                        return false;
+                    }
+                  }
+              });
+
+              if (isChild)
+              {
+                  return;
+              }
           }
 
-          traverseSelected(selectedNodes);
+          lockedNodes = {};
+          var compId = ele.id();
+          var selectedNodes = cy.nodes(':selected');
+          changeParent(selectedNodes, compId);
 
-          copyNodes.forEach(function(node, i)
-          {
-              node._private.data.parent = compId;
-          });
-
-
-          // console.log(selectedNodes.parents());
-          cy.add(copyNodes.union(selectedEdges));
-          newCollection.restore();
-          cy.nodes().updateCompoundBounds();
         }
       }
     ]
