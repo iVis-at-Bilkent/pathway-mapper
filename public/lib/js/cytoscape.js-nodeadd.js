@@ -87,7 +87,7 @@
                             cy.add(
                             {
                                 group: "nodes",
-                                data: {type: nodeType},
+                                data: {type: nodeType, name:'newNode'},
                                 renderedPosition:
                                 {
                                     x: relX,

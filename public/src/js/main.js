@@ -11,15 +11,13 @@ var panzoom = require('cytoscape-panzoom');
 var cxtmenu = require('cytoscape-cxtmenu');
 var edgehandles = require('cytoscape-edgehandles');
 var cyqtip = require('cytoscape-qtip');
-
+var regCose = require('cytoscape-cose-bilkent');
 
 //Panzoom options
 var panzoomOpts = require('./panzoomUtils.js');
 var styleSheet = require('./stylesheet.js');
 var edgeHandleOpts = require('./edgeHandlingUtils.js');
-
 var SaveLoadUtilities = require('./saveLoadUtils.js');
-
 
 //Wait all components to load
 $(window).load(function()
@@ -28,6 +26,8 @@ $(window).load(function()
     cxtmenu( cytoscape, $ ); // register extension
     // edgehandles( cytoscape, $ ); // register extension
     cyqtip( cytoscape, $ ); // register extension
+    regCose( cytoscape ); // register extension
+
 
     window.edgeAddingMode = 0;
 
@@ -37,6 +37,7 @@ $(window).load(function()
 
       boxSelectionEnabled: true,
       autounselectify: false,
+      wheelSensitivity: 0.1,
 
       style: styleSheet,
 
@@ -65,7 +66,7 @@ $(window).load(function()
       },
 
       layout: {
-        name: 'cose',
+        name: 'cose-bilkent',
         padding: 50
       }
     });

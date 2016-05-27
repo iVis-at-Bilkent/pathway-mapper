@@ -6,6 +6,7 @@ module.exports = (function(cy,$)
   function generateQtipContentHTML(ele)
   {
     var nodeData = ele.data();
+    console.log(nodeData);
     var textInput = $('<div class="col-xs-8"><input type="text" class="form-control" nodeid="' + ele.id() + '" value="' + nodeData.name + '"></div>');
     textInput.change(function()
     {

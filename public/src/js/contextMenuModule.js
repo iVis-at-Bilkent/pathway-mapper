@@ -3,6 +3,7 @@ module.exports = (function(cy)
 {
   "use strict";
   window.edgeAddingMode = false;
+  var contextMenuSelectionColor = 'rgba(51, 247, 182, 0.88)';
 
   var lockedNodes = {};
 
@@ -67,12 +68,13 @@ module.exports = (function(cy)
 
   cy.cxtmenu({
     selector: 'core',
+    activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
     commands: [
       {
         content: '<span class="fa fa-flash fa"></span>perform layout',
         select: function(ele)
         {
-          cy.layout({name:'cose', padding: 50, animate: 'true'});
+          cy.layout({name:'cose-bilkent', padding: 50, animate: 'true'});
         }
       },
     ]
@@ -80,6 +82,7 @@ module.exports = (function(cy)
 
   cy.cxtmenu({
     selector: 'node',
+    activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
     commands:
     [
       {
@@ -151,6 +154,7 @@ module.exports = (function(cy)
 
   cy.cxtmenu({
     selector: 'edge',
+    activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
     commands: [
       {
         content: '<span class="fa fa-flash fa"></span>delete edge(s)',

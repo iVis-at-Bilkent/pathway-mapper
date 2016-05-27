@@ -103,7 +103,6 @@ var contentFunction = function( ele )
   if (ele._private.data.name) {
     return ele._private.data.name;
   }
-  return "newNode";
 }
 
 var vTextPositionFunction = function( ele )
@@ -123,7 +122,7 @@ var borderWidthFunction = function( ele )
   {
     case "GENE": return 0.5; break;
     case "PROCESS": return 0; break;
-    case "FAMILY": return 2; break;
+    case "FAMILY": return 0.75; break;
     case "COMPARTMENT": return 2; break;
     default: return 0.5; break;
   }
