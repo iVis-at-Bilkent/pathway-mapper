@@ -103,6 +103,7 @@ var contentFunction = function( ele )
   if (ele._private.data.name) {
     return ele._private.data.name;
   }
+  return 'newNode';
 }
 
 var vTextPositionFunction = function( ele )
