@@ -1,3 +1,3 @@
 # TCGA-Curation-Tool
 
-https://github.com/istemi-bahceci/TCGA-Curation-Tool.git
+A tool for interactive creation, editing, sharing TCGA pathways. Using Cytoscape.js, Node.js, Backbone.js.
