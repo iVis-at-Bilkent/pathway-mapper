@@ -106,7 +106,6 @@ module.exports = (function(cy)
         {
           var selectedNodes = cy.nodes(':selected');
 
-
           //Do nothing if node is not a compound or family node
           if (ele._private.data['type'] === 'GENE' || selectedNodes.size() < 1)
           {
@@ -115,20 +114,26 @@ module.exports = (function(cy)
           else
           {
 
-              var isChild = false;
+              var notValid = false;
               selectedNodes.forEach(function(tmpNode, i)
               {
+                  if (ele.id() == tmpNode.id())
+                  {
+                    notValid = true;
+                    return false;
+                  }
+
                   if (tmpNode.isParent())
                   {
-                    isChild = isChildren(tmpNode, ele);
-                    if (isChild)
+                    notValid = isChildren(tmpNode, ele);
+                    if (notValid)
                     {
                         return false;
                     }
                   }
               });
 
-              if (isChild)
+              if (notValid)
               {
                   return;
               }

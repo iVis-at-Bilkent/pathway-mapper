@@ -43288,7 +43288,6 @@ module.exports = (function(cy)
         {
           var selectedNodes = cy.nodes(':selected');
 
-
           //Do nothing if node is not a compound or family node
           if (ele._private.data['type'] === 'GENE' || selectedNodes.size() < 1)
           {
@@ -43297,20 +43296,26 @@ module.exports = (function(cy)
           else
           {
 
-              var isChild = false;
+              var notValid = false;
               selectedNodes.forEach(function(tmpNode, i)
               {
+                  if (ele.id() == tmpNode.id())
+                  {
+                    notValid = true;
+                    return false;
+                  }
+
                   if (tmpNode.isParent())
                   {
-                    isChild = isChildren(tmpNode, ele);
-                    if (isChild)
+                    notValid = isChildren(tmpNode, ele);
+                    if (notValid)
                     {
                         return false;
                     }
                   }
               });
 
-              if (isChild)
+              if (notValid)
               {
                   return;
               }
@@ -43349,7 +43354,7 @@ var edgeHandleDefaults =
   preview: true, // whether to show added edges preview before releasing selection
   stackOrder: 4, // Controls stack order of edgehandles canvas element by setting it's z-index
   handleSize: 10, // the size of the edge handle put on nodes
-  handleColor: '#f99b70', // the colour of the handle and the line drawn from it
+  handleColor: '#224cfe', // the colour of the handle and the line drawn from it
   handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line
   handleLineWidth: 1, // width of handle line in pixels
   handleNodes: 'node', // selector/filter function for whether edges can be made from a given node
@@ -43380,33 +43385,36 @@ var edgeHandleDefaults =
   },
   start: function( sourceNode ) {
     // fired when edgehandles interaction starts (drag on handle)
+
+    var type = "NONE";
+    if (window.edgeAddingMode == 1)
+    {
+      type = 'ACTIVATES';
+    }
+    else if (window.edgeAddingMode == 2)
+    {
+      type = 'INHIBITS';
+    }
+    else if (window.edgeAddingMode == 3)
+    {
+      type = 'INDUCES';
+    }
+    else if (window.edgeAddingMode == 4)
+    {
+      type = 'REPRESSES';
+    }
+    else if (window.edgeAddingMode == 5)
+    {
+      type = 'BINDS';
+    }
+
+    cy.edgehandles('option', 'ghostEdgeType', type)
   },
   complete: function( sourceNode, targetNodes, addedEntities )
   {
-      var type;
-      if (window.edgeAddingMode == 1)
-      {
-        type = 'ACTIVATES';
-      }
-      else if (window.edgeAddingMode == 2)
-      {
-        type = 'INHIBITS';
-      }
-      else if (window.edgeAddingMode == 3)
-      {
-        type = 'INDUCES';
-      }
-      else if (window.edgeAddingMode == 4)
-      {
-        type = 'REPRESSES';
-      }
-      else if (window.edgeAddingMode == 5)
-      {
-        type = 'BINDS';
-      }
 
-      cy.add({group:'edges', data:{source: sourceNode.id(), target: targetNodes[0].id(), type: type}});
 
+      // cy.add({group:'edges', data:{source: sourceNode.id(), target: targetNodes[0].id(), type: type}});
   },
   stop: function( sourceNode ) {
     // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
@@ -43585,7 +43593,7 @@ $('#fileinput').on('change', function()
     cy.remove(cy.elements());
     var allEles = SaveLoadUtilities.parseGraph(reader.result);
     cy.add(allEles);
-    cy.layout({name:'cose', padding: 50, animate: 'true'});
+    cy.layout({name:'preset', padding: 50, animate: 'true'});
   };
   reader.readAsText(file);
 });
@@ -43598,6 +43606,7 @@ $(".edge-palette a").click(function(event)
 
   if ($(event.target).hasClass('active'))
   {
+    cy.edgehandles('disable');
     cy.edgehandles('drawoff');
     $('.edge-palette a').blur().removeClass('active');
   }
@@ -43606,7 +43615,7 @@ $(".edge-palette a").click(function(event)
     $('.edge-palette a').blur().removeClass('active');
     $(event.target).toggleClass('active');
     window.edgeAddingMode = $(event.target).attr('edgeTypeIndex');
-    cy.edgehandles('drawon');
+    cy.edgehandles('enable');
   }
 
 });

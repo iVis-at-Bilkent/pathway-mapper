@@ -1,5 +1,26 @@
-;
-( function( $$, $ ) {
+/*!
+Copyright (c) The Cytoscape Consortium
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the “Software”), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+;( function( $$, $ ) {
   'use strict';
 
   var debounce = (function(){
@@ -238,10 +259,28 @@
 
   })();
 
+  // ported lodash throttle function
+  var throttle = function( func, wait, options ){
+    var leading = true,
+        trailing = true;
+
+    if( options === false ){
+      leading = false;
+    } else if( typeof options === typeof {} ){
+      leading = 'leading' in options ? options.leading : leading;
+      trailing = 'trailing' in options ? options.trailing : trailing;
+    }
+    options = options || {};
+    options.leading = leading;
+    options.maxWait = wait;
+    options.trailing = trailing;
+
+    return debounce( func, wait, options );
+  };
 
   // registers the extension on a cytoscape lib ref
   var register = function( $$, $ ) {
-    if( !cytoscape ) {
+    if( !$$ ) {
       return;
     } // can't register if cytoscape unspecified
 
@@ -257,6 +296,7 @@
       cxt: false, // whether cxt events trigger edgehandles (useful on touch)
       enabled: true, // whether to start the plugin in the enabled state
       toggleOffOnLeave: false, // whether an edge is cancelled by leaving a node (true), or whether you need to go over again to cancel (false; allows multiple edges in one pass)
+      ghostEdgeType: 'none', //
       edgeType: function( sourceNode, targetNode ) {
         // can return 'flat' for flat edges between nodes or 'node' for intermediate node between them
         // returning null/undefined means an edge can't be added between the two nodes
@@ -289,8 +329,10 @@
       }
     };
 
-    $.fn.cytoscapeEdgehandles = function( params ) {
+    var edgehandles = function( params ) {
+      var cy = this;
       var fn = params;
+      var container = cy.container();
 
       var functions = {
         destroy: function() {
@@ -360,7 +402,6 @@
           var self = this;
           var opts = $.extend( true, {}, defaults, params );
           var $container = $( this );
-          var cy;
           var $canvas = $( '<canvas></canvas>' );
           var handle;
           var line, linePoints;
@@ -543,16 +584,9 @@
             drawsClear = false;
           }
 
-          var lineDrawRate = 1000 / 30;
-          var lastDrawLine = 0;
-          var drawLine = function( hx, hy, x, y ) {
-            var now = +new Date();
+          var lineDrawRate = 1000 / 60;
 
-            if( now - lastDrawLine < lineDrawRate ) {
-              return;
-            }
-
-            lastDrawLine = now;
+          var drawLine = throttle( function( hx, hy, x, y ) {
 
             if( options().handleLineType !== 'ghost' ) {
               ctx.fillStyle = options().handleColor;
@@ -588,7 +622,8 @@
                     classes: 'edgehandles-ghost edgehandles-ghost-edge',
                     data: {
                       source: sourceNode.id(),
-                      target: ghostNode.id()
+                      target: ghostNode.id(),
+                      type: options().ghostEdgeType
                     }
                   } );
 
@@ -637,7 +672,7 @@
             if( options().handleLineType !== 'ghost' ) {
               drawsClear = false;
             }
-          };
+          }, lineDrawRate, { leading: true } );
 
           function makeEdges( preview, src, tgt ) {
 
@@ -670,71 +705,77 @@
               }
             }
 
-//            for( var i = 0; i < targets.length; i++ ) {
-//              var target = targets[ i ];
-//
-//              switch( options().edgeType( source, target ) ) {
-//                case 'node':
-//
-//                  var p1 = source.position();
-//                  var p2 = target.position();
-//                  var p;
-//
-//                  if( source.id() === target.id() ) {
-//                    p = {
-//                      x: p1.x + options().nodeLoopOffset,
-//                      y: p1.y + options().nodeLoopOffset
-//                    };
-//                  } else {
-//                    p = {
-//                      x: ( p1.x + p2.x ) / 2,
-//                      y: ( p1.y + p2.y ) / 2
-//                    };
-//                  }
-//
-//                  var interNode = cy.add( $.extend( true, {
-//                    group: 'nodes',
-//                    position: p
-//                  }, options().nodeParams( source, target ) ) ).addClass( classes );
-//
-//                  var source2inter = cy.add( $.extend( true, {
-//                    group: 'edges',
-//                    data: {
-//                      source: source.id(),
-//                      target: interNode.id()
-//                    }
-//                  }, options().edgeParams( source, target, 0 ) ) ).addClass( classes );
-//
-//                  var inter2target = cy.add( $.extend( true, {
-//                    group: 'edges',
-//                    data: {
-//                      source: interNode.id(),
-//                      target: target.id()
-//                    }
-//                  }, options().edgeParams( source, target, 1 ) ) ).addClass( classes );
-//
-//                  added = added.add( interNode ).add( source2inter ).add( inter2target );
-//
-//                  break;
-//
-//                case 'flat':
-//                  var edge = cy.add( $.extend( true, {
-//                    group: 'edges',
-//                    data: {
-//                      source: source.id(),
-//                      target: target.id()
-//                    }
-//                  }, options().edgeParams( source, target, 0 ) ) ).addClass( classes );
-//
-//                  added = added.add( edge );
-//
-//                  break;
-//
-//                default:
-//                  target.removeClass( 'edgehandles-target' );
-//                  break; // don't add anything
-//              }
-//            }
+            for( var i = 0; i < targets.length; i++ ) {
+              var target = targets[ i ];
+
+              switch( options().edgeType( source, target ) ) {
+                case 'node':
+
+                  var p1 = source.position();
+                  var p2 = target.position();
+                  var p;
+
+                  if( source.id() === target.id() ) {
+                    p = {
+                      x: p1.x + options().nodeLoopOffset,
+                      y: p1.y + options().nodeLoopOffset
+                    };
+                  } else {
+                    p = {
+                      x: ( p1.x + p2.x ) / 2,
+                      y: ( p1.y + p2.y ) / 2
+                    };
+                  }
+
+                  var interNode = cy.add( $.extend( true, {
+                    group: 'nodes',
+                    position: p
+                  }, options().nodeParams( source, target ) ) ).addClass( classes );
+
+                  var source2inter = cy.add( $.extend( true, {
+                    group: 'edges',
+                    data: {
+                      source: source.id(),
+                      target: interNode.id(),
+                      type: options().ghostEdgeType
+
+                    }
+                  }, options().edgeParams( source, target, 0 ) ) ).addClass( classes );
+
+                  var inter2target = cy.add( $.extend( true, {
+                    group: 'edges',
+                    data: {
+                      source: interNode.id(),
+                      target: target.id(),
+                      type: options().ghostEdgeType
+
+                    }
+                  }, options().edgeParams( source, target, 1 ) ) ).addClass( classes );
+
+                  added = added.add( interNode ).add( source2inter ).add( inter2target );
+
+                  break;
+
+                case 'flat':
+                  var edge = cy.add( $.extend( true, {
+                    group: 'edges',
+                    data: {
+                      source: source.id(),
+                      target: target.id(),
+                      type: options().ghostEdgeType
+
+                    }
+                  }, options().edgeParams( source, target, 0 ) ) ).addClass( classes );
+
+                  added = added.add( edge );
+
+                  break;
+
+                default:
+                  target.removeClass( 'edgehandles-target' );
+                  break; // don't add anything
+              }
+            }
 
             if( !preview ) {
               options().complete( source, targets, added );
@@ -788,9 +829,7 @@
             }
           }
 
-          $container.cytoscape( function( e ) {
-            cy = this;
-
+          cy.ready( function( e ) {
             lastPanningEnabled = cy.panningEnabled();
             lastZoomingEnabled = cy.zoomingEnabled();
             lastBoxSelectionEnabled = cy.boxSelectionEnabled();
@@ -836,7 +875,7 @@
               hy = p.y - h / 2;
 
               // add new handle
-//              drawHandle( hx, hy, hr );
+              drawHandle( hx, hy, hr );
 
               node.trigger( 'cyedgehandles.showhandle' );
 
@@ -1261,32 +1300,22 @@
         start: function( id ) {
           var $container = $( this );
 
-          $container.cytoscape( function( e ) {
-            var cy = this;
-
+          cy.ready( function( e ) {
             cy.$( '#' + id ).trigger( 'cyedgehandles.forcestart' );
           } );
         }
       };
 
       if( functions[ fn ] ) {
-        return functions[ fn ].apply( this, Array.prototype.slice.call( arguments, 1 ) );
+        return functions[ fn ].apply( container, Array.prototype.slice.call( arguments, 1 ) );
       } else if( typeof fn == 'object' || !fn ) {
-        return functions.init.apply( this, arguments );
+        return functions.init.apply( container, arguments );
       } else {
-        $.error( 'No such function `' + fn + '` for jquery.cytoscapeEdgeHandles' );
+        console.error( 'No such function `' + fn + '` for edgehandles' );
       }
-
-      return $( this );
     };
 
-    $.fn.cyEdgehandles = $.fn.cytoscapeEdgehandles;
-
-    $$( 'core', 'edgehandles', function( options ) {
-      var cy = this;
-
-      return $( cy.container() ).cytoscapeEdgehandles( options );
-    } );
+    $$( 'core', 'edgehandles', edgehandles );
 
   };
 
@@ -1304,4 +1333,4 @@
     register( $$, $ );
   }
 
-} )( cytoscape, jQuery );
+} )( typeof cytoscape !== 'undefined' ? cytoscape : null, typeof jQuery !== 'undefined' ? jQuery : null );

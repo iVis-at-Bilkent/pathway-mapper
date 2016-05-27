@@ -167,7 +167,7 @@ $('#fileinput').on('change', function()
     cy.remove(cy.elements());
     var allEles = SaveLoadUtilities.parseGraph(reader.result);
     cy.add(allEles);
-    cy.layout({name:'cose', padding: 50, animate: 'true'});
+    cy.layout({name:'preset', padding: 50, animate: 'false'});
   };
   reader.readAsText(file);
 });
@@ -180,6 +180,7 @@ $(".edge-palette a").click(function(event)
 
   if ($(event.target).hasClass('active'))
   {
+    cy.edgehandles('disable');
     cy.edgehandles('drawoff');
     $('.edge-palette a').blur().removeClass('active');
   }
@@ -188,7 +189,7 @@ $(".edge-palette a").click(function(event)
     $('.edge-palette a').blur().removeClass('active');
     $(event.target).toggleClass('active');
     window.edgeAddingMode = $(event.target).attr('edgeTypeIndex');
-    cy.edgehandles('drawon');
+    cy.edgehandles('enable');
   }
 
 });
