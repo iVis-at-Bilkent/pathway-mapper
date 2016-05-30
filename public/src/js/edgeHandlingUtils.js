@@ -5,7 +5,7 @@ var edgeHandleDefaults =
   preview: true, // whether to show added edges preview before releasing selection
   stackOrder: 4, // Controls stack order of edgehandles canvas element by setting it's z-index
   handleSize: 10, // the size of the edge handle put on nodes
-  handleColor: '#22fe87', // the colour of the handle and the line drawn from it
+  handleColor: '#17d970', // the colour of the handle and the line drawn from it
   handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line
   handleLineWidth: 1, // width of handle line in pixels
   handleNodes: 'node', // selector/filter function for whether edges can be made from a given node
@@ -63,12 +63,16 @@ var edgeHandleDefaults =
   },
   complete: function( sourceNode, targetNodes, addedEntities )
   {
-
-
       // cy.add({group:'edges', data:{source: sourceNode.id(), target: targetNodes[0].id(), type: type}});
   },
   stop: function( sourceNode ) {
     // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
+
+    //TODO refactor this, so terrible for now
+    $('.edge-palette a').blur().removeClass('active');
+    window.edgeAddingMode == -1;
+    cy.edgehandles('disable');
+
   }
 };
 

@@ -71,7 +71,7 @@ module.exports = (function(cy)
     activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
     commands: [
       {
-        content: '<span class="fa fa-flash fa"></span>perform layout',
+        content: 'perform layout',
         select: function(ele)
         {
           cy.layout({name:'cose-bilkent', padding: 50, animate: 'true'});
@@ -86,7 +86,7 @@ module.exports = (function(cy)
     commands:
     [
       {
-        content: '<span class="fa fa-flash fa"></span>delete node(s)',
+        content: 'delete node(s)',
         select: function(ele)
         {
           cy.nodes(':selected').remove();
@@ -104,7 +104,7 @@ module.exports = (function(cy)
       //   }
       // },
       {
-        content: '<span class="fa fa-star"></span> Add Selected Into This Node',
+        content: 'Add Selected Into This Node',
         select: function(ele)
         {
           var selectedNodes = cy.nodes(':selected');
@@ -157,7 +157,7 @@ module.exports = (function(cy)
     activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
     commands: [
       {
-        content: '<span class="fa fa-flash fa"></span>delete edge(s)',
+        content: 'delete edge(s)',
         select: function(ele)
         {
           cy.edges(':selected').remove();

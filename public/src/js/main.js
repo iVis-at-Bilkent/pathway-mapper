@@ -19,6 +19,8 @@ var styleSheet = require('./stylesheet.js');
 var edgeHandleOpts = require('./edgeHandlingUtils.js');
 var SaveLoadUtilities = require('./saveLoadUtils.js');
 
+var LayoutProperties = require('./LayoutProperties.js');
+
 //Wait all components to load
 $(window).load(function()
 {
@@ -30,6 +32,7 @@ $(window).load(function()
 
 
     window.edgeAddingMode = 0;
+    window.layoutProperties = new LayoutProperties();
 
     cy = window.cy = cytoscape(
     {
@@ -65,10 +68,7 @@ $(window).load(function()
         // selectedNodes.move({parent: compId});
       },
 
-      layout: {
-        name: 'cose-bilkent',
-        padding: 50
-      }
+      layout: window.layoutProperties.currentLayoutProperties
     });
 
     cy.panzoom( panzoomOpts );
@@ -81,23 +81,23 @@ $(window).load(function()
         [
             {
               container: $('#simpleNodeDiv'),
-              explanationText: 'Gene',
-              icon: 'fa fa-square-o'
+              nodeType: 'Gene',
+              // icon: 'fa fa-square-o'
             },
             {
               container: $('#familyNodeDiv'),
-              explanationText: 'Family',
-              icon: 'fa fa-square-o'
+              nodeType: 'Family',
+              // icon: 'fa fa-square-o'
             },
             {
               container: $('#compartmentNodeDiv'),
-              explanationText: 'Compartment',
+              nodeType: 'Compartment',
               icon: 'fa fa-square-o'
             },
             {
               container: $('#processNodeDiv'),
-              explanationText: 'Process',
-              icon: 'fa fa-square-o'
+              nodeType: 'Process',
+              // icon: 'fa fa-square-o'
             }
         ]
 
@@ -112,7 +112,6 @@ $(window).load(function()
       //
       // cy.elements().addClass('faded');
       // neighborhood.removeClass('faded');
-
     });
 
     cy.on('tap', function(e){
@@ -132,45 +131,60 @@ $(window).load(function()
     addQtipToElements(cy.nodes());
 });
 
-//Jquery handles
-$('#saveGraphBtn').on('click', function(evt)
-{
+
+function saveGraph(){
   var graphJSON = cy.json();
   var returnString = SaveLoadUtilities.exportGraph(graphJSON);
   var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
   saveAs(blob, "pathway.txt");
+}
+
+//Jquery handles
+$('#saveGraphBtn').on('click', function(evt)
+{
+  saveGraph();
 });
 
 $('#loadGraphBtn').on('click', function(evt)
 {
+  $('#fileinput').attr('value', "");
   $('#fileinput').trigger('click');
+
+
 });
 
 //TODO server side integration needed because of CORS
 $('#fileinput').on('change', function()
 {
   var file = this.files[0];
-  // // Create a new FormData object.
-  // var formData = new FormData();
-  // formData.append('graphFile', file);
-  // var request = new XMLHttpRequest();
-  // request.onreadystatechange = function ()
-  // {
-  //   if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
-  //     console.log(request.responseText);
-  // };
-  // request.open("POST", "/loadGraph");
-  // request.send(formData);
-
-  var reader = new FileReader();
-  reader.onload = function()
+  // Create a new FormData object.
+  var formData = new FormData();
+  formData.append('graphFile', file);
+  var request = new XMLHttpRequest();
+  request.onreadystatechange = function ()
   {
-    cy.remove(cy.elements());
-    var allEles = SaveLoadUtilities.parseGraph(reader.result);
-    cy.add(allEles);
-    cy.layout({name:'preset', padding: 50, animate: 'false'});
+    if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+    {
+        cy.remove(cy.elements());
+        var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+        cy.add(allEles);
+        cy.layout(window.layoutProperties.currentLayoutProperties);
+    }
   };
-  reader.readAsText(file);
+  request.open("POST", "/loadGraph");
+  request.send(formData);
+
+  // var self = this;
+  // var reader = new FileReader();
+  // reader.onload = function()
+  // {
+  //   cy.remove(cy.elements());
+  //   var allEles = SaveLoadUtilities.parseGraph(reader.result);
+  //   cy.add(allEles);
+  //   cy.layout(window.layoutProperties.currentLayoutProperties);
+  // };
+  // reader.readAsText(file);
+
 });
 
 
@@ -194,6 +208,80 @@ $(".edge-palette a").click(function(event)
   }
 
 });
+
+
+//About edit drop down handler
+$(".editDropDown li a").click(function(event)
+{
+  event.preventDefault();
+  var dropdownLinkRole = $(event.target).attr('role');
+
+  if (dropdownLinkRole == 'addGene')
+  {
+    var clickedNodeType = $(event.target).text().toUpperCase();
+    cy.add(
+    {
+        group: "nodes",
+        data: {type: clickedNodeType, name:'newNode'},
+        renderedPosition:
+        {
+            x: 100,
+            y: 100
+        }
+    });
+  }
+  else if (dropdownLinkRole == 'addEdge')
+  {
+    var edgeTypeIndex = $(event.target).attr('edgeTypeIndex');
+    $('.edge-palette a').blur().removeClass('active');
+    $('.edge-palette a[edgeTypeIndex="'+edgeTypeIndex+'"]').addClass('active');
+    window.edgeAddingMode = edgeTypeIndex;
+    cy.edgehandles('enable');
+  }
+  else
+  //delete
+  {
+      cy.elements(':selected').remove();
+  }
+});
+
+
+//About drop down handler
+$(".fileDropDown li a").click(function(event)
+{
+  event.preventDefault();
+  var dropdownLinkRole = $(event.target).attr('role');
+
+  if (dropdownLinkRole == 'save')
+  {
+    saveGraph();
+  }
+  else if (dropdownLinkRole == 'load')
+  {
+    $('#fileinput').trigger('click');
+  }
+
+});
+
+//About drop down handler
+$(".layoutDropDown li a").click(function(event)
+{
+  event.preventDefault();
+  var dropdownLinkRole = $(event.target).attr('role');
+
+  if (dropdownLinkRole == 'perform_layout')
+  {
+    cy.layout(window.layoutProperties.currentLayoutProperties);
+  }
+  else if (dropdownLinkRole == 'layout_properties')
+  {
+    var layoutPropertiesContent = window.layoutProperties.render();
+    $('#layoutPropertiesDiv .modal-body').empty().append(layoutPropertiesContent);
+    $('#layoutPropertiesDiv').modal('show');
+  }
+
+});
+
 
 //About drop down handler
 $(".aboutDropDown li a").click(function(event)

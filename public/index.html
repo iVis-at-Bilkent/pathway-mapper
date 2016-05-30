@@ -8,7 +8,6 @@
   <link href="node_modules/cytoscape-panzoom/cytoscape.js-panzoom.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.css">
   <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.3.0/css/flat-ui.css"> -->
-  <link href="lib/css/cytoscape.js-nodeadd.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="bin/base.css" charset="utf-8">
 </head>
 <body>
@@ -53,7 +52,7 @@
   <div class="modal-content">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <h3 class="modal-title">Edge Legend</h3>
+      <h3 class="modal-title">Interaction Legend</h3>
     </div>
     <div class="modal-body">
         <img src="./assets/edge_legend.png" alt="" />
@@ -81,6 +80,130 @@
 </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<div id='layoutPropertiesDiv' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h3 class="modal-title">Layout Properties</h3>
+    </div>
+    <div class="modal-body">
+    </div>
+    <div class="modal-footer">
+    </div>
+  </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script id="layoutPropertiesTemplate" type="text/template" class="template">
+      <table class="table-condensed layout-table">
+      <tr>
+      <td>
+      <span class="add-on layout-text"> Node Repulsion </span>
+      </td>
+      <td>
+      <input id="node-repulsion" type="text" class="input-small layout-text" value= <%= nodeRepulsion %> >
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+      <span class="add-on layout-text"> Node Overlap </span>
+      </td>
+      <td>
+      <input id="node-overlap" type="text" class="input-small layout-text" value= <%= nodeOverlap %> >
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+      <span class="add-on layout-text"> Ideal Edge Length </span>
+      </td>
+      <td>
+      <input id="ideal-edge-length" type="text" class="input-small layout-text" value= <%= idealEdgeLength %> >
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+      <span class="add-on layout-text"> Edge Elasticity </span>
+      </td>
+      <td>
+      <input id="edge-elasticity" type="text" class="input-small layout-text" value= <%= edgeElasticity %> >
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+      <span class="add-on layout-text"> Nesting Factor </span>
+      </td>
+      <td>
+      <input id="nesting-factor" type="text" class="input-small layout-text" value= <%= nestingFactor %> >
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+      <span class="add-on layout-text"> Gravity </span>
+      </td>
+      <td>
+      <input id="gravity" type="text" class="input-small layout-text" value= <%= gravity %> >
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+      <span class="add-on layout-text"> Number of Iterations </span>
+      </td>
+      <td>
+      <input id="num-iter" type="text" class="input-small layout-text" value= <%= numIter %> >
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+      <span class="add-on layout-text"> Tile Disconnected </span>
+      </td>
+
+      <td>
+      <input id="tile" type="checkbox" class="input-small layout-text" <% if (tile){ %> checked<%}%>>
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+      <span class="add-on layout-text"> Animate </span>
+      </td>
+
+      <td>
+      <input id="animate" type="checkbox" class="input-small layout-text" <% if (animate){ %> checked<%}%>>
+      </td>
+      </tr>
+      <tr>
+      <td>
+      <span class="add-on layout-text"> Incremental </span>
+      </td>
+
+      <td>
+      <input id="incremental" type="checkbox" class="input-small layout-text" <% if (!randomize){ %> checked<%}%>>
+      </td>
+      </tr>
+      <tr>
+      <td><br>
+      </td>
+      </tr>
+
+      <tr id="layout-buttons">
+      <td>
+      <button style="float: right;" id="save-layout" class="btn btn-default" >Save</button>
+      </td>
+      <td>
+      <button id="default-layout" class="btn btn-default">Default</button>
+      </td>
+      </tr>
+      </table>
+</script>
+
 <div class="pageContentWrapper">
   <div class="customMargins">
     <div class="row">
@@ -92,16 +215,57 @@
           <a class="navbar-brand" class="active">TCGA Curation Tool</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-01">
-          <ul class="nav navbar-nav pull-right">
-            <li class="dropdown aboutDropDown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a role="node_legend" href="#">Node Legend</a></li>
-                  <li><a role="edge_legend" href="#">Edge Legend</a></li>
-                  <li><a role="about" href="#">About</a></li>
-                </ul>
-              </li>
-          </ul>
+          <div class="col-lg-offset-2">
+            <ul class="nav navbar-nav">
+              <li class="dropdown fileDropDown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a role="save" href="#">Save</a></li>
+                    <li><a role="load" href="#">Load</a></li>
+                  </ul>
+                </li>
+                <li class="dropdown editDropDown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Edit <span class="caret"></span></a>
+                  <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                        <li class="dropdown-submenu">
+                          <a tabindex="-1" href="#">Add Node</a>
+                          <ul class="dropdown-menu">
+                            <li><a role="addGene" href="#">Gene</a></li>
+                            <li><a role="addGene"  href="#">Family</a></li>
+                            <li><a role="addGene"  href="#">Compartment</a></li>
+                            <li><a role="addGene"  href="#">Process</a></li>
+                          </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                          <a tabindex="-1" href="#">Add Interaction</a>
+                          <ul class="dropdown-menu">
+                            <li><a  edgeTypeIndex='1' role="addEdge"  href="#">Activates</a></li>
+                            <li><a  edgeTypeIndex='2' role="addEdge"  href="#">Inhibits</a></li>
+                            <li><a  edgeTypeIndex='3' role="addEdge"  href="#">Induces</a></li>
+                            <li><a  edgeTypeIndex='4' role="addEdge"  href="#">Represses</a></li>
+                            <li><a  edgeTypeIndex='5' role="addEdge"  href="#">Binds</a></li>
+                          </ul>
+                        </li>
+                        <li><a role="deleteSelected" href="#">Delete Selected</a></li>
+                      </ul>
+                </li>
+                <li class="dropdown layoutDropDown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Layout <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                      <li><a role="perform_layout" href="#">Perform Layout</a></li>
+                      <!-- <li><a role="layout_properties" href="#">Layout Properties</a></li> -->
+                    </ul>
+                </li>
+                <li class="dropdown aboutDropDown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                      <li><a role="node_legend" href="#">Node Legend</a></li>
+                      <li><a role="edge_legend" href="#">Edge Legend</a></li>
+                      <li><a role="about" href="#">About</a></li>
+                    </ul>
+                  </li>
+            </ul>
+          </div>
         </div><!-- /.navbar-collapse -->
       </nav><!-- /navbar -->
     </div>
@@ -142,7 +306,7 @@
           </div>
           <div class="pnl edgePanel">
             <div class="pnl-header">
-                  Edge Palette
+                  Interaction Palette
             </div>
             <div class="pnl-body">
               <div class="edgePaletteWrapper">
@@ -165,6 +329,7 @@
     </div>
   </div>
 </div>
+
 
 <footer>
   <div class="container">

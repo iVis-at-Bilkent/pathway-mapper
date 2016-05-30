@@ -48626,6 +48626,89 @@ return jQuery;
 }.call(this));
 
 },{}],23:[function(require,module,exports){
+var layoutProps = Backbone.View.extend(
+{
+  defaultLayoutProperties: {
+    name: 'cose-bilkent',
+    nodeRepulsion: 4500,
+    nodeOverlap: 10,
+    idealEdgeLength: 50,
+    edgeElasticity: 0.45,
+    nestingFactor: 0.1,
+    gravity: 0.25,
+    numIter: 2500,
+    tile: true,
+    animate: true,
+    randomize: true,
+  },
+  currentLayoutProperties: null,
+  events:{
+    '#save-layout click': 'saveLayoutHandler',
+    '#default-layout click': 'defaultLayoutHandler'
+  },
+  initialize: function () {
+    var self = this;
+    self.copyProperties();
+
+    var templateProperties = _.clone(self.currentLayoutProperties);
+
+    self.template = _.template($("#layoutPropertiesTemplate").html());
+    self.template(templateProperties);
+  },
+  copyProperties: function () {
+    this.currentLayoutProperties = _.clone(this.defaultLayoutProperties);
+  },
+  applyLayout: function () {
+    var options = this.currentLayoutProperties;
+    options.fit = options.randomize;
+    cy.elements().filter(':visible').layout(options);
+  },
+  applyIncrementalLayout: function ()
+{
+    var options = _.clone(this.currentLayoutProperties);
+    options.randomize = false;
+    options.animate = false;
+    options.fit = true;
+    cy.elements().filter(':visible').layout(options);
+  },
+  render: function () {
+    var self = this;
+
+    var templateProperties = _.clone(self.currentLayoutProperties);
+
+    self.template = _.template($("#layoutPropertiesTemplate").html());
+    var tplContent = self.template(templateProperties);
+    this.$el.append(tplContent);
+    return this.$el;
+  },
+  saveLayoutHandler: function(event)
+  {
+    self.currentLayoutProperties.nodeRepulsion = Number(document.getElementById("node-repulsion").value);
+    self.currentLayoutProperties.nodeOverlap = Number(document.getElementById("node-overlap").value);
+    self.currentLayoutProperties.idealEdgeLength = Number(document.getElementById("ideal-edge-length").value);
+    self.currentLayoutProperties.edgeElasticity = Number(document.getElementById("edge-elasticity").value);
+    self.currentLayoutProperties.nestingFactor = Number(document.getElementById("nesting-factor").value);
+    self.currentLayoutProperties.gravity = Number(document.getElementById("gravity").value);
+    self.currentLayoutProperties.numIter = Number(document.getElementById("num-iter").value);
+    self.currentLayoutProperties.tile = document.getElementById("tile").checked;
+    self.currentLayoutProperties.animate = document.getElementById("animate").checked;
+    self.currentLayoutProperties.randomize = !document.getElementById("incremental").checked;
+  },
+  defaultLayoutHandler: function(event)
+  {
+    self.copyProperties();
+    var templateProperties = _.clone(self.currentLayoutProperties);
+
+    self.template = _.template($("#layout-settings-template").html());
+    var tplContent = self.template(templateProperties);
+
+    $(self.el).html(self.template);
+  }
+});
+
+module.exports = layoutProps;
+
+},{}],24:[function(require,module,exports){
 ;
 module.exports = (function(cy)
 {
@@ -48699,7 +48782,7 @@ module.exports = (function(cy)
     activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
     commands: [
       {
-        content: '<span class="fa fa-flash fa"></span>perform layout',
+        content: 'perform layout',
         select: function(ele)
         {
           cy.layout({name:'cose-bilkent', padding: 50, animate: 'true'});
@@ -48714,7 +48797,7 @@ module.exports = (function(cy)
     commands:
     [
       {
-        content: '<span class="fa fa-flash fa"></span>delete node(s)',
+        content: 'delete node(s)',
         select: function(ele)
         {
           cy.nodes(':selected').remove();
@@ -48732,7 +48815,7 @@ module.exports = (function(cy)
       //   }
       // },
       {
-        content: '<span class="fa fa-star"></span> Add Selected Into This Node',
+        content: 'Add Selected Into This Node',
         select: function(ele)
         {
           var selectedNodes = cy.nodes(':selected');
@@ -48785,7 +48868,7 @@ module.exports = (function(cy)
     activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
     commands: [
       {
-        content: '<span class="fa fa-flash fa"></span>delete edge(s)',
+        content: 'delete edge(s)',
         select: function(ele)
         {
           cy.edges(':selected').remove();
@@ -48796,7 +48879,7 @@ module.exports = (function(cy)
   });
 }(window.cy));
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ;
 // the default values of each option are outlined below:
 var edgeHandleDefaults =
@@ -48804,7 +48887,7 @@ var edgeHandleDefaults =
   preview: true, // whether to show added edges preview before releasing selection
   stackOrder: 4, // Controls stack order of edgehandles canvas element by setting it's z-index
   handleSize: 10, // the size of the edge handle put on nodes
-  handleColor: '#22fe87', // the colour of the handle and the line drawn from it
+  handleColor: '#17d970', // the colour of the handle and the line drawn from it
   handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line
   handleLineWidth: 1, // width of handle line in pixels
   handleNodes: 'node', // selector/filter function for whether edges can be made from a given node
@@ -48862,18 +48945,22 @@ var edgeHandleDefaults =
   },
   complete: function( sourceNode, targetNodes, addedEntities )
   {
-
-
       // cy.add({group:'edges', data:{source: sourceNode.id(), target: targetNodes[0].id(), type: type}});
   },
   stop: function( sourceNode ) {
     // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
+
+    //TODO refactor this, so terrible for now
+    $('.edge-palette a').blur().removeClass('active');
+    window.edgeAddingMode == -1;
+    cy.edgehandles('disable');
+
   }
 };
 
 module.exports = edgeHandleDefaults;
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 //Import node modules here !
 var $ = window.$ = window.jQuery = require('jquery');
 var _ = window._ = require('underscore');
@@ -48895,6 +48982,8 @@ var styleSheet = require('./stylesheet.js');
 var edgeHandleOpts = require('./edgeHandlingUtils.js');
 var SaveLoadUtilities = require('./saveLoadUtils.js');
 
+var LayoutProperties = require('./LayoutProperties.js');
+
 //Wait all components to load
 $(window).load(function()
 {
@@ -48906,6 +48995,7 @@ $(window).load(function()
 
 
     window.edgeAddingMode = 0;
+    window.layoutProperties = new LayoutProperties();
 
     cy = window.cy = cytoscape(
     {
@@ -48941,10 +49031,7 @@ $(window).load(function()
         // selectedNodes.move({parent: compId});
       },
 
-      layout: {
-        name: 'cose-bilkent',
-        padding: 50
-      }
+      layout: window.layoutProperties.currentLayoutProperties
     });
 
     cy.panzoom( panzoomOpts );
@@ -48957,23 +49044,23 @@ $(window).load(function()
         [
             {
               container: $('#simpleNodeDiv'),
-              explanationText: 'Gene',
-              icon: 'fa fa-square-o'
+              nodeType: 'Gene',
+              // icon: 'fa fa-square-o'
             },
             {
               container: $('#familyNodeDiv'),
-              explanationText: 'Family',
-              icon: 'fa fa-square-o'
+              nodeType: 'Family',
+              // icon: 'fa fa-square-o'
             },
             {
               container: $('#compartmentNodeDiv'),
-              explanationText: 'Compartment',
+              nodeType: 'Compartment',
               icon: 'fa fa-square-o'
             },
             {
               container: $('#processNodeDiv'),
-              explanationText: 'Process',
-              icon: 'fa fa-square-o'
+              nodeType: 'Process',
+              // icon: 'fa fa-square-o'
             }
         ]
 
@@ -48988,7 +49075,6 @@ $(window).load(function()
       //
       // cy.elements().addClass('faded');
       // neighborhood.removeClass('faded');
-
     });
 
     cy.on('tap', function(e){
@@ -49008,45 +49094,60 @@ $(window).load(function()
     addQtipToElements(cy.nodes());
 });
 
-//Jquery handles
-$('#saveGraphBtn').on('click', function(evt)
-{
+
+function saveGraph(){
   var graphJSON = cy.json();
   var returnString = SaveLoadUtilities.exportGraph(graphJSON);
   var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
   saveAs(blob, "pathway.txt");
+}
+
+//Jquery handles
+$('#saveGraphBtn').on('click', function(evt)
+{
+  saveGraph();
 });
 
 $('#loadGraphBtn').on('click', function(evt)
 {
+  $('#fileinput').attr('value', "");
   $('#fileinput').trigger('click');
+
+
 });
 
 //TODO server side integration needed because of CORS
 $('#fileinput').on('change', function()
 {
   var file = this.files[0];
-  // // Create a new FormData object.
-  // var formData = new FormData();
-  // formData.append('graphFile', file);
-  // var request = new XMLHttpRequest();
-  // request.onreadystatechange = function ()
-  // {
-  //   if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
-  //     console.log(request.responseText);
-  // };
-  // request.open("POST", "/loadGraph");
-  // request.send(formData);
-
-  var reader = new FileReader();
-  reader.onload = function()
+  // Create a new FormData object.
+  var formData = new FormData();
+  formData.append('graphFile', file);
+  var request = new XMLHttpRequest();
+  request.onreadystatechange = function ()
   {
-    cy.remove(cy.elements());
-    var allEles = SaveLoadUtilities.parseGraph(reader.result);
-    cy.add(allEles);
-    cy.layout({name:'preset', padding: 50, animate: 'false'});
+    if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+    {
+        cy.remove(cy.elements());
+        var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+        cy.add(allEles);
+        cy.layout(window.layoutProperties.currentLayoutProperties);
+    }
   };
-  reader.readAsText(file);
+  request.open("POST", "/loadGraph");
+  request.send(formData);
+
+  // var self = this;
+  // var reader = new FileReader();
+  // reader.onload = function()
+  // {
+  //   cy.remove(cy.elements());
+  //   var allEles = SaveLoadUtilities.parseGraph(reader.result);
+  //   cy.add(allEles);
+  //   cy.layout(window.layoutProperties.currentLayoutProperties);
+  // };
+  // reader.readAsText(file);
+
 });
 
 
@@ -49070,6 +49171,80 @@ $(".edge-palette a").click(function(event)
   }
 
 });
+
+
+//About edit drop down handler
+$(".editDropDown li a").click(function(event)
+{
+  event.preventDefault();
+  var dropdownLinkRole = $(event.target).attr('role');
+
+  if (dropdownLinkRole == 'addGene')
+  {
+    var clickedNodeType = $(event.target).text().toUpperCase();
+    cy.add(
+    {
+        group: "nodes",
+        data: {type: clickedNodeType, name:'newNode'},
+        renderedPosition:
+        {
+            x: 100,
+            y: 100
+        }
+    });
+  }
+  else if (dropdownLinkRole == 'addEdge')
+  {
+    var edgeTypeIndex = $(event.target).attr('edgeTypeIndex');
+    $('.edge-palette a').blur().removeClass('active');
+    $('.edge-palette a[edgeTypeIndex="'+edgeTypeIndex+'"]').addClass('active');
+    window.edgeAddingMode = edgeTypeIndex;
+    cy.edgehandles('enable');
+  }
+  else
+  //delete
+  {
+      cy.elements(':selected').remove();
+  }
+});
+
+
+//About drop down handler
+$(".fileDropDown li a").click(function(event)
+{
+  event.preventDefault();
+  var dropdownLinkRole = $(event.target).attr('role');
+
+  if (dropdownLinkRole == 'save')
+  {
+    saveGraph();
+  }
+  else if (dropdownLinkRole == 'load')
+  {
+    $('#fileinput').trigger('click');
+  }
+
+});
+
+//About drop down handler
+$(".layoutDropDown li a").click(function(event)
+{
+  event.preventDefault();
+  var dropdownLinkRole = $(event.target).attr('role');
+
+  if (dropdownLinkRole == 'perform_layout')
+  {
+    cy.layout(window.layoutProperties.currentLayoutProperties);
+  }
+  else if (dropdownLinkRole == 'layout_properties')
+  {
+    var layoutPropertiesContent = window.layoutProperties.render();
+    $('#layoutPropertiesDiv .modal-body').empty().append(layoutPropertiesContent);
+    $('#layoutPropertiesDiv').modal('show');
+  }
+
+});
+
 
 //About drop down handler
 $(".aboutDropDown li a").click(function(event)
@@ -49097,7 +49272,7 @@ $('.input-group').on('focus', '.form-control', function () {
   $(this).closest('.input-group, .form-group').removeClass('focus');
 });
 
-},{"./contextMenuModule.js":23,"./edgeHandlingUtils.js":24,"./panzoomUtils.js":26,"./qTipModule.js":27,"./saveLoadUtils.js":28,"./stylesheet.js":29,"backbone":1,"bootstrap":2,"cytoscape":20,"cytoscape-cose-bilkent":15,"cytoscape-cxtmenu":16,"cytoscape-edgehandles":17,"cytoscape-panzoom":18,"cytoscape-qtip":19,"jquery":21,"underscore":22}],26:[function(require,module,exports){
+},{"./LayoutProperties.js":23,"./contextMenuModule.js":24,"./edgeHandlingUtils.js":25,"./panzoomUtils.js":27,"./qTipModule.js":28,"./saveLoadUtils.js":29,"./stylesheet.js":30,"backbone":1,"bootstrap":2,"cytoscape":20,"cytoscape-cose-bilkent":15,"cytoscape-cxtmenu":16,"cytoscape-edgehandles":17,"cytoscape-panzoom":18,"cytoscape-qtip":19,"jquery":21,"underscore":22}],27:[function(require,module,exports){
 var panzoomOptions =
 {
   // the default values of each option are outlined below:
@@ -49123,7 +49298,7 @@ var panzoomOptions =
 
 module.exports = panzoomOptions;
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ;
 module.exports = (function(cy,$)
 {
@@ -49178,7 +49353,7 @@ module.exports = (function(cy,$)
 
 }(window.cy, window.$));
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 var SaveLoadUtils = {
   //Exports given json graph(based on cy.export()) into a string
   exportGraph: function(graphJSON)
@@ -49299,7 +49474,7 @@ var SaveLoadUtils = {
 
 module.exports = SaveLoadUtils;
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 var styleSheet = [
 {
       selector: 'node',
@@ -49494,4 +49669,4 @@ var edgeLineTypeHandler = function( ele )
 
 module.exports = styleSheet;
 
-},{}]},{},[25]);
+},{}]},{},[26]);

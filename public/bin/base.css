@@ -15,12 +15,83 @@
 #node_legend_modal .modal-body img {
   width: 500px; }
 
+.ui-cytoscape-nodeadd {
+  z-index: 99999;
+  /* Fix for plugin to render correctly when Bootstrap is being used*/
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  margin-bottom: 5px; }
+
+#ui-cytoscape-nodeadd-icon {
+  font-size: 1.3em !important; }
+  #ui-cytoscape-nodeadd-icon .explanationText {
+    font: 14px helvetica neue, helvetica, arial, sans-serif; }
+
+.ui-cytoscape-nodeadd-nodediv {
+  z-index: 99999;
+  padding: 3px;
+  text-align: center;
+  /* Fix for line trail left by drag (in Chrome)*/
+  -webkit-backface-visibility: hidden;
+  /* Fix for plugin to render correctly when Bootstrap is being used*/
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box; }
+
+#ui-cytoscape-nodeadd-icon {
+  cursor: pointer; }
+
+.dropdown-submenu {
+  position: relative; }
+
+.dropdown-submenu > .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  -webkit-border-radius: 0 6px 6px 6px;
+  -moz-border-radius: 0 6px 6px;
+  border-radius: 0 6px 6px 6px; }
+
+.dropdown-submenu:hover > .dropdown-menu {
+  display: block; }
+
+.dropdown-submenu > a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #ccc;
+  margin-top: 5px;
+  margin-right: -10px; }
+
+.dropdown-submenu:hover > a:after {
+  border-left-color: #fff; }
+
+.dropdown-submenu.pull-left {
+  float: none; }
+
+.dropdown-submenu.pull-left > .dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  -webkit-border-radius: 6px 0 6px 6px;
+  -moz-border-radius: 6px 0 6px 6px;
+  border-radius: 6px 0 6px 6px; }
+
 body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
   background-color: #fff; }
 
 .edgePaletteWrapper {
   text-align: center; }
+  .edgePaletteWrapper .edge-palette a {
+    margin-bottom: 5px;
+    border-radius: 6px; }
 
 footer {
   background-color: #eeeeee;

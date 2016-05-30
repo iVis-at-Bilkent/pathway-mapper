@@ -1,5 +1,6 @@
 @import 'aboutModal';
-
+@import 'dragDropNodeAdd';
+@import 'dropDown';
 
 body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
@@ -10,6 +11,14 @@ $appContentHeight: 850px;
 
 .edgePaletteWrapper{
   text-align: center;
+  .edge-palette
+  {
+    a
+    {
+      margin-bottom: 5px;
+      border-radius: 6px;
+    }
+  }
 }
 
 footer{

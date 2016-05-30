@@ -5,12 +5,12 @@
         height: 30,   //height of the icon container
         width: 30,    //width of the icon container
         padding: 5,  //padding of the icon container(from right & top)
-        backgroundColorDiv: '#f8f8f8',   //background color of the icon container
+        backgroundColorDiv: '#fff',   //background color of the icon container
         borderColorDiv: '#CFCFCF',    //border color of the icon container
         borderWidthDiv: '1px',    //border width of the icon container
         borderRadiusDiv: '5px',    //border radius of the icon container
 
-        icon: 'fa fa-square-o',   //icon class name
+        icon: '',   //icon class name
 
         nodeParams: function(){
             // return element object to be passed to cy.add() for adding node
@@ -41,10 +41,9 @@
 
                       var $nodeadd = $('<div class="ui-cytoscape-nodeadd"></div>');
                       dragContainer.append($nodeadd);
-
                       var $nodeDragHandle = $('<div class="ui-cytoscape-nodeadd-nodediv"> \
-                                                <span id="ui-cytoscape-nodeadd-icon" class="draggable icon ' + options.icon + '">\
-                                                <span  class="">'+explanationText+'</span>\
+                                                <span id="ui-cytoscape-nodeadd-icon" class="draggable" nodeType="'+ component.nodeType +'">\
+                                                  <img src="./assets/'+component.nodeType+'.png" alt="" />\
                                                 </span>\
                                               </div>');
                       $nodeadd.append($nodeDragHandle);
@@ -81,7 +80,7 @@
                             var relX = event.pageX - currentOffset.left;
                             var relY = event.pageY - currentOffset.top;
 
-                            var nodeType = $(ui.helper).find('span').text().toUpperCase();
+                            var nodeType = $(ui.helper).attr('nodeType').toUpperCase();
 
                             var cy = $container.cytoscape("get");
                             cy.add(
