@@ -48628,7 +48628,8 @@ return jQuery;
 },{}],23:[function(require,module,exports){
 var layoutProps = Backbone.View.extend(
 {
-  defaultLayoutProperties: {
+  defaultLayoutProperties:
+  {
     name: 'cose-bilkent',
     nodeRepulsion: 4500,
     nodeOverlap: 10,
@@ -48643,17 +48644,12 @@ var layoutProps = Backbone.View.extend(
   },
   currentLayoutProperties: null,
   events:{
-    '#save-layout click': 'saveLayoutHandler',
-    '#default-layout click': 'defaultLayoutHandler'
+    'click #save-layout': 'saveLayoutHandler',
+    'click #default-layout': 'defaultLayoutHandler'
   },
-  initialize: function () {
-    var self = this;
-    self.copyProperties();
-
-    var templateProperties = _.clone(self.currentLayoutProperties);
-
-    self.template = _.template($("#layoutPropertiesTemplate").html());
-    self.template(templateProperties);
+  initialize: function ()
+  {
+    this.copyProperties();
   },
   copyProperties: function () {
     this.currentLayoutProperties = _.clone(this.defaultLayoutProperties);
@@ -48664,45 +48660,50 @@ var layoutProps = Backbone.View.extend(
     cy.elements().filter(':visible').layout(options);
   },
   applyIncrementalLayout: function ()
-{
+  {
     var options = _.clone(this.currentLayoutProperties);
     options.randomize = false;
     options.animate = false;
     options.fit = true;
     cy.elements().filter(':visible').layout(options);
   },
-  render: function () {
-    var self = this;
-
-    var templateProperties = _.clone(self.currentLayoutProperties);
-
-    self.template = _.template($("#layoutPropertiesTemplate").html());
-    var tplContent = self.template(templateProperties);
+  render: function ()
+  {
+    var templateProperties = _.clone(this.currentLayoutProperties);
+    this.template = _.template($("#layoutPropertiesTemplate").html());
+    var tplContent = this.template(templateProperties);
+    this.$el.empty();
     this.$el.append(tplContent);
+    this.delegateEvents();
     return this.$el;
   },
   saveLayoutHandler: function(event)
   {
-    self.currentLayoutProperties.nodeRepulsion = Number(document.getElementById("node-repulsion").value);
-    self.currentLayoutProperties.nodeOverlap = Number(document.getElementById("node-overlap").value);
-    self.currentLayoutProperties.idealEdgeLength = Number(document.getElementById("ideal-edge-length").value);
-    self.currentLayoutProperties.edgeElasticity = Number(document.getElementById("edge-elasticity").value);
-    self.currentLayoutProperties.nestingFactor = Number(document.getElementById("nesting-factor").value);
-    self.currentLayoutProperties.gravity = Number(document.getElementById("gravity").value);
-    self.currentLayoutProperties.numIter = Number(document.getElementById("num-iter").value);
-    self.currentLayoutProperties.tile = document.getElementById("tile").checked;
-    self.currentLayoutProperties.animate = document.getElementById("animate").checked;
-    self.currentLayoutProperties.randomize = !document.getElementById("incremental").checked;
+    this.currentLayoutProperties.nodeRepulsion = Number(this.$el.find("#node-repulsion").val());
+    this.currentLayoutProperties.nodeOverlap = Number(this.$el.find("#node-overlap").val());
+    this.currentLayoutProperties.idealEdgeLength = Number(this.$el.find("#ideal-edge-length").val());
+    this.currentLayoutProperties.edgeElasticity = Number(this.$el.find("#edge-elasticity").val());
+    this.currentLayoutProperties.nestingFactor = Number(this.$el.find("#nesting-factor").val());
+    this.currentLayoutProperties.gravity = Number(this.$el.find("#gravity").val());
+    this.currentLayoutProperties.numIter = Number(this.$el.find("#num-iter").val());
+    this.currentLayoutProperties.tile = this.$el.find("#tile").is(':checked');
+    this.currentLayoutProperties.animate = this.$el.find("#animate").is(':checked');
+    this.currentLayoutProperties.randomize = !(this.$el.find("#randomize").is(':checked'));
+    // this.$el.parent().modal('toggle');
   },
   defaultLayoutHandler: function(event)
   {
-    self.copyProperties();
-    var templateProperties = _.clone(self.currentLayoutProperties);
-
-    self.template = _.template($("#layout-settings-template").html());
-    var tplContent = self.template(templateProperties);
-
-    $(self.el).html(self.template);
+    this.copyProperties();
+    this.$el.find("#node-repulsion").val(this.currentLayoutProperties.nodeRepulsion);
+    this.$el.find("#node-overlap").val(this.currentLayoutProperties.nodeOverlap);
+    this.$el.find("#ideal-edge-length").val(this.currentLayoutProperties.idealEdgeLength);
+    this.$el.find("#edge-elasticity").val(this.currentLayoutProperties.edgeElasticity);
+    this.$el.find("#nesting-factor").val(this.currentLayoutProperties.nestingFactor);
+    this.$el.find("#gravity").val(this.currentLayoutProperties.gravity);
+    this.$el.find("#num-iter").val(this.currentLayoutProperties.numIter);
+    this.$el.find("#tile")[0].checked = this.currentLayoutProperties.tile;
+    this.$el.find("#animate")[0].checked = this.currentLayoutProperties.animate;
+    this.$el.find("#randomize")[0].checked = !this.currentLayoutProperties.randomize;
   }
 });
 
@@ -48785,7 +48786,7 @@ module.exports = (function(cy)
         content: 'perform layout',
         select: function(ele)
         {
-          cy.layout({name:'cose-bilkent', padding: 50, animate: 'true'});
+          cy.layout(window.layoutProperties.currentLayoutProperties);
         }
       },
     ]
@@ -48996,6 +48997,8 @@ $(window).load(function()
 
     window.edgeAddingMode = 0;
     window.layoutProperties = new LayoutProperties();
+    var layoutPropertiesContent = window.layoutProperties.render();
+    $('#layoutPropertiesDiv').append(layoutPropertiesContent);
 
     cy = window.cy = cytoscape(
     {
@@ -49238,8 +49241,6 @@ $(".layoutDropDown li a").click(function(event)
   }
   else if (dropdownLinkRole == 'layout_properties')
   {
-    var layoutPropertiesContent = window.layoutProperties.render();
-    $('#layoutPropertiesDiv .modal-body').empty().append(layoutPropertiesContent);
     $('#layoutPropertiesDiv').modal('show');
   }
 
@@ -49259,9 +49260,14 @@ $(".aboutDropDown li a").click(function(event)
   else if (dropdownLinkRole == 'edge_legend')
   {
     $('#edge_legend_modal').modal('show');
-  }else if (dropdownLinkRole == 'node_legend')
+  }
+  else if (dropdownLinkRole == 'node_legend')
   {
     $('#node_legend_modal').modal('show');
+  }
+  else if(dropdownLinkRole == 'help')
+  {
+    $('#quickHelpModal').modal('show');
   }
 });
 
@@ -49318,7 +49324,7 @@ module.exports = (function(cy,$)
     });
 
     var row = $('<div class="row">\
-                 <div class="col-xs-4">Name:</div>\
+                 <div class="col-xs-4 qtipLabel">Name:</div>\
               </div>');
     row.append(textInput);
     return row;
@@ -49488,7 +49494,7 @@ var styleSheet = [
           return 'center';
         },
         'color': '#1e2829',
-        'width': 30,
+        'width': 60,
         'height': 15,
         'background-color': '#fff',
         'shape': function(ele)
@@ -49552,7 +49558,7 @@ var styleSheet = [
         {
             return edgeLineTypeHandler(ele);
         },
-        'opacity': 0.8
+        'opacity': 1
       }
   },
   // {
@@ -49568,8 +49574,8 @@ var styleSheet = [
     selector: ':selected',
     style:
     {
-      'shadow-color' : '#faff0e',
-      'shadow-opacity': 0.8
+      'shadow-color' : '#faff00',
+      'shadow-opacity': 1.0
     }
   }
 ];

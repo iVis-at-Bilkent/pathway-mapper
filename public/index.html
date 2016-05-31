@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>TCGA Curation Tool</title>
+  <title>TCGA Pathway Curation Tool</title>
   <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" charset="utf-8">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link href="node_modules/cytoscape-panzoom/cytoscape.js-panzoom.css" rel="stylesheet" type="text/css" />
@@ -20,6 +20,7 @@
       <h3 class="modal-title">About</h3>
     </div>
     <div class="modal-body">
+      <h3>TCGA Pathway Curation Tool</h3>
       <div class="aboutImageContent">
         <img src="./assets/i-vis.png" alt="" />
       </div>
@@ -40,8 +41,27 @@
         <a href="mailto:ivis@cs.bilkent.edu.tr">ivis@cs.bilkent.edu.tr</a>
       </div>
       <div class="">
-        <a href="https://github.com/istemi-bahceci/TCGAViz.git">https://github.com/istemi-bahceci/TCGAViz.git</a>
+        <a href="https://github.com/iVis-at-Bilkent/TCGA-Curation-Tool">https://github.com/iVis-at-Bilkent/TCGA-Curation-Tool</a>
       </div>
+    </div>
+  </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id='quickHelpModal' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h3 class="modal-title">Help</h3>
+    </div>
+    <div class="modal-body">
+      <ul class="leftTextAlign">
+        <li>To add a node: Drag and drop from node palette</li>
+        <li>To add an interaction: Click on interaction type; then click on source node and release on target node</li>
+        <li>To add a node into a container (family or compartment): Drag the node into its container node or select nodes to be contained and right click on container node and choose "Add Selected Into This Node"</li>
+        <li>To delete nodes/interactions: Select and perform Edit > Delete Selected</li>
+      </ul>
     </div>
   </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
@@ -81,127 +101,87 @@
 </div><!-- /.modal -->
 
 <div id='layoutPropertiesDiv' class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog">
-  <div class="modal-content">
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <h3 class="modal-title">Layout Properties</h3>
-    </div>
-    <div class="modal-body">
-    </div>
-    <div class="modal-footer">
-    </div>
-  </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
 <script id="layoutPropertiesTemplate" type="text/template" class="template">
-      <table class="table-condensed layout-table">
-      <tr>
-      <td>
-      <span class="add-on layout-text"> Node Repulsion </span>
-      </td>
-      <td>
-      <input id="node-repulsion" type="text" class="input-small layout-text" value= <%= nodeRepulsion %> >
-      </td>
-      </tr>
-
-      <tr>
-      <td>
-      <span class="add-on layout-text"> Node Overlap </span>
-      </td>
-      <td>
-      <input id="node-overlap" type="text" class="input-small layout-text" value= <%= nodeOverlap %> >
-      </td>
-      </tr>
-
-      <tr>
-      <td>
-      <span class="add-on layout-text"> Ideal Edge Length </span>
-      </td>
-      <td>
-      <input id="ideal-edge-length" type="text" class="input-small layout-text" value= <%= idealEdgeLength %> >
-      </td>
-      </tr>
-
-      <tr>
-      <td>
-      <span class="add-on layout-text"> Edge Elasticity </span>
-      </td>
-      <td>
-      <input id="edge-elasticity" type="text" class="input-small layout-text" value= <%= edgeElasticity %> >
-      </td>
-      </tr>
-
-      <tr>
-      <td>
-      <span class="add-on layout-text"> Nesting Factor </span>
-      </td>
-      <td>
-      <input id="nesting-factor" type="text" class="input-small layout-text" value= <%= nestingFactor %> >
-      </td>
-      </tr>
-
-      <tr>
-      <td>
-      <span class="add-on layout-text"> Gravity </span>
-      </td>
-      <td>
-      <input id="gravity" type="text" class="input-small layout-text" value= <%= gravity %> >
-      </td>
-      </tr>
-
-      <tr>
-      <td>
-      <span class="add-on layout-text"> Number of Iterations </span>
-      </td>
-      <td>
-      <input id="num-iter" type="text" class="input-small layout-text" value= <%= numIter %> >
-      </td>
-      </tr>
-
-      <tr>
-      <td>
-      <span class="add-on layout-text"> Tile Disconnected </span>
-      </td>
-
-      <td>
-      <input id="tile" type="checkbox" class="input-small layout-text" <% if (tile){ %> checked<%}%>>
-      </td>
-      </tr>
-
-      <tr>
-      <td>
-      <span class="add-on layout-text"> Animate </span>
-      </td>
-
-      <td>
-      <input id="animate" type="checkbox" class="input-small layout-text" <% if (animate){ %> checked<%}%>>
-      </td>
-      </tr>
-      <tr>
-      <td>
-      <span class="add-on layout-text"> Incremental </span>
-      </td>
-
-      <td>
-      <input id="incremental" type="checkbox" class="input-small layout-text" <% if (!randomize){ %> checked<%}%>>
-      </td>
-      </tr>
-      <tr>
-      <td><br>
-      </td>
-      </tr>
-
-      <tr id="layout-buttons">
-      <td>
-      <button style="float: right;" id="save-layout" class="btn btn-default" >Save</button>
-      </td>
-      <td>
-      <button id="default-layout" class="btn btn-default">Default</button>
-      </td>
-      </tr>
-      </table>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Layout Properties</h3>
+      </div>
+      <div class="modal-body">
+        <form role="form" id="sendVerificationForm">
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="fullName">Node Repulsion:</label>
+            <div class="col-sm-8">
+              <input id="node-repulsion" type="text" class="form-control" value= <%= nodeRepulsion %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="fullName">Node Overlap:</label>
+            <div class="col-sm-8">
+              <input id="node-overlap" type="text" class="form-control" value= <%= nodeOverlap %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="fullName">Ideal Edge Length:</label>
+            <div class="col-sm-8">
+              <input id="ideal-edge-length" type="text" class="form-control" value= <%= idealEdgeLength %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="fullName">Edge Elasticity:</label>
+            <div class="col-sm-8">
+              <input id="edge-elasticity" type="text" class="form-control" value= <%= edgeElasticity %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="fullName">Nesting Factor:</label>
+            <div class="col-sm-8">
+              <input id="nesting-factor" type="text" class="form-control" value= <%= nestingFactor %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="fullName">Gravity:</label>
+            <div class="col-sm-8">
+              <input id="gravity" type="text" class="form-control" value= <%= gravity %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="fullName">Number of Iterations:</label>
+            <div class="col-sm-8">
+              <input id="num-iter" type="text" class="form-control" value= <%= numIter %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="fullName">Tile Disconnected:</label>
+            <div class="col-sm-8 leftTextAlign">
+              <input id="tile" type="checkbox" class="input-small layout-text" <% if (tile){ %> checked<%}%>>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="fullName">Animate:</label>
+            <div class="col-sm-8 leftTextAlign">
+              <input id="animate" type="checkbox" class="input-small layout-text" <% if (animate){ %> checked<%}%>>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="fullName">Incremental:</label>
+            <div class="col-sm-8 leftTextAlign">
+              <input id="randomize" type="checkbox" class="input-small layout-text" <% if (!randomize){ %> checked<%}%>>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button id="save-layout" class="btn btn-default" >Save</button>
+          <button id="default-layout" class="btn btn-default">Default</button>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div>
 </script>
 
 <div class="pageContentWrapper">
@@ -212,7 +192,7 @@
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
             <span class="sr-only">Toggle navigation</span>
           </button>
-          <a class="navbar-brand" class="active">TCGA Curation Tool</a>
+          <a class="navbar-brand" class="active">TCGA Pathway Curation Tool</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-01">
           <div class="col-lg-offset-2">
@@ -220,8 +200,8 @@
               <li class="dropdown fileDropDown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                    <li><a role="save" href="#">Save</a></li>
-                    <li><a role="load" href="#">Load</a></li>
+                    <li><a role="save" href="#">Save...</a></li>
+                    <li><a role="load" href="#">Load...</a></li>
                   </ul>
                 </li>
                 <li class="dropdown editDropDown">
@@ -253,14 +233,15 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Layout <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                       <li><a role="perform_layout" href="#">Perform Layout</a></li>
-                      <!-- <li><a role="layout_properties" href="#">Layout Properties</a></li> -->
+                      <li><a role="layout_properties" href="#">Layout Properties...</a></li>
                     </ul>
                 </li>
                 <li class="dropdown aboutDropDown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li><a role="node_legend" href="#">Node Legend</a></li>
-                      <li><a role="edge_legend" href="#">Edge Legend</a></li>
+                      <li><a role="help" href="#">Quick Help</a></li>
+                      <!-- <li><a role="node_legend" href="#">Node Legend</a></li>
+                      <li><a role="edge_legend" href="#">Interaction Legend</a></li> -->
                       <li><a role="about" href="#">About</a></li>
                     </ul>
                   </li>
@@ -278,12 +259,12 @@
             </div>
             <div class="pnl-body">
               <div class="buttonContainer">
-                <button id="saveGraphBtn" type="button" class="btn btn-primary btn-lg">
+                <button id="saveGraphBtn" type="button" class="btn btn-default">
                   <i class="fui-folder"></i> Save
                 </button>
               </div>
               <div class="buttonContainer">
-                <button id="loadGraphBtn" type="button" class="btn btn-primary btn-lg">
+                <button id="loadGraphBtn" type="button" class="btn btn-default">
                   <i class="fui-upload"></i> Load
                 </button>
               </div>
@@ -312,11 +293,11 @@
               <div class="edgePaletteWrapper">
                  <div class="edge-palette list-group">
                    <!-- <li class="list-group-item"><a dropDownIndex='0' href="#">None</a></li> -->
-                   <a edgeTypeIndex='1' href="#"  class="list-group-item">Activates</a>
-                   <a edgeTypeIndex='2' href="#"  class="list-group-item">Inhibits</a>
-                   <a edgeTypeIndex='3' href="#"  class="list-group-item">Induces</a>
-                   <a edgeTypeIndex='4' href="#"  class="list-group-item">Represses</a>
-                   <a edgeTypeIndex='5' href="#"  class="list-group-item">Binds</a>
+                   <a edgeTypeIndex='1' href="#"  class="list-group-item"><img src="./assets/activates.png" class="pull-left"  />Activates</a>
+                   <a edgeTypeIndex='2' href="#"  class="list-group-item"><img src="./assets/inhibits.png" class="pull-left"  />Inhibits</a>
+                   <a edgeTypeIndex='3' href="#"  class="list-group-item"><img src="./assets/induces.png" class="pull-left"  />Induces</a>
+                   <a edgeTypeIndex='4' href="#"  class="list-group-item"><img src="./assets/represses.png" class="pull-left"  />Represses</a>
+                   <a edgeTypeIndex='5' href="#"  class="list-group-item"><img src="./assets/binds.png" class="pull-left"  />Binds</a>
                  </div>
               </div>
             </div>
@@ -335,9 +316,9 @@
   <div class="container">
     <div class="row">
       <div class="col-xs-7">
-        <h3 class="footer-title">About TCGA Curation Tool</h3>
+        <h3 class="footer-title">About TCGA Pathway Curation Tool</h3>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in quam sit amet quam placerat tincidunt et vitae mi. Donec maximus sodales tempor. Nam sed volutpat elit, et tincidunt enim. Donec velit est, accumsan vel aliquet rutrum, sodales a erat. Phasellus tempor eros nibh. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec eget lobortis ante. Mauris a pulvinar augue. Curabitur in metus velit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nunc porta quam sed leo blandit consectetur. In lectus urna, feugiat sed scelerisque in, aliquam finibus massa. Quisque vel nulla ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;<br/>
+            This is a curation tool for TCGA pan-cancer pathway people to help them prepare the topology and layout of these pathways using a uniform notation.
         </p>
 
 

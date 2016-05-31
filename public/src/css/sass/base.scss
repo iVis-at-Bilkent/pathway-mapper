@@ -1,6 +1,9 @@
 @import 'aboutModal';
+@import "quickHelpModal";
 @import 'dragDropNodeAdd';
 @import 'dropDown';
+@import "layoutPropertiesModal";
+@import 'qtipStyle';
 
 body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
@@ -8,6 +11,35 @@ body {
 }
 
 $appContentHeight: 850px;
+
+.leftTextAlign{
+  text-align: left;
+}
+
+button{
+  outline: none;
+}
+
+.control-label
+{
+  text-align: left;
+  margin-top: 10px;
+  color: rgba(23, 22, 22, 0.78) !important;
+  font-weight: 300 !important;
+}
+
+.input-group
+{
+  margin-bottom: 5px;
+  width: 100%;
+
+  .form-control{
+    border-radius: 6px !important;
+  }
+  input[type="checkbox"]{
+    margin-top: 10px;
+  }
+}
 
 .edgePaletteWrapper{
   text-align: center;
@@ -36,6 +68,10 @@ footer{
 
 .navbar{
   border-radius: 0px 0px 6px 6px;
+}
+
+.navbar-brand{
+  color: #337ab7 !important;
 }
 
 .cy-panzoom{

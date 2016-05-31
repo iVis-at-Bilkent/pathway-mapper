@@ -6,6 +6,8 @@
     margin-bottom: 15px; }
     .modal .modal-body .adressText p {
       margin-bottom: 0px !important; }
+  .modal .modal-body h3 {
+    color: #00a862; }
   .modal .modal-footer {
     text-align: center; }
 
@@ -14,6 +16,9 @@
 
 #node_legend_modal .modal-body img {
   width: 500px; }
+
+#quickHelpModal .modal-body ul li {
+  margin-bottom: 15px; }
 
 .ui-cytoscape-nodeadd {
   z-index: 99999;
@@ -83,9 +88,35 @@
   -moz-border-radius: 6px 0 6px 6px;
   border-radius: 6px 0 6px 6px; }
 
+#layoutPropertiesDiv .modal, #layoutPropertiesDiv .modal-body {
+  max-height: 100%; }
+
+.qtipLabel {
+  margin-top: 10px; }
+
 body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
   background-color: #fff; }
+
+.leftTextAlign {
+  text-align: left; }
+
+button {
+  outline: none; }
+
+.control-label {
+  text-align: left;
+  margin-top: 10px;
+  color: rgba(23, 22, 22, 0.78) !important;
+  font-weight: 300 !important; }
+
+.input-group {
+  margin-bottom: 5px;
+  width: 100%; }
+  .input-group .form-control {
+    border-radius: 6px !important; }
+  .input-group input[type="checkbox"] {
+    margin-top: 10px; }
 
 .edgePaletteWrapper {
   text-align: center; }
@@ -105,6 +136,9 @@ footer {
 
 .navbar {
   border-radius: 0px 0px 6px 6px; }
+
+.navbar-brand {
+  color: #337ab7 !important; }
 
 .cy-panzoom {
   position: absolute;

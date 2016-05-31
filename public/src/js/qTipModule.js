@@ -17,7 +17,7 @@ module.exports = (function(cy,$)
     });
 
     var row = $('<div class="row">\
-                 <div class="col-xs-4">Name:</div>\
+                 <div class="col-xs-4 qtipLabel">Name:</div>\
               </div>');
     row.append(textInput);
     return row;

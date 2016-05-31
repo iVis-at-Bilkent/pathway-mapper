@@ -11,7 +11,7 @@ var styleSheet = [
           return 'center';
         },
         'color': '#1e2829',
-        'width': 30,
+        'width': 60,
         'height': 15,
         'background-color': '#fff',
         'shape': function(ele)
@@ -75,7 +75,7 @@ var styleSheet = [
         {
             return edgeLineTypeHandler(ele);
         },
-        'opacity': 0.8
+        'opacity': 1
       }
   },
   // {
@@ -91,8 +91,8 @@ var styleSheet = [
     selector: ':selected',
     style:
     {
-      'shadow-color' : '#faff0e',
-      'shadow-opacity': 0.8
+      'shadow-color' : '#faff00',
+      'shadow-opacity': 1.0
     }
   }
 ];

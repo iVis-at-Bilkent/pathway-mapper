@@ -74,7 +74,7 @@ module.exports = (function(cy)
         content: 'perform layout',
         select: function(ele)
         {
-          cy.layout({name:'cose-bilkent', padding: 50, animate: 'true'});
+          cy.layout(window.layoutProperties.currentLayoutProperties);
         }
       },
     ]

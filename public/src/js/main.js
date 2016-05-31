@@ -33,6 +33,8 @@ $(window).load(function()
 
     window.edgeAddingMode = 0;
     window.layoutProperties = new LayoutProperties();
+    var layoutPropertiesContent = window.layoutProperties.render();
+    $('#layoutPropertiesDiv').append(layoutPropertiesContent);
 
     cy = window.cy = cytoscape(
     {
@@ -275,8 +277,6 @@ $(".layoutDropDown li a").click(function(event)
   }
   else if (dropdownLinkRole == 'layout_properties')
   {
-    var layoutPropertiesContent = window.layoutProperties.render();
-    $('#layoutPropertiesDiv .modal-body').empty().append(layoutPropertiesContent);
     $('#layoutPropertiesDiv').modal('show');
   }
 
@@ -296,9 +296,14 @@ $(".aboutDropDown li a").click(function(event)
   else if (dropdownLinkRole == 'edge_legend')
   {
     $('#edge_legend_modal').modal('show');
-  }else if (dropdownLinkRole == 'node_legend')
+  }
+  else if (dropdownLinkRole == 'node_legend')
   {
     $('#node_legend_modal').modal('show');
+  }
+  else if(dropdownLinkRole == 'help')
+  {
+    $('#quickHelpModal').modal('show');
   }
 });
 

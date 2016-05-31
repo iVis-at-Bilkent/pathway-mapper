@@ -34,7 +34,6 @@ function loadGraphHandler(req, res)
   {
       if (!err)
       {
-        console.log('received data: ' + data);
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(data);
         res.end();
