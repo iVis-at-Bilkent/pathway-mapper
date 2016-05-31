@@ -11,6 +11,9 @@
   .modal .modal-footer {
     text-align: center; }
 
+#aboutModal .modal-dialog {
+  width: 400px; }
+
 #edge_legend_modal .modal-body img {
   width: 500px; }
 

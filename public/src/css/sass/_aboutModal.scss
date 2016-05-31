@@ -1,4 +1,5 @@
 
+
 .modal
 {
   text-align: center;
@@ -24,6 +25,13 @@
 
   .modal-footer{
     text-align: center;
+  }
+}
+
+#aboutModal{
+  .modal-dialog
+  {
+    width: 400px;
   }
 }
 
