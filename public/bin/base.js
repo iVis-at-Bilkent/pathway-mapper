@@ -49115,8 +49115,6 @@ $('#loadGraphBtn').on('click', function(evt)
 {
   $('#fileinput').attr('value', "");
   $('#fileinput').trigger('click');
-
-
 });
 
 //TODO server side integration needed because of CORS
@@ -49225,6 +49223,10 @@ $(".fileDropDown li a").click(function(event)
   else if (dropdownLinkRole == 'load')
   {
     $('#fileinput').trigger('click');
+  }
+  else if (dropdownLinkRole == 'new')
+  {
+    cy.remove(cy.elements());
   }
 
 });
@@ -49545,7 +49547,7 @@ var styleSheet = [
         {
             return edgeTargetArrowTypeHandler(ele);
         },
-        'width': 1,
+        'width': 2,
         'line-color': function( ele )
         {
             return edgeColorHandler(ele);
@@ -49574,7 +49576,7 @@ var styleSheet = [
     selector: ':selected',
     style:
     {
-      'shadow-color' : '#faff00',
+      'shadow-color' : '#6f089a',
       'shadow-opacity': 1.0
     }
   }

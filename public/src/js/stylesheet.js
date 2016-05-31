@@ -62,7 +62,7 @@ var styleSheet = [
         {
             return edgeTargetArrowTypeHandler(ele);
         },
-        'width': 1,
+        'width': 2,
         'line-color': function( ele )
         {
             return edgeColorHandler(ele);
@@ -91,7 +91,7 @@ var styleSheet = [
     selector: ':selected',
     style:
     {
-      'shadow-color' : '#faff00',
+      'shadow-color' : '#6f089a',
       'shadow-opacity': 1.0
     }
   }

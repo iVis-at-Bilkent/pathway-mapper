@@ -151,8 +151,6 @@ $('#loadGraphBtn').on('click', function(evt)
 {
   $('#fileinput').attr('value', "");
   $('#fileinput').trigger('click');
-
-
 });
 
 //TODO server side integration needed because of CORS
@@ -261,6 +259,10 @@ $(".fileDropDown li a").click(function(event)
   else if (dropdownLinkRole == 'load')
   {
     $('#fileinput').trigger('click');
+  }
+  else if (dropdownLinkRole == 'new')
+  {
+    cy.remove(cy.elements());
   }
 
 });
