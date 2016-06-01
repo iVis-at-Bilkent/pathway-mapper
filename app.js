@@ -83,7 +83,7 @@ app.get('/',indexGetHandler);
   POST Requests
 ********************************/
 app.post('/loadGraph', multerInstance.single('graphFile'), loadGraphHandler);
-app.post('/getBioGeneData', multerInstance.single('graphFile'), biogeneDataHandler);
+app.post('/getBioGeneData', multerInstance.array(), biogeneDataHandler);
 
 app.listen(APP_PORT, function ()
 {
