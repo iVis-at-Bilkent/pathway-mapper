@@ -201,7 +201,7 @@
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a role="new" href="#">New</a></li>
-                    <li><a role="save" href="#">Save...</a></li>
+                    <li><a role="save" href="#">Save</a></li>
                     <li><a role="load" href="#">Load...</a></li>
                   </ul>
                 </li>
@@ -344,6 +344,68 @@
     </div>
   </div>
 </footer>
+
+
+<!-- BioGeneView template for backbone.js -->
+<script type="text/template" id="biogene-template">
+    <div class='node-details-text'>
+    <table class="table leftText bioGeneTable" cellspacing="10">
+    <tr class="biogene-info biogene-description node-details-summary">
+    <th valign="top">Gene Summary:</th>
+    <td colspan="2" style="max-height: 100px;">
+    <%=geneSummary %>
+    </td>
+    </tr>
+    <tr class="biogene-info biogene-aliases">
+    <th valign="top">Aliases:</th>
+    <td>
+    <%=geneAliases %>
+    </td>
+    </tr>
+    <tr class="biogene-info biogene-description">
+    <th>Description:</th>
+    <td class="expandable">
+    <%=geneDescription %>
+    </td>
+    </tr>
+    <tr class="biogene-info biogene-location">
+    <th valign="top">Chromosome Location:</th>
+    <td>
+    <%=geneLocation %>
+    </td>
+    </tr>
+    <tr class="biogene-info biogene-uniprot-links">
+    <th valign="top">UniProt ID:</th>
+    <td>
+    <a href='http://www.uniprot.org/uniprot/<%= geneUniprotId %>' target='blank'>
+    <%=geneUniprotId %>
+    </a>
+    <span class='biogene-uniprot-links-extra'>
+    <%= geneUniprotLinks %>
+    </span>
+    </td>
+    </tr>
+    <tr class="biogene-info biogene-id">
+    <th valign="top">Gene ID:</th>
+    <td>
+    <a href='http://www.ncbi.nlm.nih.gov/gene?term=<%= geneId %>' target='blank'>
+    <%=geneId %>
+    </a>
+    </td>
+    </tr>
+    </table>
+    </div>
+</script>
+
+<script type="text/template" id="uniprot-link-template">
+    <a href="http://www.uniprot.org/uniprot/<%= id %>" target="_blank">
+    <%=id %>
+    </a>
+</script>
+
+<script type="text/template" id="loading-small-template">
+  <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+</script>
 
 
   <div class="hiddenfile">

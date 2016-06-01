@@ -19,7 +19,7 @@ var styleSheet = require('./stylesheet.js');
 var edgeHandleOpts = require('./edgeHandlingUtils.js');
 var SaveLoadUtilities = require('./saveLoadUtils.js');
 
-var LayoutProperties = require('./LayoutProperties.js');
+var LayoutProperties = require('./Views/LayoutProperties.js');
 
 //Wait all components to load
 $(window).load(function()
@@ -173,18 +173,6 @@ $('#fileinput').on('change', function()
   };
   request.open("POST", "/loadGraph");
   request.send(formData);
-
-  // var self = this;
-  // var reader = new FileReader();
-  // reader.onload = function()
-  // {
-  //   cy.remove(cy.elements());
-  //   var allEles = SaveLoadUtilities.parseGraph(reader.result);
-  //   cy.add(allEles);
-  //   cy.layout(window.layoutProperties.currentLayoutProperties);
-  // };
-  // reader.readAsText(file);
-
 });
 
 
@@ -218,11 +206,11 @@ $(".editDropDown li a").click(function(event)
 
   if (dropdownLinkRole == 'addGene')
   {
-    var clickedNodeType = $(event.target).text().toUpperCase();
+    var clickedNodeType = $(event.target).text();
     cy.add(
     {
         group: "nodes",
-        data: {type: clickedNodeType, name:'newNode'},
+        data: {type: clickedNodeType.toUpperCase(), name:'New ' + clickedNodeType },
         renderedPosition:
         {
             x: 100,

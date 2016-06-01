@@ -97,6 +97,21 @@
 .qtipLabel {
   margin-top: 10px; }
 
+.geneDetails {
+  margin-top: 10px; }
+
+.inputCol {
+  padding-left: 0px !important; }
+
+.centerText {
+  text-align: center !important; }
+
+.leftText {
+  text-align: left !important; }
+
+.justifyText {
+  text-align: justify !important; }
+
 body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
   background-color: #fff; }

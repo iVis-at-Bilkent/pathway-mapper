@@ -1,4 +1,5 @@
-var SaveLoadUtils = {
+var SaveLoadUtils =
+{
   //Exports given json graph(based on cy.export()) into a string
   exportGraph: function(graphJSON)
   {
