@@ -116,11 +116,15 @@ body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
   background-color: #fff; }
 
-.leftTextAlign {
-  text-align: left; }
-
 button {
   outline: none; }
+
+.mainContentWrapper {
+  display: flex; }
+
+.sideBarWrapper {
+  min-width: 300px;
+  max-width: 300px; }
 
 .control-label {
   text-align: left;
@@ -159,10 +163,8 @@ footer {
   color: #337ab7 !important; }
 
 .cy-panzoom {
-  position: absolute;
   /* float: right; */
-  top: 14px;
-  right: 65px;
+  right: 120px;
   z-index: 100; }
 
 .pnl {
@@ -207,7 +209,9 @@ footer {
   height: 850px;
   border-radius: 6px;
   padding-right: 0 !important;
-  padding-left: 0 !important; }
+  padding-left: 0 !important;
+  width: 100%;
+  margin-left: 20px; }
 
 #cy {
   height: 100%; }

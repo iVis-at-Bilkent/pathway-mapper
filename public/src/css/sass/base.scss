@@ -13,12 +13,17 @@ body {
 
 $appContentHeight: 850px;
 
-.leftTextAlign{
-  text-align: left;
-}
-
 button{
   outline: none;
+}
+
+.mainContentWrapper{
+  display: flex;
+}
+
+.sideBarWrapper{
+  min-width: 300px;
+  max-width: 300px;
 }
 
 .control-label
@@ -76,10 +81,10 @@ footer{
 }
 
 .cy-panzoom{
-  position: absolute;
+  // position: absolute;
   /* float: right; */
-  top: 14px;
-  right: 65px;
+  // top: 14px;
+  right: 120px;
   z-index: 100;
 }
 
@@ -146,6 +151,9 @@ footer{
   border-radius: 6px;
   padding-right: 0 !important;
   padding-left: 0 !important;
+  width: 100%;
+  margin-left: 20px;
+
 }
 
 #cy
