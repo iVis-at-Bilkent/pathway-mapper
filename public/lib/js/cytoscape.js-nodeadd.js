@@ -6,8 +6,8 @@
         width: 30,    //width of the icon container
         padding: 5,  //padding of the icon container(from right & top)
         backgroundColorDiv: '#fff',   //background color of the icon container
-        borderColorDiv: '#CFCFCF',    //border color of the icon container
-        borderWidthDiv: '1px',    //border width of the icon container
+        borderColorDiv: '#fff',    //border color of the icon container
+        borderWidthDiv: '0px',    //border width of the icon container
         borderRadiusDiv: '5px',    //border radius of the icon container
 
         icon: '',   //icon class name
@@ -83,10 +83,48 @@
                             var nodeType = $(ui.helper).attr('nodeType').toUpperCase();
 
                             var cy = $container.cytoscape("get");
+
+                            //Hold a map for parents and candidate parent nodes for this addition
+                            var nodeMap = {};
+                            var parentMap = {};
+                            //Loop through nodes for hit testing about drag position on canvas
+                            cy.nodes().forEach(function(node,i)
+                            {
+                                var nodeBbox = node.renderedBoundingBox();
+                                //Rectangle point test
+                                if ( (relX <= nodeBbox.x2 && relX >= nodeBbox.x1) && (relY <= nodeBbox.y2 && relY >= nodeBbox.y1) && node.data().type != 'GENE' )
+                                {
+                                  //If node has a children put an entry to the parentMap
+                                  if (node.children().length > 0)
+                                  {
+                                    parentMap[node.id()] = true;
+                                  }
+
+                                  //If parent of this node is already added to the node map remove it, since our candidate is in deeper level !
+                                  if (parentMap[node._private.data.parent])
+                                  {
+                                      delete nodeMap[node._private.data.parent];
+                                  }
+
+                                  //Add an entry to node map
+                                  nodeMap[node.id()] = node;
+                                }
+                            });
+
+                            //Check if any parent found, if so set parent field
+                            var parent = nodeMap[Object.keys(nodeMap)[0]]
+                            var nodeData = {type: nodeType, name:'New '+ $(ui.helper).attr('nodeType')};
+                            if (parent)
+                            {
+                                if (!(nodeType == "COMPARTMENT" && parent.data().type == "FAMILY" )) {
+                                  nodeData.parent = parent.id();
+                                }
+                            }
+
                             cy.add(
                             {
                                 group: "nodes",
-                                data: {type: nodeType, name:'New '+ $(ui.helper).attr('nodeType')},
+                                data: nodeData,
                                 renderedPosition:
                                 {
                                     x: relX,

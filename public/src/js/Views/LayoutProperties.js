@@ -11,7 +11,7 @@ var layoutProps = Backbone.View.extend(
     gravity: 0.25,
     numIter: 2500,
     tile: true,
-    animate: true,
+    animate: "end",
     randomize: true,
   },
   currentLayoutProperties: null,

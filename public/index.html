@@ -156,19 +156,19 @@
           </div>
           <div class="input-group">
             <label class="control-label col-sm-4" for="fullName">Tile Disconnected:</label>
-            <div class="col-sm-8 leftTextAlign">
+            <div class="col-sm-8 leftText">
               <input id="tile" type="checkbox" class="input-small layout-text" <% if (tile){ %> checked<%}%>>
             </div>
           </div>
           <div class="input-group">
             <label class="control-label col-sm-4" for="fullName">Animate:</label>
-            <div class="col-sm-8 leftTextAlign">
+            <div class="col-sm-8 leftText">
               <input id="animate" type="checkbox" class="input-small layout-text" <% if (animate){ %> checked<%}%>>
             </div>
           </div>
           <div class="input-group">
             <label class="control-label col-sm-4" for="fullName">Incremental:</label>
-            <div class="col-sm-8 leftTextAlign">
+            <div class="col-sm-8 leftText">
               <input id="randomize" type="checkbox" class="input-small layout-text" <% if (!randomize){ %> checked<%}%>>
             </div>
           </div>
@@ -188,21 +188,21 @@
   <div class="customMargins">
     <div class="">
       <nav class="navbar navbar-default navbar-embossed" role="navigation">
-        <div class="navbar-header">
+        <div class="navbar-header pull-right">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
             <span class="sr-only">Toggle navigation</span>
           </button>
           <a class="navbar-brand" class="active">TCGA Pathway Curation Tool</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-01">
-          <div class="col-lg-offset-1">
+          <div class="">
             <ul class="nav navbar-nav">
               <li class="dropdown fileDropDown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a role="new" href="#">New</a></li>
-                    <li><a role="save" href="#">Save</a></li>
                     <li><a role="load" href="#">Load...</a></li>
+                    <li><a role="save" href="#">Save</a></li>
                   </ul>
                 </li>
                 <li class="dropdown editDropDown">
@@ -260,13 +260,13 @@
             </div>
             <div class="pnl-body">
               <div class="buttonContainer">
-                <button id="saveGraphBtn" type="button" class="btn btn-default">
-                  <i class="fui-folder"></i> Save
+                <button id="loadGraphBtn" type="button" class="btn btn-default">
+                  <i class="fui-upload"></i> Load
                 </button>
               </div>
               <div class="buttonContainer">
-                <button id="loadGraphBtn" type="button" class="btn btn-default">
-                  <i class="fui-upload"></i> Load
+                <button id="saveGraphBtn" type="button" class="btn btn-default">
+                  <i class="fui-folder"></i> Save
                 </button>
               </div>
             </div>

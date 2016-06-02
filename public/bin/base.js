@@ -4496,7 +4496,7 @@ CoSELayout.prototype.runSpringEmbedder = function () {
     this.calcGravitationalForces();
     this.moveNodes();
     this.animate();
-    if (layoutOptionsPack.animate && this.totalIterations % animationPeriod == 0) {
+    if (layoutOptionsPack.animate === 'during' && this.totalIterations % animationPeriod == 0) {
       for (var i = 0; i < 1e7; i++) {
         if ((new Date().getTime() - lastFrame) > 25) {
           break;
@@ -5341,7 +5341,7 @@ FDLayoutConstants.DEFAULT_SPRING_STRENGTH = 0.45;
 FDLayoutConstants.DEFAULT_REPULSION_STRENGTH = 4500.0;
 FDLayoutConstants.DEFAULT_GRAVITY_STRENGTH = 0.4;
 FDLayoutConstants.DEFAULT_COMPOUND_GRAVITY_STRENGTH = 1.0;
-FDLayoutConstants.DEFAULT_GRAVITY_RANGE_FACTOR = 2.35;
+FDLayoutConstants.DEFAULT_GRAVITY_RANGE_FACTOR = 3.8;
 FDLayoutConstants.DEFAULT_COMPOUND_GRAVITY_RANGE_FACTOR = 1.5;
 FDLayoutConstants.DEFAULT_USE_SMART_IDEAL_EDGE_LENGTH_CALCULATION = true;
 FDLayoutConstants.DEFAULT_USE_SMART_REPULSION_RANGE_CALCULATION = true;
@@ -8736,7 +8736,7 @@ var defaults = {
   // For enabling tiling
   tile: true,
   //whether to make animation while performing the layout
-  animate: true,
+  animate: 'end',
   //represents the amount of the vertical space to put between the zero degree members during the tiling operation(can also be a function)
   tilingPaddingVertical: 10,
   //represents the amount of the horizontal space to put between the zero degree members during the tiling operation(can also be a function)
@@ -9042,7 +9042,7 @@ _CoSELayout.prototype.run = function () {
       after.options.eles.nodes().updateCompoundBounds();
     }
 
-    after.options.eles.nodes().positions(function (i, ele) {
+    var getPositions = function(i ,ele){
       var theId = ele.data('id');
       var lNode = _CoSELayout.idToLNode[theId];
 
@@ -9050,22 +9050,29 @@ _CoSELayout.prototype.run = function () {
         x: lNode.getRect().getCenterX(),
         y: lNode.getRect().getCenterY()
       };
-    });
+    };
 
-    if (after.options.fit)
-      after.options.cy.fit(after.options.eles.nodes(), after.options.padding);
-
-    //trigger layoutready when each node has had its position set at least once
-    if (!ready) {
-      after.cy.one('layoutready', after.options.ready);
-      after.cy.trigger('layoutready');
+    if(after.options.animate !== 'during'){
+      after.options.eles.nodes().layoutPositions(after, after.options, getPositions);
     }
-
-    // trigger layoutstop when the layout stops (e.g. finishes)
-    after.cy.one('layoutstop', after.options.stop);
-    after.cy.trigger('layoutstop');
+    else {
+      after.options.eles.nodes().positions(getPositions);
+      
+      if (after.options.fit)
+        after.options.cy.fit(after.options.eles.nodes(), after.options.padding);
+    
+      //trigger layoutready when each node has had its position set at least once
+      if (!ready) {
+        after.cy.one('layoutready', after.options.ready);
+        after.cy.trigger('layoutready');
+      }
+      
+      // trigger layoutstop when the layout stops (e.g. finishes)
+      after.cy.one('layoutstop', after.options.stop);
+      after.cy.trigger('layoutstop');
+    }
+    
     t1.stop();
-
     after.options.eles.nodes().removeData('dummy_parent_id');
   });
 
@@ -9113,27 +9120,24 @@ _CoSELayout.prototype.run = function () {
   return this; // chaining
 };
 
-//Get the top most ones of a list of nodes in linear time
+//Get the top most ones of a list of nodes
 _CoSELayout.getTopMostNodes = function(nodes) {
-  //Map the ids of nodes in the list to check if a node is in the list in constant time
-  var nodeIdMap = {};
-  
-  //Fill the map in linear time
-  for(var i = 0; i < nodes.length; i++){
-    nodeIdMap[nodes[i].id()] = true;
+  var nodesMap = {};
+  for (var i = 0; i < nodes.length; i++) {
+      nodesMap[nodes[i].id()] = true;
   }
-  
-  //The nodes whose parent is not mapped are top most ones
-  var topMostNodes = nodes.filter(function(i, ele){
-    if(nodeIdMap[ele.data('parent')]){
-      return false;
-    }
-    
-    return true;
+  var roots = nodes.filter(function (i, ele) {
+      var parent = ele.parent()[0];
+      while(parent != null){
+        if(nodesMap[parent.id()]){
+          return false;
+        }
+        parent = parent.parent()[0];
+      }
+      return true;
   });
-  
-  //return the list of top most nodes
-  return topMostNodes;
+
+  return roots;
 };
 
 _CoSELayout.prototype.getToBeTiled = function (node) {
@@ -9384,12 +9388,7 @@ _CoSELayout.prototype.adjustLocations = function (organization, x, y, compoundHo
 
     for (var j = 0; j < row.length; j++) {
       var lnode = row[j];
-
       var node = this.cy.getElementById(lnode.id);
-      node.position({
-        x: x + lnode.rect.width / 2,
-        y: y + lnode.rect.height / 2
-      });
 
       lnode.rect.x = x;// + lnode.rect.width / 2;
       lnode.rect.y = y;// + lnode.rect.height / 2;
@@ -37759,7 +37758,7 @@ module.exports = ( typeof window === 'undefined' ? null : window );
 
 },{}],22:[function(require,module,exports){
 /*!
- * jQuery JavaScript Library v2.2.3
+ * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -37769,7 +37768,7 @@ module.exports = ( typeof window === 'undefined' ? null : window );
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2016-04-05T19:26Z
+ * Date: 2016-05-20T17:23Z
  */
 
 (function( global, factory ) {
@@ -37825,7 +37824,7 @@ var support = {};
 
 
 var
-	version = "2.2.3",
+	version = "2.2.4",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -42766,13 +42765,14 @@ jQuery.Event.prototype = {
 	isDefaultPrevented: returnFalse,
 	isPropagationStopped: returnFalse,
 	isImmediatePropagationStopped: returnFalse,
+	isSimulated: false,
 
 	preventDefault: function() {
 		var e = this.originalEvent;
 
 		this.isDefaultPrevented = returnTrue;
 
-		if ( e ) {
+		if ( e && !this.isSimulated ) {
 			e.preventDefault();
 		}
 	},
@@ -42781,7 +42781,7 @@ jQuery.Event.prototype = {
 
 		this.isPropagationStopped = returnTrue;
 
-		if ( e ) {
+		if ( e && !this.isSimulated ) {
 			e.stopPropagation();
 		}
 	},
@@ -42790,7 +42790,7 @@ jQuery.Event.prototype = {
 
 		this.isImmediatePropagationStopped = returnTrue;
 
-		if ( e ) {
+		if ( e && !this.isSimulated ) {
 			e.stopImmediatePropagation();
 		}
 
@@ -43720,19 +43720,6 @@ function getWidthOrHeight( elem, name, extra ) {
 		val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		styles = getStyles( elem ),
 		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
-
-	// Support: IE11 only
-	// In IE 11 fullscreen elements inside of an iframe have
-	// 100x too small dimensions (gh-1764).
-	if ( document.msFullscreenElement && window.top !== window ) {
-
-		// Support: IE11 only
-		// Running getBoundingClientRect on a disconnected node
-		// in IE throws an error.
-		if ( elem.getClientRects().length ) {
-			val = Math.round( elem.getBoundingClientRect()[ name ] * 100 );
-		}
-	}
 
 	// Some non-html elements return undefined for offsetWidth, so check for null/undefined
 	// svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
@@ -45624,6 +45611,7 @@ jQuery.extend( jQuery.event, {
 	},
 
 	// Piggyback on a donor event to simulate a different one
+	// Used only for `focus(in | out)` events
 	simulate: function( type, elem, event ) {
 		var e = jQuery.extend(
 			new jQuery.Event(),
@@ -45631,27 +45619,10 @@ jQuery.extend( jQuery.event, {
 			{
 				type: type,
 				isSimulated: true
-
-				// Previously, `originalEvent: {}` was set here, so stopPropagation call
-				// would not be triggered on donor event, since in our own
-				// jQuery.event.stopPropagation function we had a check for existence of
-				// originalEvent.stopPropagation method, so, consequently it would be a noop.
-				//
-				// But now, this "simulate" function is used only for events
-				// for which stopPropagation() is noop, so there is no need for that anymore.
-				//
-				// For the 1.x branch though, guard for "click" and "submit"
-				// events is still used, but was moved to jQuery.event.stopPropagation function
-				// because `originalEvent` should point to the original event for the constancy
-				// with other events and for more focused logic
 			}
 		);
 
 		jQuery.event.trigger( e, null, elem );
-
-		if ( e.isDefaultPrevented() ) {
-			event.preventDefault();
-		}
 	}
 
 } );
@@ -49345,7 +49316,7 @@ var layoutProps = Backbone.View.extend(
     gravity: 0.25,
     numIter: 2500,
     tile: true,
-    animate: true,
+    animate: "end",
     randomize: true,
   },
   currentLayoutProperties: null,
@@ -50117,7 +50088,7 @@ module.exports = (function(cy,$)
         at: 'bottom center'
       },
       style: {
-        classes: 'qtip-dark qtip-rounded',
+        classes: 'qtip-tipsy qtip-rounded',
         width: 400
       }
     });
@@ -50267,6 +50238,8 @@ var styleSheet = [
         'width': 60,
         'height': 15,
         'background-color': '#fff',
+        'background-opacity': 0.5,
+        'text-margin-y' : 50,
         'shape': function(ele)
         {
             return parentNodeShapeFunc( ele );
@@ -50277,7 +50250,7 @@ var styleSheet = [
         },
         'border-color': function(ele)
         {
-          return nodeColorFunction(ele);
+          return nodeBorderColorFunction(ele);
         },
         'font-size': 7
       }
@@ -50300,10 +50273,22 @@ var styleSheet = [
           {
             return 'bottom';
           },
-          'padding-top': 10,
-          'background-color': '#fff',
-          'border-color': '#000000',
-          'border-width': 2
+          'padding-left': 5,
+          'padding-right': 5,
+          'padding-bottom': 5,
+          'padding-top': 5,
+          'background-opacity': 0.5,
+          'border-width': function(ele)
+          {
+              return borderWidthFunction( ele );
+          },
+          'border-color': function(ele)
+          {
+            return nodeBorderColorFunction(ele);
+          },
+          'background-color': function(ele){
+            return nodeBackgroundColorFunction(ele);
+          }
         }
     },
     {
@@ -50315,7 +50300,7 @@ var styleSheet = [
         {
             return edgeTargetArrowTypeHandler(ele);
         },
-        'width': 2,
+        'width': 1,
         'line-color': function( ele )
         {
             return edgeColorHandler(ele);
@@ -50344,7 +50329,7 @@ var styleSheet = [
     selector: ':selected',
     style:
     {
-      'shadow-color' : '#6f089a',
+      'shadow-color' : '#f1c40f',
       'shadow-opacity': 1.0
     }
   }
@@ -50376,7 +50361,7 @@ var borderWidthFunction = function( ele )
   {
     case "GENE": return 0.5; break;
     case "PROCESS": return 0; break;
-    case "FAMILY": return 0.75; break;
+    case "FAMILY": return 1.0; break;
     case "COMPARTMENT": return 2; break;
     default: return 0.5; break;
   }
@@ -50394,12 +50379,23 @@ var parentNodeShapeFunc = function( ele )
   }
 }
 
-var nodeColorFunction = function( ele )
+var nodeBackgroundColorFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return "#fff"; break;
+    case "FAMILY": return "#eff0f2"; break;
+    case "COMPARTMENT": return "#fff"; break;
+    default: return "#fff"; break;
+  }
+}
+
+var nodeBorderColorFunction = function( ele )
 {
   switch (ele._private.data['type'])
   {
     case "GENE": return "#000000"; break;
-    case "FAMILY": return "#000000"; break;
+    case "FAMILY": return "#eff0f2"; break;
     case "COMPARTMENT": return "#000000"; break;
     default: return "#000000"; break;
   }

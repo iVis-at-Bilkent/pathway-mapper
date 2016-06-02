@@ -14,6 +14,8 @@ var styleSheet = [
         'width': 60,
         'height': 15,
         'background-color': '#fff',
+        'background-opacity': 0.5,
+        'text-margin-y' : 50,
         'shape': function(ele)
         {
             return parentNodeShapeFunc( ele );
@@ -24,7 +26,7 @@ var styleSheet = [
         },
         'border-color': function(ele)
         {
-          return nodeColorFunction(ele);
+          return nodeBorderColorFunction(ele);
         },
         'font-size': 7
       }
@@ -47,10 +49,22 @@ var styleSheet = [
           {
             return 'bottom';
           },
-          'padding-top': 10,
-          'background-color': '#fff',
-          'border-color': '#000000',
-          'border-width': 2
+          'padding-left': 5,
+          'padding-right': 5,
+          'padding-bottom': 5,
+          'padding-top': 5,
+          'background-opacity': 0.5,
+          'border-width': function(ele)
+          {
+              return borderWidthFunction( ele );
+          },
+          'border-color': function(ele)
+          {
+            return nodeBorderColorFunction(ele);
+          },
+          'background-color': function(ele){
+            return nodeBackgroundColorFunction(ele);
+          }
         }
     },
     {
@@ -62,7 +76,7 @@ var styleSheet = [
         {
             return edgeTargetArrowTypeHandler(ele);
         },
-        'width': 2,
+        'width': 1,
         'line-color': function( ele )
         {
             return edgeColorHandler(ele);
@@ -91,7 +105,7 @@ var styleSheet = [
     selector: ':selected',
     style:
     {
-      'shadow-color' : '#6f089a',
+      'shadow-color' : '#f1c40f',
       'shadow-opacity': 1.0
     }
   }
@@ -123,7 +137,7 @@ var borderWidthFunction = function( ele )
   {
     case "GENE": return 0.5; break;
     case "PROCESS": return 0; break;
-    case "FAMILY": return 0.75; break;
+    case "FAMILY": return 1.0; break;
     case "COMPARTMENT": return 2; break;
     default: return 0.5; break;
   }
@@ -141,12 +155,23 @@ var parentNodeShapeFunc = function( ele )
   }
 }
 
-var nodeColorFunction = function( ele )
+var nodeBackgroundColorFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return "#fff"; break;
+    case "FAMILY": return "#eff0f2"; break;
+    case "COMPARTMENT": return "#fff"; break;
+    default: return "#fff"; break;
+  }
+}
+
+var nodeBorderColorFunction = function( ele )
 {
   switch (ele._private.data['type'])
   {
     case "GENE": return "#000000"; break;
-    case "FAMILY": return "#000000"; break;
+    case "FAMILY": return "#eff0f2"; break;
     case "COMPARTMENT": return "#000000"; break;
     default: return "#000000"; break;
   }

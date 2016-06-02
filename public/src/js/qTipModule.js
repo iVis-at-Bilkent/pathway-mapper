@@ -91,7 +91,7 @@ module.exports = (function(cy,$)
         at: 'bottom center'
       },
       style: {
-        classes: 'qtip-dark qtip-rounded',
+        classes: 'qtip-tipsy qtip-rounded',
         width: 400
       }
     });
