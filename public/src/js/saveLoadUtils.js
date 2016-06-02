@@ -40,16 +40,18 @@ var SaveLoadUtils =
 
     //Put a blank line between nodes and edges
     returnString += '\n';
-    returnString += '--SOURCE \t TARGET \tEDGE_TYPE\n';
+    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\n';
 
     //Write edges
     for (var i = 0; i < edges.length; i++)
     {
+      var edgeID = edges[i].data.id;
       var edgeType = edges[i].data.type;
       var source = edges[i].data.source;
       var target = edges[i].data.target;
 
-      returnString += source + '\t' +
+      returnString += edgeID + '\t' +
+                      source + '\t' +
                       target + '\t' +
                       edgeType + '\n';
     }
@@ -105,11 +107,12 @@ var SaveLoadUtils =
       }
 
       var lineData = lines[i].split('\t');
-      var edgeSource = lineData[0];
-      var edgeTarget = lineData[1];
-      var edgeType = lineData[2];
+      var edgeID = lineData[0];
+      var edgeSource = lineData[1];
+      var edgeTarget = lineData[2];
+      var edgeType = lineData[3];
 
-      newEdge = {group: 'edges', data:{type: edgeType, source: edgeSource, target: edgeTarget}};
+      newEdge = {group: 'edges', data:{id: edgeID, type: edgeType, source: edgeSource, target: edgeTarget}};
       allEles.push(newEdge);
     }
 

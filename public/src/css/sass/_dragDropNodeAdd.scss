@@ -5,6 +5,7 @@
      -moz-box-sizing: content-box;
           box-sizing: content-box;
 	margin-bottom: 5px;
+
 }
 
 #ui-cytoscape-nodeadd-icon{
@@ -19,7 +20,7 @@
 	z-index: 99999;
 	padding: 3px;
 	text-align: center;
-	// width: 100%;
+	width: 140px;
 
 	/* Fix for line trail left by drag (in Chrome)*/
 	-webkit-backface-visibility: hidden;

@@ -13,17 +13,14 @@ body {
 
 $appContentHeight: 850px;
 
-button{
-  outline: none;
-}
 
 .mainContentWrapper{
   display: flex;
 }
 
 .sideBarWrapper{
-  min-width: 300px;
-  max-width: 300px;
+  min-width: 230px;
+  max-width: 230px;
 }
 
 .control-label
@@ -49,6 +46,10 @@ button{
 
 .edgePaletteWrapper{
   text-align: center;
+  .list-group
+  {
+    margin-bottom: 0 !important;
+  }
   .edge-palette
   {
     a
@@ -62,11 +63,10 @@ button{
 footer{
  background-color: rgb(238, 238, 238);
  color: rgb(57, 57, 57);
+ height: 100%;
+
 }
 
-footer{
-  height: 100%;
-}
 
 .pageContentWrapper{
   margin-bottom: 70px;
@@ -78,6 +78,7 @@ footer{
 
 .navbar-brand{
   color: #337ab7 !important;
+  font-size: 16px;
 }
 
 .cy-panzoom{
@@ -110,9 +111,15 @@ footer{
   .pnl-body
   {
     background-color: #eff0f2;
-    padding: 25px 30px 25px 30px;
+    padding: 15px 10px 15px 10px;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
+    .dragButtonContainer
+    {
+      width: 140px;
+      margin-left: auto;
+      margin-right: auto;
+    }
   }
 }
 
@@ -137,7 +144,7 @@ footer{
   margin-bottom: 5px;
 
   button{
-    width: 100%;
+    width: 75%;
   }
 }
 

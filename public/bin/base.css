@@ -40,6 +40,7 @@
   z-index: 99999;
   padding: 3px;
   text-align: center;
+  width: 140px;
   /* Fix for line trail left by drag (in Chrome)*/
   -webkit-backface-visibility: hidden;
   /* Fix for plugin to render correctly when Bootstrap is being used*/
@@ -116,15 +117,12 @@ body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
   background-color: #fff; }
 
-button {
-  outline: none; }
-
 .mainContentWrapper {
   display: flex; }
 
 .sideBarWrapper {
-  min-width: 300px;
-  max-width: 300px; }
+  min-width: 230px;
+  max-width: 230px; }
 
 .control-label {
   text-align: left;
@@ -142,15 +140,15 @@ button {
 
 .edgePaletteWrapper {
   text-align: center; }
+  .edgePaletteWrapper .list-group {
+    margin-bottom: 0 !important; }
   .edgePaletteWrapper .edge-palette a {
     margin-bottom: 5px;
     border-radius: 6px; }
 
 footer {
   background-color: #eeeeee;
-  color: #393939; }
-
-footer {
+  color: #393939;
   height: 100%; }
 
 .pageContentWrapper {
@@ -160,7 +158,8 @@ footer {
   border-radius: 0px 0px 6px 6px; }
 
 .navbar-brand {
-  color: #337ab7 !important; }
+  color: #337ab7 !important;
+  font-size: 16px; }
 
 .cy-panzoom {
   /* float: right; */
@@ -182,9 +181,13 @@ footer {
     font-weight: 900; }
   .pnl .pnl-body {
     background-color: #eff0f2;
-    padding: 25px 30px 25px 30px;
+    padding: 15px 10px 15px 10px;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px; }
+    .pnl .pnl-body .dragButtonContainer {
+      width: 140px;
+      margin-left: auto;
+      margin-right: auto; }
 
 .customMargins {
   margin-left: 3% !important;
@@ -202,7 +205,7 @@ footer {
   text-align: center;
   margin-bottom: 5px; }
   .buttonContainer button {
-    width: 100%; }
+    width: 75%; }
 
 .cyContainer {
   border: 3px solid #48c9b0;

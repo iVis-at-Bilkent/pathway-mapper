@@ -21,6 +21,42 @@ var SaveLoadUtilities = require('./saveLoadUtils.js');
 
 var LayoutProperties = require('./Views/LayoutProperties.js');
 
+var sampleGraph = "﻿﻿--NODE_NAME	NODE_ID	NODE_TYPE	PARENT_ID	POSX	POSY--\n\
+RAS	ele5	FAMILY	-1	591	649	\n\
+KRAS	ele6	GENE	ele5	516	664	\n\
+HRAS	ele7	GENE	ele5	616	634	\n\
+NRAS	ele8	GENE	ele5	543	635	\n\
+RIT1	ele9	GENE	ele5	667	661	\n\
+ALK	ele19	GENE	-1	406	559	\n\
+RET	ele20	GENE	-1	489	528	\n\
+ROS1	ele21	GENE	-1	591	529	\n\
+RAF	ele22	GENE	-1	600	727	\n\
+NF1	ele50	GENE	-1	792	652	\n\
+PI3K	ele40	GENE	-1	470	766	\n\
+BRAF	ele62	GENE	-1	290	546	\n\
+MAP2K1	ele63	GENE	-1	289	615	\n\
+Proliferation	ele64	PROCESS	-1	291	684	\n\
+RTK	ele71	FAMILY	-1	399	673	\n\
+EGFR	ele10	GENE	ele71	399	673	\n\
+ERBB2	ele11	GENE	ele71	398	639	\n\
+IGF1R	ele39	GENE	ele71	400	708	\n\
+\n\
+--EDGE_ID	SOURCE	TARGET	EDGE_TYPE\n\
+ele509	ele8	ele22	ACTIVATES\n\
+ele510	ele7	ele22	ACTIVATES\n\
+ele511	ele9	ele22	ACTIVATES\n\
+ele512	ele6	ele22	ACTIVATES\n\
+ele513	ele50	ele5	INHIBITS\n\
+ele514	ele19	ele5	ACTIVATES\n\
+ele515	ele20	ele5	ACTIVATES\n\
+ele516	ele21	ele5	ACTIVATES\n\
+ele517	ele62	ele63	ACTIVATES\n\
+ele518	ele63	ele64	ACTIVATES\n\
+ele519	ele39	ele40	ACTIVATES\n\
+ele520	ele11	ele5	ACTIVATES\n\
+ele521	ele10	ele5	ACTIVATES\n\
+";
+
 //Wait all components to load
 $(window).load(function()
 {
@@ -36,6 +72,8 @@ $(window).load(function()
     var layoutPropertiesContent = window.layoutProperties.render();
     $('#layoutPropertiesDiv').append(layoutPropertiesContent);
 
+    var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
+
     cy = window.cy = cytoscape(
     {
       container: document.querySelector('#cy'),
@@ -46,22 +84,7 @@ $(window).load(function()
 
       style: styleSheet,
 
-      elements: {
-        nodes: [
-          { data: { id: 'TP53', name:'TP53', type:'GENE' } },
-          { data: { id: 'MDM2', name:'MDM2',type:'GENE'}},
-          { data: { id: 'MDM4', name:'MDM4',type:'GENE'}},
-          { data: { id: 'IGFR', name:'IGFR',type:'GENE'}},
-          { data: { id: 'Process',name:'Process', type:'PROCESS'}}
-        ],
-        edges: [
-          { data: { source: 'TP53', target: 'MDM2', type: 'ACTIVATES' } },
-          { data: { source: 'MDM4', target: 'IGFR' , type: 'INDUCES'} },
-          { data: { source: 'MDM2', target: 'MDM4' , type: 'BINDS'} },
-          { data: { source: 'IGFR', target: 'TP53' ,type: 'REPRESSES'} },
-          { data: { source: 'TP53', target: 'Process' ,type: 'BINDS'} }
-        ]
-      },
+      elements: allEles,
       ready: function(){
 
         // var selectedNodes = this.nodes();
@@ -70,7 +93,7 @@ $(window).load(function()
         // selectedNodes.move({parent: compId});
       },
 
-      layout: window.layoutProperties.currentLayoutProperties
+      layout: {name: 'preset'}
     });
 
     cy.panzoom( panzoomOpts );
@@ -168,7 +191,7 @@ $('#fileinput').on('change', function()
         cy.remove(cy.elements());
         var allEles = SaveLoadUtilities.parseGraph(request.responseText);
         cy.add(allEles);
-        cy.layout(window.layoutProperties.currentLayoutProperties);
+        cy.fit(50);
     }
   };
   request.open("POST", "/loadGraph");
