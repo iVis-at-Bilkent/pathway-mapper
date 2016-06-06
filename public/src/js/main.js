@@ -131,17 +131,14 @@ $(window).load(function()
     //Edge Handles initialization
     cy.edgehandles( edgeHandleOpts );
 
-    cy.on('tap', 'node', function(e){
-      // var node = e.cyTarget;
-      // var neighborhood = node.neighborhood().add(node);
-      //
-      // cy.elements().addClass('faded');
-      // neighborhood.removeClass('faded');
-    });
 
-    cy.on('tap', function(e){
-      if( e.cyTarget === cy ){
-        cy.elements().removeClass('faded');
+    cy.nodes(':parent').on('tap', function( e )
+    {
+      var eventIsDirect = (e.cyTarget === this);
+
+      if( eventIsDirect )
+      {
+        this.trigger('directtap');
       }
     });
 

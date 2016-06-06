@@ -72,29 +72,40 @@ module.exports = (function(cy,$)
 
   window.addQtipToElements = function(eles)
   {
-    // just use the regular qtip api but on cy nodes
-    eles.qtip(
+    eles.forEach(function(node,i)
     {
-      content:
+      var qTipOpts =
       {
-        text:  function()
-        {
-          return generateQtipContentHTML(this);
-        },
-        title: function()
-        {
-            return 'Node Details';
-        }
-      },
-      position: {
-        my: 'top center',
-        at: 'bottom center'
-      },
-      style: {
-        classes: 'qtip-tipsy qtip-rounded',
-        width: 400
+          content:
+          {
+            text:  function()
+            {
+              return generateQtipContentHTML(this);
+            },
+            title: function()
+            {
+                return 'Node Details';
+            }
+          },
+          position: {
+            my: 'top center',
+            at: 'bottom center'
+          },
+          style: 
+          {
+            classes: 'qtip-tipsy qtip-rounded',
+            width: 400
+          }
+      };
+
+      if (node.isParent())
+      {
+        qTipOpts.show = { event: 'directtap' };
       }
+      node.qtip(qTipOpts);
+
     });
+
   }
 
 }(window.cy, window.$));
