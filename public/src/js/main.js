@@ -18,8 +18,10 @@ var panzoomOpts = require('./panzoomUtils.js');
 var styleSheet = require('./stylesheet.js');
 var edgeHandleOpts = require('./edgeHandlingUtils.js');
 var SaveLoadUtilities = require('./saveLoadUtils.js');
-
 var LayoutProperties = require('./Views/LayoutProperties.js');
+
+//Other requires
+require('./fileOperationsModule.js')
 
 var sampleGraph = "﻿﻿--NODE_NAME	NODE_ID	NODE_TYPE	PARENT_ID	POSX	POSY--\n\
 RAS	ele5	FAMILY	-1	591	649	\n\
@@ -154,127 +156,6 @@ $(window).load(function()
 });
 
 
-function saveGraph(){
-  var graphJSON = cy.json();
-  var returnString = SaveLoadUtilities.exportGraph(graphJSON);
-  var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
-  saveAs(blob, "pathway.txt");
-}
-
-// see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
-function b64toBlob(b64Data, contentType, sliceSize) {
-  contentType = contentType || '';
-  sliceSize = sliceSize || 512;
-
-  var byteCharacters = atob(b64Data);
-  var byteArrays = [];
-
-  for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-    var slice = byteCharacters.slice(offset, offset + sliceSize);
-
-    var byteNumbers = new Array(slice.length);
-    for (var i = 0; i < slice.length; i++) {
-      byteNumbers[i] = slice.charCodeAt(i);
-    }
-
-    var byteArray = new Uint8Array(byteNumbers);
-
-    byteArrays.push(byteArray);
-  }
-
-  var blob = new Blob(byteArrays, {type: contentType});
-  return blob;
-}
-
-function saveAsJPEG()
-{
-  var graphData = cy.jpeg();
-  // this is to remove the beginning of the pngContent: data:img/png;base64,
-  var b64data = graphData.substr(graphData.indexOf(",") + 1);
-  var imageData = b64toBlob(b64data, "image/jpeg");
-  var blob = new Blob([imageData]);
-  saveAs(blob, "pathway.jpeg");
-}
-
-function saveAsPNG()
-{
-  var graphData = cy.png();
-  // this is to remove the beginning of the pngContent: data:img/png;base64,
-  var b64data = graphData.substr(graphData.indexOf(",") + 1);
-  var imageData = b64toBlob(b64data, "image/png");
-  var blob = new Blob([imageData]);
-  saveAs(blob, "pathway.png");
-}
-
-//Jquery handles
-$('#saveGraphBtn').on('click', function(evt)
-{
-  saveGraph();
-});
-
-$('#loadGraphBtn').on('click', function(evt)
-{
-  $('#fileinput').attr('value', "");
-  $('#fileinput').trigger('click');
-});
-
-//TODO server side integration needed because of CORS
-$('#fileinput').on('change', function()
-{
-
-  var file = this.files[0];
-  // Create a new FormData object.
-  var formData = new FormData();
-  formData.append('graphFile', file);
-  var request = new XMLHttpRequest();
-  request.onreadystatechange = function ()
-  {
-    if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
-    {
-        cy.remove(cy.elements());
-        var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-        cy.add(allEles);
-        cy.fit(50);
-    }
-  };
-  request.open("POST", "/loadGraph");
-  request.send(formData);
-  $('#fileinput').val(null);
-
-});
-
-//TODO server side integration needed because of CORS
-$('#mergeInput').on('change', function()
-{
-
-
-  var file = this.files[0];
-  // Create a new FormData object.
-  var formData = new FormData();
-  formData.append('graphFile', file);
-  var request = new XMLHttpRequest();
-  request.onreadystatechange = function ()
-  {
-    if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
-    {
-      var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-      for (var index in allEles)
-      {
-        ele = allEles[index];
-        if (cy.filter('node[name = "'+ele.data.name+'"]').length > 0)
-        {
-          delete allEles[index];
-        }
-      }
-      cy.add(allEles);
-      cy.fit(50);
-    }
-  };
-  request.open("POST", "/loadGraph");
-  request.send(formData);
-  $('#mergeInput').val(null);
-
-});
 
 
 //Selected element on dropdown
@@ -335,39 +216,7 @@ $(".editDropDown li a").click(function(event)
 });
 
 
-//About drop down handler
-$(".fileDropDown li a").click(function(event)
-{
-  event.preventDefault();
-  var dropdownLinkRole = $(event.target).attr('role');
 
-  if (dropdownLinkRole == 'save')
-  {
-    saveGraph();
-  }
-  else if (dropdownLinkRole == 'load')
-  {
-    $('#fileinput').trigger('click');
-  }
-  else if (dropdownLinkRole == 'new')
-  {
-    cy.remove(cy.elements());
-  }
-  else if (dropdownLinkRole == 'merge')
-  {
-    $('#mergeInput').val(null);
-    $('#mergeInput').trigger('click');
-  }
-  else if (dropdownLinkRole == 'jpeg')
-  {
-    saveAsJPEG();
-  }
-  else if (dropdownLinkRole == 'png')
-  {
-    saveAsPNG();
-  }
-
-});
 
 //About drop down handler
 $(".layoutDropDown li a").click(function(event)
@@ -410,6 +259,7 @@ $(".aboutDropDown li a").click(function(event)
     $('#quickHelpModal').modal('show');
   }
 });
+
 
 //Flat UI fix for highlights
 $('.input-group').on('focus', '.form-control', function () {
