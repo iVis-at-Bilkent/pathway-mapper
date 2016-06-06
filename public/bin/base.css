@@ -100,6 +100,22 @@
 .inputCol {
   padding-left: 0px !important; }
 
+.qtip-tipsy {
+  background: rgba(47, 65, 84, 0.92);
+  color: white;
+  border: 0 solid transparent;
+  font-size: 12px;
+  font-family: 'Lucida Grande', sans-serif;
+  font-weight: bold;
+  line-height: 16px; }
+  .qtip-tipsy .qtip-content {
+    padding: 5px 10px; }
+  .qtip-tipsy .form-control:focus {
+    border-color: #1abc9c;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #1abc9c; }
+  .qtip-tipsy a {
+    color: #1abc9c; }
+
 .centerText {
   text-align: center !important; }
 

@@ -201,8 +201,16 @@
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a role="new" href="#">New</a></li>
+                    <!-- <li><a role="merge" href="#">Merge...</a></li> -->
                     <li><a role="load" href="#">Load...</a></li>
                     <li><a role="save" href="#">Save</a></li>
+                    <li class="dropdown-submenu">
+                      <a tabindex="-1" href="#">Save As</a>
+                      <ul class="dropdown-menu">
+                        <li><a  edgeTypeIndex='1' role="jpeg" href="#">JPEG</a></li>
+                        <li><a  edgeTypeIndex='1' role="png"  href="#">PNG</a></li>
+                      </ul>
+                    </li>
                   </ul>
                 </li>
                 <li class="dropdown editDropDown">
@@ -407,6 +415,12 @@
   <div class="hiddenfile">
     <form id="fileUploadForm" method="post">
       <input type="file" id="fileinput" name="graphFile" />
+    </form>
+  </div>
+
+  <div class="hiddenfile">
+    <form method="post">
+      <input type="file" id="mergeInput" name="graphFile" />
     </form>
   </div>
 

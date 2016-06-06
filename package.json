@@ -34,7 +34,7 @@
     "jquery": "^2.2.4",
     "jquery-expander": "~1.7.0",
     "multer": "~1.1.0",
-    "npm": "^3.9.5",
+    "npm": "^3.9.6",
     "qtip2": "~3.0.2",
     "underscore": "~1.8.3"
   }

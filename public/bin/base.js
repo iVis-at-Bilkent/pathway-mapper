@@ -49805,6 +49805,51 @@ function saveGraph(){
   saveAs(blob, "pathway.txt");
 }
 
+// see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+function b64toBlob(b64Data, contentType, sliceSize) {
+  contentType = contentType || '';
+  sliceSize = sliceSize || 512;
+
+  var byteCharacters = atob(b64Data);
+  var byteArrays = [];
+
+  for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+    var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+    var byteNumbers = new Array(slice.length);
+    for (var i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    var byteArray = new Uint8Array(byteNumbers);
+
+    byteArrays.push(byteArray);
+  }
+
+  var blob = new Blob(byteArrays, {type: contentType});
+  return blob;
+}
+
+function saveAsJPEG()
+{
+  var graphData = cy.jpeg();
+  // this is to remove the beginning of the pngContent: data:img/png;base64,
+  var b64data = graphData.substr(graphData.indexOf(",") + 1);
+  var imageData = b64toBlob(b64data, "image/jpeg");
+  var blob = new Blob([imageData]);
+  saveAs(blob, "pathway.jpeg");
+}
+
+function saveAsPNG()
+{
+  var graphData = cy.png();
+  // this is to remove the beginning of the pngContent: data:img/png;base64,
+  var b64data = graphData.substr(graphData.indexOf(",") + 1);
+  var imageData = b64toBlob(b64data, "image/png");
+  var blob = new Blob([imageData]);
+  saveAs(blob, "pathway.png");
+}
+
 //Jquery handles
 $('#saveGraphBtn').on('click', function(evt)
 {
@@ -49820,6 +49865,7 @@ $('#loadGraphBtn').on('click', function(evt)
 //TODO server side integration needed because of CORS
 $('#fileinput').on('change', function()
 {
+
   var file = this.files[0];
   // Create a new FormData object.
   var formData = new FormData();
@@ -49837,6 +49883,41 @@ $('#fileinput').on('change', function()
   };
   request.open("POST", "/loadGraph");
   request.send(formData);
+  $('#fileinput').val(null);
+
+});
+
+//TODO server side integration needed because of CORS
+$('#mergeInput').on('change', function()
+{
+
+
+  var file = this.files[0];
+  // Create a new FormData object.
+  var formData = new FormData();
+  formData.append('graphFile', file);
+  var request = new XMLHttpRequest();
+  request.onreadystatechange = function ()
+  {
+    if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+    {
+      var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+      for (var index in allEles)
+      {
+        ele = allEles[index];
+        if (cy.filter('node[name = "'+ele.data.name+'"]').length > 0)
+        {
+          delete allEles[index];
+        }
+      }
+      cy.add(allEles);
+      cy.fit(50);
+    }
+  };
+  request.open("POST", "/loadGraph");
+  request.send(formData);
+  $('#mergeInput').val(null);
+
 });
 
 
@@ -49915,6 +49996,19 @@ $(".fileDropDown li a").click(function(event)
   else if (dropdownLinkRole == 'new')
   {
     cy.remove(cy.elements());
+  }
+  else if (dropdownLinkRole == 'merge')
+  {
+    $('#mergeInput').val(null);
+    $('#mergeInput').trigger('click');
+  }
+  else if (dropdownLinkRole == 'jpeg')
+  {
+    saveAsJPEG();
+  }
+  else if (dropdownLinkRole == 'png')
+  {
+    saveAsPNG();
   }
 
 });
