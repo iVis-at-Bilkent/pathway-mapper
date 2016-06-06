@@ -160,7 +160,7 @@ var nodeBackgroundColorFunction = function( ele )
   switch (ele._private.data['type'])
   {
     case "GENE": return "#fff"; break;
-    case "FAMILY": return "#eff0f2"; break;
+    case "FAMILY": return "#CCCCCC"; break;
     case "COMPARTMENT": return "#fff"; break;
     default: return "#fff"; break;
   }
@@ -171,7 +171,7 @@ var nodeBorderColorFunction = function( ele )
   switch (ele._private.data['type'])
   {
     case "GENE": return "#000000"; break;
-    case "FAMILY": return "#eff0f2"; break;
+    case "FAMILY": return "#CCCCCC"; break;
     case "COMPARTMENT": return "#000000"; break;
     default: return "#000000"; break;
   }

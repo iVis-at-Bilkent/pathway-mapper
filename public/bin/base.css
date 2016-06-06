@@ -165,7 +165,6 @@ footer {
   background-color: #34495e !important; }
 
 .navbar-nav > li > .dropdown-menu, .navbar-nav > li > .dropdown-submenu {
-  min-width: 100%;
   border-radius: 4px !important;
   border: none; }
 
