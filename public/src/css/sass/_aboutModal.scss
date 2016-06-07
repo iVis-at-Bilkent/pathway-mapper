@@ -1,4 +1,5 @@
 
+@import "styleGlobals";
 
 .modal
 {
@@ -19,12 +20,15 @@
     }
     h3
     {
-      color: #00a862;
+      color: $menuHoverColor;
     }
   }
 
   .modal-footer{
     text-align: center;
+    a{
+      color:  $menuHoverColor;
+    }
   }
 }
 

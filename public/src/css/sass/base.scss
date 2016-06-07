@@ -5,6 +5,7 @@
 @import "layoutPropertiesModal";
 @import 'qtipStyle';
 @import "utilities";
+@import "styleGlobals";
 
 body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
@@ -14,20 +15,28 @@ body {
 $appContentHeight: 850px;
 
 
+.btn:focus {
+  outline: none !important;
+}
+
 
 .fileNameContent{
   font: 14px helvetica neue, helvetica, arial, sans-serif;
   color: #2f4154;
-  font-weight: bold;
+  // font-weight: bold;
   cursor: pointer;
 
   margin-bottom: 20px;
 
   .form-control:focus {
-    border: 2px solid #1abc9c;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #1abc9c;
+    border: 2px solid $menuHoverColor;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $menuHoverColor;
     color: #2f4154;
   }
+}
+
+.fileNameContent:hover{
+  color: $menuHoverColor;
 }
 
 .mainContentWrapper{
@@ -71,6 +80,10 @@ $appContentHeight: 850px;
   }
   .edge-palette
   {
+    .list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover{
+      background-color: $menuHoverColor !important;
+    }
+
     a
     {
       margin-bottom: 5px;
@@ -91,9 +104,10 @@ footer{
   margin-bottom: 70px;
 }
 
+
 .navbar-nav>.open>a, .navbar-nav>.open>a:hover, .navbar-nav>.open>a:focus {
     color: #fff !important;
-    background-color: #1abc9c !important;
+    background-color: $menuHoverColor !important;
     border-left-color: transparent;
 }
 
@@ -105,7 +119,7 @@ footer{
 
  .navbar-nav>.open>.dropdown-menu {
     // padding: 3px 4px !important;
-    background-color: #34495e !important;
+    background-color: $menubgColor !important;
 }
 
 .navbar-nav>li>.dropdown-menu, .navbar-nav>li>.dropdown-submenu  {
@@ -117,13 +131,19 @@ footer{
 
 .navbar-nav>.open>.dropdown-menu>li>a:hover, .navbar-nav>.open>.dropdown-menu>li>a:focus {
     color: #fff;
-    background-color: #1abc9c;
+    background-color: $menuHoverColor;
 }
 
 .navbar{
   border-radius: 0px 0px 6px 6px;
-  background-color: #2f4154;
+  background-color: $menubgColor;
   border: none !important;
+}
+
+.navbar-nav{
+  a{
+    transition: all 0.2s linear;
+  }
 }
 
 .navbar-nav>li>a
@@ -131,6 +151,13 @@ footer{
   color: rgb(255, 255, 255) !important;
   font-weight: bold !important;
 }
+
+.navbar-nav>li>a:hover
+{
+  color: $menuHoverColor !important;
+
+}
+
 
 .navbar-brand{
   color: #ffffff !important;
@@ -155,7 +182,7 @@ footer{
 
   .pnl-header
   {
-    background-color: #48c9b0;
+    background-color: $menuHoverColor;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
     text-align: center;
@@ -214,7 +241,7 @@ footer{
 }
 
 .cyContainer{
-  border: 3px solid #48c9b0;
+  border: 3px solid $menuHoverColor;
   height: $appContentHeight;
   border-radius: 6px;
   padding-right: 0 !important;
@@ -228,14 +255,4 @@ footer{
 {
   height: 100%;
   // width: 100%;
-}
-
-#info
-{
-  color: #c88;
-  font-size: 1em;
-  position: absolute;
-  z-index: -1;
-  left: 1em;
-  top: 1em;
 }

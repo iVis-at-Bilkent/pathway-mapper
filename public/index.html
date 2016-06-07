@@ -262,9 +262,9 @@
     <div class="fileNameWrapper">
       <div class="row">
             <div class="col-md-12">
-              <div class="pull-right fileNameContent">
+              <!-- <div class="pull-right fileNameContent">
                 <span>pathway.txt</span>
-              </div>
+              </div> -->
             </div>
       </div>
     </div>
@@ -276,9 +276,12 @@
                   File
             </div>
             <div class="pnl-body">
+              <div class="fileNameContent centerText">
+                <span>pathway.txt</span>
+              </div>
               <div class="buttonContainer">
                 <button id="loadGraphBtn" type="button" class="btn btn-default">
-                  <i class="fui-upload"></i> Load
+                  <i class="fui-upload"></i> Load...
                 </button>
               </div>
               <div class="buttonContainer">
@@ -365,7 +368,7 @@
     <table class="table leftText bioGeneTable" cellspacing="10">
     <tr class="biogene-info biogene-description node-details-summary">
     <th valign="top">Gene Summary:</th>
-    <td colspan="2" style="max-height: 100px;">
+    <td colspan="2" class="expandable">
     <%=geneSummary %>
     </td>
     </tr>
@@ -377,7 +380,7 @@
     </tr>
     <tr class="biogene-info biogene-description">
     <th>Description:</th>
-    <td class="expandable">
+    <td class="">
     <%=geneDescription %>
     </td>
     </tr>

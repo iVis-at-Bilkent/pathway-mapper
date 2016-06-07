@@ -91,7 +91,7 @@ module.exports = (function(cy,$)
             my: 'top center',
             at: 'bottom center'
           },
-          style: 
+          style:
           {
             classes: 'qtip-tipsy qtip-rounded',
             width: 400

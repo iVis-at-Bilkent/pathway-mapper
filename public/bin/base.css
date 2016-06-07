@@ -1,3 +1,22 @@
+.modal .modal-header {
+  background-color: #ececec;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px; }
+
+.modal .modal-footer {
+  background-color: #ececec;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px; }
+
+.modal .close {
+  outline: none !important; }
+
+.modal .modal-title {
+  color: #2f4154; }
+
+.modal .close:hover {
+  color: #1abc9c; }
+
 .modal {
   text-align: center; }
   .modal .modal-body .aboutImageContent {
@@ -7,9 +26,11 @@
     .modal .modal-body .adressText p {
       margin-bottom: 0px !important; }
   .modal .modal-body h3 {
-    color: #00a862; }
+    color: #1abc9c; }
   .modal .modal-footer {
     text-align: center; }
+    .modal .modal-footer a {
+      color: #1abc9c; }
 
 #aboutModal .modal-dialog {
   width: 400px; }
@@ -90,6 +111,13 @@
 
 #layoutPropertiesDiv .modal, #layoutPropertiesDiv .modal-body {
   max-height: 100%; }
+  #layoutPropertiesDiv .modal .form-control:focus, #layoutPropertiesDiv .modal-body .form-control:focus {
+    border: 2px solid #1abc9c;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #1abc9c;
+    color: #2f4154; }
+
+#layoutPropertiesDiv .modal-footer button {
+  border: none !important; }
 
 .qtipLabel {
   margin-top: 10px; }
@@ -125,20 +153,44 @@
 .justifyText {
   text-align: justify !important; }
 
+.modal .modal-header {
+  background-color: #ececec;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px; }
+
+.modal .modal-footer {
+  background-color: #ececec;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px; }
+
+.modal .close {
+  outline: none !important; }
+
+.modal .modal-title {
+  color: #2f4154; }
+
+.modal .close:hover {
+  color: #1abc9c; }
+
 body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
   background-color: #fff; }
 
+.btn:focus {
+  outline: none !important; }
+
 .fileNameContent {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
   color: #2f4154;
-  font-weight: bold;
   cursor: pointer;
   margin-bottom: 20px; }
   .fileNameContent .form-control:focus {
     border: 2px solid #1abc9c;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #1abc9c;
     color: #2f4154; }
+
+.fileNameContent:hover {
+  color: #1abc9c; }
 
 .mainContentWrapper {
   display: flex; }
@@ -167,6 +219,8 @@ body {
     margin-bottom: 0 !important; }
     .edgePaletteWrapper .list-group .list-group-item {
       border: none !important; }
+  .edgePaletteWrapper .edge-palette .list-group-item.active, .edgePaletteWrapper .edge-palette .list-group-item.active:focus, .edgePaletteWrapper .edge-palette .list-group-item.active:hover {
+    background-color: #1abc9c !important; }
   .edgePaletteWrapper .edge-palette a {
     margin-bottom: 5px;
     border-radius: 6px; }
@@ -189,7 +243,7 @@ footer {
   border-radius: 4px !important; }
 
 .navbar-nav > .open > .dropdown-menu {
-  background-color: #34495e !important; }
+  background-color: #2f4154 !important; }
 
 .navbar-nav > li > .dropdown-menu, .navbar-nav > li > .dropdown-submenu {
   border-radius: 4px !important;
@@ -204,9 +258,15 @@ footer {
   background-color: #2f4154;
   border: none !important; }
 
+.navbar-nav a {
+  transition: all 0.2s linear; }
+
 .navbar-nav > li > a {
   color: white !important;
   font-weight: bold !important; }
+
+.navbar-nav > li > a:hover {
+  color: #1abc9c !important; }
 
 .navbar-brand {
   color: #ffffff !important;
@@ -223,7 +283,7 @@ footer {
   border-radius: 6px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 -1px 1px rgba(0, 0, 0, 0.15); }
   .pnl .pnl-header {
-    background-color: #48c9b0;
+    background-color: #1abc9c;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
     text-align: center;
@@ -262,7 +322,7 @@ footer {
     width: 75%; }
 
 .cyContainer {
-  border: 3px solid #48c9b0;
+  border: 3px solid #1abc9c;
   height: 850px;
   border-radius: 6px;
   padding-right: 0 !important;
@@ -272,11 +332,3 @@ footer {
 
 #cy {
   height: 100%; }
-
-#info {
-  color: #c88;
-  font-size: 1em;
-  position: absolute;
-  z-index: -1;
-  left: 1em;
-  top: 1em; }

@@ -61,7 +61,7 @@ var layoutProps = Backbone.View.extend(
     this.currentLayoutProperties.tile = this.$el.find("#tile").is(':checked');
     this.currentLayoutProperties.animate = this.$el.find("#animate").is(':checked');
     this.currentLayoutProperties.randomize = !(this.$el.find("#randomize").is(':checked'));
-    // this.$el.parent().modal('toggle');
+    this.$el.parent().modal('toggle');
   },
   defaultLayoutHandler: function(event)
   {

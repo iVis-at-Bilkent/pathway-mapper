@@ -49205,7 +49205,7 @@ var BioGeneView = Backbone.View.extend({
         if (this.model.geneSummary == undefined)
             this.$el.find(".node-details-summary").hide();
 
-        var expanderOpts = {slicePoint: 150,
+        var expanderOpts = {slicePoint: 100,
             expandPrefix: ' ',
             expandText: ' (...)',
             userCollapseText: ' (show less)',
@@ -49217,7 +49217,7 @@ var BioGeneView = Backbone.View.extend({
             expandEffect: 'fadeIn',
             collapseEffect: 'fadeOut'};
 
-        $(".biogene-info .expandable").expander(expanderOpts);
+        this.$el.find(".biogene-info .expandable").expander();
 
         expanderOpts.slicePoint = 2; // show comma and the space
         expanderOpts.widow = 0; // hide everything else in any case
@@ -49366,7 +49366,7 @@ var layoutProps = Backbone.View.extend(
     this.currentLayoutProperties.tile = this.$el.find("#tile").is(':checked');
     this.currentLayoutProperties.animate = this.$el.find("#animate").is(':checked');
     this.currentLayoutProperties.randomize = !(this.$el.find("#randomize").is(':checked'));
-    // this.$el.parent().modal('toggle');
+    this.$el.parent().modal('toggle');
   },
   defaultLayoutHandler: function(event)
   {
@@ -50269,7 +50269,7 @@ module.exports = (function(cy,$)
             my: 'top center',
             at: 'bottom center'
           },
-          style: 
+          style:
           {
             classes: 'qtip-tipsy qtip-rounded',
             width: 400
