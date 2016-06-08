@@ -49782,7 +49782,6 @@ module.exports = (function($)
       $('#fileinput').trigger('click');
     });
 
-    //TODO server side integration needed because of CORS
     $('#fileinput').on('change', function()
     {
 
@@ -49797,6 +49796,7 @@ module.exports = (function($)
         {
             cy.remove(cy.elements());
             var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+            var allEles = allEles.nodes.concat(allEles.edges);
             cy.add(allEles);
             cy.fit(50);
             changeFileName(file.name);
@@ -49808,7 +49808,6 @@ module.exports = (function($)
 
     });
 
-    //TODO server side integration needed because of CORS
     $('#mergeInput').on('change', function()
     {
 
@@ -49822,16 +49821,72 @@ module.exports = (function($)
         if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
         {
           var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-          for (var index in allEles)
+          var nodes = allEles.nodes;
+          var edges = allEles.edges;
+
+          var nodesToBeAdded = [];
+          var edgesToBeAdded = [];
+          var nodeMap = {};
+
+
+          for (var index in nodes)
           {
-            ele = allEles[index];
-            if (cy.filter('node[name = "'+ele.data.name+'"]').length > 0)
+            var ele = nodes[index];
+            if (cy.filter('node[name = "'+ele.data.name+'"]').length <= 0)
             {
-              delete allEles[index];
+              nodesToBeAdded.push(ele);
+            }
+            nodeMap[ele.data.id] = ele;
+          }
+
+          //Iterate over all edges
+          for (var index in edges)
+          {
+            //Get corresponding source and target node in merge file
+            var ele = edges[index];
+            var sourceNode = nodeMap[ele.data.source];
+            var targetNode = nodeMap[ele.data.target];
+
+            //Check if there is nodes with same name in current graph
+            var cySourceNode = cy.nodes('[name="'+sourceNode.data.name+'"]');
+            var cyTargetNode = cy.nodes('[name="'+targetNode.data.name+'"]');
+
+            if (cySourceNode.length > 0 && cyTargetNode.length > 0)
+            {
+              //Get edges between found source and target node in current graph
+              var edgesBtw = cy.filter('edge[source = "'+cySourceNode.id()+'"][target = "'+cyTargetNode.id()+'"]');
+
+              //We assume there could be one edge between source and target node with same type
+              var isFound = false;
+              // edgesBtw.forEach(function(edge,i)
+              // {
+              //     if (edge.data().type == ele.data.type)
+              //     {
+              //       isFound = true;
+              //       return false;
+              //     }
+              // });
+
+              //If no edge with same type found
+              if (!isFound)
+              {
+                ele.data.source = cySourceNode.id();
+                ele.data.target = cyTargetNode.id();
+                edgesToBeAdded.push(ele);
+              }
+            }
+            else {
+              edgesToBeAdded.push(ele);
             }
           }
+
+
+          var allEles = nodesToBeAdded.concat(edgesToBeAdded);
           cy.add(allEles);
           cy.fit(50);
+          //TODO change file name maybe ?
+          // console.log(nodesToBeAdded);
+          // console.log(edgesToBeAdded);
         }
       };
       request.open("POST", "/loadGraph");
@@ -49839,7 +49894,7 @@ module.exports = (function($)
       $('#mergeInput').val(null);
     });
 
-    //About drop down handler
+    //File drop down handler
     $(".fileDropDown li a").click(function(event)
     {
       event.preventDefault();
@@ -50353,6 +50408,8 @@ var SaveLoadUtils =
   parseGraph: function(graphText)
   {
     var allEles = [];
+    var nodes = [];
+    var edges = [];
 
 
     // By lines
@@ -50385,7 +50442,7 @@ var SaveLoadUtils =
       {
         newNode.data.parent = parentID;
       }
-      allEles.push(newNode);
+      nodes.push(newNode);
     }
 
     //Read edges
@@ -50404,10 +50461,10 @@ var SaveLoadUtils =
       var edgeType = lineData[3];
 
       newEdge = {group: 'edges', data:{id: edgeID, type: edgeType, source: edgeSource, target: edgeTarget}};
-      allEles.push(newEdge);
+      edges.push(newEdge);
     }
 
-    return allEles;
+    return {nodes: nodes, edges: edges};
   }
 }
 

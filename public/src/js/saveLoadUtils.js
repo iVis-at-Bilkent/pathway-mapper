@@ -62,6 +62,8 @@ var SaveLoadUtils =
   parseGraph: function(graphText)
   {
     var allEles = [];
+    var nodes = [];
+    var edges = [];
 
 
     // By lines
@@ -94,7 +96,7 @@ var SaveLoadUtils =
       {
         newNode.data.parent = parentID;
       }
-      allEles.push(newNode);
+      nodes.push(newNode);
     }
 
     //Read edges
@@ -113,10 +115,10 @@ var SaveLoadUtils =
       var edgeType = lineData[3];
 
       newEdge = {group: 'edges', data:{id: edgeID, type: edgeType, source: edgeSource, target: edgeTarget}};
-      allEles.push(newEdge);
+      edges.push(newEdge);
     }
 
-    return allEles;
+    return {nodes: nodes, edges: edges};
   }
 }
 
