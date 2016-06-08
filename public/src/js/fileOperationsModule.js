@@ -194,8 +194,8 @@ module.exports = (function($)
             if (cy.filter('node[name = "'+ele.data.name+'"]').length <= 0)
             {
               nodesToBeAdded.push(ele);
+              nodeMap[ele.data.id] = ele;
             }
-            nodeMap[ele.data.id] = ele;
           }
 
           //Iterate over all edges
@@ -210,33 +210,44 @@ module.exports = (function($)
             var cySourceNode = cy.nodes('[name="'+sourceNode.data.name+'"]');
             var cyTargetNode = cy.nodes('[name="'+targetNode.data.name+'"]');
 
-            if (cySourceNode.length > 0 && cyTargetNode.length > 0)
+            if (cySourceNode)
             {
-              //Get edges between found source and target node in current graph
-              var edgesBtw = cy.filter('edge[source = "'+cySourceNode.id()+'"][target = "'+cyTargetNode.id()+'"]');
-
-              //We assume there could be one edge between source and target node with same type
-              var isFound = false;
-              // edgesBtw.forEach(function(edge,i)
-              // {
-              //     if (edge.data().type == ele.data.type)
-              //     {
-              //       isFound = true;
-              //       return false;
-              //     }
-              // });
-
-              //If no edge with same type found
-              if (!isFound)
-              {
-                ele.data.source = cySourceNode.id();
-                ele.data.target = cyTargetNode.id();
-                edgesToBeAdded.push(ele);
-              }
+              ele.data.source = cySourceNode.id();
             }
-            else {
-              edgesToBeAdded.push(ele);
+
+            if (cyTargetNode)
+            {
+              ele.data.target = cyTargetNode.id();
             }
+            edgesToBeAdded.push(ele);
+
+            // if (cySourceNode.length > 0 && cyTargetNode.length > 0)
+            // {
+            //   //Get edges between found source and target node in current graph
+            //   var edgesBtw = cy.filter('edge[source = "'+cySourceNode.id()+'"][target = "'+cyTargetNode.id()+'"]');
+            //
+            //   //We assume there could be one edge between source and target node with same type
+            //   var isFound = false;
+            //   edgesBtw.forEach(function(edge,i)
+            //   {
+            //       if (edge.data().type == ele.data.type)
+            //       {
+            //         isFound = true;
+            //         return false;
+            //       }
+            //   });
+            //
+            //   //If no edge with same type found
+            //   if (!isFound)
+            //   {
+            //     ele.data.source = cySourceNode.id();
+            //     ele.data.target = cyTargetNode.id();
+            //     edgesToBeAdded.push(ele);
+            //   }
+            // }
+            // else {
+            //   edgesToBeAdded.push(ele);
+            // }
           }
 
 
