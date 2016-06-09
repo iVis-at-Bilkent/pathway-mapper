@@ -134,25 +134,25 @@ $(window).load(function()
     cy.edgehandles( edgeHandleOpts );
 
 
-    cy.nodes(':parent').on('tap', function( e )
+    cy.nodes().on('tap', function( e )
     {
       var eventIsDirect = (e.cyTarget === this);
 
       if( eventIsDirect )
       {
-        this.trigger('directtap');
+        //Remove qtips
+        $(".qtip").remove();
+        addQtipToElements(this);
       }
     });
 
     cy.on('add', 'node', function(event)
     {
-      addQtipToElements(event.cyTarget);
     });
 
     var qTipModule = require('./qTipModule.js');
     var cxMenuModule = require('./contextMenuModule.js');
 
-    addQtipToElements(cy.nodes());
 });
 
 

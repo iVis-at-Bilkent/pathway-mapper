@@ -85,24 +85,24 @@ module.exports = (function($)
 
     function saveAsJPEG()
     {
-      var fileName = getFileName();
+      // var fileName = getFileName();
       var graphData = cy.jpeg();
       // this is to remove the beginning of the pngContent: data:img/png;base64,
       var b64data = graphData.substr(graphData.indexOf(",") + 1);
       var imageData = b64toBlob(b64data, "image/jpeg");
       var blob = new Blob([imageData]);
-      saveAs(blob, fileName);
+      saveAs(blob, "pathway.jpg");
     }
 
     function saveAsPNG()
     {
-      var fileName = getFileName();
+      // var fileName = getFileName();
       var graphData = cy.png();
       // this is to remove the beginning of the pngContent: data:img/png;base64,
       var b64data = graphData.substr(graphData.indexOf(",") + 1);
       var imageData = b64toBlob(b64data, "image/png");
       var blob = new Blob([imageData]);
-      saveAs(blob, fileName);
+      saveAs(blob, "pathway.png");
     }
 
     function saveGraph(){

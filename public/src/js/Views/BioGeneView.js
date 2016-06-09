@@ -21,7 +21,7 @@
  * Backbone view for the BioGene information.
  */
 
-require('jquery-expander')(window.$);
+require('malihu-custom-scrollbar-plugin')(window.$);
 
 var BioGeneView = Backbone.View.extend({
     render: function() {
@@ -92,7 +92,7 @@ var BioGeneView = Backbone.View.extend({
             expandEffect: 'fadeIn',
             collapseEffect: 'fadeOut'};
 
-        this.$el.find(".biogene-info .expandable").expander();
+        this.$el.find(".biogene-info .scrollable").mCustomScrollbar({theme:"dark",axis:"y"});
 
         expanderOpts.slicePoint = 2; // show comma and the space
         expanderOpts.widow = 0; // hide everything else in any case

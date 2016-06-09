@@ -6,7 +6,7 @@ module.exports = (function(cy,$)
 {
   "use strict";
 
-  function generateQtipContentHTML(ele)
+  window.generateQtipContentHTML = function(ele)
   {
     var nodeData = ele.data();
     var textInput = $('<div class="col-xs-8 inputCol"><input type="text" class="form-control" nodeid="' + ele.id() + '" value="' + nodeData.name + '"></div>');
@@ -98,10 +98,6 @@ module.exports = (function(cy,$)
           }
       };
 
-      if (node.isParent())
-      {
-        qTipOpts.show = { event: 'directtap' };
-      }
       node.qtip(qTipOpts);
 
     });
