@@ -134,7 +134,7 @@ $(window).load(function()
     cy.edgehandles( edgeHandleOpts );
 
 
-    cy.nodes().on('tap', function( e )
+    cy.on('tap', 'node', function( e )
     {
       var eventIsDirect = (e.cyTarget === this);
 
@@ -143,11 +143,12 @@ $(window).load(function()
         //Remove qtips
         $(".qtip").remove();
         addQtipToElements(this);
+        var api = this.qtip('api');
+        if (api)
+        {
+            api.show();
+        }
       }
-    });
-
-    cy.on('add', 'node', function(event)
-    {
     });
 
     var qTipModule = require('./qTipModule.js');

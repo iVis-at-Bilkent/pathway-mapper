@@ -97,9 +97,7 @@ module.exports = (function(cy,$)
             width: 400
           }
       };
-
       node.qtip(qTipOpts);
-
     });
 
   }
