@@ -191,12 +191,16 @@ module.exports = (function($)
           for (var index in nodes)
           {
             var ele = nodes[index];
+            nodeMap[ele.data.id] = ele;
+
             if (cy.filter('node[name = "'+ele.data.name+'"]').length <= 0)
             {
+              delete ele.data.id;
               nodesToBeAdded.push(ele);
-              nodeMap[ele.data.id] = ele;
             }
           }
+
+          cy.add(nodesToBeAdded);
 
           //Iterate over all edges
           for (var index in edges)
@@ -210,49 +214,42 @@ module.exports = (function($)
             var cySourceNode = cy.nodes('[name="'+sourceNode.data.name+'"]');
             var cyTargetNode = cy.nodes('[name="'+targetNode.data.name+'"]');
 
-            if (cySourceNode)
+            if (cySourceNode.length > 0)
             {
               ele.data.source = cySourceNode.id();
             }
 
-            if (cyTargetNode)
+            if (cyTargetNode.length > 0)
             {
               ele.data.target = cyTargetNode.id();
             }
-            edgesToBeAdded.push(ele);
 
-            // if (cySourceNode.length > 0 && cyTargetNode.length > 0)
-            // {
-            //   //Get edges between found source and target node in current graph
-            //   var edgesBtw = cy.filter('edge[source = "'+cySourceNode.id()+'"][target = "'+cyTargetNode.id()+'"]');
-            //
-            //   //We assume there could be one edge between source and target node with same type
-            //   var isFound = false;
-            //   edgesBtw.forEach(function(edge,i)
-            //   {
-            //       if (edge.data().type == ele.data.type)
-            //       {
-            //         isFound = true;
-            //         return false;
-            //       }
-            //   });
-            //
-            //   //If no edge with same type found
-            //   if (!isFound)
-            //   {
-            //     ele.data.source = cySourceNode.id();
-            //     ele.data.target = cyTargetNode.id();
-            //     edgesToBeAdded.push(ele);
-            //   }
-            // }
-            // else {
-            //   edgesToBeAdded.push(ele);
-            // }
+            if (cyTargetNode.length < 0 && cySourceNode.length < 0 ) {
+              continue;
+            }
+
+            var edgesBtw = cy.filter('edge[source = "'+cySourceNode.id()+'"][target = "'+cyTargetNode.id()+'"]');
+
+            //We assume there could be one edge between source and target node with same type
+            var isFound = false;
+            edgesBtw.forEach(function(edge,i)
+            {
+                if (edge.data().type == ele.data.type)
+                {
+                  isFound = true;
+                  return false;
+                }
+            });
+
+            if (!isFound)
+            {
+              delete ele.data.id;
+              edgesToBeAdded.push(ele);
+            }
           }
 
 
-          var allEles = nodesToBeAdded.concat(edgesToBeAdded);
-          cy.add(allEles);
+          cy.add(edgesToBeAdded);
           cy.fit(50);
           //TODO change file name maybe ?
           // console.log(nodesToBeAdded);
