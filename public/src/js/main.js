@@ -21,7 +21,9 @@ var SaveLoadUtilities = require('./saveLoadUtils.js');
 var LayoutProperties = require('./Views/LayoutProperties.js');
 
 //Other requires
-require('./fileOperationsModule.js')
+require('./fileOperationsModule.js');
+require('./viewOperationsModule.js');
+
 
 var sampleGraph = "﻿﻿--NODE_NAME	NODE_ID	NODE_TYPE	PARENT_ID	POSX	POSY--\n\
 RAS	ele5	FAMILY	-1	591	649	\n\
@@ -260,6 +262,8 @@ $(".aboutDropDown li a").click(function(event)
     $('#quickHelpModal').modal('show');
   }
 });
+
+
 
 
 //Flat UI fix for highlights
