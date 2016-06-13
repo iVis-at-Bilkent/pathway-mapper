@@ -47699,9 +47699,6 @@ _CoSELayout.prototype.run = function () {
     t1.require(CoSENode, 'CoSENode');
   }
 
-  var nodes = this.options.eles.nodes();
-  var edges = this.options.eles.edges();
-
   // First I need to create the data structure to pass to the worker
   var pData = {
     'nodes': [],
@@ -47710,7 +47707,7 @@ _CoSELayout.prototype.run = function () {
 
   //Map the ids of nodes in the list to check if a node is in the list in constant time
   var nodeIdMap = {};
-  
+
   //Fill the map in linear time
   for(var i = 0; i < nodes.length; i++){
     nodeIdMap[nodes[i].id()] = true;
@@ -47721,10 +47718,10 @@ _CoSELayout.prototype.run = function () {
     var lnode = lnodes[i];
     var nodeId = lnode.id;
     var cyNode = this.options.cy.getElementById(nodeId);
-    
+
     var parentId = cyNode.data('parent');
     parentId = nodeIdMap[parentId]?parentId:undefined;
-    
+
     var w = lnode.rect.width;
     var posX = lnode.rect.x;
     var posY = lnode.rect.y;
@@ -47759,7 +47756,8 @@ _CoSELayout.prototype.run = function () {
 
   var ready = false;
 
-  t1.pass(pData).run(function (pData) {
+  t1.pass(pData).run(function (pData)
+  {
     var log = function (msg) {
       broadcast({log: msg});
     };
@@ -47876,7 +47874,8 @@ _CoSELayout.prototype.run = function () {
     }
     //return the result map to pass it to the then function as parameter
     return pass;
-  }).then(function (pass) {
+  }).then(function (pass)
+  {
     var result = pass.result;
     var seeds = pass.seeds;
     RandomSeed.seed = seeds.rsSeed;
@@ -47912,21 +47911,21 @@ _CoSELayout.prototype.run = function () {
     }
     else {
       after.options.eles.nodes().positions(getPositions);
-      
+
       if (after.options.fit)
         after.options.cy.fit(after.options.eles.nodes(), after.options.padding);
-    
+
       //trigger layoutready when each node has had its position set at least once
       if (!ready) {
         after.cy.one('layoutready', after.options.ready);
         after.cy.trigger('layoutready');
       }
-      
+
       // trigger layoutstop when the layout stops (e.g. finishes)
       after.cy.one('layoutstop', after.options.stop);
       after.cy.trigger('layoutstop');
     }
-    
+
     t1.stop();
     after.options.eles.nodes().removeData('dummy_parent_id');
   });
@@ -48056,23 +48055,23 @@ _CoSELayout.prototype.getNodeDegreeWithChildren = function (node) {
 };
 
 _CoSELayout.prototype.groupZeroDegreeMembers = function () {
-  // array of [parent_id x oneDegreeNode_id] 
+  // array of [parent_id x oneDegreeNode_id]
   var tempMemberGroups = [];
   var memberGroups = [];
   var self = this;
   var parentMap = {};
-  
+
   for(var i = 0; i < this.options.eles.nodes().length; i++){
     parentMap[this.options.eles.nodes()[i].id()] = true;
   }
-  
+
   // Find all zero degree nodes which aren't covered by a compound
   var zeroDegree = this.options.eles.nodes().filter(function (i, ele) {
     var pid = ele.data('parent');
     if(pid != undefined && !parentMap[pid]){
       pid = undefined;
     }
-    
+
     if (self.getNodeDegreeWithChildren(ele) == 0 && (pid == undefined || (pid != undefined && !self.getToBeTiled(ele.parent()[0]))))
       return true;
     else
@@ -48084,7 +48083,7 @@ _CoSELayout.prototype.groupZeroDegreeMembers = function () {
   {
     var node = zeroDegree[i];
     var p_id = node.parent().id();
-    
+
     if(p_id != undefined && !parentMap[p_id]){
       p_id = undefined;
     }
@@ -48171,7 +48170,7 @@ _CoSELayout.prototype.clearCompounds = function (options) {
 
     childGraphMap[compoundOrder[i].id()] = compoundOrder[i].children();
 
-    // Remove children of compounds 
+    // Remove children of compounds
     lCompoundNode.child = null;
   }
 
@@ -48213,7 +48212,7 @@ _CoSELayout.prototype.repopulateZeroDegreeMembers = function (tiledPack) {
     var compoundNode = _CoSELayout.idToLNode[i];
     var horizontalMargin = parseInt(compound.css('padding-left'));
     var verticalMargin = parseInt(compound.css('padding-top'));
-    
+
     // Adjust the positions of nodes wrt its compound
     this.adjustLocations(tiledPack[i], compoundNode.rect.x, compoundNode.rect.y, horizontalMargin, verticalMargin);
 
@@ -48228,7 +48227,7 @@ _CoSELayout.prototype.repopulateZeroDegreeMembers = function (tiledPack) {
 };
 
 /**
- * This method places each zero degree member wrt given (x,y) coordinates (top left). 
+ * This method places each zero degree member wrt given (x,y) coordinates (top left).
  */
 _CoSELayout.prototype.adjustLocations = function (organization, x, y, compoundHorizontalMargin, compoundVerticalMargin) {
   x += compoundHorizontalMargin;
@@ -48318,13 +48317,13 @@ _CoSELayout.prototype.tileNodes = function (nodes) {
   // Create the organization -> tile members
   for (var i = 0; i < layoutNodes.length; i++) {
     var lNode = layoutNodes[i];
-    
+
     var cyNode = this.cy.getElementById(lNode.id).parent()[0];
     var minWidth = 0;
     if(cyNode){
       minWidth = parseInt(cyNode.css('padding-left')) + parseInt(cyNode.css('padding-right'));
     }
-    
+
     if (organization.rows.length == 0) {
       this.insertNodeToRow(organization, lNode, 0, minWidth);
     }
@@ -48518,7 +48517,7 @@ _CoSELayout.prototype.stop = function () {
   if( this.thread ){
     this.thread.stop();
   }
-  
+
   this.trigger('layoutstop');
 
   return this; // chaining
@@ -48566,6 +48565,7 @@ module.exports = function get(cytoscape) {
 
   return _CoSELayout;
 };
+
 },{"./CoSEConstants":22,"./CoSEEdge":23,"./CoSEGraph":24,"./CoSEGraphManager":25,"./CoSELayout":26,"./CoSENode":27,"./DimensionD":28,"./FDLayout":29,"./FDLayoutConstants":30,"./FDLayoutEdge":31,"./FDLayoutNode":32,"./HashMap":33,"./HashSet":34,"./IGeometry":35,"./IMath":36,"./Integer":37,"./LEdge":38,"./LGraph":39,"./LGraphManager":40,"./LGraphObject":41,"./LNode":42,"./Layout":43,"./LayoutConstants":44,"./Point":45,"./PointD":46,"./RandomSeed":47,"./RectangleD":48,"./Transform":49,"./UniqueIDGeneretor":50,"./layoutOptionsPack":52}],52:[function(require,module,exports){
 function layoutOptionsPack() {
 }

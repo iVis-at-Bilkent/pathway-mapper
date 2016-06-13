@@ -14,7 +14,7 @@
     "watch-css": "nodemon -e scss -w public/src/css/sass -x 'npm run build-css'",
     "watch-server": "nodemon app.js",
     "release-build": "npm run build-min-js & npm run build-min-css",
-    "build-cose": "browserify -o public/lib/js/cose-bilkent/cytoscape-cose-bilkent.js  public/lib/js/cose-bilkent/src/index.js",
+    "build-cose": "npm run build-js",
     "debug-build": "npm run watch-js & npm run watch-css & npm run watch-server & npm run watch-cose "
   },
   "author": "Istemi Bahceci",
