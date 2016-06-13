@@ -10,51 +10,60 @@ var SaveLoadUtils =
     //Prepare Meta Line
     var returnString = '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY--'+'\n';
 
-    for (var i = 0; i < nodes.length; i++)
+    if (nodes)
     {
-      //Node specific data fields
-      var nodeName = nodes[i].data.name;
-      var parentID = nodes[i].data.parent;
-      var nodeID = nodes[i].data.id;
-      var pos = nodes[i].position;
-      var nodeType = nodes[i].data.type;
-
-      //Check if node has a parent, if not set parent id -1
-      if (nodes[i].data.parent)
+      for (var i = 0; i < nodes.length; i++)
       {
-        parentID = nodes[i].data.parent;
-      }
-      else
-      {
-        parentID = -1;
-      }
+        //Node specific data fields
+        var nodeName = nodes[i].data.name;
+        var parentID = nodes[i].data.parent;
+        var nodeID = nodes[i].data.id;
+        var pos = nodes[i].position;
+        var nodeType = nodes[i].data.type;
 
-      // Write a line for a node
-      returnString +=  nodeName + '\t' +
-                       nodeID + '\t' +
-                       nodeType + '\t' +
-                       parentID + '\t' +
-                       parseInt(nodes[i].position.x) + '\t' +
-                       parseInt(nodes[i].position.y) + '\t\n';
+        //Check if node has a parent, if not set parent id -1
+        if (nodes[i].data.parent)
+        {
+          parentID = nodes[i].data.parent;
+        }
+        else
+        {
+          parentID = -1;
+        }
+
+        // Write a line for a node
+        returnString +=  nodeName + '\t' +
+                         nodeID + '\t' +
+                         nodeType + '\t' +
+                         parentID + '\t' +
+                         parseInt(nodes[i].position.x) + '\t' +
+                         parseInt(nodes[i].position.y) + '\t\n';
+      }
     }
+
+
 
     //Put a blank line between nodes and edges
     returnString += '\n';
     returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\n';
 
-    //Write edges
-    for (var i = 0; i < edges.length; i++)
-    {
-      var edgeID = edges[i].data.id;
-      var edgeType = edges[i].data.type;
-      var source = edges[i].data.source;
-      var target = edges[i].data.target;
+    if (edges) {
+      //Write edges
+      for (var i = 0; i < edges.length; i++)
+      {
+        var edgeID = edges[i].data.id;
+        var edgeType = edges[i].data.type;
+        var source = edges[i].data.source;
+        var target = edges[i].data.target;
 
-      returnString += edgeID + '\t' +
-                      source + '\t' +
-                      target + '\t' +
-                      edgeType + '\n';
+        returnString += edgeID + '\t' +
+                        source + '\t' +
+                        target + '\t' +
+                        edgeType + '\n';
+      }
     }
+
+
 
     //Finally return a string that includes whole graph lovely and peacefully :)
     return returnString;
