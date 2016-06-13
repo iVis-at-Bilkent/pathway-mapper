@@ -50187,6 +50187,17 @@ module.exports = (function($)
   function handleNodeAlignment(param)
   {
     var nodes = cy.nodes(':selected');
+    var nodeMap = {};
+
+    nodes.forEach(function(node,index)
+    {
+      if (node.isParent())
+      {
+        nodeMap[node.id()] = node;
+      }
+    });
+
+
     if (nodes.length > 0)
     {
       var firstSelected = nodes[0];
@@ -50196,17 +50207,26 @@ module.exports = (function($)
       {
         if (index == 0)
         {
-          return;
+          return ;
         }
 
-        var newPosition = calculateNewPosition(param, node, firstBbox)
-        //Recursively traverse leaf nodes
-        moveNode(node,0,0,newPosition);
+        //If parent of selected node is in selection do nothing !
+        if (nodeMap[node.parent().id()] == null)
+        {
+          var newPosition = calculateNewPosition(param, node, firstBbox)
+          //Recursively traverse leaf nodes
+          moveNode(node,0,0,newPosition);
+        }
 
       });
     }
   }
 
+  /*
+     Determine new position according to the alignment
+     node that node.position works on center positions thats why all calculations
+     are performed accordingly
+  */
   function calculateNewPosition(param, node, referenceBbox)
   {
       var currentPos = node.position();
@@ -50258,7 +50278,17 @@ module.exports = (function($)
         var childBbox = childNode.boundingBox();
         var _dx = -(parentBbox.x1 - childBbox.x1)-parentBbox.w/2+childBbox.w/2;
         var _dy = -(parentBbox.y1 - childBbox.y1)-parentBbox.h/2+childBbox.h/2;
-        moveNode(childNode, _dx, _dy, newPos);
+
+        //If further compound node is found, set position accordingly
+        if (childNode.isParent())
+        {
+          moveNode(childNode, 0, 0, {x: newPos.x+_dx, y:newPos.y+_dy});
+        }
+        else
+        {
+          moveNode(childNode, _dx, _dy, newPos);
+        }
+
       });
     }
     else
@@ -50267,7 +50297,7 @@ module.exports = (function($)
     }
   }
 
-  $(".viewDropdown").click(function(event)
+  $(".viewDropdown li a").click(function(event)
   {
     event.preventDefault();
     var dropdownLinkRole = $(event.target).attr('role');
