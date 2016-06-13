@@ -10,10 +10,12 @@
     "build-min-js": "browserify public/src/js/main.js | uglifyjs -o public/bin/base.min.js",
     "build-min-css": "node-sass public/src/css/sass/base.scss | cleancss -o public/bin/base.min.css",
     "watch-js": "nodemon -e js -w public/src/js/ -x 'npm run build-js'",
+    "watch-cose": "nodemon -e js -w public/lib/js/cose-bilkent/src -x 'npm run build-cose'",
     "watch-css": "nodemon -e scss -w public/src/css/sass -x 'npm run build-css'",
     "watch-server": "nodemon app.js",
     "release-build": "npm run build-min-js & npm run build-min-css",
-    "debug-build": "npm run watch-js & npm run watch-css & npm run watch-server"
+    "build-cose": "browserify -o public/lib/js/cose-bilkent/cytoscape-cose-bilkent.js  public/lib/js/cose-bilkent/src/index.js",
+    "debug-build": "npm run watch-js & npm run watch-css & npm run watch-server & npm run watch-cose "
   },
   "author": "Istemi Bahceci",
   "license": "BSD-2-Clause",

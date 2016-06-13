@@ -11,7 +11,7 @@ var panzoom = require('cytoscape-panzoom');
 var cxtmenu = require('cytoscape-cxtmenu');
 var edgehandles = require('cytoscape-edgehandles');
 var cyqtip = require('cytoscape-qtip');
-var regCose = require('cytoscape-cose-bilkent');
+var regCose = require("../../lib/js/cose-bilkent/src/index.js");
 
 //Panzoom options
 var panzoomOpts = require('./panzoomUtils.js');
