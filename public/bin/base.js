@@ -43328,6 +43328,10 @@ CoSELayout.prototype.runSpringEmbedder = function () {
   var lastFrame = new Date().getTime();
   var initialAnimationPeriod = 25;
   var animationPeriod = initialAnimationPeriod;
+
+  //Dummy node creation for compounds to make them compact !
+  // this.createDummyGravitationNodes();
+
   do
   {
     this.totalIterations++;
@@ -43399,6 +43403,39 @@ CoSELayout.prototype.calculateNodesToApplyGravitationTo = function () {
   }
 
   this.graphManager.setAllNodesToApplyGravitation(nodeList);
+};
+
+CoSELayout.prototype.createDummyGravitationNodes = function ()
+{
+  var nodeList = [];
+  var graph;
+
+  var graphs = this.graphManager.getGraphs();
+  var size = graphs.length;
+  var i;
+  var dummyNodes = [];
+
+  for (i = 0; i < size; i++)
+  {
+    graph = graphs[i];
+    var centerX = (graph.getLeft() + graph.getRight())/2;
+    var centerY = (graph.getLeft() + graph.getRight())/2;
+
+    var children = graph.getNodes();
+    var dummyNode = new CoSENode(this.graphManager, {x: centerX, y:centerY}, {width: 1, height: 1});
+    dummyNode.id = i+"_dummy";
+    graph.add(dummyNode);
+
+    //Children of each graph
+    for (var k = 0; k < children.length; k++)
+    {
+      if(children[k].id == dummyNode.id)
+          continue;
+      var newEdge = this.newEdge();
+      newEdge.id = children[k].id + "_" + dummyNode.id;
+      graph.add(newEdge, children[k], dummyNode);
+    }
+  }
 };
 
 CoSELayout.prototype.createBendpoints = function () {
@@ -47850,6 +47887,36 @@ _CoSELayout.prototype.run = function () {
       var e1 = gm_t.add(layout_t.newEdge(), sourceNode, targetNode);
     }
 
+    //This part is experimental and
+    // responsible for creating dummy nodes inside compounds to keep compound nodes compact !
+    var graphs = gm_t.getGraphs();
+    var size = graphs.length;
+    var i;
+    var dummyNodes = [];
+    var graph;
+
+    for (i = 0; i < size; i++)
+    {
+      graph = graphs[i];
+      var centerX = (graph.getLeft() + graph.getRight())/2;
+      var centerY = (graph.getLeft() + graph.getRight())/2;
+
+      var children = graph.getNodes();
+      var dummyNode = new CoSENode(gm_t, {x: centerX, y:centerY}, {width: 1, height: 1});
+      dummyNode.id = i+"_dummy";
+      graph.add(dummyNode);
+
+      //Children of each graph
+      for (var k = 0; k < children.length; k++)
+      {
+        if(children[k].id == dummyNode.id)
+          continue;
+        var newEdge = layout_t.newEdge();
+        newEdge.id = children[k].id + "_" + dummyNode.id;
+        graph.add(newEdge, children[k], dummyNode);
+      }
+    }
+
     //run the layout crated in this thread
     layout_t.runLayout();
 
@@ -48781,7 +48848,7 @@ var layoutProps = Backbone.View.extend(
     nestingFactor: 0.1,
     gravity: 0.25,
     numIter: 2500,
-    tile: true,
+    tile: false,
     animate: "end",
     randomize: true,
   },
