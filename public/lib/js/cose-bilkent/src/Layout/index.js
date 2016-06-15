@@ -31,59 +31,6 @@ var CoSEGraph = require('./CoSEGraph');
 var CoSEGraphManager = require('./CoSEGraphManager');
 var CoSELayout = require('./CoSELayout');
 var CoSENode = require('./CoSENode');
-var layoutOptionsPack = require('./layoutOptionsPack');
-
-layoutOptionsPack.layoutQuality; // proof, default, draft
-layoutOptionsPack.animationDuringLayout; // T-F
-layoutOptionsPack.animationOnLayout; // T-F
-layoutOptionsPack.animationPeriod; // 0-100
-layoutOptionsPack.incremental; // T-F
-layoutOptionsPack.createBendsAsNeeded; // T-F
-layoutOptionsPack.uniformLeafNodeSizes; // T-F
-
-layoutOptionsPack.defaultLayoutQuality = LayoutConstants.DEFAULT_QUALITY;
-layoutOptionsPack.defaultAnimationDuringLayout = LayoutConstants.DEFAULT_ANIMATION_DURING_LAYOUT;
-layoutOptionsPack.defaultAnimationOnLayout = LayoutConstants.DEFAULT_ANIMATION_ON_LAYOUT;
-layoutOptionsPack.defaultAnimationPeriod = 50;
-layoutOptionsPack.defaultIncremental = LayoutConstants.DEFAULT_INCREMENTAL;
-layoutOptionsPack.defaultCreateBendsAsNeeded = LayoutConstants.DEFAULT_CREATE_BENDS_AS_NEEDED;
-layoutOptionsPack.defaultUniformLeafNodeSizes = LayoutConstants.DEFAULT_UNIFORM_LEAF_NODE_SIZES;
-
-function setDefaultLayoutProperties() {
-  layoutOptionsPack.layoutQuality = layoutOptionsPack.defaultLayoutQuality;
-  layoutOptionsPack.animationDuringLayout = layoutOptionsPack.defaultAnimationDuringLayout;
-  layoutOptionsPack.animationOnLayout = layoutOptionsPack.defaultAnimationOnLayout;
-  layoutOptionsPack.animationPeriod = layoutOptionsPack.defaultAnimationPeriod;
-  layoutOptionsPack.incremental = layoutOptionsPack.defaultIncremental;
-  layoutOptionsPack.createBendsAsNeeded = layoutOptionsPack.defaultCreateBendsAsNeeded;
-  layoutOptionsPack.uniformLeafNodeSizes = layoutOptionsPack.defaultUniformLeafNodeSizes;
-}
-
-setDefaultLayoutProperties();
-
-function fillCoseLayoutOptionsPack() {
-  layoutOptionsPack.defaultIdealEdgeLength = CoSEConstants.DEFAULT_EDGE_LENGTH;
-  layoutOptionsPack.defaultSpringStrength = 50;
-  layoutOptionsPack.defaultRepulsionStrength = 50;
-  layoutOptionsPack.defaultSmartRepulsionRangeCalc = CoSEConstants.DEFAULT_USE_SMART_REPULSION_RANGE_CALCULATION;
-  layoutOptionsPack.defaultGravityStrength = 50;
-  layoutOptionsPack.defaultGravityRange = 50;
-  layoutOptionsPack.defaultCompoundGravityStrength = 50;
-  layoutOptionsPack.defaultCompoundGravityRange = 50;
-  layoutOptionsPack.defaultSmartEdgeLengthCalc = CoSEConstants.DEFAULT_USE_SMART_IDEAL_EDGE_LENGTH_CALCULATION;
-  layoutOptionsPack.defaultMultiLevelScaling = CoSEConstants.DEFAULT_USE_MULTI_LEVEL_SCALING;
-
-  layoutOptionsPack.idealEdgeLength = layoutOptionsPack.defaultIdealEdgeLength;
-  layoutOptionsPack.springStrength = layoutOptionsPack.defaultSpringStrength;
-  layoutOptionsPack.repulsionStrength = layoutOptionsPack.defaultRepulsionStrength;
-  layoutOptionsPack.smartRepulsionRangeCalc = layoutOptionsPack.defaultSmartRepulsionRangeCalc;
-  layoutOptionsPack.gravityStrength = layoutOptionsPack.defaultGravityStrength;
-  layoutOptionsPack.gravityRange = layoutOptionsPack.defaultGravityRange;
-  layoutOptionsPack.compoundGravityStrength = layoutOptionsPack.defaultCompoundGravityStrength;
-  layoutOptionsPack.compoundGravityRange = layoutOptionsPack.defaultCompoundGravityRange;
-  layoutOptionsPack.smartEdgeLengthCalc = layoutOptionsPack.defaultSmartEdgeLengthCalc;
-  layoutOptionsPack.multiLevelScaling = layoutOptionsPack.defaultMultiLevelScaling;
-}
 
 _CoSELayout.idToLNode = {};
 _CoSELayout.toBeTiled = {};
@@ -115,12 +62,18 @@ var defaults = {
   numIter: 2500,
   // For enabling tiling
   tile: true,
-  //whether to make animation while performing the layout
+  // Type of layout animation. The option set is {'during', 'end', false}
   animate: 'end',
-  //represents the amount of the vertical space to put between the zero degree members during the tiling operation(can also be a function)
+  // Represents the amount of the vertical space to put between the zero degree members during the tiling operation(can also be a function)
   tilingPaddingVertical: 10,
-  //represents the amount of the horizontal space to put between the zero degree members during the tiling operation(can also be a function)
-  tilingPaddingHorizontal: 10
+  // Represents the amount of the horizontal space to put between the zero degree members during the tiling operation(can also be a function)
+  tilingPaddingHorizontal: 10,
+  // Gravity range (constant) for compounds
+  gravityRangeCompound: 1.5,
+  // Gravity force (constant) for compounds
+  gravityCompound: 1.0,
+  // Gravity range (constant)
+  gravityRange: 1.5
 };
 
 function extend(defaults, options) {
@@ -142,9 +95,33 @@ _CoSELayout.layout = new CoSELayout();
 function _CoSELayout(options) {
 
   this.options = extend(defaults, options);
-  FDLayoutConstants.getUserOptions(this.options);
-  fillCoseLayoutOptionsPack();
+  _CoSELayout.getUserOptions(this.options);
 }
+
+_CoSELayout.getUserOptions = function (options) {
+  if (options.nodeRepulsion != null)
+    CoSEConstants.DEFAULT_REPULSION_STRENGTH = FDLayoutConstants.DEFAULT_REPULSION_STRENGTH = options.nodeRepulsion;
+  if (options.idealEdgeLength != null)
+    CoSEConstants.DEFAULT_EDGE_LENGTH = FDLayoutConstants.DEFAULT_EDGE_LENGTH = options.idealEdgeLength;
+  if (options.edgeElasticity != null)
+    CoSEConstants.DEFAULT_SPRING_STRENGTH = FDLayoutConstants.DEFAULT_SPRING_STRENGTH = options.edgeElasticity;
+  if (options.nestingFactor != null)
+    CoSEConstants.PER_LEVEL_IDEAL_EDGE_LENGTH_FACTOR = FDLayoutConstants.PER_LEVEL_IDEAL_EDGE_LENGTH_FACTOR = options.nestingFactor;
+  if (options.gravity != null)
+    CoSEConstants.DEFAULT_GRAVITY_STRENGTH = FDLayoutConstants.DEFAULT_GRAVITY_STRENGTH = options.gravity;
+  if (options.numIter != null)
+    CoSEConstants.MAX_ITERATIONS = FDLayoutConstants.MAX_ITERATIONS = options.numIter;
+  if (options.gravityRange != null)
+    CoSEConstants.DEFAULT_GRAVITY_RANGE_FACTOR = FDLayoutConstants.DEFAULT_GRAVITY_RANGE_FACTOR = options.gravityRange;
+  if(options.gravityCompound != null)
+    CoSEConstants.DEFAULT_COMPOUND_GRAVITY_STRENGTH = FDLayoutConstants.DEFAULT_COMPOUND_GRAVITY_STRENGTH = options.gravityCompound;
+  if(options.gravityRangeCompound != null)
+    CoSEConstants.DEFAULT_COMPOUND_GRAVITY_RANGE_FACTOR = FDLayoutConstants.DEFAULT_COMPOUND_GRAVITY_RANGE_FACTOR = options.gravityRangeCompound;
+  
+  CoSEConstants.DEFAULT_INCREMENTAL = FDLayoutConstants.DEFAULT_INCREMENTAL = LayoutConstants.DEFAULT_INCREMENTAL =
+          !(options.randomize);
+  CoSEConstants.ANIMATE = FDLayoutConstants.ANIMATE = options.animate;
+};
 
 _CoSELayout.prototype.run = function () {
   var layout = this;
@@ -211,7 +188,6 @@ _CoSELayout.prototype.run = function () {
     t1.require(LNode, 'LNode');
     t1.require(Layout, 'Layout');
     t1.require(LayoutConstants, 'LayoutConstants');
-    t1.require(layoutOptionsPack, 'layoutOptionsPack');
     t1.require(FDLayout, 'FDLayout');
     t1.require(FDLayoutConstants, 'FDLayoutConstants');
     t1.require(FDLayoutEdge, 'FDLayoutEdge');
@@ -224,6 +200,9 @@ _CoSELayout.prototype.run = function () {
     t1.require(CoSENode, 'CoSENode');
   }
 
+  var nodes = this.options.eles.nodes();
+  var edges = this.options.eles.edges();
+
   // First I need to create the data structure to pass to the worker
   var pData = {
     'nodes': [],
@@ -232,7 +211,7 @@ _CoSELayout.prototype.run = function () {
 
   //Map the ids of nodes in the list to check if a node is in the list in constant time
   var nodeIdMap = {};
-
+  
   //Fill the map in linear time
   for(var i = 0; i < nodes.length; i++){
     nodeIdMap[nodes[i].id()] = true;
@@ -243,10 +222,10 @@ _CoSELayout.prototype.run = function () {
     var lnode = lnodes[i];
     var nodeId = lnode.id;
     var cyNode = this.options.cy.getElementById(nodeId);
-
+    
     var parentId = cyNode.data('parent');
     parentId = nodeIdMap[parentId]?parentId:undefined;
-
+    
     var w = lnode.rect.width;
     var posX = lnode.rect.x;
     var posY = lnode.rect.y;
@@ -281,8 +260,7 @@ _CoSELayout.prototype.run = function () {
 
   var ready = false;
 
-  t1.pass(pData).run(function (pData)
-  {
+  t1.pass(pData).run(function (pData) {
     var log = function (msg) {
       broadcast({log: msg});
     };
@@ -375,6 +353,7 @@ _CoSELayout.prototype.run = function () {
       var e1 = gm_t.add(layout_t.newEdge(), sourceNode, targetNode);
     }
 
+
     //This part is experimental and
     //responsible for creating dummy nodes inside compounds to keep compound nodes compact !
     var graphs = gm_t.getGraphs();
@@ -384,7 +363,7 @@ _CoSELayout.prototype.run = function () {
     var dummyEdges = [];
     var graph;
 
-    for (i = 0; i < size; i++)
+    for (i = 1; i < size; i++)
     {
       graph = graphs[i];
       var centerX = (graph.getLeft() + graph.getRight())/2;
@@ -399,13 +378,14 @@ _CoSELayout.prototype.run = function () {
       //Children of each graph
       for (var k = 0; k < children.length; k++)
       {
+        console.log(children[k].id);
         //Do not create any edge that connects the dummy node to itself
         if(children[k].id == dummyNode.id)
           continue;
 
         var newEdge = layout_t.newEdge();
         newEdge.id = children[k].id + "_" + dummyNode.id;
-        dummyEdges.push(newEdge);
+        dummyEdges.push({dummyEdge: newEdge, parentGraph: graph});
         graph.add(newEdge, children[k], dummyNode);
       }
     }
@@ -436,7 +416,7 @@ _CoSELayout.prototype.run = function () {
     for (var i = 0; i < dummyEdges.length; i++)
     {
       var edgeInst = dummyEdges[i];
-      edgeInst.getOwner().remove(edgeInst);
+      edgeInst.parentGraph.remove(edgeInst.dummyEdge);
     }
 
     var seeds = {};
@@ -444,13 +424,11 @@ _CoSELayout.prototype.run = function () {
     seeds.rsX = RandomSeed.x;
     var pass = {
       result: result,
-      seeds: seeds,
+      seeds: seeds
     }
     //return the result map to pass it to the then function as parameter
     return pass;
-  }).then(function (pass)
-  {
-
+  }).then(function (pass) {
     var result = pass.result;
     var seeds = pass.seeds;
     RandomSeed.seed = seeds.rsSeed;
@@ -486,21 +464,21 @@ _CoSELayout.prototype.run = function () {
     }
     else {
       after.options.eles.nodes().positions(getPositions);
-
+      
       if (after.options.fit)
         after.options.cy.fit(after.options.eles.nodes(), after.options.padding);
-
+    
       //trigger layoutready when each node has had its position set at least once
       if (!ready) {
         after.cy.one('layoutready', after.options.ready);
         after.cy.trigger('layoutready');
       }
-
+      
       // trigger layoutstop when the layout stops (e.g. finishes)
       after.cy.one('layoutstop', after.options.stop);
       after.cy.trigger('layoutstop');
     }
-
+    
     t1.stop();
     after.options.eles.nodes().removeData('dummy_parent_id');
   });
@@ -630,23 +608,23 @@ _CoSELayout.prototype.getNodeDegreeWithChildren = function (node) {
 };
 
 _CoSELayout.prototype.groupZeroDegreeMembers = function () {
-  // array of [parent_id x oneDegreeNode_id]
+  // array of [parent_id x oneDegreeNode_id] 
   var tempMemberGroups = [];
   var memberGroups = [];
   var self = this;
   var parentMap = {};
-
+  
   for(var i = 0; i < this.options.eles.nodes().length; i++){
     parentMap[this.options.eles.nodes()[i].id()] = true;
   }
-
+  
   // Find all zero degree nodes which aren't covered by a compound
   var zeroDegree = this.options.eles.nodes().filter(function (i, ele) {
     var pid = ele.data('parent');
     if(pid != undefined && !parentMap[pid]){
       pid = undefined;
     }
-
+    
     if (self.getNodeDegreeWithChildren(ele) == 0 && (pid == undefined || (pid != undefined && !self.getToBeTiled(ele.parent()[0]))))
       return true;
     else
@@ -658,7 +636,7 @@ _CoSELayout.prototype.groupZeroDegreeMembers = function () {
   {
     var node = zeroDegree[i];
     var p_id = node.parent().id();
-
+    
     if(p_id != undefined && !parentMap[p_id]){
       p_id = undefined;
     }
@@ -745,7 +723,7 @@ _CoSELayout.prototype.clearCompounds = function (options) {
 
     childGraphMap[compoundOrder[i].id()] = compoundOrder[i].children();
 
-    // Remove children of compounds
+    // Remove children of compounds 
     lCompoundNode.child = null;
   }
 
@@ -787,7 +765,7 @@ _CoSELayout.prototype.repopulateZeroDegreeMembers = function (tiledPack) {
     var compoundNode = _CoSELayout.idToLNode[i];
     var horizontalMargin = parseInt(compound.css('padding-left'));
     var verticalMargin = parseInt(compound.css('padding-top'));
-
+    
     // Adjust the positions of nodes wrt its compound
     this.adjustLocations(tiledPack[i], compoundNode.rect.x, compoundNode.rect.y, horizontalMargin, verticalMargin);
 
@@ -802,7 +780,7 @@ _CoSELayout.prototype.repopulateZeroDegreeMembers = function (tiledPack) {
 };
 
 /**
- * This method places each zero degree member wrt given (x,y) coordinates (top left).
+ * This method places each zero degree member wrt given (x,y) coordinates (top left). 
  */
 _CoSELayout.prototype.adjustLocations = function (organization, x, y, compoundHorizontalMargin, compoundVerticalMargin) {
   x += compoundHorizontalMargin;
@@ -892,13 +870,13 @@ _CoSELayout.prototype.tileNodes = function (nodes) {
   // Create the organization -> tile members
   for (var i = 0; i < layoutNodes.length; i++) {
     var lNode = layoutNodes[i];
-
+    
     var cyNode = this.cy.getElementById(lNode.id).parent()[0];
     var minWidth = 0;
     if(cyNode){
       minWidth = parseInt(cyNode.css('padding-left')) + parseInt(cyNode.css('padding-right'));
     }
-
+    
     if (organization.rows.length == 0) {
       this.insertNodeToRow(organization, lNode, 0, minWidth);
     }
@@ -1092,7 +1070,7 @@ _CoSELayout.prototype.stop = function () {
   if( this.thread ){
     this.thread.stop();
   }
-
+  
   this.trigger('layoutstop');
 
   return this; // chaining

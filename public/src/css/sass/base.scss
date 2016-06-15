@@ -20,15 +20,26 @@ $appContentHeight: 850px;
 }
 
 
-.fileNameContent{
+.fileNameContent
+{
   font: 14px helvetica neue, helvetica, arial, sans-serif;
   color: #2f4154;
   // font-weight: bold;
-  cursor: pointer;
+  //margin-bottom: 20px;
+  height: 50px;
 
-  margin-bottom: 20px;
+  span{
+    position: relative;
+    top: 10px;
+    cursor: pointer;
+  }
 
-  .form-control:focus {
+  //input{
+  //  width: 100px;
+  //}
+
+  .form-control:focus
+  {
     border: 2px solid $menuHoverColor;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $menuHoverColor;
     color: #2f4154;
