@@ -73,7 +73,7 @@ var defaults = {
   // Gravity force (constant) for compounds
   gravityCompound: 1.0,
   // Gravity range (constant)
-  gravityRange: 1.5
+  gravityRange: 3.8
 };
 
 function extend(defaults, options) {
@@ -363,9 +363,16 @@ _CoSELayout.prototype.run = function () {
     var dummyEdges = [];
     var graph;
 
-    for (i = 1; i < size; i++)
+    for (i = 0; i < size; i++)
     {
       graph = graphs[i];
+
+      //If nodes are connected inside compounds do nothing !
+      if(graph.getEdges().length > 0 )
+      {
+        continue;
+      }
+
       var centerX = (graph.getLeft() + graph.getRight())/2;
       var centerY = (graph.getLeft() + graph.getRight())/2;
 

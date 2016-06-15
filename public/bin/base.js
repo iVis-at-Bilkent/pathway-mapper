@@ -47527,7 +47527,7 @@ var defaults = {
   // Gravity force (constant) for compounds
   gravityCompound: 1.0,
   // Gravity range (constant)
-  gravityRange: 1.5
+  gravityRange: 3.8
 };
 
 function extend(defaults, options) {
@@ -47817,9 +47817,16 @@ _CoSELayout.prototype.run = function () {
     var dummyEdges = [];
     var graph;
 
-    for (i = 1; i < size; i++)
+    for (i = 0; i < size; i++)
     {
       graph = graphs[i];
+
+      //If nodes are connected inside compounds do nothing !
+      if(graph.getEdges().length > 0 )
+      {
+        continue;
+      }
+
       var centerX = (graph.getLeft() + graph.getRight())/2;
       var centerY = (graph.getLeft() + graph.getRight())/2;
 
@@ -48780,11 +48787,16 @@ var layoutProps = Backbone.View.extend(
     idealEdgeLength: 50,
     edgeElasticity: 0.45,
     nestingFactor: 0.1,
-    gravity: 0.25,
+    gravity: 0.15,
     numIter: 2500,
     tile: true,
     animate: "end",
     randomize: true,
+    gravityRangeCompound: 1.5,
+    // Gravity force (constant) for compounds
+    gravityCompound: 1.0,
+    // Gravity range (constant)
+    gravityRange: 1.5
   },
   currentLayoutProperties: null,
   events:{
@@ -48830,6 +48842,10 @@ var layoutProps = Backbone.View.extend(
     this.currentLayoutProperties.nestingFactor = Number(this.$el.find("#nesting-factor").val());
     this.currentLayoutProperties.gravity = Number(this.$el.find("#gravity").val());
     this.currentLayoutProperties.numIter = Number(this.$el.find("#num-iter").val());
+    this.currentLayoutProperties.gravityRangeCompound = Number(this.$el.find("#comp-gravRange").val());
+    this.currentLayoutProperties.gravityCompound = Number(this.$el.find("#comp-grav").val());
+    this.currentLayoutProperties.gravityRange = Number(this.$el.find("#grav-range").val());
+
     this.currentLayoutProperties.tile = this.$el.find("#tile").is(':checked');
     this.currentLayoutProperties.animate = this.$el.find("#animate").is(':checked');
     this.currentLayoutProperties.randomize = !(this.$el.find("#randomize").is(':checked'));
@@ -48844,6 +48860,10 @@ var layoutProps = Backbone.View.extend(
     this.$el.find("#edge-elasticity").val(this.currentLayoutProperties.edgeElasticity);
     this.$el.find("#nesting-factor").val(this.currentLayoutProperties.nestingFactor);
     this.$el.find("#gravity").val(this.currentLayoutProperties.gravity);
+    this.$el.find("#comp-gravRange").val(this.currentLayoutProperties.gravityRangeCompound);
+    this.$el.find("#comp-grav").val(this.currentLayoutProperties.gravityCompound);
+    this.$el.find("#grav-range").val(this.currentLayoutProperties.gravityRange);
+
     this.$el.find("#num-iter").val(this.currentLayoutProperties.numIter);
     this.$el.find("#tile")[0].checked = this.currentLayoutProperties.tile;
     this.$el.find("#animate")[0].checked = this.currentLayoutProperties.animate;
@@ -48904,7 +48924,6 @@ module.exports = (function(cy)
     for (var i = 0; i < removedNodes.length; i++)
     {
       var removedNode = removedNodes[i];
-      var parentId = removedNode._private.data.parent;
 
       //Just alter the parent id of corresponding nodes !
       if (removedNode.isEdge() || lockedNodes[removedNode.id()])
@@ -48920,6 +48939,8 @@ module.exports = (function(cy)
 
     cy.add(removedNodes);
     cy.nodes().updateCompoundBounds();
+    //TODO need to find better workaround for this !
+    cy.layout({name: 'preset'});
   }
 
   cy.cxtmenu({
@@ -48942,27 +48963,53 @@ module.exports = (function(cy)
     commands:
     [
       {
-        content: 'delete node(s)',
+        content: 'Delete Node(s)',
         select: function(ele)
         {
           cy.nodes(':selected').remove();
           ele.remove();
         }
       },
-      // {
-      //   content: '<span class="fa fa-star"></span> create compound',
-      //   select: function(ele)
-      //   {
-      //     var selectedNodes = cy.nodes(':selected').size() > 0 ? cy.$(':selected') : ele;
-      //     var compNode = cy.add({group: "nodes"})[0];
-      //     var compId = compNode.id();
-      //     selectedNodes.move({parent: compId});
-      //   }
-      // },
+      {
+        content: 'Remove Selected From Parent',
+        select: function(ele)
+        {
+          lockedNodes = {};
+          var selectedNodes = cy.nodes(':selected').union(ele);
+
+          var notValid = false;
+          selectedNodes.forEach(function(tmpNode, i)
+          {
+            // if (ele.id() == tmpNode.id())
+            // {
+            //   notValid = true;
+            //   return false;
+            // }
+
+            if (tmpNode.isParent())
+            {
+              notValid = isChildren(tmpNode, ele);
+              if (notValid)
+              {
+                return false;
+              }
+            }
+          });
+
+          if (notValid)
+          {
+            return;
+          }
+
+          var compId = ele.id();
+          changeParent(selectedNodes);
+        }
+      },
       {
         content: 'Add Selected Into This Node',
         select: function(ele)
         {
+          lockedNodes = {};
           var selectedNodes = cy.nodes(':selected');
 
           //Do nothing if node is not a compound or family node
@@ -48998,7 +49045,6 @@ module.exports = (function(cy)
               }
           }
 
-          lockedNodes = {};
           var compId = ele.id();
           var selectedNodes = cy.nodes(':selected');
           changeParent(selectedNodes, compId);

@@ -48,7 +48,6 @@ module.exports = (function(cy)
     for (var i = 0; i < removedNodes.length; i++)
     {
       var removedNode = removedNodes[i];
-      var parentId = removedNode._private.data.parent;
 
       //Just alter the parent id of corresponding nodes !
       if (removedNode.isEdge() || lockedNodes[removedNode.id()])
@@ -64,6 +63,8 @@ module.exports = (function(cy)
 
     cy.add(removedNodes);
     cy.nodes().updateCompoundBounds();
+    //TODO need to find better workaround for this !
+    cy.layout({name: 'preset'});
   }
 
   cy.cxtmenu({
@@ -86,27 +87,53 @@ module.exports = (function(cy)
     commands:
     [
       {
-        content: 'delete node(s)',
+        content: 'Delete Node(s)',
         select: function(ele)
         {
           cy.nodes(':selected').remove();
           ele.remove();
         }
       },
-      // {
-      //   content: '<span class="fa fa-star"></span> create compound',
-      //   select: function(ele)
-      //   {
-      //     var selectedNodes = cy.nodes(':selected').size() > 0 ? cy.$(':selected') : ele;
-      //     var compNode = cy.add({group: "nodes"})[0];
-      //     var compId = compNode.id();
-      //     selectedNodes.move({parent: compId});
-      //   }
-      // },
+      {
+        content: 'Remove Selected From Parent',
+        select: function(ele)
+        {
+          lockedNodes = {};
+          var selectedNodes = cy.nodes(':selected').union(ele);
+
+          var notValid = false;
+          selectedNodes.forEach(function(tmpNode, i)
+          {
+            // if (ele.id() == tmpNode.id())
+            // {
+            //   notValid = true;
+            //   return false;
+            // }
+
+            if (tmpNode.isParent())
+            {
+              notValid = isChildren(tmpNode, ele);
+              if (notValid)
+              {
+                return false;
+              }
+            }
+          });
+
+          if (notValid)
+          {
+            return;
+          }
+
+          var compId = ele.id();
+          changeParent(selectedNodes);
+        }
+      },
       {
         content: 'Add Selected Into This Node',
         select: function(ele)
         {
+          lockedNodes = {};
           var selectedNodes = cy.nodes(':selected');
 
           //Do nothing if node is not a compound or family node
@@ -142,7 +169,6 @@ module.exports = (function(cy)
               }
           }
 
-          lockedNodes = {};
           var compId = ele.id();
           var selectedNodes = cy.nodes(':selected');
           changeParent(selectedNodes, compId);

@@ -8,11 +8,16 @@ var layoutProps = Backbone.View.extend(
     idealEdgeLength: 50,
     edgeElasticity: 0.45,
     nestingFactor: 0.1,
-    gravity: 0.25,
+    gravity: 0.15,
     numIter: 2500,
     tile: true,
     animate: "end",
     randomize: true,
+    gravityRangeCompound: 1.5,
+    // Gravity force (constant) for compounds
+    gravityCompound: 1.0,
+    // Gravity range (constant)
+    gravityRange: 1.5
   },
   currentLayoutProperties: null,
   events:{
@@ -58,6 +63,10 @@ var layoutProps = Backbone.View.extend(
     this.currentLayoutProperties.nestingFactor = Number(this.$el.find("#nesting-factor").val());
     this.currentLayoutProperties.gravity = Number(this.$el.find("#gravity").val());
     this.currentLayoutProperties.numIter = Number(this.$el.find("#num-iter").val());
+    this.currentLayoutProperties.gravityRangeCompound = Number(this.$el.find("#comp-gravRange").val());
+    this.currentLayoutProperties.gravityCompound = Number(this.$el.find("#comp-grav").val());
+    this.currentLayoutProperties.gravityRange = Number(this.$el.find("#grav-range").val());
+
     this.currentLayoutProperties.tile = this.$el.find("#tile").is(':checked');
     this.currentLayoutProperties.animate = this.$el.find("#animate").is(':checked');
     this.currentLayoutProperties.randomize = !(this.$el.find("#randomize").is(':checked'));
@@ -72,6 +81,10 @@ var layoutProps = Backbone.View.extend(
     this.$el.find("#edge-elasticity").val(this.currentLayoutProperties.edgeElasticity);
     this.$el.find("#nesting-factor").val(this.currentLayoutProperties.nestingFactor);
     this.$el.find("#gravity").val(this.currentLayoutProperties.gravity);
+    this.$el.find("#comp-gravRange").val(this.currentLayoutProperties.gravityRangeCompound);
+    this.$el.find("#comp-grav").val(this.currentLayoutProperties.gravityCompound);
+    this.$el.find("#grav-range").val(this.currentLayoutProperties.gravityRange);
+
     this.$el.find("#num-iter").val(this.currentLayoutProperties.numIter);
     this.$el.find("#tile")[0].checked = this.currentLayoutProperties.tile;
     this.$el.find("#animate")[0].checked = this.currentLayoutProperties.animate;
