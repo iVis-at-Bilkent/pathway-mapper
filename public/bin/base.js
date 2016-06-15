@@ -47888,11 +47888,12 @@ _CoSELayout.prototype.run = function () {
     }
 
     //This part is experimental and
-    // responsible for creating dummy nodes inside compounds to keep compound nodes compact !
+    //responsible for creating dummy nodes inside compounds to keep compound nodes compact !
     var graphs = gm_t.getGraphs();
     var size = graphs.length;
     var i;
     var dummyNodes = [];
+    var dummyEdges = [];
     var graph;
 
     for (i = 0; i < size; i++)
@@ -47904,15 +47905,19 @@ _CoSELayout.prototype.run = function () {
       var children = graph.getNodes();
       var dummyNode = new CoSENode(gm_t, {x: centerX, y:centerY}, {width: 1, height: 1});
       dummyNode.id = i+"_dummy";
+      dummyNodes.push(dummyNode);
       graph.add(dummyNode);
 
       //Children of each graph
       for (var k = 0; k < children.length; k++)
       {
+        //Do not create any edge that connects the dummy node to itself
         if(children[k].id == dummyNode.id)
           continue;
+
         var newEdge = layout_t.newEdge();
         newEdge.id = children[k].id + "_" + dummyNode.id;
+        dummyEdges.push(newEdge);
         graph.add(newEdge, children[k], dummyNode);
       }
     }
@@ -47932,17 +47937,32 @@ _CoSELayout.prototype.run = function () {
         h: rect.height
       };
     }
+
+    //Delete created dummy nodes and edges here
+    for (var i = 0; i < dummyNodes.length; i++)
+    {
+      var nodeInst = dummyNodes[i];
+      nodeInst.getOwner().remove(nodeInst);
+    }
+
+    for (var i = 0; i < dummyEdges.length; i++)
+    {
+      var edgeInst = dummyEdges[i];
+      edgeInst.getOwner().remove(edgeInst);
+    }
+
     var seeds = {};
     seeds.rsSeed = RandomSeed.seed;
     seeds.rsX = RandomSeed.x;
     var pass = {
       result: result,
-      seeds: seeds
+      seeds: seeds,
     }
     //return the result map to pass it to the then function as parameter
     return pass;
   }).then(function (pass)
   {
+
     var result = pass.result;
     var seeds = pass.seeds;
     RandomSeed.seed = seeds.rsSeed;
@@ -48848,7 +48868,7 @@ var layoutProps = Backbone.View.extend(
     nestingFactor: 0.1,
     gravity: 0.25,
     numIter: 2500,
-    tile: false,
+    tile: true,
     animate: "end",
     randomize: true,
   },

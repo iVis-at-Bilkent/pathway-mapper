@@ -10,7 +10,7 @@ var layoutProps = Backbone.View.extend(
     nestingFactor: 0.1,
     gravity: 0.25,
     numIter: 2500,
-    tile: false,
+    tile: true,
     animate: "end",
     randomize: true,
   },
