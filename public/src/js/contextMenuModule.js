@@ -72,7 +72,7 @@ module.exports = (function(cy)
     activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
     commands: [
       {
-        content: 'perform layout',
+        content: 'Perform layout',
         select: function(ele)
         {
           cy.layout(window.layoutProperties.currentLayoutProperties);
@@ -136,7 +136,7 @@ module.exports = (function(cy)
           lockedNodes = {};
           var selectedNodes = cy.nodes(':selected');
 
-          //Do nothing if node is not a compound or family node
+          //Do nothing if node is not a compound or family node or process 
           if (ele._private.data['type'] === 'GENE' || selectedNodes.size() < 1)
           {
             return;
@@ -183,7 +183,7 @@ module.exports = (function(cy)
     activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
     commands: [
       {
-        content: 'delete edge(s)',
+        content: 'Delete Edge(s)',
         select: function(ele)
         {
           cy.edges(':selected').remove();

@@ -23,51 +23,59 @@ module.exports = (function(cy,$)
                  <div class="col-xs-4 qtipLabel">Name:</div>\
               </div>');
 
-    var entrezGeneButton = $('<div class="row centerText geneDetails"><button nodeid="' + ele.id() + '" type="button" class="btn btn-default">Entrez Gene</button></div>');
-    entrezGeneButton.find('button').on('click', function(event)
-    {
-      event.preventDefault();
-      var nodeID = $(this).attr('nodeid');
-      var nodeSymbol = cy.$('#'+nodeID)[0]._private.data['name'];
-      var self = this;
-      var parent = $(this).parent();
-      parent.empty().append('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>');
-
-      var formData = new FormData();
-      formData.append('query', nodeSymbol);
-
-      var request = new XMLHttpRequest();
-      request.onreadystatechange = function ()
-      {
-        if(request.readyState === XMLHttpRequest.DONE)
-        {
-          if (request.status === 200)
-          {
-            var jsonData = JSON.parse(request.responseText);
-            if (jsonData.count > 0)
-            {
-              var backboneView = new BackboneView({model: jsonData.geneInfo[0]}).render().html();
-              parent.empty().append(backboneView);
-            }
-            else
-            {
-              parent.empty().append('There is no extra information for this gene');
-            }
-          }
-          else
-          {
-            parent.empty().append('An error occured while retrieving the data');
-          }
-        }
-      };
-      request.open("POST", "/getBioGeneData");
-      request.send(formData);
-    });
-
     row.append(textInput);
     wrapper.append(row);
-    wrapper.append(entrezGeneButton);
+
+    if (ele.data().type === "GENE")
+    {
+        var entrezGeneButton = $('<div class="row centerText geneDetails"><button nodeid="' + ele.id() + '" type="button" class="btn btn-default">Entrez Gene</button></div>');
+        entrezGeneButton.find('button').on('click', function(event)
+        {
+          event.preventDefault();
+          var nodeID = $(this).attr('nodeid');
+          var nodeSymbol = cy.$('#'+nodeID)[0]._private.data['name'];
+          var self = this;
+          var parent = $(this).parent();
+          parent.empty().append('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>');
+
+          var formData = new FormData();
+          formData.append('query', nodeSymbol);
+
+          var request = new XMLHttpRequest();
+          request.onreadystatechange = function ()
+          {
+            if(request.readyState === XMLHttpRequest.DONE)
+            {
+              if (request.status === 200)
+              {
+                var jsonData = JSON.parse(request.responseText);
+                if (jsonData.count > 0)
+                {
+                  var backboneView = new BackboneView({model: jsonData.geneInfo[0]}).render().html();
+                  parent.empty().append(backboneView);
+                }
+                else
+                {
+                  parent.empty().append('There is no extra information for this gene');
+                }
+              }
+              else
+              {
+                parent.empty().append('An error occured while retrieving the data');
+              }
+            }
+          };
+          request.open("POST", "/getBioGeneData");
+          request.send(formData);
+        });
+        wrapper.append(entrezGeneButton);
+    }
+
     return wrapper;
+  }
+
+  function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
   window.addQtipToElements = function(eles)
@@ -84,7 +92,7 @@ module.exports = (function(cy,$)
             },
             title: function()
             {
-                return 'Node Details';
+                return capitalizeFirstLetter(node.data().type.toLowerCase()) + ' Details';
             }
           },
           position: {

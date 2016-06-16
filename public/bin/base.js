@@ -48948,7 +48948,7 @@ module.exports = (function(cy)
     activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
     commands: [
       {
-        content: 'perform layout',
+        content: 'Perform layout',
         select: function(ele)
         {
           cy.layout(window.layoutProperties.currentLayoutProperties);
@@ -49012,7 +49012,7 @@ module.exports = (function(cy)
           lockedNodes = {};
           var selectedNodes = cy.nodes(':selected');
 
-          //Do nothing if node is not a compound or family node
+          //Do nothing if node is not a compound or family node or process 
           if (ele._private.data['type'] === 'GENE' || selectedNodes.size() < 1)
           {
             return;
@@ -49059,7 +49059,7 @@ module.exports = (function(cy)
     activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
     commands: [
       {
-        content: 'delete edge(s)',
+        content: 'Delete Edge(s)',
         select: function(ele)
         {
           cy.edges(':selected').remove();
@@ -49518,6 +49518,9 @@ ele520	ele11	ele5	ACTIVATES\n\
 ele521	ele10	ele5	ACTIVATES\n\
 ";
 
+//For better handling mouseover node details pop up
+var qtipTimeoutFunctions = [];
+
 //Wait all components to load
 $(window).load(function()
 {
@@ -49593,27 +49596,55 @@ $(window).load(function()
     cy.edgehandles( edgeHandleOpts );
 
 
-    cy.on('tap', 'node', function( e )
+
+
+    cy.on('mouseover', 'node', function( e )
     {
       var eventIsDirect = (e.cyTarget === this);
 
       if( eventIsDirect )
       {
-        //Remove qtips
-        $(".qtip").remove();
-        addQtipToElements(this);
-        var api = this.qtip('api');
-        if (api)
+        var self = this;
+
+        var newQtipTimeoutFunc = setTimeout(function()
         {
-            api.show();
-        }
+          //Remove qtips
+          $(".qtip").remove();
+          addQtipToElements(self);
+          var api = self.qtip('api');
+          if (api)
+          {
+              api.show();
+          }
+        }, 1000);
+
+        qtipTimeoutFunctions.push(newQtipTimeoutFunc);
+
       }
     });
+
+    cy.on('mouseout', 'node', function(e)
+    {
+        clearQtipTimeoutStack();
+    });
+
+    // cy.on('tap', 'node', function( e )
+    // {
+    //     clearQtipTimeoutStack();
+    // });
 
     var qTipModule = require('./qTipModule.js');
     var cxMenuModule = require('./contextMenuModule.js');
 
 });
+
+function clearQtipTimeoutStack()
+{
+  for (var i = 0; i < qtipTimeoutFunctions.length; i++) {
+    clearTimeout(qtipTimeoutFunctions[i]);
+  }
+  qtipTimeoutFunctions = [];
+}
 
 
 
@@ -49782,51 +49813,59 @@ module.exports = (function(cy,$)
                  <div class="col-xs-4 qtipLabel">Name:</div>\
               </div>');
 
-    var entrezGeneButton = $('<div class="row centerText geneDetails"><button nodeid="' + ele.id() + '" type="button" class="btn btn-default">Entrez Gene</button></div>');
-    entrezGeneButton.find('button').on('click', function(event)
-    {
-      event.preventDefault();
-      var nodeID = $(this).attr('nodeid');
-      var nodeSymbol = cy.$('#'+nodeID)[0]._private.data['name'];
-      var self = this;
-      var parent = $(this).parent();
-      parent.empty().append('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>');
-
-      var formData = new FormData();
-      formData.append('query', nodeSymbol);
-
-      var request = new XMLHttpRequest();
-      request.onreadystatechange = function ()
-      {
-        if(request.readyState === XMLHttpRequest.DONE)
-        {
-          if (request.status === 200)
-          {
-            var jsonData = JSON.parse(request.responseText);
-            if (jsonData.count > 0)
-            {
-              var backboneView = new BackboneView({model: jsonData.geneInfo[0]}).render().html();
-              parent.empty().append(backboneView);
-            }
-            else
-            {
-              parent.empty().append('There is no extra information for this gene');
-            }
-          }
-          else
-          {
-            parent.empty().append('An error occured while retrieving the data');
-          }
-        }
-      };
-      request.open("POST", "/getBioGeneData");
-      request.send(formData);
-    });
-
     row.append(textInput);
     wrapper.append(row);
-    wrapper.append(entrezGeneButton);
+
+    if (ele.data().type === "GENE")
+    {
+        var entrezGeneButton = $('<div class="row centerText geneDetails"><button nodeid="' + ele.id() + '" type="button" class="btn btn-default">Entrez Gene</button></div>');
+        entrezGeneButton.find('button').on('click', function(event)
+        {
+          event.preventDefault();
+          var nodeID = $(this).attr('nodeid');
+          var nodeSymbol = cy.$('#'+nodeID)[0]._private.data['name'];
+          var self = this;
+          var parent = $(this).parent();
+          parent.empty().append('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>');
+
+          var formData = new FormData();
+          formData.append('query', nodeSymbol);
+
+          var request = new XMLHttpRequest();
+          request.onreadystatechange = function ()
+          {
+            if(request.readyState === XMLHttpRequest.DONE)
+            {
+              if (request.status === 200)
+              {
+                var jsonData = JSON.parse(request.responseText);
+                if (jsonData.count > 0)
+                {
+                  var backboneView = new BackboneView({model: jsonData.geneInfo[0]}).render().html();
+                  parent.empty().append(backboneView);
+                }
+                else
+                {
+                  parent.empty().append('There is no extra information for this gene');
+                }
+              }
+              else
+              {
+                parent.empty().append('An error occured while retrieving the data');
+              }
+            }
+          };
+          request.open("POST", "/getBioGeneData");
+          request.send(formData);
+        });
+        wrapper.append(entrezGeneButton);
+    }
+
     return wrapper;
+  }
+
+  function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
   window.addQtipToElements = function(eles)
@@ -49843,7 +49882,7 @@ module.exports = (function(cy,$)
             },
             title: function()
             {
-                return 'Node Details';
+                return capitalizeFirstLetter(node.data().type.toLowerCase()) + ' Details';
             }
           },
           position: {
@@ -50034,31 +50073,25 @@ var styleSheet = [
       }
     },
     {
-      selector: ':parent',
-      style:
-      {
-        'shape': function(ele)
-        {
-            return parentNodeShapeFunc( ele );
-        }
-      }
-    },
-    {
         selector: 'node:parent',
         style:
         {
+          'shape': function(ele)
+          {
+              return parentNodeShapeFunc( ele );
+          },
           'text-valign': function(ele)
           {
             return 'bottom';
           },
-          'padding-left': 5,
-          'padding-right': 5,
-          'padding-bottom': 5,
-          'padding-top': 5,
+          'padding-left': function(ele){ return compoundPaddingFunction(ele); },
+          'padding-right': function(ele){ return compoundPaddingFunction(ele); },
+          'padding-bottom': function(ele){ return compoundPaddingFunction(ele); },
+          'padding-top':  function(ele){ return compoundPaddingFunction(ele); },
           'background-opacity': 0.5,
           'border-width': function(ele)
           {
-              return borderWidthFunction( ele );
+              return parentBorderWidthFunction( ele );
           },
           'border-color': function(ele)
           {
@@ -50114,6 +50147,17 @@ var styleSheet = [
 ];
 
 
+var compoundPaddingFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "FAMILY": return 5; break;
+    case "COMPARTMENT": return 10; break;
+    case "PROCESS": return 10; break;
+    default: return 5; break;
+  }
+}
+
 var contentFunction = function( ele )
 {
   if (ele._private.data.name) {
@@ -50126,9 +50170,9 @@ var vTextPositionFunction = function( ele )
 {
   switch (ele._private.data['type'])
   {
-    case "GENE": 'center'; break;
-    case "FAMILY": 'top'; break;
-    case "COMPARTMENT": 'top'; break;
+    case "GENE": return 'center'; break;
+    case "FAMILY": return 'top'; break;
+    case "COMPARTMENT": return 'top'; break;
     default: return 'center'; break;
   }
 }
@@ -50139,6 +50183,18 @@ var borderWidthFunction = function( ele )
   {
     case "GENE": return 0.5; break;
     case "PROCESS": return 0; break;
+    case "FAMILY": return 1.0; break;
+    case "COMPARTMENT": return 2; break;
+    default: return 0.5; break;
+  }
+}
+
+var parentBorderWidthFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return 0.5; break;
+    case "PROCESS": return 1.0; break;
     case "FAMILY": return 1.0; break;
     case "COMPARTMENT": return 2; break;
     default: return 0.5; break;

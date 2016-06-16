@@ -61,6 +61,9 @@ ele520	ele11	ele5	ACTIVATES\n\
 ele521	ele10	ele5	ACTIVATES\n\
 ";
 
+//For better handling mouseover node details pop up
+var qtipTimeoutFunctions = [];
+
 //Wait all components to load
 $(window).load(function()
 {
@@ -136,27 +139,55 @@ $(window).load(function()
     cy.edgehandles( edgeHandleOpts );
 
 
-    cy.on('tap', 'node', function( e )
+
+
+    cy.on('mouseover', 'node', function( e )
     {
       var eventIsDirect = (e.cyTarget === this);
 
       if( eventIsDirect )
       {
-        //Remove qtips
-        $(".qtip").remove();
-        addQtipToElements(this);
-        var api = this.qtip('api');
-        if (api)
+        var self = this;
+
+        var newQtipTimeoutFunc = setTimeout(function()
         {
-            api.show();
-        }
+          //Remove qtips
+          $(".qtip").remove();
+          addQtipToElements(self);
+          var api = self.qtip('api');
+          if (api)
+          {
+              api.show();
+          }
+        }, 1000);
+
+        qtipTimeoutFunctions.push(newQtipTimeoutFunc);
+
       }
     });
+
+    cy.on('mouseout', 'node', function(e)
+    {
+        clearQtipTimeoutStack();
+    });
+
+    // cy.on('tap', 'node', function( e )
+    // {
+    //     clearQtipTimeoutStack();
+    // });
 
     var qTipModule = require('./qTipModule.js');
     var cxMenuModule = require('./contextMenuModule.js');
 
 });
+
+function clearQtipTimeoutStack()
+{
+  for (var i = 0; i < qtipTimeoutFunctions.length; i++) {
+    clearTimeout(qtipTimeoutFunctions[i]);
+  }
+  qtipTimeoutFunctions = [];
+}
 
 
 

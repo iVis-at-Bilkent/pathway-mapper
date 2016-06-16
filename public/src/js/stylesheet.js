@@ -32,31 +32,25 @@ var styleSheet = [
       }
     },
     {
-      selector: ':parent',
-      style:
-      {
-        'shape': function(ele)
-        {
-            return parentNodeShapeFunc( ele );
-        }
-      }
-    },
-    {
         selector: 'node:parent',
         style:
         {
+          'shape': function(ele)
+          {
+              return parentNodeShapeFunc( ele );
+          },
           'text-valign': function(ele)
           {
             return 'bottom';
           },
-          'padding-left': 5,
-          'padding-right': 5,
-          'padding-bottom': 5,
-          'padding-top': 5,
+          'padding-left': function(ele){ return compoundPaddingFunction(ele); },
+          'padding-right': function(ele){ return compoundPaddingFunction(ele); },
+          'padding-bottom': function(ele){ return compoundPaddingFunction(ele); },
+          'padding-top':  function(ele){ return compoundPaddingFunction(ele); },
           'background-opacity': 0.5,
           'border-width': function(ele)
           {
-              return borderWidthFunction( ele );
+              return parentBorderWidthFunction( ele );
           },
           'border-color': function(ele)
           {
@@ -112,6 +106,17 @@ var styleSheet = [
 ];
 
 
+var compoundPaddingFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "FAMILY": return 5; break;
+    case "COMPARTMENT": return 10; break;
+    case "PROCESS": return 10; break;
+    default: return 5; break;
+  }
+}
+
 var contentFunction = function( ele )
 {
   if (ele._private.data.name) {
@@ -124,9 +129,9 @@ var vTextPositionFunction = function( ele )
 {
   switch (ele._private.data['type'])
   {
-    case "GENE": 'center'; break;
-    case "FAMILY": 'top'; break;
-    case "COMPARTMENT": 'top'; break;
+    case "GENE": return 'center'; break;
+    case "FAMILY": return 'top'; break;
+    case "COMPARTMENT": return 'top'; break;
     default: return 'center'; break;
   }
 }
@@ -137,6 +142,18 @@ var borderWidthFunction = function( ele )
   {
     case "GENE": return 0.5; break;
     case "PROCESS": return 0; break;
+    case "FAMILY": return 1.0; break;
+    case "COMPARTMENT": return 2; break;
+    default: return 0.5; break;
+  }
+}
+
+var parentBorderWidthFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return 0.5; break;
+    case "PROCESS": return 1.0; break;
     case "FAMILY": return 1.0; break;
     case "COMPARTMENT": return 2; break;
     default: return 0.5; break;
