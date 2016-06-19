@@ -35,6 +35,9 @@
 #aboutModal .modal-dialog {
   width: 400px; }
 
+#layoutPropertiesDiv .modal-dialog {
+  width: 500px; }
+
 #edge_legend_modal .modal-body img {
   width: 500px; }
 

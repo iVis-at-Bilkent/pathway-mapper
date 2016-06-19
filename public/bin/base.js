@@ -48948,7 +48948,7 @@ module.exports = (function(cy)
     activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
     commands: [
       {
-        content: 'Perform layout',
+        content: 'Perform Layout',
         select: function(ele)
         {
           cy.layout(window.layoutProperties.currentLayoutProperties);
@@ -49012,7 +49012,7 @@ module.exports = (function(cy)
           lockedNodes = {};
           var selectedNodes = cy.nodes(':selected');
 
-          //Do nothing if node is not a compound or family node or process 
+          //Do nothing if node is not a compound or family node or process
           if (ele._private.data['type'] === 'GENE' || selectedNodes.size() < 1)
           {
             return;
