@@ -3,12 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <title>TCGA Pathway Curation Tool</title>
+  <!-- Google Real Time Style  -->
+  <!-- Load Styles -->
+  <!-- <link href="https://www.gstatic.com/realtime/quickstart-styles.css" rel="stylesheet" type="text/css"/> -->
+
   <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" charset="utf-8">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link href="node_modules/cytoscape-panzoom/cytoscape.js-panzoom.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.css">
+
   <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.3.0/css/flat-ui.css"> -->
   <link rel="stylesheet" href="bin/base.css" charset="utf-8">
+
+
 </head>
 <body>
 
@@ -363,6 +370,10 @@
               </div>
             </div>
           </div>
+          <div class="realTimeAuthDiv centerText">
+            <button id="auth_button" type="button" class="btn btn-default">Authorize</button>
+            <button id="add_node" type="button" class="btn btn-default">Add Node</button>
+          </div>
         </div>
       </div>
         <div class="cyContainer">
@@ -483,6 +494,11 @@
   </div>
 
   <!--Script Includes-->
+  <!-- Google Real Time Scripts  -->
+  <!-- Load the Realtime JavaScript library -->
+  <script src="https://apis.google.com/js/api.js"></script>
+  <!-- Load the utility library -->
+  <script src="https://www.gstatic.com/realtime/realtime-client-utils.js"></script>
   <script src="lib/js/FileSaver.js" charset="utf-8"></script>
   <script src="bin/base.js"></script>
   <script src="lib/js/cytoscape-edgeHandles.js" charset="utf-8"></script>

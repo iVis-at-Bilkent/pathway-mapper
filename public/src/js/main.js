@@ -178,7 +178,7 @@ $(window).load(function()
 
     var qTipModule = require('./qTipModule.js');
     var cxMenuModule = require('./contextMenuModule.js');
-
+    require('./realTimeModule.js');
 });
 
 function clearQtipTimeoutStack()
