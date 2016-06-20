@@ -152,14 +152,6 @@ module.exports = (function(cy)
         gapi.drive.realtime.debug();
     }
 
-    // Connects the text boxes to the collaborative string
-    function wireTextBoxes(event) {
-        var textArea1 = document.getElementById('text_area_1');
-        var textArea2 = document.getElementById('text_area_2');
-
-        textArea1.innerHTML = event.currentTarget.nodeID;
-        textArea2.innerHTML = event.currentTarget.label;
-    }
 
     //Custom object Definitions and Registration Part
     var NodeR = function() {
