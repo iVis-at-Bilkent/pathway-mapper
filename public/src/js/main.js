@@ -104,6 +104,17 @@ $(window).load(function()
       layout: {name: 'preset'}
     });
 
+    //These dependencies requeire window.cy object so that they are imported here
+    //TODO better refactor these
+    var qTipModule = require('./qTipModule.js');
+    var cxMenuModule = require('./contextMenuModule.js');
+    var EditorActionsManager = require('./EditorActionsManager.js');
+    window.editorActionsManager = new EditorActionsManager(true);
+
+    var RealTimeModule = require('./RealTimeModule.js');
+    require('./cytoscape.js-nodeadd.js');
+    window.realTimeManager = new RealTimeModule();
+
     cy.panzoom( panzoomOpts );
 
     //Node Add initialization
@@ -174,14 +185,7 @@ $(window).load(function()
     //     clearQtipTimeoutStack();
     // });
 
-    //These dependencies requeire window.cy object so that they are imported here
-    //TODO better refactor these
-    var qTipModule = require('./qTipModule.js');
-    var cxMenuModule = require('./contextMenuModule.js');
-    var RealTimeModule = require('./RealTimeModule.js');
-    var EditorActionsManager = require('./EditorActionsManager.js');
-    window.realTimeManager = new RealTimeModule();
-    window.editorActionsManager = new EditorActionsManager();
+
 
 });
 
@@ -192,8 +196,6 @@ function clearQtipTimeoutStack()
   }
   qtipTimeoutFunctions = [];
 }
-
-
 
 
 //Selected element on dropdown
@@ -252,8 +254,6 @@ $(".editDropDown li a").click(function(event)
       cy.elements(':selected').remove();
   }
 });
-
-
 
 
 //About drop down handler

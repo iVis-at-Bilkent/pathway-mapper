@@ -1,5 +1,5 @@
 ;
-(function($, $$)
+module.exports = (function($, $$)
 {
     var defaults = {
         height: 30,   //height of the icon container
@@ -121,16 +121,7 @@
                                 }
                             }
 
-                            cy.add(
-                            {
-                                group: "nodes",
-                                data: nodeData,
-                                renderedPosition:
-                                {
-                                    x: relX,
-                                    y: relY
-                                }
-                            });
+                            editorActionsManager.addNode(nodeData,{x: relX,y: relY});
 
                         }
                     });
@@ -159,4 +150,4 @@
         $(cy.container()).cytoscapeNodeadd(options);
     });
 
-})(jQuery, cytoscape);
+})(window.$, window.cytoscape, window.editorActionsManager);

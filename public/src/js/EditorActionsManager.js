@@ -2,10 +2,10 @@ module.exports = (function(cy)
 {
   "use strict";
 
-  var _EditorActionsManager = function(isCollaborative,realTimeDoc)
+  var _EditorActionsManager = function(isCollaborative)
   {
-      this.realTimeDoc = realTimeDoc;
-      this.isCollaborative = isCollaborative;
+      // this.realTimeDoc = realTimeDoc;
+      this.isCollaborative = true;
       this.nodeCounter = 0;
       this.edgeCounter = 0;
   };
@@ -74,29 +74,7 @@ module.exports = (function(cy)
 
   _EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
   {
-    var model = this.realTimeDoc.getModel();
-    var root = model.getRoot();
-
-    var newNode;
-
-    if (posData)
-    {
-      newNode = model.create(NodeR,
-      {
-          name: nodeData.name,
-          type: "Gene",
-          x: posData.x,
-          y: posData.y,
-      });
-    }
-    else
-    {
-      newNode = model.create(NodeR,
-      {
-          name: nodeData.name,
-          type: nodeData.type,
-      });
-    }
+      window.realTimeManager.addNewNode(nodeData,posData);
   }
 
   // Singleton Class related stuff here !

@@ -1,4 +1,4 @@
-module.exports = (function(cy)
+module.exports = (function(cy, editorActionsManager)
 {
     "use strict";
 
@@ -149,36 +149,57 @@ module.exports = (function(cy)
         var model = doc.getModel();
         var root = model.getRoot();
 
-        var refreshDataButton = document.getElementById('add_node');
-        refreshDataButton.addEventListener('click', function(event)
+        //Keep a reference to the file !
+        this.realTimeDoc = doc;
+
+        // var refreshDataButton = document.getElementById('add_node');
+        // refreshDataButton.addEventListener('click', function(event)
+        // {
+        //     var nodeData = {name: "Dummy", type: "Gene"};
+        //
+        //     var newNode = model.create(NodeR, {
+        //         name: "Dummy",
+        //         nodeID: Math.random() * 10,
+        //         type: "Gene",
+        //         x: Math.random() * 10,
+        //         y: Math.random() * 10,
+        //     });
+        //
+        //     root.get('nodes').push(newNode);
+        // });
+
+        root.get('nodes').addEventListener( gapi.drive.realtime.EventType.VALUES_ADDED, function(event){editorActionsManager.realTimeNodeAddEventCallBack(event)});
+
+        gapi.drive.realtime.debug();
+    }
+
+    RealTimeModule.prototype.addNewNode = function(nodeData, posData)
+    {
+      var model = this.realTimeDoc.getModel();
+      var root = model.getRoot();
+
+      var newNode;
+
+      if (posData)
+      {
+        newNode = model.create(NodeR,
         {
-            var nodeData = {name: "Dummy", type: "Gene"};
-
-            var newNode = model.create(NodeR, {
-                name: "Dummy",
-                nodeID: Math.random() * 10,
-                type: "Gene",
-                x: Math.random() * 10,
-                y: Math.random() * 10,
-            });
-
-            root.get('nodes').push(newNode);
+            name: nodeData.name,
+            type: "Gene",
+            x: posData.x,
+            y: posData.y,
         });
-
-        root.get('nodes').addEventListener( gapi.drive.realtime.EventType.VALUES_ADDED, function(event)
+      }
+      else
+      {
+        newNode = model.create(NodeR,
         {
-          var node = event.values[0];
+            name: nodeData.name,
+            type: nodeData.type,
+        });
+      }
 
-          var nodeData = {type: node.type, name:'New '+ node.type};
-          console.log(event);
-          cy.add(
-          {
-              group: "nodes",
-              data: nodeData
-          });
-        })
-
-        // gapi.drive.realtime.debug();
+      root.get('nodes').push(newNode);
     }
 
     //Custom object Definitions and Registration Part
@@ -216,4 +237,5 @@ module.exports = (function(cy)
     }
 
     return RealTimeModule;
-})(window.cy)
+
+})(window.cy, window.editorActionsManager)
