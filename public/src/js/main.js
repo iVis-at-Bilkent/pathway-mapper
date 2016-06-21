@@ -76,6 +76,7 @@ $(window).load(function()
 
     window.edgeAddingMode = 0;
     window.layoutProperties = new LayoutProperties();
+
     var layoutPropertiesContent = window.layoutProperties.render();
     $('#layoutPropertiesDiv').append(layoutPropertiesContent);
 
@@ -138,9 +139,6 @@ $(window).load(function()
     //Edge Handles initialization
     cy.edgehandles( edgeHandleOpts );
 
-
-
-
     cy.on('mouseover', 'node', function( e )
     {
       var eventIsDirect = (e.cyTarget === this);
@@ -176,9 +174,15 @@ $(window).load(function()
     //     clearQtipTimeoutStack();
     // });
 
+    //These dependencies requeire window.cy object so that they are imported here
+    //TODO better refactor these
     var qTipModule = require('./qTipModule.js');
     var cxMenuModule = require('./contextMenuModule.js');
-    require('./realTimeModule.js');
+    var RealTimeModule = require('./RealTimeModule.js');
+    var EditorActionsManager = require('./EditorActionsManager.js');
+    window.realTimeManager = new RealTimeModule();
+    window.editorActionsManager = new EditorActionsManager();
+
 });
 
 function clearQtipTimeoutStack()

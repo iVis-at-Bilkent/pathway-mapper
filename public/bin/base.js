@@ -48598,6 +48598,354 @@ if( typeof cytoscape !== 'undefined' ){ // expose to global cytoscape (i.e. wind
 module.exports = register;
 
 },{"./Layout":51}],53:[function(require,module,exports){
+module.exports = (function(cy)
+{
+  "use strict";
+
+  var _EditorActionsManager = function(isCollaborative,realTimeDoc)
+  {
+      this.realTimeDoc = realTimeDoc;
+      this.isCollaborative = isCollaborative;
+      this.nodeCounter = 0;
+      this.edgeCounter = 0;
+  };
+
+  _EditorActionsManager.prototype.addNode = function(nodeData, posData)
+  {
+      nodeData.id =  this.nodeCounter++;
+
+      if (this.isCollaborative)
+      {
+          this.addNewNodeToRealTime(nodeData, posData);
+      }
+      else
+      {
+          this.addNodetoCy(nodeData,posData);
+      }
+  }
+
+  _EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)
+  {
+    var newNode;
+
+    if (posData)
+    {
+      newNode = cy.add(
+      {
+          group: "nodes",
+          data: nodeData,
+          renderedPosition:
+          {
+              x: posData.x,
+              y: posData.y
+          }
+      });
+    }
+    else
+    {
+      newNode = cy.add(
+      {
+          group: "nodes",
+          data: nodeData,
+      });
+    }
+  }
+
+  _EditorActionsManager.prototype.realTimeNodeAddEventCallBack = function(event)
+  {
+    //Get real time node object and sync it to node addition
+    var node = event.values[0];
+    var nodeData =
+    {
+      id: node.nodeID,
+      type: node.type,
+      name:'New '+ node.type,
+    };
+
+    if (node.posX != "undefined" && node.posY != "unedfined")
+    {
+      this.addNodetoCy(nodeData, {x: node.x, y: node.y});
+    }
+    else
+    {
+      this.addNodetoCy(nodeData);
+    }
+  }
+
+  _EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
+  {
+    var model = this.realTimeDoc.getModel();
+    var root = model.getRoot();
+
+    var newNode;
+
+    if (posData)
+    {
+      newNode = model.create(NodeR,
+      {
+          name: nodeData.name,
+          type: "Gene",
+          x: posData.x,
+          y: posData.y,
+      });
+    }
+    else
+    {
+      newNode = model.create(NodeR,
+      {
+          name: nodeData.name,
+          type: nodeData.type,
+      });
+    }
+  }
+
+  // Singleton Class related stuff here !
+  var EditorActionsManager = function()
+  {
+    // var instance;
+    //
+    // function createInstance()
+    // {
+    //     var object = new _EditorActionsManager();
+    //     return object;
+    // }
+    //
+    // this.prototype.getInstance = function()
+    // {
+    //     if (!instance) {
+    //         instance = createInstance();
+    //     }
+    //     return instance;
+    // }
+    return new _EditorActionsManager();
+  }
+
+  return EditorActionsManager;
+
+})(window.cy);
+
+},{}],54:[function(require,module,exports){
+module.exports = (function(cy)
+{
+    "use strict";
+
+    var RealTimeModule = function()
+    {
+      this.clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
+
+      // if (!/^([0-9])$/.test(clientId[0]))
+      // {
+      //     throw new Error('Invalid Client ID - did you forget to insert your application Client ID?');
+      // }
+
+      // Create a new instance of the realtime utility with your client ID.
+      this.realtimeUtils = new utils.RealtimeUtils({
+          clientId: this.clientId
+      });
+      this.authorize();
+
+    }
+
+    RealTimeModule.prototype.authorize = function()
+    {
+      // Attempt to authorize
+      var self = this;
+      this.realtimeUtils.authorize(function(response)
+      {
+          //TODO Modal ?
+          if (response.error)
+          {
+              // Authorization failed because this is the first time the user has used your application,
+              // show the authorize button to prompt them to authorize manually.
+              var button = document.getElementById('auth_button');
+              button.classList.add('visible');
+              button.addEventListener('click', function() {
+                  self.realtimeUtils.authorize(function(response) {
+                      start();
+                  }, true);
+              });
+          }
+          else
+          {
+              self.initRealTimeAPI();
+          }
+      }, false);
+    }
+
+    RealTimeModule.prototype.initRealTimeAPI = function()
+    {
+        // With auth taken care of, load a file, or create one if there
+        // is not an id in the URL.
+        var id = this.realtimeUtils.getParam('id');
+
+        // Register Types before load event !
+        this.registerTypes();
+        var self = this;
+
+        var initFileCallback = function(model)
+        {
+            self.onFileInitialize(model);
+        }
+
+        var loadFileCallback = function(model)
+        {
+            self.onFileLoaded(model);
+        }
+
+        if (id)
+        {
+            // Load the document id from the URL
+            this.realtimeUtils.load(id.replace('/', ''), loadFileCallback, initFileCallback);
+        }
+        else
+        {
+            // Create a new document, add it to the URL
+            this.realtimeUtils.createRealtimeFile('New Graph', function(createResponse) {
+                window.history.pushState(null, null, '?id=' + createResponse.id);
+                self.realtimeUtils.load(createResponse.id, loadFileCallback, initFileCallback);
+            });
+        }
+     }
+
+
+    // You must register the custom object before loading or creating any file that
+    // uses this custom object.
+    RealTimeModule.prototype.registerTypes = function()
+    {
+        //Register our custom objects go Google Real Time API
+        gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
+        gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
+        gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
+        gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
+        createNodeAndEdgeFieldsR();
+        // gapi.drive.realtime.custom.setOnLoaded(NodeR, onLoadCallback);
+    }
+
+
+    // The first time a file is opened, it must be initialized with the
+    // document structure.
+    RealTimeModule.prototype.onFileInitialize = function(model)
+    {
+        var root = model.getRoot();
+
+        var nodeList = model.createList();
+        var edgeList = model.createList();
+
+        root.set('nodes', nodeList);
+        root.set('edges', edgeList);
+
+        var nodes = cy.nodes();
+        var edges = cy.edges();
+
+        nodes.forEach(function(node, index)
+        {
+            var nodeData = node.data();
+            var nodePos = node.position();
+
+            var newNode = model.create(NodeR, {
+                label: nodeData.name,
+                nodeID: nodeData.id,
+                type: nodeData.type,
+                x: nodePos.x,
+                y: nodePos.y
+            });
+
+            nodeList.push(newNode);
+        });
+
+        edges.forEach(function(edge, index)
+        {
+            var edgeData = edge.data();
+
+            var newEdge = model.create(EdgeR, {
+                edgeID: edgeData.id,
+                source: edgeData.source,
+                target: edgeData.target,
+                type: edgeData.type
+            });
+
+            edgeList.push(newEdge);
+        });
+    }
+
+    // After a file has been initialized and loaded, we can access the
+    // document. We will wire up the data model to the UI.
+    RealTimeModule.prototype.onFileLoaded =  function(doc)
+    {
+        // this.realTimeDoc = doc;
+        var model = doc.getModel();
+        var root = model.getRoot();
+
+        var refreshDataButton = document.getElementById('add_node');
+        refreshDataButton.addEventListener('click', function(event)
+        {
+            var nodeData = {name: "Dummy", type: "Gene"};
+
+            var newNode = model.create(NodeR, {
+                name: "Dummy",
+                nodeID: Math.random() * 10,
+                type: "Gene",
+                x: Math.random() * 10,
+                y: Math.random() * 10,
+            });
+
+            root.get('nodes').push(newNode);
+        });
+
+        root.get('nodes').addEventListener( gapi.drive.realtime.EventType.VALUES_ADDED, function(event)
+        {
+          var node = event.values[0];
+
+          var nodeData = {type: node.type, name:'New '+ node.type};
+          console.log(event);
+          cy.add(
+          {
+              group: "nodes",
+              data: nodeData
+          });
+        })
+
+        // gapi.drive.realtime.debug();
+    }
+
+    //Custom object Definitions and Registration Part
+    var NodeR = function() {}
+    var EdgeR = function() {}
+
+    var createNodeAndEdgeFieldsR = function() {
+        NodeR.prototype.nodeID = gapi.drive.realtime.custom.collaborativeField('nodeID');
+        NodeR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
+        NodeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
+        NodeR.prototype.x = gapi.drive.realtime.custom.collaborativeField('x');
+        NodeR.prototype.y = gapi.drive.realtime.custom.collaborativeField('y');
+
+        EdgeR.prototype.edgeID = gapi.drive.realtime.custom.collaborativeField('edgeID');
+        EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
+        EdgeR.prototype.target = gapi.drive.realtime.custom.collaborativeField('target');
+        EdgeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
+    }
+
+    var NodeRInitializer = function(params) {
+        var model = gapi.drive.realtime.custom.getModel(this);
+        this.nodeID = params.nodeID || "undefined";
+        this.label = params.name || "undefined";
+        this.type = params.type || "undefined";
+        this.x = params.x || "undefined";
+        this.y = params.y || "undefined";
+    }
+
+    var EdgeRInitializer = function(params) {
+        var model = gapi.drive.realtime.custom.getModel(this);
+        this.edgeID = params.edgeID || "undefined";
+        this.type = params.type || "undefined";
+        this.source = params.source || "undefined";
+        this.target = params.target || "undefined";
+    }
+
+    return RealTimeModule;
+})(window.cy)
+
+},{}],55:[function(require,module,exports){
 /*
  * Copyright 2013 Memorial-Sloan Kettering Cancer Center.
  *
@@ -48776,7 +49124,7 @@ var BioGeneView = Backbone.View.extend({
 
 module.exports = BioGeneView;
 
-},{}],54:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 var layoutProps = Backbone.View.extend(
 {
   defaultLayoutProperties:
@@ -48873,7 +49221,7 @@ var layoutProps = Backbone.View.extend(
 
 module.exports = layoutProps;
 
-},{}],55:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 ;
 module.exports = (function(cy)
 {
@@ -49070,7 +49418,7 @@ module.exports = (function(cy)
   });
 }(window.cy));
 
-},{}],56:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 ;
 // the default values of each option are outlined below:
 var edgeHandleDefaults =
@@ -49151,7 +49499,7 @@ var edgeHandleDefaults =
 
 module.exports = edgeHandleDefaults;
 
-},{}],57:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 var SaveLoadUtilities = require('./saveLoadUtils.js');
 
 
@@ -49454,7 +49802,7 @@ module.exports = (function($)
 
 })(window.$)
 
-},{"./saveLoadUtils.js":62}],58:[function(require,module,exports){
+},{"./saveLoadUtils.js":63}],60:[function(require,module,exports){
 //Import node modules here !
 var $ = window.$ = window.jQuery = require('jquery');
 var _ = window._ = require('underscore');
@@ -49533,6 +49881,7 @@ $(window).load(function()
 
     window.edgeAddingMode = 0;
     window.layoutProperties = new LayoutProperties();
+
     var layoutPropertiesContent = window.layoutProperties.render();
     $('#layoutPropertiesDiv').append(layoutPropertiesContent);
 
@@ -49595,9 +49944,6 @@ $(window).load(function()
     //Edge Handles initialization
     cy.edgehandles( edgeHandleOpts );
 
-
-
-
     cy.on('mouseover', 'node', function( e )
     {
       var eventIsDirect = (e.cyTarget === this);
@@ -49633,9 +49979,15 @@ $(window).load(function()
     //     clearQtipTimeoutStack();
     // });
 
+    //These dependencies requeire window.cy object so that they are imported here
+    //TODO better refactor these
     var qTipModule = require('./qTipModule.js');
     var cxMenuModule = require('./contextMenuModule.js');
-    require('./realTimeModule.js');
+    var RealTimeModule = require('./RealTimeModule.js');
+    var EditorActionsManager = require('./EditorActionsManager.js');
+    window.realTimeManager = new RealTimeModule();
+    window.editorActionsManager = new EditorActionsManager();
+
 });
 
 function clearQtipTimeoutStack()
@@ -49761,7 +50113,7 @@ $('.input-group').on('focus', '.form-control', function () {
   $(this).closest('.input-group, .form-group').removeClass('focus');
 });
 
-},{"../../lib/js/cose-bilkent/src/index.js":52,"./Views/LayoutProperties.js":54,"./contextMenuModule.js":55,"./edgeHandlingUtils.js":56,"./fileOperationsModule.js":57,"./panzoomUtils.js":59,"./qTipModule.js":60,"./realTimeModule.js":61,"./saveLoadUtils.js":62,"./stylesheet.js":63,"./viewOperationsModule.js":64,"backbone":1,"bootstrap":2,"cytoscape":19,"cytoscape-cxtmenu":15,"cytoscape-edgehandles":16,"cytoscape-panzoom":17,"cytoscape-qtip":18,"jquery":20,"underscore":21}],59:[function(require,module,exports){
+},{"../../lib/js/cose-bilkent/src/index.js":52,"./EditorActionsManager.js":53,"./RealTimeModule.js":54,"./Views/LayoutProperties.js":56,"./contextMenuModule.js":57,"./edgeHandlingUtils.js":58,"./fileOperationsModule.js":59,"./panzoomUtils.js":61,"./qTipModule.js":62,"./saveLoadUtils.js":63,"./stylesheet.js":64,"./viewOperationsModule.js":65,"backbone":1,"bootstrap":2,"cytoscape":19,"cytoscape-cxtmenu":15,"cytoscape-edgehandles":16,"cytoscape-panzoom":17,"cytoscape-qtip":18,"jquery":20,"underscore":21}],61:[function(require,module,exports){
 var panzoomOptions =
 {
   // the default values of each option are outlined below:
@@ -49787,7 +50139,7 @@ var panzoomOptions =
 
 module.exports = panzoomOptions;
 
-},{}],60:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 ;
 
 var BackboneView = require('./Views/BioGeneView.js');
@@ -49902,212 +50254,7 @@ module.exports = (function(cy,$)
 
 }(window.cy, window.$));
 
-},{"./Views/BioGeneView.js":53}],61:[function(require,module,exports){
-module.exports = (function(cy)
-{
-    var clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
-
-    if (!/^([0-9])$/.test(clientId[0])) {
-        alert('Invalid Client ID - did you forget to insert your application Client ID?');
-    }
-    // Create a new instance of the realtime utility with your client ID.
-    var realtimeUtils = new utils.RealtimeUtils({
-        clientId: clientId
-    });
-
-    authorize();
-
-    function authorize() {
-        // Attempt to authorize
-        realtimeUtils.authorize(function(response) {
-            if (response.error) {
-                // Authorization failed because this is the first time the user has used your application,
-                // show the authorize button to prompt them to authorize manually.
-                var button = document.getElementById('auth_button');
-                button.classList.add('visible');
-                button.addEventListener('click', function() {
-                    realtimeUtils.authorize(function(response) {
-                        start();
-                    }, true);
-                });
-            } else {
-                start();
-            }
-        }, false);
-    }
-
-    function start() {
-        // With auth taken care of, load a file, or create one if there
-        // is not an id in the URL.
-        var id = realtimeUtils.getParam('id');
-
-        // Register Types before load event !
-        registerTypes();
-
-        if (id) {
-            // Load the document id from the URL
-            realtimeUtils.load(id.replace('/', ''), onFileLoaded, onFileInitialize);
-        } else {
-            // Create a new document, add it to the URL
-            realtimeUtils.createRealtimeFile('New Graph', function(createResponse) {
-                window.history.pushState(null, null, '?id=' + createResponse.id);
-                realtimeUtils.load(createResponse.id, onFileLoaded, onFileInitialize);
-            });
-        }
-    }
-
-
-    // You must register the custom object before loading or creating any file that
-    // uses this custom object.
-    function registerTypes() {
-        //Register our custom objects go Google Real Time API
-        gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
-        gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
-        gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
-        gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
-        createNodeAndEdgeFieldsR();
-        gapi.drive.realtime.custom.setOnLoaded(NodeR, onLoadCallback);
-    }
-
-    function onLoadCallback() {
-        // this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, wireTextBoxes);
-    }
-
-    // The first time a file is opened, it must be initialized with the
-    // document structure.
-    function onFileInitialize(model) {
-        var root = model.getRoot();
-
-        var nodeList = model.createList();
-        var edgeList = model.createList();
-
-        root.set('nodes', nodeList);
-        root.set('edges', edgeList);
-
-        var nodes = cy.nodes();
-        var edges = cy.edges();
-
-        nodes.forEach(function(node, index)
-        {
-            var nodeData = node.data();
-            var nodePos = node.position();
-
-            var newNode = model.create(NodeR, {
-                label: nodeData.name,
-                nodeID: nodeData.id,
-                type: nodeData.type,
-                posX: nodePos.x,
-                posY: nodePos.y
-            });
-
-            nodeList.push(newNode);
-        });
-
-        edges.forEach(function(edge, index)
-        {
-            var edgeData = edge.data();
-
-            var newEdge = model.create(EdgeR, {
-                edgeID: edgeData.id,
-                source: edgeData.source,
-                target: edgeData.target,
-                type: edgeData.type
-            });
-
-            edgeList.push(newEdge);
-        });
-    }
-
-    // After a file has been initialized and loaded, we can access the
-    // document. We will wire up the data model to the UI.
-    function onFileLoaded(doc)
-    {
-        var model = doc.getModel();
-        var root = model.getRoot();
-
-        var refreshDataButton = document.getElementById('add_node');
-        refreshDataButton.addEventListener('click', function(event)
-        {
-            var nodeData = {name: "Dummy", type: "Gene"};
-
-            var newNode = model.create(NodeR, {
-                label: "Dummy",
-                nodeID: Math.random() * 10,
-                type: "Gene",
-                posX: Math.random() * 10,
-                posY: Math.random() * 10,
-            });
-
-            root.get('nodes').push(newNode);
-        });
-
-        root.get('nodes').addEventListener( gapi.drive.realtime.EventType.VALUES_ADDED, function(event)
-        {
-          var node = event.values[0];
-
-          var nodeData = {type: node.type, name:'New '+ node.type};
-          console.log(event);
-          cy.add(
-          {
-              group: "nodes",
-              data: nodeData
-          });
-        })
-
-        gapi.drive.realtime.debug();
-    }
-
-    // Connects the text boxes to the collaborative string
-    function wireTextBoxes(event) {
-        var textArea1 = document.getElementById('text_area_1');
-        var textArea2 = document.getElementById('text_area_2');
-
-        textArea1.innerHTML = event.currentTarget.nodeID;
-        textArea2.innerHTML = event.currentTarget.label;
-    }
-
-    //Custom object Definitions and Registration Part
-    var NodeR = function() {
-
-    }
-
-    var EdgeR = function() {
-
-    }
-
-    var createNodeAndEdgeFieldsR = function() {
-        NodeR.prototype.nodeID = gapi.drive.realtime.custom.collaborativeField('nodeID');
-        NodeR.prototype.label = gapi.drive.realtime.custom.collaborativeField('label');
-        NodeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
-        NodeR.prototype.posX = gapi.drive.realtime.custom.collaborativeField('posX');
-        NodeR.prototype.posY = gapi.drive.realtime.custom.collaborativeField('posY');
-
-        EdgeR.prototype.edgeID = gapi.drive.realtime.custom.collaborativeField('edgeID');
-        EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
-        EdgeR.prototype.target = gapi.drive.realtime.custom.collaborativeField('target');
-        EdgeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
-    }
-
-    var NodeRInitializer = function(params) {
-        var model = gapi.drive.realtime.custom.getModel(this);
-        this.nodeID = params.nodeID || "undefined";
-        this.label = params.label || "undefined";
-        this.type = params.type || "undefined";
-        this.posX = params.posX || "undefined";
-        this.posY = params.posY || "undefined";
-    }
-
-    var EdgeRInitializer = function(params) {
-        var model = gapi.drive.realtime.custom.getModel(this);
-        this.edgeID = params.edgeID || "undefined";
-        this.type = params.type || "undefined";
-        this.source = params.source || "undefined";
-        this.target = params.target || "undefined";
-    }
-
-})(window.cy)
-
-},{}],62:[function(require,module,exports){
+},{"./Views/BioGeneView.js":55}],63:[function(require,module,exports){
 var SaveLoadUtils =
 {
   //Exports given json graph(based on cy.export()) into a string
@@ -50243,7 +50390,7 @@ var SaveLoadUtils =
 
 module.exports = SaveLoadUtils;
 
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 var styleSheet = [
 {
       selector: 'node',
@@ -50480,7 +50627,7 @@ var edgeLineTypeHandler = function( ele )
 
 module.exports = styleSheet;
 
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 module.exports = (function($)
 {
   'use strict';
@@ -50607,4 +50754,4 @@ module.exports = (function($)
 
 })(window.$)
 
-},{}]},{},[58]);
+},{}]},{},[60]);

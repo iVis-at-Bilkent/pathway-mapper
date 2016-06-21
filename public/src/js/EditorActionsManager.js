@@ -1,4 +1,4 @@
-module.exports = (function()
+module.exports = (function(cy)
 {
   "use strict";
 
@@ -10,7 +10,7 @@ module.exports = (function()
       this.edgeCounter = 0;
   };
 
-  _EditorActionsManager.prototype.addNode(nodeData, posData)
+  _EditorActionsManager.prototype.addNode = function(nodeData, posData)
   {
       nodeData.id =  this.nodeCounter++;
 
@@ -24,7 +24,7 @@ module.exports = (function()
       }
   }
 
-  _EditorActionsManager.prototype.addNodetoCy(nodeData, posData)
+  _EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)
   {
     var newNode;
 
@@ -51,8 +51,9 @@ module.exports = (function()
     }
   }
 
-  _EditorActionsManager.prototype.realTimeNodeAddEventCallBack(event)
+  _EditorActionsManager.prototype.realTimeNodeAddEventCallBack = function(event)
   {
+    //Get real time node object and sync it to node addition
     var node = event.values[0];
     var nodeData =
     {
@@ -63,7 +64,7 @@ module.exports = (function()
 
     if (node.posX != "undefined" && node.posY != "unedfined")
     {
-      this.addNodetoCy(nodeData, {x: node.x, node.y});
+      this.addNodetoCy(nodeData, {x: node.x, y: node.y});
     }
     else
     {
@@ -71,7 +72,7 @@ module.exports = (function()
     }
   }
 
-  _EditorActionsManager.prototype.addNewNodeToRealTime(nodeData, posData)
+  _EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
   {
     var model = this.realTimeDoc.getModel();
     var root = model.getRoot();
@@ -84,8 +85,8 @@ module.exports = (function()
       {
           name: nodeData.name,
           type: "Gene",
-          posX: posData.x,
-          posY: posData.y,
+          x: posData.x,
+          y: posData.y,
       });
     }
     else
@@ -101,25 +102,24 @@ module.exports = (function()
   // Singleton Class related stuff here !
   var EditorActionsManager = function()
   {
-    var instance;
-
-    function createInstance()
-    {
-        var object = new _EditorActionsManager();
-        return object;
-    }
-
-    return
-    {
-        getInstance: function () {
-            if (!instance) {
-                instance = createInstance();
-            }
-            return instance;
-        }
-    };
+    // var instance;
+    //
+    // function createInstance()
+    // {
+    //     var object = new _EditorActionsManager();
+    //     return object;
+    // }
+    //
+    // this.prototype.getInstance = function()
+    // {
+    //     if (!instance) {
+    //         instance = createInstance();
+    //     }
+    //     return instance;
+    // }
+    return new _EditorActionsManager();
   }
 
   return EditorActionsManager;
 
-})();
+})(window.cy);

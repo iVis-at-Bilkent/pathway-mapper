@@ -1,76 +1,104 @@
 module.exports = (function(cy)
 {
-    var clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
+    "use strict";
 
-    if (!/^([0-9])$/.test(clientId[0])) {
-        alert('Invalid Client ID - did you forget to insert your application Client ID?');
-    }
-    // Create a new instance of the realtime utility with your client ID.
-    var realtimeUtils = new utils.RealtimeUtils({
-        clientId: clientId
-    });
+    var RealTimeModule = function()
+    {
+      this.clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
 
-    authorize();
+      // if (!/^([0-9])$/.test(clientId[0]))
+      // {
+      //     throw new Error('Invalid Client ID - did you forget to insert your application Client ID?');
+      // }
 
-    function authorize() {
-        // Attempt to authorize
-        realtimeUtils.authorize(function(response) {
-            if (response.error) {
-                // Authorization failed because this is the first time the user has used your application,
-                // show the authorize button to prompt them to authorize manually.
-                var button = document.getElementById('auth_button');
-                button.classList.add('visible');
-                button.addEventListener('click', function() {
-                    realtimeUtils.authorize(function(response) {
-                        start();
-                    }, true);
-                });
-            } else {
-                start();
-            }
-        }, false);
+      // Create a new instance of the realtime utility with your client ID.
+      this.realtimeUtils = new utils.RealtimeUtils({
+          clientId: this.clientId
+      });
+      this.authorize();
+
     }
 
-    function start() {
+    RealTimeModule.prototype.authorize = function()
+    {
+      // Attempt to authorize
+      var self = this;
+      this.realtimeUtils.authorize(function(response)
+      {
+          //TODO Modal ?
+          if (response.error)
+          {
+              // Authorization failed because this is the first time the user has used your application,
+              // show the authorize button to prompt them to authorize manually.
+              var button = document.getElementById('auth_button');
+              button.classList.add('visible');
+              button.addEventListener('click', function() {
+                  self.realtimeUtils.authorize(function(response) {
+                      start();
+                  }, true);
+              });
+          }
+          else
+          {
+              self.initRealTimeAPI();
+          }
+      }, false);
+    }
+
+    RealTimeModule.prototype.initRealTimeAPI = function()
+    {
         // With auth taken care of, load a file, or create one if there
         // is not an id in the URL.
-        var id = realtimeUtils.getParam('id');
+        var id = this.realtimeUtils.getParam('id');
 
         // Register Types before load event !
-        registerTypes();
+        this.registerTypes();
+        var self = this;
 
-        if (id) {
+        var initFileCallback = function(model)
+        {
+            self.onFileInitialize(model);
+        }
+
+        var loadFileCallback = function(model)
+        {
+            self.onFileLoaded(model);
+        }
+
+        if (id)
+        {
             // Load the document id from the URL
-            realtimeUtils.load(id.replace('/', ''), onFileLoaded, onFileInitialize);
-        } else {
+            this.realtimeUtils.load(id.replace('/', ''), loadFileCallback, initFileCallback);
+        }
+        else
+        {
             // Create a new document, add it to the URL
-            realtimeUtils.createRealtimeFile('New Graph', function(createResponse) {
+            this.realtimeUtils.createRealtimeFile('New Graph', function(createResponse) {
                 window.history.pushState(null, null, '?id=' + createResponse.id);
-                realtimeUtils.load(createResponse.id, onFileLoaded, onFileInitialize);
+                self.realtimeUtils.load(createResponse.id, loadFileCallback, initFileCallback);
             });
         }
-    }
+     }
 
 
     // You must register the custom object before loading or creating any file that
     // uses this custom object.
-    function registerTypes() {
+    RealTimeModule.prototype.registerTypes = function()
+    {
         //Register our custom objects go Google Real Time API
         gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
         gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
         gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
         gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
         createNodeAndEdgeFieldsR();
-        gapi.drive.realtime.custom.setOnLoaded(NodeR, onLoadCallback);
+        // gapi.drive.realtime.custom.setOnLoaded(NodeR, onLoadCallback);
     }
 
-    function onLoadCallback() {
-        // this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, wireTextBoxes);
-    }
 
     // The first time a file is opened, it must be initialized with the
     // document structure.
-    function onFileInitialize(model) {
+    RealTimeModule.prototype.onFileInitialize = function(model)
+    {
         var root = model.getRoot();
 
         var nodeList = model.createList();
@@ -91,8 +119,8 @@ module.exports = (function(cy)
                 label: nodeData.name,
                 nodeID: nodeData.id,
                 type: nodeData.type,
-                posX: nodePos.x,
-                posY: nodePos.y
+                x: nodePos.x,
+                y: nodePos.y
             });
 
             nodeList.push(newNode);
@@ -115,8 +143,9 @@ module.exports = (function(cy)
 
     // After a file has been initialized and loaded, we can access the
     // document. We will wire up the data model to the UI.
-    function onFileLoaded(doc)
+    RealTimeModule.prototype.onFileLoaded =  function(doc)
     {
+        // this.realTimeDoc = doc;
         var model = doc.getModel();
         var root = model.getRoot();
 
@@ -126,11 +155,11 @@ module.exports = (function(cy)
             var nodeData = {name: "Dummy", type: "Gene"};
 
             var newNode = model.create(NodeR, {
-                label: "Dummy",
+                name: "Dummy",
                 nodeID: Math.random() * 10,
                 type: "Gene",
-                posX: Math.random() * 10,
-                posY: Math.random() * 10,
+                x: Math.random() * 10,
+                y: Math.random() * 10,
             });
 
             root.get('nodes').push(newNode);
@@ -149,25 +178,19 @@ module.exports = (function(cy)
           });
         })
 
-        gapi.drive.realtime.debug();
+        // gapi.drive.realtime.debug();
     }
-
 
     //Custom object Definitions and Registration Part
-    var NodeR = function() {
-
-    }
-
-    var EdgeR = function() {
-
-    }
+    var NodeR = function() {}
+    var EdgeR = function() {}
 
     var createNodeAndEdgeFieldsR = function() {
         NodeR.prototype.nodeID = gapi.drive.realtime.custom.collaborativeField('nodeID');
-        NodeR.prototype.label = gapi.drive.realtime.custom.collaborativeField('label');
+        NodeR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
         NodeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
-        NodeR.prototype.posX = gapi.drive.realtime.custom.collaborativeField('posX');
-        NodeR.prototype.posY = gapi.drive.realtime.custom.collaborativeField('posY');
+        NodeR.prototype.x = gapi.drive.realtime.custom.collaborativeField('x');
+        NodeR.prototype.y = gapi.drive.realtime.custom.collaborativeField('y');
 
         EdgeR.prototype.edgeID = gapi.drive.realtime.custom.collaborativeField('edgeID');
         EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
@@ -178,10 +201,10 @@ module.exports = (function(cy)
     var NodeRInitializer = function(params) {
         var model = gapi.drive.realtime.custom.getModel(this);
         this.nodeID = params.nodeID || "undefined";
-        this.label = params.label || "undefined";
+        this.label = params.name || "undefined";
         this.type = params.type || "undefined";
-        this.posX = params.posX || "undefined";
-        this.posY = params.posY || "undefined";
+        this.x = params.x || "undefined";
+        this.y = params.y || "undefined";
     }
 
     var EdgeRInitializer = function(params) {
@@ -192,4 +215,5 @@ module.exports = (function(cy)
         this.target = params.target || "undefined";
     }
 
+    return RealTimeModule;
 })(window.cy)
