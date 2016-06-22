@@ -23,7 +23,9 @@ module.exports = (function(cy)
   function removeNodes(nodes)
   {
     //Get removed edges first
-    var removedEles = nodes.connectedEdges().remove();
+    var removedEles = nodes.connectedEdges();
+    window.editorActionsManager.removeElement(removedEles);
+
     var children = nodes.children();
 
     if (children != null && children.length > 0)
@@ -36,8 +38,9 @@ module.exports = (function(cy)
       removedEles = removedEles.union(removeNodes(children));
     }
 
-    removedEles = removedEles.union(nodes.remove());
-    cy.nodes().updateCompoundBounds();
+    window.editorActionsManager.removeElement(nodes);
+    removedEles = removedEles.union(nodes);
+    //cy.nodes().updateCompoundBounds();
     return removedEles;
   }
 
@@ -61,8 +64,8 @@ module.exports = (function(cy)
       }
     }
 
-    cy.add(removedNodes);
-    cy.nodes().updateCompoundBounds();
+    window.editorActionsManager.addNodes(removedNodes);
+    //cy.nodes().updateCompoundBounds();
     //TODO need to find better workaround for this !
     cy.layout({name: 'preset'});
   }
@@ -91,7 +94,8 @@ module.exports = (function(cy)
         select: function(ele)
         {
           var selectedNodes = cy.nodes(':selected').union(ele);
-          selectedNodes.forEach(function(node, index)
+          var nodesToBeRemoved = selectedNodes.remove();
+          nodesToBeRemoved.forEach(function(node, index)
           {
             window.editorActionsManager.removeElement(node);
           });

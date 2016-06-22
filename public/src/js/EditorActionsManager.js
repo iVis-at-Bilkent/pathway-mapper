@@ -6,14 +6,12 @@ module.exports = (function(cy)
   {
       // this.realTimeDoc = realTimeDoc;
       this.isCollaborative = true;
-      this.nodeCounter = 0;
-      this.edgeCounter = 0;
   };
 
 
-   //Node Related Functions
-  _EditorActionsManager.prototype.addNode = function(nodeData, posData)
-  {
+    //Node Related Functions
+    _EditorActionsManager.prototype.addNode = function(nodeData, posData)
+    {
       if (this.isCollaborative)
       {
           this.addNewNodeToRealTime(nodeData, posData);
@@ -22,33 +20,42 @@ module.exports = (function(cy)
       {
           this.addNodetoCy(nodeData,posData);
       }
-  }
+    }
+
+    _EditorActionsManager.prototype.addNodes = function(nodes)
+    {
+        var self = this;
+        nodes.forEach(function (node, index)
+        {
+            self.addNode(node.data(),node.position());
+        });
+    }
 
   _EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)
   {
-    var newNode;
-    if (posData)
-    {
-      newNode = cy.add(
+      var newNode =
       {
-          group: "nodes",
-          data: nodeData,
-          renderedPosition:
+        group: "nodes",
+        data: nodeData
+      };
+
+      if (nodeData.parent === undefined )
+      {
+        delete newNode.data.parent;
+      }
+
+      if (posData)
+      {
+          newNode.renderedPosition =
           {
               x: posData.x,
               y: posData.y
           }
-      });
+      }
+
+      cy.add(newNode);
     }
-    else
-    {
-      newNode = cy.add(
-      {
-          group: "nodes",
-          data: nodeData,
-      });
-    }
-  }
+
 
   _EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
   {
@@ -72,10 +79,11 @@ module.exports = (function(cy)
       {
         id: nodeID,
         type: node.type,
-        name:'New '+ node.type
+        name: node.name,
+        parent: node.parent
       };
 
-      if (node.posX != "undefined" && node.posY != "unedfined")
+      if (node.x != "undefined" && node.y != "unedfined")
       {
         this.addNodetoCy(nodeData, {x: node.x, y: node.y});
       }
@@ -152,7 +160,11 @@ module.exports = (function(cy)
  {
      if (this.isCollaborative)
      {
-         this.removeElementFromRealTime(ele);
+         var self = this;
+         ele.forEach(function (elem, index)
+         {
+             self.removeElementFromRealTime(elem);
+         })
      }
      else
      {
@@ -174,6 +186,19 @@ module.exports = (function(cy)
   {
     this.removeElementCy(cyEle);
   }
+
+    _EditorActionsManager.prototype.moveElements = function(ele)
+    {
+        //Sync movement to real time api
+        if(this.isCollaborative)
+        {
+            ele.forEach(function (ele,index)
+            {
+               window.realTimeManager.moveElement(ele);
+            });
+        }
+    }
+
 
 
   // Singleton Class related stuff here !

@@ -92,7 +92,7 @@ $(window).load(function()
 
       style: styleSheet,
 
-      elements: allEles,
+      // elements: allEles,
       ready: function(){
 
         // var selectedNodes = this.nodes();
@@ -178,6 +178,12 @@ $(window).load(function()
     cy.on('mouseout', 'node', function(e)
     {
         clearQtipTimeoutStack();
+    });
+
+    cy.on('free', 'node', function (e)
+    {
+        //TODO work on this later
+        // window.editorActionsManager.moveElements(event.cyTarget);
     });
 
     // cy.on('tap', 'node', function( e )

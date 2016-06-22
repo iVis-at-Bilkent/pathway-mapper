@@ -182,27 +182,14 @@ module.exports = (function(cy, editorActionsManager)
       var model = this.realTimeDoc.getModel();
       var root = model.getRoot();
       var nodeMap =  root.get('nodes');
-
-      var newNode;
-
-      if (posData)
+      var newNode = model.create(NodeR,
       {
-        newNode = model.create(NodeR,
-        {
-            name: nodeData.name,
-            type: nodeData.type,
-            x: posData.x,
-            y: posData.y,
-        });
-      }
-      else
-      {
-        newNode = model.create(NodeR,
-        {
-            name: nodeData.name,
-            type: nodeData.type,
-        });
-      }
+        name: nodeData.name,
+        type: nodeData.type,
+        parent: nodeData.parent,
+        x: posData.x,
+        y: posData.y
+      });
 
       var realTimeGeneratedID = this.getCustomObjId(newNode);
       nodeMap.set(realTimeGeneratedID, newNode);
@@ -247,6 +234,32 @@ module.exports = (function(cy, editorActionsManager)
       }
     }
 
+    RealTimeModule.prototype.moveElement = function(ele)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var edgeMap =  root.get('edges');
+        var nodeMap =  root.get('nodes');
+
+        var elementID = ele.id();
+        var newPos = ele.position();
+
+        if (nodeMap.has(elementID))
+        {
+            var tmpNode = nodeMap.get(elementID);
+        }
+        else if (edgeMap.has(elementID))
+        {
+            var tmpEdge = edgeMap.get(elementID);
+        }
+        else
+        {
+            throw new Error('Element does not exists in Real Time');
+            return;
+        }
+
+    }
+
     //Google Real Time's custom object ids are retrieved in this way
     RealTimeModule.prototype.getCustomObjId = function(object)
     {
@@ -263,6 +276,7 @@ module.exports = (function(cy, editorActionsManager)
         NodeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
         NodeR.prototype.x = gapi.drive.realtime.custom.collaborativeField('x');
         NodeR.prototype.y = gapi.drive.realtime.custom.collaborativeField('y');
+        NodeR.prototype.parent = gapi.drive.realtime.custom.collaborativeField('parent');
 
         // EdgeR.prototype.edgeID = gapi.drive.realtime.custom.collaborativeField('edgeID');
         EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
@@ -272,9 +286,9 @@ module.exports = (function(cy, editorActionsManager)
 
     var NodeRInitializer = function(params) {
         var model = gapi.drive.realtime.custom.getModel(this);
-        // this.nodeID = this.getId || "undefined";
         this.name = params.name || "undefined";
         this.type = params.type || "undefined";
+        this.parent = params.parent || "undefined";
         this.x = params.x || "undefined";
         this.y = params.y || "undefined";
     }

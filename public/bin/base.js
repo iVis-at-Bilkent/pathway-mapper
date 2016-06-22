@@ -48606,14 +48606,12 @@ module.exports = (function(cy)
   {
       // this.realTimeDoc = realTimeDoc;
       this.isCollaborative = true;
-      this.nodeCounter = 0;
-      this.edgeCounter = 0;
   };
 
 
-   //Node Related Functions
-  _EditorActionsManager.prototype.addNode = function(nodeData, posData)
-  {
+    //Node Related Functions
+    _EditorActionsManager.prototype.addNode = function(nodeData, posData)
+    {
       if (this.isCollaborative)
       {
           this.addNewNodeToRealTime(nodeData, posData);
@@ -48622,33 +48620,42 @@ module.exports = (function(cy)
       {
           this.addNodetoCy(nodeData,posData);
       }
-  }
+    }
+
+    _EditorActionsManager.prototype.addNodes = function(nodes)
+    {
+        var self = this;
+        nodes.forEach(function (node, index)
+        {
+            self.addNode(node.data(),node.position());
+        });
+    }
 
   _EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)
   {
-    var newNode;
-    if (posData)
-    {
-      newNode = cy.add(
+      var newNode =
       {
-          group: "nodes",
-          data: nodeData,
-          renderedPosition:
+        group: "nodes",
+        data: nodeData
+      };
+
+      if (nodeData.parent === undefined )
+      {
+        delete newNode.data.parent;
+      }
+
+      if (posData)
+      {
+          newNode.renderedPosition =
           {
               x: posData.x,
               y: posData.y
           }
-      });
+      }
+
+      cy.add(newNode);
     }
-    else
-    {
-      newNode = cy.add(
-      {
-          group: "nodes",
-          data: nodeData,
-      });
-    }
-  }
+
 
   _EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
   {
@@ -48672,10 +48679,11 @@ module.exports = (function(cy)
       {
         id: nodeID,
         type: node.type,
-        name:'New '+ node.type
+        name: node.name,
+        parent: node.parent
       };
 
-      if (node.posX != "undefined" && node.posY != "unedfined")
+      if (node.x != "undefined" && node.y != "unedfined")
       {
         this.addNodetoCy(nodeData, {x: node.x, y: node.y});
       }
@@ -48752,7 +48760,11 @@ module.exports = (function(cy)
  {
      if (this.isCollaborative)
      {
-         this.removeElementFromRealTime(ele);
+         var self = this;
+         ele.forEach(function (elem, index)
+         {
+             self.removeElementFromRealTime(elem);
+         })
      }
      else
      {
@@ -48774,6 +48786,19 @@ module.exports = (function(cy)
   {
     this.removeElementCy(cyEle);
   }
+
+    _EditorActionsManager.prototype.moveElements = function(ele)
+    {
+        //Sync movement to real time api
+        if(this.isCollaborative)
+        {
+            ele.forEach(function (ele,index)
+            {
+               window.realTimeManager.moveElement(ele);
+            });
+        }
+    }
+
 
 
   // Singleton Class related stuff here !
@@ -48986,27 +49011,14 @@ module.exports = (function(cy, editorActionsManager)
       var model = this.realTimeDoc.getModel();
       var root = model.getRoot();
       var nodeMap =  root.get('nodes');
-
-      var newNode;
-
-      if (posData)
+      var newNode = model.create(NodeR,
       {
-        newNode = model.create(NodeR,
-        {
-            name: nodeData.name,
-            type: nodeData.type,
-            x: posData.x,
-            y: posData.y,
-        });
-      }
-      else
-      {
-        newNode = model.create(NodeR,
-        {
-            name: nodeData.name,
-            type: nodeData.type,
-        });
-      }
+        name: nodeData.name,
+        type: nodeData.type,
+        parent: nodeData.parent,
+        x: posData.x,
+        y: posData.y
+      });
 
       var realTimeGeneratedID = this.getCustomObjId(newNode);
       nodeMap.set(realTimeGeneratedID, newNode);
@@ -49051,6 +49063,32 @@ module.exports = (function(cy, editorActionsManager)
       }
     }
 
+    RealTimeModule.prototype.moveElement = function(ele)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var edgeMap =  root.get('edges');
+        var nodeMap =  root.get('nodes');
+
+        var elementID = ele.id();
+        var newPos = ele.position();
+
+        if (nodeMap.has(elementID))
+        {
+            var tmpNode = nodeMap.get(elementID);
+        }
+        else if (edgeMap.has(elementID))
+        {
+            var tmpEdge = edgeMap.get(elementID);
+        }
+        else
+        {
+            throw new Error('Element does not exists in Real Time');
+            return;
+        }
+
+    }
+
     //Google Real Time's custom object ids are retrieved in this way
     RealTimeModule.prototype.getCustomObjId = function(object)
     {
@@ -49067,6 +49105,7 @@ module.exports = (function(cy, editorActionsManager)
         NodeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
         NodeR.prototype.x = gapi.drive.realtime.custom.collaborativeField('x');
         NodeR.prototype.y = gapi.drive.realtime.custom.collaborativeField('y');
+        NodeR.prototype.parent = gapi.drive.realtime.custom.collaborativeField('parent');
 
         // EdgeR.prototype.edgeID = gapi.drive.realtime.custom.collaborativeField('edgeID');
         EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
@@ -49076,9 +49115,9 @@ module.exports = (function(cy, editorActionsManager)
 
     var NodeRInitializer = function(params) {
         var model = gapi.drive.realtime.custom.getModel(this);
-        // this.nodeID = this.getId || "undefined";
         this.name = params.name || "undefined";
         this.type = params.type || "undefined";
+        this.parent = params.parent || "undefined";
         this.x = params.x || "undefined";
         this.y = params.y || "undefined";
     }
@@ -49397,7 +49436,9 @@ module.exports = (function(cy)
   function removeNodes(nodes)
   {
     //Get removed edges first
-    var removedEles = nodes.connectedEdges().remove();
+    var removedEles = nodes.connectedEdges();
+    window.editorActionsManager.removeElement(removedEles);
+
     var children = nodes.children();
 
     if (children != null && children.length > 0)
@@ -49410,8 +49451,9 @@ module.exports = (function(cy)
       removedEles = removedEles.union(removeNodes(children));
     }
 
-    removedEles = removedEles.union(nodes.remove());
-    cy.nodes().updateCompoundBounds();
+    window.editorActionsManager.removeElement(nodes);
+    removedEles = removedEles.union(nodes);
+    //cy.nodes().updateCompoundBounds();
     return removedEles;
   }
 
@@ -49435,8 +49477,8 @@ module.exports = (function(cy)
       }
     }
 
-    cy.add(removedNodes);
-    cy.nodes().updateCompoundBounds();
+    window.editorActionsManager.addNodes(removedNodes);
+    //cy.nodes().updateCompoundBounds();
     //TODO need to find better workaround for this !
     cy.layout({name: 'preset'});
   }
@@ -49465,7 +49507,8 @@ module.exports = (function(cy)
         select: function(ele)
         {
           var selectedNodes = cy.nodes(':selected').union(ele);
-          selectedNodes.forEach(function(node, index)
+          var nodesToBeRemoved = selectedNodes.remove();
+          nodesToBeRemoved.forEach(function(node, index)
           {
             window.editorActionsManager.removeElement(node);
           });
@@ -50211,7 +50254,7 @@ $(window).load(function()
 
       style: styleSheet,
 
-      elements: allEles,
+      // elements: allEles,
       ready: function(){
 
         // var selectedNodes = this.nodes();
@@ -50297,6 +50340,12 @@ $(window).load(function()
     cy.on('mouseout', 'node', function(e)
     {
         clearQtipTimeoutStack();
+    });
+
+    cy.on('free', 'node', function (e)
+    {
+        //TODO work on this later
+        // window.editorActionsManager.moveElements(event.cyTarget);
     });
 
     // cy.on('tap', 'node', function( e )
