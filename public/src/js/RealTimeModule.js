@@ -91,7 +91,6 @@ module.exports = (function(cy, editorActionsManager)
         gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
         gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
         createNodeAndEdgeFieldsR();
-        // gapi.drive.realtime.custom.setOnLoaded(NodeR, onLoadCallback);
     }
 
 
@@ -103,10 +102,12 @@ module.exports = (function(cy, editorActionsManager)
 
         var nodeMap = model.createMap();
         var edgeMap = model.createMap();
+        var elementCounter = model.createString();
+        elementCounter.setText("0");
 
         root.set('nodes', nodeMap);
         root.set('edges', edgeMap);
-
+        root.set('element_counter', elementCounter);
 
         // var nodes = cy.nodes();
         // var edges = cy.edges();
@@ -153,19 +154,20 @@ module.exports = (function(cy, editorActionsManager)
         //Keep a reference to the file !
         this.realTimeDoc = doc;
 
-        //Setup event handlers for lists
-        var nodeAddEventHandler = function(event)
+        //Setup event handlers for maps
+        var nodeAddRemoveHandler = function(event)
         {
-          editorActionsManager.realTimeNodeAddEventCallBack(event);
+          editorActionsManager.realTimeNodeAddRemoveEventCallBack(event);
         }
 
-        var edgeAddEventHandler = function(event)
+        var edgeAddRemoveHandler = function(event)
         {
-          editorActionsManager.realTimeNodeAddEventCallBack(event);
+          editorActionsManager.realTimeEdgeAddRemoveEventCallBack(event);
         }
 
-        root.get('nodes').addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddEventHandler);
-        root.get('edges').addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, edgeAddEventHandler);
+        //Event listeners for edge and node map
+        root.get('nodes').addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddRemoveHandler);
+        root.get('edges').addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, edgeAddRemoveHandler);
 
         //Just for debugging
         var debugRButton = document.getElementById('debugR');
@@ -180,8 +182,6 @@ module.exports = (function(cy, editorActionsManager)
       var model = this.realTimeDoc.getModel();
       var root = model.getRoot();
       var nodeMap =  root.get('nodes');
-      var currentSize = nodeMap.size;
-      var newID = "elem"+currentSize;
 
       var newNode;
 
@@ -189,7 +189,6 @@ module.exports = (function(cy, editorActionsManager)
       {
         newNode = model.create(NodeR,
         {
-            nodeID: newID,
             name: nodeData.name,
             type: nodeData.type,
             x: posData.x,
@@ -200,47 +199,58 @@ module.exports = (function(cy, editorActionsManager)
       {
         newNode = model.create(NodeR,
         {
-            nodeID: newID,
             name: nodeData.name,
             type: nodeData.type,
         });
       }
 
-      nodeMap.set(newID, newNode);
+      var realTimeGeneratedID = this.getCustomObjId(newNode);
+      nodeMap.set(realTimeGeneratedID, newNode);
     }
 
     RealTimeModule.prototype.addNewEdge = function(edgeData)
     {
       var model = this.realTimeDoc.getModel();
       var root = model.getRoot();
-      var nodeMap =  root.get('edges');
-      var currentSize = nodeMap.size;
-      var newID = "elem"+currentSize;
+      var edgeMap =  root.get('edges');
 
-      var newNode;
-
-      if (posData)
+      var newEdge = model.create(EdgeR,
       {
-        newNode = model.create(NodeR,
-        {
-            nodeID: newID,
-            name: nodeData.name,
-            type: nodeData.type,
-            x: posData.x,
-            y: posData.y,
-        });
+          type: edgeData.type,
+          source: edgeData.source,
+          target: edgeData.target
+      });
+
+      var realTimeGeneratedID = this.getCustomObjId(newEdge);
+      edgeMap.set(realTimeGeneratedID, newEdge);
+    }
+
+    RealTimeModule.prototype.removeElement = function(elementID)
+    {
+      var model = this.realTimeDoc.getModel();
+      var root = model.getRoot();
+      var edgeMap =  root.get('edges');
+      var nodeMap =  root.get('nodes');
+
+      if (nodeMap.has(elementID))
+      {
+          nodeMap.delete(elementID);
+      }
+      else if (edgeMap.has(elementID))
+      {
+        edgeMap.delete(elementID);
       }
       else
       {
-        newNode = model.create(NodeR,
-        {
-            nodeID: newID,
-            name: nodeData.name,
-            type: nodeData.type,
-        });
+        throw new Error('Element does not exists in Real Time');
+        return;
       }
+    }
 
-      nodeMap.set(newID, newNode);
+    //Google Real Time's custom object ids are retrieved in this way
+    RealTimeModule.prototype.getCustomObjId = function(object)
+    {
+      return gapi.drive.realtime.custom.getId(object);
     }
 
     //Custom object Definitions and Registration Part
@@ -248,13 +258,13 @@ module.exports = (function(cy, editorActionsManager)
     var EdgeR = function() {}
 
     var createNodeAndEdgeFieldsR = function() {
-        NodeR.prototype.nodeID = gapi.drive.realtime.custom.collaborativeField('nodeID');
+        // NodeR.prototype.nodeID = gapi.drive.realtime.custom.collaborativeField('nodeID');
         NodeR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
         NodeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
         NodeR.prototype.x = gapi.drive.realtime.custom.collaborativeField('x');
         NodeR.prototype.y = gapi.drive.realtime.custom.collaborativeField('y');
 
-        EdgeR.prototype.edgeID = gapi.drive.realtime.custom.collaborativeField('edgeID');
+        // EdgeR.prototype.edgeID = gapi.drive.realtime.custom.collaborativeField('edgeID');
         EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
         EdgeR.prototype.target = gapi.drive.realtime.custom.collaborativeField('target');
         EdgeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
@@ -262,8 +272,8 @@ module.exports = (function(cy, editorActionsManager)
 
     var NodeRInitializer = function(params) {
         var model = gapi.drive.realtime.custom.getModel(this);
-        this.nodeID = params.nodeID || "undefined";
-        this.label = params.name || "undefined";
+        // this.nodeID = this.getId || "undefined";
+        this.name = params.name || "undefined";
         this.type = params.type || "undefined";
         this.x = params.x || "undefined";
         this.y = params.y || "undefined";
@@ -271,7 +281,7 @@ module.exports = (function(cy, editorActionsManager)
 
     var EdgeRInitializer = function(params) {
         var model = gapi.drive.realtime.custom.getModel(this);
-        this.edgeID = params.edgeID || "undefined";
+        // this.edgeID = params.edgeID || "undefined";
         this.type = params.type || "undefined";
         this.source = params.source || "undefined";
         this.target = params.target || "undefined";

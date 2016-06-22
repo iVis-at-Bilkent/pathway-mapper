@@ -10,6 +10,7 @@ module.exports = (function(cy)
       this.edgeCounter = 0;
   };
 
+
    //Node Related Functions
   _EditorActionsManager.prototype.addNode = function(nodeData, posData)
   {
@@ -49,25 +50,41 @@ module.exports = (function(cy)
     }
   }
 
-  _EditorActionsManager.prototype.realTimeNodeAddEventCallBack = function(event)
+  _EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
   {
-    //Get real time node object and sync it to node addition
+    //Get real time node object and sync it to node addition or removal
     var node = event.newValue;
-    var nodeData =
-    {
-      id: node.nodeID,
-      type: node.type,
-      name:'New '+ node.type
-    };
+    var nodeID = event.property;
 
-    if (node.posX != "undefined" && node.posY != "unedfined")
+    //Removal Operation
+    if (node === null)
     {
-      this.addNodetoCy(nodeData, {x: node.x, y: node.y});
+      //Remove element from existing graph
+      var ele = event.newValue;
+      var cyEle = cy.$("#" + nodeID)
+      this.removeElementCy(cyEle);
     }
+    //Addition Operation
     else
     {
-      this.addNodetoCy(nodeData);
+      var nodeID = window.realTimeManager.getCustomObjId(node);
+      var nodeData =
+      {
+        id: nodeID,
+        type: node.type,
+        name:'New '+ node.type
+      };
+
+      if (node.posX != "undefined" && node.posY != "unedfined")
+      {
+        this.addNodetoCy(nodeData, {x: node.x, y: node.y});
+      }
+      else
+      {
+        this.addNodetoCy(nodeData);
+      }
     }
+
   }
 
   _EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
@@ -101,19 +118,63 @@ module.exports = (function(cy)
       });
   }
 
-  _EditorActionsManager.prototype.realTimeEdgeAddEventCallback = function(event)
+  _EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(event)
   {
-    //Get real time edge object and sync new edge to the existing graph
+
+    //Get real time node object and sync it to node addition or removal
     var edge = event.newValue;
-    var edgeData =
+    var edgeID = event.property;
+
+    //Removal Operation
+    if (edge === null)
     {
-      id: edge.edgeID,
-      type: edge.type,
-      source: edge.source,
-      target: edge.target
-    };
-    this.addNewEdgetoCy(edgeData);
+      //Remove element from existing graph
+      var ele = event.newValue;
+      var cyEle = cy.$("#" + edgeID)
+      this.removeElementCy(cyEle);
+    }
+    //Addition Operation
+    else
+    {
+      var edgeData =
+      {
+        id: edgeID,
+        type: edge.type,
+        source: edge.source,
+        target: edge.target
+      };
+      this.addNewEdgetoCy(edgeData);
+    }
   }
+
+  //Node Related Functions
+ _EditorActionsManager.prototype.removeElement = function(ele)
+ {
+     if (this.isCollaborative)
+     {
+         this.removeElementFromRealTime(ele);
+     }
+     else
+     {
+         this.removeElementCy(ele);
+     }
+ }
+
+   _EditorActionsManager.prototype.removeElementCy = function(ele)
+  {
+    cy.remove(ele);
+  }
+
+  _EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
+  {
+    window.realTimeManager.removeElement(ele.id());
+  }
+
+  _EditorActionsManager.prototype.realTimeElementDeletedEventCallback = function(event)
+  {
+    this.removeElementCy(cyEle);
+  }
+
 
   // Singleton Class related stuff here !
   var EditorActionsManager = function()

@@ -186,7 +186,6 @@ $(window).load(function()
     // });
 
 
-
 });
 
 function clearQtipTimeoutStack()

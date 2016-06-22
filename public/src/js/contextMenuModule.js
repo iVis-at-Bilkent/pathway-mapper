@@ -90,8 +90,11 @@ module.exports = (function(cy)
         content: 'Delete Node(s)',
         select: function(ele)
         {
-          cy.nodes(':selected').remove();
-          ele.remove();
+          var selectedNodes = cy.nodes(':selected').union(ele);
+          selectedNodes.forEach(function(node, index)
+          {
+            window.editorActionsManager.removeElement(node);
+          });
         }
       },
       {
@@ -186,8 +189,12 @@ module.exports = (function(cy)
         content: 'Delete Edge(s)',
         select: function(ele)
         {
-          cy.edges(':selected').remove();
-          ele.remove();
+          var selectedEdges = cy.edges(':selected').union(ele);
+          selectedEdges.forEach(function(edge, index)
+          {
+            window.editorActionsManager.removeElement(edge);
+          });
+
         }
       }
     ]
