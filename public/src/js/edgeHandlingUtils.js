@@ -64,6 +64,7 @@ var edgeHandleDefaults =
   complete: function( sourceNode, targetNodes, addedEntities )
   {
       // cy.add({group:'edges', data:{source: sourceNode.id(), target: targetNodes[0].id(), type: type}});
+      cy.remove(addedEntities);
   },
   stop: function( sourceNode ) {
     // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)

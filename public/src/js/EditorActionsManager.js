@@ -10,10 +10,9 @@ module.exports = (function(cy)
       this.edgeCounter = 0;
   };
 
+   //Node Related Functions
   _EditorActionsManager.prototype.addNode = function(nodeData, posData)
   {
-      nodeData.id =  this.nodeCounter++;
-
       if (this.isCollaborative)
       {
           this.addNewNodeToRealTime(nodeData, posData);
@@ -27,7 +26,6 @@ module.exports = (function(cy)
   _EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)
   {
     var newNode;
-
     if (posData)
     {
       newNode = cy.add(
@@ -54,12 +52,12 @@ module.exports = (function(cy)
   _EditorActionsManager.prototype.realTimeNodeAddEventCallBack = function(event)
   {
     //Get real time node object and sync it to node addition
-    var node = event.values[0];
+    var node = event.newValue;
     var nodeData =
     {
       id: node.nodeID,
       type: node.type,
-      name:'New '+ node.type,
+      name:'New '+ node.type
     };
 
     if (node.posX != "undefined" && node.posY != "unedfined")
@@ -75,6 +73,46 @@ module.exports = (function(cy)
   _EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
   {
       window.realTimeManager.addNewNode(nodeData,posData);
+  }
+
+  _EditorActionsManager.prototype.addEdge = function(edgeData)
+  {
+    if (this.isCollaborative)
+    {
+      this.addNewEdgeRealTime(edgeData);
+    }
+    else
+    {
+      this.addNewEdgetoCy(edgeData);
+    }
+  }
+
+  _EditorActionsManager.prototype.addNewEdgeRealTime = function(edgeData)
+  {
+      window.realTimeManager.addNewEdge(edgeData);
+  }
+
+  _EditorActionsManager.prototype.addNewEdgetoCy = function(edgeData)
+  {
+      cy.add(
+      {
+          group: "edges",
+          data: edgeData
+      });
+  }
+
+  _EditorActionsManager.prototype.realTimeEdgeAddEventCallback = function(event)
+  {
+    //Get real time edge object and sync new edge to the existing graph
+    var edge = event.newValue;
+    var edgeData =
+    {
+      id: edge.edgeID,
+      type: edge.type,
+      source: edge.source,
+      target: edge.target
+    };
+    this.addNewEdgetoCy(edgeData);
   }
 
   // Singleton Class related stuff here !

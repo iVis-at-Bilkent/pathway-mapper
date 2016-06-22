@@ -101,44 +101,45 @@ module.exports = (function(cy, editorActionsManager)
     {
         var root = model.getRoot();
 
-        var nodeList = model.createList();
-        var edgeList = model.createList();
+        var nodeMap = model.createMap();
+        var edgeMap = model.createMap();
 
-        root.set('nodes', nodeList);
-        root.set('edges', edgeList);
+        root.set('nodes', nodeMap);
+        root.set('edges', edgeMap);
 
-        var nodes = cy.nodes();
-        var edges = cy.edges();
 
-        nodes.forEach(function(node, index)
-        {
-            var nodeData = node.data();
-            var nodePos = node.position();
-
-            var newNode = model.create(NodeR, {
-                label: nodeData.name,
-                nodeID: nodeData.id,
-                type: nodeData.type,
-                x: nodePos.x,
-                y: nodePos.y
-            });
-
-            nodeList.push(newNode);
-        });
-
-        edges.forEach(function(edge, index)
-        {
-            var edgeData = edge.data();
-
-            var newEdge = model.create(EdgeR, {
-                edgeID: edgeData.id,
-                source: edgeData.source,
-                target: edgeData.target,
-                type: edgeData.type
-            });
-
-            edgeList.push(newEdge);
-        });
+        // var nodes = cy.nodes();
+        // var edges = cy.edges();
+        //
+        // nodes.forEach(function(node, index)
+        // {
+        //     var nodeData = node.data();
+        //     var nodePos = node.position();
+        //
+        //     var newNode = model.create(NodeR, {
+        //         label: nodeData.name,
+        //         nodeID: nodeData.id,
+        //         type: nodeData.type,
+        //         x: nodePos.x,
+        //         y: nodePos.y
+        //     });
+        //
+        //     nodeList.push(newNode);
+        // });
+        //
+        // edges.forEach(function(edge, index)
+        // {
+        //     var edgeData = edge.data();
+        //
+        //     var newEdge = model.create(EdgeR, {
+        //         edgeID: edgeData.id,
+        //         source: edgeData.source,
+        //         target: edgeData.target,
+        //         type: edgeData.type
+        //     });
+        //
+        //     edgeList.push(newEdge);
+        // });
     }
 
     // After a file has been initialized and loaded, we can access the
@@ -152,31 +153,35 @@ module.exports = (function(cy, editorActionsManager)
         //Keep a reference to the file !
         this.realTimeDoc = doc;
 
-        // var refreshDataButton = document.getElementById('add_node');
-        // refreshDataButton.addEventListener('click', function(event)
-        // {
-        //     var nodeData = {name: "Dummy", type: "Gene"};
-        //
-        //     var newNode = model.create(NodeR, {
-        //         name: "Dummy",
-        //         nodeID: Math.random() * 10,
-        //         type: "Gene",
-        //         x: Math.random() * 10,
-        //         y: Math.random() * 10,
-        //     });
-        //
-        //     root.get('nodes').push(newNode);
-        // });
+        //Setup event handlers for lists
+        var nodeAddEventHandler = function(event)
+        {
+          editorActionsManager.realTimeNodeAddEventCallBack(event);
+        }
 
-        root.get('nodes').addEventListener( gapi.drive.realtime.EventType.VALUES_ADDED, function(event){editorActionsManager.realTimeNodeAddEventCallBack(event)});
+        var edgeAddEventHandler = function(event)
+        {
+          editorActionsManager.realTimeNodeAddEventCallBack(event);
+        }
 
-        gapi.drive.realtime.debug();
+        root.get('nodes').addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddEventHandler);
+        root.get('edges').addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, edgeAddEventHandler);
+
+        //Just for debugging
+        var debugRButton = document.getElementById('debugR');
+        debugRButton.addEventListener('click', function(event)
+        {
+          gapi.drive.realtime.debug();
+        });
     }
 
     RealTimeModule.prototype.addNewNode = function(nodeData, posData)
     {
       var model = this.realTimeDoc.getModel();
       var root = model.getRoot();
+      var nodeMap =  root.get('nodes');
+      var currentSize = nodeMap.size;
+      var newID = "elem"+currentSize;
 
       var newNode;
 
@@ -184,8 +189,9 @@ module.exports = (function(cy, editorActionsManager)
       {
         newNode = model.create(NodeR,
         {
+            nodeID: newID,
             name: nodeData.name,
-            type: "Gene",
+            type: nodeData.type,
             x: posData.x,
             y: posData.y,
         });
@@ -194,12 +200,47 @@ module.exports = (function(cy, editorActionsManager)
       {
         newNode = model.create(NodeR,
         {
+            nodeID: newID,
             name: nodeData.name,
             type: nodeData.type,
         });
       }
 
-      root.get('nodes').push(newNode);
+      nodeMap.set(newID, newNode);
+    }
+
+    RealTimeModule.prototype.addNewEdge = function(edgeData)
+    {
+      var model = this.realTimeDoc.getModel();
+      var root = model.getRoot();
+      var nodeMap =  root.get('edges');
+      var currentSize = nodeMap.size;
+      var newID = "elem"+currentSize;
+
+      var newNode;
+
+      if (posData)
+      {
+        newNode = model.create(NodeR,
+        {
+            nodeID: newID,
+            name: nodeData.name,
+            type: nodeData.type,
+            x: posData.x,
+            y: posData.y,
+        });
+      }
+      else
+      {
+        newNode = model.create(NodeR,
+        {
+            nodeID: newID,
+            name: nodeData.name,
+            type: nodeData.type,
+        });
+      }
+
+      nodeMap.set(newID, newNode);
     }
 
     //Custom object Definitions and Registration Part

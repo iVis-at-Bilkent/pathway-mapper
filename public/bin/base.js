@@ -47571,7 +47571,7 @@ _CoSELayout.getUserOptions = function (options) {
     CoSEConstants.DEFAULT_COMPOUND_GRAVITY_STRENGTH = FDLayoutConstants.DEFAULT_COMPOUND_GRAVITY_STRENGTH = options.gravityCompound;
   if(options.gravityRangeCompound != null)
     CoSEConstants.DEFAULT_COMPOUND_GRAVITY_RANGE_FACTOR = FDLayoutConstants.DEFAULT_COMPOUND_GRAVITY_RANGE_FACTOR = options.gravityRangeCompound;
-  
+
   CoSEConstants.DEFAULT_INCREMENTAL = FDLayoutConstants.DEFAULT_INCREMENTAL = LayoutConstants.DEFAULT_INCREMENTAL =
           !(options.randomize);
   CoSEConstants.ANIMATE = FDLayoutConstants.ANIMATE = options.animate;
@@ -47665,7 +47665,7 @@ _CoSELayout.prototype.run = function () {
 
   //Map the ids of nodes in the list to check if a node is in the list in constant time
   var nodeIdMap = {};
-  
+
   //Fill the map in linear time
   for(var i = 0; i < nodes.length; i++){
     nodeIdMap[nodes[i].id()] = true;
@@ -47676,10 +47676,10 @@ _CoSELayout.prototype.run = function () {
     var lnode = lnodes[i];
     var nodeId = lnode.id;
     var cyNode = this.options.cy.getElementById(nodeId);
-    
+
     var parentId = cyNode.data('parent');
     parentId = nodeIdMap[parentId]?parentId:undefined;
-    
+
     var w = lnode.rect.width;
     var posX = lnode.rect.x;
     var posY = lnode.rect.y;
@@ -47839,7 +47839,6 @@ _CoSELayout.prototype.run = function () {
       //Children of each graph
       for (var k = 0; k < children.length; k++)
       {
-        console.log(children[k].id);
         //Do not create any edge that connects the dummy node to itself
         if(children[k].id == dummyNode.id)
           continue;
@@ -47925,21 +47924,21 @@ _CoSELayout.prototype.run = function () {
     }
     else {
       after.options.eles.nodes().positions(getPositions);
-      
+
       if (after.options.fit)
         after.options.cy.fit(after.options.eles.nodes(), after.options.padding);
-    
+
       //trigger layoutready when each node has had its position set at least once
       if (!ready) {
         after.cy.one('layoutready', after.options.ready);
         after.cy.trigger('layoutready');
       }
-      
+
       // trigger layoutstop when the layout stops (e.g. finishes)
       after.cy.one('layoutstop', after.options.stop);
       after.cy.trigger('layoutstop');
     }
-    
+
     t1.stop();
     after.options.eles.nodes().removeData('dummy_parent_id');
   });
@@ -48069,23 +48068,23 @@ _CoSELayout.prototype.getNodeDegreeWithChildren = function (node) {
 };
 
 _CoSELayout.prototype.groupZeroDegreeMembers = function () {
-  // array of [parent_id x oneDegreeNode_id] 
+  // array of [parent_id x oneDegreeNode_id]
   var tempMemberGroups = [];
   var memberGroups = [];
   var self = this;
   var parentMap = {};
-  
+
   for(var i = 0; i < this.options.eles.nodes().length; i++){
     parentMap[this.options.eles.nodes()[i].id()] = true;
   }
-  
+
   // Find all zero degree nodes which aren't covered by a compound
   var zeroDegree = this.options.eles.nodes().filter(function (i, ele) {
     var pid = ele.data('parent');
     if(pid != undefined && !parentMap[pid]){
       pid = undefined;
     }
-    
+
     if (self.getNodeDegreeWithChildren(ele) == 0 && (pid == undefined || (pid != undefined && !self.getToBeTiled(ele.parent()[0]))))
       return true;
     else
@@ -48097,7 +48096,7 @@ _CoSELayout.prototype.groupZeroDegreeMembers = function () {
   {
     var node = zeroDegree[i];
     var p_id = node.parent().id();
-    
+
     if(p_id != undefined && !parentMap[p_id]){
       p_id = undefined;
     }
@@ -48184,7 +48183,7 @@ _CoSELayout.prototype.clearCompounds = function (options) {
 
     childGraphMap[compoundOrder[i].id()] = compoundOrder[i].children();
 
-    // Remove children of compounds 
+    // Remove children of compounds
     lCompoundNode.child = null;
   }
 
@@ -48226,7 +48225,7 @@ _CoSELayout.prototype.repopulateZeroDegreeMembers = function (tiledPack) {
     var compoundNode = _CoSELayout.idToLNode[i];
     var horizontalMargin = parseInt(compound.css('padding-left'));
     var verticalMargin = parseInt(compound.css('padding-top'));
-    
+
     // Adjust the positions of nodes wrt its compound
     this.adjustLocations(tiledPack[i], compoundNode.rect.x, compoundNode.rect.y, horizontalMargin, verticalMargin);
 
@@ -48241,7 +48240,7 @@ _CoSELayout.prototype.repopulateZeroDegreeMembers = function (tiledPack) {
 };
 
 /**
- * This method places each zero degree member wrt given (x,y) coordinates (top left). 
+ * This method places each zero degree member wrt given (x,y) coordinates (top left).
  */
 _CoSELayout.prototype.adjustLocations = function (organization, x, y, compoundHorizontalMargin, compoundVerticalMargin) {
   x += compoundHorizontalMargin;
@@ -48331,13 +48330,13 @@ _CoSELayout.prototype.tileNodes = function (nodes) {
   // Create the organization -> tile members
   for (var i = 0; i < layoutNodes.length; i++) {
     var lNode = layoutNodes[i];
-    
+
     var cyNode = this.cy.getElementById(lNode.id).parent()[0];
     var minWidth = 0;
     if(cyNode){
       minWidth = parseInt(cyNode.css('padding-left')) + parseInt(cyNode.css('padding-right'));
     }
-    
+
     if (organization.rows.length == 0) {
       this.insertNodeToRow(organization, lNode, 0, minWidth);
     }
@@ -48531,7 +48530,7 @@ _CoSELayout.prototype.stop = function () {
   if( this.thread ){
     this.thread.stop();
   }
-  
+
   this.trigger('layoutstop');
 
   return this; // chaining
@@ -48579,6 +48578,7 @@ module.exports = function get(cytoscape) {
 
   return _CoSELayout;
 };
+
 },{"./CoSEConstants":22,"./CoSEEdge":23,"./CoSEGraph":24,"./CoSEGraphManager":25,"./CoSELayout":26,"./CoSENode":27,"./DimensionD":28,"./FDLayout":29,"./FDLayoutConstants":30,"./FDLayoutEdge":31,"./FDLayoutNode":32,"./HashMap":33,"./HashSet":34,"./IGeometry":35,"./IMath":36,"./Integer":37,"./LEdge":38,"./LGraph":39,"./LGraphManager":40,"./LGraphObject":41,"./LNode":42,"./Layout":43,"./LayoutConstants":44,"./Point":45,"./PointD":46,"./RandomSeed":47,"./RectangleD":48,"./Transform":49,"./UniqueIDGeneretor":50}],52:[function(require,module,exports){
 'use strict';
 
@@ -48610,10 +48610,9 @@ module.exports = (function(cy)
       this.edgeCounter = 0;
   };
 
+   //Node Related Functions
   _EditorActionsManager.prototype.addNode = function(nodeData, posData)
   {
-      nodeData.id =  this.nodeCounter++;
-
       if (this.isCollaborative)
       {
           this.addNewNodeToRealTime(nodeData, posData);
@@ -48627,7 +48626,6 @@ module.exports = (function(cy)
   _EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)
   {
     var newNode;
-
     if (posData)
     {
       newNode = cy.add(
@@ -48654,12 +48652,12 @@ module.exports = (function(cy)
   _EditorActionsManager.prototype.realTimeNodeAddEventCallBack = function(event)
   {
     //Get real time node object and sync it to node addition
-    var node = event.values[0];
+    var node = event.newValue;
     var nodeData =
     {
       id: node.nodeID,
       type: node.type,
-      name:'New '+ node.type,
+      name:'New '+ node.type
     };
 
     if (node.posX != "undefined" && node.posY != "unedfined")
@@ -48675,6 +48673,46 @@ module.exports = (function(cy)
   _EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
   {
       window.realTimeManager.addNewNode(nodeData,posData);
+  }
+
+  _EditorActionsManager.prototype.addEdge = function(edgeData)
+  {
+    if (this.isCollaborative)
+    {
+      this.addNewEdgeRealTime(edgeData);
+    }
+    else
+    {
+      this.addNewEdgetoCy(edgeData);
+    }
+  }
+
+  _EditorActionsManager.prototype.addNewEdgeRealTime = function(edgeData)
+  {
+      window.realTimeManager.addNewEdge(edgeData);
+  }
+
+  _EditorActionsManager.prototype.addNewEdgetoCy = function(edgeData)
+  {
+      cy.add(
+      {
+          group: "edges",
+          data: edgeData
+      });
+  }
+
+  _EditorActionsManager.prototype.realTimeEdgeAddEventCallback = function(event)
+  {
+    //Get real time edge object and sync new edge to the existing graph
+    var edge = event.newValue;
+    var edgeData =
+    {
+      id: edge.edgeID,
+      type: edge.type,
+      source: edge.source,
+      target: edge.target
+    };
+    this.addNewEdgetoCy(edgeData);
   }
 
   // Singleton Class related stuff here !
@@ -48806,44 +48844,45 @@ module.exports = (function(cy, editorActionsManager)
     {
         var root = model.getRoot();
 
-        var nodeList = model.createList();
-        var edgeList = model.createList();
+        var nodeMap = model.createMap();
+        var edgeMap = model.createMap();
 
-        root.set('nodes', nodeList);
-        root.set('edges', edgeList);
+        root.set('nodes', nodeMap);
+        root.set('edges', edgeMap);
 
-        var nodes = cy.nodes();
-        var edges = cy.edges();
 
-        nodes.forEach(function(node, index)
-        {
-            var nodeData = node.data();
-            var nodePos = node.position();
-
-            var newNode = model.create(NodeR, {
-                label: nodeData.name,
-                nodeID: nodeData.id,
-                type: nodeData.type,
-                x: nodePos.x,
-                y: nodePos.y
-            });
-
-            nodeList.push(newNode);
-        });
-
-        edges.forEach(function(edge, index)
-        {
-            var edgeData = edge.data();
-
-            var newEdge = model.create(EdgeR, {
-                edgeID: edgeData.id,
-                source: edgeData.source,
-                target: edgeData.target,
-                type: edgeData.type
-            });
-
-            edgeList.push(newEdge);
-        });
+        // var nodes = cy.nodes();
+        // var edges = cy.edges();
+        //
+        // nodes.forEach(function(node, index)
+        // {
+        //     var nodeData = node.data();
+        //     var nodePos = node.position();
+        //
+        //     var newNode = model.create(NodeR, {
+        //         label: nodeData.name,
+        //         nodeID: nodeData.id,
+        //         type: nodeData.type,
+        //         x: nodePos.x,
+        //         y: nodePos.y
+        //     });
+        //
+        //     nodeList.push(newNode);
+        // });
+        //
+        // edges.forEach(function(edge, index)
+        // {
+        //     var edgeData = edge.data();
+        //
+        //     var newEdge = model.create(EdgeR, {
+        //         edgeID: edgeData.id,
+        //         source: edgeData.source,
+        //         target: edgeData.target,
+        //         type: edgeData.type
+        //     });
+        //
+        //     edgeList.push(newEdge);
+        // });
     }
 
     // After a file has been initialized and loaded, we can access the
@@ -48857,31 +48896,35 @@ module.exports = (function(cy, editorActionsManager)
         //Keep a reference to the file !
         this.realTimeDoc = doc;
 
-        // var refreshDataButton = document.getElementById('add_node');
-        // refreshDataButton.addEventListener('click', function(event)
-        // {
-        //     var nodeData = {name: "Dummy", type: "Gene"};
-        //
-        //     var newNode = model.create(NodeR, {
-        //         name: "Dummy",
-        //         nodeID: Math.random() * 10,
-        //         type: "Gene",
-        //         x: Math.random() * 10,
-        //         y: Math.random() * 10,
-        //     });
-        //
-        //     root.get('nodes').push(newNode);
-        // });
+        //Setup event handlers for lists
+        var nodeAddEventHandler = function(event)
+        {
+          editorActionsManager.realTimeNodeAddEventCallBack(event);
+        }
 
-        root.get('nodes').addEventListener( gapi.drive.realtime.EventType.VALUES_ADDED, function(event){editorActionsManager.realTimeNodeAddEventCallBack(event)});
+        var edgeAddEventHandler = function(event)
+        {
+          editorActionsManager.realTimeNodeAddEventCallBack(event);
+        }
 
-        gapi.drive.realtime.debug();
+        root.get('nodes').addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddEventHandler);
+        root.get('edges').addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, edgeAddEventHandler);
+
+        //Just for debugging
+        var debugRButton = document.getElementById('debugR');
+        debugRButton.addEventListener('click', function(event)
+        {
+          gapi.drive.realtime.debug();
+        });
     }
 
     RealTimeModule.prototype.addNewNode = function(nodeData, posData)
     {
       var model = this.realTimeDoc.getModel();
       var root = model.getRoot();
+      var nodeMap =  root.get('nodes');
+      var currentSize = nodeMap.size;
+      var newID = "elem"+currentSize;
 
       var newNode;
 
@@ -48889,8 +48932,9 @@ module.exports = (function(cy, editorActionsManager)
       {
         newNode = model.create(NodeR,
         {
+            nodeID: newID,
             name: nodeData.name,
-            type: "Gene",
+            type: nodeData.type,
             x: posData.x,
             y: posData.y,
         });
@@ -48899,12 +48943,47 @@ module.exports = (function(cy, editorActionsManager)
       {
         newNode = model.create(NodeR,
         {
+            nodeID: newID,
             name: nodeData.name,
             type: nodeData.type,
         });
       }
 
-      root.get('nodes').push(newNode);
+      nodeMap.set(newID, newNode);
+    }
+
+    RealTimeModule.prototype.addNewEdge = function(edgeData)
+    {
+      var model = this.realTimeDoc.getModel();
+      var root = model.getRoot();
+      var nodeMap =  root.get('edges');
+      var currentSize = nodeMap.size;
+      var newID = "elem"+currentSize;
+
+      var newNode;
+
+      if (posData)
+      {
+        newNode = model.create(NodeR,
+        {
+            nodeID: newID,
+            name: nodeData.name,
+            type: nodeData.type,
+            x: posData.x,
+            y: posData.y,
+        });
+      }
+      else
+      {
+        newNode = model.create(NodeR,
+        {
+            nodeID: newID,
+            name: nodeData.name,
+            type: nodeData.type,
+        });
+      }
+
+      nodeMap.set(newID, newNode);
     }
 
     //Custom object Definitions and Registration Part
@@ -49640,6 +49719,7 @@ var edgeHandleDefaults =
   complete: function( sourceNode, targetNodes, addedEntities )
   {
       // cy.add({group:'edges', data:{source: sourceNode.id(), target: targetNodes[0].id(), type: type}});
+      cy.remove(addedEntities);
   },
   stop: function( sourceNode ) {
     // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
