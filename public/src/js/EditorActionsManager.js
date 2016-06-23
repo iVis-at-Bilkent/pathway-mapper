@@ -279,7 +279,7 @@ module.exports = (function(cy)
 
         var rootNodeR = new NodeObj(null);
         traverseNodes(eles, rootNodeR);
-        window.realTimeManager.changeParent(rootNodeR, newParentId);
+        window.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
         console.log(rootNodeR);
     }
 

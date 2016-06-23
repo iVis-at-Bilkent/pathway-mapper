@@ -281,7 +281,7 @@ module.exports = (function(cy, editorActionsManager)
 
         var self = this;
         
-        function traverseRootNode(rootNode, parId)
+        function traverseFromRoot(rootNode, parId)
         {
             /*
              remove outermost node,
@@ -327,11 +327,12 @@ module.exports = (function(cy, editorActionsManager)
             for (var i in children)
             {
                 var childNode = children[i];
-                traverseRootNode(childNode, newParentId);
+                traverseFromRoot(childNode, newParentId);
             }
         }
 
-        traverseRootNode(rootNode, newParentId);
+        //Begin traversing from given root node
+        traverseFromRoot(rootNode, newParentId);
 
         //Restore edges that dissapear by the change parent operation
         //TODO compound operations ?

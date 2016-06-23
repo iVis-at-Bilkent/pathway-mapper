@@ -48851,12 +48851,14 @@ module.exports = (function(cy)
     
     _EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId) 
     {
+        var connectedEdges = eles.connectedEdges();
+
         var NodeObj = function(nodeObj){
             this.nodeRef  = nodeObj;
             this.children = [];
         }
 
-        //Traverses given elements and constructs subgraph relations
+        // Traverses given elements and constructs subgraph relations
         // creates a nested structure into rootnodeObj
         function traverseNodes(eles, rootNodeObj)
         {
@@ -48877,7 +48879,7 @@ module.exports = (function(cy)
 
         var rootNodeR = new NodeObj(null);
         traverseNodes(eles, rootNodeR);
-        window.realTimeManager.changeParent(rootNodeR, newParentId);
+        window.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
         console.log(rootNodeR);
     }
 
@@ -49195,21 +49197,25 @@ module.exports = (function(cy, editorActionsManager)
         
     }
 
-    RealTimeModule.prototype.changeParent = function (rootNode, newParentId)
+    RealTimeModule.prototype.changeParent = function (rootNode, newParentId, connectedEdges)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
         var nodeMap =  root.get('nodes');
 
+        var nodeLookupTable = {};
+
         var self = this;
         
-        function traverseRootNode(rootNode, parId)
+        function traverseFromRoot(rootNode, parId)
         {
             /*
              remove outermost node,
              create new real time node with given parentId,
              pass id of this real time node to children,
              repeat in a recursive manner
+             after that restore the edges that dissapear by removed nodes 
+             during change parent
              */
 
             var refNode = rootNode.nodeRef;
@@ -49241,16 +49247,31 @@ module.exports = (function(cy, editorActionsManager)
                 var newNodeId = self.getCustomObjId(newNode);
                 nodeMap.set(newNodeId, newNode);
                 newParentId = newNodeId;
+                nodeLookupTable[refNodeId] = newNodeId;
             }
 
             for (var i in children)
             {
                 var childNode = children[i];
-                traverseRootNode(childNode, newParentId);
+                traverseFromRoot(childNode, newParentId);
             }
         }
 
-        traverseRootNode(rootNode, newParentId);
+        //Begin traversing from given root node
+        traverseFromRoot(rootNode, newParentId);
+
+        //Restore edges that dissapear by the change parent operation
+        //TODO compound operations ?
+        connectedEdges.forEach(function (edge, index)
+        {
+            var edgeData = edge.data();
+            self.removeElement(edge.id());
+            var newSource = nodeLookupTable[edgeData.source];
+            var newTarget = nodeLookupTable[edgeData.target];
+            edgeData.source = newSource;
+            edgeData.target = newTarget;
+            self.addNewEdge(edgeData);
+        });
     }
 
     //Google Real Time's custom object ids are retrieved in this way
