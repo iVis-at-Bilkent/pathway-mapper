@@ -4,45 +4,45 @@ module.exports = (function(cy, editorActionsManager)
 
     var RealTimeModule = function()
     {
-      this.clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
+        this.clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
 
-      // if (!/^([0-9])$/.test(clientId[0]))
-      // {
-      //     throw new Error('Invalid Client ID - did you forget to insert your application Client ID?');
-      // }
+        // if (!/^([0-9])$/.test(clientId[0]))
+        // {
+        //     throw new Error('Invalid Client ID - did you forget to insert your application Client ID?');
+        // }
 
-      // Create a new instance of the realtime utility with your client ID.
-      this.realtimeUtils = new utils.RealtimeUtils({
-          clientId: this.clientId
-      });
-      this.authorize();
+        // Create a new instance of the realtime utility with your client ID.
+        this.realtimeUtils = new utils.RealtimeUtils({
+            clientId: this.clientId
+        });
+        this.authorize();
 
     }
 
     RealTimeModule.prototype.authorize = function()
     {
-      // Attempt to authorize
-      var self = this;
-      this.realtimeUtils.authorize(function(response)
-      {
-          //TODO Modal ?
-          if (response.error)
-          {
-              // Authorization failed because this is the first time the user has used your application,
-              // show the authorize button to prompt them to authorize manually.
-              var button = document.getElementById('auth_button');
-              button.classList.add('visible');
-              button.addEventListener('click', function() {
-                  self.realtimeUtils.authorize(function(response) {
-                      start();
-                  }, true);
-              });
-          }
-          else
-          {
-              self.initRealTimeAPI();
-          }
-      }, false);
+        // Attempt to authorize
+        var self = this;
+        this.realtimeUtils.authorize(function(response)
+        {
+            //TODO Modal ?
+            if (response.error)
+            {
+                // Authorization failed because this is the first time the user has used your application,
+                // show the authorize button to prompt them to authorize manually.
+                var button = document.getElementById('auth_button');
+                button.classList.add('visible');
+                button.addEventListener('click', function() {
+                    self.realtimeUtils.authorize(function(response) {
+                        start();
+                    }, true);
+                });
+            }
+            else
+            {
+                self.initRealTimeAPI();
+            }
+        }, false);
     }
 
     RealTimeModule.prototype.initRealTimeAPI = function()
@@ -78,9 +78,8 @@ module.exports = (function(cy, editorActionsManager)
                 self.realtimeUtils.load(createResponse.id, loadFileCallback, initFileCallback);
             });
         }
-     }
-
-
+    }
+    
     // You must register the custom object before loading or creating any file that
     // uses this custom object.
     RealTimeModule.prototype.registerTypes = function()
@@ -91,9 +90,21 @@ module.exports = (function(cy, editorActionsManager)
         gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
         gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
         createNodeAndEdgeFieldsR();
+
+        function registerAttributeChangeHandlersNodeR()
+        {
+            function logObjectChange(event)
+            {
+                console.log(event);
+            }
+
+            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, logObjectChange);
+        }
+
+        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);
+
     }
-
-
+    
     // The first time a file is opened, it must be initialized with the
     // document structure.
     RealTimeModule.prototype.onFileInitialize = function(model)
@@ -157,12 +168,12 @@ module.exports = (function(cy, editorActionsManager)
         //Setup event handlers for maps
         var nodeAddRemoveHandler = function(event)
         {
-          editorActionsManager.realTimeNodeAddRemoveEventCallBack(event);
+            editorActionsManager.realTimeNodeAddRemoveEventCallBack(event);
         }
 
         var edgeAddRemoveHandler = function(event)
         {
-          editorActionsManager.realTimeEdgeAddRemoveEventCallBack(event);
+            editorActionsManager.realTimeEdgeAddRemoveEventCallBack(event);
         }
 
         //Event listeners for edge and node map
@@ -173,65 +184,65 @@ module.exports = (function(cy, editorActionsManager)
         var debugRButton = document.getElementById('debugR');
         debugRButton.addEventListener('click', function(event)
         {
-          gapi.drive.realtime.debug();
+            gapi.drive.realtime.debug();
         });
     }
 
     RealTimeModule.prototype.addNewNode = function(nodeData, posData)
     {
-      var model = this.realTimeDoc.getModel();
-      var root = model.getRoot();
-      var nodeMap =  root.get('nodes');
-      var newNode = model.create(NodeR,
-      {
-        name: nodeData.name,
-        type: nodeData.type,
-        parent: nodeData.parent,
-        x: posData.x,
-        y: posData.y
-      });
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap =  root.get('nodes');
+        var newNode = model.create(NodeR,
+            {
+                name: nodeData.name,
+                type: nodeData.type,
+                parent: nodeData.parent,
+                x: posData.x,
+                y: posData.y
+            });
 
-      var realTimeGeneratedID = this.getCustomObjId(newNode);
-      nodeMap.set(realTimeGeneratedID, newNode);
+        var realTimeGeneratedID = this.getCustomObjId(newNode);
+        nodeMap.set(realTimeGeneratedID, newNode);
     }
 
     RealTimeModule.prototype.addNewEdge = function(edgeData)
     {
-      var model = this.realTimeDoc.getModel();
-      var root = model.getRoot();
-      var edgeMap =  root.get('edges');
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var edgeMap =  root.get('edges');
 
-      var newEdge = model.create(EdgeR,
-      {
-          type: edgeData.type,
-          source: edgeData.source,
-          target: edgeData.target
-      });
+        var newEdge = model.create(EdgeR,
+            {
+                type: edgeData.type,
+                source: edgeData.source,
+                target: edgeData.target
+            });
 
-      var realTimeGeneratedID = this.getCustomObjId(newEdge);
-      edgeMap.set(realTimeGeneratedID, newEdge);
+        var realTimeGeneratedID = this.getCustomObjId(newEdge);
+        edgeMap.set(realTimeGeneratedID, newEdge);
     }
 
     RealTimeModule.prototype.removeElement = function(elementID)
     {
-      var model = this.realTimeDoc.getModel();
-      var root = model.getRoot();
-      var edgeMap =  root.get('edges');
-      var nodeMap =  root.get('nodes');
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var edgeMap =  root.get('edges');
+        var nodeMap =  root.get('nodes');
 
-      if (nodeMap.has(elementID))
-      {
-          nodeMap.delete(elementID);
-      }
-      else if (edgeMap.has(elementID))
-      {
-        edgeMap.delete(elementID);
-      }
-      else
-      {
-        throw new Error('Element does not exists in Real Time');
-        return;
-      }
+        if (nodeMap.has(elementID))
+        {
+            nodeMap.delete(elementID);
+        }
+        else if (edgeMap.has(elementID))
+        {
+            edgeMap.delete(elementID);
+        }
+        else
+        {
+            throw new Error('Element does not exists in Real Time');
+            return;
+        }
     }
 
     RealTimeModule.prototype.moveElement = function(ele)
@@ -247,23 +258,81 @@ module.exports = (function(cy, editorActionsManager)
         if (nodeMap.has(elementID))
         {
             var tmpNode = nodeMap.get(elementID);
-        }
-        else if (edgeMap.has(elementID))
-        {
-            var tmpEdge = edgeMap.get(elementID);
+            model.beginCompoundOperation();
+            tmpNode.x = newPos.x;
+            tmpNode.y = newPos.y;
+            model.endCompoundOperation();
         }
         else
         {
-            throw new Error('Element does not exists in Real Time');
+            throw new Error('Element does not exists in nodes !!! ');
             return;
         }
+        
+    }
 
+    RealTimeModule.prototype.changeParent = function (rootNode, newParentId)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap =  root.get('nodes');
+
+        var self = this;
+        
+        function traverseRootNode(rootNode, parId)
+        {
+            /*
+             remove outermost node,
+             create new real time node with given parentId,
+             pass id of this real time node to children,
+             repeat in a recursive manner
+             */
+
+            var refNode = rootNode.nodeRef;
+            var children = rootNode.children;
+            var newParentId = parId;
+
+            if (refNode)
+            {
+                var refNodeId = refNode.id();
+                var nodeData = refNode.data();
+                var posData = refNode.position();
+
+                var newNodeData =
+                {
+                    name: nodeData.name,
+                    type: nodeData.type,
+                    x: posData.x,
+                    y: posData.y
+                }
+
+                if(parId)
+                {
+                    newNodeData.parent = parId;
+                }
+
+                //TODO compound operations ?
+                self.removeElement(refNodeId);
+                var newNode = model.create(NodeR, newNodeData);
+                var newNodeId = self.getCustomObjId(newNode);
+                nodeMap.set(newNodeId, newNode);
+                newParentId = newNodeId;
+            }
+
+            for (var i in children)
+            {
+                var childNode = children[i];
+                traverseRootNode(childNode, newParentId);
+            }
+        }
+
+        traverseRootNode(rootNode, newParentId);
     }
 
     //Google Real Time's custom object ids are retrieved in this way
     RealTimeModule.prototype.getCustomObjId = function(object)
     {
-      return gapi.drive.realtime.custom.getId(object);
+        return gapi.drive.realtime.custom.getId(object);
     }
 
     //Custom object Definitions and Registration Part
