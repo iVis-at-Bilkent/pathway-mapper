@@ -251,12 +251,14 @@ module.exports = (function(cy)
     
     _EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId) 
     {
+        var connectedEdges = eles.connectedEdges();
+
         var NodeObj = function(nodeObj){
             this.nodeRef  = nodeObj;
             this.children = [];
         }
 
-        //Traverses given elements and constructs subgraph relations
+        // Traverses given elements and constructs subgraph relations
         // creates a nested structure into rootnodeObj
         function traverseNodes(eles, rootNodeObj)
         {

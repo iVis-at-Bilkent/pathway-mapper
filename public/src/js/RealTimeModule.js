@@ -271,11 +271,13 @@ module.exports = (function(cy, editorActionsManager)
         
     }
 
-    RealTimeModule.prototype.changeParent = function (rootNode, newParentId)
+    RealTimeModule.prototype.changeParent = function (rootNode, newParentId, connectedEdges)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
         var nodeMap =  root.get('nodes');
+
+        var nodeLookupTable = {};
 
         var self = this;
         
@@ -286,6 +288,8 @@ module.exports = (function(cy, editorActionsManager)
              create new real time node with given parentId,
              pass id of this real time node to children,
              repeat in a recursive manner
+             after that restore the edges that dissapear by removed nodes 
+             during change parent
              */
 
             var refNode = rootNode.nodeRef;
@@ -317,6 +321,7 @@ module.exports = (function(cy, editorActionsManager)
                 var newNodeId = self.getCustomObjId(newNode);
                 nodeMap.set(newNodeId, newNode);
                 newParentId = newNodeId;
+                nodeLookupTable[refNodeId] = newNodeId;
             }
 
             for (var i in children)
@@ -327,6 +332,19 @@ module.exports = (function(cy, editorActionsManager)
         }
 
         traverseRootNode(rootNode, newParentId);
+
+        //Restore edges that dissapear by the change parent operation
+        //TODO compound operations ?
+        connectedEdges.forEach(function (edge, index)
+        {
+            var edgeData = edge.data();
+            self.removeElement(edge.id());
+            var newSource = nodeLookupTable[edgeData.source];
+            var newTarget = nodeLookupTable[edgeData.target];
+            edgeData.source = newSource;
+            edgeData.target = newTarget;
+            self.addNewEdge(edgeData);
+        });
     }
 
     //Google Real Time's custom object ids are retrieved in this way
