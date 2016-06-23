@@ -251,6 +251,7 @@ module.exports = (function(cy)
     
     _EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId) 
     {
+
         var connectedEdges = eles.connectedEdges();
 
         var NodeObj = function(nodeObj){
@@ -258,17 +259,20 @@ module.exports = (function(cy)
             this.children = [];
         }
 
+        //TODO need to preprocess incoming eles !!!!
         // Traverses given elements and constructs subgraph relations
         // creates a nested structure into rootnodeObj
-        function traverseNodes(eles, rootNodeObj)
+        function traverseNodes(eles, rootNodeObj, connEdges)
         {
             eles.forEach(function (ele, index)
             {
-               if(ele.isParent())
+                connEdges = connEdges.union(ele.connectedEdges());
+
+                if(ele.isParent())
                {
                    rootNodeObj.children.push(new NodeObj(ele));
                    var lengthOfChildrenArray = rootNodeObj.children.length;
-                   traverseNodes(ele.children(), rootNodeObj.children[lengthOfChildrenArray-1]);
+                   traverseNodes(ele.children(), rootNodeObj.children[lengthOfChildrenArray-1], connEdges);
                }
                else
                {
@@ -278,7 +282,7 @@ module.exports = (function(cy)
         }
 
         var rootNodeR = new NodeObj(null);
-        traverseNodes(eles, rootNodeR);
+        traverseNodes(eles, rootNodeR, connectedEdges);
         window.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
         console.log(rootNodeR);
     }

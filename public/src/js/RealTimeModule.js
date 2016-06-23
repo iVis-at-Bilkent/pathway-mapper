@@ -79,31 +79,7 @@ module.exports = (function(cy, editorActionsManager)
             });
         }
     }
-    
-    // You must register the custom object before loading or creating any file that
-    // uses this custom object.
-    RealTimeModule.prototype.registerTypes = function()
-    {
-        //Register our custom objects go Google Real Time API
-        gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
-        gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
-        gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
-        gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
-        createNodeAndEdgeFieldsR();
 
-        function registerAttributeChangeHandlersNodeR()
-        {
-            function logObjectChange(event)
-            {
-                console.log(event);
-            }
-
-            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, logObjectChange);
-        }
-
-        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);
-
-    }
     
     // The first time a file is opened, it must be initialized with the
     // document structure.
@@ -249,7 +225,6 @@ module.exports = (function(cy, editorActionsManager)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var edgeMap =  root.get('edges');
         var nodeMap =  root.get('nodes');
 
         var elementID = ele.id();
@@ -340,10 +315,20 @@ module.exports = (function(cy, editorActionsManager)
         {
             var edgeData = edge.data();
             self.removeElement(edge.id());
+
             var newSource = nodeLookupTable[edgeData.source];
             var newTarget = nodeLookupTable[edgeData.target];
-            edgeData.source = newSource;
-            edgeData.target = newTarget;
+            
+            if (newSource)
+            {
+                edgeData.source = newSource;
+            }
+
+            if (newTarget)
+            {
+                edgeData.target = newTarget;
+            }
+
             self.addNewEdge(edgeData);
         });
     }
@@ -352,6 +337,31 @@ module.exports = (function(cy, editorActionsManager)
     RealTimeModule.prototype.getCustomObjId = function(object)
     {
         return gapi.drive.realtime.custom.getId(object);
+    }
+
+    // You must register the custom object before loading or creating any file that
+    // uses this custom object.
+    RealTimeModule.prototype.registerTypes = function()
+    {
+        //Register our custom objects go Google Real Time API
+        gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
+        gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
+        gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
+        gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
+        createNodeAndEdgeFieldsR();
+
+        function registerAttributeChangeHandlersNodeR()
+        {
+            function logObjectChange(event)
+            {
+                console.log(event);
+            }
+
+            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, logObjectChange);
+        }
+
+        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);
+
     }
 
     //Custom object Definitions and Registration Part

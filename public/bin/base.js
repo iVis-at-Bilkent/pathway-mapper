@@ -48851,6 +48851,7 @@ module.exports = (function(cy)
     
     _EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId) 
     {
+
         var connectedEdges = eles.connectedEdges();
 
         var NodeObj = function(nodeObj){
@@ -48858,17 +48859,20 @@ module.exports = (function(cy)
             this.children = [];
         }
 
+        //TODO need to preprocess incoming eles !!!!
         // Traverses given elements and constructs subgraph relations
         // creates a nested structure into rootnodeObj
-        function traverseNodes(eles, rootNodeObj)
+        function traverseNodes(eles, rootNodeObj, connEdges)
         {
             eles.forEach(function (ele, index)
             {
-               if(ele.isParent())
+                connEdges = connEdges.union(ele.connectedEdges());
+
+                if(ele.isParent())
                {
                    rootNodeObj.children.push(new NodeObj(ele));
                    var lengthOfChildrenArray = rootNodeObj.children.length;
-                   traverseNodes(ele.children(), rootNodeObj.children[lengthOfChildrenArray-1]);
+                   traverseNodes(ele.children(), rootNodeObj.children[lengthOfChildrenArray-1], connEdges);
                }
                else
                {
@@ -48878,7 +48882,7 @@ module.exports = (function(cy)
         }
 
         var rootNodeR = new NodeObj(null);
-        traverseNodes(eles, rootNodeR);
+        traverseNodes(eles, rootNodeR, connectedEdges);
         window.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
         console.log(rootNodeR);
     }
@@ -49005,31 +49009,7 @@ module.exports = (function(cy, editorActionsManager)
             });
         }
     }
-    
-    // You must register the custom object before loading or creating any file that
-    // uses this custom object.
-    RealTimeModule.prototype.registerTypes = function()
-    {
-        //Register our custom objects go Google Real Time API
-        gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
-        gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
-        gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
-        gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
-        createNodeAndEdgeFieldsR();
 
-        function registerAttributeChangeHandlersNodeR()
-        {
-            function logObjectChange(event)
-            {
-                console.log(event);
-            }
-
-            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, logObjectChange);
-        }
-
-        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);
-
-    }
     
     // The first time a file is opened, it must be initialized with the
     // document structure.
@@ -49175,7 +49155,6 @@ module.exports = (function(cy, editorActionsManager)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var edgeMap =  root.get('edges');
         var nodeMap =  root.get('nodes');
 
         var elementID = ele.id();
@@ -49266,10 +49245,20 @@ module.exports = (function(cy, editorActionsManager)
         {
             var edgeData = edge.data();
             self.removeElement(edge.id());
+
             var newSource = nodeLookupTable[edgeData.source];
             var newTarget = nodeLookupTable[edgeData.target];
-            edgeData.source = newSource;
-            edgeData.target = newTarget;
+            
+            if (newSource)
+            {
+                edgeData.source = newSource;
+            }
+
+            if (newTarget)
+            {
+                edgeData.target = newTarget;
+            }
+
             self.addNewEdge(edgeData);
         });
     }
@@ -49278,6 +49267,31 @@ module.exports = (function(cy, editorActionsManager)
     RealTimeModule.prototype.getCustomObjId = function(object)
     {
         return gapi.drive.realtime.custom.getId(object);
+    }
+
+    // You must register the custom object before loading or creating any file that
+    // uses this custom object.
+    RealTimeModule.prototype.registerTypes = function()
+    {
+        //Register our custom objects go Google Real Time API
+        gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
+        gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
+        gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
+        gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
+        createNodeAndEdgeFieldsR();
+
+        function registerAttributeChangeHandlersNodeR()
+        {
+            function logObjectChange(event)
+            {
+                console.log(event);
+            }
+
+            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, logObjectChange);
+        }
+
+        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);
+
     }
 
     //Custom object Definitions and Registration Part
