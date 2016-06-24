@@ -48669,6 +48669,7 @@ module.exports = (function(cy)
             var ele = event.newValue;
             var cyEle = cy.$("#" + nodeID)
             this.removeElementCy(cyEle);
+            cy.nodes().updateCompoundBounds();
         }
         //Addition Operation
         else
@@ -48690,6 +48691,8 @@ module.exports = (function(cy)
             {
                 this.addNodetoCy(nodeData);
             }
+            cy.nodes().updateCompoundBounds();
+
         }
 
     }
@@ -48852,27 +48855,54 @@ module.exports = (function(cy)
     _EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId) 
     {
 
-        var connectedEdges = eles.connectedEdges();
+        function getTopLevelParents(eles)
+        {
+            var tpMostNodes = cy.collection();
+            var parentMap = {};
+
+            //Get all parents
+            eles.forEach(function (node, index)
+            {
+                if(node.isParent())
+                    parentMap[node.id()] = node;
+            });
+
+            //Get all parents
+            eles.forEach(function (node, index)
+            {
+                var nodeParent = node.parent();
+
+                if(parentMap[nodeParent.id()] === undefined)
+                    tpMostNodes = tpMostNodes.union(node);
+            });
+
+            return tpMostNodes;
+        }
+
+
+
 
         var NodeObj = function(nodeObj){
             this.nodeRef  = nodeObj;
             this.children = [];
         }
 
-        //TODO need to preprocess incoming eles !!!!
+
+        //TODO need to pass this to function somehow
+        var connectedEdges = eles.connectedEdges();
         // Traverses given elements and constructs subgraph relations
         // creates a nested structure into rootnodeObj
-        function traverseNodes(eles, rootNodeObj, connEdges)
+        function traverseNodes(eles, rootNodeObj)
         {
             eles.forEach(function (ele, index)
             {
-                connEdges = connEdges.union(ele.connectedEdges());
+                connectedEdges = connectedEdges.union(ele.connectedEdges());
 
                 if(ele.isParent())
                {
                    rootNodeObj.children.push(new NodeObj(ele));
                    var lengthOfChildrenArray = rootNodeObj.children.length;
-                   traverseNodes(ele.children(), rootNodeObj.children[lengthOfChildrenArray-1], connEdges);
+                   traverseNodes(ele.children(), rootNodeObj.children[lengthOfChildrenArray-1]);
                }
                else
                {
@@ -48881,8 +48911,12 @@ module.exports = (function(cy)
             });
         }
 
+        //Create new collection
+        var topMostNodes = getTopLevelParents(eles);
+
         var rootNodeR = new NodeObj(null);
-        traverseNodes(eles, rootNodeR, connectedEdges);
+
+        traverseNodes(topMostNodes, rootNodeR);
         window.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
         console.log(rootNodeR);
     }
@@ -48898,6 +48932,18 @@ module.exports = (function(cy)
             });
         }
     }
+
+
+
+    _EditorActionsManager.prototype.updateElementCallback = function(ele, id)
+    {
+        //Remove element from existing graph
+        var nodeID = id;
+        var cyEle = cy.$("#" + nodeID);
+        cyEle.css('content', ele.name);
+        cyEle.position({x: ele.x, y: ele.y});
+    }
+
 
     //Utility Functions
     //TODO move functions thar are inside class functions here
@@ -49205,7 +49251,7 @@ module.exports = (function(cy, editorActionsManager)
             {
                 var refNodeId = refNode.id();
                 var nodeData = refNode.data();
-                var posData = refNode.position();
+                var posData = refNode.renderedPosition();
 
                 var newNodeData =
                 {
@@ -49261,6 +49307,7 @@ module.exports = (function(cy, editorActionsManager)
 
             self.addNewEdge(edgeData);
         });
+        
     }
 
     //Google Real Time's custom object ids are retrieved in this way
@@ -49273,6 +49320,7 @@ module.exports = (function(cy, editorActionsManager)
     // uses this custom object.
     RealTimeModule.prototype.registerTypes = function()
     {
+        var self = this;
         //Register our custom objects go Google Real Time API
         gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
         gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
@@ -49284,7 +49332,8 @@ module.exports = (function(cy, editorActionsManager)
         {
             function logObjectChange(event)
             {
-                console.log(event);
+                var node = event.currentTarget;
+                window.editorActionsManager.updateElementCallback(node, self.getCustomObjId(node));
             }
 
             this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, logObjectChange);
@@ -50328,6 +50377,7 @@ require('./fileOperationsModule.js');
 require('./viewOperationsModule.js');
 
 
+//TODO move this to server side
 var sampleGraph = "﻿﻿--NODE_NAME	NODE_ID	NODE_TYPE	PARENT_ID	POSX	POSY--\n\
 RAS	ele5	FAMILY	-1	591	649	\n\
 KRAS	ele6	GENE	ele5	516	664	\n\
@@ -50392,18 +50442,9 @@ $(window).load(function()
             boxSelectionEnabled: true,
             autounselectify: false,
             wheelSensitivity: 0.1,
-
             style: styleSheet,
-
             // elements: allEles,
-            ready: function(){
-
-                // var selectedNodes = this.nodes();
-                // var compNode = this.add({group: "nodes"})[0];
-                // var compId = compNode.id();
-                // selectedNodes.move({parent: compId});
-            },
-
+            ready: function(){},
             layout: {name: 'preset'}
         });
 
@@ -50483,10 +50524,24 @@ $(window).load(function()
         clearQtipTimeoutStack();
     });
 
+    cy.on('cxttap', 'node', function( e )
+    {
+        clearQtipTimeoutStack();
+    });
+
     cy.on('free', 'node', function (e)
     {
-        //TODO work on this later
-        window.editorActionsManager.moveElements(e.cyTarget);
+        //Collect all nodes with descendants in case of compounds
+        var selectedNodes = cy.nodes(':selected');
+        var nodes = e.cyTarget;
+        nodes = nodes.union(nodes.descendants());
+        nodes = nodes.union(selectedNodes);
+        window.editorActionsManager.moveElements(nodes);
+    });
+
+    cy.on('layoutstop', function(event)
+    {
+        window.editorActionsManager.moveElements(cy.nodes());
     });
 
     // cy.on('tap', 'node', function( e )

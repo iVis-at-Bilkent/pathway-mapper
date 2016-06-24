@@ -69,6 +69,7 @@ module.exports = (function(cy)
             var ele = event.newValue;
             var cyEle = cy.$("#" + nodeID)
             this.removeElementCy(cyEle);
+            cy.nodes().updateCompoundBounds();
         }
         //Addition Operation
         else
@@ -90,6 +91,8 @@ module.exports = (function(cy)
             {
                 this.addNodetoCy(nodeData);
             }
+            cy.nodes().updateCompoundBounds();
+
         }
 
     }
@@ -252,27 +255,54 @@ module.exports = (function(cy)
     _EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId) 
     {
 
-        var connectedEdges = eles.connectedEdges();
+        function getTopLevelParents(eles)
+        {
+            var tpMostNodes = cy.collection();
+            var parentMap = {};
+
+            //Get all parents
+            eles.forEach(function (node, index)
+            {
+                if(node.isParent())
+                    parentMap[node.id()] = node;
+            });
+
+            //Get all parents
+            eles.forEach(function (node, index)
+            {
+                var nodeParent = node.parent();
+
+                if(parentMap[nodeParent.id()] === undefined)
+                    tpMostNodes = tpMostNodes.union(node);
+            });
+
+            return tpMostNodes;
+        }
+
+
+
 
         var NodeObj = function(nodeObj){
             this.nodeRef  = nodeObj;
             this.children = [];
         }
 
-        //TODO need to preprocess incoming eles !!!!
+
+        //TODO need to pass this to function somehow
+        var connectedEdges = eles.connectedEdges();
         // Traverses given elements and constructs subgraph relations
         // creates a nested structure into rootnodeObj
-        function traverseNodes(eles, rootNodeObj, connEdges)
+        function traverseNodes(eles, rootNodeObj)
         {
             eles.forEach(function (ele, index)
             {
-                connEdges = connEdges.union(ele.connectedEdges());
+                connectedEdges = connectedEdges.union(ele.connectedEdges());
 
                 if(ele.isParent())
                {
                    rootNodeObj.children.push(new NodeObj(ele));
                    var lengthOfChildrenArray = rootNodeObj.children.length;
-                   traverseNodes(ele.children(), rootNodeObj.children[lengthOfChildrenArray-1], connEdges);
+                   traverseNodes(ele.children(), rootNodeObj.children[lengthOfChildrenArray-1]);
                }
                else
                {
@@ -281,8 +311,12 @@ module.exports = (function(cy)
             });
         }
 
+        //Create new collection
+        var topMostNodes = getTopLevelParents(eles);
+
         var rootNodeR = new NodeObj(null);
-        traverseNodes(eles, rootNodeR, connectedEdges);
+
+        traverseNodes(topMostNodes, rootNodeR);
         window.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
         console.log(rootNodeR);
     }
@@ -298,6 +332,18 @@ module.exports = (function(cy)
             });
         }
     }
+
+
+
+    _EditorActionsManager.prototype.updateElementCallback = function(ele, id)
+    {
+        //Remove element from existing graph
+        var nodeID = id;
+        var cyEle = cy.$("#" + nodeID);
+        cyEle.css('content', ele.name);
+        cyEle.position({x: ele.x, y: ele.y});
+    }
+
 
     //Utility Functions
     //TODO move functions thar are inside class functions here

@@ -275,7 +275,7 @@ module.exports = (function(cy, editorActionsManager)
             {
                 var refNodeId = refNode.id();
                 var nodeData = refNode.data();
-                var posData = refNode.position();
+                var posData = refNode.renderedPosition();
 
                 var newNodeData =
                 {
@@ -331,6 +331,7 @@ module.exports = (function(cy, editorActionsManager)
 
             self.addNewEdge(edgeData);
         });
+        
     }
 
     //Google Real Time's custom object ids are retrieved in this way
@@ -343,6 +344,7 @@ module.exports = (function(cy, editorActionsManager)
     // uses this custom object.
     RealTimeModule.prototype.registerTypes = function()
     {
+        var self = this;
         //Register our custom objects go Google Real Time API
         gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
         gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
@@ -354,7 +356,8 @@ module.exports = (function(cy, editorActionsManager)
         {
             function logObjectChange(event)
             {
-                console.log(event);
+                var node = event.currentTarget;
+                window.editorActionsManager.updateElementCallback(node, self.getCustomObjId(node));
             }
 
             this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, logObjectChange);

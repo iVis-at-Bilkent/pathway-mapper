@@ -25,6 +25,7 @@ require('./fileOperationsModule.js');
 require('./viewOperationsModule.js');
 
 
+//TODO move this to server side
 var sampleGraph = "﻿﻿--NODE_NAME	NODE_ID	NODE_TYPE	PARENT_ID	POSX	POSY--\n\
 RAS	ele5	FAMILY	-1	591	649	\n\
 KRAS	ele6	GENE	ele5	516	664	\n\
@@ -89,18 +90,9 @@ $(window).load(function()
             boxSelectionEnabled: true,
             autounselectify: false,
             wheelSensitivity: 0.1,
-
             style: styleSheet,
-
             // elements: allEles,
-            ready: function(){
-
-                // var selectedNodes = this.nodes();
-                // var compNode = this.add({group: "nodes"})[0];
-                // var compId = compNode.id();
-                // selectedNodes.move({parent: compId});
-            },
-
+            ready: function(){},
             layout: {name: 'preset'}
         });
 
@@ -180,10 +172,24 @@ $(window).load(function()
         clearQtipTimeoutStack();
     });
 
+    cy.on('cxttap', 'node', function( e )
+    {
+        clearQtipTimeoutStack();
+    });
+
     cy.on('free', 'node', function (e)
     {
-        //TODO work on this later
-        window.editorActionsManager.moveElements(e.cyTarget);
+        //Collect all nodes with descendants in case of compounds
+        var selectedNodes = cy.nodes(':selected');
+        var nodes = e.cyTarget;
+        nodes = nodes.union(nodes.descendants());
+        nodes = nodes.union(selectedNodes);
+        window.editorActionsManager.moveElements(nodes);
+    });
+
+    cy.on('layoutstop', function(event)
+    {
+        window.editorActionsManager.moveElements(cy.nodes());
     });
 
     // cy.on('tap', 'node', function( e )
