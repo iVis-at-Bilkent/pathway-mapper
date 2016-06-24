@@ -246,6 +246,29 @@ module.exports = (function(cy, editorActionsManager)
         
     }
 
+    RealTimeModule.prototype.changeName = function(ele, newName)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap =  root.get('nodes');
+
+        var elementID = ele.id();
+
+        if (nodeMap.has(elementID))
+        {
+            var tmpNode = nodeMap.get(elementID);
+            model.beginCompoundOperation();
+            tmpNode.name = newName;
+            model.endCompoundOperation();
+        }
+        else
+        {
+            throw new Error('Element does not exists in nodes !!! ');
+            return;
+        }
+
+    }
+
     RealTimeModule.prototype.changeParent = function (rootNode, newParentId, connectedEdges)
     {
         var model = this.realTimeDoc.getModel();
@@ -354,13 +377,13 @@ module.exports = (function(cy, editorActionsManager)
 
         function registerAttributeChangeHandlersNodeR()
         {
-            function logObjectChange(event)
+            function updateElementHandler(event)
             {
                 var node = event.currentTarget;
                 window.editorActionsManager.updateElementCallback(node, self.getCustomObjId(node));
             }
 
-            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, logObjectChange);
+            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateElementHandler);
         }
 
         gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);

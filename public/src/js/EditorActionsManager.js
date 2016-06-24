@@ -333,6 +333,23 @@ module.exports = (function(cy)
         }
     }
 
+    _EditorActionsManager.prototype.changeName = function(ele, newName)
+    {
+        if (this.isCollaborative)
+        {
+            window.realTimeManager.changeName(ele, newName);
+        }
+        else
+        {
+            this.changeName(ele, newName);
+        }
+    }
+
+    _EditorActionsManager.prototype.changeNameCy = function(ele, newName)
+    {
+        ele.data('name', newName);
+        ele.css('content', newName);
+    }
 
 
     _EditorActionsManager.prototype.updateElementCallback = function(ele, id)
@@ -340,8 +357,8 @@ module.exports = (function(cy)
         //Remove element from existing graph
         var nodeID = id;
         var cyEle = cy.$("#" + nodeID);
-        cyEle.css('content', ele.name);
         cyEle.position({x: ele.x, y: ele.y});
+        this.changeNameCy(cyEle, ele.name);
     }
 
 

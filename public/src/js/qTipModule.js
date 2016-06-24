@@ -14,8 +14,9 @@ module.exports = (function(cy,$)
     {
       var nodeID = $(this).find('input').attr('nodeid');
 
-      cy.$('#'+nodeID)[0]._private.data['name'] = $(this).find('input').val();
-      cy.$('#'+nodeID)[0].css('content', $(this).find('input').val());
+      var cyNode = cy.$('#'+nodeID)[0];
+      var newName = $(this).find('input').val();
+      window.editorActionsManager.changeName(cyNode, newName);
     });
 
     var wrapper = $('<div></div>');

@@ -48933,6 +48933,23 @@ module.exports = (function(cy)
         }
     }
 
+    _EditorActionsManager.prototype.changeName = function(ele, newName)
+    {
+        if (this.isCollaborative)
+        {
+            window.realTimeManager.changeName(ele, newName);
+        }
+        else
+        {
+            this.changeName(ele, newName);
+        }
+    }
+
+    _EditorActionsManager.prototype.changeNameCy = function(ele, newName)
+    {
+        ele.data('name', newName);
+        ele.css('content', newName);
+    }
 
 
     _EditorActionsManager.prototype.updateElementCallback = function(ele, id)
@@ -48940,8 +48957,8 @@ module.exports = (function(cy)
         //Remove element from existing graph
         var nodeID = id;
         var cyEle = cy.$("#" + nodeID);
-        cyEle.css('content', ele.name);
         cyEle.position({x: ele.x, y: ele.y});
+        this.changeNameCy(cyEle, ele.name);
     }
 
 
@@ -49222,6 +49239,29 @@ module.exports = (function(cy, editorActionsManager)
         
     }
 
+    RealTimeModule.prototype.changeName = function(ele, newName)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap =  root.get('nodes');
+
+        var elementID = ele.id();
+
+        if (nodeMap.has(elementID))
+        {
+            var tmpNode = nodeMap.get(elementID);
+            model.beginCompoundOperation();
+            tmpNode.name = newName;
+            model.endCompoundOperation();
+        }
+        else
+        {
+            throw new Error('Element does not exists in nodes !!! ');
+            return;
+        }
+
+    }
+
     RealTimeModule.prototype.changeParent = function (rootNode, newParentId, connectedEdges)
     {
         var model = this.realTimeDoc.getModel();
@@ -49330,13 +49370,13 @@ module.exports = (function(cy, editorActionsManager)
 
         function registerAttributeChangeHandlersNodeR()
         {
-            function logObjectChange(event)
+            function updateElementHandler(event)
             {
                 var node = event.currentTarget;
                 window.editorActionsManager.updateElementCallback(node, self.getCustomObjId(node));
             }
 
-            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, logObjectChange);
+            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateElementHandler);
         }
 
         gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);
@@ -50714,8 +50754,9 @@ module.exports = (function(cy,$)
     {
       var nodeID = $(this).find('input').attr('nodeid');
 
-      cy.$('#'+nodeID)[0]._private.data['name'] = $(this).find('input').val();
-      cy.$('#'+nodeID)[0].css('content', $(this).find('input').val());
+      var cyNode = cy.$('#'+nodeID)[0];
+      var newName = $(this).find('input').val();
+      window.editorActionsManager.changeName(cyNode, newName);
     });
 
     var wrapper = $('<div></div>');
