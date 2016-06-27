@@ -48667,7 +48667,7 @@ module.exports = (function(cy)
         {
             //Remove element from existing graph
             var ele = event.newValue;
-            var cyEle = cy.$("#" + nodeID)
+            var cyEle = cy.$("#" + nodeID);
             this.removeElementCy(cyEle);
             cy.nodes().updateCompoundBounds();
         }
@@ -48766,8 +48766,16 @@ module.exports = (function(cy)
             var self = this;
             ele.forEach(function (elem, index)
             {
+                var connectedEdges = elem.connectedEdges();
+
+                //Remove all connected edges also !
+                connectedEdges.forEach(function (edge, j)
+                {
+                   self.removeElementFromRealTime(edge);
+                });
+
                 self.removeElementFromRealTime(elem);
-            })
+            });
         }
         else
         {
