@@ -83,18 +83,16 @@ $(window).load(function()
 
     var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
 
-    cy = window.cy = cytoscape(
-        {
-            container: document.querySelector('#cy'),
-
-            boxSelectionEnabled: true,
-            autounselectify: false,
-            wheelSensitivity: 0.1,
-            style: styleSheet,
-            // elements: allEles,
-            ready: function(){},
-            layout: {name: 'preset'}
-        });
+    cy = window.cy = cytoscape({
+        container: document.querySelector('#cy'),
+        boxSelectionEnabled: true,
+        autounselectify: false,
+        wheelSensitivity: 0.1,
+        style: styleSheet,
+        // elements: allEles,
+        ready: function(){},
+        layout: {name: 'preset'}
+    });
 
     //These dependencies requeire window.cy object so that they are imported here
     //TODO better refactor these

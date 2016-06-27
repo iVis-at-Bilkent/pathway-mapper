@@ -2,6 +2,9 @@ module.exports = (function(cy, editorActionsManager)
 {
     "use strict";
 
+    var NODEMAP_NAME = 'nodes';
+    var EDGEMAP_NAME = 'edges';
+
     var RealTimeModule = function()
     {
         this.clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
@@ -16,7 +19,6 @@ module.exports = (function(cy, editorActionsManager)
             clientId: this.clientId
         });
         this.authorize();
-
     }
 
     RealTimeModule.prototype.authorize = function()
@@ -80,7 +82,6 @@ module.exports = (function(cy, editorActionsManager)
         }
     }
 
-    
     // The first time a file is opened, it must be initialized with the
     // document structure.
     RealTimeModule.prototype.onFileInitialize = function(model)
@@ -89,12 +90,9 @@ module.exports = (function(cy, editorActionsManager)
 
         var nodeMap = model.createMap();
         var edgeMap = model.createMap();
-        var elementCounter = model.createString();
-        elementCounter.setText("0");
 
-        root.set('nodes', nodeMap);
-        root.set('edges', edgeMap);
-        root.set('element_counter', elementCounter);
+        root.set(NODEMAP_NAME, nodeMap);
+        root.set(EDGEMAP_NAME, edgeMap);
 
         // var nodes = cy.nodes();
         // var edges = cy.edges();
@@ -138,6 +136,26 @@ module.exports = (function(cy, editorActionsManager)
         var model = doc.getModel();
         var root = model.getRoot();
 
+        var nodeMap = root.get(NODEMAP_NAME);
+        var edgeMap = root.get(EDGEMAP_NAME);
+
+        var nodeMapKeys = nodeMap.keys();
+        var edgeMapKeys = edgeMap.keys();
+
+        //Add real time nodes to local graph
+        for (var index in nodeMapKeys)
+        {
+            var realtimeNode = nodeMap.get(nodeMapKeys[index]);
+            window.editorActionsManager.addNewNodeLocally(realtimeNode);
+        }
+
+        //Add real time edges to local graph
+        for (var index in edgeMapKeys)
+        {
+            var realTimeEdge = edgeMap.get(edgeMapKeys[index]);
+            window.editorActionsManager.addNewEdgeLocally(realTimeEdge);
+        }
+
         //Keep a reference to the file !
         this.realTimeDoc = doc;
 
@@ -153,8 +171,8 @@ module.exports = (function(cy, editorActionsManager)
         }
 
         //Event listeners for edge and node map
-        root.get('nodes').addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddRemoveHandler);
-        root.get('edges').addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, edgeAddRemoveHandler);
+        root.get(NODEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddRemoveHandler);
+        root.get(EDGEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, edgeAddRemoveHandler);
 
         //Just for debugging
         var debugRButton = document.getElementById('debugR');
@@ -162,21 +180,26 @@ module.exports = (function(cy, editorActionsManager)
         {
             gapi.drive.realtime.debug();
         });
+
+
     }
 
     RealTimeModule.prototype.addNewNode = function(nodeData, posData)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var nodeMap =  root.get('nodes');
-        var newNode = model.create(NodeR,
-            {
-                name: nodeData.name,
-                type: nodeData.type,
-                parent: nodeData.parent,
-                x: posData.x,
-                y: posData.y
-            });
+        var nodeMap =  root.get(NODEMAP_NAME);
+        var newNode = model.create(NodeR, {
+            name: nodeData.name,
+            type: nodeData.type,
+            parent: nodeData.parent
+        });
+
+        if (posData)
+        {
+            newNode.x = posData.x;
+            newNode.y = posData.y;
+        }
 
         var realTimeGeneratedID = this.getCustomObjId(newNode);
         nodeMap.set(realTimeGeneratedID, newNode);
@@ -186,7 +209,7 @@ module.exports = (function(cy, editorActionsManager)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var edgeMap =  root.get('edges');
+        var edgeMap =  root.get(EDGEMAP_NAME);
 
         var newEdge = model.create(EdgeR,
             {
@@ -203,8 +226,8 @@ module.exports = (function(cy, editorActionsManager)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var edgeMap =  root.get('edges');
-        var nodeMap =  root.get('nodes');
+        var edgeMap =  root.get(EDGEMAP_NAME);
+        var nodeMap =  root.get(NODEMAP_NAME);
 
         if (nodeMap.has(elementID))
         {
@@ -225,7 +248,7 @@ module.exports = (function(cy, editorActionsManager)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var nodeMap =  root.get('nodes');
+        var nodeMap =  root.get(NODEMAP_NAME);
 
         var elementID = ele.id();
         var newPos = ele.position();
@@ -250,7 +273,7 @@ module.exports = (function(cy, editorActionsManager)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var nodeMap =  root.get('nodes');
+        var nodeMap =  root.get(NODEMAP_NAME);
 
         var elementID = ele.id();
 
@@ -273,7 +296,7 @@ module.exports = (function(cy, editorActionsManager)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var nodeMap =  root.get('nodes');
+        var nodeMap =  root.get(NODEMAP_NAME);
 
         var nodeLookupTable = {};
 

@@ -48621,13 +48621,12 @@ module.exports = (function(cy)
         }
     }
 
-    _EditorActionsManager.prototype.addNodes = function(nodes)
+    _EditorActionsManager.prototype.addNodes = function(nodes, posData)
     {
-        var self = this;
-        nodes.forEach(function (node, index)
+        for (var i in nodes)
         {
-            self.addNode(node.data(),node.position());
-        });
+            this.addNode(nodes[i], posData);
+        }
     }
 
     _EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)
@@ -48674,27 +48673,30 @@ module.exports = (function(cy)
         //Addition Operation
         else
         {
-            var nodeID = window.realTimeManager.getCustomObjId(node);
-            var nodeData =
-            {
-                id: nodeID,
-                type: node.type,
-                name: node.name,
-                parent: node.parent
-            };
-
-            if (node.x != "undefined" && node.y != "unedfined")
-            {
-                this.addNodetoCy(nodeData, {x: node.x, y: node.y});
-            }
-            else
-            {
-                this.addNodetoCy(nodeData);
-            }
-            cy.nodes().updateCompoundBounds();
-
+            this.addNewNodeLocally(node)
         }
+    }
 
+    _EditorActionsManager.prototype.addNewNodeLocally = function(realtimeNode)
+    {
+        var nodeID = window.realTimeManager.getCustomObjId(realtimeNode);
+        var nodeData =
+        {
+            id: nodeID,
+            type: realtimeNode.type,
+            name: realtimeNode.name,
+            parent: realtimeNode.parent
+        };
+
+        if (realtimeNode.x != "undefined" && realtimeNode.y != "unedfined")
+        {
+            this.addNodetoCy(nodeData, {x: realtimeNode.x, y: realtimeNode.y});
+        }
+        else
+        {
+            this.addNodetoCy(nodeData);
+        }
+        cy.nodes().updateCompoundBounds();
     }
 
     _EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
@@ -48715,6 +48717,14 @@ module.exports = (function(cy)
         }
     }
 
+    _EditorActionsManager.prototype.addEdges = function(edges)
+    {
+        for (var i in edges)
+        {
+            this.addEdge(edges[i]);
+        }
+    }
+
     _EditorActionsManager.prototype.addNewEdgeRealTime = function(edgeData)
     {
         window.realTimeManager.addNewEdge(edgeData);
@@ -48732,13 +48742,13 @@ module.exports = (function(cy)
     _EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(event)
     {
 
-        //Get real time node object and sync it to node addition or removal
+        //Get real time edge object and sync it to node addition or removal
         var edge = event.newValue;
-        var edgeID = event.property;
 
         //Removal Operation
         if (edge === null)
         {
+            var edgeID = window.realTimeManager.getCustomObjId(edge);
             //Remove element from existing graph
             var ele = event.newValue;
             var cyEle = cy.$("#" + edgeID)
@@ -48747,15 +48757,21 @@ module.exports = (function(cy)
         //Addition Operation
         else
         {
-            var edgeData =
-            {
-                id: edgeID,
-                type: edge.type,
-                source: edge.source,
-                target: edge.target
-            };
-            this.addNewEdgetoCy(edgeData);
+            this.addNewEdgeLocally(edge);
         }
+    }
+
+    _EditorActionsManager.prototype.addNewEdgeLocally = function(edge)
+    {
+        var edgeID = window.realTimeManager.getCustomObjId(edge);
+        var edgeData =
+        {
+            id: edgeID,
+            type: edge.type,
+            source: edge.source,
+            target: edge.target
+        };
+        this.addNewEdgetoCy(edgeData);
     }
 
     //Removal functions
@@ -48802,8 +48818,6 @@ module.exports = (function(cy)
     {
         if(this.isCollaborative)
         {
-            //TODO collaborative change parent
-            // this.changeParentCy(eles, newParentId);
             this.changeParentRealTime(eles, newParentId);
         }
         else
@@ -49003,6 +49017,9 @@ module.exports = (function(cy, editorActionsManager)
 {
     "use strict";
 
+    var NODEMAP_NAME = 'nodes';
+    var EDGEMAP_NAME = 'edges';
+
     var RealTimeModule = function()
     {
         this.clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
@@ -49017,7 +49034,6 @@ module.exports = (function(cy, editorActionsManager)
             clientId: this.clientId
         });
         this.authorize();
-
     }
 
     RealTimeModule.prototype.authorize = function()
@@ -49081,7 +49097,6 @@ module.exports = (function(cy, editorActionsManager)
         }
     }
 
-    
     // The first time a file is opened, it must be initialized with the
     // document structure.
     RealTimeModule.prototype.onFileInitialize = function(model)
@@ -49090,12 +49105,9 @@ module.exports = (function(cy, editorActionsManager)
 
         var nodeMap = model.createMap();
         var edgeMap = model.createMap();
-        var elementCounter = model.createString();
-        elementCounter.setText("0");
 
-        root.set('nodes', nodeMap);
-        root.set('edges', edgeMap);
-        root.set('element_counter', elementCounter);
+        root.set(NODEMAP_NAME, nodeMap);
+        root.set(EDGEMAP_NAME, edgeMap);
 
         // var nodes = cy.nodes();
         // var edges = cy.edges();
@@ -49139,6 +49151,26 @@ module.exports = (function(cy, editorActionsManager)
         var model = doc.getModel();
         var root = model.getRoot();
 
+        var nodeMap = root.get(NODEMAP_NAME);
+        var edgeMap = root.get(EDGEMAP_NAME);
+
+        var nodeMapKeys = nodeMap.keys();
+        var edgeMapKeys = edgeMap.keys();
+
+        //Add real time nodes to local graph
+        for (var index in nodeMapKeys)
+        {
+            var realtimeNode = nodeMap.get(nodeMapKeys[index]);
+            window.editorActionsManager.addNewNodeLocally(realtimeNode);
+        }
+
+        //Add real time edges to local graph
+        for (var index in edgeMapKeys)
+        {
+            var realTimeEdge = edgeMap.get(edgeMapKeys[index]);
+            window.editorActionsManager.addNewEdgeLocally(realTimeEdge);
+        }
+
         //Keep a reference to the file !
         this.realTimeDoc = doc;
 
@@ -49154,8 +49186,8 @@ module.exports = (function(cy, editorActionsManager)
         }
 
         //Event listeners for edge and node map
-        root.get('nodes').addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddRemoveHandler);
-        root.get('edges').addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, edgeAddRemoveHandler);
+        root.get(NODEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddRemoveHandler);
+        root.get(EDGEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, edgeAddRemoveHandler);
 
         //Just for debugging
         var debugRButton = document.getElementById('debugR');
@@ -49163,21 +49195,26 @@ module.exports = (function(cy, editorActionsManager)
         {
             gapi.drive.realtime.debug();
         });
+
+
     }
 
     RealTimeModule.prototype.addNewNode = function(nodeData, posData)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var nodeMap =  root.get('nodes');
-        var newNode = model.create(NodeR,
-            {
-                name: nodeData.name,
-                type: nodeData.type,
-                parent: nodeData.parent,
-                x: posData.x,
-                y: posData.y
-            });
+        var nodeMap =  root.get(NODEMAP_NAME);
+        var newNode = model.create(NodeR, {
+            name: nodeData.name,
+            type: nodeData.type,
+            parent: nodeData.parent
+        });
+
+        if (posData)
+        {
+            newNode.x = posData.x;
+            newNode.y = posData.y;
+        }
 
         var realTimeGeneratedID = this.getCustomObjId(newNode);
         nodeMap.set(realTimeGeneratedID, newNode);
@@ -49187,7 +49224,7 @@ module.exports = (function(cy, editorActionsManager)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var edgeMap =  root.get('edges');
+        var edgeMap =  root.get(EDGEMAP_NAME);
 
         var newEdge = model.create(EdgeR,
             {
@@ -49204,8 +49241,8 @@ module.exports = (function(cy, editorActionsManager)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var edgeMap =  root.get('edges');
-        var nodeMap =  root.get('nodes');
+        var edgeMap =  root.get(EDGEMAP_NAME);
+        var nodeMap =  root.get(NODEMAP_NAME);
 
         if (nodeMap.has(elementID))
         {
@@ -49226,7 +49263,7 @@ module.exports = (function(cy, editorActionsManager)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var nodeMap =  root.get('nodes');
+        var nodeMap =  root.get(NODEMAP_NAME);
 
         var elementID = ele.id();
         var newPos = ele.position();
@@ -49251,7 +49288,7 @@ module.exports = (function(cy, editorActionsManager)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var nodeMap =  root.get('nodes');
+        var nodeMap =  root.get(NODEMAP_NAME);
 
         var elementID = ele.id();
 
@@ -49274,7 +49311,7 @@ module.exports = (function(cy, editorActionsManager)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var nodeMap =  root.get('nodes');
+        var nodeMap =  root.get(NODEMAP_NAME);
 
         var nodeLookupTable = {};
 
@@ -50250,10 +50287,10 @@ module.exports = (function($)
       {
         if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
         {
-            cy.remove(cy.elements());
+            window.editorActionsManager.removeElement(cy.elements());
             var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-            var allEles = allEles.nodes.concat(allEles.edges);
-            cy.add(allEles);
+            window.editorActionsManager.addNodes(allEles.nodes);
+            window.editorActionsManager.addEdges(allEles.edges);
             cy.fit(50);
             changeFileName(file.name);
         }
@@ -50483,18 +50520,16 @@ $(window).load(function()
 
     var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
 
-    cy = window.cy = cytoscape(
-        {
-            container: document.querySelector('#cy'),
-
-            boxSelectionEnabled: true,
-            autounselectify: false,
-            wheelSensitivity: 0.1,
-            style: styleSheet,
-            // elements: allEles,
-            ready: function(){},
-            layout: {name: 'preset'}
-        });
+    cy = window.cy = cytoscape({
+        container: document.querySelector('#cy'),
+        boxSelectionEnabled: true,
+        autounselectify: false,
+        wheelSensitivity: 0.1,
+        style: styleSheet,
+        // elements: allEles,
+        ready: function(){},
+        layout: {name: 'preset'}
+    });
 
     //These dependencies requeire window.cy object so that they are imported here
     //TODO better refactor these
@@ -50823,7 +50858,8 @@ module.exports = (function(cy,$)
     return wrapper;
   }
 
-  function capitalizeFirstLetter(string) {
+  function capitalizeFirstLetter(string) 
+  {
       return string.charAt(0).toUpperCase() + string.slice(1);
   }
 

@@ -21,13 +21,12 @@ module.exports = (function(cy)
         }
     }
 
-    _EditorActionsManager.prototype.addNodes = function(nodes)
+    _EditorActionsManager.prototype.addNodes = function(nodes, posData)
     {
-        var self = this;
-        nodes.forEach(function (node, index)
+        for (var i in nodes)
         {
-            self.addNode(node.data(),node.position());
-        });
+            this.addNode(nodes[i], posData);
+        }
     }
 
     _EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)
@@ -74,27 +73,30 @@ module.exports = (function(cy)
         //Addition Operation
         else
         {
-            var nodeID = window.realTimeManager.getCustomObjId(node);
-            var nodeData =
-            {
-                id: nodeID,
-                type: node.type,
-                name: node.name,
-                parent: node.parent
-            };
-
-            if (node.x != "undefined" && node.y != "unedfined")
-            {
-                this.addNodetoCy(nodeData, {x: node.x, y: node.y});
-            }
-            else
-            {
-                this.addNodetoCy(nodeData);
-            }
-            cy.nodes().updateCompoundBounds();
-
+            this.addNewNodeLocally(node)
         }
+    }
 
+    _EditorActionsManager.prototype.addNewNodeLocally = function(realtimeNode)
+    {
+        var nodeID = window.realTimeManager.getCustomObjId(realtimeNode);
+        var nodeData =
+        {
+            id: nodeID,
+            type: realtimeNode.type,
+            name: realtimeNode.name,
+            parent: realtimeNode.parent
+        };
+
+        if (realtimeNode.x != "undefined" && realtimeNode.y != "unedfined")
+        {
+            this.addNodetoCy(nodeData, {x: realtimeNode.x, y: realtimeNode.y});
+        }
+        else
+        {
+            this.addNodetoCy(nodeData);
+        }
+        cy.nodes().updateCompoundBounds();
     }
 
     _EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
@@ -115,6 +117,14 @@ module.exports = (function(cy)
         }
     }
 
+    _EditorActionsManager.prototype.addEdges = function(edges)
+    {
+        for (var i in edges)
+        {
+            this.addEdge(edges[i]);
+        }
+    }
+
     _EditorActionsManager.prototype.addNewEdgeRealTime = function(edgeData)
     {
         window.realTimeManager.addNewEdge(edgeData);
@@ -132,13 +142,13 @@ module.exports = (function(cy)
     _EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(event)
     {
 
-        //Get real time node object and sync it to node addition or removal
+        //Get real time edge object and sync it to node addition or removal
         var edge = event.newValue;
-        var edgeID = event.property;
 
         //Removal Operation
         if (edge === null)
         {
+            var edgeID = window.realTimeManager.getCustomObjId(edge);
             //Remove element from existing graph
             var ele = event.newValue;
             var cyEle = cy.$("#" + edgeID)
@@ -147,15 +157,21 @@ module.exports = (function(cy)
         //Addition Operation
         else
         {
-            var edgeData =
-            {
-                id: edgeID,
-                type: edge.type,
-                source: edge.source,
-                target: edge.target
-            };
-            this.addNewEdgetoCy(edgeData);
+            this.addNewEdgeLocally(edge);
         }
+    }
+
+    _EditorActionsManager.prototype.addNewEdgeLocally = function(edge)
+    {
+        var edgeID = window.realTimeManager.getCustomObjId(edge);
+        var edgeData =
+        {
+            id: edgeID,
+            type: edge.type,
+            source: edge.source,
+            target: edge.target
+        };
+        this.addNewEdgetoCy(edgeData);
     }
 
     //Removal functions
@@ -202,8 +218,6 @@ module.exports = (function(cy)
     {
         if(this.isCollaborative)
         {
-            //TODO collaborative change parent
-            // this.changeParentCy(eles, newParentId);
             this.changeParentRealTime(eles, newParentId);
         }
         else
