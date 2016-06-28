@@ -2,14 +2,16 @@ module.exports = (function(cy)
 {
     "use strict";
 
-    var _EditorActionsManager = function(isCollaborative)
+    var EditorActionsManager = function(isCollaborative, realtimeManager)
     {
         // this.realTimeDoc = realTimeDoc;
-        this.isCollaborative = true;
+        this.isCollaborative = isCollaborative;
+        if(this.isCollaborative && realtimeManager)
+            this.realTimeManager = realtimeManager;
     };
 
     //Node Related Functions
-    _EditorActionsManager.prototype.addNode = function(nodeData, posData)
+    EditorActionsManager.prototype.addNode = function(nodeData, posData)
     {
         if (this.isCollaborative)
         {
@@ -21,7 +23,7 @@ module.exports = (function(cy)
         }
     }
 
-    _EditorActionsManager.prototype.addNodes = function(nodes, posData)
+    EditorActionsManager.prototype.addNodes = function(nodes, posData)
     {
         for (var i in nodes)
         {
@@ -29,7 +31,7 @@ module.exports = (function(cy)
         }
     }
 
-    _EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)
+    EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)
     {
         var newNode =
         {
@@ -55,7 +57,7 @@ module.exports = (function(cy)
         cy.nodes().updateCompoundBounds();
     }
 
-    _EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
+    EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
     {
         //Get real time node object and sync it to node addition or removal
         var node = event.newValue;
@@ -77,9 +79,9 @@ module.exports = (function(cy)
         }
     }
 
-    _EditorActionsManager.prototype.addNewNodeLocally = function(realtimeNode)
+    EditorActionsManager.prototype.addNewNodeLocally = function(realtimeNode)
     {
-        var nodeID = window.realTimeManager.getCustomObjId(realtimeNode);
+        var nodeID = this.realTimeManager.getCustomObjId(realtimeNode);
         var nodeData =
         {
             id: nodeID,
@@ -99,13 +101,13 @@ module.exports = (function(cy)
         cy.nodes().updateCompoundBounds();
     }
 
-    _EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
+    EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
     {
-        window.realTimeManager.addNewNode(nodeData,posData);
+        this.realTimeManager.addNewNode(nodeData,posData);
     }
 
     //Edge related functions
-    _EditorActionsManager.prototype.addEdge = function(edgeData)
+    EditorActionsManager.prototype.addEdge = function(edgeData)
     {
         if (this.isCollaborative)
         {
@@ -117,7 +119,7 @@ module.exports = (function(cy)
         }
     }
 
-    _EditorActionsManager.prototype.addEdges = function(edges)
+    EditorActionsManager.prototype.addEdges = function(edges)
     {
         for (var i in edges)
         {
@@ -125,12 +127,12 @@ module.exports = (function(cy)
         }
     }
 
-    _EditorActionsManager.prototype.addNewEdgeRealTime = function(edgeData)
+    EditorActionsManager.prototype.addNewEdgeRealTime = function(edgeData)
     {
-        window.realTimeManager.addNewEdge(edgeData);
+        this.realTimeManager.addNewEdge(edgeData);
     }
 
-    _EditorActionsManager.prototype.addNewEdgetoCy = function(edgeData)
+    EditorActionsManager.prototype.addNewEdgetoCy = function(edgeData)
     {
         cy.add(
             {
@@ -139,7 +141,7 @@ module.exports = (function(cy)
             });
     }
 
-    _EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(event)
+    EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(event)
     {
 
         //Get real time edge object and sync it to node addition or removal
@@ -148,7 +150,7 @@ module.exports = (function(cy)
         //Removal Operation
         if (edge === null)
         {
-            var edgeID = window.realTimeManager.getCustomObjId(edge);
+            var edgeID = this.realTimeManager.getCustomObjId(edge);
             //Remove element from existing graph
             var ele = event.newValue;
             var cyEle = cy.$("#" + edgeID)
@@ -161,9 +163,9 @@ module.exports = (function(cy)
         }
     }
 
-    _EditorActionsManager.prototype.addNewEdgeLocally = function(edge)
+    EditorActionsManager.prototype.addNewEdgeLocally = function(edge)
     {
-        var edgeID = window.realTimeManager.getCustomObjId(edge);
+        var edgeID = this.realTimeManager.getCustomObjId(edge);
         var edgeData =
         {
             id: edgeID,
@@ -175,7 +177,7 @@ module.exports = (function(cy)
     }
 
     //Removal functions
-    _EditorActionsManager.prototype.removeElement = function(ele)
+    EditorActionsManager.prototype.removeElement = function(ele)
     {
         if (this.isCollaborative)
         {
@@ -199,22 +201,22 @@ module.exports = (function(cy)
         }
     }
 
-    _EditorActionsManager.prototype.removeElementCy = function(ele)
+    EditorActionsManager.prototype.removeElementCy = function(ele)
     {
         cy.remove(ele);
     }
 
-    _EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
+    EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
     {
-        window.realTimeManager.removeElement(ele.id());
+        this.realTimeManager.removeElement(ele.id());
     }
 
-    _EditorActionsManager.prototype.realTimeElementDeletedEventCallback = function(event)
+    EditorActionsManager.prototype.realTimeElementDeletedEventCallback = function(event)
     {
         this.removeElementCy(cyEle);
     }
     
-    _EditorActionsManager.prototype.changeParents = function(eles, newParentId)
+    EditorActionsManager.prototype.changeParents = function(eles, newParentId)
     {
         if(this.isCollaborative)
         {
@@ -226,7 +228,7 @@ module.exports = (function(cy)
         }
     }
 
-    _EditorActionsManager.prototype.changeParentCy = function(eles, newParentId)
+    EditorActionsManager.prototype.changeParentCy = function(eles, newParentId)
     {
         var lockedNodes = {};
 
@@ -274,7 +276,7 @@ module.exports = (function(cy)
         cy.nodes().updateCompoundBounds();
     }
     
-    _EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId) 
+    EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId) 
     {
 
         function getTopLevelParents(eles)
@@ -339,27 +341,27 @@ module.exports = (function(cy)
         var rootNodeR = new NodeObj(null);
 
         traverseNodes(topMostNodes, rootNodeR);
-        window.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
+        this.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
         console.log(rootNodeR);
     }
 
-    _EditorActionsManager.prototype.moveElements = function(ele)
+    EditorActionsManager.prototype.moveElements = function(ele)
     {
         //Sync movement to real time api
         if(this.isCollaborative)
         {
             ele.forEach(function (ele,index)
             {
-                window.realTimeManager.moveElement(ele);
+                this.realTimeManager.moveElement(ele);
             });
         }
     }
 
-    _EditorActionsManager.prototype.changeName = function(ele, newName)
+    EditorActionsManager.prototype.changeName = function(ele, newName)
     {
         if (this.isCollaborative)
         {
-            window.realTimeManager.changeName(ele, newName);
+            this.realTimeManager.changeName(ele, newName);
         }
         else
         {
@@ -367,14 +369,14 @@ module.exports = (function(cy)
         }
     }
 
-    _EditorActionsManager.prototype.changeNameCy = function(ele, newName)
+    EditorActionsManager.prototype.changeNameCy = function(ele, newName)
     {
         ele.data('name', newName);
         ele.css('content', newName);
     }
 
 
-    _EditorActionsManager.prototype.updateElementCallback = function(ele, id)
+    EditorActionsManager.prototype.updateElementCallback = function(ele, id)
     {
         //Remove element from existing graph
         var nodeID = id;
@@ -387,26 +389,6 @@ module.exports = (function(cy)
     //Utility Functions
     //TODO move functions thar are inside class functions here
 
-    // Singleton Class related stuff here !
-    var EditorActionsManager = function()
-    {
-        // var instance;
-        //
-        // function createInstance()
-        // {
-        //     var object = new _EditorActionsManager();
-        //     return object;
-        // }
-        //
-        // this.prototype.getInstance = function()
-        // {
-        //     if (!instance) {
-        //         instance = createInstance();
-        //     }
-        //     return instance;
-        // }
-        return new _EditorActionsManager();
-    }
 
     return EditorActionsManager;
 

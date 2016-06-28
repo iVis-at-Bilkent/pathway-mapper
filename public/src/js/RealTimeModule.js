@@ -18,7 +18,6 @@ module.exports = (function(cy, editorActionsManager)
         this.realtimeUtils = new utils.RealtimeUtils({
             clientId: this.clientId
         });
-        this.authorize();
     }
 
     RealTimeModule.prototype.authorize = function()

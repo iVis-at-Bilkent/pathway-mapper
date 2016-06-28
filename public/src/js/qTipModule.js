@@ -2,19 +2,25 @@
 
 var BackboneView = require('./Views/BioGeneView.js');
 
-module.exports = (function(cy,$)
+module.exports = (function($)
 {
   "use strict";
-
-  window.generateQtipContentHTML = function(ele)
+  
+  var QtipModule =function (cy)
   {
+    this.cy = cy;
+  };
+
+  QtipModule.prototype.generateQtipContentHTML = function(ele)
+  {
+    var self = this;
     var nodeData = ele.data();
     var textInput = $('<div class="col-xs-8 inputCol"><input type="text" class="form-control" nodeid="' + ele.id() + '" value="' + nodeData.name + '"></div>');
     textInput.change(function()
     {
       var nodeID = $(this).find('input').attr('nodeid');
 
-      var cyNode = cy.$('#'+nodeID)[0];
+      var cyNode = self.cy.$('#'+nodeID)[0];
       var newName = $(this).find('input').val();
       window.editorActionsManager.changeName(cyNode, newName);
     });
@@ -29,87 +35,92 @@ module.exports = (function(cy,$)
 
     if (ele.data().type === "GENE")
     {
-        var entrezGeneButton = $('<div class="row centerText geneDetails"><button nodeid="' + ele.id() + '" type="button" class="btn btn-default">Entrez Gene</button></div>');
-        entrezGeneButton.find('button').on('click', function(event)
+      var entrezGeneButton = $('<div class="row centerText geneDetails"><button nodeid="' + ele.id() + '" type="button" class="btn btn-default">Entrez Gene</button></div>');
+      entrezGeneButton.find('button').on('click', function(event)
+      {
+        event.preventDefault();
+        var nodeID = $(this).attr('nodeid');
+        var nodeSymbol = this.cy.$('#'+nodeID)[0]._private.data['name'];
+        var self = this;
+        var parent = $(this).parent();
+        parent.empty().append('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>');
+
+        var formData = new FormData();
+        formData.append('query', nodeSymbol);
+
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function ()
         {
-          event.preventDefault();
-          var nodeID = $(this).attr('nodeid');
-          var nodeSymbol = cy.$('#'+nodeID)[0]._private.data['name'];
-          var self = this;
-          var parent = $(this).parent();
-          parent.empty().append('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>');
-
-          var formData = new FormData();
-          formData.append('query', nodeSymbol);
-
-          var request = new XMLHttpRequest();
-          request.onreadystatechange = function ()
+          if(request.readyState === XMLHttpRequest.DONE)
           {
-            if(request.readyState === XMLHttpRequest.DONE)
+            if (request.status === 200)
             {
-              if (request.status === 200)
+              var jsonData = JSON.parse(request.responseText);
+              if (jsonData.count > 0)
               {
-                var jsonData = JSON.parse(request.responseText);
-                if (jsonData.count > 0)
-                {
-                  var backboneView = new BackboneView({model: jsonData.geneInfo[0]}).render().html();
-                  parent.empty().append(backboneView);
-                }
-                else
-                {
-                  parent.empty().append('There is no extra information for this gene');
-                }
+                var backboneView = new BackboneView({model: jsonData.geneInfo[0]}).render().html();
+                parent.empty().append(backboneView);
               }
               else
               {
-                parent.empty().append('An error occured while retrieving the data');
+                parent.empty().append('There is no extra information for this gene');
               }
             }
-          };
-          request.open("POST", "/getBioGeneData");
-          request.send(formData);
-        });
-        wrapper.append(entrezGeneButton);
+            else
+            {
+              parent.empty().append('An error occured while retrieving the data');
+            }
+          }
+        };
+        request.open("POST", "/getBioGeneData");
+        request.send(formData);
+      });
+      wrapper.append(entrezGeneButton);
     }
 
     return wrapper;
   }
 
-  function capitalizeFirstLetter(string) 
+  QtipModule.prototype.addQtipToElements = function(eles)
   {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
-  window.addQtipToElements = function(eles)
-  {
+    var self = this;
     eles.forEach(function(node,i)
     {
       var qTipOpts =
       {
-          content:
+        content:
+        {
+          text:  function()
           {
-            text:  function()
-            {
-              return generateQtipContentHTML(this);
-            },
-            title: function()
-            {
-                return capitalizeFirstLetter(node.data().type.toLowerCase()) + ' Details';
-            }
+            return self.generateQtipContentHTML(this);
           },
-          position: {
-            my: 'top center',
-            at: 'bottom center'
-          },
-          style:
+          title: function()
           {
-            classes: 'qtip-tipsy qtip-rounded',
-            width: 400
+            return capitalizeFirstLetter(node.data().type.toLowerCase()) + ' Details';
           }
+        },
+        position: {
+          my: 'top center',
+          at: 'bottom center'
+        },
+        style:
+        {
+          classes: 'qtip-tipsy qtip-rounded',
+          width: 400
+        }
       };
       node.qtip(qTipOpts);
     });
 
   }
+  
 
-}(window.cy, window.$));
+  //Utility Functions
+  function capitalizeFirstLetter(string)
+  {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  return QtipModule;
+
+}(window.$));
