@@ -49497,11 +49497,20 @@ $(window).load(function()
         realTimeManager.authorize(realTimeAuthCallback, false);
     }
 
+
     var welPage = new WelcomePageView({
         el: $('.welcomePageContainer'),
         localUsageCallback: localUsageCallback,
         collaborativeUsageCallback: collaborativeUsageCallback
     }).render();
+
+    //TODO SHAME ! ! !
+    var uri = window.location.search;
+    if (uri.length > 0)
+    {
+        $('.welPageButtons').hide();
+        $('#collaborativeUsage').click();
+    }
 
 });
 
