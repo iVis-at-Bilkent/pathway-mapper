@@ -40,7 +40,7 @@ var WelcomePageView = Backbone.View.extend(
         postSuccess: function()
         {
             this.$el.empty();
-            this.$el.fadeOut();
+            this.$el.fadeOut(800);
         }
     });
 

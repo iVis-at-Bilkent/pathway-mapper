@@ -153,10 +153,8 @@ module.exports = (function($)
       {
         if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
         {
-            window.editorActionsManager.removeElement(cy.elements());
             var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-            window.editorActionsManager.addNodes(allEles.nodes);
-            window.editorActionsManager.addEdges(allEles.edges);
+            window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
             cy.fit(50);
             changeFileName(file.name);
         }

@@ -23,11 +23,19 @@ module.exports = (function()
         }
     }
 
-    EditorActionsManager.prototype.addNodes = function(nodes, posData)
+    EditorActionsManager.prototype.addNodes = function(nodes)
     {
         for (var i in nodes)
         {
-            this.addNode(nodes[i], posData);
+            this.addNode(nodes[i].data, nodes[i].position);
+        }
+    }
+
+    EditorActionsManager.prototype.addNodesCy = function(nodes)
+    {
+        for (var i in nodes)
+        {
+            this.addNodetoCy(nodes[i].data, nodes[i].position);
         }
     }
 
@@ -123,7 +131,15 @@ module.exports = (function()
     {
         for (var i in edges)
         {
-            this.addEdge(edges[i]);
+            this.addEdge(edges[i].data);
+        }
+    }
+
+    EditorActionsManager.prototype.addEdgesCy = function(edges)
+    {
+        for (var i in edges)
+        {
+            this.addNewEdgetoCy(edges[i].data);
         }
     }
 
@@ -209,11 +225,6 @@ module.exports = (function()
     EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
     {
         this.realTimeManager.removeElement(ele.id());
-    }
-
-    EditorActionsManager.prototype.realTimeElementDeletedEventCallback = function(event)
-    {
-        this.removeElementCy(cyEle);
     }
     
     EditorActionsManager.prototype.changeParents = function(eles, newParentId)
@@ -357,6 +368,34 @@ module.exports = (function()
         }
     }
 
+    EditorActionsManager.prototype.loadFile = function(nodes, edges)
+    {
+        if (this.isCollaborative)
+        {
+            //TODO collab stuff
+            this.loadfileRealTime(nodes,edges);
+        }
+        else
+        {
+            //Local usage file load
+            this.loadFileCy(nodes,edges);
+        }
+    }
+
+    EditorActionsManager.prototype.loadFileCy = function(nodes, edges)
+    {
+        //Remove all elements
+        this.removeElementCy(cy.elements());
+        this.addNodesCy(nodes);
+        this.addEdgesCy(edges);
+    }
+
+    EditorActionsManager.prototype.loadfileRealTime = function(nodes, edges)
+    {
+        this.realTimeManager.loadGraph(nodes,edges);
+    }
+
+
     EditorActionsManager.prototype.changeName = function(ele, newName)
     {
         if (this.isCollaborative)
@@ -374,8 +413,7 @@ module.exports = (function()
         ele.data('name', newName);
         ele.css('content', newName);
     }
-
-
+    
     EditorActionsManager.prototype.updateElementCallback = function(ele, id)
     {
         //Remove element from existing graph

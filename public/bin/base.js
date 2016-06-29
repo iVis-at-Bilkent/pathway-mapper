@@ -47473,11 +47473,19 @@ module.exports = (function()
         }
     }
 
-    EditorActionsManager.prototype.addNodes = function(nodes, posData)
+    EditorActionsManager.prototype.addNodes = function(nodes)
     {
         for (var i in nodes)
         {
-            this.addNode(nodes[i], posData);
+            this.addNode(nodes[i].data, nodes[i].position);
+        }
+    }
+
+    EditorActionsManager.prototype.addNodesCy = function(nodes)
+    {
+        for (var i in nodes)
+        {
+            this.addNodetoCy(nodes[i].data, nodes[i].position);
         }
     }
 
@@ -47573,7 +47581,15 @@ module.exports = (function()
     {
         for (var i in edges)
         {
-            this.addEdge(edges[i]);
+            this.addEdge(edges[i].data);
+        }
+    }
+
+    EditorActionsManager.prototype.addEdgesCy = function(edges)
+    {
+        for (var i in edges)
+        {
+            this.addNewEdgetoCy(edges[i].data);
         }
     }
 
@@ -47659,11 +47675,6 @@ module.exports = (function()
     EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
     {
         this.realTimeManager.removeElement(ele.id());
-    }
-
-    EditorActionsManager.prototype.realTimeElementDeletedEventCallback = function(event)
-    {
-        this.removeElementCy(cyEle);
     }
     
     EditorActionsManager.prototype.changeParents = function(eles, newParentId)
@@ -47807,6 +47818,34 @@ module.exports = (function()
         }
     }
 
+    EditorActionsManager.prototype.loadFile = function(nodes, edges)
+    {
+        if (this.isCollaborative)
+        {
+            //TODO collab stuff
+            this.loadfileRealTime(nodes,edges);
+        }
+        else
+        {
+            //Local usage file load
+            this.loadFileCy(nodes,edges);
+        }
+    }
+
+    EditorActionsManager.prototype.loadFileCy = function(nodes, edges)
+    {
+        //Remove all elements
+        this.removeElementCy(cy.elements());
+        this.addNodesCy(nodes);
+        this.addEdgesCy(edges);
+    }
+
+    EditorActionsManager.prototype.loadfileRealTime = function(nodes, edges)
+    {
+        this.realTimeManager.loadGraph(nodes,edges);
+    }
+
+
     EditorActionsManager.prototype.changeName = function(ele, newName)
     {
         if (this.isCollaborative)
@@ -47824,8 +47863,7 @@ module.exports = (function()
         ele.data('name', newName);
         ele.css('content', newName);
     }
-
-
+    
     EditorActionsManager.prototype.updateElementCallback = function(ele, id)
     {
         //Remove element from existing graph
@@ -48177,6 +48215,118 @@ module.exports = (function()
             self.addNewEdge(edgeData);
         });
         
+    }
+    
+    RealTimeModule.prototype.loadGraph = function(nodes, edges)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap = root.get(NODEMAP_NAME);
+        var edgeMap = root.get(EDGEMAP_NAME);
+
+        var nodeMapKeys = nodeMap.keys();
+        var edgeMapKeys = edgeMap.keys();
+        var nodeLookupTable = {};
+        var parentMap = {};
+        var levelList = [];
+        var allAddedMap = {};
+
+
+        //TODO compound operation
+        //Remove all real time nodes time nodes
+        for (var index in nodeMapKeys)
+        {
+            this.removeElement(nodeMapKeys[index]);
+        }
+
+        //Remove all real time edges
+        for (var index in edgeMapKeys)
+        {
+            this.removeElement(edgeMapKeys[index]);
+        }
+
+        // //Add nodes first
+        // //construct parent map first !
+        // for (var i in nodes)
+        // {
+        //     var nodeData = nodes[i].data;
+        //     if (nodeData.parent)
+        //         parentMap[nodeData.id] = nodeData.parent;
+        // }
+        //
+        // var allAdded = false;
+        // var levelListIndex = 0;
+        // var addedCounter = 0;
+        // while(!allAdded)
+        // {
+        //     for (var index in nodes)
+        //     {
+        //         var node = nodes[index];
+        //         levelList[levelListIndex] = [];
+        //
+        //         var parentId = node.data.parent;
+        //         if(parentId)
+        //         {
+        //             var highestLevelParent = parentMap[parentId];
+        //
+        //             var topMostFoundFlag = false;
+        //             while(!topMostFoundFlag)
+        //             {
+        //                 var parentOfParent = parentMap[highestLevelParent];
+        //                 if(parentOfParent)
+        //                 {
+        //                     highestLevelParent = parentMap[parentOfParent];
+        //                 }
+        //                 else
+        //                 {
+        //                     topMostFoundFlag = true;
+        //                 }
+        //             }
+        //
+        //             if(allAddedMap[highestLevelParent] === undefined)
+        //             {
+        //                 levelList[levelListIndex].push(topmostOne);
+        //                 allAddedMap[topmostOne] = true;
+        //                 addedCounter++;
+        //             }
+        //         }
+        //
+        //         levelListIndex++;
+        //     }
+        //     allAdded = (addedCounter == nodes.length);
+        // }
+
+        // console.log(levelList);
+
+
+        //Add nodes first
+        //TODO compound relations ?????
+        for (var i in nodes)
+        {
+            var node = nodes[i];
+            var refNodeId = node.data.id;
+
+            node.data.x = node.position.x;
+            node.data.y = node.position.y;
+
+            var newNode = model.create(NodeR, node.data);
+            var newNodeId = this.getCustomObjId(newNode);
+            nodeMap.set(newNodeId, newNode);
+            nodeLookupTable[refNodeId] = newNodeId;
+        }
+
+        for (var i in edges)
+        {
+            var edge = edges[i];
+
+            edge.data.source = nodeLookupTable[edge.data.source];
+            edge.data.target = nodeLookupTable[edge.data.target];
+
+            var newEdge = model.create(EdgeR, edge.data);
+            var newEdgeID = this.getCustomObjId(newEdge);
+            edgeMap.set(newEdgeID, newEdge);
+        }
+
     }
 
     //Google Real Time's custom object ids are retrieved in this way
@@ -48570,7 +48720,7 @@ var WelcomePageView = Backbone.View.extend(
         postSuccess: function()
         {
             this.$el.empty();
-            this.$el.fadeOut();
+            this.$el.fadeOut(800);
         }
     });
 
@@ -49154,10 +49304,8 @@ module.exports = (function($)
       {
         if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
         {
-            window.editorActionsManager.removeElement(cy.elements());
             var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-            window.editorActionsManager.addNodes(allEles.nodes);
-            window.editorActionsManager.addEdges(allEles.edges);
+            window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
             cy.fit(50);
             changeFileName(file.name);
         }

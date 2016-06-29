@@ -331,6 +331,118 @@ module.exports = (function()
         });
         
     }
+    
+    RealTimeModule.prototype.loadGraph = function(nodes, edges)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap = root.get(NODEMAP_NAME);
+        var edgeMap = root.get(EDGEMAP_NAME);
+
+        var nodeMapKeys = nodeMap.keys();
+        var edgeMapKeys = edgeMap.keys();
+        var nodeLookupTable = {};
+        var parentMap = {};
+        var levelList = [];
+        var allAddedMap = {};
+
+
+        //TODO compound operation
+        //Remove all real time nodes time nodes
+        for (var index in nodeMapKeys)
+        {
+            this.removeElement(nodeMapKeys[index]);
+        }
+
+        //Remove all real time edges
+        for (var index in edgeMapKeys)
+        {
+            this.removeElement(edgeMapKeys[index]);
+        }
+
+        // //Add nodes first
+        // //construct parent map first !
+        // for (var i in nodes)
+        // {
+        //     var nodeData = nodes[i].data;
+        //     if (nodeData.parent)
+        //         parentMap[nodeData.id] = nodeData.parent;
+        // }
+        //
+        // var allAdded = false;
+        // var levelListIndex = 0;
+        // var addedCounter = 0;
+        // while(!allAdded)
+        // {
+        //     for (var index in nodes)
+        //     {
+        //         var node = nodes[index];
+        //         levelList[levelListIndex] = [];
+        //
+        //         var parentId = node.data.parent;
+        //         if(parentId)
+        //         {
+        //             var highestLevelParent = parentMap[parentId];
+        //
+        //             var topMostFoundFlag = false;
+        //             while(!topMostFoundFlag)
+        //             {
+        //                 var parentOfParent = parentMap[highestLevelParent];
+        //                 if(parentOfParent)
+        //                 {
+        //                     highestLevelParent = parentMap[parentOfParent];
+        //                 }
+        //                 else
+        //                 {
+        //                     topMostFoundFlag = true;
+        //                 }
+        //             }
+        //
+        //             if(allAddedMap[highestLevelParent] === undefined)
+        //             {
+        //                 levelList[levelListIndex].push(topmostOne);
+        //                 allAddedMap[topmostOne] = true;
+        //                 addedCounter++;
+        //             }
+        //         }
+        //
+        //         levelListIndex++;
+        //     }
+        //     allAdded = (addedCounter == nodes.length);
+        // }
+
+        // console.log(levelList);
+
+
+        //Add nodes first
+        //TODO compound relations ?????
+        for (var i in nodes)
+        {
+            var node = nodes[i];
+            var refNodeId = node.data.id;
+
+            node.data.x = node.position.x;
+            node.data.y = node.position.y;
+
+            var newNode = model.create(NodeR, node.data);
+            var newNodeId = this.getCustomObjId(newNode);
+            nodeMap.set(newNodeId, newNode);
+            nodeLookupTable[refNodeId] = newNodeId;
+        }
+
+        for (var i in edges)
+        {
+            var edge = edges[i];
+
+            edge.data.source = nodeLookupTable[edge.data.source];
+            edge.data.target = nodeLookupTable[edge.data.target];
+
+            var newEdge = model.create(EdgeR, edge.data);
+            var newEdgeID = this.getCustomObjId(newEdge);
+            edgeMap.set(newEdgeID, newEdge);
+        }
+
+    }
 
     //Google Real Time's custom object ids are retrieved in this way
     RealTimeModule.prototype.getCustomObjId = function(object)
