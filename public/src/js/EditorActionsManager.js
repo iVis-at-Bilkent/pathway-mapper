@@ -1,9 +1,9 @@
-module.exports = (function(cy)
+module.exports = (function()
 {
     "use strict";
-
-    var EditorActionsManager = function(isCollaborative, realtimeManager)
+    var EditorActionsManager = function(isCollaborative, realtimeManager, cyInst)
     {
+        this.cy = cyInst;
         // this.realTimeDoc = realTimeDoc;
         this.isCollaborative = isCollaborative;
         if(this.isCollaborative && realtimeManager)
@@ -53,8 +53,8 @@ module.exports = (function(cy)
             }
         }
 
-        cy.add(newNode);
-        cy.nodes().updateCompoundBounds();
+        this.cy.add(newNode);
+        this.cy.nodes().updateCompoundBounds();
     }
 
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
@@ -68,9 +68,9 @@ module.exports = (function(cy)
         {
             //Remove element from existing graph
             var ele = event.newValue;
-            var cyEle = cy.$("#" + nodeID);
+            var cyEle = this.cy.$("#" + nodeID);
             this.removeElementCy(cyEle);
-            cy.nodes().updateCompoundBounds();
+            this.cy.nodes().updateCompoundBounds();
         }
         //Addition Operation
         else
@@ -98,7 +98,7 @@ module.exports = (function(cy)
         {
             this.addNodetoCy(nodeData);
         }
-        cy.nodes().updateCompoundBounds();
+        this.cy.nodes().updateCompoundBounds();
     }
 
     EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
@@ -134,7 +134,7 @@ module.exports = (function(cy)
 
     EditorActionsManager.prototype.addNewEdgetoCy = function(edgeData)
     {
-        cy.add(
+        this.cy.add(
             {
                 group: "edges",
                 data: edgeData
@@ -153,7 +153,7 @@ module.exports = (function(cy)
             var edgeID = this.realTimeManager.getCustomObjId(edge);
             //Remove element from existing graph
             var ele = event.newValue;
-            var cyEle = cy.$("#" + edgeID)
+            var cyEle = this.cy.$("#" + edgeID)
             this.removeElementCy(cyEle);
         }
         //Addition Operation
@@ -203,7 +203,7 @@ module.exports = (function(cy)
 
     EditorActionsManager.prototype.removeElementCy = function(ele)
     {
-        cy.remove(ele);
+        this.cy.remove(ele);
     }
 
     EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
@@ -231,6 +231,7 @@ module.exports = (function(cy)
     EditorActionsManager.prototype.changeParentCy = function(eles, newParentId)
     {
         var lockedNodes = {};
+        var self = this;
 
         function removeNodes(nodes)
         {
@@ -249,7 +250,7 @@ module.exports = (function(cy)
             }
 
             removedEles = removedEles.union(nodes.remove());
-            cy.nodes().updateCompoundBounds();
+            self.cy.nodes().updateCompoundBounds();
             return removedEles;
         }
 
@@ -272,16 +273,17 @@ module.exports = (function(cy)
             }
         }
 
-        cy.add(removedNodes);
-        cy.nodes().updateCompoundBounds();
+        self.cy.add(removedNodes);
+        self.cy.nodes().updateCompoundBounds();
     }
     
     EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId) 
     {
 
+        var classRef = this;
         function getTopLevelParents(eles)
         {
-            var tpMostNodes = cy.collection();
+            var tpMostNodes = classRef.cy.collection();
             var parentMap = {};
 
             //Get all parents
@@ -302,9 +304,6 @@ module.exports = (function(cy)
 
             return tpMostNodes;
         }
-
-
-
 
         var NodeObj = function(nodeObj){
             this.nodeRef  = nodeObj;
@@ -347,12 +346,13 @@ module.exports = (function(cy)
 
     EditorActionsManager.prototype.moveElements = function(ele)
     {
+        var classRef = this;
         //Sync movement to real time api
         if(this.isCollaborative)
         {
             ele.forEach(function (ele,index)
             {
-                this.realTimeManager.moveElement(ele);
+                classRef.realTimeManager.moveElement(ele);
             });
         }
     }
@@ -380,7 +380,7 @@ module.exports = (function(cy)
     {
         //Remove element from existing graph
         var nodeID = id;
-        var cyEle = cy.$("#" + nodeID);
+        var cyEle = this.cy.$("#" + nodeID);
         cyEle.position({x: ele.x, y: ele.y});
         this.changeNameCy(cyEle, ele.name);
     }
@@ -392,4 +392,4 @@ module.exports = (function(cy)
 
     return EditorActionsManager;
 
-})(window.cy);
+})();

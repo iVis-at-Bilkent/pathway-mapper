@@ -5,6 +5,7 @@ var Backbone = window.Backbone = require('backbone');
 Backbone.$ = $;
 require('bootstrap');
 
+var WelcomePageView = require('./Views/WelcomePageView.js');
 var AppManager = require('./AppManager');
 var RealTimeModule = require('./RealTimeModule');
 
@@ -12,11 +13,44 @@ var RealTimeModule = require('./RealTimeModule');
 //Wait all components to load
 $(window).load(function()
 {
-    var realTimeManager = new RealTimeModule();
+    var localUsageCallback = function(postSuccess)
+    {
+        var appInstance = new AppManager(false);
+        postSuccess();
+    }
 
-    //Create App here
-    var appInstance = new AppManager(realTimeManager);
-    realTimeManager.authorize();
+    //TODO urgent comment needed with a rested mind !
+    var collaborativeUsageCallback = function(postSuccess)
+    {
+        var realTimeManager = new RealTimeModule(postSuccess);
+
+        var realTimeAuthCallback = function(response)
+        {
+            if(response.error)
+            {
+                function popUpAuthHandler()
+                {
+                    var appInstance = new AppManager(true,realTimeManager);
+                    realTimeManager.initRealTimeAPI();
+                }
+                realTimeManager.authorize(popUpAuthHandler, true);
+            }
+            else
+            {
+                var appInstance = new AppManager(true,realTimeManager);
+                realTimeManager.initRealTimeAPI();
+            }
+        }
+
+        realTimeManager.authorize(realTimeAuthCallback, false);
+    }
+
+    var welPage = new WelcomePageView({
+        el: $('.welcomePageContainer'),
+        localUsageCallback: localUsageCallback,
+        collaborativeUsageCallback: collaborativeUsageCallback
+    }).render();
+
 });
 
 

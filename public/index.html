@@ -371,7 +371,6 @@
             </div>
           </div>
           <div class="realTimeAuthDiv centerText">
-            <button id="auth_button" type="button" class="btn btn-default">Authorize</button>
             <button id="debugR" type="button" class="btn btn-default">Open Debugger</button>
           </div>
         </div>
@@ -383,6 +382,9 @@
   </div>
 </div>
 
+<div class="welcomePageContainer centerText">
+
+</div>
 
 <footer>
   <div class="container">
@@ -480,6 +482,24 @@
   <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
 </script>
 
+
+<script type="text/template" id="welcomePageTemplate">
+  <div class="landingContent">
+    <div class="container">
+        <div class="row">
+          <h1>TCGA Pathway Curation Tool</h1>
+        </div>
+        <div class="row welcomePageLoading">
+          <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+        </div>
+        <div class="row">
+          <button id="localUsage" class="btn btn-default" >Local Usage</button>
+          OR
+          <button id="collaborativeUsage" class="btn btn-default" >Collaborative Usage</button>
+        </div>
+    </div>
+  </div>
+</script>
 
   <div class="hiddenfile">
     <form id="fileUploadForm" method="post">

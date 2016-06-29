@@ -1,11 +1,11 @@
-module.exports = (function(cy, editorActionsManager)
+module.exports = (function()
 {
     "use strict";
 
     var NODEMAP_NAME = 'nodes';
     var EDGEMAP_NAME = 'edges';
 
-    var RealTimeModule = function()
+    var RealTimeModule = function(postFileLoadCallback)
     {
         this.clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
 
@@ -18,32 +18,17 @@ module.exports = (function(cy, editorActionsManager)
         this.realtimeUtils = new utils.RealtimeUtils({
             clientId: this.clientId
         });
+        this.postFileLoad = postFileLoadCallback;
     }
 
-    RealTimeModule.prototype.authorize = function()
+    RealTimeModule.prototype.authorize = function(callbackFunction, isModal)
     {
         // Attempt to authorize
-        var self = this;
         this.realtimeUtils.authorize(function(response)
         {
-            //TODO Modal ?
-            if (response.error)
-            {
-                // Authorization failed because this is the first time the user has used your application,
-                // show the authorize button to prompt them to authorize manually.
-                var button = document.getElementById('auth_button');
-                button.classList.add('visible');
-                button.addEventListener('click', function() {
-                    self.realtimeUtils.authorize(function(response) {
-                        start();
-                    }, true);
-                });
-            }
-            else
-            {
-                self.initRealTimeAPI();
-            }
-        }, false);
+            callbackFunction(response);
+
+        }, isModal);
     }
 
     RealTimeModule.prototype.initRealTimeAPI = function()
@@ -92,39 +77,6 @@ module.exports = (function(cy, editorActionsManager)
 
         root.set(NODEMAP_NAME, nodeMap);
         root.set(EDGEMAP_NAME, edgeMap);
-
-        // var nodes = cy.nodes();
-        // var edges = cy.edges();
-        //
-        // nodes.forEach(function(node, index)
-        // {
-        //     var nodeData = node.data();
-        //     var nodePos = node.position();
-        //
-        //     var newNode = model.create(NodeR, {
-        //         label: nodeData.name,
-        //         nodeID: nodeData.id,
-        //         type: nodeData.type,
-        //         x: nodePos.x,
-        //         y: nodePos.y
-        //     });
-        //
-        //     nodeList.push(newNode);
-        // });
-        //
-        // edges.forEach(function(edge, index)
-        // {
-        //     var edgeData = edge.data();
-        //
-        //     var newEdge = model.create(EdgeR, {
-        //         edgeID: edgeData.id,
-        //         source: edgeData.source,
-        //         target: edgeData.target,
-        //         type: edgeData.type
-        //     });
-        //
-        //     edgeList.push(newEdge);
-        // });
     }
 
     // After a file has been initialized and loaded, we can access the
@@ -180,7 +132,8 @@ module.exports = (function(cy, editorActionsManager)
             gapi.drive.realtime.debug();
         });
 
-
+        this.postFileLoad();
+        
     }
 
     RealTimeModule.prototype.addNewNode = function(nodeData, posData)
@@ -449,4 +402,4 @@ module.exports = (function(cy, editorActionsManager)
 
     return RealTimeModule;
 
-})(window.cy, window.editorActionsManager)
+})()

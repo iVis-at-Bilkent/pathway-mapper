@@ -17,11 +17,15 @@ require('./fileOperationsModule.js');
 require('./viewOperationsModule.js');
 var QtipModule = require('./qTipModule.js');
 var CxtMenu = require('./contextMenuModule.js');
+var NodeAdd = require('./cytoscape.js-nodeadd.js');
+var EditorActionsManager = require('./EditorActionsManager.js');
+
 
 module.exports = (function()
 {
-    function AppManager(realTimeManager)
+    function AppManager(isCollaborative,realTimeManager)
     {
+        this.isCollaborative = isCollaborative;
         this.realTimeManager = realTimeManager;
         this.init();
     }
@@ -38,7 +42,6 @@ module.exports = (function()
     {
         panzoom( cytoscape, $ );  // register extension
         cxtmenu( cytoscape, $ ); // register extension
-        // edgehandles( cytoscape, $ ); // register extension
         cyqtip( cytoscape, $ ); // register extension
         regCose( cytoscape ); // register extension
 
@@ -62,16 +65,11 @@ module.exports = (function()
             layout: {name: 'preset'}
         });
 
-        //These dependencies requeire window.cy object so that they are imported here
-        //TODO better refactor these
-        this.qtipHandler = new QtipModule(window.cy);
-        this.cxMenuHandler = new CxtMenu(window.cy);
-        
-        var EditorActionsManager = require('./EditorActionsManager.js');
-        window.editorActionsManager = new EditorActionsManager(true, this.realTimeManager);
-        require('./cytoscape.js-nodeadd.js');
-
-
+        //TODO remove window.editorActionsManager from real time module ASAP !
+        window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative, this.realTimeManager, window.cy);
+        this.qtipHandler = new QtipModule(window.cy), this.editorActionsManager;
+        this.cxMenuHandler = new CxtMenu(window.cy, this.editorActionsManager);
+        this.nodeAdd = new NodeAdd(this.editorActionsManager);
 
         cy.panzoom( panzoomOpts );
 

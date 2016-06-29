@@ -3,14 +3,17 @@ module.exports = (function()
 {
   "use strict";
 
-  var CxtMenu = function(cy)
+  var CxtMenu = function(cy, editorActionsManager)
   {
     this.cy = cy;
+    this.editorActionsManager = editorActionsManager;
     this.init();
   };
 
   CxtMenu.prototype.init = function()
   {
+    var classRef = this;
+
     //Core context menu
     this.cy.cxtmenu({
       selector: 'core',
@@ -40,7 +43,7 @@ module.exports = (function()
                 var nodesToBeRemoved = selectedNodes.remove();
                 nodesToBeRemoved.forEach(function(node, index)
                 {
-                  window.editorActionsManager.removeElement(node);
+                  classRef.editorActionsManager.removeElement(node);
                 });
               }
             },
@@ -69,7 +72,7 @@ module.exports = (function()
                   return;
                 }
 
-                window.editorActionsManager.changeParents(selectedNodes);
+                classRef.editorActionsManager.changeParents(selectedNodes);
               }
             },
             {
@@ -112,7 +115,7 @@ module.exports = (function()
                 }
 
                 var compId = ele.id();
-                window.editorActionsManager.changeParents(selectedNodes, compId);
+                classRef.editorActionsManager.changeParents(selectedNodes, compId);
               }
             }
           ]
@@ -130,7 +133,7 @@ module.exports = (function()
             var selectedEdges = cy.edges(':selected').union(ele);
             selectedEdges.forEach(function(edge, index)
             {
-              window.editorActionsManager.removeElement(edge);
+              classRef.editorActionsManager.removeElement(edge);
             });
 
           }
@@ -139,6 +142,7 @@ module.exports = (function()
     });
   }
 
+  //TODO ??????
   window.edgeAddingMode = false;
   var contextMenuSelectionColor = 'rgba(51, 247, 182, 0.88)';
 

@@ -47287,11 +47287,15 @@ require('./fileOperationsModule.js');
 require('./viewOperationsModule.js');
 var QtipModule = require('./qTipModule.js');
 var CxtMenu = require('./contextMenuModule.js');
+var NodeAdd = require('./cytoscape.js-nodeadd.js');
+var EditorActionsManager = require('./EditorActionsManager.js');
+
 
 module.exports = (function()
 {
-    function AppManager(realTimeManager)
+    function AppManager(isCollaborative,realTimeManager)
     {
+        this.isCollaborative = isCollaborative;
         this.realTimeManager = realTimeManager;
         this.init();
     }
@@ -47308,7 +47312,6 @@ module.exports = (function()
     {
         panzoom( cytoscape, $ );  // register extension
         cxtmenu( cytoscape, $ ); // register extension
-        // edgehandles( cytoscape, $ ); // register extension
         cyqtip( cytoscape, $ ); // register extension
         regCose( cytoscape ); // register extension
 
@@ -47332,16 +47335,11 @@ module.exports = (function()
             layout: {name: 'preset'}
         });
 
-        //These dependencies requeire window.cy object so that they are imported here
-        //TODO better refactor these
-        this.qtipHandler = new QtipModule(window.cy);
-        this.cxMenuHandler = new CxtMenu(window.cy);
-        
-        var EditorActionsManager = require('./EditorActionsManager.js');
-        window.editorActionsManager = new EditorActionsManager(true, this.realTimeManager);
-        require('./cytoscape.js-nodeadd.js');
-
-
+        //TODO remove window.editorActionsManager from real time module ASAP !
+        window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative, this.realTimeManager, window.cy);
+        this.qtipHandler = new QtipModule(window.cy), this.editorActionsManager;
+        this.cxMenuHandler = new CxtMenu(window.cy, this.editorActionsManager);
+        this.nodeAdd = new NodeAdd(this.editorActionsManager);
 
         cy.panzoom( panzoomOpts );
 
@@ -47449,13 +47447,13 @@ module.exports = (function()
     return AppManager;
 
 })();
-},{"../../lib/js/cose-bilkent/src/index.js":51,"./EditorActionsManager.js":53,"./Views/LayoutProperties.js":56,"./contextMenuModule.js":57,"./cytoscape.js-nodeadd.js":58,"./edgeHandlingUtils.js":59,"./fileOperationsModule.js":60,"./panzoomUtils.js":62,"./qTipModule.js":63,"./saveLoadUtils.js":64,"./stylesheet.js":65,"./viewOperationsModule.js":66,"cytoscape":18,"cytoscape-cxtmenu":15,"cytoscape-panzoom":16,"cytoscape-qtip":17}],53:[function(require,module,exports){
-module.exports = (function(cy)
+},{"../../lib/js/cose-bilkent/src/index.js":51,"./EditorActionsManager.js":53,"./Views/LayoutProperties.js":56,"./contextMenuModule.js":58,"./cytoscape.js-nodeadd.js":59,"./edgeHandlingUtils.js":60,"./fileOperationsModule.js":61,"./panzoomUtils.js":63,"./qTipModule.js":64,"./saveLoadUtils.js":65,"./stylesheet.js":66,"./viewOperationsModule.js":67,"cytoscape":18,"cytoscape-cxtmenu":15,"cytoscape-panzoom":16,"cytoscape-qtip":17}],53:[function(require,module,exports){
+module.exports = (function()
 {
     "use strict";
-
-    var EditorActionsManager = function(isCollaborative, realtimeManager)
+    var EditorActionsManager = function(isCollaborative, realtimeManager, cyInst)
     {
+        this.cy = cyInst;
         // this.realTimeDoc = realTimeDoc;
         this.isCollaborative = isCollaborative;
         if(this.isCollaborative && realtimeManager)
@@ -47505,8 +47503,8 @@ module.exports = (function(cy)
             }
         }
 
-        cy.add(newNode);
-        cy.nodes().updateCompoundBounds();
+        this.cy.add(newNode);
+        this.cy.nodes().updateCompoundBounds();
     }
 
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
@@ -47520,9 +47518,9 @@ module.exports = (function(cy)
         {
             //Remove element from existing graph
             var ele = event.newValue;
-            var cyEle = cy.$("#" + nodeID);
+            var cyEle = this.cy.$("#" + nodeID);
             this.removeElementCy(cyEle);
-            cy.nodes().updateCompoundBounds();
+            this.cy.nodes().updateCompoundBounds();
         }
         //Addition Operation
         else
@@ -47550,7 +47548,7 @@ module.exports = (function(cy)
         {
             this.addNodetoCy(nodeData);
         }
-        cy.nodes().updateCompoundBounds();
+        this.cy.nodes().updateCompoundBounds();
     }
 
     EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
@@ -47586,7 +47584,7 @@ module.exports = (function(cy)
 
     EditorActionsManager.prototype.addNewEdgetoCy = function(edgeData)
     {
-        cy.add(
+        this.cy.add(
             {
                 group: "edges",
                 data: edgeData
@@ -47605,7 +47603,7 @@ module.exports = (function(cy)
             var edgeID = this.realTimeManager.getCustomObjId(edge);
             //Remove element from existing graph
             var ele = event.newValue;
-            var cyEle = cy.$("#" + edgeID)
+            var cyEle = this.cy.$("#" + edgeID)
             this.removeElementCy(cyEle);
         }
         //Addition Operation
@@ -47655,7 +47653,7 @@ module.exports = (function(cy)
 
     EditorActionsManager.prototype.removeElementCy = function(ele)
     {
-        cy.remove(ele);
+        this.cy.remove(ele);
     }
 
     EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
@@ -47683,6 +47681,7 @@ module.exports = (function(cy)
     EditorActionsManager.prototype.changeParentCy = function(eles, newParentId)
     {
         var lockedNodes = {};
+        var self = this;
 
         function removeNodes(nodes)
         {
@@ -47701,7 +47700,7 @@ module.exports = (function(cy)
             }
 
             removedEles = removedEles.union(nodes.remove());
-            cy.nodes().updateCompoundBounds();
+            self.cy.nodes().updateCompoundBounds();
             return removedEles;
         }
 
@@ -47724,16 +47723,17 @@ module.exports = (function(cy)
             }
         }
 
-        cy.add(removedNodes);
-        cy.nodes().updateCompoundBounds();
+        self.cy.add(removedNodes);
+        self.cy.nodes().updateCompoundBounds();
     }
     
     EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId) 
     {
 
+        var classRef = this;
         function getTopLevelParents(eles)
         {
-            var tpMostNodes = cy.collection();
+            var tpMostNodes = classRef.cy.collection();
             var parentMap = {};
 
             //Get all parents
@@ -47754,9 +47754,6 @@ module.exports = (function(cy)
 
             return tpMostNodes;
         }
-
-
-
 
         var NodeObj = function(nodeObj){
             this.nodeRef  = nodeObj;
@@ -47799,12 +47796,13 @@ module.exports = (function(cy)
 
     EditorActionsManager.prototype.moveElements = function(ele)
     {
+        var classRef = this;
         //Sync movement to real time api
         if(this.isCollaborative)
         {
             ele.forEach(function (ele,index)
             {
-                this.realTimeManager.moveElement(ele);
+                classRef.realTimeManager.moveElement(ele);
             });
         }
     }
@@ -47832,7 +47830,7 @@ module.exports = (function(cy)
     {
         //Remove element from existing graph
         var nodeID = id;
-        var cyEle = cy.$("#" + nodeID);
+        var cyEle = this.cy.$("#" + nodeID);
         cyEle.position({x: ele.x, y: ele.y});
         this.changeNameCy(cyEle, ele.name);
     }
@@ -47844,17 +47842,17 @@ module.exports = (function(cy)
 
     return EditorActionsManager;
 
-})(window.cy);
+})();
 
 },{}],54:[function(require,module,exports){
-module.exports = (function(cy, editorActionsManager)
+module.exports = (function()
 {
     "use strict";
 
     var NODEMAP_NAME = 'nodes';
     var EDGEMAP_NAME = 'edges';
 
-    var RealTimeModule = function()
+    var RealTimeModule = function(postFileLoadCallback)
     {
         this.clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
 
@@ -47867,32 +47865,17 @@ module.exports = (function(cy, editorActionsManager)
         this.realtimeUtils = new utils.RealtimeUtils({
             clientId: this.clientId
         });
+        this.postFileLoad = postFileLoadCallback;
     }
 
-    RealTimeModule.prototype.authorize = function()
+    RealTimeModule.prototype.authorize = function(callbackFunction, isModal)
     {
         // Attempt to authorize
-        var self = this;
         this.realtimeUtils.authorize(function(response)
         {
-            //TODO Modal ?
-            if (response.error)
-            {
-                // Authorization failed because this is the first time the user has used your application,
-                // show the authorize button to prompt them to authorize manually.
-                var button = document.getElementById('auth_button');
-                button.classList.add('visible');
-                button.addEventListener('click', function() {
-                    self.realtimeUtils.authorize(function(response) {
-                        start();
-                    }, true);
-                });
-            }
-            else
-            {
-                self.initRealTimeAPI();
-            }
-        }, false);
+            callbackFunction(response);
+
+        }, isModal);
     }
 
     RealTimeModule.prototype.initRealTimeAPI = function()
@@ -47941,39 +47924,6 @@ module.exports = (function(cy, editorActionsManager)
 
         root.set(NODEMAP_NAME, nodeMap);
         root.set(EDGEMAP_NAME, edgeMap);
-
-        // var nodes = cy.nodes();
-        // var edges = cy.edges();
-        //
-        // nodes.forEach(function(node, index)
-        // {
-        //     var nodeData = node.data();
-        //     var nodePos = node.position();
-        //
-        //     var newNode = model.create(NodeR, {
-        //         label: nodeData.name,
-        //         nodeID: nodeData.id,
-        //         type: nodeData.type,
-        //         x: nodePos.x,
-        //         y: nodePos.y
-        //     });
-        //
-        //     nodeList.push(newNode);
-        // });
-        //
-        // edges.forEach(function(edge, index)
-        // {
-        //     var edgeData = edge.data();
-        //
-        //     var newEdge = model.create(EdgeR, {
-        //         edgeID: edgeData.id,
-        //         source: edgeData.source,
-        //         target: edgeData.target,
-        //         type: edgeData.type
-        //     });
-        //
-        //     edgeList.push(newEdge);
-        // });
     }
 
     // After a file has been initialized and loaded, we can access the
@@ -48029,7 +47979,8 @@ module.exports = (function(cy, editorActionsManager)
             gapi.drive.realtime.debug();
         });
 
-
+        this.postFileLoad();
+        
     }
 
     RealTimeModule.prototype.addNewNode = function(nodeData, posData)
@@ -48298,7 +48249,7 @@ module.exports = (function(cy, editorActionsManager)
 
     return RealTimeModule;
 
-})(window.cy, window.editorActionsManager)
+})()
 
 },{}],55:[function(require,module,exports){
 /*
@@ -48577,19 +48528,71 @@ var layoutProps = Backbone.View.extend(
 module.exports = layoutProps;
 
 },{}],57:[function(require,module,exports){
+var WelcomePageView = Backbone.View.extend(
+    {
+        cachedTpl: _.template($("#welcomePageTemplate").html()),
+        events:
+        {
+            'click #localUsage': 'localUsageHandler',
+            'click #collaborativeUsage': 'collaborativeUsageHandler'
+        },
+        initialize: function (options)
+        {
+            this.localUsageCallback = options.localUsageCallback;
+            this.collaborativeUsageCallback = options.collaborativeUsageCallback;
+        },
+        render: function ()
+        {
+            this.$el.empty();
+            this.$el.append(this.cachedTpl());
+        },
+        localUsageHandler: function(event)
+        {
+            this.$el.find('.welcomePageLoading').fadeIn();
+            var self = this;
+            function postHandler()
+            {
+                self.postSuccess();
+            }
+            this.localUsageCallback(postHandler);
+        },
+        collaborativeUsageHandler: function(event)
+        {
+            var self = this;
+            this.$el.find('.welcomePageLoading').show();
+            function postHandler()
+            {
+                self.postSuccess();
+            }
+
+            this.collaborativeUsageCallback(postHandler);
+        },
+        postSuccess: function()
+        {
+            this.$el.empty();
+            this.$el.fadeOut();
+        }
+    });
+
+module.exports = WelcomePageView;
+
+},{}],58:[function(require,module,exports){
 ;
 module.exports = (function()
 {
   "use strict";
 
-  var CxtMenu = function(cy)
+  var CxtMenu = function(cy, editorActionsManager)
   {
     this.cy = cy;
+    this.editorActionsManager = editorActionsManager;
     this.init();
   };
 
   CxtMenu.prototype.init = function()
   {
+    var classRef = this;
+
     //Core context menu
     this.cy.cxtmenu({
       selector: 'core',
@@ -48619,7 +48622,7 @@ module.exports = (function()
                 var nodesToBeRemoved = selectedNodes.remove();
                 nodesToBeRemoved.forEach(function(node, index)
                 {
-                  window.editorActionsManager.removeElement(node);
+                  classRef.editorActionsManager.removeElement(node);
                 });
               }
             },
@@ -48648,7 +48651,7 @@ module.exports = (function()
                   return;
                 }
 
-                window.editorActionsManager.changeParents(selectedNodes);
+                classRef.editorActionsManager.changeParents(selectedNodes);
               }
             },
             {
@@ -48691,7 +48694,7 @@ module.exports = (function()
                 }
 
                 var compId = ele.id();
-                window.editorActionsManager.changeParents(selectedNodes, compId);
+                classRef.editorActionsManager.changeParents(selectedNodes, compId);
               }
             }
           ]
@@ -48709,7 +48712,7 @@ module.exports = (function()
             var selectedEdges = cy.edges(':selected').union(ele);
             selectedEdges.forEach(function(edge, index)
             {
-              window.editorActionsManager.removeElement(edge);
+              classRef.editorActionsManager.removeElement(edge);
             });
 
           }
@@ -48718,6 +48721,7 @@ module.exports = (function()
     });
   }
 
+  //TODO ??????
   window.edgeAddingMode = false;
   var contextMenuSelectionColor = 'rgba(51, 247, 182, 0.88)';
 
@@ -48741,162 +48745,177 @@ module.exports = (function()
 
 }());
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 ;
 module.exports = (function($, $$)
 {
-    var defaults = {
-        height: 30,   //height of the icon container
-        width: 30,    //width of the icon container
-        padding: 5,  //padding of the icon container(from right & top)
-        backgroundColorDiv: '#fff',   //background color of the icon container
-        borderColorDiv: '#fff',    //border color of the icon container
-        borderWidthDiv: '0px',    //border width of the icon container
-        borderRadiusDiv: '5px',    //border radius of the icon container
+    'use strict';
 
-        icon: '',   //icon class name
+    var NodeAdd = function(editorActionsManager)
+    {
+        this.editorActionsManager = editorActionsManager;
+        this.initNodeAdd();
+    }
 
-        nodeParams: function(){
-            // return element object to be passed to cy.add() for adding node
-            return {};
-        }
-    };
+    NodeAdd.prototype.initNodeAdd = function()
+    {
+        var nodeAddClass = this;
 
-    $.fn.cytoscapeNodeadd = function(params) {
-        var options = $.extend(true, {}, defaults, params);
-        var fn = params;
+        var defaults = {
+            height: 30,   //height of the icon container
+            width: 30,    //width of the icon container
+            padding: 5,  //padding of the icon container(from right & top)
+            backgroundColorDiv: '#fff',   //background color of the icon container
+            borderColorDiv: '#fff',    //border color of the icon container
+            borderWidthDiv: '0px',    //border width of the icon container
+            borderRadiusDiv: '5px',    //border radius of the icon container
 
-        var functions = {
-            destroy: function() {
-                var $this = $(this);
+            icon: '',   //icon class name
 
-                $this.find(".ui-cytoscape-nodeadd").remove();
-            },
-            init: function()
-            {
-                return $(this).each(function()
+            nodeParams: function(){
+                // return element object to be passed to cy.add() for adding node
+                return {};
+            }
+        };
+
+        $.fn.cytoscapeNodeadd = function(params) {
+            var options = $.extend(true, {}, defaults, params);
+            var fn = params;
+
+            var functions = {
+                destroy: function() {
+                    var $this = $(this);
+
+                    $this.find(".ui-cytoscape-nodeadd").remove();
+                },
+                init: function()
                 {
-                    var components = options.components;
-                    for (var index in components)
+                    return $(this).each(function()
                     {
-                      var component = components[index];
-                      var dragContainer = component.container;
-                      var explanationText = component.explanationText;
+                        var components = options.components;
+                        for (var index in components)
+                        {
+                            var component = components[index];
+                            var dragContainer = component.container;
+                            var explanationText = component.explanationText;
 
-                      var $nodeadd = $('<div class="ui-cytoscape-nodeadd"></div>');
-                      dragContainer.append($nodeadd);
-                      var $nodeDragHandle = $('<div class="ui-cytoscape-nodeadd-nodediv"> \
+                            var $nodeadd = $('<div class="ui-cytoscape-nodeadd"></div>');
+                            dragContainer.append($nodeadd);
+                            var $nodeDragHandle = $('<div class="ui-cytoscape-nodeadd-nodediv"> \
                                                 <span id="ui-cytoscape-nodeadd-icon" class="draggable" nodeType="'+ component.nodeType +'">\
                                                   <img src="./assets/'+component.nodeType+'.png" alt="" />\
                                                 </span>\
                                               </div>');
-                      $nodeadd.append($nodeDragHandle);
+                            $nodeadd.append($nodeDragHandle);
 
-                      $nodeDragHandle.bind("mousedown", function(e)
-                      {
-                        e.stopPropagation(); // don't trigger dragging of nodeadd
-                        e.preventDefault(); // don't cause text selection
-                      });
-
-                      //Setup UI
-                      dragContainer.find(".ui-cytoscape-nodeadd-nodediv").css({
-                        background: options.backgroundColorDiv,
-                        border: options.borderWidthDiv + ' solid ' + options.borderColorDiv,
-                        'border-radius': options.borderRadiusDiv
-                      });
-
-                      //Init Draggable
-                      dragContainer.find("#ui-cytoscape-nodeadd-icon").draggable({
-                          helper: "clone",
-                          cursor: "pointer"
-                      });
-                    }
-
-                    var $container = $(this);
-                    //Init Droppable
-                    $container.droppable({
-                        activeClass: "ui-state-highlight",
-                        // accept: "#ui-cytoscape-nodeadd-icon",
-                        drop: function(event, ui) {
-                            $container.removeClass("ui-state-highlight");
-
-                            var currentOffset = $container.offset();
-                            var relX = event.pageX - currentOffset.left;
-                            var relY = event.pageY - currentOffset.top;
-
-                            var nodeType = $(ui.helper).attr('nodeType').toUpperCase();
-
-                            var cy = $container.cytoscape("get");
-
-                            //Hold a map for parents and candidate parent nodes for this addition
-                            var nodeMap = {};
-                            var parentMap = {};
-                            //Loop through nodes for hit testing about drag position on canvas
-                            cy.nodes().forEach(function(node,i)
+                            $nodeDragHandle.bind("mousedown", function(e)
                             {
-                                var nodeBbox = node.renderedBoundingBox();
-                                //Rectangle point test
-                                if ( (relX <= nodeBbox.x2 && relX >= nodeBbox.x1) && (relY <= nodeBbox.y2 && relY >= nodeBbox.y1) && node.data().type != 'GENE' )
-                                {
-                                  //If node has a children put an entry to the parentMap
-                                  if (node.children().length > 0)
-                                  {
-                                    parentMap[node.id()] = true;
-                                  }
-
-                                  //If parent of this node is already added to the node map remove it, since our candidate is in deeper level !
-                                  if (parentMap[node._private.data.parent])
-                                  {
-                                      delete nodeMap[node._private.data.parent];
-                                  }
-
-                                  //Add an entry to node map
-                                  nodeMap[node.id()] = node;
-                                }
+                                e.stopPropagation(); // don't trigger dragging of nodeadd
+                                e.preventDefault(); // don't cause text selection
                             });
 
-                            //Check if any parent found, if so set parent field
-                            var parent = nodeMap[Object.keys(nodeMap)[0]]
-                            var nodeData = {type: nodeType, name:'New '+ $(ui.helper).attr('nodeType')};
-                            if (parent)
-                            {
-                                if (!(nodeType == "COMPARTMENT" && parent.data().type == "FAMILY" )) {
-                                  nodeData.parent = parent.id();
-                                }
-                            }
+                            //Setup UI
+                            dragContainer.find(".ui-cytoscape-nodeadd-nodediv").css({
+                                background: options.backgroundColorDiv,
+                                border: options.borderWidthDiv + ' solid ' + options.borderColorDiv,
+                                'border-radius': options.borderRadiusDiv
+                            });
 
-                            editorActionsManager.addNode(nodeData,{x: relX,y: relY});
-
+                            //Init Draggable
+                            dragContainer.find("#ui-cytoscape-nodeadd-icon").draggable({
+                                helper: "clone",
+                                cursor: "pointer"
+                            });
                         }
-                    });
 
-                });
+                        var $container = $(this);
+                        //Init Droppable
+                        $container.droppable({
+                            activeClass: "ui-state-highlight",
+                            // accept: "#ui-cytoscape-nodeadd-icon",
+                            drop: function(event, ui) {
+                                $container.removeClass("ui-state-highlight");
+
+                                var currentOffset = $container.offset();
+                                var relX = event.pageX - currentOffset.left;
+                                var relY = event.pageY - currentOffset.top;
+
+                                var nodeType = $(ui.helper).attr('nodeType').toUpperCase();
+
+                                var cy = $container.cytoscape("get");
+
+                                //Hold a map for parents and candidate parent nodes for this addition
+                                var nodeMap = {};
+                                var parentMap = {};
+                                //Loop through nodes for hit testing about drag position on canvas
+                                cy.nodes().forEach(function(node,i)
+                                {
+                                    var nodeBbox = node.renderedBoundingBox();
+                                    //Rectangle point test
+                                    if ( (relX <= nodeBbox.x2 && relX >= nodeBbox.x1) && (relY <= nodeBbox.y2 && relY >= nodeBbox.y1) && node.data().type != 'GENE' )
+                                    {
+                                        //If node has a children put an entry to the parentMap
+                                        if (node.children().length > 0)
+                                        {
+                                            parentMap[node.id()] = true;
+                                        }
+
+                                        //If parent of this node is already added to the node map remove it, since our candidate is in deeper level !
+                                        if (parentMap[node._private.data.parent])
+                                        {
+                                            delete nodeMap[node._private.data.parent];
+                                        }
+
+                                        //Add an entry to node map
+                                        nodeMap[node.id()] = node;
+                                    }
+                                });
+
+                                //Check if any parent found, if so set parent field
+                                var parent = nodeMap[Object.keys(nodeMap)[0]]
+                                var nodeData = {type: nodeType, name:'New '+ $(ui.helper).attr('nodeType')};
+                                if (parent)
+                                {
+                                    if (!(nodeType == "COMPARTMENT" && parent.data().type == "FAMILY" )) {
+                                        nodeData.parent = parent.id();
+                                    }
+                                }
+
+                                nodeAddClass.editorActionsManager.addNode(nodeData,{x: relX,y: relY});
+
+                            }
+                        });
+
+                    });
+                }
+            };
+
+            if (functions[fn]) {
+                return functions[fn].apply(this, Array.prototype.slice.call(arguments, 1));
+            } else if (typeof fn == 'object' || !fn) {
+                return functions.init.apply(this, arguments);
+            } else {
+                $.error("No such function `" + fn + "` for jquery.cytoscapenodeadd");
             }
+
+            return $(this);
         };
 
-        if (functions[fn]) {
-            return functions[fn].apply(this, Array.prototype.slice.call(arguments, 1));
-        } else if (typeof fn == 'object' || !fn) {
-            return functions.init.apply(this, arguments);
-        } else {
-            $.error("No such function `" + fn + "` for jquery.cytoscapenodeadd");
-        }
+        $.fn.cynodeadd = $.fn.cytoscapeNodeadd;
 
-        return $(this);
-    };
+        /* Adding as an extension to the core functionality of cytoscape.js*/
+        $$('core', 'nodeadd', function(options) {
+            var cy = this;
 
-    $.fn.cynodeadd = $.fn.cytoscapeNodeadd;
+            $(cy.container()).cytoscapeNodeadd(options);
+        });
+    }
 
-    /* Adding as an extension to the core functionality of cytoscape.js*/
-    $$('core', 'nodeadd', function(options) {
-        var cy = this;
+    return NodeAdd;
 
-        $(cy.container()).cytoscapeNodeadd(options);
-    });
+})(window.$, window.cytoscape);
 
-})(window.$, window.cytoscape, window.editorActionsManager);
-
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 ;
 // the default values of each option are outlined below:
 var edgeHandleDefaults =
@@ -48979,7 +48998,7 @@ var edgeHandleDefaults =
 
 module.exports = edgeHandleDefaults;
 
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 var SaveLoadUtilities = require('./saveLoadUtils.js');
 
 
@@ -49282,7 +49301,7 @@ module.exports = (function($)
 
 })(window.$)
 
-},{"./saveLoadUtils.js":64}],61:[function(require,module,exports){
+},{"./saveLoadUtils.js":65}],62:[function(require,module,exports){
 //Import node modules here !
 var $ = window.$ = window.jQuery = require('jquery');
 var _ = window._ = require('underscore');
@@ -49290,6 +49309,7 @@ var Backbone = window.Backbone = require('backbone');
 Backbone.$ = $;
 require('bootstrap');
 
+var WelcomePageView = require('./Views/WelcomePageView.js');
 var AppManager = require('./AppManager');
 var RealTimeModule = require('./RealTimeModule');
 
@@ -49297,11 +49317,44 @@ var RealTimeModule = require('./RealTimeModule');
 //Wait all components to load
 $(window).load(function()
 {
-    var realTimeManager = new RealTimeModule();
+    var localUsageCallback = function(postSuccess)
+    {
+        var appInstance = new AppManager(false);
+        postSuccess();
+    }
 
-    //Create App here
-    var appInstance = new AppManager(realTimeManager);
-    realTimeManager.authorize();
+    //TODO urgent comment needed with a rested mind !
+    var collaborativeUsageCallback = function(postSuccess)
+    {
+        var realTimeManager = new RealTimeModule(postSuccess);
+
+        var realTimeAuthCallback = function(response)
+        {
+            if(response.error)
+            {
+                function popUpAuthHandler()
+                {
+                    var appInstance = new AppManager(true,realTimeManager);
+                    realTimeManager.initRealTimeAPI();
+                }
+                realTimeManager.authorize(popUpAuthHandler, true);
+            }
+            else
+            {
+                var appInstance = new AppManager(true,realTimeManager);
+                realTimeManager.initRealTimeAPI();
+            }
+        }
+
+        realTimeManager.authorize(realTimeAuthCallback, false);
+    }
+
+    var welPage = new WelcomePageView({
+        el: $('.welcomePageContainer'),
+        localUsageCallback: localUsageCallback,
+        collaborativeUsageCallback: collaborativeUsageCallback
+    }).render();
+
 });
 
 
@@ -49405,7 +49458,7 @@ $(".aboutDropDown li a").click(function(event)
     }
 });
 
-},{"./AppManager":52,"./RealTimeModule":54,"backbone":1,"bootstrap":2,"jquery":19,"underscore":20}],62:[function(require,module,exports){
+},{"./AppManager":52,"./RealTimeModule":54,"./Views/WelcomePageView.js":57,"backbone":1,"bootstrap":2,"jquery":19,"underscore":20}],63:[function(require,module,exports){
 var panzoomOptions =
 {
   // the default values of each option are outlined below:
@@ -49431,7 +49484,7 @@ var panzoomOptions =
 
 module.exports = panzoomOptions;
 
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 ;
 
 var BackboneView = require('./Views/BioGeneView.js');
@@ -49559,7 +49612,7 @@ module.exports = (function($)
 
 }(window.$));
 
-},{"./Views/BioGeneView.js":55}],64:[function(require,module,exports){
+},{"./Views/BioGeneView.js":55}],65:[function(require,module,exports){
 var SaveLoadUtils =
 {
   //Exports given json graph(based on cy.export()) into a string
@@ -49695,7 +49748,7 @@ var SaveLoadUtils =
 
 module.exports = SaveLoadUtils;
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 var styleSheet = [
 {
       selector: 'node',
@@ -49932,7 +49985,7 @@ var edgeLineTypeHandler = function( ele )
 
 module.exports = styleSheet;
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 module.exports = (function($)
 {
   'use strict';
@@ -50059,4 +50112,4 @@ module.exports = (function($)
 
 })(window.$)
 
-},{}]},{},[61]);
+},{}]},{},[62]);
