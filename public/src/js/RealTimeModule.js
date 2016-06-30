@@ -59,9 +59,11 @@ module.exports = (function()
         else
         {
             // Create a new document, add it to the URL
-            this.realtimeUtils.createRealtimeFile('New Graph', function(createResponse) {
-                window.history.pushState(null, null, '?id=' + createResponse.id);
-                self.realtimeUtils.load(createResponse.id, loadFileCallback, initFileCallback);
+            this.realtimeUtils.createRealtimeFile('New Graph', function(createResponse) 
+            {
+                var result = createResponse.result;
+                window.history.pushState(null, null, '?id=' + result.id);
+                self.realtimeUtils.load(result.id, loadFileCallback, initFileCallback);
             });
         }
     }

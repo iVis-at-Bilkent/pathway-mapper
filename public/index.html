@@ -487,17 +487,31 @@
   <div class="landingContent">
     <div class="container">
         <div class="row">
-          <h1>TCGA Pathway Curation Tool</h1>
+          <h1>Welcome to TCGA Pathway Curation Tool</h1>
+          <h2>Please choose the type of your usage:</h2>
         </div>
         <div class="row welcomePageLoading">
           <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
         </div>
         <div class="row welPageButtons">
-          <button id="localUsage" class="btn btn-default" >Local Usage</button>
-          OR
-          <button id="collaborativeUsage" class="btn btn-default" >Collaborative Usage</button>
+          <div id="localUsage" class="welcomePageCheckable">
+            <i class="fa fa-check"></i>
+            Local
+          </div>
+          <span class="buttonsSeparator">OR</span>
+          <div id="collaborativeUsage" class="welcomePageCheckable" >
+            <i class="fa fa-check"></i>
+            Collaborative
+          </div>
+      </div>
+      <div class="row continueRow">
+        <div class="col-md-12 centerText">
+          <div class="continueButton" >
+            Continue
+          </div>
         </div>
-    </div>
+      </div>
+  </div>
   </div>
 </script>
 
@@ -517,8 +531,6 @@
   <!-- Google Real Time Scripts  -->
   <!-- Load the Realtime JavaScript library -->
   <script src="https://apis.google.com/js/api.js"></script>
-  <!-- Load the utility library -->
-  <script src="https://www.gstatic.com/realtime/realtime-client-utils.js"></script>
   <script src="lib/js/FileSaver.js" charset="utf-8"></script>
   <script src="bin/base.js"></script>
   <script src="lib/js/cytoscape-edgeHandles.js" charset="utf-8"></script>

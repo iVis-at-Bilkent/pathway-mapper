@@ -47447,7 +47447,7 @@ module.exports = (function()
     return AppManager;
 
 })();
-},{"../../lib/js/cose-bilkent/src/index.js":51,"./EditorActionsManager.js":53,"./Views/LayoutProperties.js":56,"./contextMenuModule.js":58,"./cytoscape.js-nodeadd.js":59,"./edgeHandlingUtils.js":60,"./fileOperationsModule.js":61,"./panzoomUtils.js":63,"./qTipModule.js":64,"./saveLoadUtils.js":65,"./stylesheet.js":66,"./viewOperationsModule.js":67,"cytoscape":18,"cytoscape-cxtmenu":15,"cytoscape-panzoom":16,"cytoscape-qtip":17}],53:[function(require,module,exports){
+},{"../../lib/js/cose-bilkent/src/index.js":51,"./EditorActionsManager.js":53,"./Views/LayoutProperties.js":57,"./contextMenuModule.js":59,"./cytoscape.js-nodeadd.js":60,"./edgeHandlingUtils.js":61,"./fileOperationsModule.js":62,"./panzoomUtils.js":64,"./qTipModule.js":65,"./saveLoadUtils.js":66,"./stylesheet.js":67,"./viewOperationsModule.js":68,"cytoscape":18,"cytoscape-cxtmenu":15,"cytoscape-panzoom":16,"cytoscape-qtip":17}],53:[function(require,module,exports){
 module.exports = (function()
 {
     "use strict";
@@ -47944,9 +47944,11 @@ module.exports = (function()
         else
         {
             // Create a new document, add it to the URL
-            this.realtimeUtils.createRealtimeFile('New Graph', function(createResponse) {
-                window.history.pushState(null, null, '?id=' + createResponse.id);
-                self.realtimeUtils.load(createResponse.id, loadFileCallback, initFileCallback);
+            this.realtimeUtils.createRealtimeFile('New Graph', function(createResponse) 
+            {
+                var result = createResponse.result;
+                window.history.pushState(null, null, '?id=' + result.id);
+                self.realtimeUtils.load(result.id, loadFileCallback, initFileCallback);
             });
         }
     }
@@ -48402,6 +48404,305 @@ module.exports = (function()
 })()
 
 },{}],55:[function(require,module,exports){
+/**
+ * @license
+ * Realtime Utils 1.0.0
+ * https://developers.google.com/google-apps/realtime/overview
+ * Copyright 2015 Seth Howard, Google Inc. All Rights Reserved.
+ * Realtime Utils may be freely distributed under the Apache 2.0 license.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @fileoverview Common utility functionality for the Google Realtime API,
+ * including authorization and file loading.
+ */
+
+
+module.exports = (function(){
+    /**
+     * Create the utils namespace
+     */
+    window.utils = {};
+
+    /**
+     * @constructor
+     * @param {!Object} options for the realtime utility. One key is mandatory:
+     *
+     *  1) "clientId" the client id from the APIs console.
+     *
+     */
+    utils.RealtimeUtils = function(options) {
+        this.init(options);
+    };
+
+    utils.RealtimeUtils.prototype = {
+
+        /**
+         * clientId for this realtime application.
+         * @type {!string}
+         */
+        clientId: null,
+
+        /**
+         * MimeType for this realtime application.
+         * @type {!string}
+         */
+        mimeType: 'application/vnd.google-apps.drive-sdk',
+
+        /**
+         * The interval at which the oauth token will attempt to be refreshed.
+         * @type {!string}
+         */
+        refreshInterval: 1800000, // 30 minutes
+
+        /**
+         * Required scopes.
+         * @type {!Array<string>}
+         */
+        scopes: [
+            'https://www.googleapis.com/auth/drive.install',
+            'https://www.googleapis.com/auth/drive.file'
+        ],
+
+        /**
+         * Initializes RealtimeUtils
+         * @param {Object} options containing required utility keys.
+         * @private
+         */
+        init: function(options) {
+            this.mergeOptions(options);
+            this.authorizer = new utils.RealtimeAuthorizer(this);
+            this.createRealtimeFile = this.createRealtimeFile.bind(this);
+        },
+
+        /**
+         * Kicks off the authorization process
+         * @param {!Function} onAuthComplete callback invoked after authorizing.
+         * @param {!boolean} usePopup true if authenticating via a popup window.
+         * @export
+         */
+        authorize: function(onAuthComplete, usePopup) {
+            this.authorizer.start(onAuthComplete, usePopup);
+        },
+
+        /**
+         * Merges passed-in options with default options.
+         * @param {Object} options that will be merged with existing options.
+         * @private
+         */
+        mergeOptions: function(options) {
+            for (var option in options) {
+                this[option] = options[option];
+            }
+        },
+
+        /**
+         * Examines url query parameters for a specific parameter.
+         * @param {!string} urlParam to search for in url parameters.
+         * @return {?(string)} returns match as a string or null if no match.
+         * @export
+         */
+        getParam: function(urlParam) {
+            var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
+            var match = window.location.search.match(regExp);
+            if (match && match.length) {
+                match = match[0];
+                match = match.replace(urlParam + '=', '').replace('&', '');
+            } else {
+                match = null;
+            }
+            return match;
+        },
+
+        /**
+         * Creates a new realtime file.
+         * @param {!string} title for the new realtime document.
+         * @param {Function} callback to be executed once the file has been created.
+         * @export
+         */
+        createRealtimeFile: function(title, callback) {
+            var that = this;
+            window.gapi.client.load('drive', 'v3', function()
+            {
+                var insertHash = {
+                    'resource': {
+                        mimeType: that.mimeType,
+                        name: title
+                    }
+                };
+
+                window.gapi.client.drive.files.create(insertHash).
+                then(
+                    function(resp)
+                    {
+                        var fileId = resp.result.id;
+                        //Share file to anyone with link
+                        window.gapi.client.drive.permissions.create(
+                            {
+                                resource:
+                                {
+                                    type: 'anyone',
+                                    role: 'writer',
+                                    allowFileDiscovery: false
+                                },
+                                fileId: fileId
+                            }
+                        ).then(
+                            function (resp)
+                            {
+                                console.log(resp);
+                            }
+                        );
+
+                        callback(resp);
+                    },
+                    function(reason)
+                    {
+                        alert('An Error happened: ' + reason.result.error.message);
+                        window.location.href = '/';
+                    });
+            });
+
+
+        },
+
+        /**
+         * Loads an existing realtime file.
+         * @param {!string} documentId for the document to load.
+         * @param {!function(gapi.drive.realtime.Document): undefined} onFileLoaded
+         *     to be executed once the file has been loaded.
+         * @param {!function(gapi.drive.realtime.Model): undefined} initializeModel
+         *     will be executed if this is the first time this file has been loaded.
+         * @export
+         */
+        load: function(documentId, onFileLoaded, initializeModel) {
+            var that = this;
+            window.gapi.drive.realtime.load(documentId, function(doc) {
+                window.doc = doc;  // Debugging purposes
+                onFileLoaded(doc);
+            }, initializeModel, this.onError.bind(this));
+        },
+
+        /**
+         * Handles errors that occurred during document load.
+         * @param {gapi.drive.realtime.Error} error containing specific realtime
+         *     details.
+         * @private
+         */
+        onError: function(error) {
+            if (error.type == window.gapi.drive.realtime.ErrorType
+                    .TOKEN_REFRESH_REQUIRED) {
+                this.authorizer.authorize(function() {
+                    console.log('Error, auth refreshed');
+                }, false);
+            } else if (error.type == window.gapi.drive.realtime.ErrorType
+                    .CLIENT_ERROR) {
+                alert('An Error happened: ' + error.message);
+                window.location.href = '/';
+            } else if (error.type == window.gapi.drive.realtime.ErrorType.NOT_FOUND) {
+                alert('The file was not found. It does not exist or you do not have ' +
+                    'read access to the file.');
+                window.location.href = '/';
+            } else if (error.type == window.gapi.drive.realtime.ErrorType.FORBIDDEN) {
+                alert('You do not have access to this file. Try having the owner share' +
+                    'it with you from Google Drive.');
+                window.location.href = '/';
+            }
+        }
+    };
+
+
+    /**
+     * @constructor
+     * @param {utils.RealtimeUtils} realtimeUtil that owns this
+     *     RealtimeAuthorizer instance.
+     *
+     */
+    utils.RealtimeAuthorizer = function(realtimeUtil) {
+        this.util = realtimeUtil;
+        this.handleAuthResult = this.handleAuthResult.bind(this);
+        this.token = null;
+    };
+
+    utils.RealtimeAuthorizer.prototype = {
+
+        /**
+         * Starts the authorizer
+         * @param {!Function} onAuthComplete callback invoked after authorizing.
+         * @param {boolean} usePopup true if authenticating via a popup window.
+         * @export
+         */
+        start: function(onAuthComplete, usePopup) {
+            var that = this;
+            window.gapi.load('auth:client,drive-realtime,drive-share', {
+                callback: function() {
+                    that.authorize(onAuthComplete, usePopup);
+                }
+            });
+            if (this.authTimer) {
+                window.clearTimeout(this.authTimer);
+            }
+            this.refreshAuth();
+        },
+
+        /**
+         * Attempts to authorize.
+         * @param {!Function} onAuthComplete callback invoked after authorizing.
+         * @param {boolean} usePopup true if authenticating via a popup window.
+         * @private
+         */
+        authorize: function(onAuthComplete, usePopup) {
+            this.onAuthComplete = onAuthComplete;
+            // Try with no popups first.
+            window.gapi.auth.authorize({
+                client_id: this.util.clientId,
+                scope: this.util.scopes,
+                immediate: !usePopup
+            }, this.handleAuthResult);
+        },
+
+        /**
+         * Handles the auth result before invoking the user supplied callback.
+         * @param {Object} authResult from the drive service containing details about
+         *     this authorization attempt.
+         * @private
+         */
+        handleAuthResult: function(authResult) {
+            if (authResult && !authResult.error) {
+                this.token = authResult.access_token;
+            }
+            this.onAuthComplete(authResult);
+        },
+
+        /**
+         * Sets a timer that will refresh the oauth token after an interval.
+         * @private
+         */
+        refreshAuth: function() {
+            var that = this;
+            this.authTimer = setTimeout(function() {
+                that.authorize(function() {
+                    console.log('Refreshed Auth Token');
+                }, false);
+                that.refreshAuth();
+            }, this.util.refreshInterval);
+        }
+    };
+})();
+
+},{}],56:[function(require,module,exports){
 /*
  * Copyright 2013 Memorial-Sloan Kettering Cancer Center.
  *
@@ -48580,7 +48881,7 @@ var BioGeneView = Backbone.View.extend({
 
 module.exports = BioGeneView;
 
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 var layoutProps = Backbone.View.extend(
 {
   defaultLayoutProperties:
@@ -48677,36 +48978,68 @@ var layoutProps = Backbone.View.extend(
 
 module.exports = layoutProps;
 
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 var WelcomePageView = Backbone.View.extend(
     {
         cachedTpl: _.template($("#welcomePageTemplate").html()),
         events:
         {
             'click #localUsage': 'localUsageHandler',
-            'click #collaborativeUsage': 'collaborativeUsageHandler'
+            'click #collaborativeUsage': 'collaborativeUsageHandler',
+            'click .continueButton': 'continueButtonHandler'
         },
         initialize: function (options)
         {
             this.localUsageCallback = options.localUsageCallback;
             this.collaborativeUsageCallback = options.collaborativeUsageCallback;
+
+            this.modelSelectionMap =
+            {
+                NONE: -1,
+                LOCAL: 0,
+                COLLAB: 1
+            };
+
+            this.modelSelection = this.modelSelectionMap.NONE;
+
         },
         render: function ()
         {
             this.$el.empty();
             this.$el.append(this.cachedTpl());
+
+            this.$el.find('#localUsage').popover({
+                container: 'body',
+                content: 'Create a pathway individually',
+                placement: 'left',
+                delay: 100,
+                trigger: 'hover'
+            });
+
+            this.$el.find('#collaborativeUsage').popover({
+                container: 'body',
+                content: 'Share the pathway ID with other(s) to collaboratively create a pathway',
+                placement: 'right',
+                delay: 100,
+                trigger: 'hover'
+            });
+
         },
         localUsageHandler: function(event)
         {
-            this.$el.find('.welcomePageLoading').fadeIn();
-            var self = this;
-            function postHandler()
-            {
-                self.postSuccess();
-            }
-            this.localUsageCallback(postHandler);
+            this.$el.find('.welcomePageCheckable').removeClass('active');
+            $(event.currentTarget).addClass('active');
+            this.$el.find('.continueRow').css('visibility', 'visible');
+            this.modelSelection = this.modelSelectionMap.LOCAL;
         },
         collaborativeUsageHandler: function(event)
+        {
+            this.$el.find('.welcomePageCheckable').removeClass('active');
+            $(event.currentTarget).addClass('active');
+            this.$el.find('.continueRow').css('visibility', 'visible');
+            this.modelSelection = this.modelSelectionMap.COLLAB;
+        },
+        continueButtonHandler: function(event)
         {
             var self = this;
             this.$el.find('.welcomePageLoading').show();
@@ -48715,7 +49048,17 @@ var WelcomePageView = Backbone.View.extend(
                 self.postSuccess();
             }
 
-            this.collaborativeUsageCallback(postHandler);
+            if(this.modelSelection != this.modelSelectionMap.NONE)
+            {
+                if(this.modelSelection == this.modelSelectionMap.LOCAL)
+                {
+                    this.localUsageCallback(postHandler);
+                }
+                else if(this.modelSelection == this.modelSelectionMap.COLLAB)
+                {
+                    this.collaborativeUsageCallback(postHandler);
+                }
+            }
         },
         postSuccess: function()
         {
@@ -48726,7 +49069,7 @@ var WelcomePageView = Backbone.View.extend(
 
 module.exports = WelcomePageView;
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 ;
 module.exports = (function()
 {
@@ -48895,7 +49238,7 @@ module.exports = (function()
 
 }());
 
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 ;
 module.exports = (function($, $$)
 {
@@ -49065,7 +49408,7 @@ module.exports = (function($, $$)
 
 })(window.$, window.cytoscape);
 
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 ;
 // the default values of each option are outlined below:
 var edgeHandleDefaults =
@@ -49148,7 +49491,7 @@ var edgeHandleDefaults =
 
 module.exports = edgeHandleDefaults;
 
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 var SaveLoadUtilities = require('./saveLoadUtils.js');
 
 
@@ -49449,13 +49792,14 @@ module.exports = (function($)
 
 })(window.$)
 
-},{"./saveLoadUtils.js":65}],62:[function(require,module,exports){
+},{"./saveLoadUtils.js":66}],63:[function(require,module,exports){
 //Import node modules here !
 var $ = window.$ = window.jQuery = require('jquery');
 var _ = window._ = require('underscore');
 var Backbone = window.Backbone = require('backbone');
 Backbone.$ = $;
 require('bootstrap');
+require('./RealTimeUtils');//Google's real time utility lib
 
 var WelcomePageView = require('./Views/WelcomePageView.js');
 var AppManager = require('./AppManager');
@@ -49508,8 +49852,10 @@ $(window).load(function()
     var uri = window.location.search;
     if (uri.length > 0)
     {
+        $('.landingContent h2').hide();
         $('.welPageButtons').hide();
         $('#collaborativeUsage').click();
+        $('.continueButton').click().hide();
     }
 
 });
@@ -49615,7 +49961,7 @@ $(".aboutDropDown li a").click(function(event)
     }
 });
 
-},{"./AppManager":52,"./RealTimeModule":54,"./Views/WelcomePageView.js":57,"backbone":1,"bootstrap":2,"jquery":19,"underscore":20}],63:[function(require,module,exports){
+},{"./AppManager":52,"./RealTimeModule":54,"./RealTimeUtils":55,"./Views/WelcomePageView.js":58,"backbone":1,"bootstrap":2,"jquery":19,"underscore":20}],64:[function(require,module,exports){
 var panzoomOptions =
 {
   // the default values of each option are outlined below:
@@ -49641,7 +49987,7 @@ var panzoomOptions =
 
 module.exports = panzoomOptions;
 
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 ;
 
 var BackboneView = require('./Views/BioGeneView.js');
@@ -49769,7 +50115,7 @@ module.exports = (function($)
 
 }(window.$));
 
-},{"./Views/BioGeneView.js":55}],65:[function(require,module,exports){
+},{"./Views/BioGeneView.js":56}],66:[function(require,module,exports){
 var SaveLoadUtils =
 {
   //Exports given json graph(based on cy.export()) into a string
@@ -49905,7 +50251,7 @@ var SaveLoadUtils =
 
 module.exports = SaveLoadUtils;
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 var styleSheet = [
 {
       selector: 'node',
@@ -50142,7 +50488,7 @@ var edgeLineTypeHandler = function( ele )
 
 module.exports = styleSheet;
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 module.exports = (function($)
 {
   'use strict';
@@ -50269,4 +50615,4 @@ module.exports = (function($)
 
 })(window.$)
 
-},{}]},{},[62]);
+},{}]},{},[63]);

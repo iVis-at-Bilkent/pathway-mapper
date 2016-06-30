@@ -4,29 +4,61 @@ var WelcomePageView = Backbone.View.extend(
         events:
         {
             'click #localUsage': 'localUsageHandler',
-            'click #collaborativeUsage': 'collaborativeUsageHandler'
+            'click #collaborativeUsage': 'collaborativeUsageHandler',
+            'click .continueButton': 'continueButtonHandler'
         },
         initialize: function (options)
         {
             this.localUsageCallback = options.localUsageCallback;
             this.collaborativeUsageCallback = options.collaborativeUsageCallback;
+
+            this.modelSelectionMap =
+            {
+                NONE: -1,
+                LOCAL: 0,
+                COLLAB: 1
+            };
+
+            this.modelSelection = this.modelSelectionMap.NONE;
+
         },
         render: function ()
         {
             this.$el.empty();
             this.$el.append(this.cachedTpl());
+
+            this.$el.find('#localUsage').popover({
+                container: 'body',
+                content: 'Create a pathway individually',
+                placement: 'left',
+                delay: 100,
+                trigger: 'hover'
+            });
+
+            this.$el.find('#collaborativeUsage').popover({
+                container: 'body',
+                content: 'Share the pathway ID with other(s) to collaboratively create a pathway',
+                placement: 'right',
+                delay: 100,
+                trigger: 'hover'
+            });
+
         },
         localUsageHandler: function(event)
         {
-            this.$el.find('.welcomePageLoading').fadeIn();
-            var self = this;
-            function postHandler()
-            {
-                self.postSuccess();
-            }
-            this.localUsageCallback(postHandler);
+            this.$el.find('.welcomePageCheckable').removeClass('active');
+            $(event.currentTarget).addClass('active');
+            this.$el.find('.continueRow').css('visibility', 'visible');
+            this.modelSelection = this.modelSelectionMap.LOCAL;
         },
         collaborativeUsageHandler: function(event)
+        {
+            this.$el.find('.welcomePageCheckable').removeClass('active');
+            $(event.currentTarget).addClass('active');
+            this.$el.find('.continueRow').css('visibility', 'visible');
+            this.modelSelection = this.modelSelectionMap.COLLAB;
+        },
+        continueButtonHandler: function(event)
         {
             var self = this;
             this.$el.find('.welcomePageLoading').show();
@@ -35,7 +67,17 @@ var WelcomePageView = Backbone.View.extend(
                 self.postSuccess();
             }
 
-            this.collaborativeUsageCallback(postHandler);
+            if(this.modelSelection != this.modelSelectionMap.NONE)
+            {
+                if(this.modelSelection == this.modelSelectionMap.LOCAL)
+                {
+                    this.localUsageCallback(postHandler);
+                }
+                else if(this.modelSelection == this.modelSelectionMap.COLLAB)
+                {
+                    this.collaborativeUsageCallback(postHandler);
+                }
+            }
         },
         postSuccess: function()
         {

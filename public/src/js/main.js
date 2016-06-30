@@ -4,6 +4,7 @@ var _ = window._ = require('underscore');
 var Backbone = window.Backbone = require('backbone');
 Backbone.$ = $;
 require('bootstrap');
+require('./RealTimeUtils');//Google's real time utility lib
 
 var WelcomePageView = require('./Views/WelcomePageView.js');
 var AppManager = require('./AppManager');
@@ -56,8 +57,10 @@ $(window).load(function()
     var uri = window.location.search;
     if (uri.length > 0)
     {
+        $('.landingContent h2').hide();
         $('.welPageButtons').hide();
         $('#collaborativeUsage').click();
+        $('.continueButton').click().hide();
     }
 
 });
