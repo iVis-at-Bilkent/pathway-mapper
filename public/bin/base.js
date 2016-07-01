@@ -48235,7 +48235,7 @@ module.exports = (function()
 
 
         //TODO compound operation
-        //Remove all real time nodes time nodes
+        //Remove all real time nodes
         for (var index in nodeMapKeys)
         {
             this.removeElement(nodeMapKeys[index]);
@@ -48256,22 +48256,39 @@ module.exports = (function()
         //         parentMap[nodeData.id] = nodeData.parent;
         // }
         //
-        // var allAdded = false;
+        // /*
+        //     Infer the graph hierarchy level by level according to the nesting
+        //     E.g. levelList[0] - root level
+        //          levelList[1] - first level, child nodes of previous level nodes
+        // */
+        // var allProcessed = false;
         // var levelListIndex = 0;
         // var addedCounter = 0;
-        // while(!allAdded)
+        //
+        // //Continue till all nodes are processed
+        // while(!allProcessed)
         // {
+        //
+        //     //create entry array that represents nesting level
+        //     levelList[levelListIndex] = [];
+        //
+        //     //Loop over all nodes
         //     for (var index in nodes)
         //     {
         //         var node = nodes[index];
-        //         levelList[levelListIndex] = [];
+        //         var nodeid = node.data.id;
         //
+        //         if(nodeid in allAddedMap)
+        //             continue;
+        //
+        //         //Parent of current node
         //         var parentId = node.data.parent;
         //         if(parentId)
         //         {
-        //             var highestLevelParent = parentMap[parentId];
-        //
+        //             //Try to find highest level parent of this node
+        //             var highestLevelParent = parentId;
         //             var topMostFoundFlag = false;
+        //
         //             while(!topMostFoundFlag)
         //             {
         //                 var parentOfParent = parentMap[highestLevelParent];
@@ -48285,19 +48302,31 @@ module.exports = (function()
         //                 }
         //             }
         //
-        //             if(allAddedMap[highestLevelParent] === undefined)
+        //             if(!(highestLevelParent in allAddedMap))
         //             {
-        //                 levelList[levelListIndex].push(topmostOne);
-        //                 allAddedMap[topmostOne] = true;
+        //                 levelList[levelListIndex].push(highestLevelParent);
+        //                 allAddedMap[highestLevelParent] = true;
         //                 addedCounter++;
         //             }
-        //         }
+        //             else
+        //             {
+        //                 continue;
+        //             }
         //
-        //         levelListIndex++;
+        //         }
+        //         // Node belongs to current level
+        //         else
+        //         {
+        //             levelList[levelListIndex].push(nodeid);
+        //             allAddedMap[nodeid] = true;
+        //             addedCounter++;
+        //         }
         //     }
-        //     allAdded = (addedCounter == nodes.length);
+        //
+        //     levelListIndex++;
+        //     allProcessed = (addedCounter == nodes.length);
         // }
-
+        //
         // console.log(levelList);
 
 
@@ -48481,7 +48510,8 @@ module.exports = (function(){
          * @param {Object} options containing required utility keys.
          * @private
          */
-        init: function(options) {
+        init: function(options)
+        {
             this.mergeOptions(options);
             this.authorizer = new utils.RealtimeAuthorizer(this);
             this.createRealtimeFile = this.createRealtimeFile.bind(this);
@@ -48493,7 +48523,8 @@ module.exports = (function(){
          * @param {!boolean} usePopup true if authenticating via a popup window.
          * @export
          */
-        authorize: function(onAuthComplete, usePopup) {
+        authorize: function(onAuthComplete, usePopup)
+        {
             this.authorizer.start(onAuthComplete, usePopup);
         },
 
@@ -48502,8 +48533,10 @@ module.exports = (function(){
          * @param {Object} options that will be merged with existing options.
          * @private
          */
-        mergeOptions: function(options) {
-            for (var option in options) {
+        mergeOptions: function(options)
+        {
+            for (var option in options)
+            {
                 this[option] = options[option];
             }
         },
@@ -48514,7 +48547,8 @@ module.exports = (function(){
          * @return {?(string)} returns match as a string or null if no match.
          * @export
          */
-        getParam: function(urlParam) {
+        getParam: function(urlParam)
+        {
             var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
             var match = window.location.search.match(regExp);
             if (match && match.length) {
@@ -48548,24 +48582,7 @@ module.exports = (function(){
                     function(resp)
                     {
                         var fileId = resp.result.id;
-                        //Share file to anyone with link
-                        window.gapi.client.drive.permissions.create(
-                            {
-                                resource:
-                                {
-                                    type: 'anyone',
-                                    role: 'writer',
-                                    allowFileDiscovery: false
-                                },
-                                fileId: fileId
-                            }
-                        ).then(
-                            function (resp)
-                            {
-                                console.log(resp);
-                            }
-                        );
-
+                        that.shareRealTimeFile(fileId);
                         callback(resp);
                     },
                     function(reason)
@@ -48576,6 +48593,31 @@ module.exports = (function(){
             });
 
 
+        },
+
+        shareRealTimeFile: function(fileId)
+        {
+            //Share file to anyone with link
+            window.gapi.client.drive.permissions.create(
+                {
+                    resource:
+                    {
+                        type: 'anyone',
+                        role: 'writer',
+                        allowFileDiscovery: false
+                    },
+                    fileId: fileId
+                }
+            ).then(
+                function (resp)
+                {
+                    console.log('File shared succesfully !');
+                },
+                function(reason)
+                {
+                    console.log('An Error happened: ' + reason.result.error.message);
+                }
+            );
         },
 
         /**
@@ -48590,7 +48632,7 @@ module.exports = (function(){
         load: function(documentId, onFileLoaded, initializeModel) {
             var that = this;
             window.gapi.drive.realtime.load(documentId, function(doc) {
-                window.doc = doc;  // Debugging purposes
+                // window.doc = doc;  // Debugging purposes
                 onFileLoaded(doc);
             }, initializeModel, this.onError.bind(this));
         },
@@ -48601,21 +48643,30 @@ module.exports = (function(){
          *     details.
          * @private
          */
-        onError: function(error) {
+        onError: function(error)
+        {
             if (error.type == window.gapi.drive.realtime.ErrorType
-                    .TOKEN_REFRESH_REQUIRED) {
-                this.authorizer.authorize(function() {
+                    .TOKEN_REFRESH_REQUIRED)
+            {
+                this.authorizer.authorize(function()
+                {
                     console.log('Error, auth refreshed');
                 }, false);
-            } else if (error.type == window.gapi.drive.realtime.ErrorType
-                    .CLIENT_ERROR) {
+            }
+            else if (error.type == window.gapi.drive.realtime.ErrorType
+                    .CLIENT_ERROR)
+            {
                 alert('An Error happened: ' + error.message);
                 window.location.href = '/';
-            } else if (error.type == window.gapi.drive.realtime.ErrorType.NOT_FOUND) {
+            }
+            else if (error.type == window.gapi.drive.realtime.ErrorType.NOT_FOUND)
+            {
                 alert('The file was not found. It does not exist or you do not have ' +
                     'read access to the file.');
                 window.location.href = '/';
-            } else if (error.type == window.gapi.drive.realtime.ErrorType.FORBIDDEN) {
+            }
+            else if (error.type == window.gapi.drive.realtime.ErrorType.FORBIDDEN)
+            {
                 alert('You do not have access to this file. Try having the owner share' +
                     'it with you from Google Drive.');
                 window.location.href = '/';
@@ -48636,7 +48687,8 @@ module.exports = (function(){
         this.token = null;
     };
 
-    utils.RealtimeAuthorizer.prototype = {
+    utils.RealtimeAuthorizer.prototype =
+    {
 
         /**
          * Starts the authorizer
@@ -48644,7 +48696,8 @@ module.exports = (function(){
          * @param {boolean} usePopup true if authenticating via a popup window.
          * @export
          */
-        start: function(onAuthComplete, usePopup) {
+        start: function(onAuthComplete, usePopup)
+        {
             var that = this;
             window.gapi.load('auth:client,drive-realtime,drive-share', {
                 callback: function() {
@@ -49018,7 +49071,10 @@ var WelcomePageView = Backbone.View.extend(
 
             this.$el.find('#collaborativeUsage').popover({
                 container: 'body',
-                content: 'Share the pathway ID with other(s) to collaboratively create a pathway',
+                html : true,
+                content: function(){
+                    return $('#collaborativePopoverContent').html();
+                },
                 placement: 'right',
                 delay: 100,
                 trigger: 'hover'
@@ -49824,8 +49880,11 @@ $(window).load(function()
         {
             if(response.error)
             {
-                function popUpAuthHandler()
+                function popUpAuthHandler(response)
                 {
+                    if(response.error)
+                        console.log(response.error);
+                    
                     var appInstance = new AppManager(true,realTimeManager);
                     realTimeManager.initRealTimeAPI();
                 }
@@ -49852,7 +49911,7 @@ $(window).load(function()
     var uri = window.location.search;
     if (uri.length > 0)
     {
-        $('.landingContent h2').hide();
+        $('.landingContent h3').hide();
         $('.welPageButtons').hide();
         $('#collaborativeUsage').click();
         $('.continueButton').click().hide();

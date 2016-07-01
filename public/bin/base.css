@@ -197,6 +197,13 @@
 .modal .close:hover {
   color: #1abc9c; }
 
+/* The max width is dependant on the container (more info below) */
+.popover {
+  max-width: 400px;
+  /* Max Width of the popover (depending on the container!) */ }
+  .popover span {
+    background-color: #e74c3c; }
+
 .welcomePageContainer {
   position: fixed;
   top: 0;
@@ -206,7 +213,7 @@
   height: 100%;
   display: table;
   width: 100%; }
-  .welcomePageContainer h2, .welcomePageContainer h1 {
+  .welcomePageContainer h3, .welcomePageContainer h1 {
     color: #2f4154; }
   .welcomePageContainer .landingContent {
     height: 100%;
@@ -222,7 +229,7 @@
     .welcomePageContainer .welcomePageLoading i {
       color: #1abc9c; }
   .welcomePageContainer .welPageButtons {
-    margin-top: 50px; }
+    margin-top: 30px; }
   .welcomePageContainer .welcomePageCheckable {
     display: inline-block;
     padding: 10px;

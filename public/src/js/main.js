@@ -29,8 +29,11 @@ $(window).load(function()
         {
             if(response.error)
             {
-                function popUpAuthHandler()
+                function popUpAuthHandler(response)
                 {
+                    if(response.error)
+                        console.log(response.error);
+                    
                     var appInstance = new AppManager(true,realTimeManager);
                     realTimeManager.initRealTimeAPI();
                 }
@@ -57,7 +60,7 @@ $(window).load(function()
     var uri = window.location.search;
     if (uri.length > 0)
     {
-        $('.landingContent h2').hide();
+        $('.landingContent h3').hide();
         $('.welPageButtons').hide();
         $('#collaborativeUsage').click();
         $('.continueButton').click().hide();

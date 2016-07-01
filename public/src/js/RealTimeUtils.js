@@ -75,7 +75,8 @@ module.exports = (function(){
          * @param {Object} options containing required utility keys.
          * @private
          */
-        init: function(options) {
+        init: function(options)
+        {
             this.mergeOptions(options);
             this.authorizer = new utils.RealtimeAuthorizer(this);
             this.createRealtimeFile = this.createRealtimeFile.bind(this);
@@ -87,7 +88,8 @@ module.exports = (function(){
          * @param {!boolean} usePopup true if authenticating via a popup window.
          * @export
          */
-        authorize: function(onAuthComplete, usePopup) {
+        authorize: function(onAuthComplete, usePopup)
+        {
             this.authorizer.start(onAuthComplete, usePopup);
         },
 
@@ -96,8 +98,10 @@ module.exports = (function(){
          * @param {Object} options that will be merged with existing options.
          * @private
          */
-        mergeOptions: function(options) {
-            for (var option in options) {
+        mergeOptions: function(options)
+        {
+            for (var option in options)
+            {
                 this[option] = options[option];
             }
         },
@@ -108,7 +112,8 @@ module.exports = (function(){
          * @return {?(string)} returns match as a string or null if no match.
          * @export
          */
-        getParam: function(urlParam) {
+        getParam: function(urlParam)
+        {
             var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
             var match = window.location.search.match(regExp);
             if (match && match.length) {
@@ -142,24 +147,7 @@ module.exports = (function(){
                     function(resp)
                     {
                         var fileId = resp.result.id;
-                        //Share file to anyone with link
-                        window.gapi.client.drive.permissions.create(
-                            {
-                                resource:
-                                {
-                                    type: 'anyone',
-                                    role: 'writer',
-                                    allowFileDiscovery: false
-                                },
-                                fileId: fileId
-                            }
-                        ).then(
-                            function (resp)
-                            {
-                                console.log(resp);
-                            }
-                        );
-
+                        that.shareRealTimeFile(fileId);
                         callback(resp);
                     },
                     function(reason)
@@ -170,6 +158,31 @@ module.exports = (function(){
             });
 
 
+        },
+
+        shareRealTimeFile: function(fileId)
+        {
+            //Share file to anyone with link
+            window.gapi.client.drive.permissions.create(
+                {
+                    resource:
+                    {
+                        type: 'anyone',
+                        role: 'writer',
+                        allowFileDiscovery: false
+                    },
+                    fileId: fileId
+                }
+            ).then(
+                function (resp)
+                {
+                    console.log('File shared succesfully !');
+                },
+                function(reason)
+                {
+                    console.log('An Error happened: ' + reason.result.error.message);
+                }
+            );
         },
 
         /**
@@ -184,7 +197,7 @@ module.exports = (function(){
         load: function(documentId, onFileLoaded, initializeModel) {
             var that = this;
             window.gapi.drive.realtime.load(documentId, function(doc) {
-                window.doc = doc;  // Debugging purposes
+                // window.doc = doc;  // Debugging purposes
                 onFileLoaded(doc);
             }, initializeModel, this.onError.bind(this));
         },
@@ -195,21 +208,30 @@ module.exports = (function(){
          *     details.
          * @private
          */
-        onError: function(error) {
+        onError: function(error)
+        {
             if (error.type == window.gapi.drive.realtime.ErrorType
-                    .TOKEN_REFRESH_REQUIRED) {
-                this.authorizer.authorize(function() {
+                    .TOKEN_REFRESH_REQUIRED)
+            {
+                this.authorizer.authorize(function()
+                {
                     console.log('Error, auth refreshed');
                 }, false);
-            } else if (error.type == window.gapi.drive.realtime.ErrorType
-                    .CLIENT_ERROR) {
+            }
+            else if (error.type == window.gapi.drive.realtime.ErrorType
+                    .CLIENT_ERROR)
+            {
                 alert('An Error happened: ' + error.message);
                 window.location.href = '/';
-            } else if (error.type == window.gapi.drive.realtime.ErrorType.NOT_FOUND) {
+            }
+            else if (error.type == window.gapi.drive.realtime.ErrorType.NOT_FOUND)
+            {
                 alert('The file was not found. It does not exist or you do not have ' +
                     'read access to the file.');
                 window.location.href = '/';
-            } else if (error.type == window.gapi.drive.realtime.ErrorType.FORBIDDEN) {
+            }
+            else if (error.type == window.gapi.drive.realtime.ErrorType.FORBIDDEN)
+            {
                 alert('You do not have access to this file. Try having the owner share' +
                     'it with you from Google Drive.');
                 window.location.href = '/';
@@ -230,7 +252,8 @@ module.exports = (function(){
         this.token = null;
     };
 
-    utils.RealtimeAuthorizer.prototype = {
+    utils.RealtimeAuthorizer.prototype =
+    {
 
         /**
          * Starts the authorizer
@@ -238,7 +261,8 @@ module.exports = (function(){
          * @param {boolean} usePopup true if authenticating via a popup window.
          * @export
          */
-        start: function(onAuthComplete, usePopup) {
+        start: function(onAuthComplete, usePopup)
+        {
             var that = this;
             window.gapi.load('auth:client,drive-realtime,drive-share', {
                 callback: function() {

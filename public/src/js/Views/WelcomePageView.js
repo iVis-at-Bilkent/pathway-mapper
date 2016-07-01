@@ -37,7 +37,10 @@ var WelcomePageView = Backbone.View.extend(
 
             this.$el.find('#collaborativeUsage').popover({
                 container: 'body',
-                content: 'Share the pathway ID with other(s) to collaboratively create a pathway',
+                html : true,
+                content: function(){
+                    return $('#collaborativePopoverContent').html();
+                },
                 placement: 'right',
                 delay: 100,
                 trigger: 'hover'

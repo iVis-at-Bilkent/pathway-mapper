@@ -1,8 +1,16 @@
 @import 'styleGlobals';
 
+/* The max width is dependant on the container (more info below) */
+.popover{
+  max-width: 400px; /* Max Width of the popover (depending on the container!) */
+  span{
+    background-color: #e74c3c;
+  }
+}
+
 .welcomePageContainer
 {
-  h2,h1{
+  h3,h1{
     color: #2f4154;
   }
 
@@ -40,7 +48,7 @@
   }
 
   .welPageButtons{
-    margin-top: 50px;
+    margin-top: 30px;
   }
 
   .welcomePageCheckable

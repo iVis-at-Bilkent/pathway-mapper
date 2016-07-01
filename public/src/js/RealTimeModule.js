@@ -350,7 +350,7 @@ module.exports = (function()
 
 
         //TODO compound operation
-        //Remove all real time nodes time nodes
+        //Remove all real time nodes
         for (var index in nodeMapKeys)
         {
             this.removeElement(nodeMapKeys[index]);
@@ -371,22 +371,39 @@ module.exports = (function()
         //         parentMap[nodeData.id] = nodeData.parent;
         // }
         //
-        // var allAdded = false;
+        // /*
+        //     Infer the graph hierarchy level by level according to the nesting
+        //     E.g. levelList[0] - root level
+        //          levelList[1] - first level, child nodes of previous level nodes
+        // */
+        // var allProcessed = false;
         // var levelListIndex = 0;
         // var addedCounter = 0;
-        // while(!allAdded)
+        //
+        // //Continue till all nodes are processed
+        // while(!allProcessed)
         // {
+        //
+        //     //create entry array that represents nesting level
+        //     levelList[levelListIndex] = [];
+        //
+        //     //Loop over all nodes
         //     for (var index in nodes)
         //     {
         //         var node = nodes[index];
-        //         levelList[levelListIndex] = [];
+        //         var nodeid = node.data.id;
         //
+        //         if(nodeid in allAddedMap)
+        //             continue;
+        //
+        //         //Parent of current node
         //         var parentId = node.data.parent;
         //         if(parentId)
         //         {
-        //             var highestLevelParent = parentMap[parentId];
-        //
+        //             //Try to find highest level parent of this node
+        //             var highestLevelParent = parentId;
         //             var topMostFoundFlag = false;
+        //
         //             while(!topMostFoundFlag)
         //             {
         //                 var parentOfParent = parentMap[highestLevelParent];
@@ -400,19 +417,31 @@ module.exports = (function()
         //                 }
         //             }
         //
-        //             if(allAddedMap[highestLevelParent] === undefined)
+        //             if(!(highestLevelParent in allAddedMap))
         //             {
-        //                 levelList[levelListIndex].push(topmostOne);
-        //                 allAddedMap[topmostOne] = true;
+        //                 levelList[levelListIndex].push(highestLevelParent);
+        //                 allAddedMap[highestLevelParent] = true;
         //                 addedCounter++;
         //             }
-        //         }
+        //             else
+        //             {
+        //                 continue;
+        //             }
         //
-        //         levelListIndex++;
+        //         }
+        //         // Node belongs to current level
+        //         else
+        //         {
+        //             levelList[levelListIndex].push(nodeid);
+        //             allAddedMap[nodeid] = true;
+        //             addedCounter++;
+        //         }
         //     }
-        //     allAdded = (addedCounter == nodes.length);
+        //
+        //     levelListIndex++;
+        //     allProcessed = (addedCounter == nodes.length);
         // }
-
+        //
         // console.log(levelList);
 
 
