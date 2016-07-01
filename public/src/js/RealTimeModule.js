@@ -59,7 +59,7 @@ module.exports = (function()
         else
         {
             // Create a new document, add it to the URL
-            this.realtimeUtils.createRealtimeFile('New Graph', function(createResponse) 
+            this.realtimeUtils.createAppFile('New Graph', function(createResponse)
             {
                 var result = createResponse.result;
                 window.history.pushState(null, null, '?id=' + result.id);

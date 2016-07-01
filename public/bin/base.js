@@ -47944,7 +47944,7 @@ module.exports = (function()
         else
         {
             // Create a new document, add it to the URL
-            this.realtimeUtils.createRealtimeFile('New Graph', function(createResponse) 
+            this.realtimeUtils.createAppFile('New Graph', function(createResponse)
             {
                 var result = createResponse.result;
                 window.history.pushState(null, null, '?id=' + result.id);
@@ -48502,8 +48502,11 @@ module.exports = (function(){
          */
         scopes: [
             'https://www.googleapis.com/auth/drive.install',
-            'https://www.googleapis.com/auth/drive.file'
+            'https://www.googleapis.com/auth/drive.file',
+            'https://www.googleapis.com/auth/drive.readonly'
         ],
+
+        TCGA_APP_FOLDER_NAME: 'TCGA_Pathway_Curation_Tool_Files',
 
         /**
          * Initializes RealtimeUtils
@@ -48566,19 +48569,26 @@ module.exports = (function(){
          * @param {Function} callback to be executed once the file has been created.
          * @export
          */
-        createRealtimeFile: function(title, callback) {
+        createRealtimeFile: function(title, callback, parentFolder) {
             var that = this;
-            window.gapi.client.load('drive', 'v3', function()
-            {
-                var insertHash = {
-                    'resource': {
-                        mimeType: that.mimeType,
-                        name: title
-                    }
-                };
 
+            var insertHash = {
+                resource:
+                {
+                    mimeType: that.mimeType,
+                    name: title
+                }
+            };
+
+            if(parentFolder)
+                insertHash.resource.parents = [parentFolder];
+
+
+            if(window.gapi.client.drive)
+            {
                 window.gapi.client.drive.files.create(insertHash).
-                then(
+                then
+                (
                     function(resp)
                     {
                         var fileId = resp.result.id;
@@ -48589,10 +48599,122 @@ module.exports = (function(){
                     {
                         alert('An Error happened: ' + reason.result.error.message);
                         window.location.href = '/';
-                    });
+                    }
+                );
+            }
+            else
+            {
+                window.gapi.client.load('drive', 'v3', function()
+                {
+                    window.gapi.client.drive.files.create(insertHash).
+                    then
+                    (
+                        function(resp)
+                        {
+                            var fileId = resp.result.id;
+                            that.shareRealTimeFile(fileId);
+                            callback(resp);
+                        },
+                        function(reason)
+                        {
+                            alert('An Error happened: ' + reason.result.error.message);
+                            window.location.href = '/';
+                        }
+                    );
+                });
+            }
+        },
+
+        createAppFile: function(title, callback)
+        {
+            var that = this;
+            this.createAppFolder(function(folderId)
+            {
+                that.createRealtimeFile(title, callback, folderId);
             });
+        },
+        /**
+         * Creates a new realtime folder for app.
+         * Since real time api will use files for app, they should be sharable
+         * AppData folder does not work since it is not sharable !!!
+         * @return {?string} returns newly created app folder id.
+         */
+        createAppFolder: function(successHandler, appfolderName)
+        {
+            var appFName = appfolderName || this.TCGA_APP_FOLDER_NAME;
 
+            var that = this;
 
+            if(window.gapi.client.drive)
+            {
+                searchFolder(appFName, successHandler);
+            }
+            else
+            {
+                window.gapi.client.load('drive', 'v3', function()
+                {
+                    searchFolder(appFName, successHandler);
+                });
+            }
+
+            function searchFolder(appFolderName)
+            {
+                var driveAPI = window.gapi.client.drive;
+                var fileResource =
+                {
+                    q:  "name='"+appFolderName+"' and " +
+                    "mimeType = 'application/vnd.google-apps.folder' and " +
+                    "trashed = false",
+                    spaces: 'drive'
+                }
+
+                driveAPI.files.list(fileResource).then
+                (
+                    function(res)
+                    {
+                        var files = res.result.files;
+                        //App data folder exists
+                        if(files.length > 0)
+                        {
+                            //We are assuming there could be only one folder that uniquely
+                            //Assigned to the app !
+                            var id = files[0].id;
+                            successHandler(id)
+                        }
+                        //Create folder
+                        else
+                        {
+                            var  createProps =
+                            {
+                                resource:
+                                {
+                                    name : appFName,
+                                    mimeType : 'application/vnd.google-apps.folder'
+                                }
+                            };
+
+                            driveAPI.files.create(createProps).
+                            then
+                            (
+                                function(resp)
+                                {
+                                    var newFolderId = resp.result.id;
+                                    successHandler(newFolderId);
+                                },
+                                function(err)
+                                {
+                                    console.log(err);
+                                }
+                            );
+                        }
+                    },
+                    function (err)
+                    {
+                        console.log(err);
+
+                    }
+                );
+            }
         },
 
         shareRealTimeFile: function(fileId)
