@@ -21,8 +21,13 @@
 /**
  * @fileoverview Common utility functionality for the Google Realtime API,
  * including authorization and file loading.
+ *
+ * @modified: on 1/7/2016 by Istemi Bahceci
+ *
+ *      - Since appData folder does not support shared files
+ *      added functions for creating an app folder for creating future
+ *      real time app files here
  */
-
 
 module.exports = (function(){
     /**
@@ -394,6 +399,7 @@ module.exports = (function(){
             if (this.authTimer) {
                 window.clearTimeout(this.authTimer);
             }
+            //TODO disabled this for now, look back later
             this.refreshAuth();
         },
 

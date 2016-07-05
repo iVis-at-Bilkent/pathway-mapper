@@ -155,7 +155,6 @@ module.exports = (function($)
         {
             var allEles = SaveLoadUtilities.parseGraph(request.responseText);
             window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
-            cy.fit(50);
             changeFileName(file.name);
         }
       };
@@ -167,7 +166,6 @@ module.exports = (function($)
 
     $('#mergeInput').on('change', function()
     {
-
       var file = this.files[0];
       // Create a new FormData object.
       var formData = new FormData();
@@ -250,8 +248,6 @@ module.exports = (function($)
           cy.add(edgesToBeAdded);
           cy.fit(50);
           //TODO change file name maybe ?
-          // console.log(nodesToBeAdded);
-          // console.log(edgesToBeAdded);
         }
       };
       request.open("POST", "/loadGraph");

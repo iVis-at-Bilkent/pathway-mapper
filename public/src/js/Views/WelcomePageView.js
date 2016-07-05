@@ -42,7 +42,7 @@ var WelcomePageView = Backbone.View.extend(
                     return $('#collaborativePopoverContent').html();
                 },
                 placement: 'right',
-                delay: 100,
+                delay: 300,
                 trigger: 'hover'
             });
 

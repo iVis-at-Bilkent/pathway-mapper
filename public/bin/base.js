@@ -48228,13 +48228,8 @@ module.exports = (function()
 
         var nodeMapKeys = nodeMap.keys();
         var edgeMapKeys = edgeMap.keys();
-        var nodeLookupTable = {};
-        var parentMap = {};
-        var levelList = [];
-        var allAddedMap = {};
 
 
-        //TODO compound operation
         //Remove all real time nodes
         for (var index in nodeMapKeys)
         {
@@ -48247,118 +48242,50 @@ module.exports = (function()
             this.removeElement(edgeMapKeys[index]);
         }
 
-        // //Add nodes first
-        // //construct parent map first !
-        // for (var i in nodes)
-        // {
-        //     var nodeData = nodes[i].data;
-        //     if (nodeData.parent)
-        //         parentMap[nodeData.id] = nodeData.parent;
-        // }
-        //
-        // /*
-        //     Infer the graph hierarchy level by level according to the nesting
-        //     E.g. levelList[0] - root level
-        //          levelList[1] - first level, child nodes of previous level nodes
-        // */
-        // var allProcessed = false;
-        // var levelListIndex = 0;
-        // var addedCounter = 0;
-        //
-        // //Continue till all nodes are processed
-        // while(!allProcessed)
-        // {
-        //
-        //     //create entry array that represents nesting level
-        //     levelList[levelListIndex] = [];
-        //
-        //     //Loop over all nodes
-        //     for (var index in nodes)
-        //     {
-        //         var node = nodes[index];
-        //         var nodeid = node.data.id;
-        //
-        //         if(nodeid in allAddedMap)
-        //             continue;
-        //
-        //         //Parent of current node
-        //         var parentId = node.data.parent;
-        //         if(parentId)
-        //         {
-        //             //Try to find highest level parent of this node
-        //             var highestLevelParent = parentId;
-        //             var topMostFoundFlag = false;
-        //
-        //             while(!topMostFoundFlag)
-        //             {
-        //                 var parentOfParent = parentMap[highestLevelParent];
-        //                 if(parentOfParent)
-        //                 {
-        //                     highestLevelParent = parentMap[parentOfParent];
-        //                 }
-        //                 else
-        //                 {
-        //                     topMostFoundFlag = true;
-        //                 }
-        //             }
-        //
-        //             if(!(highestLevelParent in allAddedMap))
-        //             {
-        //                 levelList[levelListIndex].push(highestLevelParent);
-        //                 allAddedMap[highestLevelParent] = true;
-        //                 addedCounter++;
-        //             }
-        //             else
-        //             {
-        //                 continue;
-        //             }
-        //
-        //         }
-        //         // Node belongs to current level
-        //         else
-        //         {
-        //             levelList[levelListIndex].push(nodeid);
-        //             allAddedMap[nodeid] = true;
-        //             addedCounter++;
-        //         }
-        //     }
-        //
-        //     levelListIndex++;
-        //     allProcessed = (addedCounter == nodes.length);
-        // }
-        //
-        // console.log(levelList);
-
-
-        //Add nodes first
-        //TODO compound relations ?????
-        for (var i in nodes)
+        var callBackFunct = function(levelList, nodeLookupTable, parentMap, refClass)
         {
-            var node = nodes[i];
-            var refNodeId = node.data.id;
+            var oldIdNewIdMap = {};
+            for (var level in levelList)
+            {
+                for (var j in levelList[level])
+                {
+                    var nodeId = levelList[level][j];
+                    var node = nodeLookupTable[nodeId];
+                    var refNodeId = node.data.id;
 
-            node.data.x = node.position.x;
-            node.data.y = node.position.y;
+                    node.data.x = node.position.x;
+                    node.data.y = node.position.y;
 
-            var newNode = model.create(NodeR, node.data);
-            var newNodeId = this.getCustomObjId(newNode);
-            nodeMap.set(newNodeId, newNode);
-            nodeLookupTable[refNodeId] = newNodeId;
-        }
+                    //Update parent !
+                    var parent = parentMap[refNodeId] ;
+                    if(parent)
+                    {
+                        node.data.parent = oldIdNewIdMap[parent];
+                    }
 
-        for (var i in edges)
-        {
-            var edge = edges[i];
+                    var newNode = model.create(NodeR, node.data);
+                    var newNodeId = refClass.getCustomObjId(newNode);
+                    oldIdNewIdMap[refNodeId] = newNodeId;
+                    nodeMap.set(newNodeId, newNode);
+                }
+            }
 
-            edge.data.source = nodeLookupTable[edge.data.source];
-            edge.data.target = nodeLookupTable[edge.data.target];
+            //Create Edges
+            for (var i in edges)
+            {
+                var edge = edges[i];
 
-            var newEdge = model.create(EdgeR, edge.data);
-            var newEdgeID = this.getCustomObjId(newEdge);
-            edgeMap.set(newEdgeID, newEdge);
-        }
+                edge.data.source = oldIdNewIdMap[edge.data.source];
+                edge.data.target = oldIdNewIdMap[edge.data.target];
+                var newEdge = model.create(EdgeR, edge.data);
+                var newEdgeID = refClass.getCustomObjId(newEdge);
+                edgeMap.set(newEdgeID, newEdge);
+            }
+        };
+        this.createGraphHierarchy(nodes, callBackFunct);
 
     }
+
 
     //Google Real Time's custom object ids are retrieved in this way
     RealTimeModule.prototype.getCustomObjId = function(object)
@@ -48391,6 +48318,145 @@ module.exports = (function()
 
         gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);
 
+    }
+
+    /*
+     * Creates graph hierarchy from given flat list of nodes list, nodes list is assumed to have parent-child
+     * relationship by a field 'parent' which represents to the id of the parent node This function is specific
+     * for the needs of TCGA Pathway Curation Tool 04/07/2016
+     *
+     * @param nodes {array}: flat list of nodes of a graph
+     * @param nodeLookUpDatble {array}: flat list of nodes of a graph
+     * @return {array}: Multi dimensional array, each row represents nesting level in graph and each column represents
+     * a node in corresponding level.
+     *
+     * */
+    RealTimeModule.prototype.createGraphHierarchy = function(nodes, callBack)
+    {
+        //Some arrays and maps for creating graph hierarchy
+        var nodeLookupTable = {};
+        var parentMap = {};
+        var leafNodeMap = {};
+        var allAddedMap = {};
+        var notValidNodeCurrentLevel = {};
+        var levelList = [];
+
+        //Add nodes first
+        //construct parent map first !
+        for (var i in nodes)
+        {
+            var nodeData = nodes[i].data;
+            nodeLookupTable[nodeData.id] = nodes[i];
+            if (nodeData.parent)
+                parentMap[nodeData.id] = nodeData.parent;
+        }
+
+        //Construct leaf node map
+        var getValues = function (obj)
+        {
+            var vals = {};
+            for( var key in obj )
+            {
+                if ( obj.hasOwnProperty(key) )
+                {
+                    vals[obj[key]] = true;
+                }
+            }
+            return vals;
+        }
+
+        //Get parent list of parent map
+        var parentList = getValues(parentMap);
+
+        //Create leaf node map
+        for (var i in nodes)
+        {
+            var nodeId = nodes[i].data.id;
+            if ( !( nodeId in parentList ) )
+                leafNodeMap[nodeId] = true;
+        }
+
+        /*
+         Infer the graph hierarchy level by level according to the nesting
+         E.g. levelList[0] - root level
+         levelList[1] - first level, child nodes of previous level nodes
+         */
+        var allProcessed = false;
+        var levelListIndex = 0;
+        var addedCounter = 0;
+
+        //Continue till all nodes are processed
+        while(!allProcessed)
+        {
+            //create entry array that represents nesting level
+            levelList[levelListIndex] = [];
+
+            //Loop over all nodes
+            for (var index in nodes)
+            {
+                var node = nodes[index];
+                var nodeid = node.data.id;
+
+                if(nodeid in allAddedMap)
+                    continue;
+
+                //Parent of current node
+                var parentId = node.data.parent;
+                if(parentId)
+                {
+                    //Try to find highest level parent of this node
+                    var highestLevelParent = parentId;
+                    var topMostFoundFlag = false;
+                    while(!topMostFoundFlag)
+                    {
+                        var parentOfParent = parentMap[highestLevelParent];
+                        if(parentOfParent && !(parentOfParent in notValidNodeCurrentLevel))
+                        {
+
+                            highestLevelParent = parentOfParent;
+                        }
+                        else
+                        {
+                            topMostFoundFlag = true;
+                        }
+                    }
+
+                    //If topmost parent is not added yet add it to current level
+                    if(!(highestLevelParent in allAddedMap))
+                    {
+                        levelList[levelListIndex].push(highestLevelParent);
+                        allAddedMap[highestLevelParent] = true;
+                        addedCounter++;
+
+                    }
+                }
+                else
+                {
+                    levelList[levelListIndex].push(nodeid);
+                    allAddedMap[nodeid] = true;
+                    addedCounter++;
+                }
+            }
+
+            //Update dummy map
+            for( var key in allAddedMap )
+            {
+                notValidNodeCurrentLevel[key] = true;
+            }
+
+            levelListIndex++;
+            allProcessed = (addedCounter == (nodes.length-Object.keys(leafNodeMap).length));
+        }
+
+        //Add leaf level nodes finally
+        levelList[levelListIndex] = [];
+        for (var key in leafNodeMap)
+        {
+            levelList[levelListIndex].push(key);
+        }
+
+        //Call callback by passing some maps that might be required after creation of level list
+        callBack(levelList, nodeLookupTable, parentMap, this);
     }
 
     //Custom object Definitions and Registration Part
@@ -48456,8 +48522,13 @@ module.exports = (function()
 /**
  * @fileoverview Common utility functionality for the Google Realtime API,
  * including authorization and file loading.
+ *
+ * @modified: on 1/7/2016 by Istemi Bahceci
+ *
+ *      - Since appData folder does not support shared files
+ *      added functions for creating an app folder for creating future
+ *      real time app files here
  */
-
 
 module.exports = (function(){
     /**
@@ -48829,6 +48900,7 @@ module.exports = (function(){
             if (this.authTimer) {
                 window.clearTimeout(this.authTimer);
             }
+            //TODO disabled this for now, look back later
             this.refreshAuth();
         },
 
@@ -49198,7 +49270,7 @@ var WelcomePageView = Backbone.View.extend(
                     return $('#collaborativePopoverContent').html();
                 },
                 placement: 'right',
-                delay: 100,
+                delay: 300,
                 trigger: 'hover'
             });
 
@@ -49827,7 +49899,6 @@ module.exports = (function($)
         {
             var allEles = SaveLoadUtilities.parseGraph(request.responseText);
             window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
-            cy.fit(50);
             changeFileName(file.name);
         }
       };
@@ -49839,7 +49910,6 @@ module.exports = (function($)
 
     $('#mergeInput').on('change', function()
     {
-
       var file = this.files[0];
       // Create a new FormData object.
       var formData = new FormData();
@@ -49922,8 +49992,6 @@ module.exports = (function($)
           cy.add(edgesToBeAdded);
           cy.fit(50);
           //TODO change file name maybe ?
-          // console.log(nodesToBeAdded);
-          // console.log(edgesToBeAdded);
         }
       };
       request.open("POST", "/loadGraph");
