@@ -29,6 +29,7 @@
     "cytoscape-edgehandles": "~2.3.2",
     "cytoscape-panzoom": "~2.2.3",
     "cytoscape-qtip": "~2.3.0",
+    "data-tree": "^1.2.4",
     "express": "~4.13.4",
     "filesaverjs": "~0.2.2",
     "google-auth-library": "^0.9.8",

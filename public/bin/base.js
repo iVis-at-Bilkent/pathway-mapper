@@ -47890,6 +47890,22 @@ module.exports = (function()
     var NODEMAP_NAME = 'nodes';
     var EDGEMAP_NAME = 'edges';
 
+    var GraphStructure = function()
+    {
+        var GraphNode = function(data)
+        {
+            this.data = data;
+            this.children = [];
+        }
+
+        this.prototype.addNode()
+        {
+            
+        }
+
+
+    }
+
     var RealTimeModule = function(postFileLoadCallback)
     {
         this.clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
@@ -48242,48 +48258,84 @@ module.exports = (function()
             this.removeElement(edgeMapKeys[index]);
         }
 
-        var callBackFunct = function(levelList, nodeLookupTable, parentMap, refClass)
+        //Some arrays and maps for creating graph hierarchy
+        var tree = [];
+        var mappedArr = {};
+        var oldIdNewIdMap = {};
+
+        // First map the nodes of the array to an object -> create a hash table.
+        for (var i = 0, len = nodes.length; i < len; i++)
         {
-            var oldIdNewIdMap = {};
-            for (var level in levelList)
+            var arrElem = nodes[i];
+            mappedArr[arrElem.data.id] = arrElem;
+            mappedArr[arrElem.data.id].children = [];
+        }
+
+        for (var id in mappedArr)
+        {
+            var mappedElem = mappedArr[id];
+
+            // If the element is not at the root level, add it to its parent array of children.
+            if (mappedElem.data.parent)
             {
-                for (var j in levelList[level])
+                mappedArr[mappedElem.data.parent].children.push(mappedElem);
+            }
+            // If the element is at the root level, add it to first level elements array.
+            else
+            {
+                tree.push(mappedElem);
+            }
+        }
+
+        var that = this;
+        function traverseTree(node, newParentId)
+        {
+            node.data.x = node.position.x;
+            node.data.y = node.position.y;
+
+            //Update parent !
+            if(newParentId)
+            {
+                var parent = node.data.parent;
+                if(parent)
                 {
-                    var nodeId = levelList[level][j];
-                    var node = nodeLookupTable[nodeId];
-                    var refNodeId = node.data.id;
-
-                    node.data.x = node.position.x;
-                    node.data.y = node.position.y;
-
-                    //Update parent !
-                    var parent = parentMap[refNodeId] ;
-                    if(parent)
-                    {
-                        node.data.parent = oldIdNewIdMap[parent];
-                    }
-
-                    var newNode = model.create(NodeR, node.data);
-                    var newNodeId = refClass.getCustomObjId(newNode);
-                    oldIdNewIdMap[refNodeId] = newNodeId;
-                    nodeMap.set(newNodeId, newNode);
+                    node.data.parent = newParentId;
                 }
             }
 
-            //Create Edges
-            for (var i in edges)
+            var newNode = model.create(NodeR, node.data);
+            var newNodeId = that.getCustomObjId(newNode);
+            oldIdNewIdMap[node.data.id] = newNodeId;
+            nodeMap.set(newNodeId, newNode);
+
+            //If node has children recursively traverse sub graphs and update parent field of child nodes
+            if(node.children.length > 0)
             {
-                var edge = edges[i];
-
-                edge.data.source = oldIdNewIdMap[edge.data.source];
-                edge.data.target = oldIdNewIdMap[edge.data.target];
-                var newEdge = model.create(EdgeR, edge.data);
-                var newEdgeID = refClass.getCustomObjId(newEdge);
-                edgeMap.set(newEdgeID, newEdge);
+                for (var i in node.children)
+                {
+                    var tmpNode = node.children[i];
+                    traverseTree(tmpNode, newNodeId);
+                }
             }
-        };
-        this.createGraphHierarchy(nodes, callBackFunct);
+        }
 
+        //Traverse from root
+        for (var i in tree)
+        {
+            var rootLevelNode = tree[i];
+            traverseTree(rootLevelNode);
+        }
+
+        //Create Edges
+        for (var i in edges)
+        {
+            var edge = edges[i];
+            edge.data.source = oldIdNewIdMap[edge.data.source];
+            edge.data.target = oldIdNewIdMap[edge.data.target];
+            var newEdge = model.create(EdgeR, edge.data);
+            var newEdgeID = this.getCustomObjId(newEdge);
+            edgeMap.set(newEdgeID, newEdge);
+        }
     }
 
 
@@ -48333,130 +48385,12 @@ module.exports = (function()
      * */
     RealTimeModule.prototype.createGraphHierarchy = function(nodes, callBack)
     {
-        //Some arrays and maps for creating graph hierarchy
-        var nodeLookupTable = {};
-        var parentMap = {};
-        var leafNodeMap = {};
-        var allAddedMap = {};
-        var notValidNodeCurrentLevel = {};
-        var levelList = [];
 
-        //Add nodes first
-        //construct parent map first !
-        for (var i in nodes)
-        {
-            var nodeData = nodes[i].data;
-            nodeLookupTable[nodeData.id] = nodes[i];
-            if (nodeData.parent)
-                parentMap[nodeData.id] = nodeData.parent;
-        }
 
-        //Construct leaf node map
-        var getValues = function (obj)
-        {
-            var vals = {};
-            for( var key in obj )
-            {
-                if ( obj.hasOwnProperty(key) )
-                {
-                    vals[obj[key]] = true;
-                }
-            }
-            return vals;
-        }
-
-        //Get parent list of parent map
-        var parentList = getValues(parentMap);
-
-        //Create leaf node map
-        for (var i in nodes)
-        {
-            var nodeId = nodes[i].data.id;
-            if ( !( nodeId in parentList ) )
-                leafNodeMap[nodeId] = true;
-        }
-
-        /*
-         Infer the graph hierarchy level by level according to the nesting
-         E.g. levelList[0] - root level
-         levelList[1] - first level, child nodes of previous level nodes
-         */
-        var allProcessed = false;
-        var levelListIndex = 0;
-        var addedCounter = 0;
-
-        //Continue till all nodes are processed
-        while(!allProcessed)
-        {
-            //create entry array that represents nesting level
-            levelList[levelListIndex] = [];
-
-            //Loop over all nodes
-            for (var index in nodes)
-            {
-                var node = nodes[index];
-                var nodeid = node.data.id;
-
-                if(nodeid in allAddedMap)
-                    continue;
-
-                //Parent of current node
-                var parentId = node.data.parent;
-                if(parentId)
-                {
-                    //Try to find highest level parent of this node
-                    var highestLevelParent = parentId;
-                    var topMostFoundFlag = false;
-                    while(!topMostFoundFlag)
-                    {
-                        var parentOfParent = parentMap[highestLevelParent];
-                        if(parentOfParent && !(parentOfParent in notValidNodeCurrentLevel))
-                        {
-
-                            highestLevelParent = parentOfParent;
-                        }
-                        else
-                        {
-                            topMostFoundFlag = true;
-                        }
-                    }
-
-                    //If topmost parent is not added yet add it to current level
-                    if(!(highestLevelParent in allAddedMap))
-                    {
-                        levelList[levelListIndex].push(highestLevelParent);
-                        allAddedMap[highestLevelParent] = true;
-                        addedCounter++;
-
-                    }
-                }
-                else
-                {
-                    levelList[levelListIndex].push(nodeid);
-                    allAddedMap[nodeid] = true;
-                    addedCounter++;
-                }
-            }
-
-            //Update dummy map
-            for( var key in allAddedMap )
-            {
-                notValidNodeCurrentLevel[key] = true;
-            }
-
-            levelListIndex++;
-            allProcessed = (addedCounter == (nodes.length-Object.keys(leafNodeMap).length));
-        }
-
-        //Add leaf level nodes finally
-        levelList[levelListIndex] = [];
-        for (var key in leafNodeMap)
-        {
-            levelList[levelListIndex].push(key);
-        }
+        console.log(tree);
 
         //Call callback by passing some maps that might be required after creation of level list
-        callBack(levelList, nodeLookupTable, parentMap, this);
+        //callBack(levelList, nodeLookupTable, parentMap, this);
     }
 
     //Custom object Definitions and Registration Part

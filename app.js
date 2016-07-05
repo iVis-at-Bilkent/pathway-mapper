@@ -87,5 +87,5 @@ app.post('/getBioGeneData', multerInstance.array(), biogeneDataHandler);
 
 app.listen(APP_PORT, function ()
 {
-  console.log('Example app listening on port ' + APP_PORT);
+  console.log('TCGA Pathway Curation Tool up and running on port ' + APP_PORT);
 });
