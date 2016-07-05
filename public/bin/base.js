@@ -47818,11 +47818,98 @@ module.exports = (function()
         }
     }
 
+    EditorActionsManager.prototype.mergeGraph = function(nodes, edges)
+    {
+        if (this.isCollaborative)
+        {
+            //Collaborative usage
+            this.realTimeManager.mergeGraph(nodes,edges);
+        }
+        else
+        {
+            //Local usage file load
+            this.mergeGraphCy(nodes,edges);
+        }
+    }
+
+    EditorActionsManager.prototype.mergeGraphCy = function(nodes, edges)
+    {
+        //Define arrays and maps
+        var nodesToBeAdded = [];
+        var edgesToBeAdded = [];
+        var nodeMap = {};
+
+        //Iterate over nodes and find nodes that does not exist in current graph by looking their name
+        for (var index in nodes)
+        {
+            var ele = nodes[index];
+            nodeMap[ele.data.id] = ele;
+
+            if (cy.filter('node[name = "'+ele.data.name+'"]').length <= 0)
+            {
+                delete ele.data.id;
+                //TODO need to update parent ?
+                nodesToBeAdded.push(ele);
+            }
+        }
+
+        cy.add(nodesToBeAdded);
+
+        //Iterate over all edges
+        for (var index in edges)
+        {
+            //Get corresponding source and target node in merge file
+            var ele = edges[index];
+            var sourceNode = nodeMap[ele.data.source];
+            var targetNode = nodeMap[ele.data.target];
+
+            //Check if there are nodes with same name in current graph
+            var cySourceNode = cy.nodes('[name="'+sourceNode.data.name+'"]');
+            var cyTargetNode = cy.nodes('[name="'+targetNode.data.name+'"]');
+
+            if (cySourceNode.length > 0)
+            {
+                ele.data.source = cySourceNode.id();
+            }
+
+            if (cyTargetNode.length > 0)
+            {
+                ele.data.target = cyTargetNode.id();
+            }
+
+            if (cyTargetNode.length < 0 && cySourceNode.length < 0 ) {
+                continue;
+            }
+
+            var edgesBtw = cy.filter('edge[source = "'+cySourceNode.id()+'"][target = "'+cyTargetNode.id()+'"]');
+
+            //We assume there could be one edge between source and target node with same type
+            var isFound = false;
+            edgesBtw.forEach(function(edge,i)
+            {
+                if (edge.data().type == ele.data.type)
+                {
+                    isFound = true;
+                    return false;
+                }
+            });
+
+            if (!isFound)
+            {
+                delete ele.data.id;
+                edgesToBeAdded.push(ele);
+            }
+        }
+        
+        cy.add(edgesToBeAdded);
+        cy.fit(50);
+    }
+
     EditorActionsManager.prototype.loadFile = function(nodes, edges)
     {
         if (this.isCollaborative)
         {
-            //TODO collab stuff
+            //Real time load graph
             this.loadfileRealTime(nodes,edges);
         }
         else
@@ -47838,6 +47925,7 @@ module.exports = (function()
         this.removeElementCy(cy.elements());
         this.addNodesCy(nodes);
         this.addEdgesCy(edges);
+        cy.fit(50);
     }
 
     EditorActionsManager.prototype.loadfileRealTime = function(nodes, edges)
@@ -47854,7 +47942,7 @@ module.exports = (function()
         }
         else
         {
-            this.changeName(ele, newName);
+            this.changeNameCy(ele, newName);
         }
     }
 
@@ -47887,24 +47975,7 @@ module.exports = (function()
 {
     "use strict";
 
-    var NODEMAP_NAME = 'nodes';
-    var EDGEMAP_NAME = 'edges';
 
-    var GraphStructure = function()
-    {
-        var GraphNode = function(data)
-        {
-            this.data = data;
-            this.children = [];
-        }
-
-        this.prototype.addNode()
-        {
-            
-        }
-
-
-    }
 
     var RealTimeModule = function(postFileLoadCallback)
     {
@@ -47914,6 +47985,9 @@ module.exports = (function()
         // {
         //     throw new Error('Invalid Client ID - did you forget to insert your application Client ID?');
         // }
+
+        this.NODEMAP_NAME = 'nodes';
+        this.EDGEMAP_NAME = 'edges';
 
         // Create a new instance of the realtime utility with your client ID.
         this.realtimeUtils = new utils.RealtimeUtils({
@@ -47978,20 +48052,22 @@ module.exports = (function()
         var nodeMap = model.createMap();
         var edgeMap = model.createMap();
 
-        root.set(NODEMAP_NAME, nodeMap);
-        root.set(EDGEMAP_NAME, edgeMap);
+        root.set(this.NODEMAP_NAME, nodeMap);
+        root.set(this.EDGEMAP_NAME, edgeMap);
     }
 
-    // After a file has been initialized and loaded, we can access the
-    // document. We will wire up the data model to the UI.
+    /*
+        After a file has been initialized and loaded, we can access the
+        document. We will wire up the data model to the UI.
+    */
     RealTimeModule.prototype.onFileLoaded =  function(doc)
     {
         // this.realTimeDoc = doc;
         var model = doc.getModel();
         var root = model.getRoot();
 
-        var nodeMap = root.get(NODEMAP_NAME);
-        var edgeMap = root.get(EDGEMAP_NAME);
+        var nodeMap = root.get(this.NODEMAP_NAME);
+        var edgeMap = root.get(this.EDGEMAP_NAME);
 
         var nodeMapKeys = nodeMap.keys();
         var edgeMapKeys = edgeMap.keys();
@@ -48025,8 +48101,8 @@ module.exports = (function()
         }
 
         //Event listeners for edge and node map
-        root.get(NODEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddRemoveHandler);
-        root.get(EDGEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, edgeAddRemoveHandler);
+        root.get(this.NODEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddRemoveHandler);
+        root.get(this.EDGEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, edgeAddRemoveHandler);
 
         //Just for debugging
         var debugRButton = document.getElementById('debugR');
@@ -48043,7 +48119,7 @@ module.exports = (function()
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var nodeMap =  root.get(NODEMAP_NAME);
+        var nodeMap =  root.get(this.NODEMAP_NAME);
         var newNode = model.create(NodeR, {
             name: nodeData.name,
             type: nodeData.type,
@@ -48064,7 +48140,7 @@ module.exports = (function()
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var edgeMap =  root.get(EDGEMAP_NAME);
+        var edgeMap =  root.get(this.EDGEMAP_NAME);
 
         var newEdge = model.create(EdgeR,
             {
@@ -48081,8 +48157,8 @@ module.exports = (function()
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var edgeMap =  root.get(EDGEMAP_NAME);
-        var nodeMap =  root.get(NODEMAP_NAME);
+        var edgeMap =  root.get(this.EDGEMAP_NAME);
+        var nodeMap =  root.get(this.NODEMAP_NAME);
 
         if (nodeMap.has(elementID))
         {
@@ -48103,7 +48179,7 @@ module.exports = (function()
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var nodeMap =  root.get(NODEMAP_NAME);
+        var nodeMap =  root.get(this.NODEMAP_NAME);
 
         var elementID = ele.id();
         var newPos = ele.position();
@@ -48128,7 +48204,7 @@ module.exports = (function()
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var nodeMap =  root.get(NODEMAP_NAME);
+        var nodeMap =  root.get(this.NODEMAP_NAME);
 
         var elementID = ele.id();
 
@@ -48151,7 +48227,7 @@ module.exports = (function()
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var nodeMap =  root.get(NODEMAP_NAME);
+        var nodeMap =  root.get(this.NODEMAP_NAME);
 
         var nodeLookupTable = {};
 
@@ -48234,13 +48310,13 @@ module.exports = (function()
         });
         
     }
-    
+
     RealTimeModule.prototype.loadGraph = function(nodes, edges)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
-        var nodeMap = root.get(NODEMAP_NAME);
-        var edgeMap = root.get(EDGEMAP_NAME);
+        var nodeMap = root.get(this.NODEMAP_NAME);
+        var edgeMap = root.get(this.EDGEMAP_NAME);
 
         var nodeMapKeys = nodeMap.keys();
         var edgeMapKeys = edgeMap.keys();
@@ -48258,36 +48334,9 @@ module.exports = (function()
             this.removeElement(edgeMapKeys[index]);
         }
 
-        //Some arrays and maps for creating graph hierarchy
-        var tree = [];
-        var mappedArr = {};
-        var oldIdNewIdMap = {};
-
-        // First map the nodes of the array to an object -> create a hash table.
-        for (var i = 0, len = nodes.length; i < len; i++)
-        {
-            var arrElem = nodes[i];
-            mappedArr[arrElem.data.id] = arrElem;
-            mappedArr[arrElem.data.id].children = [];
-        }
-
-        for (var id in mappedArr)
-        {
-            var mappedElem = mappedArr[id];
-
-            // If the element is not at the root level, add it to its parent array of children.
-            if (mappedElem.data.parent)
-            {
-                mappedArr[mappedElem.data.parent].children.push(mappedElem);
-            }
-            // If the element is at the root level, add it to first level elements array.
-            else
-            {
-                tree.push(mappedElem);
-            }
-        }
-
+        //Function that traverses graph tree recursively.
         var that = this;
+        var oldIdNewIdMap = {};
         function traverseTree(node, newParentId)
         {
             node.data.x = node.position.x;
@@ -48303,6 +48352,7 @@ module.exports = (function()
                 }
             }
 
+            //Create new real time node
             var newNode = model.create(NodeR, node.data);
             var newNodeId = that.getCustomObjId(newNode);
             oldIdNewIdMap[node.data.id] = newNodeId;
@@ -48319,14 +48369,19 @@ module.exports = (function()
             }
         }
 
-        //Traverse from root
+        //Create graph hierarchy from given list of flat nodes
+        var tree = this.createGraphHierarchy(nodes);
+        //Traverse from root nodes of tree
         for (var i in tree)
         {
             var rootLevelNode = tree[i];
             traverseTree(rootLevelNode);
         }
 
-        //Create Edges
+        /*
+          Create real time edges, update the source and target fields, since new ids will be generated for the nodes in
+          real time
+        */
         for (var i in edges)
         {
             var edge = edges[i];
@@ -48336,6 +48391,47 @@ module.exports = (function()
             var newEdgeID = this.getCustomObjId(newEdge);
             edgeMap.set(newEdgeID, newEdge);
         }
+    }
+
+    RealTimeModule.prototype.mergeGraph = function(nodes, edges)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap = root.get(this.NODEMAP_NAME);
+        var edgeMap = root.get(this.EDGEMAP_NAME);
+
+        var nodeMapItems = nodeMap.items();
+        var nodeLookupTable = {};
+
+        for (var i in nodeMapItems)
+        {
+            var nodeMapItem = nodeMapItems[i];
+            nodeLookupTable[nodeMapItem[0]] = nodeMapItem[1];
+        }
+
+        console.log(nodeLookupTable);
+
+        // function traverseTree(node)
+        // {
+        //     //If node has children recursively traverse sub graphs
+        //     if(node.children.length > 0)
+        //     {
+        //         for (var i in node.children)
+        //         {
+        //             var tmpNode = node.children[i];
+        //             traverseTree(tmpNode);
+        //         }
+        //     }
+        // }
+        //
+        // var tree = this.createGraphHierarchy(nodes);
+        // //Traverse from root nodes of tree
+        // for (var i in tree)
+        // {
+        //     var rootLevelNode = tree[i];
+        //     traverseTree(rootLevelNode);
+        // }
+
     }
 
 
@@ -48378,19 +48474,41 @@ module.exports = (function()
      * for the needs of TCGA Pathway Curation Tool 04/07/2016
      *
      * @param nodes {array}: flat list of nodes of a graph
-     * @param nodeLookUpDatble {array}: flat list of nodes of a graph
-     * @return {array}: Multi dimensional array, each row represents nesting level in graph and each column represents
+     * @return {array}: Tree representation in array, entries are root level nodes. node.children gives children nodes
+     * of each node in the returned array.
      * a node in corresponding level.
      *
      * */
-    RealTimeModule.prototype.createGraphHierarchy = function(nodes, callBack)
+    RealTimeModule.prototype.createGraphHierarchy = function(nodes)
     {
+        //Some arrays and maps for creating graph hierarchy
+        var tree = [];
+        var mappedArr = {};
 
+        // First map the nodes of the array to an object -> create a hash table.
+        for (var i = 0, len = nodes.length; i < len; i++)
+        {
+            var arrElem = nodes[i];
+            mappedArr[arrElem.data.id] = arrElem;
+            mappedArr[arrElem.data.id].children = [];
+        }
 
-        console.log(tree);
+        for (var id in mappedArr)
+        {
+            var mappedElem = mappedArr[id];
 
-        //Call callback by passing some maps that might be required after creation of level list
-        //callBack(levelList, nodeLookupTable, parentMap, this);
+            // If the element is not at the root level, add it to its parent array of children.
+            if (mappedElem.data.parent)
+            {
+                mappedArr[mappedElem.data.parent].children.push(mappedElem);
+            }
+            // If the element is at the root level, add it to first level elements array.
+            else
+            {
+                tree.push(mappedElem);
+            }
+        }
+        return tree;
     }
 
     //Custom object Definitions and Registration Part
@@ -49854,77 +49972,7 @@ module.exports = (function($)
         if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
         {
           var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-          var nodes = allEles.nodes;
-          var edges = allEles.edges;
-
-          var nodesToBeAdded = [];
-          var edgesToBeAdded = [];
-          var nodeMap = {};
-
-
-          for (var index in nodes)
-          {
-            var ele = nodes[index];
-            nodeMap[ele.data.id] = ele;
-
-            if (cy.filter('node[name = "'+ele.data.name+'"]').length <= 0)
-            {
-              delete ele.data.id;
-              nodesToBeAdded.push(ele);
-            }
-          }
-
-          cy.add(nodesToBeAdded);
-
-          //Iterate over all edges
-          for (var index in edges)
-          {
-            //Get corresponding source and target node in merge file
-            var ele = edges[index];
-            var sourceNode = nodeMap[ele.data.source];
-            var targetNode = nodeMap[ele.data.target];
-
-            //Check if there is nodes with same name in current graph
-            var cySourceNode = cy.nodes('[name="'+sourceNode.data.name+'"]');
-            var cyTargetNode = cy.nodes('[name="'+targetNode.data.name+'"]');
-
-            if (cySourceNode.length > 0)
-            {
-              ele.data.source = cySourceNode.id();
-            }
-
-            if (cyTargetNode.length > 0)
-            {
-              ele.data.target = cyTargetNode.id();
-            }
-
-            if (cyTargetNode.length < 0 && cySourceNode.length < 0 ) {
-              continue;
-            }
-
-            var edgesBtw = cy.filter('edge[source = "'+cySourceNode.id()+'"][target = "'+cyTargetNode.id()+'"]');
-
-            //We assume there could be one edge between source and target node with same type
-            var isFound = false;
-            edgesBtw.forEach(function(edge,i)
-            {
-                if (edge.data().type == ele.data.type)
-                {
-                  isFound = true;
-                  return false;
-                }
-            });
-
-            if (!isFound)
-            {
-              delete ele.data.id;
-              edgesToBeAdded.push(ele);
-            }
-          }
-
-
-          cy.add(edgesToBeAdded);
-          cy.fit(50);
+          window.editorActionsManager.mergeGraph(allEles.nodes,allEles.edges);
           //TODO change file name maybe ?
         }
       };

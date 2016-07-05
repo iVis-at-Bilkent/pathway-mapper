@@ -368,11 +368,98 @@ module.exports = (function()
         }
     }
 
+    EditorActionsManager.prototype.mergeGraph = function(nodes, edges)
+    {
+        if (this.isCollaborative)
+        {
+            //Collaborative usage
+            this.realTimeManager.mergeGraph(nodes,edges);
+        }
+        else
+        {
+            //Local usage file load
+            this.mergeGraphCy(nodes,edges);
+        }
+    }
+
+    EditorActionsManager.prototype.mergeGraphCy = function(nodes, edges)
+    {
+        //Define arrays and maps
+        var nodesToBeAdded = [];
+        var edgesToBeAdded = [];
+        var nodeMap = {};
+
+        //Iterate over nodes and find nodes that does not exist in current graph by looking their name
+        for (var index in nodes)
+        {
+            var ele = nodes[index];
+            nodeMap[ele.data.id] = ele;
+
+            if (cy.filter('node[name = "'+ele.data.name+'"]').length <= 0)
+            {
+                delete ele.data.id;
+                //TODO need to update parent ?
+                nodesToBeAdded.push(ele);
+            }
+        }
+
+        cy.add(nodesToBeAdded);
+
+        //Iterate over all edges
+        for (var index in edges)
+        {
+            //Get corresponding source and target node in merge file
+            var ele = edges[index];
+            var sourceNode = nodeMap[ele.data.source];
+            var targetNode = nodeMap[ele.data.target];
+
+            //Check if there are nodes with same name in current graph
+            var cySourceNode = cy.nodes('[name="'+sourceNode.data.name+'"]');
+            var cyTargetNode = cy.nodes('[name="'+targetNode.data.name+'"]');
+
+            if (cySourceNode.length > 0)
+            {
+                ele.data.source = cySourceNode.id();
+            }
+
+            if (cyTargetNode.length > 0)
+            {
+                ele.data.target = cyTargetNode.id();
+            }
+
+            if (cyTargetNode.length < 0 && cySourceNode.length < 0 ) {
+                continue;
+            }
+
+            var edgesBtw = cy.filter('edge[source = "'+cySourceNode.id()+'"][target = "'+cyTargetNode.id()+'"]');
+
+            //We assume there could be one edge between source and target node with same type
+            var isFound = false;
+            edgesBtw.forEach(function(edge,i)
+            {
+                if (edge.data().type == ele.data.type)
+                {
+                    isFound = true;
+                    return false;
+                }
+            });
+
+            if (!isFound)
+            {
+                delete ele.data.id;
+                edgesToBeAdded.push(ele);
+            }
+        }
+        
+        cy.add(edgesToBeAdded);
+        cy.fit(50);
+    }
+
     EditorActionsManager.prototype.loadFile = function(nodes, edges)
     {
         if (this.isCollaborative)
         {
-            //TODO collab stuff
+            //Real time load graph
             this.loadfileRealTime(nodes,edges);
         }
         else
@@ -388,6 +475,7 @@ module.exports = (function()
         this.removeElementCy(cy.elements());
         this.addNodesCy(nodes);
         this.addEdgesCy(edges);
+        cy.fit(50);
     }
 
     EditorActionsManager.prototype.loadfileRealTime = function(nodes, edges)
@@ -404,7 +492,7 @@ module.exports = (function()
         }
         else
         {
-            this.changeName(ele, newName);
+            this.changeNameCy(ele, newName);
         }
     }
 
