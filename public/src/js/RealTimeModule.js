@@ -2,8 +2,6 @@ module.exports = (function()
 {
     "use strict";
 
-
-
     var RealTimeModule = function(postFileLoadCallback)
     {
         this.clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
@@ -427,38 +425,103 @@ module.exports = (function()
         var nodeMap = root.get(this.NODEMAP_NAME);
         var edgeMap = root.get(this.EDGEMAP_NAME);
 
-        var nodeMapItems = nodeMap.items();
-        var nodeLookupTable = {};
+        var realTimeNodeMap = nodeMap.items();
+        var realTimeNodeLookupTable = {};
+        var realTimeNodeNameLookupTable = {};
+        var oldIdNewIdMap = {};
+        var that = this;
 
-        for (var i in nodeMapItems)
+        //Create lookup table for real time nodes
+        //items are stored in an array in the resulting array of nodeMap.items()
+        // [0] - id, [1] - object
+        for (var i in realTimeNodeMap)
         {
-            var nodeMapItem = nodeMapItems[i];
-            nodeLookupTable[nodeMapItem[0]] = nodeMapItem[1];
+            var nodeMapItem = realTimeNodeMap[i];
+            realTimeNodeLookupTable[nodeMapItem[0]] = nodeMapItem[1];
+            realTimeNodeNameLookupTable[nodeMapItem[1].name] = nodeMapItem[1];
         }
 
-        console.log(nodeLookupTable);
+        //Recursive traverse definition
+        function traverseTree(node, newParentId)
+        {
+            //Search by name !
+            //We have not found a node that exist in the graph, add normally
+            if(!(node.data.name in realTimeNodeNameLookupTable))
+            {
+                node.data.x = node.position.x;
+                node.data.y = node.position.y;
 
-        // function traverseTree(node)
-        // {
-        //     //If node has children recursively traverse sub graphs
-        //     if(node.children.length > 0)
-        //     {
-        //         for (var i in node.children)
-        //         {
-        //             var tmpNode = node.children[i];
-        //             traverseTree(tmpNode);
-        //         }
-        //     }
-        // }
-        //
-        // var tree = this.createGraphHierarchy(nodes);
-        // //Traverse from root nodes of tree
-        // for (var i in tree)
-        // {
-        //     var rootLevelNode = tree[i];
-        //     traverseTree(rootLevelNode);
-        // }
+                //Update parent !
+                if(newParentId)
+                {
+                    var parent = node.data.parent;
+                    if(parent)
+                    {
+                        node.data.parent = newParentId;
+                    }
+                }
 
+                //Create new real time node
+                var newNode = model.create(NodeR, node.data);
+                var newNodeId = that.getCustomObjId(newNode);
+                oldIdNewIdMap[node.data.id] = newNodeId;
+                nodeMap.set(newNodeId, newNode);
+
+                //If node has children recursively traverse sub graphs and update parent field of child nodes
+                if(node.children.length > 0)
+                {
+                    for (var i in node.children)
+                    {
+                        var tmpNode = node.children[i];
+                        traverseTree(tmpNode, newNodeId);
+                    }
+                }
+            }
+            // At this point there exists another node in the graph with the same name as 'node'
+            // we need to update parent field of children of this node if any
+            else
+            {
+                if(node.children.length > 0)
+                {
+                    var sameNameNode = realTimeNodeNameLookupTable[node.data.name];
+                    var sameNodeId = that.getCustomObjId(sameNameNode);
+                    oldIdNewIdMap[node.data.id] = sameNodeId;
+
+                    var realTimeNode = realTimeNodeLookupTable[node.data.id];
+                    //If node has children recursively traverse sub graphs and update parent field of child nodes
+                    if(node.children.length > 0)
+                    {
+                        for (var i in node.children)
+                        {
+                            var tmpNode = node.children[i];
+                            traverseTree(tmpNode, sameNodeId);
+                        }
+                    }
+                }
+            }
+        }
+
+        //Traverse from root nodes of tree
+        var tree = this.createGraphHierarchy(nodes);
+        for (var i in tree)
+        {
+            var rootLevelNode = tree[i];
+            traverseTree(rootLevelNode, rootLevelNode.data.id);
+        }
+
+        /*
+         Create real time edges, update the source and target fields, since new ids will be generated for the nodes in
+         real time
+         */
+        for (var i in edges)
+        {
+            var edge = edges[i];
+            edge.data.source = oldIdNewIdMap[edge.data.source];
+            edge.data.target = oldIdNewIdMap[edge.data.target];
+            var newEdge = model.create(EdgeR, edge.data);
+            var newEdgeID = this.getCustomObjId(newEdge);
+            edgeMap.set(newEdgeID, newEdge);
+        }
     }
 
 
