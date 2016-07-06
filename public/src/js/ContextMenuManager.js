@@ -23,7 +23,7 @@ module.exports = (function()
           content: 'Perform Layout',
           select: function(ele)
           {
-            cy.layout(window.layoutProperties.currentLayoutProperties);
+            window.editorActionsManager.performLayout();
           }
         },
       ]

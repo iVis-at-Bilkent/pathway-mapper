@@ -4,9 +4,9 @@ var _ = window._ = require('underscore');
 var Backbone = window.Backbone = require('backbone');
 Backbone.$ = $;
 require('bootstrap');
-require('./RealTimeUtils');//Google's real time utility lib
+require('./RealTimeUtils');//Google's real time utility lib which is customized also for this tool :)
 
-var WelcomePageView = require('./Views/WelcomePageView.js');
+var WelcomePageView = require('./BackboneViews/WelcomePageView.js');
 var AppManager = require('./AppManager');
 var RealTimeModule = require('./RealTimeManager');
 
@@ -65,106 +65,5 @@ $(window).load(function()
         $('#collaborativeUsage').click();
         $('.continueButton').click().hide();
     }
-
 });
 
-
-//Selected element on dropdown
-$(".edge-palette a").click(function(event)
-{
-    event.preventDefault();
-
-    if ($(event.target).hasClass('active'))
-    {
-        cy.edgehandles('disable');
-        cy.edgehandles('drawoff');
-        $('.edge-palette a').blur().removeClass('active');
-    }
-    else
-    {
-        $('.edge-palette a').blur().removeClass('active');
-        $(event.target).toggleClass('active');
-        window.edgeAddingMode = $(event.target).attr('edgeTypeIndex');
-        cy.edgehandles('enable');
-    }
-
-});
-
-
-//About edit drop down handler
-$(".editDropDown li a").click(function(event)
-{
-    event.preventDefault();
-    var dropdownLinkRole = $(event.target).attr('role');
-
-    if (dropdownLinkRole == 'addGene')
-    {
-        var clickedNodeType = $(event.target).text();
-        cy.add(
-            {
-                group: "nodes",
-                data: {type: clickedNodeType.toUpperCase(), name:'New ' + clickedNodeType },
-                renderedPosition:
-                {
-                    x: 100,
-                    y: 100
-                }
-            });
-    }
-    else if (dropdownLinkRole == 'addEdge')
-    {
-        var edgeTypeIndex = $(event.target).attr('edgeTypeIndex');
-        $('.edge-palette a').blur().removeClass('active');
-        $('.edge-palette a[edgeTypeIndex="'+edgeTypeIndex+'"]').addClass('active');
-        window.edgeAddingMode = edgeTypeIndex;
-        cy.edgehandles('enable');
-    }
-    else
-    //delete
-    {
-        cy.elements(':selected').remove();
-    }
-});
-
-
-//About drop down handler
-$(".layoutDropDown li a").click(function(event)
-{
-    event.preventDefault();
-    var dropdownLinkRole = $(event.target).attr('role');
-
-    if (dropdownLinkRole == 'perform_layout')
-    {
-        cy.layout(window.layoutProperties.currentLayoutProperties);
-    }
-    else if (dropdownLinkRole == 'layout_properties')
-    {
-        $('#layoutPropertiesDiv').modal('show');
-    }
-
-});
-
-
-//About drop down handler
-$(".aboutDropDown li a").click(function(event)
-{
-    event.preventDefault();
-    var dropdownLinkRole = $(event.target).attr('role');
-
-    if (dropdownLinkRole == 'about')
-    {
-        $('#aboutModal').modal('show');
-    }
-    else if (dropdownLinkRole == 'edge_legend')
-    {
-        $('#edge_legend_modal').modal('show');
-    }
-    else if (dropdownLinkRole == 'node_legend')
-    {
-        $('#node_legend_modal').modal('show');
-    }
-    else if(dropdownLinkRole == 'help')
-    {
-        $('#quickHelpModal').modal('show');
-    }
-});

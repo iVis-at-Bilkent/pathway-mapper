@@ -34,7 +34,8 @@ var edgeHandleDefaults =
     // NB: i indicates edge index in case of edgeType: 'node'
     return {};
   },
-  start: function( sourceNode ) {
+  start: function( sourceNode )
+  {
     // fired when edgehandles interaction starts (drag on handle)
 
     var type = "NONE";
@@ -59,7 +60,7 @@ var edgeHandleDefaults =
       type = 'BINDS';
     }
 
-    cy.edgehandles('option', 'ghostEdgeType', type)
+    cy.edgehandles('option', 'ghostEdgeType', type);
   },
   complete: function( sourceNode, targetNodes, addedEntities )
   {
@@ -67,9 +68,9 @@ var edgeHandleDefaults =
       cy.remove(addedEntities);
       window.editorActionsManager.addEdge(addedEntities[0].data());
   },
-  stop: function( sourceNode ) {
+  stop: function( sourceNode ) 
+  {
     // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
-
     //TODO refactor this, so terrible for now
     $('.edge-palette a').blur().removeClass('active');
     window.edgeAddingMode == -1;

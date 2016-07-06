@@ -1,6 +1,6 @@
 ;
 
-var BackboneView = require('./Views/BioGeneView.js');
+var BackboneView = require('./BackboneViews/BioGeneView.js');
 
 module.exports = (function($)
 {

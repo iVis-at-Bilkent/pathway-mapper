@@ -13,13 +13,14 @@ module.exports = (function()
 
         this.NODEMAP_NAME = 'nodes';
         this.EDGEMAP_NAME = 'edges';
+        this.LAYOUT_PROPS_NAME = 'layoutProperties';
 
         // Create a new instance of the realtime utility with your client ID.
         this.realtimeUtils = new utils.RealtimeUtils({
             clientId: this.clientId
         });
         this.postFileLoad = postFileLoadCallback;
-    }
+    };
 
     RealTimeManager.prototype.authorize = function(callbackFunction, isModal)
     {
@@ -29,7 +30,7 @@ module.exports = (function()
             callbackFunction(response);
 
         }, isModal);
-    }
+    };
 
     RealTimeManager.prototype.initRealTimeAPI = function()
     {
@@ -44,12 +45,12 @@ module.exports = (function()
         var initFileCallback = function(model)
         {
             self.onFileInitialize(model);
-        }
+        };
 
         var loadFileCallback = function(model)
         {
             self.onFileLoaded(model);
-        }
+        };
 
         if (id)
         {
@@ -66,7 +67,7 @@ module.exports = (function()
                 self.realtimeUtils.load(result.id, loadFileCallback, initFileCallback);
             });
         }
-    }
+    };
 
     // The first time a file is opened, it must be initialized with the
     // document structure.
@@ -76,10 +77,12 @@ module.exports = (function()
 
         var nodeMap = model.createMap();
         var edgeMap = model.createMap();
+        var layoutProperties = model.create(LayoutPropertiesR, {});
 
         root.set(this.NODEMAP_NAME, nodeMap);
         root.set(this.EDGEMAP_NAME, edgeMap);
-    }
+        root.set(this.LAYOUT_PROPS_NAME, layoutProperties);
+    };
 
     /*
         After a file has been initialized and loaded, we can access the
@@ -108,12 +111,12 @@ module.exports = (function()
         var nodeAddRemoveHandler = function(event)
         {
             window.editorActionsManager.realTimeNodeAddRemoveEventCallBack(event);
-        }
+        };
 
         var edgeAddRemoveHandler = function(event)
         {
             window.editorActionsManager.realTimeEdgeAddRemoveEventCallBack(event);
-        }
+        };
 
         //Event listeners for edge and node map
         root.get(this.NODEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddRemoveHandler);
@@ -128,7 +131,7 @@ module.exports = (function()
 
         this.postFileLoad();
         
-    }
+    };
 
     RealTimeManager.prototype.addNewNode = function(nodeData, posData)
     {
@@ -149,7 +152,7 @@ module.exports = (function()
 
         var realTimeGeneratedID = this.getCustomObjId(newNode);
         nodeMap.set(realTimeGeneratedID, newNode);
-    }
+    };
 
     RealTimeManager.prototype.addNewEdge = function(edgeData)
     {
@@ -166,7 +169,7 @@ module.exports = (function()
 
         var realTimeGeneratedID = this.getCustomObjId(newEdge);
         edgeMap.set(realTimeGeneratedID, newEdge);
-    }
+    };
 
     RealTimeManager.prototype.removeElement = function(elementID)
     {
@@ -186,9 +189,9 @@ module.exports = (function()
         else
         {
             throw new Error('Element does not exists in Real Time');
-            return;
+
         }
-    }
+    };
 
     RealTimeManager.prototype.moveElement = function(ele)
     {
@@ -210,10 +213,10 @@ module.exports = (function()
         else
         {
             throw new Error('Element does not exists in nodes !!! ');
-            return;
+
         }
         
-    }
+    };
 
     RealTimeManager.prototype.changeName = function(ele, newName)
     {
@@ -233,10 +236,10 @@ module.exports = (function()
         else
         {
             throw new Error('Element does not exists in nodes !!! ');
-            return;
+
         }
 
-    }
+    };
 
     RealTimeManager.prototype.changeParent = function (rootNode, newParentId, connectedEdges)
     {
@@ -275,7 +278,7 @@ module.exports = (function()
                     type: nodeData.type,
                     x: posData.x,
                     y: posData.y
-                }
+                };
 
                 if(parId)
                 {
@@ -324,19 +327,18 @@ module.exports = (function()
             self.addNewEdge(edgeData);
         });
         
-    }
+    };
 
-    RealTimeManager.prototype.loadGraph = function(nodes, edges)
+    RealTimeManager.prototype.removeAllElements = function()
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
         var nodeMap = root.get(this.NODEMAP_NAME);
         var edgeMap = root.get(this.EDGEMAP_NAME);
-
         var nodeMapKeys = nodeMap.keys();
         var edgeMapKeys = edgeMap.keys();
 
-
+        //TODO Compound operations
         //Remove all real time nodes
         for (var index in nodeMapKeys)
         {
@@ -348,6 +350,17 @@ module.exports = (function()
         {
             this.removeElement(edgeMapKeys[index]);
         }
+    };
+
+
+    RealTimeManager.prototype.loadGraph = function(nodes, edges)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap = root.get(this.NODEMAP_NAME);
+        var edgeMap = root.get(this.EDGEMAP_NAME);
+
+        this.removeAllElements();
 
         //Function that traverses graph tree recursively.
         var that = this;
@@ -406,7 +419,7 @@ module.exports = (function()
             var newEdgeID = this.getCustomObjId(newEdge);
             edgeMap.set(newEdgeID, newEdge);
         }
-    }
+    };
 
     RealTimeManager.prototype.mergeGraph = function(nodes, edges)
     {
@@ -511,41 +524,39 @@ module.exports = (function()
             var newEdgeID = this.getCustomObjId(newEdge);
             edgeMap.set(newEdgeID, newEdge);
         }
-    }
+    };
+
+    RealTimeManager.prototype.updateLayoutProperties = function(newLayoutProperties)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var layoutPropertiesR =  root.get(this.LAYOUT_PROPS_NAME);
+
+        model.beginCompoundOperation();
+        for (var property in newLayoutProperties)
+        {
+            if (newLayoutProperties.hasOwnProperty(property))
+            {
+                layoutPropertiesR[property] = newLayoutProperties[property];
+            }
+        }
+        model.endCompoundOperation();
+    };
 
 
     //Google Real Time's custom object ids are retrieved in this way
     RealTimeManager.prototype.getCustomObjId = function(object)
     {
         return gapi.drive.realtime.custom.getId(object);
-    }
+    };
 
     // You must register the custom object before loading or creating any file that
     // uses this custom object.
     RealTimeManager.prototype.registerTypes = function()
     {
-        var self = this;
-        //Register our custom objects go Google Real Time API
-        gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
-        gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
-        gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
-        gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
-        createNodeAndEdgeFieldsR();
-
-        function registerAttributeChangeHandlersNodeR()
-        {
-            function updateElementHandler(event)
-            {
-                var node = event.currentTarget;
-                window.editorActionsManager.updateElementCallback(node, self.getCustomObjId(node));
-            }
-
-            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateElementHandler);
-        }
-
-        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);
-
-    }
+        //TODO does not need 2 functions remove one
+        this.createRealTimeObjectDefinitions();
+    };
 
     /*
      * Creates graph hierarchy from given flat list of nodes list, nodes list is assumed to have parent-child
@@ -588,25 +599,86 @@ module.exports = (function()
             }
         }
         return tree;
-    }
+    };
 
-    //Custom object Definitions and Registration Part
-    var NodeR = function() {}
-    var EdgeR = function() {}
 
-    var createNodeAndEdgeFieldsR = function() {
-        // NodeR.prototype.nodeID = gapi.drive.realtime.custom.collaborativeField('nodeID');
+
+    RealTimeManager.prototype.createRealTimeObjectDefinitions = function()
+    {
+        //Register our custom objects go Google Real Time API
+        gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
+        gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
+        gapi.drive.realtime.custom.registerType(LayoutPropertiesR, 'LayoutPropertiesR');
+
+        gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
+        gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
+        gapi.drive.realtime.custom.setInitializer(LayoutPropertiesR, LayoutPropertiesRInitializer);
+
+
+        // NodeR;
         NodeR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
         NodeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
         NodeR.prototype.x = gapi.drive.realtime.custom.collaborativeField('x');
         NodeR.prototype.y = gapi.drive.realtime.custom.collaborativeField('y');
         NodeR.prototype.parent = gapi.drive.realtime.custom.collaborativeField('parent');
 
-        // EdgeR.prototype.edgeID = gapi.drive.realtime.custom.collaborativeField('edgeID');
+        // EdgeR;
         EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
         EdgeR.prototype.target = gapi.drive.realtime.custom.collaborativeField('target');
         EdgeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
-    }
+
+        //LayoutPropertiesR
+        LayoutPropertiesR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
+        LayoutPropertiesR.prototype.nodeRepulsion = gapi.drive.realtime.custom.collaborativeField('nodeRepulsion');
+        LayoutPropertiesR.prototype.nodeOverlap = gapi.drive.realtime.custom.collaborativeField('nodeOverlap');
+        LayoutPropertiesR.prototype.idealEdgeLength = gapi.drive.realtime.custom.collaborativeField('idealEdgeLength');
+        LayoutPropertiesR.prototype.edgeElasticity = gapi.drive.realtime.custom.collaborativeField('edgeElasticity');
+        LayoutPropertiesR.prototype.nestingFactor = gapi.drive.realtime.custom.collaborativeField('nestingFactor');
+        LayoutPropertiesR.prototype.gravity = gapi.drive.realtime.custom.collaborativeField('gravity');
+        LayoutPropertiesR.prototype.numIter = gapi.drive.realtime.custom.collaborativeField('numIter');
+        LayoutPropertiesR.prototype.tile = gapi.drive.realtime.custom.collaborativeField('tile');
+        LayoutPropertiesR.prototype.animate = gapi.drive.realtime.custom.collaborativeField('animate');
+        LayoutPropertiesR.prototype.randomize = gapi.drive.realtime.custom.collaborativeField('randomize');
+        LayoutPropertiesR.prototype.gravityRangeCompound = gapi.drive.realtime.custom.collaborativeField('gravityRangeCompound');
+        LayoutPropertiesR.prototype.gravityCompound = gapi.drive.realtime.custom.collaborativeField('gravityCompound');
+        LayoutPropertiesR.prototype.gravityRange = gapi.drive.realtime.custom.collaborativeField('gravityRange');
+
+
+        //Attribute changed handlers !!!
+        var self = this;
+
+        function registerAttributeChangeHandlersNodeR()
+        {
+            function updateElementHandler(event)
+            {
+                var node = event.currentTarget;
+                window.editorActionsManager.updateElementCallback(node, self.getCustomObjId(node));
+            }
+
+            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateElementHandler);
+        }
+
+        function registerAttributeChangeHandlersLayoutPropertiesR()
+        {
+            function updateLayoutPropsHandler(event)
+            {
+                var layoutProps = event.currentTarget;
+                window.editorActionsManager.saveLayoutProperties(layoutProps);
+            }
+
+            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateLayoutPropsHandler);
+        }
+
+        //Register attribute changed handlers
+        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);
+        gapi.drive.realtime.custom.setOnLoaded(LayoutPropertiesR, registerAttributeChangeHandlersLayoutPropertiesR);
+
+    };
+
+    //Custom object Definitions and Registration Part
+    var NodeR = function() {};
+    var EdgeR = function() {};
+    var LayoutPropertiesR = function() {};
 
     var NodeRInitializer = function(params) {
         var model = gapi.drive.realtime.custom.getModel(this);
@@ -615,16 +687,35 @@ module.exports = (function()
         this.parent = params.parent || "undefined";
         this.x = params.x || "undefined";
         this.y = params.y || "undefined";
-    }
+    };
 
-    var EdgeRInitializer = function(params) {
+    var EdgeRInitializer = function(params)
+    {
         var model = gapi.drive.realtime.custom.getModel(this);
-        // this.edgeID = params.edgeID || "undefined";
         this.type = params.type || "undefined";
         this.source = params.source || "undefined";
         this.target = params.target || "undefined";
-    }
+    };
+
+    var LayoutPropertiesRInitializer = function(params)
+    {
+        var model = gapi.drive.realtime.custom.getModel(this);
+        this.name = params.name || 'undefined';
+        this.nodeRepulsion = params.nodeRepulsion || 'undefined';
+        this.nodeOverlap = params.nodeOverlap || 'undefined';
+        this.idealEdgeLength = params.idealEdgeLength || 'undefined';
+        this.edgeElasticity = params.edgeElasticity || 'undefined';
+        this.nestingFactor = params.nestingFactor || 'undefined';
+        this.gravity = params.gravity || 'undefined';
+        this.numIter = params.numIter || 'undefined';
+        this.tile = params.tile || 'undefined';
+        this.animate = params.animate || 'undefined';
+        this.randomize = params.randomize || 'undefined';
+        this.gravityRangeCompound = params.gravityRangeCompound || 'undefined';
+        this.gravityCompound = params.gravityCompound || 'undefined';
+        this.gravityRange = params.gravityRange || 'undefined';
+    };
 
     return RealTimeManager;
 
-})()
+})();

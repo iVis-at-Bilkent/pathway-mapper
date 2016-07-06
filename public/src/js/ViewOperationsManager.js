@@ -1,125 +1,126 @@
 module.exports = (function($)
 {
-  'use strict';
+    'use strict';
 
-  function handleNodeAlignment(param)
-  {
-    var nodes = cy.nodes(':selected');
-    var nodeMap = {};
-
-    nodes.forEach(function(node,index)
+    function handleNodeAlignment(param)
     {
-      if (node.isParent())
-      {
-        nodeMap[node.id()] = node;
-      }
-    });
+        var nodes = cy.nodes(':selected');
+        var nodeMap = {};
 
-
-    if (nodes.length > 0)
-    {
-      var firstSelected = nodes[0];
-      var firstBbox = firstSelected.boundingBox();
-
-      nodes.forEach(function(node,index)
-      {
-        if (index == 0)
+        nodes.forEach(function(node,index)
         {
-          return ;
-        }
+            if (node.isParent())
+            {
+                nodeMap[node.id()] = node;
+            }
+        });
 
-        //If parent of selected node is in selection do nothing !
-        if (nodeMap[node.parent().id()] == null)
+
+        if (nodes.length > 0)
         {
-          var newPosition = calculateNewPosition(param, node, firstBbox)
-          //Recursively traverse leaf nodes
-          moveNode(node,0,0,newPosition);
-        }
+            var firstSelected = nodes[0];
+            var firstBbox = firstSelected.boundingBox();
 
-      });
+            nodes.forEach(function(node,index)
+            {
+                if (index == 0)
+                {
+                    return ;
+                }
+
+                //If parent of selected node is in selection do nothing !
+                if (nodeMap[node.parent().id()] == null)
+                {
+                    var newPosition = calculateNewPosition(param, node, firstBbox)
+                    //Recursively traverse leaf nodes
+                    moveNode(node,0,0,newPosition);
+                }
+
+            });
+        }
     }
-  }
 
-  /*
+    /*
      Determine new position according to the alignment
      node that node.position works on center positions thats why all calculations
      are performed accordingly
-  */
-  function calculateNewPosition(param, node, referenceBbox)
-  {
-      var currentPos = node.position();
-      var currentBbox = node.boundingBox();
-      var newPosition;
-
-      if (param === 'vLeft')
-      {
-        newPosition = {x: referenceBbox.x1+currentBbox.w/2, y: currentPos.y};
-      }
-      else if (param === 'vCen')
-      {
-        newPosition = {x: referenceBbox.x1+referenceBbox.w/2, y: currentPos.y};
-      }
-      else if (param === 'vRight')
-      {
-        newPosition = {x: referenceBbox.x2-currentBbox.w/2, y: currentPos.y};
-      }
-      else if (param === 'hTop')
-      {
-        newPosition = {x: currentPos.x, y: referenceBbox.y1 + currentBbox.h/2};
-      }
-      else if (param === 'hMid')
-      {
-        newPosition = {x: currentPos.x, y: referenceBbox.y1 + referenceBbox.h/2};
-      }
-      else if (param === 'hBot')
-      {
-        newPosition = {x: currentPos.x, y: referenceBbox.y2 - currentBbox.h/2};
-      }
-      else {
-        console.log('Error: wrong alignment name ' + param);
-        return;
-      }
-
-      return newPosition;
-
-  }
-
-  //Recursively move leaf nodes
-  function moveNode(node, dx, dy, newPos)
-  {
-    if (node.isParent())
+     */
+    function calculateNewPosition(param, node, referenceBbox)
     {
-      var childNodes = node.children();
-      var parentBbox = node.boundingBox();
-      childNodes.forEach(function(childNode, index)
-      {
-        var childBbox = childNode.boundingBox();
-        var _dx = -(parentBbox.x1 - childBbox.x1)-parentBbox.w/2+childBbox.w/2;
-        var _dy = -(parentBbox.y1 - childBbox.y1)-parentBbox.h/2+childBbox.h/2;
+        var currentPos = node.position();
+        var currentBbox = node.boundingBox();
+        var newPosition;
 
-        //If further compound node is found, set position accordingly
-        if (childNode.isParent())
+        if (param === 'vLeft')
         {
-          moveNode(childNode, 0, 0, {x: newPos.x+_dx, y:newPos.y+_dy});
+            newPosition = {x: referenceBbox.x1+currentBbox.w/2, y: currentPos.y};
+        }
+        else if (param === 'vCen')
+        {
+            newPosition = {x: referenceBbox.x1+referenceBbox.w/2, y: currentPos.y};
+        }
+        else if (param === 'vRight')
+        {
+            newPosition = {x: referenceBbox.x2-currentBbox.w/2, y: currentPos.y};
+        }
+        else if (param === 'hTop')
+        {
+            newPosition = {x: currentPos.x, y: referenceBbox.y1 + currentBbox.h/2};
+        }
+        else if (param === 'hMid')
+        {
+            newPosition = {x: currentPos.x, y: referenceBbox.y1 + referenceBbox.h/2};
+        }
+        else if (param === 'hBot')
+        {
+            newPosition = {x: currentPos.x, y: referenceBbox.y2 - currentBbox.h/2};
+        }
+        else {
+            console.log('Error: wrong alignment name ' + param);
+            return;
+        }
+
+        return newPosition;
+
+    }
+
+    //Recursively move leaf nodes
+    function moveNode(node, dx, dy, newPos)
+    {
+        if (node.isParent())
+        {
+            var childNodes = node.children();
+            var parentBbox = node.boundingBox();
+            childNodes.forEach(function(childNode, index)
+            {
+                var childBbox = childNode.boundingBox();
+                var _dx = -(parentBbox.x1 - childBbox.x1)-parentBbox.w/2+childBbox.w/2;
+                var _dy = -(parentBbox.y1 - childBbox.y1)-parentBbox.h/2+childBbox.h/2;
+
+                //If further compound node is found, set position accordingly
+                if (childNode.isParent())
+                {
+                    moveNode(childNode, 0, 0, {x: newPos.x+_dx, y:newPos.y+_dy});
+                }
+                else
+                {
+                    moveNode(childNode, _dx, _dy, newPos);
+                }
+
+            });
         }
         else
         {
-          moveNode(childNode, _dx, _dy, newPos);
+            //TODO editor actions manager move
+            node.position({x: newPos.x+dx, y:newPos.y+dy});
         }
-
-      });
     }
-    else
+
+    $(".viewDropdown li a").click(function(event)
     {
-      node.position({x: newPos.x+dx, y:newPos.y+dy});
-    }
-  }
-
-  $(".viewDropdown li a").click(function(event)
-  {
-    event.preventDefault();
-    var dropdownLinkRole = $(event.target).attr('role');
-    handleNodeAlignment(dropdownLinkRole);
-  });
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
+        handleNodeAlignment(dropdownLinkRole);
+    });
 
 })(window.$)

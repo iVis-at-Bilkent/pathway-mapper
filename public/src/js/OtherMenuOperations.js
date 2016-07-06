@@ -1,0 +1,109 @@
+module.exports = (function()
+{
+    'use strict';
+
+    //Selected element on dropdown
+    $(".edge-palette a").click(function(event)
+    {
+        event.preventDefault();
+
+        if ($(event.target).hasClass('active'))
+        {
+            cy.edgehandles('disable');
+            cy.edgehandles('drawoff');
+            $('.edge-palette a').blur().removeClass('active');
+        }
+        else
+        {
+            $('.edge-palette a').blur().removeClass('active');
+            $(event.target).toggleClass('active');
+            window.edgeAddingMode = $(event.target).attr('edgeTypeIndex');
+            cy.edgehandles('enable');
+        }
+
+    });
+
+
+    //Edit drop down handler
+    $(".editDropDown li a").click(function(event)
+    {
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
+
+        if (dropdownLinkRole == 'addGene')
+        {
+            var clickedNodeType = $(event.target).text();
+            var nodeData =
+            {
+                group: "nodes",
+                data: {type: clickedNodeType.toUpperCase(), name:'New ' + clickedNodeType }
+            };
+            var posData =
+            {
+                x: 100,
+                y: 100
+            };
+
+            window.editorActionsManager.addNode(nodeData, posData);
+        }
+        else if (dropdownLinkRole == 'addEdge')
+        {
+            var edgeTypeIndex = $(event.target).attr('edgeTypeIndex');
+            $('.edge-palette a').blur().removeClass('active');
+            $('.edge-palette a[edgeTypeIndex="'+edgeTypeIndex+'"]').addClass('active');
+            window.edgeAddingMode = edgeTypeIndex;
+            cy.edgehandles('enable');
+        }
+        else
+        //delete
+        {
+            var selectedEles = cy.elements(':selected');
+            selectedEles.forEach(function (ele, index)
+            {
+                window.editorActionsManager.removeElement(ele);
+            });
+        }
+    });
+
+
+    //Layout drop down handler
+    $(".layoutDropDown li a").click(function(event)
+    {
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
+
+        if (dropdownLinkRole == 'perform_layout')
+        {
+            window.editorActionsManager.performLayout();
+        }
+        else if (dropdownLinkRole == 'layout_properties')
+        {
+            $('#layoutPropertiesDiv').modal('show');
+        }
+    });
+
+    //About drop down handler
+    $(".aboutDropDown li a").click(function(event)
+    {
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
+
+        if (dropdownLinkRole == 'about')
+        {
+            $('#aboutModal').modal('show');
+        }
+        else if (dropdownLinkRole == 'edge_legend')
+        {
+            $('#edge_legend_modal').modal('show');
+        }
+        else if (dropdownLinkRole == 'node_legend')
+        {
+            $('#node_legend_modal').modal('show');
+        }
+        else if(dropdownLinkRole == 'help')
+        {
+            $('#quickHelpModal').modal('show');
+        }
+    });
+
+})();

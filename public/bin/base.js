@@ -47279,11 +47279,11 @@ var regCose = require("../../lib/js/cose-bilkent/src/index.js");
 var panzoomOpts = require('./PanzoomOptions.js');
 var styleSheet = require('./GraphStyleSheet.js');
 var edgeHandleOpts = require('./EdgeHandlesOptions.js');
-var SaveLoadUtilities = require('./SaveLoadUtility.js');
-var LayoutProperties = require('./Views/LayoutProperties.js');
+var LayoutProperties = require('./BackboneViews/LayoutPropertiesView.js');
 
 //Other requires
 require('./FileOperationsManager.js');
+require('./OtherMenuOperations.js');
 require('./ViewOperationsManager.js');
 
 var QtipManager = require('./QtipManager.js');
@@ -47304,27 +47304,20 @@ module.exports = (function()
     AppManager.prototype.init = function()
     {
         //Initializes cytoscape
-        this.initCytoscape();
+        this.initCyJS();
         //Initialize cytoscape based handlers here
         this.initCyHandlers();
-    }
+    };
 
-    AppManager.prototype.initCytoscape = function()
+    AppManager.prototype.initCyJS = function()
     {
         panzoom( cytoscape, $ );  // register extension
         cxtmenu( cytoscape, $ ); // register extension
         cyqtip( cytoscape, $ ); // register extension
         regCose( cytoscape ); // register extension
-
-
+        
         window.edgeAddingMode = 0;
-        window.layoutProperties = new LayoutProperties();
-
-        var layoutPropertiesContent = window.layoutProperties.render();
-        $('#layoutPropertiesDiv').append(layoutPropertiesContent);
-
         // var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
-
         cy = window.cy = cytoscape({
             container: document.querySelector('#cy'),
             boxSelectionEnabled: true,
@@ -47337,11 +47330,23 @@ module.exports = (function()
         });
 
         //TODO remove window.editorActionsManager from real time module ASAP !
-        window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative, this.realTimeManager, window.cy);
-        this.qtipHandler = new QtipManager(window.cy), this.editorActionsManager;
-        this.cxMenuHandler = new ContextMenuManager(window.cy, this.editorActionsManager);
-        this.nodeAdd = new DragDropNodeAddPlugin(this.editorActionsManager);
+        //Create Manager Classes
+        window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative, 
+            this.realTimeManager, 
+            window.cy);
+        
+        this.qtipManager = new QtipManager(window.cy), this.editorActionsManager;
+        this.cxtMenuManager = new ContextMenuManager(window.cy, this.editorActionsManager);
+        this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editorActionsManager);
 
+        //Render layout properties view after editor actions manager is created !
+        this.layoutPropertiesView = new LayoutProperties({
+            el: $('#layoutPropertiesDiv'),
+            editorActionsManager: this.editorActionsManager
+        }).render();
+
+
+        //Initialize panzoom
         cy.panzoom( panzoomOpts );
 
         //Node Add initialization
@@ -47377,7 +47382,7 @@ module.exports = (function()
         //Edge Handles initialization
         cy.edgehandles( edgeHandleOpts );
 
-    }
+    };
 
     AppManager.prototype.initCyHandlers = function()
     {
@@ -47394,7 +47399,7 @@ module.exports = (function()
                 {
                     //Remove qtips
                     $(".qtip").remove();
-                    that.qtipHandler.addQtipToElements(self);
+                    that.qtipManager.addQtipToElements(self);
                     var api = self.qtip('api');
                     if (api)
                     {
@@ -47431,7 +47436,7 @@ module.exports = (function()
         {
             that.editorActionsManager.moveElements(cy.nodes());
         });
-    }
+    };
 
     //Utility Functions
     //For better handling mouseover node details pop up
@@ -47448,7 +47453,363 @@ module.exports = (function()
     return AppManager;
 
 })();
-},{"../../lib/js/cose-bilkent/src/index.js":51,"./ContextMenuManager.js":53,"./DragDropNodeAddPlugin.js":54,"./EdgeHandlesOptions.js":55,"./EditorActionsManager.js":56,"./FileOperationsManager.js":57,"./GraphStyleSheet.js":58,"./PanzoomOptions.js":59,"./QtipManager.js":60,"./SaveLoadUtility.js":63,"./ViewOperationsManager.js":64,"./Views/LayoutProperties.js":66,"cytoscape":18,"cytoscape-cxtmenu":15,"cytoscape-panzoom":16,"cytoscape-qtip":17}],53:[function(require,module,exports){
+},{"../../lib/js/cose-bilkent/src/index.js":51,"./BackboneViews/LayoutPropertiesView.js":54,"./ContextMenuManager.js":56,"./DragDropNodeAddPlugin.js":57,"./EdgeHandlesOptions.js":58,"./EditorActionsManager.js":59,"./FileOperationsManager.js":60,"./GraphStyleSheet.js":61,"./OtherMenuOperations.js":62,"./PanzoomOptions.js":63,"./QtipManager.js":64,"./ViewOperationsManager.js":68,"cytoscape":18,"cytoscape-cxtmenu":15,"cytoscape-panzoom":16,"cytoscape-qtip":17}],53:[function(require,module,exports){
+/*
+ * Copyright 2013 Memorial-Sloan Kettering Cancer Center.
+ *
+ * This file is part of PCViz.
+ *
+ * PCViz is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * PCViz is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with PCViz. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * Backbone view for the BioGene information.
+ */
+
+
+var BioGeneView = Backbone.View.extend({
+    render: function() {
+        // pass variables in using Underscore.js template
+        var variables = {
+            geneDescription: this.model.geneDescription,
+            geneAliases: this.parseDelimitedInfo(this.model.geneAliases, ":", ",", null),
+            geneDesignations: this.parseDelimitedInfo(this.model.geneDesignations, ":", ",", null),
+            geneLocation: this.model.geneLocation,
+            geneMim: this.model.geneMim,
+            geneId: this.model.geneId,
+            geneUniprotId: this.extractFirstUniprotId(this.model.geneUniprotMapping),
+            geneUniprotLinks: this.generateUniprotLinks(this.model.geneUniprotMapping),
+            geneSummary: this.model.geneSummary
+        };
+
+        // compile the template using underscore
+        var template = _.template( $("#biogene-template").html());
+        template = template(variables);
+
+        // load the compiled HTML into the Backbone "el"
+        this.$el.html(template);
+
+        // format after loading
+        this.format(this.model);
+
+        return this.$el;
+    },
+    format: function()
+    {
+        // hide rows with undefined data
+        if (this.model.geneDescription == undefined)
+            this.$el.find(".biogene-description").hide();
+
+        if (this.model.geneAliases == undefined)
+            this.$el.find(".biogene-aliases").hide();
+
+        if (this.model.geneDesignations == undefined)
+            this.$el.find(".biogene-designations").hide();
+
+        if (this.model.geneChromosome == undefined)
+            this.$el.find(".biogene-chromosome").hide();
+
+        if (this.model.geneLocation == undefined)
+            this.$el.find(".biogene-location").hide();
+
+        if (this.model.geneMim == undefined)
+            this.$el.find(".biogene-mim").hide();
+
+        if (this.model.geneId == undefined)
+            this.$el.find(".biogene-id").hide();
+
+        if (this.model.geneUniprotMapping == undefined)
+            this.$el.find(".biogene-uniprot-links").hide();
+
+        if (this.model.geneSummary == undefined)
+            this.$el.find(".node-details-summary").hide();
+
+        var expanderOpts = {slicePoint: 100,
+            expandPrefix: ' ',
+            expandText: ' (...)',
+            userCollapseText: ' (show less)',
+            moreClass: 'expander-read-more',
+            lessClass: 'expander-read-less',
+            detailClass: 'expander-details',
+            // do not use default effects
+            // (see https://github.com/kswedberg/jquery-expander/issues/46)
+            expandEffect: 'fadeIn',
+            collapseEffect: 'fadeOut'};
+
+        // this.$el.find(".biogene-info .scrollable").mCustomScrollbar({theme:"dark",axis:"y"});
+
+        expanderOpts.slicePoint = 2; // show comma and the space
+        expanderOpts.widow = 0; // hide everything else in any case
+    },
+    generateUniprotLinks: function(mapping) {
+        var formatter = function(id){
+            var tpl = _.template($("#uniprot-link-template").html());
+            tpl = tpl({ id: id });
+            return tpl;
+        };
+
+        if (mapping == undefined || mapping == null)
+        {
+            return "";
+        }
+
+        // remove first id (assuming it is already processed)
+        if (mapping.indexOf(':') < 0)
+        {
+            return "";
+        }
+        else
+        {
+            mapping = mapping.substring(mapping.indexOf(':') + 1);
+            return ', ' + this.parseDelimitedInfo(mapping, ':', ',', formatter);
+        }
+    },
+    extractFirstUniprotId: function(mapping) {
+        if (mapping == undefined || mapping == null)
+        {
+            return "";
+        }
+
+        var parts = mapping.split(":");
+
+        if (parts.length > 0)
+        {
+            return parts[0];
+        }
+
+        return "";
+    },
+    parseDelimitedInfo: function(info, delimiter, separator, formatter) {
+        // do not process undefined or null values
+        if (info == undefined || info == null)
+        {
+            return info;
+        }
+
+        var text = "";
+        var parts = info.split(delimiter);
+
+        if (parts.length > 0)
+        {
+            if (formatter)
+            {
+                text = formatter(parts[0]);
+            }
+            else
+            {
+                text = parts[0];
+            }
+        }
+
+        for (var i=1; i < parts.length; i++)
+        {
+            text += separator + " ";
+
+            if (formatter)
+            {
+                text += formatter(parts[i]);
+            }
+            else
+            {
+                text += parts[i];
+            }
+        }
+
+        return text;
+    }
+});
+
+module.exports = BioGeneView;
+
+},{}],54:[function(require,module,exports){
+var layoutProps = Backbone.View.extend(
+{
+  currentLayoutProperties: null,
+  events:{
+    'click #save-layout': 'saveLayoutHandler',
+    'click #default-layout': 'defaultLayoutHandler'
+  },
+  initialize: function (options)
+  {
+    //A reference to editor actions manager
+    this.editorActionsManagerRef = options.editorActionsManager;
+    this.copyProperties(this.editorActionsManagerRef.layoutProperties);
+
+    //Subscribe this object as observer to the editor actions manager
+    this.editorActionsManagerRef.registerObserver(this);
+  },
+  copyProperties: function (params)
+  {
+    this.currentLayoutProperties = _.clone(params);
+  },
+  render: function ()
+  {
+    var templateProperties = _.clone(this.currentLayoutProperties);
+    this.template = _.template($("#layoutPropertiesTemplate").html());
+    var tplContent = this.template(templateProperties);
+    this.$el.empty();
+    this.$el.append(tplContent);
+    this.delegateEvents();
+    this.$el;
+  },
+  saveLayoutHandler: function(event)
+  {
+    this.currentLayoutProperties.nodeRepulsion = Number(this.$el.find("#node-repulsion").val());
+    this.currentLayoutProperties.nodeOverlap = Number(this.$el.find("#node-overlap").val());
+    this.currentLayoutProperties.idealEdgeLength = Number(this.$el.find("#ideal-edge-length").val());
+    this.currentLayoutProperties.edgeElasticity = Number(this.$el.find("#edge-elasticity").val());
+    this.currentLayoutProperties.nestingFactor = Number(this.$el.find("#nesting-factor").val());
+    this.currentLayoutProperties.gravity = Number(this.$el.find("#gravity").val());
+    this.currentLayoutProperties.numIter = Number(this.$el.find("#num-iter").val());
+    this.currentLayoutProperties.gravityRangeCompound = Number(this.$el.find("#comp-gravRange").val());
+    this.currentLayoutProperties.gravityCompound = Number(this.$el.find("#comp-grav").val());
+    this.currentLayoutProperties.gravityRange = Number(this.$el.find("#grav-range").val());
+
+    this.currentLayoutProperties.tile = this.$el.find("#tile").is(':checked');
+    this.currentLayoutProperties.animate = this.$el.find("#animate").is(':checked');
+    this.currentLayoutProperties.randomize = !(this.$el.find("#randomize").is(':checked'));
+
+    this.editorActionsManagerRef.saveLayoutProperties(this.currentLayoutProperties);
+    this.$el.modal('toggle');
+  },
+  changeParameters: function()
+  {
+    this.$el.find("#node-repulsion").val(this.currentLayoutProperties.nodeRepulsion);
+    this.$el.find("#node-overlap").val(this.currentLayoutProperties.nodeOverlap);
+    this.$el.find("#ideal-edge-length").val(this.currentLayoutProperties.idealEdgeLength);
+    this.$el.find("#edge-elasticity").val(this.currentLayoutProperties.edgeElasticity);
+    this.$el.find("#nesting-factor").val(this.currentLayoutProperties.nestingFactor);
+    this.$el.find("#gravity").val(this.currentLayoutProperties.gravity);
+    this.$el.find("#comp-gravRange").val(this.currentLayoutProperties.gravityRangeCompound);
+    this.$el.find("#comp-grav").val(this.currentLayoutProperties.gravityCompound);
+    this.$el.find("#grav-range").val(this.currentLayoutProperties.gravityRange);
+
+    this.$el.find("#num-iter").val(this.currentLayoutProperties.numIter);
+    this.$el.find("#tile")[0].checked = this.currentLayoutProperties.tile;
+    this.$el.find("#animate")[0].checked = this.currentLayoutProperties.animate;
+    this.$el.find("#randomize")[0].checked = !this.currentLayoutProperties.randomize;
+  },
+  defaultLayoutHandler: function(event)
+  {
+    this.copyProperties(this.editorActionsManagerRef.defaultLayoutProperties);
+    this.changeParameters();
+  },
+  //For observer observable pattern usage !!!!
+  notify: function()
+  {
+    this.copyProperties(this.editorActionsManagerRef.layoutProperties);
+    this.changeParameters();
+  }
+});
+
+module.exports = layoutProps;
+
+},{}],55:[function(require,module,exports){
+var WelcomePageView = Backbone.View.extend(
+    {
+        cachedTpl: _.template($("#welcomePageTemplate").html()),
+        events:
+        {
+            'click #localUsage': 'localUsageHandler',
+            'click #collaborativeUsage': 'collaborativeUsageHandler',
+            'click .continueButton': 'continueButtonHandler'
+        },
+        initialize: function (options)
+        {
+            this.localUsageCallback = options.localUsageCallback;
+            this.collaborativeUsageCallback = options.collaborativeUsageCallback;
+
+            this.modelSelectionMap =
+            {
+                NONE: -1,
+                LOCAL: 0,
+                COLLAB: 1
+            };
+
+            this.modelSelection = this.modelSelectionMap.NONE;
+
+        },
+        render: function ()
+        {
+            this.$el.empty();
+            this.$el.append(this.cachedTpl());
+
+            this.$el.find('#localUsage').popover({
+                container: 'body',
+                content: 'Create a pathway individually',
+                placement: 'left',
+                delay: 100,
+                trigger: 'hover'
+            });
+
+            this.$el.find('#collaborativeUsage').popover({
+                container: 'body',
+                html : true,
+                content: function(){
+                    return $('#collaborativePopoverContent').html();
+                },
+                placement: 'right',
+                delay: 300,
+                trigger: 'hover'
+            });
+
+        },
+        localUsageHandler: function(event)
+        {
+            this.$el.find('.welcomePageCheckable').removeClass('active');
+            $(event.currentTarget).addClass('active');
+            this.$el.find('.continueRow').css('visibility', 'visible');
+            this.modelSelection = this.modelSelectionMap.LOCAL;
+        },
+        collaborativeUsageHandler: function(event)
+        {
+            this.$el.find('.welcomePageCheckable').removeClass('active');
+            $(event.currentTarget).addClass('active');
+            this.$el.find('.continueRow').css('visibility', 'visible');
+            this.modelSelection = this.modelSelectionMap.COLLAB;
+        },
+        continueButtonHandler: function(event)
+        {
+            var self = this;
+            this.$el.find('.welcomePageLoading').show();
+            function postHandler()
+            {
+                self.postSuccess();
+            }
+
+            if(this.modelSelection != this.modelSelectionMap.NONE)
+            {
+                if(this.modelSelection == this.modelSelectionMap.LOCAL)
+                {
+                    this.localUsageCallback(postHandler);
+                }
+                else if(this.modelSelection == this.modelSelectionMap.COLLAB)
+                {
+                    this.collaborativeUsageCallback(postHandler);
+                }
+            }
+        },
+        postSuccess: function()
+        {
+            this.$el.empty();
+            this.$el.fadeOut(800);
+        }
+    });
+
+module.exports = WelcomePageView;
+
+},{}],56:[function(require,module,exports){
 ;
 module.exports = (function()
 {
@@ -47474,7 +47835,7 @@ module.exports = (function()
           content: 'Perform Layout',
           select: function(ele)
           {
-            cy.layout(window.layoutProperties.currentLayoutProperties);
+            window.editorActionsManager.performLayout();
           }
         },
       ]
@@ -47617,7 +47978,7 @@ module.exports = (function()
 
 }());
 
-},{}],54:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 ;
 module.exports = (function($, $$)
 {
@@ -47787,7 +48148,7 @@ module.exports = (function($, $$)
 
 })(window.$, window.cytoscape);
 
-},{}],55:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 ;
 // the default values of each option are outlined below:
 var edgeHandleDefaults =
@@ -47824,7 +48185,8 @@ var edgeHandleDefaults =
     // NB: i indicates edge index in case of edgeType: 'node'
     return {};
   },
-  start: function( sourceNode ) {
+  start: function( sourceNode )
+  {
     // fired when edgehandles interaction starts (drag on handle)
 
     var type = "NONE";
@@ -47849,7 +48211,7 @@ var edgeHandleDefaults =
       type = 'BINDS';
     }
 
-    cy.edgehandles('option', 'ghostEdgeType', type)
+    cy.edgehandles('option', 'ghostEdgeType', type);
   },
   complete: function( sourceNode, targetNodes, addedEntities )
   {
@@ -47857,9 +48219,9 @@ var edgeHandleDefaults =
       cy.remove(addedEntities);
       window.editorActionsManager.addEdge(addedEntities[0].data());
   },
-  stop: function( sourceNode ) {
+  stop: function( sourceNode ) 
+  {
     // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
-
     //TODO refactor this, so terrible for now
     $('.edge-palette a').blur().removeClass('active');
     window.edgeAddingMode == -1;
@@ -47870,17 +48232,75 @@ var edgeHandleDefaults =
 
 module.exports = edgeHandleDefaults;
 
-},{}],56:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 module.exports = (function()
 {
     "use strict";
     var EditorActionsManager = function(isCollaborative, realtimeManager, cyInst)
     {
+        //Set cy instance and set real time manager reference if collaborative mode
         this.cy = cyInst;
-        // this.realTimeDoc = realTimeDoc;
         this.isCollaborative = isCollaborative;
         if(this.isCollaborative && realtimeManager)
             this.realTimeManager = realtimeManager;
+
+        this.defaultLayoutProperties =
+        {
+            name: 'cose-bilkent',
+            nodeRepulsion: 4500,
+            nodeOverlap: 10,
+            idealEdgeLength: 50,
+            edgeElasticity: 0.45,
+            nestingFactor: 0.1,
+            gravity: 0.15,
+            numIter: 2500,
+            tile: true,
+            animate: "end",
+            randomize: true,
+            gravityRangeCompound: 1.5,
+            // Gravity force (constant) for compounds
+            gravityCompound: 1.0,
+            // Gravity range (constant)
+            gravityRange: 1.5
+        };
+
+        this.layoutProperties = _.clone(this.defaultLayoutProperties);
+        this.observers = [];
+    };
+
+    //Simple observer-observable pattern for views!!!!!
+    EditorActionsManager.prototype.registerObserver = function(observer)
+    {
+        this.observers.push(observer);
+    };
+
+    EditorActionsManager.prototype.notifyObservers = function()
+    {
+        for (var i in this.observers)
+        {
+            var observer = this.observers[i];
+            observer.notify();
+        }
+    };
+    
+    //Layout properties related functions
+    EditorActionsManager.prototype.saveLayoutProperties = function(newLayoutProps)
+    {
+        if(this.isCollaborative)
+        {
+            this.layoutProperties = _.clone(newLayoutProps);
+            //Notify observers on each collaborator
+            self.editorActionsManager.notifyObservers();
+        }
+        else
+        {
+            this.layoutProperties = _.clone(newLayoutProps);
+        }
+    };
+
+    EditorActionsManager.prototype.performLayout = function()
+    {
+        cy.layout(this.layoutProperties);
     };
 
     //Node Related Functions
@@ -47894,7 +48314,7 @@ module.exports = (function()
         {
             this.addNodetoCy(nodeData,posData);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addNodes = function(nodes)
     {
@@ -47902,7 +48322,7 @@ module.exports = (function()
         {
             this.addNode(nodes[i].data, nodes[i].position);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addNodesCy = function(nodes)
     {
@@ -47910,7 +48330,7 @@ module.exports = (function()
         {
             this.addNodetoCy(nodes[i].data, nodes[i].position);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)
     {
@@ -47936,7 +48356,7 @@ module.exports = (function()
 
         this.cy.add(newNode);
         this.cy.nodes().updateCompoundBounds();
-    }
+    };
 
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
     {
@@ -47958,7 +48378,7 @@ module.exports = (function()
         {
             this.addNewNodeLocally(node)
         }
-    }
+    };
 
     EditorActionsManager.prototype.addNewNodesLocally = function(realTimeNodeArray)
     {
@@ -47978,7 +48398,7 @@ module.exports = (function()
                     name: realTimeNode.name,
                     parent: realTimeNode.parent
                 }
-            }
+            };
 
             if (nodeData.data.parent === undefined )
             {
@@ -47998,7 +48418,7 @@ module.exports = (function()
         }
         this.cy.add(nodeList);
         this.cy.nodes().updateCompoundBounds();
-    }
+    };
 
     EditorActionsManager.prototype.addNewNodeLocally = function(realtimeNode)
     {
@@ -48020,12 +48440,12 @@ module.exports = (function()
             this.addNodetoCy(nodeData);
         }
         this.cy.nodes().updateCompoundBounds();
-    }
+    };
 
     EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
     {
         this.realTimeManager.addNewNode(nodeData,posData);
-    }
+    };
 
     //Edge related functions
     EditorActionsManager.prototype.addEdge = function(edgeData)
@@ -48038,7 +48458,7 @@ module.exports = (function()
         {
             this.addNewEdgetoCy(edgeData);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addEdges = function(edges)
     {
@@ -48046,7 +48466,7 @@ module.exports = (function()
         {
             this.addEdge(edges[i].data);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addEdgesCy = function(edges)
     {
@@ -48054,12 +48474,12 @@ module.exports = (function()
         {
             this.addNewEdgetoCy(edges[i].data);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addNewEdgeRealTime = function(edgeData)
     {
         this.realTimeManager.addNewEdge(edgeData);
-    }
+    };
 
     EditorActionsManager.prototype.addNewEdgetoCy = function(edgeData)
     {
@@ -48068,7 +48488,7 @@ module.exports = (function()
                 group: "edges",
                 data: edgeData
             });
-    }
+    };
 
     EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(event)
     {
@@ -48082,7 +48502,7 @@ module.exports = (function()
             var edgeID = this.realTimeManager.getCustomObjId(edge);
             //Remove element from existing graph
             var ele = event.newValue;
-            var cyEle = this.cy.$("#" + edgeID)
+            var cyEle = this.cy.$("#" + edgeID);
             this.removeElementCy(cyEle);
         }
         //Addition Operation
@@ -48090,7 +48510,7 @@ module.exports = (function()
         {
             this.addNewEdgeLocally(edge);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addNewEdgesLocally = function(realTimeEdgeArray)
     {
@@ -48115,7 +48535,7 @@ module.exports = (function()
             edgeList.push(edgeData);
         }
         this.cy.add(edgeList);
-    }
+    };
 
     EditorActionsManager.prototype.addNewEdgeLocally = function(edge)
     {
@@ -48128,7 +48548,7 @@ module.exports = (function()
             target: edge.target
         };
         this.addNewEdgetoCy(edgeData);
-    }
+    };
 
     //Removal functions
     EditorActionsManager.prototype.removeElement = function(ele)
@@ -48153,17 +48573,17 @@ module.exports = (function()
         {
             this.removeElementCy(ele);
         }
-    }
+    };
 
     EditorActionsManager.prototype.removeElementCy = function(ele)
     {
         this.cy.remove(ele);
-    }
+    };
 
     EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
     {
         this.realTimeManager.removeElement(ele.id());
-    }
+    };
     
     EditorActionsManager.prototype.changeParents = function(eles, newParentId)
     {
@@ -48175,7 +48595,7 @@ module.exports = (function()
         {
             this.changeParentCy(eles, newParentId);
         }
-    }
+    };
 
     EditorActionsManager.prototype.changeParentCy = function(eles, newParentId)
     {
@@ -48224,7 +48644,7 @@ module.exports = (function()
 
         self.cy.add(removedNodes);
         self.cy.nodes().updateCompoundBounds();
-    }
+    };
     
     EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId) 
     {
@@ -48257,7 +48677,7 @@ module.exports = (function()
         var NodeObj = function(nodeObj){
             this.nodeRef  = nodeObj;
             this.children = [];
-        }
+        };
 
 
         //TODO need to pass this to function somehow
@@ -48291,7 +48711,7 @@ module.exports = (function()
         traverseNodes(topMostNodes, rootNodeR);
         this.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
         console.log(rootNodeR);
-    }
+    };
 
     EditorActionsManager.prototype.moveElements = function(ele)
     {
@@ -48304,7 +48724,7 @@ module.exports = (function()
                 classRef.realTimeManager.moveElement(ele);
             });
         }
-    }
+    };
 
     EditorActionsManager.prototype.mergeGraph = function(nodes, edges)
     {
@@ -48318,7 +48738,7 @@ module.exports = (function()
             //Local usage file load
             this.mergeGraphCy(nodes,edges);
         }
-    }
+    };
 
     EditorActionsManager.prototype.mergeGraphCy = function(nodes, edges)
     {
@@ -48391,7 +48811,7 @@ module.exports = (function()
         
         cy.add(edgesToBeAdded);
         cy.fit(50);
-    }
+    };
 
     EditorActionsManager.prototype.loadFile = function(nodes, edges)
     {
@@ -48405,7 +48825,7 @@ module.exports = (function()
             //Local usage file load
             this.loadFileCy(nodes,edges);
         }
-    }
+    };
 
     EditorActionsManager.prototype.loadFileCy = function(nodes, edges)
     {
@@ -48414,12 +48834,24 @@ module.exports = (function()
         this.addNodesCy(nodes);
         this.addEdgesCy(edges);
         cy.fit(50);
-    }
+    };
 
     EditorActionsManager.prototype.loadfileRealTime = function(nodes, edges)
     {
         this.realTimeManager.loadGraph(nodes,edges);
-    }
+    };
+
+    EditorActionsManager.prototype.removeAllElements = function()
+    {
+        if (this.isCollaborative)
+        {
+            this.realTimeManager.removeAllElements();
+        }
+        else
+        {
+            cy.remove(cy.elements());
+        }
+    };
 
 
     EditorActionsManager.prototype.changeName = function(ele, newName)
@@ -48432,13 +48864,13 @@ module.exports = (function()
         {
             this.changeNameCy(ele, newName);
         }
-    }
+    };
 
     EditorActionsManager.prototype.changeNameCy = function(ele, newName)
     {
         ele.data('name', newName);
         ele.css('content', newName);
-    }
+    };
     
     EditorActionsManager.prototype.updateElementCallback = function(ele, id)
     {
@@ -48447,7 +48879,7 @@ module.exports = (function()
         var cyEle = this.cy.$("#" + nodeID);
         cyEle.position({x: ele.x, y: ele.y});
         this.changeNameCy(cyEle, ele.name);
-    }
+    };
 
 
     //Utility Functions
@@ -48458,7 +48890,7 @@ module.exports = (function()
 
 })();
 
-},{}],57:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 var SaveLoadUtilities = require('./SaveLoadUtility.js');
 
 
@@ -48468,215 +48900,216 @@ module.exports = (function($)
 
     function focusOutHandler(event)
     {
-      var inputFileName = $(".fileNameContent input");
-      var oldFileName = inputFileName.attr('oldFileName');
-      var parentEl = inputFileName.parent();
-      parentEl.empty();
-      var newFileName = $('<span>'+oldFileName+'</span>');
-      newFileName.click(fileNameClickFunction);
-      parentEl.append(newFileName);
+        var inputFileName = $(".fileNameContent input");
+        var oldFileName = inputFileName.attr('oldFileName');
+        var parentEl = inputFileName.parent();
+        parentEl.empty();
+        var newFileName = $('<span>'+oldFileName+'</span>');
+        newFileName.click(fileNameClickFunction);
+        parentEl.append(newFileName);
     }
 
     function fileNameClickFunction(event)
     {
-      event.preventDefault();
-      switchToInputView();
+        event.preventDefault();
+        switchToInputView();
     }
 
     function fileNameEditFunction(event)
     {
-      var key = event.charCode ? event.charCode : event.keyCode ? event.keyCode : 0;
-      //Enter key
-      if(key == 13)
-      {
-          event.preventDefault();
-          switchToFileNameView();
-      }
+        var key = event.charCode ? event.charCode : event.keyCode ? event.keyCode : 0;
+        //Enter key
+        if(key == 13)
+        {
+            event.preventDefault();
+            switchToFileNameView();
+        }
     }
 
     function switchToFileNameView()
     {
-      var el = $(".fileNameContent input");
-      var parentEl = el.parent();
-      var fileName = el.val();
-      parentEl.empty();
-      var newFileName = $('<span>'+fileName+'</span>');
-      newFileName.click(fileNameClickFunction);
-      parentEl.append(newFileName);
+        var el = $(".fileNameContent input");
+        var parentEl = el.parent();
+        var fileName = el.val();
+        parentEl.empty();
+        var newFileName = $('<span>'+fileName+'</span>');
+        newFileName.click(fileNameClickFunction);
+        parentEl.append(newFileName);
     }
 
     function switchToInputView()
     {
-      var el = $(".fileNameContent span");
-      var fileName = el.text();
-      var parentEl = el.parent();
-      parentEl.empty();
-      var inputField = $('<input class="form-control" type="text" oldFileName="'+fileName+'"/>');
-      inputField.val(fileName);
-      inputField.keydown(fileNameEditFunction);
-      inputField.focusout(focusOutHandler);
-      parentEl.append(inputField);
-      inputField.focus();
+        var el = $(".fileNameContent span");
+        var fileName = el.text();
+        var parentEl = el.parent();
+        parentEl.empty();
+        var inputField = $('<input class="form-control" type="text" oldFileName="'+fileName+'"/>');
+        inputField.val(fileName);
+        inputField.keydown(fileNameEditFunction);
+        inputField.focusout(focusOutHandler);
+        parentEl.append(inputField);
+        inputField.focus();
     }
 
     // see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
     function b64toBlob(b64Data, contentType, sliceSize) {
-      contentType = contentType || '';
-      sliceSize = sliceSize || 512;
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
 
-      var byteCharacters = atob(b64Data);
-      var byteArrays = [];
+        var byteCharacters = atob(b64Data);
+        var byteArrays = [];
 
-      for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-        var slice = byteCharacters.slice(offset, offset + sliceSize);
+        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            var slice = byteCharacters.slice(offset, offset + sliceSize);
 
-        var byteNumbers = new Array(slice.length);
-        for (var i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i);
+            var byteNumbers = new Array(slice.length);
+            for (var i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            var byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
         }
 
-        var byteArray = new Uint8Array(byteNumbers);
-
-        byteArrays.push(byteArray);
-      }
-
-      var blob = new Blob(byteArrays, {type: contentType});
-      return blob;
+        var blob = new Blob(byteArrays, {type: contentType});
+        return blob;
     }
 
     function saveAsJPEG()
     {
-      // var fileName = getFileName();
-      var graphData = cy.jpeg();
-      // this is to remove the beginning of the pngContent: data:img/png;base64,
-      var b64data = graphData.substr(graphData.indexOf(",") + 1);
-      var imageData = b64toBlob(b64data, "image/jpeg");
-      var blob = new Blob([imageData]);
-      saveAs(blob, "pathway.jpg");
+        // var fileName = getFileName();
+        var graphData = cy.jpeg();
+        // this is to remove the beginning of the pngContent: data:img/png;base64,
+        var b64data = graphData.substr(graphData.indexOf(",") + 1);
+        var imageData = b64toBlob(b64data, "image/jpeg");
+        var blob = new Blob([imageData]);
+        saveAs(blob, "pathway.jpg");
     }
 
     function saveAsPNG()
     {
-      // var fileName = getFileName();
-      var graphData = cy.png();
-      // this is to remove the beginning of the pngContent: data:img/png;base64,
-      var b64data = graphData.substr(graphData.indexOf(",") + 1);
-      var imageData = b64toBlob(b64data, "image/png");
-      var blob = new Blob([imageData]);
-      saveAs(blob, "pathway.png");
+        // var fileName = getFileName();
+        var graphData = cy.png();
+        // this is to remove the beginning of the pngContent: data:img/png;base64,
+        var b64data = graphData.substr(graphData.indexOf(",") + 1);
+        var imageData = b64toBlob(b64data, "image/png");
+        var blob = new Blob([imageData]);
+        saveAs(blob, "pathway.png");
     }
 
     function saveGraph(){
-      var fileName = getFileName();
-      var graphJSON = cy.json();
-      var returnString = SaveLoadUtilities.exportGraph(graphJSON);
-      var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
-      saveAs(blob, fileName);
+        var fileName = getFileName();
+        var graphJSON = cy.json();
+        var returnString = SaveLoadUtilities.exportGraph(graphJSON);
+        var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, fileName);
     }
 
 
     function getFileName()
     {
-      return $(".fileNameContent span").text();
+        return $(".fileNameContent span").text();
     }
 
     function changeFileName(text)
     {
-       $(".fileNameContent span").text(text);
+        $(".fileNameContent span").text(text);
     }
 
     function resetFileName()
     {
-       $(".fileNameContent span").text('pathway.txt');
+        $(".fileNameContent span").text('pathway.txt');
     }
 
     //Jquery handles
     $('#saveGraphBtn').on('click', function(evt)
     {
-      saveGraph();
+        saveGraph();
     });
 
     $('#loadGraphBtn').on('click', function(evt)
     {
-      $('#fileinput').attr('value', "");
-      $('#fileinput').trigger('click');
+        $('#fileinput').attr('value', "");
+        $('#fileinput').trigger('click');
     });
 
     $('#fileinput').on('change', function()
     {
 
-      var file = this.files[0];
-      // Create a new FormData object.
-      var formData = new FormData();
-      formData.append('graphFile', file);
-      var request = new XMLHttpRequest();
-      request.onreadystatechange = function ()
-      {
-        if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+        var file = this.files[0];
+        // Create a new FormData object.
+        var formData = new FormData();
+        formData.append('graphFile', file);
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function ()
         {
-            var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-            window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
-            changeFileName(file.name);
-        }
-      };
-      request.open("POST", "/loadGraph");
-      request.send(formData);
-      $('#fileinput').val(null);
+            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+            {
+                var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+                window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
+                changeFileName(file.name);
+            }
+        };
+        request.open("POST", "/loadGraph");
+        request.send(formData);
+        $('#fileinput').val(null);
 
     });
 
     $('#mergeInput').on('change', function()
     {
-      var file = this.files[0];
-      // Create a new FormData object.
-      var formData = new FormData();
-      formData.append('graphFile', file);
-      var request = new XMLHttpRequest();
-      request.onreadystatechange = function ()
-      {
-        if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+        var file = this.files[0];
+        // Create a new FormData object.
+        var formData = new FormData();
+        formData.append('graphFile', file);
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function ()
         {
-          var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-          window.editorActionsManager.mergeGraph(allEles.nodes,allEles.edges);
-          //TODO change file name maybe ?
-        }
-      };
-      request.open("POST", "/loadGraph");
-      request.send(formData);
-      $('#mergeInput').val(null);
+            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+            {
+                var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+                window.editorActionsManager.mergeGraph(allEles.nodes,allEles.edges);
+                //TODO change file name maybe ?
+            }
+        };
+        request.open("POST", "/loadGraph");
+        request.send(formData);
+        $('#mergeInput').val(null);
     });
 
     //File drop down handler
     $(".fileDropDown li a").click(function(event)
     {
-      event.preventDefault();
-      var dropdownLinkRole = $(event.target).attr('role');
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
 
-      if (dropdownLinkRole == 'save')
-      {
-        saveGraph();
-      }
-      else if (dropdownLinkRole == 'load')
-      {
-        $('#fileinput').trigger('click');
-      }
-      else if (dropdownLinkRole == 'new')
-      {
-        cy.remove(cy.elements());
-        resetFileName();
-      }
-      else if (dropdownLinkRole == 'merge')
-      {
-        $('#mergeInput').trigger('click');
-      }
-      else if (dropdownLinkRole == 'jpeg')
-      {
-        saveAsJPEG();
-      }
-      else if (dropdownLinkRole == 'png')
-      {
-        saveAsPNG();
-      }
+        if (dropdownLinkRole == 'save')
+        {
+            saveGraph();
+        }
+        else if (dropdownLinkRole == 'load')
+        {
+            $('#fileinput').trigger('click');
+        }
+        else if (dropdownLinkRole == 'new')
+        {
+            window.editorActionsManager.removeAllElements();
+            //TODO change filename in collaborative mode ??
+            resetFileName();
+        }
+        else if (dropdownLinkRole == 'merge')
+        {
+            $('#mergeInput').trigger('click');
+        }
+        else if (dropdownLinkRole == 'jpeg')
+        {
+            saveAsJPEG();
+        }
+        else if (dropdownLinkRole == 'png')
+        {
+            saveAsPNG();
+        }
     });
 
     //Initial file name click handler
@@ -48684,14 +49117,16 @@ module.exports = (function($)
 
 })(window.$)
 
-},{"./SaveLoadUtility.js":63}],58:[function(require,module,exports){
-var styleSheet = [
+},{"./SaveLoadUtility.js":67}],61:[function(require,module,exports){
+module.exports = (function()
 {
+  var styleSheet = [
+    {
       selector: 'node',
       style:
       {
         'content': function(ele){
-            return contentFunction(ele);
+          return contentFunction(ele);
         },
         'text-valign': function(ele)
         {
@@ -48705,11 +49140,11 @@ var styleSheet = [
         'text-margin-y' : 50,
         'shape': function(ele)
         {
-            return parentNodeShapeFunc( ele );
+          return parentNodeShapeFunc( ele );
         },
         'border-width': function(ele)
         {
-            return borderWidthFunction( ele );
+          return borderWidthFunction( ele );
         },
         'border-color': function(ele)
         {
@@ -48719,34 +49154,34 @@ var styleSheet = [
       }
     },
     {
-        selector: 'node:parent',
-        style:
+      selector: 'node:parent',
+      style:
+      {
+        'shape': function(ele)
         {
-          'shape': function(ele)
-          {
-              return parentNodeShapeFunc( ele );
-          },
-          'text-valign': function(ele)
-          {
-            return 'bottom';
-          },
-          'padding-left': function(ele){ return compoundPaddingFunction(ele); },
-          'padding-right': function(ele){ return compoundPaddingFunction(ele); },
-          'padding-bottom': function(ele){ return compoundPaddingFunction(ele); },
-          'padding-top':  function(ele){ return compoundPaddingFunction(ele); },
-          'background-opacity': 0.5,
-          'border-width': function(ele)
-          {
-              return parentBorderWidthFunction( ele );
-          },
-          'border-color': function(ele)
-          {
-            return nodeBorderColorFunction(ele);
-          },
-          'background-color': function(ele){
-            return nodeBackgroundColorFunction(ele);
-          }
+          return parentNodeShapeFunc( ele );
+        },
+        'text-valign': function(ele)
+        {
+          return 'bottom';
+        },
+        'padding-left': function(ele){ return compoundPaddingFunction(ele); },
+        'padding-right': function(ele){ return compoundPaddingFunction(ele); },
+        'padding-bottom': function(ele){ return compoundPaddingFunction(ele); },
+        'padding-top':  function(ele){ return compoundPaddingFunction(ele); },
+        'background-opacity': 0.5,
+        'border-width': function(ele)
+        {
+          return parentBorderWidthFunction( ele );
+        },
+        'border-color': function(ele)
+        {
+          return nodeBorderColorFunction(ele);
+        },
+        'background-color': function(ele){
+          return nodeBackgroundColorFunction(ele);
         }
+      }
     },
     {
       selector: 'edge',
@@ -48755,147 +49190,147 @@ var styleSheet = [
         'curve-style': 'bezier',
         'target-arrow-shape': function( ele )
         {
-            return edgeTargetArrowTypeHandler(ele);
+          return edgeTargetArrowTypeHandler(ele);
         },
         'width': 1,
         'line-color': function( ele )
         {
-            return edgeColorHandler(ele);
+          return edgeColorHandler(ele);
         },
         'target-arrow-color': function( ele )
         {
-            return edgeColorHandler(ele);
+          return edgeColorHandler(ele);
         },
         'line-style': function(ele)
         {
-            return edgeLineTypeHandler(ele);
+          return edgeLineTypeHandler(ele);
         },
         'opacity': 1
       }
-  },
-  // {
-  //     selector: 'edge.segments',
-  //     style:
-  //     {
-  //       'curve-style': 'segments',
-  //       'segment-distances': '0 100',
-  //       'segment-weights': '0 1'
-  //     }
-  // },
-  {
-    selector: ':selected',
-    style:
+    },
+    // {
+    //     selector: 'edge.segments',
+    //     style:
+    //     {
+    //       'curve-style': 'segments',
+    //       'segment-distances': '0 100',
+    //       'segment-weights': '0 1'
+    //     }
+    // },
     {
-      'shadow-color' : '#f1c40f',
-      'shadow-opacity': 1.0
+      selector: ':selected',
+      style:
+      {
+        'shadow-color' : '#f1c40f',
+        'shadow-opacity': 1.0
+      }
+    }
+  ];
+
+
+  var compoundPaddingFunction = function( ele )
+  {
+    switch (ele._private.data['type'])
+    {
+      case "FAMILY": return 5; break;
+      case "COMPARTMENT": return 10; break;
+      case "PROCESS": return 10; break;
+      default: return 5; break;
     }
   }
-];
 
-
-var compoundPaddingFunction = function( ele )
-{
-  switch (ele._private.data['type'])
+  var contentFunction = function( ele )
   {
-    case "FAMILY": return 5; break;
-    case "COMPARTMENT": return 10; break;
-    case "PROCESS": return 10; break;
-    default: return 5; break;
+    if (ele._private.data.name) {
+      return ele._private.data.name;
+    }
+    return 'newNode';
   }
-}
 
-var contentFunction = function( ele )
-{
-  if (ele._private.data.name) {
-    return ele._private.data.name;
-  }
-  return 'newNode';
-}
-
-var vTextPositionFunction = function( ele )
-{
-  switch (ele._private.data['type'])
+  var vTextPositionFunction = function( ele )
   {
-    case "GENE": return 'center'; break;
-    case "FAMILY": return 'top'; break;
-    case "COMPARTMENT": return 'top'; break;
-    default: return 'center'; break;
+    switch (ele._private.data['type'])
+    {
+      case "GENE": return 'center'; break;
+      case "FAMILY": return 'top'; break;
+      case "COMPARTMENT": return 'top'; break;
+      default: return 'center'; break;
+    }
   }
-}
 
-var borderWidthFunction = function( ele )
-{
-  switch (ele._private.data['type'])
+  var borderWidthFunction = function( ele )
   {
-    case "GENE": return 0.5; break;
-    case "PROCESS": return 0; break;
-    case "FAMILY": return 1.0; break;
-    case "COMPARTMENT": return 2; break;
-    default: return 0.5; break;
+    switch (ele._private.data['type'])
+    {
+      case "GENE": return 0.5; break;
+      case "PROCESS": return 0; break;
+      case "FAMILY": return 1.0; break;
+      case "COMPARTMENT": return 2; break;
+      default: return 0.5; break;
+    }
   }
-}
 
-var parentBorderWidthFunction = function( ele )
-{
-  switch (ele._private.data['type'])
+  var parentBorderWidthFunction = function( ele )
   {
-    case "GENE": return 0.5; break;
-    case "PROCESS": return 1.0; break;
-    case "FAMILY": return 1.0; break;
-    case "COMPARTMENT": return 2; break;
-    default: return 0.5; break;
+    switch (ele._private.data['type'])
+    {
+      case "GENE": return 0.5; break;
+      case "PROCESS": return 1.0; break;
+      case "FAMILY": return 1.0; break;
+      case "COMPARTMENT": return 2; break;
+      default: return 0.5; break;
+    }
   }
-}
 
-var parentNodeShapeFunc = function( ele )
-{
-  switch (ele._private.data['type'])
+  var parentNodeShapeFunc = function( ele )
   {
-    case "GENE": return "roundrectangle"; break;
-    case "PROCESS": return "roundrectangle"; break;
-    case "FAMILY": return "rectangle"; break;
-    case "COMPARTMENT": return "roundrectangle"; break;
-    default: return "roundrectangle"; break;
+    switch (ele._private.data['type'])
+    {
+      case "GENE": return "roundrectangle"; break;
+      case "PROCESS": return "roundrectangle"; break;
+      case "FAMILY": return "rectangle"; break;
+      case "COMPARTMENT": return "roundrectangle"; break;
+      default: return "roundrectangle"; break;
+    }
   }
-}
 
-var nodeBackgroundColorFunction = function( ele )
-{
-  switch (ele._private.data['type'])
+  var nodeBackgroundColorFunction = function( ele )
   {
-    case "GENE": return "#fff"; break;
-    case "FAMILY": return "#CCCCCC"; break;
-    case "COMPARTMENT": return "#fff"; break;
-    default: return "#fff"; break;
+    switch (ele._private.data['type'])
+    {
+      case "GENE": return "#fff"; break;
+      case "FAMILY": return "#CCCCCC"; break;
+      case "COMPARTMENT": return "#fff"; break;
+      default: return "#fff"; break;
+    }
   }
-}
 
-var nodeBorderColorFunction = function( ele )
-{
-  switch (ele._private.data['type'])
+  var nodeBorderColorFunction = function( ele )
   {
-    case "GENE": return "#000000"; break;
-    case "FAMILY": return "#CCCCCC"; break;
-    case "COMPARTMENT": return "#000000"; break;
-    default: return "#000000"; break;
+    switch (ele._private.data['type'])
+    {
+      case "GENE": return "#000000"; break;
+      case "FAMILY": return "#CCCCCC"; break;
+      case "COMPARTMENT": return "#000000"; break;
+      default: return "#000000"; break;
+    }
   }
-}
 
-var edgeColorHandler = function( ele )
-{
-  // switch (ele._private.data['type']){
-  //   case "ACTIVATES": return "#904930"; break;
-  //   case "INHIBITS": return "#7B7EF7"; break;
-  //   case "INDUCES": return "#ad47c2"; break;
-  //   case "REPRESSES": return "#67C1A9"; break;
-  //   case "BINDS": return "#67C1A9"; break;
-  //   default: return "#989898"; break;
-  // }
-  return "#1b1b1b";
-}
+  var edgeColorHandler = function( ele )
+  {
+    // switch (ele._private.data['type']){
+    //   case "ACTIVATES": return "#904930"; break;
+    //   case "INHIBITS": return "#7B7EF7"; break;
+    //   case "INDUCES": return "#ad47c2"; break;
+    //   case "REPRESSES": return "#67C1A9"; break;
+    //   case "BINDS": return "#67C1A9"; break;
+    //   default: return "#989898"; break;
+    // }
+    return "#1b1b1b";
+  }
 
-var edgeTargetArrowTypeHandler = function( ele )
-{
+  var edgeTargetArrowTypeHandler = function( ele )
+  {
     switch (ele._private.data['type']){
       case "ACTIVATES": return "triangle"; break;
       case "INHIBITS": return "tee"; break;
@@ -48904,10 +49339,10 @@ var edgeTargetArrowTypeHandler = function( ele )
       case "BINDS": return "none"; break;
       default: return "none"; break;
     }
-}
+  }
 
-var edgeLineTypeHandler = function( ele )
-{
+  var edgeLineTypeHandler = function( ele )
+  {
     switch (ele._private.data['type']){
       case "ACTIVATES": return "solid"; break;
       case "INHIBITS": return "solid"; break;
@@ -48916,12 +49351,124 @@ var edgeLineTypeHandler = function( ele )
       case "BINDS": return "solid"; break;
       default: return "solid"; break;
     }
-}
+  }
+
+  return styleSheet;
+})();
 
 
-module.exports = styleSheet;
 
-},{}],59:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
+module.exports = (function()
+{
+    'use strict';
+
+    //Selected element on dropdown
+    $(".edge-palette a").click(function(event)
+    {
+        event.preventDefault();
+
+        if ($(event.target).hasClass('active'))
+        {
+            cy.edgehandles('disable');
+            cy.edgehandles('drawoff');
+            $('.edge-palette a').blur().removeClass('active');
+        }
+        else
+        {
+            $('.edge-palette a').blur().removeClass('active');
+            $(event.target).toggleClass('active');
+            window.edgeAddingMode = $(event.target).attr('edgeTypeIndex');
+            cy.edgehandles('enable');
+        }
+
+    });
+
+
+    //Edit drop down handler
+    $(".editDropDown li a").click(function(event)
+    {
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
+
+        if (dropdownLinkRole == 'addGene')
+        {
+            var clickedNodeType = $(event.target).text();
+            var nodeData =
+            {
+                group: "nodes",
+                data: {type: clickedNodeType.toUpperCase(), name:'New ' + clickedNodeType }
+            };
+            var posData =
+            {
+                x: 100,
+                y: 100
+            };
+
+            window.editorActionsManager.addNode(nodeData, posData);
+        }
+        else if (dropdownLinkRole == 'addEdge')
+        {
+            var edgeTypeIndex = $(event.target).attr('edgeTypeIndex');
+            $('.edge-palette a').blur().removeClass('active');
+            $('.edge-palette a[edgeTypeIndex="'+edgeTypeIndex+'"]').addClass('active');
+            window.edgeAddingMode = edgeTypeIndex;
+            cy.edgehandles('enable');
+        }
+        else
+        //delete
+        {
+            var selectedEles = cy.elements(':selected');
+            selectedEles.forEach(function (ele, index)
+            {
+                window.editorActionsManager.removeElement(ele);
+            });
+        }
+    });
+
+
+    //Layout drop down handler
+    $(".layoutDropDown li a").click(function(event)
+    {
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
+
+        if (dropdownLinkRole == 'perform_layout')
+        {
+            window.editorActionsManager.performLayout();
+        }
+        else if (dropdownLinkRole == 'layout_properties')
+        {
+            $('#layoutPropertiesDiv').modal('show');
+        }
+    });
+
+    //About drop down handler
+    $(".aboutDropDown li a").click(function(event)
+    {
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
+
+        if (dropdownLinkRole == 'about')
+        {
+            $('#aboutModal').modal('show');
+        }
+        else if (dropdownLinkRole == 'edge_legend')
+        {
+            $('#edge_legend_modal').modal('show');
+        }
+        else if (dropdownLinkRole == 'node_legend')
+        {
+            $('#node_legend_modal').modal('show');
+        }
+        else if(dropdownLinkRole == 'help')
+        {
+            $('#quickHelpModal').modal('show');
+        }
+    });
+
+})();
+},{}],63:[function(require,module,exports){
 var panzoomOptions =
 {
   // the default values of each option are outlined below:
@@ -48947,10 +49494,10 @@ var panzoomOptions =
 
 module.exports = panzoomOptions;
 
-},{}],60:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 ;
 
-var BackboneView = require('./Views/BioGeneView.js');
+var BackboneView = require('./BackboneViews/BioGeneView.js');
 
 module.exports = (function($)
 {
@@ -49075,7 +49622,7 @@ module.exports = (function($)
 
 }(window.$));
 
-},{"./Views/BioGeneView.js":65}],61:[function(require,module,exports){
+},{"./BackboneViews/BioGeneView.js":53}],65:[function(require,module,exports){
 module.exports = (function()
 {
     "use strict";
@@ -49091,13 +49638,14 @@ module.exports = (function()
 
         this.NODEMAP_NAME = 'nodes';
         this.EDGEMAP_NAME = 'edges';
+        this.LAYOUT_PROPS_NAME = 'layoutProperties';
 
         // Create a new instance of the realtime utility with your client ID.
         this.realtimeUtils = new utils.RealtimeUtils({
             clientId: this.clientId
         });
         this.postFileLoad = postFileLoadCallback;
-    }
+    };
 
     RealTimeManager.prototype.authorize = function(callbackFunction, isModal)
     {
@@ -49107,7 +49655,7 @@ module.exports = (function()
             callbackFunction(response);
 
         }, isModal);
-    }
+    };
 
     RealTimeManager.prototype.initRealTimeAPI = function()
     {
@@ -49122,12 +49670,12 @@ module.exports = (function()
         var initFileCallback = function(model)
         {
             self.onFileInitialize(model);
-        }
+        };
 
         var loadFileCallback = function(model)
         {
             self.onFileLoaded(model);
-        }
+        };
 
         if (id)
         {
@@ -49144,7 +49692,7 @@ module.exports = (function()
                 self.realtimeUtils.load(result.id, loadFileCallback, initFileCallback);
             });
         }
-    }
+    };
 
     // The first time a file is opened, it must be initialized with the
     // document structure.
@@ -49154,10 +49702,12 @@ module.exports = (function()
 
         var nodeMap = model.createMap();
         var edgeMap = model.createMap();
+        var layoutProperties = model.create(LayoutPropertiesR, {});
 
         root.set(this.NODEMAP_NAME, nodeMap);
         root.set(this.EDGEMAP_NAME, edgeMap);
-    }
+        root.set(this.LAYOUT_PROPS_NAME, layoutProperties);
+    };
 
     /*
         After a file has been initialized and loaded, we can access the
@@ -49186,12 +49736,12 @@ module.exports = (function()
         var nodeAddRemoveHandler = function(event)
         {
             window.editorActionsManager.realTimeNodeAddRemoveEventCallBack(event);
-        }
+        };
 
         var edgeAddRemoveHandler = function(event)
         {
             window.editorActionsManager.realTimeEdgeAddRemoveEventCallBack(event);
-        }
+        };
 
         //Event listeners for edge and node map
         root.get(this.NODEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddRemoveHandler);
@@ -49206,7 +49756,7 @@ module.exports = (function()
 
         this.postFileLoad();
         
-    }
+    };
 
     RealTimeManager.prototype.addNewNode = function(nodeData, posData)
     {
@@ -49227,7 +49777,7 @@ module.exports = (function()
 
         var realTimeGeneratedID = this.getCustomObjId(newNode);
         nodeMap.set(realTimeGeneratedID, newNode);
-    }
+    };
 
     RealTimeManager.prototype.addNewEdge = function(edgeData)
     {
@@ -49244,7 +49794,7 @@ module.exports = (function()
 
         var realTimeGeneratedID = this.getCustomObjId(newEdge);
         edgeMap.set(realTimeGeneratedID, newEdge);
-    }
+    };
 
     RealTimeManager.prototype.removeElement = function(elementID)
     {
@@ -49264,9 +49814,9 @@ module.exports = (function()
         else
         {
             throw new Error('Element does not exists in Real Time');
-            return;
+
         }
-    }
+    };
 
     RealTimeManager.prototype.moveElement = function(ele)
     {
@@ -49288,10 +49838,10 @@ module.exports = (function()
         else
         {
             throw new Error('Element does not exists in nodes !!! ');
-            return;
+
         }
         
-    }
+    };
 
     RealTimeManager.prototype.changeName = function(ele, newName)
     {
@@ -49311,10 +49861,10 @@ module.exports = (function()
         else
         {
             throw new Error('Element does not exists in nodes !!! ');
-            return;
+
         }
 
-    }
+    };
 
     RealTimeManager.prototype.changeParent = function (rootNode, newParentId, connectedEdges)
     {
@@ -49353,7 +49903,7 @@ module.exports = (function()
                     type: nodeData.type,
                     x: posData.x,
                     y: posData.y
-                }
+                };
 
                 if(parId)
                 {
@@ -49402,19 +49952,18 @@ module.exports = (function()
             self.addNewEdge(edgeData);
         });
         
-    }
+    };
 
-    RealTimeManager.prototype.loadGraph = function(nodes, edges)
+    RealTimeManager.prototype.removeAllElements = function()
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
         var nodeMap = root.get(this.NODEMAP_NAME);
         var edgeMap = root.get(this.EDGEMAP_NAME);
-
         var nodeMapKeys = nodeMap.keys();
         var edgeMapKeys = edgeMap.keys();
 
-
+        //TODO Compound operations
         //Remove all real time nodes
         for (var index in nodeMapKeys)
         {
@@ -49426,6 +49975,17 @@ module.exports = (function()
         {
             this.removeElement(edgeMapKeys[index]);
         }
+    };
+
+
+    RealTimeManager.prototype.loadGraph = function(nodes, edges)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap = root.get(this.NODEMAP_NAME);
+        var edgeMap = root.get(this.EDGEMAP_NAME);
+
+        this.removeAllElements();
 
         //Function that traverses graph tree recursively.
         var that = this;
@@ -49484,7 +50044,7 @@ module.exports = (function()
             var newEdgeID = this.getCustomObjId(newEdge);
             edgeMap.set(newEdgeID, newEdge);
         }
-    }
+    };
 
     RealTimeManager.prototype.mergeGraph = function(nodes, edges)
     {
@@ -49589,41 +50149,39 @@ module.exports = (function()
             var newEdgeID = this.getCustomObjId(newEdge);
             edgeMap.set(newEdgeID, newEdge);
         }
-    }
+    };
+
+    RealTimeManager.prototype.updateLayoutProperties = function(newLayoutProperties)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var layoutPropertiesR =  root.get(this.LAYOUT_PROPS_NAME);
+
+        model.beginCompoundOperation();
+        for (var property in newLayoutProperties)
+        {
+            if (newLayoutProperties.hasOwnProperty(property))
+            {
+                layoutPropertiesR[property] = newLayoutProperties[property];
+            }
+        }
+        model.endCompoundOperation();
+    };
 
 
     //Google Real Time's custom object ids are retrieved in this way
     RealTimeManager.prototype.getCustomObjId = function(object)
     {
         return gapi.drive.realtime.custom.getId(object);
-    }
+    };
 
     // You must register the custom object before loading or creating any file that
     // uses this custom object.
     RealTimeManager.prototype.registerTypes = function()
     {
-        var self = this;
-        //Register our custom objects go Google Real Time API
-        gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
-        gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
-        gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
-        gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
-        createNodeAndEdgeFieldsR();
-
-        function registerAttributeChangeHandlersNodeR()
-        {
-            function updateElementHandler(event)
-            {
-                var node = event.currentTarget;
-                window.editorActionsManager.updateElementCallback(node, self.getCustomObjId(node));
-            }
-
-            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateElementHandler);
-        }
-
-        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);
-
-    }
+        //TODO does not need 2 functions remove one
+        this.createRealTimeObjectDefinitions();
+    };
 
     /*
      * Creates graph hierarchy from given flat list of nodes list, nodes list is assumed to have parent-child
@@ -49666,25 +50224,86 @@ module.exports = (function()
             }
         }
         return tree;
-    }
+    };
 
-    //Custom object Definitions and Registration Part
-    var NodeR = function() {}
-    var EdgeR = function() {}
 
-    var createNodeAndEdgeFieldsR = function() {
-        // NodeR.prototype.nodeID = gapi.drive.realtime.custom.collaborativeField('nodeID');
+
+    RealTimeManager.prototype.createRealTimeObjectDefinitions = function()
+    {
+        //Register our custom objects go Google Real Time API
+        gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
+        gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
+        gapi.drive.realtime.custom.registerType(LayoutPropertiesR, 'LayoutPropertiesR');
+
+        gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
+        gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
+        gapi.drive.realtime.custom.setInitializer(LayoutPropertiesR, LayoutPropertiesRInitializer);
+
+
+        // NodeR;
         NodeR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
         NodeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
         NodeR.prototype.x = gapi.drive.realtime.custom.collaborativeField('x');
         NodeR.prototype.y = gapi.drive.realtime.custom.collaborativeField('y');
         NodeR.prototype.parent = gapi.drive.realtime.custom.collaborativeField('parent');
 
-        // EdgeR.prototype.edgeID = gapi.drive.realtime.custom.collaborativeField('edgeID');
+        // EdgeR;
         EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
         EdgeR.prototype.target = gapi.drive.realtime.custom.collaborativeField('target');
         EdgeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
-    }
+
+        //LayoutPropertiesR
+        LayoutPropertiesR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
+        LayoutPropertiesR.prototype.nodeRepulsion = gapi.drive.realtime.custom.collaborativeField('nodeRepulsion');
+        LayoutPropertiesR.prototype.nodeOverlap = gapi.drive.realtime.custom.collaborativeField('nodeOverlap');
+        LayoutPropertiesR.prototype.idealEdgeLength = gapi.drive.realtime.custom.collaborativeField('idealEdgeLength');
+        LayoutPropertiesR.prototype.edgeElasticity = gapi.drive.realtime.custom.collaborativeField('edgeElasticity');
+        LayoutPropertiesR.prototype.nestingFactor = gapi.drive.realtime.custom.collaborativeField('nestingFactor');
+        LayoutPropertiesR.prototype.gravity = gapi.drive.realtime.custom.collaborativeField('gravity');
+        LayoutPropertiesR.prototype.numIter = gapi.drive.realtime.custom.collaborativeField('numIter');
+        LayoutPropertiesR.prototype.tile = gapi.drive.realtime.custom.collaborativeField('tile');
+        LayoutPropertiesR.prototype.animate = gapi.drive.realtime.custom.collaborativeField('animate');
+        LayoutPropertiesR.prototype.randomize = gapi.drive.realtime.custom.collaborativeField('randomize');
+        LayoutPropertiesR.prototype.gravityRangeCompound = gapi.drive.realtime.custom.collaborativeField('gravityRangeCompound');
+        LayoutPropertiesR.prototype.gravityCompound = gapi.drive.realtime.custom.collaborativeField('gravityCompound');
+        LayoutPropertiesR.prototype.gravityRange = gapi.drive.realtime.custom.collaborativeField('gravityRange');
+
+
+        //Attribute changed handlers !!!
+        var self = this;
+
+        function registerAttributeChangeHandlersNodeR()
+        {
+            function updateElementHandler(event)
+            {
+                var node = event.currentTarget;
+                window.editorActionsManager.updateElementCallback(node, self.getCustomObjId(node));
+            }
+
+            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateElementHandler);
+        }
+
+        function registerAttributeChangeHandlersLayoutPropertiesR()
+        {
+            function updateLayoutPropsHandler(event)
+            {
+                var layoutProps = event.currentTarget;
+                window.editorActionsManager.saveLayoutProperties(layoutProps);
+            }
+
+            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateLayoutPropsHandler);
+        }
+
+        //Register attribute changed handlers
+        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);
+        gapi.drive.realtime.custom.setOnLoaded(LayoutPropertiesR, registerAttributeChangeHandlersLayoutPropertiesR);
+
+    };
+
+    //Custom object Definitions and Registration Part
+    var NodeR = function() {};
+    var EdgeR = function() {};
+    var LayoutPropertiesR = function() {};
 
     var NodeRInitializer = function(params) {
         var model = gapi.drive.realtime.custom.getModel(this);
@@ -49693,21 +50312,40 @@ module.exports = (function()
         this.parent = params.parent || "undefined";
         this.x = params.x || "undefined";
         this.y = params.y || "undefined";
-    }
+    };
 
-    var EdgeRInitializer = function(params) {
+    var EdgeRInitializer = function(params)
+    {
         var model = gapi.drive.realtime.custom.getModel(this);
-        // this.edgeID = params.edgeID || "undefined";
         this.type = params.type || "undefined";
         this.source = params.source || "undefined";
         this.target = params.target || "undefined";
-    }
+    };
+
+    var LayoutPropertiesRInitializer = function(params)
+    {
+        var model = gapi.drive.realtime.custom.getModel(this);
+        this.name = params.name || 'undefined';
+        this.nodeRepulsion = params.nodeRepulsion || 'undefined';
+        this.nodeOverlap = params.nodeOverlap || 'undefined';
+        this.idealEdgeLength = params.idealEdgeLength || 'undefined';
+        this.edgeElasticity = params.edgeElasticity || 'undefined';
+        this.nestingFactor = params.nestingFactor || 'undefined';
+        this.gravity = params.gravity || 'undefined';
+        this.numIter = params.numIter || 'undefined';
+        this.tile = params.tile || 'undefined';
+        this.animate = params.animate || 'undefined';
+        this.randomize = params.randomize || 'undefined';
+        this.gravityRangeCompound = params.gravityRangeCompound || 'undefined';
+        this.gravityCompound = params.gravityCompound || 'undefined';
+        this.gravityRange = params.gravityRange || 'undefined';
+    };
 
     return RealTimeManager;
 
-})()
+})();
 
-},{}],62:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 /**
  * @license
  * Realtime Utils 1.0.0
@@ -50158,7 +50796,7 @@ module.exports = (function(){
     };
 })();
 
-},{}],63:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 var SaveLoadUtils =
 {
   //Exports given json graph(based on cy.export()) into a string
@@ -50294,513 +50932,144 @@ var SaveLoadUtils =
 
 module.exports = SaveLoadUtils;
 
-},{}],64:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 module.exports = (function($)
 {
-  'use strict';
+    'use strict';
 
-  function handleNodeAlignment(param)
-  {
-    var nodes = cy.nodes(':selected');
-    var nodeMap = {};
-
-    nodes.forEach(function(node,index)
+    function handleNodeAlignment(param)
     {
-      if (node.isParent())
-      {
-        nodeMap[node.id()] = node;
-      }
-    });
+        var nodes = cy.nodes(':selected');
+        var nodeMap = {};
 
-
-    if (nodes.length > 0)
-    {
-      var firstSelected = nodes[0];
-      var firstBbox = firstSelected.boundingBox();
-
-      nodes.forEach(function(node,index)
-      {
-        if (index == 0)
+        nodes.forEach(function(node,index)
         {
-          return ;
-        }
+            if (node.isParent())
+            {
+                nodeMap[node.id()] = node;
+            }
+        });
 
-        //If parent of selected node is in selection do nothing !
-        if (nodeMap[node.parent().id()] == null)
+
+        if (nodes.length > 0)
         {
-          var newPosition = calculateNewPosition(param, node, firstBbox)
-          //Recursively traverse leaf nodes
-          moveNode(node,0,0,newPosition);
-        }
+            var firstSelected = nodes[0];
+            var firstBbox = firstSelected.boundingBox();
 
-      });
+            nodes.forEach(function(node,index)
+            {
+                if (index == 0)
+                {
+                    return ;
+                }
+
+                //If parent of selected node is in selection do nothing !
+                if (nodeMap[node.parent().id()] == null)
+                {
+                    var newPosition = calculateNewPosition(param, node, firstBbox)
+                    //Recursively traverse leaf nodes
+                    moveNode(node,0,0,newPosition);
+                }
+
+            });
+        }
     }
-  }
 
-  /*
+    /*
      Determine new position according to the alignment
      node that node.position works on center positions thats why all calculations
      are performed accordingly
-  */
-  function calculateNewPosition(param, node, referenceBbox)
-  {
-      var currentPos = node.position();
-      var currentBbox = node.boundingBox();
-      var newPosition;
-
-      if (param === 'vLeft')
-      {
-        newPosition = {x: referenceBbox.x1+currentBbox.w/2, y: currentPos.y};
-      }
-      else if (param === 'vCen')
-      {
-        newPosition = {x: referenceBbox.x1+referenceBbox.w/2, y: currentPos.y};
-      }
-      else if (param === 'vRight')
-      {
-        newPosition = {x: referenceBbox.x2-currentBbox.w/2, y: currentPos.y};
-      }
-      else if (param === 'hTop')
-      {
-        newPosition = {x: currentPos.x, y: referenceBbox.y1 + currentBbox.h/2};
-      }
-      else if (param === 'hMid')
-      {
-        newPosition = {x: currentPos.x, y: referenceBbox.y1 + referenceBbox.h/2};
-      }
-      else if (param === 'hBot')
-      {
-        newPosition = {x: currentPos.x, y: referenceBbox.y2 - currentBbox.h/2};
-      }
-      else {
-        console.log('Error: wrong alignment name ' + param);
-        return;
-      }
-
-      return newPosition;
-
-  }
-
-  //Recursively move leaf nodes
-  function moveNode(node, dx, dy, newPos)
-  {
-    if (node.isParent())
+     */
+    function calculateNewPosition(param, node, referenceBbox)
     {
-      var childNodes = node.children();
-      var parentBbox = node.boundingBox();
-      childNodes.forEach(function(childNode, index)
-      {
-        var childBbox = childNode.boundingBox();
-        var _dx = -(parentBbox.x1 - childBbox.x1)-parentBbox.w/2+childBbox.w/2;
-        var _dy = -(parentBbox.y1 - childBbox.y1)-parentBbox.h/2+childBbox.h/2;
+        var currentPos = node.position();
+        var currentBbox = node.boundingBox();
+        var newPosition;
 
-        //If further compound node is found, set position accordingly
-        if (childNode.isParent())
+        if (param === 'vLeft')
         {
-          moveNode(childNode, 0, 0, {x: newPos.x+_dx, y:newPos.y+_dy});
+            newPosition = {x: referenceBbox.x1+currentBbox.w/2, y: currentPos.y};
+        }
+        else if (param === 'vCen')
+        {
+            newPosition = {x: referenceBbox.x1+referenceBbox.w/2, y: currentPos.y};
+        }
+        else if (param === 'vRight')
+        {
+            newPosition = {x: referenceBbox.x2-currentBbox.w/2, y: currentPos.y};
+        }
+        else if (param === 'hTop')
+        {
+            newPosition = {x: currentPos.x, y: referenceBbox.y1 + currentBbox.h/2};
+        }
+        else if (param === 'hMid')
+        {
+            newPosition = {x: currentPos.x, y: referenceBbox.y1 + referenceBbox.h/2};
+        }
+        else if (param === 'hBot')
+        {
+            newPosition = {x: currentPos.x, y: referenceBbox.y2 - currentBbox.h/2};
+        }
+        else {
+            console.log('Error: wrong alignment name ' + param);
+            return;
+        }
+
+        return newPosition;
+
+    }
+
+    //Recursively move leaf nodes
+    function moveNode(node, dx, dy, newPos)
+    {
+        if (node.isParent())
+        {
+            var childNodes = node.children();
+            var parentBbox = node.boundingBox();
+            childNodes.forEach(function(childNode, index)
+            {
+                var childBbox = childNode.boundingBox();
+                var _dx = -(parentBbox.x1 - childBbox.x1)-parentBbox.w/2+childBbox.w/2;
+                var _dy = -(parentBbox.y1 - childBbox.y1)-parentBbox.h/2+childBbox.h/2;
+
+                //If further compound node is found, set position accordingly
+                if (childNode.isParent())
+                {
+                    moveNode(childNode, 0, 0, {x: newPos.x+_dx, y:newPos.y+_dy});
+                }
+                else
+                {
+                    moveNode(childNode, _dx, _dy, newPos);
+                }
+
+            });
         }
         else
         {
-          moveNode(childNode, _dx, _dy, newPos);
+            //TODO editor actions manager move
+            node.position({x: newPos.x+dx, y:newPos.y+dy});
         }
-
-      });
     }
-    else
+
+    $(".viewDropdown li a").click(function(event)
     {
-      node.position({x: newPos.x+dx, y:newPos.y+dy});
-    }
-  }
-
-  $(".viewDropdown li a").click(function(event)
-  {
-    event.preventDefault();
-    var dropdownLinkRole = $(event.target).attr('role');
-    handleNodeAlignment(dropdownLinkRole);
-  });
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
+        handleNodeAlignment(dropdownLinkRole);
+    });
 
 })(window.$)
 
-},{}],65:[function(require,module,exports){
-/*
- * Copyright 2013 Memorial-Sloan Kettering Cancer Center.
- *
- * This file is part of PCViz.
- *
- * PCViz is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PCViz is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with PCViz. If not, see <http://www.gnu.org/licenses/>.
- */
-
-/**
- * Backbone view for the BioGene information.
- */
-
-
-var BioGeneView = Backbone.View.extend({
-    render: function() {
-        // pass variables in using Underscore.js template
-        var variables = {
-            geneDescription: this.model.geneDescription,
-            geneAliases: this.parseDelimitedInfo(this.model.geneAliases, ":", ",", null),
-            geneDesignations: this.parseDelimitedInfo(this.model.geneDesignations, ":", ",", null),
-            geneLocation: this.model.geneLocation,
-            geneMim: this.model.geneMim,
-            geneId: this.model.geneId,
-            geneUniprotId: this.extractFirstUniprotId(this.model.geneUniprotMapping),
-            geneUniprotLinks: this.generateUniprotLinks(this.model.geneUniprotMapping),
-            geneSummary: this.model.geneSummary
-        };
-
-        // compile the template using underscore
-        var template = _.template( $("#biogene-template").html());
-        template = template(variables);
-
-        // load the compiled HTML into the Backbone "el"
-        this.$el.html(template);
-
-        // format after loading
-        this.format(this.model);
-
-        return this.$el;
-    },
-    format: function()
-    {
-        // hide rows with undefined data
-        if (this.model.geneDescription == undefined)
-            this.$el.find(".biogene-description").hide();
-
-        if (this.model.geneAliases == undefined)
-            this.$el.find(".biogene-aliases").hide();
-
-        if (this.model.geneDesignations == undefined)
-            this.$el.find(".biogene-designations").hide();
-
-        if (this.model.geneChromosome == undefined)
-            this.$el.find(".biogene-chromosome").hide();
-
-        if (this.model.geneLocation == undefined)
-            this.$el.find(".biogene-location").hide();
-
-        if (this.model.geneMim == undefined)
-            this.$el.find(".biogene-mim").hide();
-
-        if (this.model.geneId == undefined)
-            this.$el.find(".biogene-id").hide();
-
-        if (this.model.geneUniprotMapping == undefined)
-            this.$el.find(".biogene-uniprot-links").hide();
-
-        if (this.model.geneSummary == undefined)
-            this.$el.find(".node-details-summary").hide();
-
-        var expanderOpts = {slicePoint: 100,
-            expandPrefix: ' ',
-            expandText: ' (...)',
-            userCollapseText: ' (show less)',
-            moreClass: 'expander-read-more',
-            lessClass: 'expander-read-less',
-            detailClass: 'expander-details',
-            // do not use default effects
-            // (see https://github.com/kswedberg/jquery-expander/issues/46)
-            expandEffect: 'fadeIn',
-            collapseEffect: 'fadeOut'};
-
-        // this.$el.find(".biogene-info .scrollable").mCustomScrollbar({theme:"dark",axis:"y"});
-
-        expanderOpts.slicePoint = 2; // show comma and the space
-        expanderOpts.widow = 0; // hide everything else in any case
-    },
-    generateUniprotLinks: function(mapping) {
-        var formatter = function(id){
-            var tpl = _.template($("#uniprot-link-template").html());
-            tpl = tpl({ id: id });
-            return tpl;
-        };
-
-        if (mapping == undefined || mapping == null)
-        {
-            return "";
-        }
-
-        // remove first id (assuming it is already processed)
-        if (mapping.indexOf(':') < 0)
-        {
-            return "";
-        }
-        else
-        {
-            mapping = mapping.substring(mapping.indexOf(':') + 1);
-            return ', ' + this.parseDelimitedInfo(mapping, ':', ',', formatter);
-        }
-    },
-    extractFirstUniprotId: function(mapping) {
-        if (mapping == undefined || mapping == null)
-        {
-            return "";
-        }
-
-        var parts = mapping.split(":");
-
-        if (parts.length > 0)
-        {
-            return parts[0];
-        }
-
-        return "";
-    },
-    parseDelimitedInfo: function(info, delimiter, separator, formatter) {
-        // do not process undefined or null values
-        if (info == undefined || info == null)
-        {
-            return info;
-        }
-
-        var text = "";
-        var parts = info.split(delimiter);
-
-        if (parts.length > 0)
-        {
-            if (formatter)
-            {
-                text = formatter(parts[0]);
-            }
-            else
-            {
-                text = parts[0];
-            }
-        }
-
-        for (var i=1; i < parts.length; i++)
-        {
-            text += separator + " ";
-
-            if (formatter)
-            {
-                text += formatter(parts[i]);
-            }
-            else
-            {
-                text += parts[i];
-            }
-        }
-
-        return text;
-    }
-});
-
-module.exports = BioGeneView;
-
-},{}],66:[function(require,module,exports){
-var layoutProps = Backbone.View.extend(
-{
-  defaultLayoutProperties:
-  {
-    name: 'cose-bilkent',
-    nodeRepulsion: 4500,
-    nodeOverlap: 10,
-    idealEdgeLength: 50,
-    edgeElasticity: 0.45,
-    nestingFactor: 0.1,
-    gravity: 0.15,
-    numIter: 2500,
-    tile: true,
-    animate: "end",
-    randomize: true,
-    gravityRangeCompound: 1.5,
-    // Gravity force (constant) for compounds
-    gravityCompound: 1.0,
-    // Gravity range (constant)
-    gravityRange: 1.5
-  },
-  currentLayoutProperties: null,
-  events:{
-    'click #save-layout': 'saveLayoutHandler',
-    'click #default-layout': 'defaultLayoutHandler'
-  },
-  initialize: function ()
-  {
-    this.copyProperties();
-  },
-  copyProperties: function () {
-    this.currentLayoutProperties = _.clone(this.defaultLayoutProperties);
-  },
-  applyLayout: function () {
-    var options = this.currentLayoutProperties;
-    options.fit = options.randomize;
-    cy.elements().filter(':visible').layout(options);
-  },
-  applyIncrementalLayout: function ()
-  {
-    var options = _.clone(this.currentLayoutProperties);
-    options.randomize = false;
-    options.animate = false;
-    options.fit = true;
-    cy.elements().filter(':visible').layout(options);
-  },
-  render: function ()
-  {
-    var templateProperties = _.clone(this.currentLayoutProperties);
-    this.template = _.template($("#layoutPropertiesTemplate").html());
-    var tplContent = this.template(templateProperties);
-    this.$el.empty();
-    this.$el.append(tplContent);
-    this.delegateEvents();
-    return this.$el;
-  },
-  saveLayoutHandler: function(event)
-  {
-    this.currentLayoutProperties.nodeRepulsion = Number(this.$el.find("#node-repulsion").val());
-    this.currentLayoutProperties.nodeOverlap = Number(this.$el.find("#node-overlap").val());
-    this.currentLayoutProperties.idealEdgeLength = Number(this.$el.find("#ideal-edge-length").val());
-    this.currentLayoutProperties.edgeElasticity = Number(this.$el.find("#edge-elasticity").val());
-    this.currentLayoutProperties.nestingFactor = Number(this.$el.find("#nesting-factor").val());
-    this.currentLayoutProperties.gravity = Number(this.$el.find("#gravity").val());
-    this.currentLayoutProperties.numIter = Number(this.$el.find("#num-iter").val());
-    this.currentLayoutProperties.gravityRangeCompound = Number(this.$el.find("#comp-gravRange").val());
-    this.currentLayoutProperties.gravityCompound = Number(this.$el.find("#comp-grav").val());
-    this.currentLayoutProperties.gravityRange = Number(this.$el.find("#grav-range").val());
-
-    this.currentLayoutProperties.tile = this.$el.find("#tile").is(':checked');
-    this.currentLayoutProperties.animate = this.$el.find("#animate").is(':checked');
-    this.currentLayoutProperties.randomize = !(this.$el.find("#randomize").is(':checked'));
-    this.$el.parent().modal('toggle');
-  },
-  defaultLayoutHandler: function(event)
-  {
-    this.copyProperties();
-    this.$el.find("#node-repulsion").val(this.currentLayoutProperties.nodeRepulsion);
-    this.$el.find("#node-overlap").val(this.currentLayoutProperties.nodeOverlap);
-    this.$el.find("#ideal-edge-length").val(this.currentLayoutProperties.idealEdgeLength);
-    this.$el.find("#edge-elasticity").val(this.currentLayoutProperties.edgeElasticity);
-    this.$el.find("#nesting-factor").val(this.currentLayoutProperties.nestingFactor);
-    this.$el.find("#gravity").val(this.currentLayoutProperties.gravity);
-    this.$el.find("#comp-gravRange").val(this.currentLayoutProperties.gravityRangeCompound);
-    this.$el.find("#comp-grav").val(this.currentLayoutProperties.gravityCompound);
-    this.$el.find("#grav-range").val(this.currentLayoutProperties.gravityRange);
-
-    this.$el.find("#num-iter").val(this.currentLayoutProperties.numIter);
-    this.$el.find("#tile")[0].checked = this.currentLayoutProperties.tile;
-    this.$el.find("#animate")[0].checked = this.currentLayoutProperties.animate;
-    this.$el.find("#randomize")[0].checked = !this.currentLayoutProperties.randomize;
-  }
-});
-
-module.exports = layoutProps;
-
-},{}],67:[function(require,module,exports){
-var WelcomePageView = Backbone.View.extend(
-    {
-        cachedTpl: _.template($("#welcomePageTemplate").html()),
-        events:
-        {
-            'click #localUsage': 'localUsageHandler',
-            'click #collaborativeUsage': 'collaborativeUsageHandler',
-            'click .continueButton': 'continueButtonHandler'
-        },
-        initialize: function (options)
-        {
-            this.localUsageCallback = options.localUsageCallback;
-            this.collaborativeUsageCallback = options.collaborativeUsageCallback;
-
-            this.modelSelectionMap =
-            {
-                NONE: -1,
-                LOCAL: 0,
-                COLLAB: 1
-            };
-
-            this.modelSelection = this.modelSelectionMap.NONE;
-
-        },
-        render: function ()
-        {
-            this.$el.empty();
-            this.$el.append(this.cachedTpl());
-
-            this.$el.find('#localUsage').popover({
-                container: 'body',
-                content: 'Create a pathway individually',
-                placement: 'left',
-                delay: 100,
-                trigger: 'hover'
-            });
-
-            this.$el.find('#collaborativeUsage').popover({
-                container: 'body',
-                html : true,
-                content: function(){
-                    return $('#collaborativePopoverContent').html();
-                },
-                placement: 'right',
-                delay: 300,
-                trigger: 'hover'
-            });
-
-        },
-        localUsageHandler: function(event)
-        {
-            this.$el.find('.welcomePageCheckable').removeClass('active');
-            $(event.currentTarget).addClass('active');
-            this.$el.find('.continueRow').css('visibility', 'visible');
-            this.modelSelection = this.modelSelectionMap.LOCAL;
-        },
-        collaborativeUsageHandler: function(event)
-        {
-            this.$el.find('.welcomePageCheckable').removeClass('active');
-            $(event.currentTarget).addClass('active');
-            this.$el.find('.continueRow').css('visibility', 'visible');
-            this.modelSelection = this.modelSelectionMap.COLLAB;
-        },
-        continueButtonHandler: function(event)
-        {
-            var self = this;
-            this.$el.find('.welcomePageLoading').show();
-            function postHandler()
-            {
-                self.postSuccess();
-            }
-
-            if(this.modelSelection != this.modelSelectionMap.NONE)
-            {
-                if(this.modelSelection == this.modelSelectionMap.LOCAL)
-                {
-                    this.localUsageCallback(postHandler);
-                }
-                else if(this.modelSelection == this.modelSelectionMap.COLLAB)
-                {
-                    this.collaborativeUsageCallback(postHandler);
-                }
-            }
-        },
-        postSuccess: function()
-        {
-            this.$el.empty();
-            this.$el.fadeOut(800);
-        }
-    });
-
-module.exports = WelcomePageView;
-
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 //Import node modules here !
 var $ = window.$ = window.jQuery = require('jquery');
 var _ = window._ = require('underscore');
 var Backbone = window.Backbone = require('backbone');
 Backbone.$ = $;
 require('bootstrap');
-require('./RealTimeUtils');//Google's real time utility lib
+require('./RealTimeUtils');//Google's real time utility lib which is customized also for this tool :)
 
-var WelcomePageView = require('./Views/WelcomePageView.js');
+var WelcomePageView = require('./BackboneViews/WelcomePageView.js');
 var AppManager = require('./AppManager');
 var RealTimeModule = require('./RealTimeManager');
 
@@ -50859,108 +51128,7 @@ $(window).load(function()
         $('#collaborativeUsage').click();
         $('.continueButton').click().hide();
     }
-
 });
 
 
-//Selected element on dropdown
-$(".edge-palette a").click(function(event)
-{
-    event.preventDefault();
-
-    if ($(event.target).hasClass('active'))
-    {
-        cy.edgehandles('disable');
-        cy.edgehandles('drawoff');
-        $('.edge-palette a').blur().removeClass('active');
-    }
-    else
-    {
-        $('.edge-palette a').blur().removeClass('active');
-        $(event.target).toggleClass('active');
-        window.edgeAddingMode = $(event.target).attr('edgeTypeIndex');
-        cy.edgehandles('enable');
-    }
-
-});
-
-
-//About edit drop down handler
-$(".editDropDown li a").click(function(event)
-{
-    event.preventDefault();
-    var dropdownLinkRole = $(event.target).attr('role');
-
-    if (dropdownLinkRole == 'addGene')
-    {
-        var clickedNodeType = $(event.target).text();
-        cy.add(
-            {
-                group: "nodes",
-                data: {type: clickedNodeType.toUpperCase(), name:'New ' + clickedNodeType },
-                renderedPosition:
-                {
-                    x: 100,
-                    y: 100
-                }
-            });
-    }
-    else if (dropdownLinkRole == 'addEdge')
-    {
-        var edgeTypeIndex = $(event.target).attr('edgeTypeIndex');
-        $('.edge-palette a').blur().removeClass('active');
-        $('.edge-palette a[edgeTypeIndex="'+edgeTypeIndex+'"]').addClass('active');
-        window.edgeAddingMode = edgeTypeIndex;
-        cy.edgehandles('enable');
-    }
-    else
-    //delete
-    {
-        cy.elements(':selected').remove();
-    }
-});
-
-
-//About drop down handler
-$(".layoutDropDown li a").click(function(event)
-{
-    event.preventDefault();
-    var dropdownLinkRole = $(event.target).attr('role');
-
-    if (dropdownLinkRole == 'perform_layout')
-    {
-        cy.layout(window.layoutProperties.currentLayoutProperties);
-    }
-    else if (dropdownLinkRole == 'layout_properties')
-    {
-        $('#layoutPropertiesDiv').modal('show');
-    }
-
-});
-
-
-//About drop down handler
-$(".aboutDropDown li a").click(function(event)
-{
-    event.preventDefault();
-    var dropdownLinkRole = $(event.target).attr('role');
-
-    if (dropdownLinkRole == 'about')
-    {
-        $('#aboutModal').modal('show');
-    }
-    else if (dropdownLinkRole == 'edge_legend')
-    {
-        $('#edge_legend_modal').modal('show');
-    }
-    else if (dropdownLinkRole == 'node_legend')
-    {
-        $('#node_legend_modal').modal('show');
-    }
-    else if(dropdownLinkRole == 'help')
-    {
-        $('#quickHelpModal').modal('show');
-    }
-});
-
-},{"./AppManager":52,"./RealTimeManager":61,"./RealTimeUtils":62,"./Views/WelcomePageView.js":67,"backbone":1,"bootstrap":2,"jquery":19,"underscore":20}]},{},[68]);
+},{"./AppManager":52,"./BackboneViews/WelcomePageView.js":55,"./RealTimeManager":65,"./RealTimeUtils":66,"backbone":1,"bootstrap":2,"jquery":19,"underscore":20}]},{},[69]);

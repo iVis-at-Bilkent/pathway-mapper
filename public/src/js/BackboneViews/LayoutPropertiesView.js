@@ -1,48 +1,22 @@
 var layoutProps = Backbone.View.extend(
 {
-  defaultLayoutProperties:
-  {
-    name: 'cose-bilkent',
-    nodeRepulsion: 4500,
-    nodeOverlap: 10,
-    idealEdgeLength: 50,
-    edgeElasticity: 0.45,
-    nestingFactor: 0.1,
-    gravity: 0.15,
-    numIter: 2500,
-    tile: true,
-    animate: "end",
-    randomize: true,
-    gravityRangeCompound: 1.5,
-    // Gravity force (constant) for compounds
-    gravityCompound: 1.0,
-    // Gravity range (constant)
-    gravityRange: 1.5
-  },
   currentLayoutProperties: null,
   events:{
     'click #save-layout': 'saveLayoutHandler',
     'click #default-layout': 'defaultLayoutHandler'
   },
-  initialize: function ()
+  initialize: function (options)
   {
-    this.copyProperties();
+    //A reference to editor actions manager
+    this.editorActionsManagerRef = options.editorActionsManager;
+    this.copyProperties(this.editorActionsManagerRef.layoutProperties);
+
+    //Subscribe this object as observer to the editor actions manager
+    this.editorActionsManagerRef.registerObserver(this);
   },
-  copyProperties: function () {
-    this.currentLayoutProperties = _.clone(this.defaultLayoutProperties);
-  },
-  applyLayout: function () {
-    var options = this.currentLayoutProperties;
-    options.fit = options.randomize;
-    cy.elements().filter(':visible').layout(options);
-  },
-  applyIncrementalLayout: function ()
+  copyProperties: function (params)
   {
-    var options = _.clone(this.currentLayoutProperties);
-    options.randomize = false;
-    options.animate = false;
-    options.fit = true;
-    cy.elements().filter(':visible').layout(options);
+    this.currentLayoutProperties = _.clone(params);
   },
   render: function ()
   {
@@ -52,7 +26,7 @@ var layoutProps = Backbone.View.extend(
     this.$el.empty();
     this.$el.append(tplContent);
     this.delegateEvents();
-    return this.$el;
+    this.$el;
   },
   saveLayoutHandler: function(event)
   {
@@ -70,11 +44,12 @@ var layoutProps = Backbone.View.extend(
     this.currentLayoutProperties.tile = this.$el.find("#tile").is(':checked');
     this.currentLayoutProperties.animate = this.$el.find("#animate").is(':checked');
     this.currentLayoutProperties.randomize = !(this.$el.find("#randomize").is(':checked'));
-    this.$el.parent().modal('toggle');
+
+    this.editorActionsManagerRef.saveLayoutProperties(this.currentLayoutProperties);
+    this.$el.modal('toggle');
   },
-  defaultLayoutHandler: function(event)
+  changeParameters: function()
   {
-    this.copyProperties();
     this.$el.find("#node-repulsion").val(this.currentLayoutProperties.nodeRepulsion);
     this.$el.find("#node-overlap").val(this.currentLayoutProperties.nodeOverlap);
     this.$el.find("#ideal-edge-length").val(this.currentLayoutProperties.idealEdgeLength);
@@ -89,6 +64,17 @@ var layoutProps = Backbone.View.extend(
     this.$el.find("#tile")[0].checked = this.currentLayoutProperties.tile;
     this.$el.find("#animate")[0].checked = this.currentLayoutProperties.animate;
     this.$el.find("#randomize")[0].checked = !this.currentLayoutProperties.randomize;
+  },
+  defaultLayoutHandler: function(event)
+  {
+    this.copyProperties(this.editorActionsManagerRef.defaultLayoutProperties);
+    this.changeParameters();
+  },
+  //For observer observable pattern usage !!!!
+  notify: function()
+  {
+    this.copyProperties(this.editorActionsManagerRef.layoutProperties);
+    this.changeParameters();
   }
 });
 

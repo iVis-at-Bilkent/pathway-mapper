@@ -1,10 +1,12 @@
-var styleSheet = [
+module.exports = (function()
 {
+  var styleSheet = [
+    {
       selector: 'node',
       style:
       {
         'content': function(ele){
-            return contentFunction(ele);
+          return contentFunction(ele);
         },
         'text-valign': function(ele)
         {
@@ -18,11 +20,11 @@ var styleSheet = [
         'text-margin-y' : 50,
         'shape': function(ele)
         {
-            return parentNodeShapeFunc( ele );
+          return parentNodeShapeFunc( ele );
         },
         'border-width': function(ele)
         {
-            return borderWidthFunction( ele );
+          return borderWidthFunction( ele );
         },
         'border-color': function(ele)
         {
@@ -32,34 +34,34 @@ var styleSheet = [
       }
     },
     {
-        selector: 'node:parent',
-        style:
+      selector: 'node:parent',
+      style:
+      {
+        'shape': function(ele)
         {
-          'shape': function(ele)
-          {
-              return parentNodeShapeFunc( ele );
-          },
-          'text-valign': function(ele)
-          {
-            return 'bottom';
-          },
-          'padding-left': function(ele){ return compoundPaddingFunction(ele); },
-          'padding-right': function(ele){ return compoundPaddingFunction(ele); },
-          'padding-bottom': function(ele){ return compoundPaddingFunction(ele); },
-          'padding-top':  function(ele){ return compoundPaddingFunction(ele); },
-          'background-opacity': 0.5,
-          'border-width': function(ele)
-          {
-              return parentBorderWidthFunction( ele );
-          },
-          'border-color': function(ele)
-          {
-            return nodeBorderColorFunction(ele);
-          },
-          'background-color': function(ele){
-            return nodeBackgroundColorFunction(ele);
-          }
+          return parentNodeShapeFunc( ele );
+        },
+        'text-valign': function(ele)
+        {
+          return 'bottom';
+        },
+        'padding-left': function(ele){ return compoundPaddingFunction(ele); },
+        'padding-right': function(ele){ return compoundPaddingFunction(ele); },
+        'padding-bottom': function(ele){ return compoundPaddingFunction(ele); },
+        'padding-top':  function(ele){ return compoundPaddingFunction(ele); },
+        'background-opacity': 0.5,
+        'border-width': function(ele)
+        {
+          return parentBorderWidthFunction( ele );
+        },
+        'border-color': function(ele)
+        {
+          return nodeBorderColorFunction(ele);
+        },
+        'background-color': function(ele){
+          return nodeBackgroundColorFunction(ele);
         }
+      }
     },
     {
       selector: 'edge',
@@ -68,147 +70,147 @@ var styleSheet = [
         'curve-style': 'bezier',
         'target-arrow-shape': function( ele )
         {
-            return edgeTargetArrowTypeHandler(ele);
+          return edgeTargetArrowTypeHandler(ele);
         },
         'width': 1,
         'line-color': function( ele )
         {
-            return edgeColorHandler(ele);
+          return edgeColorHandler(ele);
         },
         'target-arrow-color': function( ele )
         {
-            return edgeColorHandler(ele);
+          return edgeColorHandler(ele);
         },
         'line-style': function(ele)
         {
-            return edgeLineTypeHandler(ele);
+          return edgeLineTypeHandler(ele);
         },
         'opacity': 1
       }
-  },
-  // {
-  //     selector: 'edge.segments',
-  //     style:
-  //     {
-  //       'curve-style': 'segments',
-  //       'segment-distances': '0 100',
-  //       'segment-weights': '0 1'
-  //     }
-  // },
-  {
-    selector: ':selected',
-    style:
+    },
+    // {
+    //     selector: 'edge.segments',
+    //     style:
+    //     {
+    //       'curve-style': 'segments',
+    //       'segment-distances': '0 100',
+    //       'segment-weights': '0 1'
+    //     }
+    // },
     {
-      'shadow-color' : '#f1c40f',
-      'shadow-opacity': 1.0
+      selector: ':selected',
+      style:
+      {
+        'shadow-color' : '#f1c40f',
+        'shadow-opacity': 1.0
+      }
+    }
+  ];
+
+
+  var compoundPaddingFunction = function( ele )
+  {
+    switch (ele._private.data['type'])
+    {
+      case "FAMILY": return 5; break;
+      case "COMPARTMENT": return 10; break;
+      case "PROCESS": return 10; break;
+      default: return 5; break;
     }
   }
-];
 
-
-var compoundPaddingFunction = function( ele )
-{
-  switch (ele._private.data['type'])
+  var contentFunction = function( ele )
   {
-    case "FAMILY": return 5; break;
-    case "COMPARTMENT": return 10; break;
-    case "PROCESS": return 10; break;
-    default: return 5; break;
+    if (ele._private.data.name) {
+      return ele._private.data.name;
+    }
+    return 'newNode';
   }
-}
 
-var contentFunction = function( ele )
-{
-  if (ele._private.data.name) {
-    return ele._private.data.name;
-  }
-  return 'newNode';
-}
-
-var vTextPositionFunction = function( ele )
-{
-  switch (ele._private.data['type'])
+  var vTextPositionFunction = function( ele )
   {
-    case "GENE": return 'center'; break;
-    case "FAMILY": return 'top'; break;
-    case "COMPARTMENT": return 'top'; break;
-    default: return 'center'; break;
+    switch (ele._private.data['type'])
+    {
+      case "GENE": return 'center'; break;
+      case "FAMILY": return 'top'; break;
+      case "COMPARTMENT": return 'top'; break;
+      default: return 'center'; break;
+    }
   }
-}
 
-var borderWidthFunction = function( ele )
-{
-  switch (ele._private.data['type'])
+  var borderWidthFunction = function( ele )
   {
-    case "GENE": return 0.5; break;
-    case "PROCESS": return 0; break;
-    case "FAMILY": return 1.0; break;
-    case "COMPARTMENT": return 2; break;
-    default: return 0.5; break;
+    switch (ele._private.data['type'])
+    {
+      case "GENE": return 0.5; break;
+      case "PROCESS": return 0; break;
+      case "FAMILY": return 1.0; break;
+      case "COMPARTMENT": return 2; break;
+      default: return 0.5; break;
+    }
   }
-}
 
-var parentBorderWidthFunction = function( ele )
-{
-  switch (ele._private.data['type'])
+  var parentBorderWidthFunction = function( ele )
   {
-    case "GENE": return 0.5; break;
-    case "PROCESS": return 1.0; break;
-    case "FAMILY": return 1.0; break;
-    case "COMPARTMENT": return 2; break;
-    default: return 0.5; break;
+    switch (ele._private.data['type'])
+    {
+      case "GENE": return 0.5; break;
+      case "PROCESS": return 1.0; break;
+      case "FAMILY": return 1.0; break;
+      case "COMPARTMENT": return 2; break;
+      default: return 0.5; break;
+    }
   }
-}
 
-var parentNodeShapeFunc = function( ele )
-{
-  switch (ele._private.data['type'])
+  var parentNodeShapeFunc = function( ele )
   {
-    case "GENE": return "roundrectangle"; break;
-    case "PROCESS": return "roundrectangle"; break;
-    case "FAMILY": return "rectangle"; break;
-    case "COMPARTMENT": return "roundrectangle"; break;
-    default: return "roundrectangle"; break;
+    switch (ele._private.data['type'])
+    {
+      case "GENE": return "roundrectangle"; break;
+      case "PROCESS": return "roundrectangle"; break;
+      case "FAMILY": return "rectangle"; break;
+      case "COMPARTMENT": return "roundrectangle"; break;
+      default: return "roundrectangle"; break;
+    }
   }
-}
 
-var nodeBackgroundColorFunction = function( ele )
-{
-  switch (ele._private.data['type'])
+  var nodeBackgroundColorFunction = function( ele )
   {
-    case "GENE": return "#fff"; break;
-    case "FAMILY": return "#CCCCCC"; break;
-    case "COMPARTMENT": return "#fff"; break;
-    default: return "#fff"; break;
+    switch (ele._private.data['type'])
+    {
+      case "GENE": return "#fff"; break;
+      case "FAMILY": return "#CCCCCC"; break;
+      case "COMPARTMENT": return "#fff"; break;
+      default: return "#fff"; break;
+    }
   }
-}
 
-var nodeBorderColorFunction = function( ele )
-{
-  switch (ele._private.data['type'])
+  var nodeBorderColorFunction = function( ele )
   {
-    case "GENE": return "#000000"; break;
-    case "FAMILY": return "#CCCCCC"; break;
-    case "COMPARTMENT": return "#000000"; break;
-    default: return "#000000"; break;
+    switch (ele._private.data['type'])
+    {
+      case "GENE": return "#000000"; break;
+      case "FAMILY": return "#CCCCCC"; break;
+      case "COMPARTMENT": return "#000000"; break;
+      default: return "#000000"; break;
+    }
   }
-}
 
-var edgeColorHandler = function( ele )
-{
-  // switch (ele._private.data['type']){
-  //   case "ACTIVATES": return "#904930"; break;
-  //   case "INHIBITS": return "#7B7EF7"; break;
-  //   case "INDUCES": return "#ad47c2"; break;
-  //   case "REPRESSES": return "#67C1A9"; break;
-  //   case "BINDS": return "#67C1A9"; break;
-  //   default: return "#989898"; break;
-  // }
-  return "#1b1b1b";
-}
+  var edgeColorHandler = function( ele )
+  {
+    // switch (ele._private.data['type']){
+    //   case "ACTIVATES": return "#904930"; break;
+    //   case "INHIBITS": return "#7B7EF7"; break;
+    //   case "INDUCES": return "#ad47c2"; break;
+    //   case "REPRESSES": return "#67C1A9"; break;
+    //   case "BINDS": return "#67C1A9"; break;
+    //   default: return "#989898"; break;
+    // }
+    return "#1b1b1b";
+  }
 
-var edgeTargetArrowTypeHandler = function( ele )
-{
+  var edgeTargetArrowTypeHandler = function( ele )
+  {
     switch (ele._private.data['type']){
       case "ACTIVATES": return "triangle"; break;
       case "INHIBITS": return "tee"; break;
@@ -217,10 +219,10 @@ var edgeTargetArrowTypeHandler = function( ele )
       case "BINDS": return "none"; break;
       default: return "none"; break;
     }
-}
+  }
 
-var edgeLineTypeHandler = function( ele )
-{
+  var edgeLineTypeHandler = function( ele )
+  {
     switch (ele._private.data['type']){
       case "ACTIVATES": return "solid"; break;
       case "INHIBITS": return "solid"; break;
@@ -229,7 +231,9 @@ var edgeLineTypeHandler = function( ele )
       case "BINDS": return "solid"; break;
       default: return "solid"; break;
     }
-}
+  }
+
+  return styleSheet;
+})();
 
 
-module.exports = styleSheet;

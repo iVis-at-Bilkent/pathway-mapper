@@ -3,11 +3,69 @@ module.exports = (function()
     "use strict";
     var EditorActionsManager = function(isCollaborative, realtimeManager, cyInst)
     {
+        //Set cy instance and set real time manager reference if collaborative mode
         this.cy = cyInst;
-        // this.realTimeDoc = realTimeDoc;
         this.isCollaborative = isCollaborative;
         if(this.isCollaborative && realtimeManager)
             this.realTimeManager = realtimeManager;
+
+        this.defaultLayoutProperties =
+        {
+            name: 'cose-bilkent',
+            nodeRepulsion: 4500,
+            nodeOverlap: 10,
+            idealEdgeLength: 50,
+            edgeElasticity: 0.45,
+            nestingFactor: 0.1,
+            gravity: 0.15,
+            numIter: 2500,
+            tile: true,
+            animate: "end",
+            randomize: true,
+            gravityRangeCompound: 1.5,
+            // Gravity force (constant) for compounds
+            gravityCompound: 1.0,
+            // Gravity range (constant)
+            gravityRange: 1.5
+        };
+
+        this.layoutProperties = _.clone(this.defaultLayoutProperties);
+        this.observers = [];
+    };
+
+    //Simple observer-observable pattern for views!!!!!
+    EditorActionsManager.prototype.registerObserver = function(observer)
+    {
+        this.observers.push(observer);
+    };
+
+    EditorActionsManager.prototype.notifyObservers = function()
+    {
+        for (var i in this.observers)
+        {
+            var observer = this.observers[i];
+            observer.notify();
+        }
+    };
+    
+    //Layout properties related functions
+    EditorActionsManager.prototype.saveLayoutProperties = function(newLayoutProps)
+    {
+        if(this.isCollaborative)
+        {
+            this.layoutProperties = _.clone(newLayoutProps);
+            //Notify observers on each collaborator
+            self.editorActionsManager.notifyObservers();
+        }
+        else
+        {
+            this.layoutProperties = _.clone(newLayoutProps);
+        }
+    };
+
+    EditorActionsManager.prototype.performLayout = function()
+    {
+        cy.layout(this.layoutProperties);
     };
 
     //Node Related Functions
@@ -21,7 +79,7 @@ module.exports = (function()
         {
             this.addNodetoCy(nodeData,posData);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addNodes = function(nodes)
     {
@@ -29,7 +87,7 @@ module.exports = (function()
         {
             this.addNode(nodes[i].data, nodes[i].position);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addNodesCy = function(nodes)
     {
@@ -37,7 +95,7 @@ module.exports = (function()
         {
             this.addNodetoCy(nodes[i].data, nodes[i].position);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)
     {
@@ -63,7 +121,7 @@ module.exports = (function()
 
         this.cy.add(newNode);
         this.cy.nodes().updateCompoundBounds();
-    }
+    };
 
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
     {
@@ -85,7 +143,7 @@ module.exports = (function()
         {
             this.addNewNodeLocally(node)
         }
-    }
+    };
 
     EditorActionsManager.prototype.addNewNodesLocally = function(realTimeNodeArray)
     {
@@ -105,7 +163,7 @@ module.exports = (function()
                     name: realTimeNode.name,
                     parent: realTimeNode.parent
                 }
-            }
+            };
 
             if (nodeData.data.parent === undefined )
             {
@@ -125,7 +183,7 @@ module.exports = (function()
         }
         this.cy.add(nodeList);
         this.cy.nodes().updateCompoundBounds();
-    }
+    };
 
     EditorActionsManager.prototype.addNewNodeLocally = function(realtimeNode)
     {
@@ -147,12 +205,12 @@ module.exports = (function()
             this.addNodetoCy(nodeData);
         }
         this.cy.nodes().updateCompoundBounds();
-    }
+    };
 
     EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
     {
         this.realTimeManager.addNewNode(nodeData,posData);
-    }
+    };
 
     //Edge related functions
     EditorActionsManager.prototype.addEdge = function(edgeData)
@@ -165,7 +223,7 @@ module.exports = (function()
         {
             this.addNewEdgetoCy(edgeData);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addEdges = function(edges)
     {
@@ -173,7 +231,7 @@ module.exports = (function()
         {
             this.addEdge(edges[i].data);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addEdgesCy = function(edges)
     {
@@ -181,12 +239,12 @@ module.exports = (function()
         {
             this.addNewEdgetoCy(edges[i].data);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addNewEdgeRealTime = function(edgeData)
     {
         this.realTimeManager.addNewEdge(edgeData);
-    }
+    };
 
     EditorActionsManager.prototype.addNewEdgetoCy = function(edgeData)
     {
@@ -195,7 +253,7 @@ module.exports = (function()
                 group: "edges",
                 data: edgeData
             });
-    }
+    };
 
     EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(event)
     {
@@ -209,7 +267,7 @@ module.exports = (function()
             var edgeID = this.realTimeManager.getCustomObjId(edge);
             //Remove element from existing graph
             var ele = event.newValue;
-            var cyEle = this.cy.$("#" + edgeID)
+            var cyEle = this.cy.$("#" + edgeID);
             this.removeElementCy(cyEle);
         }
         //Addition Operation
@@ -217,7 +275,7 @@ module.exports = (function()
         {
             this.addNewEdgeLocally(edge);
         }
-    }
+    };
 
     EditorActionsManager.prototype.addNewEdgesLocally = function(realTimeEdgeArray)
     {
@@ -242,7 +300,7 @@ module.exports = (function()
             edgeList.push(edgeData);
         }
         this.cy.add(edgeList);
-    }
+    };
 
     EditorActionsManager.prototype.addNewEdgeLocally = function(edge)
     {
@@ -255,7 +313,7 @@ module.exports = (function()
             target: edge.target
         };
         this.addNewEdgetoCy(edgeData);
-    }
+    };
 
     //Removal functions
     EditorActionsManager.prototype.removeElement = function(ele)
@@ -280,17 +338,17 @@ module.exports = (function()
         {
             this.removeElementCy(ele);
         }
-    }
+    };
 
     EditorActionsManager.prototype.removeElementCy = function(ele)
     {
         this.cy.remove(ele);
-    }
+    };
 
     EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
     {
         this.realTimeManager.removeElement(ele.id());
-    }
+    };
     
     EditorActionsManager.prototype.changeParents = function(eles, newParentId)
     {
@@ -302,7 +360,7 @@ module.exports = (function()
         {
             this.changeParentCy(eles, newParentId);
         }
-    }
+    };
 
     EditorActionsManager.prototype.changeParentCy = function(eles, newParentId)
     {
@@ -351,7 +409,7 @@ module.exports = (function()
 
         self.cy.add(removedNodes);
         self.cy.nodes().updateCompoundBounds();
-    }
+    };
     
     EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId) 
     {
@@ -384,7 +442,7 @@ module.exports = (function()
         var NodeObj = function(nodeObj){
             this.nodeRef  = nodeObj;
             this.children = [];
-        }
+        };
 
 
         //TODO need to pass this to function somehow
@@ -418,7 +476,7 @@ module.exports = (function()
         traverseNodes(topMostNodes, rootNodeR);
         this.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
         console.log(rootNodeR);
-    }
+    };
 
     EditorActionsManager.prototype.moveElements = function(ele)
     {
@@ -431,7 +489,7 @@ module.exports = (function()
                 classRef.realTimeManager.moveElement(ele);
             });
         }
-    }
+    };
 
     EditorActionsManager.prototype.mergeGraph = function(nodes, edges)
     {
@@ -445,7 +503,7 @@ module.exports = (function()
             //Local usage file load
             this.mergeGraphCy(nodes,edges);
         }
-    }
+    };
 
     EditorActionsManager.prototype.mergeGraphCy = function(nodes, edges)
     {
@@ -518,7 +576,7 @@ module.exports = (function()
         
         cy.add(edgesToBeAdded);
         cy.fit(50);
-    }
+    };
 
     EditorActionsManager.prototype.loadFile = function(nodes, edges)
     {
@@ -532,7 +590,7 @@ module.exports = (function()
             //Local usage file load
             this.loadFileCy(nodes,edges);
         }
-    }
+    };
 
     EditorActionsManager.prototype.loadFileCy = function(nodes, edges)
     {
@@ -541,12 +599,24 @@ module.exports = (function()
         this.addNodesCy(nodes);
         this.addEdgesCy(edges);
         cy.fit(50);
-    }
+    };
 
     EditorActionsManager.prototype.loadfileRealTime = function(nodes, edges)
     {
         this.realTimeManager.loadGraph(nodes,edges);
-    }
+    };
+
+    EditorActionsManager.prototype.removeAllElements = function()
+    {
+        if (this.isCollaborative)
+        {
+            this.realTimeManager.removeAllElements();
+        }
+        else
+        {
+            cy.remove(cy.elements());
+        }
+    };
 
 
     EditorActionsManager.prototype.changeName = function(ele, newName)
@@ -559,13 +629,13 @@ module.exports = (function()
         {
             this.changeNameCy(ele, newName);
         }
-    }
+    };
 
     EditorActionsManager.prototype.changeNameCy = function(ele, newName)
     {
         ele.data('name', newName);
         ele.css('content', newName);
-    }
+    };
     
     EditorActionsManager.prototype.updateElementCallback = function(ele, id)
     {
@@ -574,7 +644,7 @@ module.exports = (function()
         var cyEle = this.cy.$("#" + nodeID);
         cyEle.position({x: ele.x, y: ele.y});
         this.changeNameCy(cyEle, ele.name);
-    }
+    };
 
 
     //Utility Functions
