@@ -87,6 +87,46 @@ module.exports = (function()
         }
     }
 
+    EditorActionsManager.prototype.addNewNodesLocally = function(realTimeNodeArray)
+    {
+        var nodeList = [];
+        for (var i in realTimeNodeArray)
+        {
+            var realTimeNode= realTimeNodeArray[i];
+
+            var nodeID = this.realTimeManager.getCustomObjId(realTimeNode);
+            var nodeData =
+            {
+                group: 'nodes',
+                data:
+                {
+                    id: nodeID,
+                    type: realTimeNode.type,
+                    name: realTimeNode.name,
+                    parent: realTimeNode.parent
+                }
+            }
+
+            if (nodeData.data.parent === undefined )
+            {
+                delete nodeData.data.parent;
+            }
+
+            if (realTimeNode.x && realTimeNode.y)
+            {
+                nodeData.position =
+                {
+                    x: realTimeNode.x,
+                    y: realTimeNode.y
+                }
+            }
+
+            nodeList.push(nodeData);
+        }
+        this.cy.add(nodeList);
+        this.cy.nodes().updateCompoundBounds();
+    }
+
     EditorActionsManager.prototype.addNewNodeLocally = function(realtimeNode)
     {
         var nodeID = this.realTimeManager.getCustomObjId(realtimeNode);
@@ -177,6 +217,31 @@ module.exports = (function()
         {
             this.addNewEdgeLocally(edge);
         }
+    }
+
+    EditorActionsManager.prototype.addNewEdgesLocally = function(realTimeEdgeArray)
+    {
+        var edgeList = [];
+        for (var i in realTimeEdgeArray)
+        {
+            var edge= realTimeEdgeArray[i];
+            var edgeID = this.realTimeManager.getCustomObjId(edge);
+
+            var edgeData =
+            {
+                group: 'edges',
+                data:
+                {
+                    id: edgeID,
+                    type: edge.type,
+                    source: edge.source,
+                    target: edge.target
+                }
+            };
+
+            edgeList.push(edgeData);
+        }
+        this.cy.add(edgeList);
     }
 
     EditorActionsManager.prototype.addNewEdgeLocally = function(edge)

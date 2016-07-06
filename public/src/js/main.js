@@ -8,7 +8,7 @@ require('./RealTimeUtils');//Google's real time utility lib
 
 var WelcomePageView = require('./Views/WelcomePageView.js');
 var AppManager = require('./AppManager');
-var RealTimeModule = require('./RealTimeModule');
+var RealTimeModule = require('./RealTimeManager');
 
 
 //Wait all components to load

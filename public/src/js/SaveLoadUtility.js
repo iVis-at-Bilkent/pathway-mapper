@@ -36,8 +36,8 @@ var SaveLoadUtils =
                          nodeID + '\t' +
                          nodeType + '\t' +
                          parentID + '\t' +
-                         parseInt(nodes[i].position.x) + '\t' +
-                         parseInt(nodes[i].position.y) + '\t\n';
+                         parseInt(pos.x) + '\t' +
+                         parseInt(pos.y) + '\t\n';
       }
     }
 

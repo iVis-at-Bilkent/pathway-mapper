@@ -2,7 +2,7 @@ module.exports = (function()
 {
     "use strict";
 
-    var RealTimeModule = function(postFileLoadCallback)
+    var RealTimeManager = function(postFileLoadCallback)
     {
         this.clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
 
@@ -21,7 +21,7 @@ module.exports = (function()
         this.postFileLoad = postFileLoadCallback;
     }
 
-    RealTimeModule.prototype.authorize = function(callbackFunction, isModal)
+    RealTimeManager.prototype.authorize = function(callbackFunction, isModal)
     {
         // Attempt to authorize
         this.realtimeUtils.authorize(function(response)
@@ -31,7 +31,7 @@ module.exports = (function()
         }, isModal);
     }
 
-    RealTimeModule.prototype.initRealTimeAPI = function()
+    RealTimeManager.prototype.initRealTimeAPI = function()
     {
         // With auth taken care of, load a file, or create one if there
         // is not an id in the URL.
@@ -70,7 +70,7 @@ module.exports = (function()
 
     // The first time a file is opened, it must be initialized with the
     // document structure.
-    RealTimeModule.prototype.onFileInitialize = function(model)
+    RealTimeManager.prototype.onFileInitialize = function(model)
     {
         var root = model.getRoot();
 
@@ -85,7 +85,7 @@ module.exports = (function()
         After a file has been initialized and loaded, we can access the
         document. We will wire up the data model to the UI.
     */
-    RealTimeModule.prototype.onFileLoaded =  function(doc)
+    RealTimeManager.prototype.onFileLoaded =  function(doc)
     {
         // this.realTimeDoc = doc;
         var model = doc.getModel();
@@ -94,22 +94,12 @@ module.exports = (function()
         var nodeMap = root.get(this.NODEMAP_NAME);
         var edgeMap = root.get(this.EDGEMAP_NAME);
 
-        var nodeMapKeys = nodeMap.keys();
-        var edgeMapKeys = edgeMap.keys();
+        var nodeMapEntries = nodeMap.values();
+        var edgeMapEntries = edgeMap.values();
 
         //Add real time nodes to local graph
-        for (var index in nodeMapKeys)
-        {
-            var realtimeNode = nodeMap.get(nodeMapKeys[index]);
-            window.editorActionsManager.addNewNodeLocally(realtimeNode);
-        }
-
-        //Add real time edges to local graph
-        for (var index in edgeMapKeys)
-        {
-            var realTimeEdge = edgeMap.get(edgeMapKeys[index]);
-            window.editorActionsManager.addNewEdgeLocally(realTimeEdge);
-        }
+        window.editorActionsManager.addNewNodesLocally(nodeMapEntries);
+        window.editorActionsManager.addNewEdgesLocally(edgeMapEntries);
 
         //Keep a reference to the file !
         this.realTimeDoc = doc;
@@ -117,12 +107,12 @@ module.exports = (function()
         //Setup event handlers for maps
         var nodeAddRemoveHandler = function(event)
         {
-            editorActionsManager.realTimeNodeAddRemoveEventCallBack(event);
+            window.editorActionsManager.realTimeNodeAddRemoveEventCallBack(event);
         }
 
         var edgeAddRemoveHandler = function(event)
         {
-            editorActionsManager.realTimeEdgeAddRemoveEventCallBack(event);
+            window.editorActionsManager.realTimeEdgeAddRemoveEventCallBack(event);
         }
 
         //Event listeners for edge and node map
@@ -140,7 +130,7 @@ module.exports = (function()
         
     }
 
-    RealTimeModule.prototype.addNewNode = function(nodeData, posData)
+    RealTimeManager.prototype.addNewNode = function(nodeData, posData)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -161,7 +151,7 @@ module.exports = (function()
         nodeMap.set(realTimeGeneratedID, newNode);
     }
 
-    RealTimeModule.prototype.addNewEdge = function(edgeData)
+    RealTimeManager.prototype.addNewEdge = function(edgeData)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -178,7 +168,7 @@ module.exports = (function()
         edgeMap.set(realTimeGeneratedID, newEdge);
     }
 
-    RealTimeModule.prototype.removeElement = function(elementID)
+    RealTimeManager.prototype.removeElement = function(elementID)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -200,7 +190,7 @@ module.exports = (function()
         }
     }
 
-    RealTimeModule.prototype.moveElement = function(ele)
+    RealTimeManager.prototype.moveElement = function(ele)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -225,7 +215,7 @@ module.exports = (function()
         
     }
 
-    RealTimeModule.prototype.changeName = function(ele, newName)
+    RealTimeManager.prototype.changeName = function(ele, newName)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -248,7 +238,7 @@ module.exports = (function()
 
     }
 
-    RealTimeModule.prototype.changeParent = function (rootNode, newParentId, connectedEdges)
+    RealTimeManager.prototype.changeParent = function (rootNode, newParentId, connectedEdges)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -336,7 +326,7 @@ module.exports = (function()
         
     }
 
-    RealTimeModule.prototype.loadGraph = function(nodes, edges)
+    RealTimeManager.prototype.loadGraph = function(nodes, edges)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -418,7 +408,7 @@ module.exports = (function()
         }
     }
 
-    RealTimeModule.prototype.mergeGraph = function(nodes, edges)
+    RealTimeManager.prototype.mergeGraph = function(nodes, edges)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -487,7 +477,6 @@ module.exports = (function()
                     var sameNodeId = that.getCustomObjId(sameNameNode);
                     oldIdNewIdMap[node.data.id] = sameNodeId;
 
-                    var realTimeNode = realTimeNodeLookupTable[node.data.id];
                     //If node has children recursively traverse sub graphs and update parent field of child nodes
                     if(node.children.length > 0)
                     {
@@ -526,14 +515,14 @@ module.exports = (function()
 
 
     //Google Real Time's custom object ids are retrieved in this way
-    RealTimeModule.prototype.getCustomObjId = function(object)
+    RealTimeManager.prototype.getCustomObjId = function(object)
     {
         return gapi.drive.realtime.custom.getId(object);
     }
 
     // You must register the custom object before loading or creating any file that
     // uses this custom object.
-    RealTimeModule.prototype.registerTypes = function()
+    RealTimeManager.prototype.registerTypes = function()
     {
         var self = this;
         //Register our custom objects go Google Real Time API
@@ -569,7 +558,7 @@ module.exports = (function()
      * a node in corresponding level.
      *
      * */
-    RealTimeModule.prototype.createGraphHierarchy = function(nodes)
+    RealTimeManager.prototype.createGraphHierarchy = function(nodes)
     {
         //Some arrays and maps for creating graph hierarchy
         var tree = [];
@@ -636,6 +625,6 @@ module.exports = (function()
         this.target = params.target || "undefined";
     }
 
-    return RealTimeModule;
+    return RealTimeManager;
 
 })()

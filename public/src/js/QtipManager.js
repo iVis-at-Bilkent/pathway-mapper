@@ -6,12 +6,12 @@ module.exports = (function($)
 {
   "use strict";
   
-  var QtipModule =function (cy)
+  var QtipManager =function (cy)
   {
     this.cy = cy;
   };
 
-  QtipModule.prototype.generateQtipContentHTML = function(ele)
+  QtipManager.prototype.generateQtipContentHTML = function(ele)
   {
     var self = this;
     var nodeData = ele.data();
@@ -81,7 +81,7 @@ module.exports = (function($)
     return wrapper;
   }
 
-  QtipModule.prototype.addQtipToElements = function(eles)
+  QtipManager.prototype.addQtipToElements = function(eles)
   {
     var self = this;
     eles.forEach(function(node,i)
@@ -121,6 +121,6 @@ module.exports = (function($)
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
-  return QtipModule;
+  return QtipManager;
 
 }(window.$));

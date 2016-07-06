@@ -1,4 +1,4 @@
-var SaveLoadUtilities = require('./saveLoadUtils.js');
+var SaveLoadUtilities = require('./SaveLoadUtility.js');
 
 
 module.exports = (function($)
@@ -216,7 +216,6 @@ module.exports = (function($)
       {
         saveAsPNG();
       }
-
     });
 
     //Initial file name click handler

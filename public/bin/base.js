@@ -47276,18 +47276,19 @@ var cyqtip = require('cytoscape-qtip');
 var regCose = require("../../lib/js/cose-bilkent/src/index.js");
 
 //Panzoom options
-var panzoomOpts = require('./panzoomUtils.js');
-var styleSheet = require('./stylesheet.js');
-var edgeHandleOpts = require('./edgeHandlingUtils.js');
-var SaveLoadUtilities = require('./saveLoadUtils.js');
+var panzoomOpts = require('./PanzoomOptions.js');
+var styleSheet = require('./GraphStyleSheet.js');
+var edgeHandleOpts = require('./EdgeHandlesOptions.js');
+var SaveLoadUtilities = require('./SaveLoadUtility.js');
 var LayoutProperties = require('./Views/LayoutProperties.js');
 
 //Other requires
-require('./fileOperationsModule.js');
-require('./viewOperationsModule.js');
-var QtipModule = require('./qTipModule.js');
-var CxtMenu = require('./contextMenuModule.js');
-var NodeAdd = require('./cytoscape.js-nodeadd.js');
+require('./FileOperationsManager.js');
+require('./ViewOperationsManager.js');
+
+var QtipManager = require('./QtipManager.js');
+var ContextMenuManager = require('./ContextMenuManager.js');
+var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
 var EditorActionsManager = require('./EditorActionsManager.js');
 
 
@@ -47337,9 +47338,9 @@ module.exports = (function()
 
         //TODO remove window.editorActionsManager from real time module ASAP !
         window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative, this.realTimeManager, window.cy);
-        this.qtipHandler = new QtipModule(window.cy), this.editorActionsManager;
-        this.cxMenuHandler = new CxtMenu(window.cy, this.editorActionsManager);
-        this.nodeAdd = new NodeAdd(this.editorActionsManager);
+        this.qtipHandler = new QtipManager(window.cy), this.editorActionsManager;
+        this.cxMenuHandler = new ContextMenuManager(window.cy, this.editorActionsManager);
+        this.nodeAdd = new DragDropNodeAddPlugin(this.editorActionsManager);
 
         cy.panzoom( panzoomOpts );
 
@@ -47447,7 +47448,429 @@ module.exports = (function()
     return AppManager;
 
 })();
-},{"../../lib/js/cose-bilkent/src/index.js":51,"./EditorActionsManager.js":53,"./Views/LayoutProperties.js":57,"./contextMenuModule.js":59,"./cytoscape.js-nodeadd.js":60,"./edgeHandlingUtils.js":61,"./fileOperationsModule.js":62,"./panzoomUtils.js":64,"./qTipModule.js":65,"./saveLoadUtils.js":66,"./stylesheet.js":67,"./viewOperationsModule.js":68,"cytoscape":18,"cytoscape-cxtmenu":15,"cytoscape-panzoom":16,"cytoscape-qtip":17}],53:[function(require,module,exports){
+},{"../../lib/js/cose-bilkent/src/index.js":51,"./ContextMenuManager.js":53,"./DragDropNodeAddPlugin.js":54,"./EdgeHandlesOptions.js":55,"./EditorActionsManager.js":56,"./FileOperationsManager.js":57,"./GraphStyleSheet.js":58,"./PanzoomOptions.js":59,"./QtipManager.js":60,"./SaveLoadUtility.js":63,"./ViewOperationsManager.js":64,"./Views/LayoutProperties.js":66,"cytoscape":18,"cytoscape-cxtmenu":15,"cytoscape-panzoom":16,"cytoscape-qtip":17}],53:[function(require,module,exports){
+;
+module.exports = (function()
+{
+  "use strict";
+
+  var CxtMenu = function(cy, editorActionsManager)
+  {
+    this.cy = cy;
+    this.editorActionsManager = editorActionsManager;
+    this.init();
+  };
+
+  CxtMenu.prototype.init = function()
+  {
+    var classRef = this;
+
+    //Core context menu
+    this.cy.cxtmenu({
+      selector: 'core',
+      activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
+      commands: [
+        {
+          content: 'Perform Layout',
+          select: function(ele)
+          {
+            cy.layout(window.layoutProperties.currentLayoutProperties);
+          }
+        },
+      ]
+    });
+
+    //Node context menu
+    this.cy.cxtmenu({
+      selector: 'node',
+      activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
+      commands:
+          [
+            {
+              content: 'Delete Node(s)',
+              select: function(ele)
+              {
+                var selectedNodes = cy.nodes(':selected').union(ele);
+                var nodesToBeRemoved = selectedNodes.remove();
+                nodesToBeRemoved.forEach(function(node, index)
+                {
+                  classRef.editorActionsManager.removeElement(node);
+                });
+              }
+            },
+            {
+              content: 'Remove Selected From Parent',
+              select: function(ele)
+              {
+                var selectedNodes = cy.nodes(':selected').union(ele);
+
+                var notValid = false;
+                selectedNodes.forEach(function(tmpNode, i)
+                {
+
+                  if (tmpNode.isParent())
+                  {
+                    notValid = isChildren(tmpNode, ele);
+                    if (notValid)
+                    {
+                      return false;
+                    }
+                  }
+                });
+
+                if (notValid)
+                {
+                  return;
+                }
+
+                classRef.editorActionsManager.changeParents(selectedNodes);
+              }
+            },
+            {
+              content: 'Add Selected Into This Node',
+              select: function(ele)
+              {
+                var selectedNodes = cy.nodes(':selected');
+
+                //Do nothing if node is GENE
+                if (ele._private.data['type'] === 'GENE' || selectedNodes.size() < 1)
+                {
+                  return;
+                }
+                //Prevent actions like adding root node to children & addition to itself
+                else
+                {
+                  var notValid = false;
+                  selectedNodes.forEach(function(tmpNode, i)
+                  {
+                    if (ele.id() == tmpNode.id())
+                    {
+                      notValid = true;
+                      return false;
+                    }
+
+                    if (tmpNode.isParent())
+                    {
+                      notValid = isChildren(tmpNode, ele);
+                      if (notValid)
+                      {
+                        return false;
+                      }
+                    }
+                  });
+
+                  if (notValid)
+                  {
+                    return;
+                  }
+                }
+
+                var compId = ele.id();
+                classRef.editorActionsManager.changeParents(selectedNodes, compId);
+              }
+            }
+          ]
+    });
+
+    //Edge context menu
+    this.cy.cxtmenu({
+      selector: 'edge',
+      activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
+      commands: [
+        {
+          content: 'Delete Edge(s)',
+          select: function(ele)
+          {
+            var selectedEdges = cy.edges(':selected').union(ele);
+            selectedEdges.forEach(function(edge, index)
+            {
+              classRef.editorActionsManager.removeElement(edge);
+            });
+
+          }
+        }
+      ]
+    });
+  }
+
+  //TODO ??????
+  window.edgeAddingMode = false;
+  var contextMenuSelectionColor = 'rgba(51, 247, 182, 0.88)';
+
+  //TODO better move this to another class
+  //Utility function to check whether query node is children of given node
+  function isChildren(node, queryNode)
+  {
+    var parent = queryNode.parent()[0];
+    while(parent)
+    {
+      if (parent.id() == node.id()) {
+        return true;
+      }
+      parent = parent.parent()[0];
+    }
+    return false;
+  }
+  
+
+  return CxtMenu;
+
+}());
+
+},{}],54:[function(require,module,exports){
+;
+module.exports = (function($, $$)
+{
+    'use strict';
+
+    var NodeAdd = function(editorActionsManager)
+    {
+        this.editorActionsManager = editorActionsManager;
+        this.initNodeAdd();
+    }
+
+    NodeAdd.prototype.initNodeAdd = function()
+    {
+        var nodeAddClass = this;
+
+        var defaults = {
+            height: 30,   //height of the icon container
+            width: 30,    //width of the icon container
+            padding: 5,  //padding of the icon container(from right & top)
+            backgroundColorDiv: '#fff',   //background color of the icon container
+            borderColorDiv: '#fff',    //border color of the icon container
+            borderWidthDiv: '0px',    //border width of the icon container
+            borderRadiusDiv: '5px',    //border radius of the icon container
+
+            icon: '',   //icon class name
+
+            nodeParams: function(){
+                // return element object to be passed to cy.add() for adding node
+                return {};
+            }
+        };
+
+        $.fn.cytoscapeNodeadd = function(params) {
+            var options = $.extend(true, {}, defaults, params);
+            var fn = params;
+
+            var functions = {
+                destroy: function() {
+                    var $this = $(this);
+
+                    $this.find(".ui-cytoscape-nodeadd").remove();
+                },
+                init: function()
+                {
+                    return $(this).each(function()
+                    {
+                        var components = options.components;
+                        for (var index in components)
+                        {
+                            var component = components[index];
+                            var dragContainer = component.container;
+                            var explanationText = component.explanationText;
+
+                            var $nodeadd = $('<div class="ui-cytoscape-nodeadd"></div>');
+                            dragContainer.append($nodeadd);
+                            var $nodeDragHandle = $('<div class="ui-cytoscape-nodeadd-nodediv"> \
+                                                <span id="ui-cytoscape-nodeadd-icon" class="draggable" nodeType="'+ component.nodeType +'">\
+                                                  <img src="./assets/'+component.nodeType+'.png" alt="" />\
+                                                </span>\
+                                              </div>');
+                            $nodeadd.append($nodeDragHandle);
+
+                            $nodeDragHandle.bind("mousedown", function(e)
+                            {
+                                e.stopPropagation(); // don't trigger dragging of nodeadd
+                                e.preventDefault(); // don't cause text selection
+                            });
+
+                            //Setup UI
+                            dragContainer.find(".ui-cytoscape-nodeadd-nodediv").css({
+                                background: options.backgroundColorDiv,
+                                border: options.borderWidthDiv + ' solid ' + options.borderColorDiv,
+                                'border-radius': options.borderRadiusDiv
+                            });
+
+                            //Init Draggable
+                            dragContainer.find("#ui-cytoscape-nodeadd-icon").draggable({
+                                helper: "clone",
+                                cursor: "pointer"
+                            });
+                        }
+
+                        var $container = $(this);
+                        //Init Droppable
+                        $container.droppable({
+                            activeClass: "ui-state-highlight",
+                            // accept: "#ui-cytoscape-nodeadd-icon",
+                            drop: function(event, ui) {
+                                $container.removeClass("ui-state-highlight");
+
+                                var currentOffset = $container.offset();
+                                var relX = event.pageX - currentOffset.left;
+                                var relY = event.pageY - currentOffset.top;
+
+                                var nodeType = $(ui.helper).attr('nodeType').toUpperCase();
+
+                                var cy = $container.cytoscape("get");
+
+                                //Hold a map for parents and candidate parent nodes for this addition
+                                var nodeMap = {};
+                                var parentMap = {};
+                                //Loop through nodes for hit testing about drag position on canvas
+                                cy.nodes().forEach(function(node,i)
+                                {
+                                    var nodeBbox = node.renderedBoundingBox();
+                                    //Rectangle point test
+                                    if ( (relX <= nodeBbox.x2 && relX >= nodeBbox.x1) && (relY <= nodeBbox.y2 && relY >= nodeBbox.y1) && node.data().type != 'GENE' )
+                                    {
+                                        //If node has a children put an entry to the parentMap
+                                        if (node.children().length > 0)
+                                        {
+                                            parentMap[node.id()] = true;
+                                        }
+
+                                        //If parent of this node is already added to the node map remove it, since our candidate is in deeper level !
+                                        if (parentMap[node._private.data.parent])
+                                        {
+                                            delete nodeMap[node._private.data.parent];
+                                        }
+
+                                        //Add an entry to node map
+                                        nodeMap[node.id()] = node;
+                                    }
+                                });
+
+                                //Check if any parent found, if so set parent field
+                                var parent = nodeMap[Object.keys(nodeMap)[0]]
+                                var nodeData = {type: nodeType, name:'New '+ $(ui.helper).attr('nodeType')};
+                                if (parent)
+                                {
+                                    if (!(nodeType == "COMPARTMENT" && parent.data().type == "FAMILY" )) {
+                                        nodeData.parent = parent.id();
+                                    }
+                                }
+
+                                nodeAddClass.editorActionsManager.addNode(nodeData,{x: relX,y: relY});
+
+                            }
+                        });
+
+                    });
+                }
+            };
+
+            if (functions[fn]) {
+                return functions[fn].apply(this, Array.prototype.slice.call(arguments, 1));
+            } else if (typeof fn == 'object' || !fn) {
+                return functions.init.apply(this, arguments);
+            } else {
+                $.error("No such function `" + fn + "` for jquery.cytoscapenodeadd");
+            }
+
+            return $(this);
+        };
+
+        $.fn.cynodeadd = $.fn.cytoscapeNodeadd;
+
+        /* Adding as an extension to the core functionality of cytoscape.js*/
+        $$('core', 'nodeadd', function(options) {
+            var cy = this;
+
+            $(cy.container()).cytoscapeNodeadd(options);
+        });
+    }
+
+    return NodeAdd;
+
+})(window.$, window.cytoscape);
+
+},{}],55:[function(require,module,exports){
+;
+// the default values of each option are outlined below:
+var edgeHandleDefaults =
+{
+  preview: true, // whether to show added edges preview before releasing selection
+  stackOrder: 4, // Controls stack order of edgehandles canvas element by setting it's z-index
+  handleSize: 10, // the size of the edge handle put on nodes
+  handleColor: '#17d970', // the colour of the handle and the line drawn from it
+  handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line
+  handleLineWidth: 1, // width of handle line in pixels
+  handleNodes: 'node', // selector/filter function for whether edges can be made from a given node
+  hoverDelay: 150, // time spend over a target node before it is considered a target selection
+  cxt: false, // whether cxt events trigger edgehandles (useful on touch)
+  enabled: false, // whether to start the extension in the enabled state
+  toggleOffOnLeave: false, // whether an edge is cancelled by leaving a node (true), or whether you need to go over again to cancel (false; allows multiple edges in one pass)
+  edgeType: function( sourceNode, targetNode ) {
+    // can return 'flat' for flat edges between nodes or 'node' for intermediate node between them
+    // returning null/undefined means an edge can't be added between the two nodes
+    return 'flat';
+  },
+  loopAllowed: function( node ) {
+    // for the specified node, return whether edges from itself to itself are allowed
+    return false;
+  },
+  nodeLoopOffset: -50, // offset for edgeType: 'node' loops
+  nodeParams: function( sourceNode, targetNode ) {
+    // for edges between the specified source and target
+    // return element object to be passed to cy.add() for intermediary node
+    return {};
+  },
+  edgeParams: function( sourceNode, targetNode, i ) {
+    // for edges between the specified source and target
+    // return element object to be passed to cy.add() for edge
+    // NB: i indicates edge index in case of edgeType: 'node'
+    return {};
+  },
+  start: function( sourceNode ) {
+    // fired when edgehandles interaction starts (drag on handle)
+
+    var type = "NONE";
+    if (window.edgeAddingMode == 1)
+    {
+      type = 'ACTIVATES';
+    }
+    else if (window.edgeAddingMode == 2)
+    {
+      type = 'INHIBITS';
+    }
+    else if (window.edgeAddingMode == 3)
+    {
+      type = 'INDUCES';
+    }
+    else if (window.edgeAddingMode == 4)
+    {
+      type = 'REPRESSES';
+    }
+    else if (window.edgeAddingMode == 5)
+    {
+      type = 'BINDS';
+    }
+
+    cy.edgehandles('option', 'ghostEdgeType', type)
+  },
+  complete: function( sourceNode, targetNodes, addedEntities )
+  {
+      // cy.add({group:'edges', data:{source: sourceNode.id(), target: targetNodes[0].id(), type: type}});
+      cy.remove(addedEntities);
+      window.editorActionsManager.addEdge(addedEntities[0].data());
+  },
+  stop: function( sourceNode ) {
+    // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
+
+    //TODO refactor this, so terrible for now
+    $('.edge-palette a').blur().removeClass('active');
+    window.edgeAddingMode == -1;
+    cy.edgehandles('disable');
+
+  }
+};
+
+module.exports = edgeHandleDefaults;
+
+},{}],56:[function(require,module,exports){
 module.exports = (function()
 {
     "use strict";
@@ -47535,6 +47958,46 @@ module.exports = (function()
         {
             this.addNewNodeLocally(node)
         }
+    }
+
+    EditorActionsManager.prototype.addNewNodesLocally = function(realTimeNodeArray)
+    {
+        var nodeList = [];
+        for (var i in realTimeNodeArray)
+        {
+            var realTimeNode= realTimeNodeArray[i];
+
+            var nodeID = this.realTimeManager.getCustomObjId(realTimeNode);
+            var nodeData =
+            {
+                group: 'nodes',
+                data:
+                {
+                    id: nodeID,
+                    type: realTimeNode.type,
+                    name: realTimeNode.name,
+                    parent: realTimeNode.parent
+                }
+            }
+
+            if (nodeData.data.parent === undefined )
+            {
+                delete nodeData.data.parent;
+            }
+
+            if (realTimeNode.x && realTimeNode.y)
+            {
+                nodeData.position =
+                {
+                    x: realTimeNode.x,
+                    y: realTimeNode.y
+                }
+            }
+
+            nodeList.push(nodeData);
+        }
+        this.cy.add(nodeList);
+        this.cy.nodes().updateCompoundBounds();
     }
 
     EditorActionsManager.prototype.addNewNodeLocally = function(realtimeNode)
@@ -47627,6 +48090,31 @@ module.exports = (function()
         {
             this.addNewEdgeLocally(edge);
         }
+    }
+
+    EditorActionsManager.prototype.addNewEdgesLocally = function(realTimeEdgeArray)
+    {
+        var edgeList = [];
+        for (var i in realTimeEdgeArray)
+        {
+            var edge= realTimeEdgeArray[i];
+            var edgeID = this.realTimeManager.getCustomObjId(edge);
+
+            var edgeData =
+            {
+                group: 'edges',
+                data:
+                {
+                    id: edgeID,
+                    type: edge.type,
+                    source: edge.source,
+                    target: edge.target
+                }
+            };
+
+            edgeList.push(edgeData);
+        }
+        this.cy.add(edgeList);
     }
 
     EditorActionsManager.prototype.addNewEdgeLocally = function(edge)
@@ -47970,12 +48458,629 @@ module.exports = (function()
 
 })();
 
-},{}],54:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
+var SaveLoadUtilities = require('./SaveLoadUtility.js');
+
+
+module.exports = (function($)
+{
+    'use strict';
+
+    function focusOutHandler(event)
+    {
+      var inputFileName = $(".fileNameContent input");
+      var oldFileName = inputFileName.attr('oldFileName');
+      var parentEl = inputFileName.parent();
+      parentEl.empty();
+      var newFileName = $('<span>'+oldFileName+'</span>');
+      newFileName.click(fileNameClickFunction);
+      parentEl.append(newFileName);
+    }
+
+    function fileNameClickFunction(event)
+    {
+      event.preventDefault();
+      switchToInputView();
+    }
+
+    function fileNameEditFunction(event)
+    {
+      var key = event.charCode ? event.charCode : event.keyCode ? event.keyCode : 0;
+      //Enter key
+      if(key == 13)
+      {
+          event.preventDefault();
+          switchToFileNameView();
+      }
+    }
+
+    function switchToFileNameView()
+    {
+      var el = $(".fileNameContent input");
+      var parentEl = el.parent();
+      var fileName = el.val();
+      parentEl.empty();
+      var newFileName = $('<span>'+fileName+'</span>');
+      newFileName.click(fileNameClickFunction);
+      parentEl.append(newFileName);
+    }
+
+    function switchToInputView()
+    {
+      var el = $(".fileNameContent span");
+      var fileName = el.text();
+      var parentEl = el.parent();
+      parentEl.empty();
+      var inputField = $('<input class="form-control" type="text" oldFileName="'+fileName+'"/>');
+      inputField.val(fileName);
+      inputField.keydown(fileNameEditFunction);
+      inputField.focusout(focusOutHandler);
+      parentEl.append(inputField);
+      inputField.focus();
+    }
+
+    // see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+    function b64toBlob(b64Data, contentType, sliceSize) {
+      contentType = contentType || '';
+      sliceSize = sliceSize || 512;
+
+      var byteCharacters = atob(b64Data);
+      var byteArrays = [];
+
+      for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+      }
+
+      var blob = new Blob(byteArrays, {type: contentType});
+      return blob;
+    }
+
+    function saveAsJPEG()
+    {
+      // var fileName = getFileName();
+      var graphData = cy.jpeg();
+      // this is to remove the beginning of the pngContent: data:img/png;base64,
+      var b64data = graphData.substr(graphData.indexOf(",") + 1);
+      var imageData = b64toBlob(b64data, "image/jpeg");
+      var blob = new Blob([imageData]);
+      saveAs(blob, "pathway.jpg");
+    }
+
+    function saveAsPNG()
+    {
+      // var fileName = getFileName();
+      var graphData = cy.png();
+      // this is to remove the beginning of the pngContent: data:img/png;base64,
+      var b64data = graphData.substr(graphData.indexOf(",") + 1);
+      var imageData = b64toBlob(b64data, "image/png");
+      var blob = new Blob([imageData]);
+      saveAs(blob, "pathway.png");
+    }
+
+    function saveGraph(){
+      var fileName = getFileName();
+      var graphJSON = cy.json();
+      var returnString = SaveLoadUtilities.exportGraph(graphJSON);
+      var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
+      saveAs(blob, fileName);
+    }
+
+
+    function getFileName()
+    {
+      return $(".fileNameContent span").text();
+    }
+
+    function changeFileName(text)
+    {
+       $(".fileNameContent span").text(text);
+    }
+
+    function resetFileName()
+    {
+       $(".fileNameContent span").text('pathway.txt');
+    }
+
+    //Jquery handles
+    $('#saveGraphBtn').on('click', function(evt)
+    {
+      saveGraph();
+    });
+
+    $('#loadGraphBtn').on('click', function(evt)
+    {
+      $('#fileinput').attr('value', "");
+      $('#fileinput').trigger('click');
+    });
+
+    $('#fileinput').on('change', function()
+    {
+
+      var file = this.files[0];
+      // Create a new FormData object.
+      var formData = new FormData();
+      formData.append('graphFile', file);
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function ()
+      {
+        if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+        {
+            var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+            window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
+            changeFileName(file.name);
+        }
+      };
+      request.open("POST", "/loadGraph");
+      request.send(formData);
+      $('#fileinput').val(null);
+
+    });
+
+    $('#mergeInput').on('change', function()
+    {
+      var file = this.files[0];
+      // Create a new FormData object.
+      var formData = new FormData();
+      formData.append('graphFile', file);
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function ()
+      {
+        if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+        {
+          var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+          window.editorActionsManager.mergeGraph(allEles.nodes,allEles.edges);
+          //TODO change file name maybe ?
+        }
+      };
+      request.open("POST", "/loadGraph");
+      request.send(formData);
+      $('#mergeInput').val(null);
+    });
+
+    //File drop down handler
+    $(".fileDropDown li a").click(function(event)
+    {
+      event.preventDefault();
+      var dropdownLinkRole = $(event.target).attr('role');
+
+      if (dropdownLinkRole == 'save')
+      {
+        saveGraph();
+      }
+      else if (dropdownLinkRole == 'load')
+      {
+        $('#fileinput').trigger('click');
+      }
+      else if (dropdownLinkRole == 'new')
+      {
+        cy.remove(cy.elements());
+        resetFileName();
+      }
+      else if (dropdownLinkRole == 'merge')
+      {
+        $('#mergeInput').trigger('click');
+      }
+      else if (dropdownLinkRole == 'jpeg')
+      {
+        saveAsJPEG();
+      }
+      else if (dropdownLinkRole == 'png')
+      {
+        saveAsPNG();
+      }
+    });
+
+    //Initial file name click handler
+    $(".fileNameContent span").click(fileNameClickFunction);
+
+})(window.$)
+
+},{"./SaveLoadUtility.js":63}],58:[function(require,module,exports){
+var styleSheet = [
+{
+      selector: 'node',
+      style:
+      {
+        'content': function(ele){
+            return contentFunction(ele);
+        },
+        'text-valign': function(ele)
+        {
+          return 'center';
+        },
+        'color': '#1e2829',
+        'width': 60,
+        'height': 15,
+        'background-color': '#fff',
+        'background-opacity': 0.5,
+        'text-margin-y' : 50,
+        'shape': function(ele)
+        {
+            return parentNodeShapeFunc( ele );
+        },
+        'border-width': function(ele)
+        {
+            return borderWidthFunction( ele );
+        },
+        'border-color': function(ele)
+        {
+          return nodeBorderColorFunction(ele);
+        },
+        'font-size': 7
+      }
+    },
+    {
+        selector: 'node:parent',
+        style:
+        {
+          'shape': function(ele)
+          {
+              return parentNodeShapeFunc( ele );
+          },
+          'text-valign': function(ele)
+          {
+            return 'bottom';
+          },
+          'padding-left': function(ele){ return compoundPaddingFunction(ele); },
+          'padding-right': function(ele){ return compoundPaddingFunction(ele); },
+          'padding-bottom': function(ele){ return compoundPaddingFunction(ele); },
+          'padding-top':  function(ele){ return compoundPaddingFunction(ele); },
+          'background-opacity': 0.5,
+          'border-width': function(ele)
+          {
+              return parentBorderWidthFunction( ele );
+          },
+          'border-color': function(ele)
+          {
+            return nodeBorderColorFunction(ele);
+          },
+          'background-color': function(ele){
+            return nodeBackgroundColorFunction(ele);
+          }
+        }
+    },
+    {
+      selector: 'edge',
+      style:
+      {
+        'curve-style': 'bezier',
+        'target-arrow-shape': function( ele )
+        {
+            return edgeTargetArrowTypeHandler(ele);
+        },
+        'width': 1,
+        'line-color': function( ele )
+        {
+            return edgeColorHandler(ele);
+        },
+        'target-arrow-color': function( ele )
+        {
+            return edgeColorHandler(ele);
+        },
+        'line-style': function(ele)
+        {
+            return edgeLineTypeHandler(ele);
+        },
+        'opacity': 1
+      }
+  },
+  // {
+  //     selector: 'edge.segments',
+  //     style:
+  //     {
+  //       'curve-style': 'segments',
+  //       'segment-distances': '0 100',
+  //       'segment-weights': '0 1'
+  //     }
+  // },
+  {
+    selector: ':selected',
+    style:
+    {
+      'shadow-color' : '#f1c40f',
+      'shadow-opacity': 1.0
+    }
+  }
+];
+
+
+var compoundPaddingFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "FAMILY": return 5; break;
+    case "COMPARTMENT": return 10; break;
+    case "PROCESS": return 10; break;
+    default: return 5; break;
+  }
+}
+
+var contentFunction = function( ele )
+{
+  if (ele._private.data.name) {
+    return ele._private.data.name;
+  }
+  return 'newNode';
+}
+
+var vTextPositionFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return 'center'; break;
+    case "FAMILY": return 'top'; break;
+    case "COMPARTMENT": return 'top'; break;
+    default: return 'center'; break;
+  }
+}
+
+var borderWidthFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return 0.5; break;
+    case "PROCESS": return 0; break;
+    case "FAMILY": return 1.0; break;
+    case "COMPARTMENT": return 2; break;
+    default: return 0.5; break;
+  }
+}
+
+var parentBorderWidthFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return 0.5; break;
+    case "PROCESS": return 1.0; break;
+    case "FAMILY": return 1.0; break;
+    case "COMPARTMENT": return 2; break;
+    default: return 0.5; break;
+  }
+}
+
+var parentNodeShapeFunc = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return "roundrectangle"; break;
+    case "PROCESS": return "roundrectangle"; break;
+    case "FAMILY": return "rectangle"; break;
+    case "COMPARTMENT": return "roundrectangle"; break;
+    default: return "roundrectangle"; break;
+  }
+}
+
+var nodeBackgroundColorFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return "#fff"; break;
+    case "FAMILY": return "#CCCCCC"; break;
+    case "COMPARTMENT": return "#fff"; break;
+    default: return "#fff"; break;
+  }
+}
+
+var nodeBorderColorFunction = function( ele )
+{
+  switch (ele._private.data['type'])
+  {
+    case "GENE": return "#000000"; break;
+    case "FAMILY": return "#CCCCCC"; break;
+    case "COMPARTMENT": return "#000000"; break;
+    default: return "#000000"; break;
+  }
+}
+
+var edgeColorHandler = function( ele )
+{
+  // switch (ele._private.data['type']){
+  //   case "ACTIVATES": return "#904930"; break;
+  //   case "INHIBITS": return "#7B7EF7"; break;
+  //   case "INDUCES": return "#ad47c2"; break;
+  //   case "REPRESSES": return "#67C1A9"; break;
+  //   case "BINDS": return "#67C1A9"; break;
+  //   default: return "#989898"; break;
+  // }
+  return "#1b1b1b";
+}
+
+var edgeTargetArrowTypeHandler = function( ele )
+{
+    switch (ele._private.data['type']){
+      case "ACTIVATES": return "triangle"; break;
+      case "INHIBITS": return "tee"; break;
+      case "INDUCES": return "triangle"; break;
+      case "REPRESSES": return "tee"; break;
+      case "BINDS": return "none"; break;
+      default: return "none"; break;
+    }
+}
+
+var edgeLineTypeHandler = function( ele )
+{
+    switch (ele._private.data['type']){
+      case "ACTIVATES": return "solid"; break;
+      case "INHIBITS": return "solid"; break;
+      case "INDUCES": return "dashed"; break;
+      case "REPRESSES": return "dashed"; break;
+      case "BINDS": return "solid"; break;
+      default: return "solid"; break;
+    }
+}
+
+
+module.exports = styleSheet;
+
+},{}],59:[function(require,module,exports){
+var panzoomOptions =
+{
+  // the default values of each option are outlined below:
+    zoomFactor: 0.05, // zoom factor per zoom tick
+    zoomDelay: 45, // how many ms between zoom ticks
+    minZoom: 0.1, // min zoom level
+    maxZoom: 10, // max zoom level
+    fitPadding: 50, // padding when fitting
+    panSpeed: 10, // how many ms in between pan ticks
+    panDistance: 10, // max pan distance per tick
+    panDragAreaSize: 75, // the length of the pan drag box in which the vector for panning is calculated (bigger = finer control of pan speed and direction)
+    panMinPercentSpeed: 0.25, // the slowest speed we can pan by (as a percent of panSpeed)
+    panInactiveArea: 8, // radius of inactive area in pan drag box
+    panIndicatorMinOpacity: 0.5, // min opacity of pan indicator (the draggable nib); scales from this to 1.0
+    zoomOnly: false, // a minimal version of the ui only with zooming (useful on systems with bad mousewheel resolution)
+
+    // icon class names
+    sliderHandleIcon: 'fa fa-minus',
+    zoomInIcon: 'fa fa-plus',
+    zoomOutIcon: 'fa fa-minus',
+    resetIcon: 'fa fa-expand'
+};
+
+module.exports = panzoomOptions;
+
+},{}],60:[function(require,module,exports){
+;
+
+var BackboneView = require('./Views/BioGeneView.js');
+
+module.exports = (function($)
+{
+  "use strict";
+  
+  var QtipManager =function (cy)
+  {
+    this.cy = cy;
+  };
+
+  QtipManager.prototype.generateQtipContentHTML = function(ele)
+  {
+    var self = this;
+    var nodeData = ele.data();
+    var textInput = $('<div class="col-xs-8 inputCol"><input type="text" class="form-control" nodeid="' + ele.id() + '" value="' + nodeData.name + '"></div>');
+    textInput.change(function()
+    {
+      var nodeID = $(this).find('input').attr('nodeid');
+
+      var cyNode = self.cy.$('#'+nodeID)[0];
+      var newName = $(this).find('input').val();
+      window.editorActionsManager.changeName(cyNode, newName);
+    });
+
+    var wrapper = $('<div></div>');
+    var row = $('<div class="row">\
+                 <div class="col-xs-4 qtipLabel">Name:</div>\
+              </div>');
+
+    row.append(textInput);
+    wrapper.append(row);
+
+    if (ele.data().type === "GENE")
+    {
+      var entrezGeneButton = $('<div class="row centerText geneDetails"><button nodeid="' + ele.id() + '" type="button" class="btn btn-default">Entrez Gene</button></div>');
+      entrezGeneButton.find('button').on('click', function(event)
+      {
+        event.preventDefault();
+        var nodeID = $(this).attr('nodeid');
+        var nodeSymbol = this.cy.$('#'+nodeID)[0]._private.data['name'];
+        var self = this;
+        var parent = $(this).parent();
+        parent.empty().append('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>');
+
+        var formData = new FormData();
+        formData.append('query', nodeSymbol);
+
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function ()
+        {
+          if(request.readyState === XMLHttpRequest.DONE)
+          {
+            if (request.status === 200)
+            {
+              var jsonData = JSON.parse(request.responseText);
+              if (jsonData.count > 0)
+              {
+                var backboneView = new BackboneView({model: jsonData.geneInfo[0]}).render().html();
+                parent.empty().append(backboneView);
+              }
+              else
+              {
+                parent.empty().append('There is no extra information for this gene');
+              }
+            }
+            else
+            {
+              parent.empty().append('An error occured while retrieving the data');
+            }
+          }
+        };
+        request.open("POST", "/getBioGeneData");
+        request.send(formData);
+      });
+      wrapper.append(entrezGeneButton);
+    }
+
+    return wrapper;
+  }
+
+  QtipManager.prototype.addQtipToElements = function(eles)
+  {
+    var self = this;
+    eles.forEach(function(node,i)
+    {
+      var qTipOpts =
+      {
+        content:
+        {
+          text:  function()
+          {
+            return self.generateQtipContentHTML(this);
+          },
+          title: function()
+          {
+            return capitalizeFirstLetter(node.data().type.toLowerCase()) + ' Details';
+          }
+        },
+        position: {
+          my: 'top center',
+          at: 'bottom center'
+        },
+        style:
+        {
+          classes: 'qtip-tipsy qtip-rounded',
+          width: 400
+        }
+      };
+      node.qtip(qTipOpts);
+    });
+
+  }
+  
+
+  //Utility Functions
+  function capitalizeFirstLetter(string)
+  {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  return QtipManager;
+
+}(window.$));
+
+},{"./Views/BioGeneView.js":65}],61:[function(require,module,exports){
 module.exports = (function()
 {
     "use strict";
 
-    var RealTimeModule = function(postFileLoadCallback)
+    var RealTimeManager = function(postFileLoadCallback)
     {
         this.clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
 
@@ -47994,7 +49099,7 @@ module.exports = (function()
         this.postFileLoad = postFileLoadCallback;
     }
 
-    RealTimeModule.prototype.authorize = function(callbackFunction, isModal)
+    RealTimeManager.prototype.authorize = function(callbackFunction, isModal)
     {
         // Attempt to authorize
         this.realtimeUtils.authorize(function(response)
@@ -48004,7 +49109,7 @@ module.exports = (function()
         }, isModal);
     }
 
-    RealTimeModule.prototype.initRealTimeAPI = function()
+    RealTimeManager.prototype.initRealTimeAPI = function()
     {
         // With auth taken care of, load a file, or create one if there
         // is not an id in the URL.
@@ -48043,7 +49148,7 @@ module.exports = (function()
 
     // The first time a file is opened, it must be initialized with the
     // document structure.
-    RealTimeModule.prototype.onFileInitialize = function(model)
+    RealTimeManager.prototype.onFileInitialize = function(model)
     {
         var root = model.getRoot();
 
@@ -48058,7 +49163,7 @@ module.exports = (function()
         After a file has been initialized and loaded, we can access the
         document. We will wire up the data model to the UI.
     */
-    RealTimeModule.prototype.onFileLoaded =  function(doc)
+    RealTimeManager.prototype.onFileLoaded =  function(doc)
     {
         // this.realTimeDoc = doc;
         var model = doc.getModel();
@@ -48067,22 +49172,12 @@ module.exports = (function()
         var nodeMap = root.get(this.NODEMAP_NAME);
         var edgeMap = root.get(this.EDGEMAP_NAME);
 
-        var nodeMapKeys = nodeMap.keys();
-        var edgeMapKeys = edgeMap.keys();
+        var nodeMapEntries = nodeMap.values();
+        var edgeMapEntries = edgeMap.values();
 
         //Add real time nodes to local graph
-        for (var index in nodeMapKeys)
-        {
-            var realtimeNode = nodeMap.get(nodeMapKeys[index]);
-            window.editorActionsManager.addNewNodeLocally(realtimeNode);
-        }
-
-        //Add real time edges to local graph
-        for (var index in edgeMapKeys)
-        {
-            var realTimeEdge = edgeMap.get(edgeMapKeys[index]);
-            window.editorActionsManager.addNewEdgeLocally(realTimeEdge);
-        }
+        window.editorActionsManager.addNewNodesLocally(nodeMapEntries);
+        window.editorActionsManager.addNewEdgesLocally(edgeMapEntries);
 
         //Keep a reference to the file !
         this.realTimeDoc = doc;
@@ -48090,12 +49185,12 @@ module.exports = (function()
         //Setup event handlers for maps
         var nodeAddRemoveHandler = function(event)
         {
-            editorActionsManager.realTimeNodeAddRemoveEventCallBack(event);
+            window.editorActionsManager.realTimeNodeAddRemoveEventCallBack(event);
         }
 
         var edgeAddRemoveHandler = function(event)
         {
-            editorActionsManager.realTimeEdgeAddRemoveEventCallBack(event);
+            window.editorActionsManager.realTimeEdgeAddRemoveEventCallBack(event);
         }
 
         //Event listeners for edge and node map
@@ -48113,7 +49208,7 @@ module.exports = (function()
         
     }
 
-    RealTimeModule.prototype.addNewNode = function(nodeData, posData)
+    RealTimeManager.prototype.addNewNode = function(nodeData, posData)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -48134,7 +49229,7 @@ module.exports = (function()
         nodeMap.set(realTimeGeneratedID, newNode);
     }
 
-    RealTimeModule.prototype.addNewEdge = function(edgeData)
+    RealTimeManager.prototype.addNewEdge = function(edgeData)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -48151,7 +49246,7 @@ module.exports = (function()
         edgeMap.set(realTimeGeneratedID, newEdge);
     }
 
-    RealTimeModule.prototype.removeElement = function(elementID)
+    RealTimeManager.prototype.removeElement = function(elementID)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -48173,7 +49268,7 @@ module.exports = (function()
         }
     }
 
-    RealTimeModule.prototype.moveElement = function(ele)
+    RealTimeManager.prototype.moveElement = function(ele)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -48198,7 +49293,7 @@ module.exports = (function()
         
     }
 
-    RealTimeModule.prototype.changeName = function(ele, newName)
+    RealTimeManager.prototype.changeName = function(ele, newName)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -48221,7 +49316,7 @@ module.exports = (function()
 
     }
 
-    RealTimeModule.prototype.changeParent = function (rootNode, newParentId, connectedEdges)
+    RealTimeManager.prototype.changeParent = function (rootNode, newParentId, connectedEdges)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -48309,7 +49404,7 @@ module.exports = (function()
         
     }
 
-    RealTimeModule.prototype.loadGraph = function(nodes, edges)
+    RealTimeManager.prototype.loadGraph = function(nodes, edges)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -48391,7 +49486,7 @@ module.exports = (function()
         }
     }
 
-    RealTimeModule.prototype.mergeGraph = function(nodes, edges)
+    RealTimeManager.prototype.mergeGraph = function(nodes, edges)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -48460,7 +49555,6 @@ module.exports = (function()
                     var sameNodeId = that.getCustomObjId(sameNameNode);
                     oldIdNewIdMap[node.data.id] = sameNodeId;
 
-                    var realTimeNode = realTimeNodeLookupTable[node.data.id];
                     //If node has children recursively traverse sub graphs and update parent field of child nodes
                     if(node.children.length > 0)
                     {
@@ -48499,14 +49593,14 @@ module.exports = (function()
 
 
     //Google Real Time's custom object ids are retrieved in this way
-    RealTimeModule.prototype.getCustomObjId = function(object)
+    RealTimeManager.prototype.getCustomObjId = function(object)
     {
         return gapi.drive.realtime.custom.getId(object);
     }
 
     // You must register the custom object before loading or creating any file that
     // uses this custom object.
-    RealTimeModule.prototype.registerTypes = function()
+    RealTimeManager.prototype.registerTypes = function()
     {
         var self = this;
         //Register our custom objects go Google Real Time API
@@ -48542,7 +49636,7 @@ module.exports = (function()
      * a node in corresponding level.
      *
      * */
-    RealTimeModule.prototype.createGraphHierarchy = function(nodes)
+    RealTimeManager.prototype.createGraphHierarchy = function(nodes)
     {
         //Some arrays and maps for creating graph hierarchy
         var tree = [];
@@ -48609,11 +49703,11 @@ module.exports = (function()
         this.target = params.target || "undefined";
     }
 
-    return RealTimeModule;
+    return RealTimeManager;
 
 })()
 
-},{}],55:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 /**
  * @license
  * Realtime Utils 1.0.0
@@ -49064,7 +50158,270 @@ module.exports = (function(){
     };
 })();
 
-},{}],56:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
+var SaveLoadUtils =
+{
+  //Exports given json graph(based on cy.export()) into a string
+  exportGraph: function(graphJSON)
+  {
+    //Get nodes and edges
+    var nodes = graphJSON.elements.nodes;
+    var edges = graphJSON.elements.edges;
+
+    //Prepare Meta Line
+    var returnString = '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY--'+'\n';
+
+    if (nodes)
+    {
+      for (var i = 0; i < nodes.length; i++)
+      {
+        //Node specific data fields
+        var nodeName = nodes[i].data.name;
+        var parentID = nodes[i].data.parent;
+        var nodeID = nodes[i].data.id;
+        var pos = nodes[i].position;
+        var nodeType = nodes[i].data.type;
+
+        //Check if node has a parent, if not set parent id -1
+        if (nodes[i].data.parent)
+        {
+          parentID = nodes[i].data.parent;
+        }
+        else
+        {
+          parentID = -1;
+        }
+
+        // Write a line for a node
+        returnString +=  nodeName + '\t' +
+                         nodeID + '\t' +
+                         nodeType + '\t' +
+                         parentID + '\t' +
+                         parseInt(pos.x) + '\t' +
+                         parseInt(pos.y) + '\t\n';
+      }
+    }
+
+
+
+    //Put a blank line between nodes and edges
+    returnString += '\n';
+    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\n';
+
+    if (edges) {
+      //Write edges
+      for (var i = 0; i < edges.length; i++)
+      {
+        var edgeID = edges[i].data.id;
+        var edgeType = edges[i].data.type;
+        var source = edges[i].data.source;
+        var target = edges[i].data.target;
+
+        returnString += edgeID + '\t' +
+                        source + '\t' +
+                        target + '\t' +
+                        edgeType + '\n';
+      }
+    }
+
+
+
+    //Finally return a string that includes whole graph lovely and peacefully :)
+    return returnString;
+  },
+  parseGraph: function(graphText)
+  {
+    var allEles = [];
+    var nodes = [];
+    var edges = [];
+
+
+    // By lines
+    var lines = graphText.split('\n');
+    var edgesStartIndex = -1;
+
+    // start from first line skip node meta data
+    for(var i =1; i < lines.length; i++)
+    {
+      // If we encounter a blank line, that means we need to parse edges from now on !
+      // so skip blank line and edge meta line
+      if (lines[i].length == 0)
+      {
+        edgesStartIndex = i + 2;
+        break;
+      }
+
+      //Fetch a line for nodes
+      var lineData = lines[i].split('\t');
+      var nodeName = lineData[0];
+      var nodeID = lineData[1];
+      var nodeType = lineData[2];
+      var parentID = lineData[3];
+      var posX = lineData[4];
+      var posY = lineData[5];
+
+      var newNode = {group: 'nodes', data:{id: nodeID, name: nodeName, type:nodeType} ,position:{x: parseInt(posX), y:parseInt(posY)}};
+
+      if ( parentID != '-1')
+      {
+        newNode.data.parent = parentID;
+      }
+      nodes.push(newNode);
+    }
+
+    //Read edges
+    for(var i = edgesStartIndex; i < lines.length; i++)
+    {
+      //If we reach EOF we break loop
+      if (lines[i].length == 0)
+      {
+        break;
+      }
+
+      var lineData = lines[i].split('\t');
+      var edgeID = lineData[0];
+      var edgeSource = lineData[1];
+      var edgeTarget = lineData[2];
+      var edgeType = lineData[3];
+
+      newEdge = {group: 'edges', data:{id: edgeID, type: edgeType, source: edgeSource, target: edgeTarget}};
+      edges.push(newEdge);
+    }
+
+    return {nodes: nodes, edges: edges};
+  }
+}
+
+module.exports = SaveLoadUtils;
+
+},{}],64:[function(require,module,exports){
+module.exports = (function($)
+{
+  'use strict';
+
+  function handleNodeAlignment(param)
+  {
+    var nodes = cy.nodes(':selected');
+    var nodeMap = {};
+
+    nodes.forEach(function(node,index)
+    {
+      if (node.isParent())
+      {
+        nodeMap[node.id()] = node;
+      }
+    });
+
+
+    if (nodes.length > 0)
+    {
+      var firstSelected = nodes[0];
+      var firstBbox = firstSelected.boundingBox();
+
+      nodes.forEach(function(node,index)
+      {
+        if (index == 0)
+        {
+          return ;
+        }
+
+        //If parent of selected node is in selection do nothing !
+        if (nodeMap[node.parent().id()] == null)
+        {
+          var newPosition = calculateNewPosition(param, node, firstBbox)
+          //Recursively traverse leaf nodes
+          moveNode(node,0,0,newPosition);
+        }
+
+      });
+    }
+  }
+
+  /*
+     Determine new position according to the alignment
+     node that node.position works on center positions thats why all calculations
+     are performed accordingly
+  */
+  function calculateNewPosition(param, node, referenceBbox)
+  {
+      var currentPos = node.position();
+      var currentBbox = node.boundingBox();
+      var newPosition;
+
+      if (param === 'vLeft')
+      {
+        newPosition = {x: referenceBbox.x1+currentBbox.w/2, y: currentPos.y};
+      }
+      else if (param === 'vCen')
+      {
+        newPosition = {x: referenceBbox.x1+referenceBbox.w/2, y: currentPos.y};
+      }
+      else if (param === 'vRight')
+      {
+        newPosition = {x: referenceBbox.x2-currentBbox.w/2, y: currentPos.y};
+      }
+      else if (param === 'hTop')
+      {
+        newPosition = {x: currentPos.x, y: referenceBbox.y1 + currentBbox.h/2};
+      }
+      else if (param === 'hMid')
+      {
+        newPosition = {x: currentPos.x, y: referenceBbox.y1 + referenceBbox.h/2};
+      }
+      else if (param === 'hBot')
+      {
+        newPosition = {x: currentPos.x, y: referenceBbox.y2 - currentBbox.h/2};
+      }
+      else {
+        console.log('Error: wrong alignment name ' + param);
+        return;
+      }
+
+      return newPosition;
+
+  }
+
+  //Recursively move leaf nodes
+  function moveNode(node, dx, dy, newPos)
+  {
+    if (node.isParent())
+    {
+      var childNodes = node.children();
+      var parentBbox = node.boundingBox();
+      childNodes.forEach(function(childNode, index)
+      {
+        var childBbox = childNode.boundingBox();
+        var _dx = -(parentBbox.x1 - childBbox.x1)-parentBbox.w/2+childBbox.w/2;
+        var _dy = -(parentBbox.y1 - childBbox.y1)-parentBbox.h/2+childBbox.h/2;
+
+        //If further compound node is found, set position accordingly
+        if (childNode.isParent())
+        {
+          moveNode(childNode, 0, 0, {x: newPos.x+_dx, y:newPos.y+_dy});
+        }
+        else
+        {
+          moveNode(childNode, _dx, _dy, newPos);
+        }
+
+      });
+    }
+    else
+    {
+      node.position({x: newPos.x+dx, y:newPos.y+dy});
+    }
+  }
+
+  $(".viewDropdown li a").click(function(event)
+  {
+    event.preventDefault();
+    var dropdownLinkRole = $(event.target).attr('role');
+    handleNodeAlignment(dropdownLinkRole);
+  });
+
+})(window.$)
+
+},{}],65:[function(require,module,exports){
 /*
  * Copyright 2013 Memorial-Sloan Kettering Cancer Center.
  *
@@ -49243,7 +50600,7 @@ var BioGeneView = Backbone.View.extend({
 
 module.exports = BioGeneView;
 
-},{}],57:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 var layoutProps = Backbone.View.extend(
 {
   defaultLayoutProperties:
@@ -49340,7 +50697,7 @@ var layoutProps = Backbone.View.extend(
 
 module.exports = layoutProps;
 
-},{}],58:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 var WelcomePageView = Backbone.View.extend(
     {
         cachedTpl: _.template($("#welcomePageTemplate").html()),
@@ -49434,656 +50791,7 @@ var WelcomePageView = Backbone.View.extend(
 
 module.exports = WelcomePageView;
 
-},{}],59:[function(require,module,exports){
-;
-module.exports = (function()
-{
-  "use strict";
-
-  var CxtMenu = function(cy, editorActionsManager)
-  {
-    this.cy = cy;
-    this.editorActionsManager = editorActionsManager;
-    this.init();
-  };
-
-  CxtMenu.prototype.init = function()
-  {
-    var classRef = this;
-
-    //Core context menu
-    this.cy.cxtmenu({
-      selector: 'core',
-      activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
-      commands: [
-        {
-          content: 'Perform Layout',
-          select: function(ele)
-          {
-            cy.layout(window.layoutProperties.currentLayoutProperties);
-          }
-        },
-      ]
-    });
-
-    //Node context menu
-    this.cy.cxtmenu({
-      selector: 'node',
-      activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
-      commands:
-          [
-            {
-              content: 'Delete Node(s)',
-              select: function(ele)
-              {
-                var selectedNodes = cy.nodes(':selected').union(ele);
-                var nodesToBeRemoved = selectedNodes.remove();
-                nodesToBeRemoved.forEach(function(node, index)
-                {
-                  classRef.editorActionsManager.removeElement(node);
-                });
-              }
-            },
-            {
-              content: 'Remove Selected From Parent',
-              select: function(ele)
-              {
-                var selectedNodes = cy.nodes(':selected').union(ele);
-
-                var notValid = false;
-                selectedNodes.forEach(function(tmpNode, i)
-                {
-
-                  if (tmpNode.isParent())
-                  {
-                    notValid = isChildren(tmpNode, ele);
-                    if (notValid)
-                    {
-                      return false;
-                    }
-                  }
-                });
-
-                if (notValid)
-                {
-                  return;
-                }
-
-                classRef.editorActionsManager.changeParents(selectedNodes);
-              }
-            },
-            {
-              content: 'Add Selected Into This Node',
-              select: function(ele)
-              {
-                var selectedNodes = cy.nodes(':selected');
-
-                //Do nothing if node is GENE
-                if (ele._private.data['type'] === 'GENE' || selectedNodes.size() < 1)
-                {
-                  return;
-                }
-                //Prevent actions like adding root node to children & addition to itself
-                else
-                {
-                  var notValid = false;
-                  selectedNodes.forEach(function(tmpNode, i)
-                  {
-                    if (ele.id() == tmpNode.id())
-                    {
-                      notValid = true;
-                      return false;
-                    }
-
-                    if (tmpNode.isParent())
-                    {
-                      notValid = isChildren(tmpNode, ele);
-                      if (notValid)
-                      {
-                        return false;
-                      }
-                    }
-                  });
-
-                  if (notValid)
-                  {
-                    return;
-                  }
-                }
-
-                var compId = ele.id();
-                classRef.editorActionsManager.changeParents(selectedNodes, compId);
-              }
-            }
-          ]
-    });
-
-    //Edge context menu
-    this.cy.cxtmenu({
-      selector: 'edge',
-      activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
-      commands: [
-        {
-          content: 'Delete Edge(s)',
-          select: function(ele)
-          {
-            var selectedEdges = cy.edges(':selected').union(ele);
-            selectedEdges.forEach(function(edge, index)
-            {
-              classRef.editorActionsManager.removeElement(edge);
-            });
-
-          }
-        }
-      ]
-    });
-  }
-
-  //TODO ??????
-  window.edgeAddingMode = false;
-  var contextMenuSelectionColor = 'rgba(51, 247, 182, 0.88)';
-
-  //TODO better move this to another class
-  //Utility function to check whether query node is children of given node
-  function isChildren(node, queryNode)
-  {
-    var parent = queryNode.parent()[0];
-    while(parent)
-    {
-      if (parent.id() == node.id()) {
-        return true;
-      }
-      parent = parent.parent()[0];
-    }
-    return false;
-  }
-  
-
-  return CxtMenu;
-
-}());
-
-},{}],60:[function(require,module,exports){
-;
-module.exports = (function($, $$)
-{
-    'use strict';
-
-    var NodeAdd = function(editorActionsManager)
-    {
-        this.editorActionsManager = editorActionsManager;
-        this.initNodeAdd();
-    }
-
-    NodeAdd.prototype.initNodeAdd = function()
-    {
-        var nodeAddClass = this;
-
-        var defaults = {
-            height: 30,   //height of the icon container
-            width: 30,    //width of the icon container
-            padding: 5,  //padding of the icon container(from right & top)
-            backgroundColorDiv: '#fff',   //background color of the icon container
-            borderColorDiv: '#fff',    //border color of the icon container
-            borderWidthDiv: '0px',    //border width of the icon container
-            borderRadiusDiv: '5px',    //border radius of the icon container
-
-            icon: '',   //icon class name
-
-            nodeParams: function(){
-                // return element object to be passed to cy.add() for adding node
-                return {};
-            }
-        };
-
-        $.fn.cytoscapeNodeadd = function(params) {
-            var options = $.extend(true, {}, defaults, params);
-            var fn = params;
-
-            var functions = {
-                destroy: function() {
-                    var $this = $(this);
-
-                    $this.find(".ui-cytoscape-nodeadd").remove();
-                },
-                init: function()
-                {
-                    return $(this).each(function()
-                    {
-                        var components = options.components;
-                        for (var index in components)
-                        {
-                            var component = components[index];
-                            var dragContainer = component.container;
-                            var explanationText = component.explanationText;
-
-                            var $nodeadd = $('<div class="ui-cytoscape-nodeadd"></div>');
-                            dragContainer.append($nodeadd);
-                            var $nodeDragHandle = $('<div class="ui-cytoscape-nodeadd-nodediv"> \
-                                                <span id="ui-cytoscape-nodeadd-icon" class="draggable" nodeType="'+ component.nodeType +'">\
-                                                  <img src="./assets/'+component.nodeType+'.png" alt="" />\
-                                                </span>\
-                                              </div>');
-                            $nodeadd.append($nodeDragHandle);
-
-                            $nodeDragHandle.bind("mousedown", function(e)
-                            {
-                                e.stopPropagation(); // don't trigger dragging of nodeadd
-                                e.preventDefault(); // don't cause text selection
-                            });
-
-                            //Setup UI
-                            dragContainer.find(".ui-cytoscape-nodeadd-nodediv").css({
-                                background: options.backgroundColorDiv,
-                                border: options.borderWidthDiv + ' solid ' + options.borderColorDiv,
-                                'border-radius': options.borderRadiusDiv
-                            });
-
-                            //Init Draggable
-                            dragContainer.find("#ui-cytoscape-nodeadd-icon").draggable({
-                                helper: "clone",
-                                cursor: "pointer"
-                            });
-                        }
-
-                        var $container = $(this);
-                        //Init Droppable
-                        $container.droppable({
-                            activeClass: "ui-state-highlight",
-                            // accept: "#ui-cytoscape-nodeadd-icon",
-                            drop: function(event, ui) {
-                                $container.removeClass("ui-state-highlight");
-
-                                var currentOffset = $container.offset();
-                                var relX = event.pageX - currentOffset.left;
-                                var relY = event.pageY - currentOffset.top;
-
-                                var nodeType = $(ui.helper).attr('nodeType').toUpperCase();
-
-                                var cy = $container.cytoscape("get");
-
-                                //Hold a map for parents and candidate parent nodes for this addition
-                                var nodeMap = {};
-                                var parentMap = {};
-                                //Loop through nodes for hit testing about drag position on canvas
-                                cy.nodes().forEach(function(node,i)
-                                {
-                                    var nodeBbox = node.renderedBoundingBox();
-                                    //Rectangle point test
-                                    if ( (relX <= nodeBbox.x2 && relX >= nodeBbox.x1) && (relY <= nodeBbox.y2 && relY >= nodeBbox.y1) && node.data().type != 'GENE' )
-                                    {
-                                        //If node has a children put an entry to the parentMap
-                                        if (node.children().length > 0)
-                                        {
-                                            parentMap[node.id()] = true;
-                                        }
-
-                                        //If parent of this node is already added to the node map remove it, since our candidate is in deeper level !
-                                        if (parentMap[node._private.data.parent])
-                                        {
-                                            delete nodeMap[node._private.data.parent];
-                                        }
-
-                                        //Add an entry to node map
-                                        nodeMap[node.id()] = node;
-                                    }
-                                });
-
-                                //Check if any parent found, if so set parent field
-                                var parent = nodeMap[Object.keys(nodeMap)[0]]
-                                var nodeData = {type: nodeType, name:'New '+ $(ui.helper).attr('nodeType')};
-                                if (parent)
-                                {
-                                    if (!(nodeType == "COMPARTMENT" && parent.data().type == "FAMILY" )) {
-                                        nodeData.parent = parent.id();
-                                    }
-                                }
-
-                                nodeAddClass.editorActionsManager.addNode(nodeData,{x: relX,y: relY});
-
-                            }
-                        });
-
-                    });
-                }
-            };
-
-            if (functions[fn]) {
-                return functions[fn].apply(this, Array.prototype.slice.call(arguments, 1));
-            } else if (typeof fn == 'object' || !fn) {
-                return functions.init.apply(this, arguments);
-            } else {
-                $.error("No such function `" + fn + "` for jquery.cytoscapenodeadd");
-            }
-
-            return $(this);
-        };
-
-        $.fn.cynodeadd = $.fn.cytoscapeNodeadd;
-
-        /* Adding as an extension to the core functionality of cytoscape.js*/
-        $$('core', 'nodeadd', function(options) {
-            var cy = this;
-
-            $(cy.container()).cytoscapeNodeadd(options);
-        });
-    }
-
-    return NodeAdd;
-
-})(window.$, window.cytoscape);
-
-},{}],61:[function(require,module,exports){
-;
-// the default values of each option are outlined below:
-var edgeHandleDefaults =
-{
-  preview: true, // whether to show added edges preview before releasing selection
-  stackOrder: 4, // Controls stack order of edgehandles canvas element by setting it's z-index
-  handleSize: 10, // the size of the edge handle put on nodes
-  handleColor: '#17d970', // the colour of the handle and the line drawn from it
-  handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line
-  handleLineWidth: 1, // width of handle line in pixels
-  handleNodes: 'node', // selector/filter function for whether edges can be made from a given node
-  hoverDelay: 150, // time spend over a target node before it is considered a target selection
-  cxt: false, // whether cxt events trigger edgehandles (useful on touch)
-  enabled: false, // whether to start the extension in the enabled state
-  toggleOffOnLeave: false, // whether an edge is cancelled by leaving a node (true), or whether you need to go over again to cancel (false; allows multiple edges in one pass)
-  edgeType: function( sourceNode, targetNode ) {
-    // can return 'flat' for flat edges between nodes or 'node' for intermediate node between them
-    // returning null/undefined means an edge can't be added between the two nodes
-    return 'flat';
-  },
-  loopAllowed: function( node ) {
-    // for the specified node, return whether edges from itself to itself are allowed
-    return false;
-  },
-  nodeLoopOffset: -50, // offset for edgeType: 'node' loops
-  nodeParams: function( sourceNode, targetNode ) {
-    // for edges between the specified source and target
-    // return element object to be passed to cy.add() for intermediary node
-    return {};
-  },
-  edgeParams: function( sourceNode, targetNode, i ) {
-    // for edges between the specified source and target
-    // return element object to be passed to cy.add() for edge
-    // NB: i indicates edge index in case of edgeType: 'node'
-    return {};
-  },
-  start: function( sourceNode ) {
-    // fired when edgehandles interaction starts (drag on handle)
-
-    var type = "NONE";
-    if (window.edgeAddingMode == 1)
-    {
-      type = 'ACTIVATES';
-    }
-    else if (window.edgeAddingMode == 2)
-    {
-      type = 'INHIBITS';
-    }
-    else if (window.edgeAddingMode == 3)
-    {
-      type = 'INDUCES';
-    }
-    else if (window.edgeAddingMode == 4)
-    {
-      type = 'REPRESSES';
-    }
-    else if (window.edgeAddingMode == 5)
-    {
-      type = 'BINDS';
-    }
-
-    cy.edgehandles('option', 'ghostEdgeType', type)
-  },
-  complete: function( sourceNode, targetNodes, addedEntities )
-  {
-      // cy.add({group:'edges', data:{source: sourceNode.id(), target: targetNodes[0].id(), type: type}});
-      cy.remove(addedEntities);
-      window.editorActionsManager.addEdge(addedEntities[0].data());
-  },
-  stop: function( sourceNode ) {
-    // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
-
-    //TODO refactor this, so terrible for now
-    $('.edge-palette a').blur().removeClass('active');
-    window.edgeAddingMode == -1;
-    cy.edgehandles('disable');
-
-  }
-};
-
-module.exports = edgeHandleDefaults;
-
-},{}],62:[function(require,module,exports){
-var SaveLoadUtilities = require('./saveLoadUtils.js');
-
-
-module.exports = (function($)
-{
-    'use strict';
-
-    function focusOutHandler(event)
-    {
-      var inputFileName = $(".fileNameContent input");
-      var oldFileName = inputFileName.attr('oldFileName');
-      var parentEl = inputFileName.parent();
-      parentEl.empty();
-      var newFileName = $('<span>'+oldFileName+'</span>');
-      newFileName.click(fileNameClickFunction);
-      parentEl.append(newFileName);
-    }
-
-    function fileNameClickFunction(event)
-    {
-      event.preventDefault();
-      switchToInputView();
-    }
-
-    function fileNameEditFunction(event)
-    {
-      var key = event.charCode ? event.charCode : event.keyCode ? event.keyCode : 0;
-      //Enter key
-      if(key == 13)
-      {
-          event.preventDefault();
-          switchToFileNameView();
-      }
-    }
-
-    function switchToFileNameView()
-    {
-      var el = $(".fileNameContent input");
-      var parentEl = el.parent();
-      var fileName = el.val();
-      parentEl.empty();
-      var newFileName = $('<span>'+fileName+'</span>');
-      newFileName.click(fileNameClickFunction);
-      parentEl.append(newFileName);
-    }
-
-    function switchToInputView()
-    {
-      var el = $(".fileNameContent span");
-      var fileName = el.text();
-      var parentEl = el.parent();
-      parentEl.empty();
-      var inputField = $('<input class="form-control" type="text" oldFileName="'+fileName+'"/>');
-      inputField.val(fileName);
-      inputField.keydown(fileNameEditFunction);
-      inputField.focusout(focusOutHandler);
-      parentEl.append(inputField);
-      inputField.focus();
-    }
-
-    // see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
-    function b64toBlob(b64Data, contentType, sliceSize) {
-      contentType = contentType || '';
-      sliceSize = sliceSize || 512;
-
-      var byteCharacters = atob(b64Data);
-      var byteArrays = [];
-
-      for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-        var slice = byteCharacters.slice(offset, offset + sliceSize);
-
-        var byteNumbers = new Array(slice.length);
-        for (var i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i);
-        }
-
-        var byteArray = new Uint8Array(byteNumbers);
-
-        byteArrays.push(byteArray);
-      }
-
-      var blob = new Blob(byteArrays, {type: contentType});
-      return blob;
-    }
-
-    function saveAsJPEG()
-    {
-      // var fileName = getFileName();
-      var graphData = cy.jpeg();
-      // this is to remove the beginning of the pngContent: data:img/png;base64,
-      var b64data = graphData.substr(graphData.indexOf(",") + 1);
-      var imageData = b64toBlob(b64data, "image/jpeg");
-      var blob = new Blob([imageData]);
-      saveAs(blob, "pathway.jpg");
-    }
-
-    function saveAsPNG()
-    {
-      // var fileName = getFileName();
-      var graphData = cy.png();
-      // this is to remove the beginning of the pngContent: data:img/png;base64,
-      var b64data = graphData.substr(graphData.indexOf(",") + 1);
-      var imageData = b64toBlob(b64data, "image/png");
-      var blob = new Blob([imageData]);
-      saveAs(blob, "pathway.png");
-    }
-
-    function saveGraph(){
-      var fileName = getFileName();
-      var graphJSON = cy.json();
-      var returnString = SaveLoadUtilities.exportGraph(graphJSON);
-      var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
-      saveAs(blob, fileName);
-    }
-
-
-    function getFileName()
-    {
-      return $(".fileNameContent span").text();
-    }
-
-    function changeFileName(text)
-    {
-       $(".fileNameContent span").text(text);
-    }
-
-    function resetFileName()
-    {
-       $(".fileNameContent span").text('pathway.txt');
-    }
-
-    //Jquery handles
-    $('#saveGraphBtn').on('click', function(evt)
-    {
-      saveGraph();
-    });
-
-    $('#loadGraphBtn').on('click', function(evt)
-    {
-      $('#fileinput').attr('value', "");
-      $('#fileinput').trigger('click');
-    });
-
-    $('#fileinput').on('change', function()
-    {
-
-      var file = this.files[0];
-      // Create a new FormData object.
-      var formData = new FormData();
-      formData.append('graphFile', file);
-      var request = new XMLHttpRequest();
-      request.onreadystatechange = function ()
-      {
-        if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
-        {
-            var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-            window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
-            changeFileName(file.name);
-        }
-      };
-      request.open("POST", "/loadGraph");
-      request.send(formData);
-      $('#fileinput').val(null);
-
-    });
-
-    $('#mergeInput').on('change', function()
-    {
-      var file = this.files[0];
-      // Create a new FormData object.
-      var formData = new FormData();
-      formData.append('graphFile', file);
-      var request = new XMLHttpRequest();
-      request.onreadystatechange = function ()
-      {
-        if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
-        {
-          var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-          window.editorActionsManager.mergeGraph(allEles.nodes,allEles.edges);
-          //TODO change file name maybe ?
-        }
-      };
-      request.open("POST", "/loadGraph");
-      request.send(formData);
-      $('#mergeInput').val(null);
-    });
-
-    //File drop down handler
-    $(".fileDropDown li a").click(function(event)
-    {
-      event.preventDefault();
-      var dropdownLinkRole = $(event.target).attr('role');
-
-      if (dropdownLinkRole == 'save')
-      {
-        saveGraph();
-      }
-      else if (dropdownLinkRole == 'load')
-      {
-        $('#fileinput').trigger('click');
-      }
-      else if (dropdownLinkRole == 'new')
-      {
-        cy.remove(cy.elements());
-        resetFileName();
-      }
-      else if (dropdownLinkRole == 'merge')
-      {
-        $('#mergeInput').trigger('click');
-      }
-      else if (dropdownLinkRole == 'jpeg')
-      {
-        saveAsJPEG();
-      }
-      else if (dropdownLinkRole == 'png')
-      {
-        saveAsPNG();
-      }
-
-    });
-
-    //Initial file name click handler
-    $(".fileNameContent span").click(fileNameClickFunction);
-
-})(window.$)
-
-},{"./saveLoadUtils.js":66}],63:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 //Import node modules here !
 var $ = window.$ = window.jQuery = require('jquery');
 var _ = window._ = require('underscore');
@@ -50094,7 +50802,7 @@ require('./RealTimeUtils');//Google's real time utility lib
 
 var WelcomePageView = require('./Views/WelcomePageView.js');
 var AppManager = require('./AppManager');
-var RealTimeModule = require('./RealTimeModule');
+var RealTimeModule = require('./RealTimeManager');
 
 
 //Wait all components to load
@@ -50255,658 +50963,4 @@ $(".aboutDropDown li a").click(function(event)
     }
 });
 
-},{"./AppManager":52,"./RealTimeModule":54,"./RealTimeUtils":55,"./Views/WelcomePageView.js":58,"backbone":1,"bootstrap":2,"jquery":19,"underscore":20}],64:[function(require,module,exports){
-var panzoomOptions =
-{
-  // the default values of each option are outlined below:
-    zoomFactor: 0.05, // zoom factor per zoom tick
-    zoomDelay: 45, // how many ms between zoom ticks
-    minZoom: 0.1, // min zoom level
-    maxZoom: 10, // max zoom level
-    fitPadding: 50, // padding when fitting
-    panSpeed: 10, // how many ms in between pan ticks
-    panDistance: 10, // max pan distance per tick
-    panDragAreaSize: 75, // the length of the pan drag box in which the vector for panning is calculated (bigger = finer control of pan speed and direction)
-    panMinPercentSpeed: 0.25, // the slowest speed we can pan by (as a percent of panSpeed)
-    panInactiveArea: 8, // radius of inactive area in pan drag box
-    panIndicatorMinOpacity: 0.5, // min opacity of pan indicator (the draggable nib); scales from this to 1.0
-    zoomOnly: false, // a minimal version of the ui only with zooming (useful on systems with bad mousewheel resolution)
-
-    // icon class names
-    sliderHandleIcon: 'fa fa-minus',
-    zoomInIcon: 'fa fa-plus',
-    zoomOutIcon: 'fa fa-minus',
-    resetIcon: 'fa fa-expand'
-};
-
-module.exports = panzoomOptions;
-
-},{}],65:[function(require,module,exports){
-;
-
-var BackboneView = require('./Views/BioGeneView.js');
-
-module.exports = (function($)
-{
-  "use strict";
-  
-  var QtipModule =function (cy)
-  {
-    this.cy = cy;
-  };
-
-  QtipModule.prototype.generateQtipContentHTML = function(ele)
-  {
-    var self = this;
-    var nodeData = ele.data();
-    var textInput = $('<div class="col-xs-8 inputCol"><input type="text" class="form-control" nodeid="' + ele.id() + '" value="' + nodeData.name + '"></div>');
-    textInput.change(function()
-    {
-      var nodeID = $(this).find('input').attr('nodeid');
-
-      var cyNode = self.cy.$('#'+nodeID)[0];
-      var newName = $(this).find('input').val();
-      window.editorActionsManager.changeName(cyNode, newName);
-    });
-
-    var wrapper = $('<div></div>');
-    var row = $('<div class="row">\
-                 <div class="col-xs-4 qtipLabel">Name:</div>\
-              </div>');
-
-    row.append(textInput);
-    wrapper.append(row);
-
-    if (ele.data().type === "GENE")
-    {
-      var entrezGeneButton = $('<div class="row centerText geneDetails"><button nodeid="' + ele.id() + '" type="button" class="btn btn-default">Entrez Gene</button></div>');
-      entrezGeneButton.find('button').on('click', function(event)
-      {
-        event.preventDefault();
-        var nodeID = $(this).attr('nodeid');
-        var nodeSymbol = this.cy.$('#'+nodeID)[0]._private.data['name'];
-        var self = this;
-        var parent = $(this).parent();
-        parent.empty().append('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>');
-
-        var formData = new FormData();
-        formData.append('query', nodeSymbol);
-
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function ()
-        {
-          if(request.readyState === XMLHttpRequest.DONE)
-          {
-            if (request.status === 200)
-            {
-              var jsonData = JSON.parse(request.responseText);
-              if (jsonData.count > 0)
-              {
-                var backboneView = new BackboneView({model: jsonData.geneInfo[0]}).render().html();
-                parent.empty().append(backboneView);
-              }
-              else
-              {
-                parent.empty().append('There is no extra information for this gene');
-              }
-            }
-            else
-            {
-              parent.empty().append('An error occured while retrieving the data');
-            }
-          }
-        };
-        request.open("POST", "/getBioGeneData");
-        request.send(formData);
-      });
-      wrapper.append(entrezGeneButton);
-    }
-
-    return wrapper;
-  }
-
-  QtipModule.prototype.addQtipToElements = function(eles)
-  {
-    var self = this;
-    eles.forEach(function(node,i)
-    {
-      var qTipOpts =
-      {
-        content:
-        {
-          text:  function()
-          {
-            return self.generateQtipContentHTML(this);
-          },
-          title: function()
-          {
-            return capitalizeFirstLetter(node.data().type.toLowerCase()) + ' Details';
-          }
-        },
-        position: {
-          my: 'top center',
-          at: 'bottom center'
-        },
-        style:
-        {
-          classes: 'qtip-tipsy qtip-rounded',
-          width: 400
-        }
-      };
-      node.qtip(qTipOpts);
-    });
-
-  }
-  
-
-  //Utility Functions
-  function capitalizeFirstLetter(string)
-  {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
-  return QtipModule;
-
-}(window.$));
-
-},{"./Views/BioGeneView.js":56}],66:[function(require,module,exports){
-var SaveLoadUtils =
-{
-  //Exports given json graph(based on cy.export()) into a string
-  exportGraph: function(graphJSON)
-  {
-    //Get nodes and edges
-    var nodes = graphJSON.elements.nodes;
-    var edges = graphJSON.elements.edges;
-
-    //Prepare Meta Line
-    var returnString = '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY--'+'\n';
-
-    if (nodes)
-    {
-      for (var i = 0; i < nodes.length; i++)
-      {
-        //Node specific data fields
-        var nodeName = nodes[i].data.name;
-        var parentID = nodes[i].data.parent;
-        var nodeID = nodes[i].data.id;
-        var pos = nodes[i].position;
-        var nodeType = nodes[i].data.type;
-
-        //Check if node has a parent, if not set parent id -1
-        if (nodes[i].data.parent)
-        {
-          parentID = nodes[i].data.parent;
-        }
-        else
-        {
-          parentID = -1;
-        }
-
-        // Write a line for a node
-        returnString +=  nodeName + '\t' +
-                         nodeID + '\t' +
-                         nodeType + '\t' +
-                         parentID + '\t' +
-                         parseInt(nodes[i].position.x) + '\t' +
-                         parseInt(nodes[i].position.y) + '\t\n';
-      }
-    }
-
-
-
-    //Put a blank line between nodes and edges
-    returnString += '\n';
-    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\n';
-
-    if (edges) {
-      //Write edges
-      for (var i = 0; i < edges.length; i++)
-      {
-        var edgeID = edges[i].data.id;
-        var edgeType = edges[i].data.type;
-        var source = edges[i].data.source;
-        var target = edges[i].data.target;
-
-        returnString += edgeID + '\t' +
-                        source + '\t' +
-                        target + '\t' +
-                        edgeType + '\n';
-      }
-    }
-
-
-
-    //Finally return a string that includes whole graph lovely and peacefully :)
-    return returnString;
-  },
-  parseGraph: function(graphText)
-  {
-    var allEles = [];
-    var nodes = [];
-    var edges = [];
-
-
-    // By lines
-    var lines = graphText.split('\n');
-    var edgesStartIndex = -1;
-
-    // start from first line skip node meta data
-    for(var i =1; i < lines.length; i++)
-    {
-      // If we encounter a blank line, that means we need to parse edges from now on !
-      // so skip blank line and edge meta line
-      if (lines[i].length == 0)
-      {
-        edgesStartIndex = i + 2;
-        break;
-      }
-
-      //Fetch a line for nodes
-      var lineData = lines[i].split('\t');
-      var nodeName = lineData[0];
-      var nodeID = lineData[1];
-      var nodeType = lineData[2];
-      var parentID = lineData[3];
-      var posX = lineData[4];
-      var posY = lineData[5];
-
-      var newNode = {group: 'nodes', data:{id: nodeID, name: nodeName, type:nodeType} ,position:{x: parseInt(posX), y:parseInt(posY)}};
-
-      if ( parentID != '-1')
-      {
-        newNode.data.parent = parentID;
-      }
-      nodes.push(newNode);
-    }
-
-    //Read edges
-    for(var i = edgesStartIndex; i < lines.length; i++)
-    {
-      //If we reach EOF we break loop
-      if (lines[i].length == 0)
-      {
-        break;
-      }
-
-      var lineData = lines[i].split('\t');
-      var edgeID = lineData[0];
-      var edgeSource = lineData[1];
-      var edgeTarget = lineData[2];
-      var edgeType = lineData[3];
-
-      newEdge = {group: 'edges', data:{id: edgeID, type: edgeType, source: edgeSource, target: edgeTarget}};
-      edges.push(newEdge);
-    }
-
-    return {nodes: nodes, edges: edges};
-  }
-}
-
-module.exports = SaveLoadUtils;
-
-},{}],67:[function(require,module,exports){
-var styleSheet = [
-{
-      selector: 'node',
-      style:
-      {
-        'content': function(ele){
-            return contentFunction(ele);
-        },
-        'text-valign': function(ele)
-        {
-          return 'center';
-        },
-        'color': '#1e2829',
-        'width': 60,
-        'height': 15,
-        'background-color': '#fff',
-        'background-opacity': 0.5,
-        'text-margin-y' : 50,
-        'shape': function(ele)
-        {
-            return parentNodeShapeFunc( ele );
-        },
-        'border-width': function(ele)
-        {
-            return borderWidthFunction( ele );
-        },
-        'border-color': function(ele)
-        {
-          return nodeBorderColorFunction(ele);
-        },
-        'font-size': 7
-      }
-    },
-    {
-        selector: 'node:parent',
-        style:
-        {
-          'shape': function(ele)
-          {
-              return parentNodeShapeFunc( ele );
-          },
-          'text-valign': function(ele)
-          {
-            return 'bottom';
-          },
-          'padding-left': function(ele){ return compoundPaddingFunction(ele); },
-          'padding-right': function(ele){ return compoundPaddingFunction(ele); },
-          'padding-bottom': function(ele){ return compoundPaddingFunction(ele); },
-          'padding-top':  function(ele){ return compoundPaddingFunction(ele); },
-          'background-opacity': 0.5,
-          'border-width': function(ele)
-          {
-              return parentBorderWidthFunction( ele );
-          },
-          'border-color': function(ele)
-          {
-            return nodeBorderColorFunction(ele);
-          },
-          'background-color': function(ele){
-            return nodeBackgroundColorFunction(ele);
-          }
-        }
-    },
-    {
-      selector: 'edge',
-      style:
-      {
-        'curve-style': 'bezier',
-        'target-arrow-shape': function( ele )
-        {
-            return edgeTargetArrowTypeHandler(ele);
-        },
-        'width': 1,
-        'line-color': function( ele )
-        {
-            return edgeColorHandler(ele);
-        },
-        'target-arrow-color': function( ele )
-        {
-            return edgeColorHandler(ele);
-        },
-        'line-style': function(ele)
-        {
-            return edgeLineTypeHandler(ele);
-        },
-        'opacity': 1
-      }
-  },
-  // {
-  //     selector: 'edge.segments',
-  //     style:
-  //     {
-  //       'curve-style': 'segments',
-  //       'segment-distances': '0 100',
-  //       'segment-weights': '0 1'
-  //     }
-  // },
-  {
-    selector: ':selected',
-    style:
-    {
-      'shadow-color' : '#f1c40f',
-      'shadow-opacity': 1.0
-    }
-  }
-];
-
-
-var compoundPaddingFunction = function( ele )
-{
-  switch (ele._private.data['type'])
-  {
-    case "FAMILY": return 5; break;
-    case "COMPARTMENT": return 10; break;
-    case "PROCESS": return 10; break;
-    default: return 5; break;
-  }
-}
-
-var contentFunction = function( ele )
-{
-  if (ele._private.data.name) {
-    return ele._private.data.name;
-  }
-  return 'newNode';
-}
-
-var vTextPositionFunction = function( ele )
-{
-  switch (ele._private.data['type'])
-  {
-    case "GENE": return 'center'; break;
-    case "FAMILY": return 'top'; break;
-    case "COMPARTMENT": return 'top'; break;
-    default: return 'center'; break;
-  }
-}
-
-var borderWidthFunction = function( ele )
-{
-  switch (ele._private.data['type'])
-  {
-    case "GENE": return 0.5; break;
-    case "PROCESS": return 0; break;
-    case "FAMILY": return 1.0; break;
-    case "COMPARTMENT": return 2; break;
-    default: return 0.5; break;
-  }
-}
-
-var parentBorderWidthFunction = function( ele )
-{
-  switch (ele._private.data['type'])
-  {
-    case "GENE": return 0.5; break;
-    case "PROCESS": return 1.0; break;
-    case "FAMILY": return 1.0; break;
-    case "COMPARTMENT": return 2; break;
-    default: return 0.5; break;
-  }
-}
-
-var parentNodeShapeFunc = function( ele )
-{
-  switch (ele._private.data['type'])
-  {
-    case "GENE": return "roundrectangle"; break;
-    case "PROCESS": return "roundrectangle"; break;
-    case "FAMILY": return "rectangle"; break;
-    case "COMPARTMENT": return "roundrectangle"; break;
-    default: return "roundrectangle"; break;
-  }
-}
-
-var nodeBackgroundColorFunction = function( ele )
-{
-  switch (ele._private.data['type'])
-  {
-    case "GENE": return "#fff"; break;
-    case "FAMILY": return "#CCCCCC"; break;
-    case "COMPARTMENT": return "#fff"; break;
-    default: return "#fff"; break;
-  }
-}
-
-var nodeBorderColorFunction = function( ele )
-{
-  switch (ele._private.data['type'])
-  {
-    case "GENE": return "#000000"; break;
-    case "FAMILY": return "#CCCCCC"; break;
-    case "COMPARTMENT": return "#000000"; break;
-    default: return "#000000"; break;
-  }
-}
-
-var edgeColorHandler = function( ele )
-{
-  // switch (ele._private.data['type']){
-  //   case "ACTIVATES": return "#904930"; break;
-  //   case "INHIBITS": return "#7B7EF7"; break;
-  //   case "INDUCES": return "#ad47c2"; break;
-  //   case "REPRESSES": return "#67C1A9"; break;
-  //   case "BINDS": return "#67C1A9"; break;
-  //   default: return "#989898"; break;
-  // }
-  return "#1b1b1b";
-}
-
-var edgeTargetArrowTypeHandler = function( ele )
-{
-    switch (ele._private.data['type']){
-      case "ACTIVATES": return "triangle"; break;
-      case "INHIBITS": return "tee"; break;
-      case "INDUCES": return "triangle"; break;
-      case "REPRESSES": return "tee"; break;
-      case "BINDS": return "none"; break;
-      default: return "none"; break;
-    }
-}
-
-var edgeLineTypeHandler = function( ele )
-{
-    switch (ele._private.data['type']){
-      case "ACTIVATES": return "solid"; break;
-      case "INHIBITS": return "solid"; break;
-      case "INDUCES": return "dashed"; break;
-      case "REPRESSES": return "dashed"; break;
-      case "BINDS": return "solid"; break;
-      default: return "solid"; break;
-    }
-}
-
-
-module.exports = styleSheet;
-
-},{}],68:[function(require,module,exports){
-module.exports = (function($)
-{
-  'use strict';
-
-  function handleNodeAlignment(param)
-  {
-    var nodes = cy.nodes(':selected');
-    var nodeMap = {};
-
-    nodes.forEach(function(node,index)
-    {
-      if (node.isParent())
-      {
-        nodeMap[node.id()] = node;
-      }
-    });
-
-
-    if (nodes.length > 0)
-    {
-      var firstSelected = nodes[0];
-      var firstBbox = firstSelected.boundingBox();
-
-      nodes.forEach(function(node,index)
-      {
-        if (index == 0)
-        {
-          return ;
-        }
-
-        //If parent of selected node is in selection do nothing !
-        if (nodeMap[node.parent().id()] == null)
-        {
-          var newPosition = calculateNewPosition(param, node, firstBbox)
-          //Recursively traverse leaf nodes
-          moveNode(node,0,0,newPosition);
-        }
-
-      });
-    }
-  }
-
-  /*
-     Determine new position according to the alignment
-     node that node.position works on center positions thats why all calculations
-     are performed accordingly
-  */
-  function calculateNewPosition(param, node, referenceBbox)
-  {
-      var currentPos = node.position();
-      var currentBbox = node.boundingBox();
-      var newPosition;
-
-      if (param === 'vLeft')
-      {
-        newPosition = {x: referenceBbox.x1+currentBbox.w/2, y: currentPos.y};
-      }
-      else if (param === 'vCen')
-      {
-        newPosition = {x: referenceBbox.x1+referenceBbox.w/2, y: currentPos.y};
-      }
-      else if (param === 'vRight')
-      {
-        newPosition = {x: referenceBbox.x2-currentBbox.w/2, y: currentPos.y};
-      }
-      else if (param === 'hTop')
-      {
-        newPosition = {x: currentPos.x, y: referenceBbox.y1 + currentBbox.h/2};
-      }
-      else if (param === 'hMid')
-      {
-        newPosition = {x: currentPos.x, y: referenceBbox.y1 + referenceBbox.h/2};
-      }
-      else if (param === 'hBot')
-      {
-        newPosition = {x: currentPos.x, y: referenceBbox.y2 - currentBbox.h/2};
-      }
-      else {
-        console.log('Error: wrong alignment name ' + param);
-        return;
-      }
-
-      return newPosition;
-
-  }
-
-  //Recursively move leaf nodes
-  function moveNode(node, dx, dy, newPos)
-  {
-    if (node.isParent())
-    {
-      var childNodes = node.children();
-      var parentBbox = node.boundingBox();
-      childNodes.forEach(function(childNode, index)
-      {
-        var childBbox = childNode.boundingBox();
-        var _dx = -(parentBbox.x1 - childBbox.x1)-parentBbox.w/2+childBbox.w/2;
-        var _dy = -(parentBbox.y1 - childBbox.y1)-parentBbox.h/2+childBbox.h/2;
-
-        //If further compound node is found, set position accordingly
-        if (childNode.isParent())
-        {
-          moveNode(childNode, 0, 0, {x: newPos.x+_dx, y:newPos.y+_dy});
-        }
-        else
-        {
-          moveNode(childNode, _dx, _dy, newPos);
-        }
-
-      });
-    }
-    else
-    {
-      node.position({x: newPos.x+dx, y:newPos.y+dy});
-    }
-  }
-
-  $(".viewDropdown li a").click(function(event)
-  {
-    event.preventDefault();
-    var dropdownLinkRole = $(event.target).attr('role');
-    handleNodeAlignment(dropdownLinkRole);
-  });
-
-})(window.$)
-
-},{}]},{},[63]);
+},{"./AppManager":52,"./RealTimeManager":61,"./RealTimeUtils":62,"./Views/WelcomePageView.js":67,"backbone":1,"bootstrap":2,"jquery":19,"underscore":20}]},{},[68]);

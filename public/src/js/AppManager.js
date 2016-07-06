@@ -6,18 +6,19 @@ var cyqtip = require('cytoscape-qtip');
 var regCose = require("../../lib/js/cose-bilkent/src/index.js");
 
 //Panzoom options
-var panzoomOpts = require('./panzoomUtils.js');
-var styleSheet = require('./stylesheet.js');
-var edgeHandleOpts = require('./edgeHandlingUtils.js');
-var SaveLoadUtilities = require('./saveLoadUtils.js');
+var panzoomOpts = require('./PanzoomOptions.js');
+var styleSheet = require('./GraphStyleSheet.js');
+var edgeHandleOpts = require('./EdgeHandlesOptions.js');
+var SaveLoadUtilities = require('./SaveLoadUtility.js');
 var LayoutProperties = require('./Views/LayoutProperties.js');
 
 //Other requires
-require('./fileOperationsModule.js');
-require('./viewOperationsModule.js');
-var QtipModule = require('./qTipModule.js');
-var CxtMenu = require('./contextMenuModule.js');
-var NodeAdd = require('./cytoscape.js-nodeadd.js');
+require('./FileOperationsManager.js');
+require('./ViewOperationsManager.js');
+
+var QtipManager = require('./QtipManager.js');
+var ContextMenuManager = require('./ContextMenuManager.js');
+var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
 var EditorActionsManager = require('./EditorActionsManager.js');
 
 
@@ -67,9 +68,9 @@ module.exports = (function()
 
         //TODO remove window.editorActionsManager from real time module ASAP !
         window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative, this.realTimeManager, window.cy);
-        this.qtipHandler = new QtipModule(window.cy), this.editorActionsManager;
-        this.cxMenuHandler = new CxtMenu(window.cy, this.editorActionsManager);
-        this.nodeAdd = new NodeAdd(this.editorActionsManager);
+        this.qtipHandler = new QtipManager(window.cy), this.editorActionsManager;
+        this.cxMenuHandler = new ContextMenuManager(window.cy, this.editorActionsManager);
+        this.nodeAdd = new DragDropNodeAddPlugin(this.editorActionsManager);
 
         cy.panzoom( panzoomOpts );
 
