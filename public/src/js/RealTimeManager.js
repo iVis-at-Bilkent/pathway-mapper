@@ -14,6 +14,8 @@ module.exports = (function()
         this.NODEMAP_NAME = 'nodes';
         this.EDGEMAP_NAME = 'edges';
         this.LAYOUT_PROPS_NAME = 'layoutProperties';
+        this.GLOBAL_OPTS_NAME = 'globalOptions';
+
 
         // Create a new instance of the realtime utility with your client ID.
         this.realtimeUtils = new utils.RealtimeUtils({
@@ -79,10 +81,12 @@ module.exports = (function()
         var edgeMap = model.createMap();
         //Set initial layout properties here when real time document is created initially
         var layoutProperties = model.create(LayoutPropertiesR, window.editorActionsManager.layoutProperties);
+        var globalOptions = model.create(GlobalOptionsR, window.editorActionsManager.getGlobalOptions());
 
         root.set(this.NODEMAP_NAME, nodeMap);
         root.set(this.EDGEMAP_NAME, edgeMap);
         root.set(this.LAYOUT_PROPS_NAME, layoutProperties);
+        root.set(this.GLOBAL_OPTS_NAME, globalOptions);
     };
 
     /*
@@ -98,6 +102,7 @@ module.exports = (function()
         var nodeMap = root.get(this.NODEMAP_NAME);
         var edgeMap = root.get(this.EDGEMAP_NAME);
         var realTimeLayoutProperties = root.get(this.LAYOUT_PROPS_NAME);
+        var globalOptions = root.get(this.GLOBAL_OPTS_NAME);
 
         var nodeMapEntries = nodeMap.values();
         var edgeMapEntries = edgeMap.values();
@@ -105,9 +110,10 @@ module.exports = (function()
         //Add real time nodes to local graph
         window.editorActionsManager.addNewNodesLocally(nodeMapEntries);
         window.editorActionsManager.addNewEdgesLocally(edgeMapEntries);
-        
-        //TODO update layout properties !!
+
+        //Update layout properties & global options!!
         window.editorActionsManager.updateLayoutPropertiesCallback(realTimeLayoutProperties);
+        window.editorActionsManager.changeGlobalOptions(globalOptions);
 
         //Keep a reference to the file !
         this.realTimeDoc = doc;
@@ -135,7 +141,6 @@ module.exports = (function()
         });
 
         this.postFileLoad();
-        
     };
 
     RealTimeManager.prototype.addNewNode = function(nodeData, posData)
@@ -489,22 +494,20 @@ module.exports = (function()
             // we need to update parent field of children of this node if any
             else
             {
+                var sameNameNode = realTimeNodeNameLookupTable[node.data.name];
+                var sameNodeId = that.getCustomObjId(sameNameNode);
+                oldIdNewIdMap[node.data.id] = sameNodeId;
+
+                //If node has children recursively traverse sub graphs and update parent field of child nodes
                 if(node.children.length > 0)
                 {
-                    var sameNameNode = realTimeNodeNameLookupTable[node.data.name];
-                    var sameNodeId = that.getCustomObjId(sameNameNode);
-                    oldIdNewIdMap[node.data.id] = sameNodeId;
-
-                    //If node has children recursively traverse sub graphs and update parent field of child nodes
-                    if(node.children.length > 0)
+                    for (var i in node.children)
                     {
-                        for (var i in node.children)
-                        {
-                            var tmpNode = node.children[i];
-                            traverseTree(tmpNode, sameNodeId);
-                        }
+                        var tmpNode = node.children[i];
+                        traverseTree(tmpNode, sameNodeId);
                     }
                 }
+
             }
         }
 
@@ -543,6 +546,23 @@ module.exports = (function()
             if (newLayoutProperties.hasOwnProperty(property))
             {
                 layoutPropertiesR[property] = newLayoutProperties[property];
+            }
+        }
+        model.endCompoundOperation();
+    };
+
+    RealTimeManager.prototype.updateGlobalOptions = function(newOptions)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var globalOptions =  root.get(this.GLOBAL_OPTS_NAME);
+
+        model.beginCompoundOperation();
+        for (var property in globalOptions)
+        {
+            if (newOptions.hasOwnProperty(property))
+            {
+                globalOptions[property] = newOptions[property];
             }
         }
         model.endCompoundOperation();
@@ -611,11 +631,12 @@ module.exports = (function()
         gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
         gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
         gapi.drive.realtime.custom.registerType(LayoutPropertiesR, 'LayoutPropertiesR');
+        gapi.drive.realtime.custom.registerType(GlobalOptionsR, 'GlobalOptionsR');
 
         gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
         gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
         gapi.drive.realtime.custom.setInitializer(LayoutPropertiesR, LayoutPropertiesRInitializer);
-
+        gapi.drive.realtime.custom.setInitializer(GlobalOptionsR, GlobalOptionsRInitializer);
 
         // NodeR;
         NodeR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
@@ -645,7 +666,10 @@ module.exports = (function()
         LayoutPropertiesR.prototype.gravityCompound = gapi.drive.realtime.custom.collaborativeField('gravityCompound');
         LayoutPropertiesR.prototype.gravityRange = gapi.drive.realtime.custom.collaborativeField('gravityRange');
 
-
+        //GlobalOptionsR
+        GlobalOptionsR.prototype.zoomLevel = gapi.drive.realtime.custom.collaborativeField('zoomLevel');
+        GlobalOptionsR.prototype.panLevel = gapi.drive.realtime.custom.collaborativeField('panLevel');
+        
         //Attribute changed handlers !!!
         var self = this;
 
@@ -671,9 +695,21 @@ module.exports = (function()
             this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateLayoutPropsHandler);
         }
 
+        function registerAttributeChangeHandlersGlobalOptionsR()
+        {
+            function updateGlobalOptionsRHandler(event)
+            {
+                var globalOptions = event.currentTarget;
+                window.editorActionsManager.changeGlobalOptions(globalOptions);
+            }
+
+            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateGlobalOptionsRHandler);
+        }
+
         //Register attribute changed handlers
         gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);
         gapi.drive.realtime.custom.setOnLoaded(LayoutPropertiesR, registerAttributeChangeHandlersLayoutPropertiesR);
+        gapi.drive.realtime.custom.setOnLoaded(GlobalOptionsR, registerAttributeChangeHandlersGlobalOptionsR);
 
     };
 
@@ -681,27 +717,35 @@ module.exports = (function()
     var NodeR = function() {};
     var EdgeR = function() {};
     var LayoutPropertiesR = function() {};
+    //For storing global options like zoom, pan level etc in colalborative mode
+    var GlobalOptionsR = function(){};
 
     var NodeRInitializer = function(params) {
         var model = gapi.drive.realtime.custom.getModel(this);
+        model.beginCompoundOperation();
         this.name = params.name || "undefined";
         this.type = params.type || "undefined";
         this.parent = params.parent || "undefined";
         this.x = params.x || "undefined";
         this.y = params.y || "undefined";
+        model.endCompoundOperation();
     };
 
     var EdgeRInitializer = function(params)
     {
         var model = gapi.drive.realtime.custom.getModel(this);
+        model.beginCompoundOperation();
         this.type = params.type || "undefined";
         this.source = params.source || "undefined";
         this.target = params.target || "undefined";
+        model.endCompoundOperation();
+
     };
 
     var LayoutPropertiesRInitializer = function(params)
     {
         var model = gapi.drive.realtime.custom.getModel(this);
+        model.beginCompoundOperation();
         this.name = params.name || 'undefined';
         this.nodeRepulsion = params.nodeRepulsion || 'undefined';
         this.nodeOverlap = params.nodeOverlap || 'undefined';
@@ -716,6 +760,16 @@ module.exports = (function()
         this.gravityRangeCompound = params.gravityRangeCompound || 'undefined';
         this.gravityCompound = params.gravityCompound || 'undefined';
         this.gravityRange = params.gravityRange || 'undefined';
+        model.endCompoundOperation();
+    };
+
+    var GlobalOptionsRInitializer = function(params)
+    {
+        var model = gapi.drive.realtime.custom.getModel(this);
+        model.beginCompoundOperation();
+        this.zoomLevel = params.zoomLevel || 'undefined';
+        this.panLevel = params.panLevel || 'undefined';
+        model.endCompoundOperation();
     };
 
     return RealTimeManager;

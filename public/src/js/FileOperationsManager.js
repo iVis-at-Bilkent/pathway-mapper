@@ -177,7 +177,7 @@ module.exports = (function($)
             {
                 var allEles = SaveLoadUtilities.parseGraph(request.responseText);
                 window.editorActionsManager.mergeGraph(allEles.nodes,allEles.edges);
-                //TODO change file name maybe ?
+                //TODO change file name maybe, probabyly  not necessary ?
             }
         };
         request.open("POST", "/loadGraph");

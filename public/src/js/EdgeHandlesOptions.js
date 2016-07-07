@@ -64,7 +64,9 @@ var edgeHandleDefaults =
   },
   complete: function( sourceNode, targetNodes, addedEntities )
   {
-      // cy.add({group:'edges', data:{source: sourceNode.id(), target: targetNodes[0].id(), type: type}});
+       // Remove recently added edge ! 
+       // FBI takes this case from now on :O
+       // We will take care of addition in our manager :)
       cy.remove(addedEntities);
       window.editorActionsManager.addEdge(addedEntities[0].data());
   },

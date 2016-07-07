@@ -399,7 +399,6 @@ module.exports = (function(){
             if (this.authTimer) {
                 window.clearTimeout(this.authTimer);
             }
-            //TODO disabled this for now, look back later
             this.refreshAuth();
         },
 

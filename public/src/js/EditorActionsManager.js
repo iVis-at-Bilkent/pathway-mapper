@@ -28,6 +28,7 @@ module.exports = (function()
             // Gravity range (constant)
             gravityRange: 1.5
         };
+        this.FIT_CONSTANT = 50;
 
         this.layoutProperties = _.clone(this.defaultLayoutProperties);
         this.observers = [];
@@ -47,7 +48,27 @@ module.exports = (function()
             observer.notify();
         }
     };
-    
+
+    //Global options related functions, zoom etc..
+    EditorActionsManager.prototype.getGlobalOptions = function()
+    {
+        return {
+            zoomLevel: cy.zoom(),
+            panLevel: cy.pan()
+        };
+    }
+
+    EditorActionsManager.prototype.changeGlobalOptions = function(globalOptions)
+    {
+        cy.zoom(globalOptions.zoomLevel);
+        cy.pan(globalOptions.panLevel);
+    }
+
+    EditorActionsManager.prototype.updateGlobalOptions = function(newOptions)
+    {
+        this.realTimeManager.updateGlobalOptions(newOptions);
+    }
+
     //Layout properties related functions
     EditorActionsManager.prototype.saveLayoutProperties = function(newLayoutProps)
     {
@@ -70,7 +91,7 @@ module.exports = (function()
         //Notify observers to reflect changes on colalborative object to the views
         this.notifyObservers();
     };
-    
+
     EditorActionsManager.prototype.performLayout = function()
     {
         cy.layout(this.layoutProperties);
@@ -141,7 +162,6 @@ module.exports = (function()
         if (node === null)
         {
             //Remove element from existing graph
-            var ele = event.newValue;
             var cyEle = this.cy.$("#" + nodeID);
             this.removeElementCy(cyEle);
             this.cy.nodes().updateCompoundBounds();
@@ -268,13 +288,12 @@ module.exports = (function()
 
         //Get real time edge object and sync it to node addition or removal
         var edge = event.newValue;
+        var edgeID = event.property;
 
         //Removal Operation
         if (edge === null)
         {
-            var edgeID = this.realTimeManager.getCustomObjId(edge);
             //Remove element from existing graph
-            var ele = event.newValue;
             var cyEle = this.cy.$("#" + edgeID);
             this.removeElementCy(cyEle);
         }
@@ -336,7 +355,7 @@ module.exports = (function()
                 //Remove all connected edges also !
                 connectedEdges.forEach(function (edge, j)
                 {
-                   self.removeElementFromRealTime(edge);
+                    self.removeElementFromRealTime(edge);
                 });
 
                 self.removeElementFromRealTime(elem);
@@ -357,7 +376,7 @@ module.exports = (function()
     {
         this.realTimeManager.removeElement(ele.id());
     };
-    
+
     EditorActionsManager.prototype.changeParents = function(eles, newParentId)
     {
         if(this.isCollaborative)
@@ -418,8 +437,8 @@ module.exports = (function()
         self.cy.add(removedNodes);
         self.cy.nodes().updateCompoundBounds();
     };
-    
-    EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId) 
+
+    EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId)
     {
 
         var classRef = this;
@@ -452,8 +471,6 @@ module.exports = (function()
             this.children = [];
         };
 
-
-        //TODO need to pass this to function somehow
         var connectedEdges = eles.connectedEdges();
         // Traverses given elements and constructs subgraph relations
         // creates a nested structure into rootnodeObj
@@ -464,15 +481,15 @@ module.exports = (function()
                 connectedEdges = connectedEdges.union(ele.connectedEdges());
 
                 if(ele.isParent())
-               {
-                   rootNodeObj.children.push(new NodeObj(ele));
-                   var lengthOfChildrenArray = rootNodeObj.children.length;
-                   traverseNodes(ele.children(), rootNodeObj.children[lengthOfChildrenArray-1]);
-               }
-               else
-               {
-                   rootNodeObj.children.push(new NodeObj(ele));
-               }
+                {
+                    rootNodeObj.children.push(new NodeObj(ele));
+                    var lengthOfChildrenArray = rootNodeObj.children.length;
+                    traverseNodes(ele.children(), rootNodeObj.children[lengthOfChildrenArray-1]);
+                }
+                else
+                {
+                    rootNodeObj.children.push(new NodeObj(ele));
+                }
             });
         }
 
@@ -483,7 +500,6 @@ module.exports = (function()
 
         traverseNodes(topMostNodes, rootNodeR);
         this.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
-        console.log(rootNodeR);
     };
 
     EditorActionsManager.prototype.moveElements = function(ele)
@@ -511,6 +527,7 @@ module.exports = (function()
             //Local usage file load
             this.mergeGraphCy(nodes,edges);
         }
+        this.fitGraph();
     };
 
     EditorActionsManager.prototype.mergeGraphCy = function(nodes, edges)
@@ -581,10 +598,27 @@ module.exports = (function()
                 edgesToBeAdded.push(ele);
             }
         }
-        
+
         cy.add(edgesToBeAdded);
-        cy.fit(50);
     };
+
+    EditorActionsManager.prototype.fitGraph = function()
+    {
+        if(this.isCollaborative)
+        {
+            cy.fit(this.FIT_CONSTANT);
+            var newState =
+            {
+                zoomLevel: cy.zoom(),
+                panLevel: cy.pan()
+            };
+            this.updateGlobalOptions(newState);
+        }
+        else
+        {
+            cy.fit(this.FIT_CONSTANT);
+        }
+    }
 
     EditorActionsManager.prototype.loadFile = function(nodes, edges)
     {
@@ -598,6 +632,7 @@ module.exports = (function()
             //Local usage file load
             this.loadFileCy(nodes,edges);
         }
+        this.fitGraph();
     };
 
     EditorActionsManager.prototype.loadFileCy = function(nodes, edges)
@@ -606,7 +641,6 @@ module.exports = (function()
         this.removeElementCy(cy.elements());
         this.addNodesCy(nodes);
         this.addEdgesCy(edges);
-        cy.fit(50);
     };
 
     EditorActionsManager.prototype.loadfileRealTime = function(nodes, edges)
@@ -643,7 +677,7 @@ module.exports = (function()
         ele.data('name', newName);
         ele.css('content', newName);
     };
-    
+
     EditorActionsManager.prototype.updateElementCallback = function(ele, id)
     {
         //Remove element from existing graph

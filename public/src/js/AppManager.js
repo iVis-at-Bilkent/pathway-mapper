@@ -2,6 +2,7 @@
 var cytoscape =  window.cytoscape = require('cytoscape');
 var panzoom = require('cytoscape-panzoom');
 var cxtmenu = require('cytoscape-cxtmenu');
+var navigator = require('cytoscape-navigator');
 var cyqtip = require('cytoscape-qtip');
 var regCose = require("../../lib/js/cose-bilkent/src/index.js");
 
@@ -45,7 +46,9 @@ module.exports = (function()
         cxtmenu( cytoscape, $ ); // register extension
         cyqtip( cytoscape, $ ); // register extension
         regCose( cytoscape ); // register extension
-        
+        navigator( cytoscape ); // register extension
+
+
         window.edgeAddingMode = 0;
         // var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
         cy = window.cy = cytoscape({
@@ -61,10 +64,10 @@ module.exports = (function()
 
         //TODO remove window.editorActionsManager from real time module ASAP !
         //Create Manager Classes
-        window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative, 
-            this.realTimeManager, 
+        window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative,
+            this.realTimeManager,
             window.cy);
-        
+
         this.qtipManager = new QtipManager(window.cy), this.editorActionsManager;
         this.cxtMenuManager = new ContextMenuManager(window.cy, this.editorActionsManager);
         this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editorActionsManager);
@@ -74,7 +77,6 @@ module.exports = (function()
             el: $('#layoutPropertiesDiv'),
             editorActionsManager: this.editorActionsManager
         }).render();
-
 
         //Initialize panzoom
         cy.panzoom( panzoomOpts );
@@ -112,46 +114,40 @@ module.exports = (function()
         //Edge Handles initialization
         cy.edgehandles( edgeHandleOpts );
 
+        // //Navigator for cytoscape js
+        // var navDefaults = {
+        //     container: false // can be a HTML or jQuery element or jQuery selector
+        //     , viewLiveFramerate: 0 // set false to update graph pan only on drag end; set 0 to do it instantly; set a number (frames per second) to update not more than N times per second
+        //     , thumbnailEventFramerate: 30 // max thumbnail's updates per second triggered by graph updates
+        //     , thumbnailLiveFramerate: false // max thumbnail's updates per second. Set false to disable
+        //     , dblClickDelay: 200 // milliseconds
+        //     , removeCustomContainer: true // destroy the container specified by user on plugin destroy
+        //     , rerenderDelay: 100 // ms to throttle rerender updates to the panzoom for performance
+        // };
+        //
+        // var nav = cy.navigator( navDefaults ); // get navigator instance, nav
     };
 
     AppManager.prototype.initCyHandlers = function()
     {
         var that = this;
-        cy.on('mouseover', 'node', function( e )
+        cy.on('click', 'node', function( e )
         {
             var eventIsDirect = (e.cyTarget === this);
 
             if( eventIsDirect )
             {
-                var self = this;
-
-                var newQtipTimeoutFunc = setTimeout(function()
+                //Remove qtips
+                $(".qtip").remove();
+                that.qtipManager.addQtipToElements(e.cyTarget);
+                var api = this.qtip('api');
+                if (api)
                 {
-                    //Remove qtips
-                    $(".qtip").remove();
-                    that.qtipManager.addQtipToElements(self);
-                    var api = self.qtip('api');
-                    if (api)
-                    {
-                        api.show();
-                    }
-                }, 1000);
-
-                qtipTimeoutFunctions.push(newQtipTimeoutFunc);
-
+                    api.show();
+                }
             }
         });
-
-        cy.on('mouseout', 'node', function(e)
-        {
-            clearQtipTimeoutStack();
-        });
-
-        cy.on('cxttap', 'node', function( e )
-        {
-            clearQtipTimeoutStack();
-        });
-
+        
         cy.on('free', 'node', function (e)
         {
             //Collect all nodes with descendants in case of compounds
@@ -165,20 +161,13 @@ module.exports = (function()
         cy.on('layoutstop', function(event)
         {
             that.editorActionsManager.moveElements(cy.nodes());
+            var newState = {
+                zoomLevel: cy.zoom(),
+                panLevel: cy.pan()
+            };
+            that.editorActionsManager.updateGlobalOptions(newState);
         });
     };
-
-    //Utility Functions
-    //For better handling mouseover node details pop up
-    var qtipTimeoutFunctions = [];
-
-    function clearQtipTimeoutStack()
-    {
-        for (var i = 0; i < qtipTimeoutFunctions.length; i++) {
-            clearTimeout(qtipTimeoutFunctions[i]);
-        }
-        qtipTimeoutFunctions = [];
-    }
 
     return AppManager;
 

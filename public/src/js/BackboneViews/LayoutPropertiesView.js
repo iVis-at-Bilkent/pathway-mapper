@@ -76,7 +76,7 @@ var layoutProps = Backbone.View.extend(
   //For observer observable pattern usage !!!!
   notify: function()
   {
-    //Editor actiosn manager notified us here, that means layout properties on editor actions manager
+    //Editor actions manager notified us here, that means layout properties on editor actions manager
     //is changed. reflect it to view
     this.copyProperties(this.editorActionsManagerRef.layoutProperties);
     this.changeParameters();
