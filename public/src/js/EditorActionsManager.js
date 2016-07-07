@@ -66,7 +66,8 @@ module.exports = (function()
 
     EditorActionsManager.prototype.updateGlobalOptions = function(newOptions)
     {
-        this.realTimeManager.updateGlobalOptions(newOptions);
+        if(this.isCollaborative)
+            this.realTimeManager.updateGlobalOptions(newOptions);
     }
 
     //Layout properties related functions

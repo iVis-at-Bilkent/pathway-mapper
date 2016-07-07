@@ -15,6 +15,11 @@ module.exports = (function()
         'color': '#1e2829',
         'width': 60,
         'height': 15,
+        // 'background-image-opacity': 1,
+        // 'background-image': function (ele)
+        // {
+        //   return backgroundImageHandler(ele);
+        // },
         'background-color': '#fff',
         'background-opacity': 0.5,
         'text-margin-y' : 50,
@@ -231,6 +236,24 @@ module.exports = (function()
       case "BINDS": return "solid"; break;
       default: return "solid"; break;
     }
+  }
+
+  var backgroundImageHandler = function(ele)
+  {
+    var dataURI = "data:image/svg+xml;utf8,";
+    var svgNameSpace = 'http://www.w3.org/2000/svg';
+
+    var svg = document.createElementNS(svgNameSpace,'svg');
+    // svg.setAttribute('width', 10);
+    // svg.setAttribute('height', 10);
+
+    var rect = document.createElementNS(svgNameSpace, 'rect');
+    rect.setAttribute('width', 5);
+    rect.setAttribute('height', 5);
+    rect.setAttribute('style', "fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)");
+
+    svg.appendChild(rect);
+    return dataURI+svg.outerHTML;
   }
 
   return styleSheet;

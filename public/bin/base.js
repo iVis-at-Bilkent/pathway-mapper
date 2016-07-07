@@ -5122,6 +5122,23 @@ SOFTWARE.
     Main functions
   ****************************/
 
+  , bb: function(){
+    var bb = this.cy.elements().boundingBox()
+
+    if( bb.w === 0 || bb.h === 0 ){
+      return {
+        x1: 0,
+        x2: Infinity,
+        y1: 0,
+        y2: Infinity,
+        w: Infinity,
+        h: Infinity
+      } // => hide interactive overlay
+    }
+
+    return bb
+  }
+
   , _init: function ( cy, options ) {
       this.$element = $( cy.container() )
       this.options = $.extend({}, defaults, options)
@@ -5129,7 +5146,7 @@ SOFTWARE.
       this.cy = cy
 
       // Cache bounding box
-      this.boundingBox = this.cy.elements().boundingBox()
+      this.boundingBox = this.bb()
 
       // Cache sizes
       this.width = this.$element.width()
@@ -5223,7 +5240,7 @@ SOFTWARE.
 
   , _setupThumbnailSizes: function () {
       // Update bounding box cache
-      this.boundingBox = this.cy.elements().boundingBox()
+      this.boundingBox = this.bb()
 
       this.thumbnailZoom = Math.min(this.panelHeight / this.boundingBox.h, this.panelWidth / this.boundingBox.w)
 
@@ -5613,10 +5630,16 @@ SOFTWARE.
         y: (h - zoom*( bb.h ))/2
       };
 
-      img.setAttribute('src', that.cy.png({
+      var png = that.cy.png({
         full: true,
         scale: zoom
-      }));
+      });
+
+      if( png.indexOf('image/png') < 0 ){
+        img.removeAttribute( 'src' );
+      } else {
+        img.setAttribute( 'src', png );
+      }
 
       $img.css({
         'position': 'absolute',
@@ -49152,7 +49175,8 @@ module.exports = (function()
 
     EditorActionsManager.prototype.updateGlobalOptions = function(newOptions)
     {
-        this.realTimeManager.updateGlobalOptions(newOptions);
+        if(this.isCollaborative)
+            this.realTimeManager.updateGlobalOptions(newOptions);
     }
 
     //Layout properties related functions
@@ -50025,6 +50049,11 @@ module.exports = (function()
         'color': '#1e2829',
         'width': 60,
         'height': 15,
+        // 'background-image-opacity': 1,
+        // 'background-image': function (ele)
+        // {
+        //   return backgroundImageHandler(ele);
+        // },
         'background-color': '#fff',
         'background-opacity': 0.5,
         'text-margin-y' : 50,
@@ -50241,6 +50270,24 @@ module.exports = (function()
       case "BINDS": return "solid"; break;
       default: return "solid"; break;
     }
+  }
+
+  var backgroundImageHandler = function(ele)
+  {
+    var dataURI = "data:image/svg+xml;utf8,";
+    var svgNameSpace = 'http://www.w3.org/2000/svg';
+
+    var svg = document.createElementNS(svgNameSpace,'svg');
+    // svg.setAttribute('width', 10);
+    // svg.setAttribute('height', 10);
+
+    var rect = document.createElementNS(svgNameSpace, 'rect');
+    rect.setAttribute('width', 5);
+    rect.setAttribute('height', 5);
+    rect.setAttribute('style', "fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)");
+
+    svg.appendChild(rect);
+    return dataURI+svg.outerHTML;
   }
 
   return styleSheet;
