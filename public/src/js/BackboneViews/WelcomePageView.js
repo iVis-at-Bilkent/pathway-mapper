@@ -32,7 +32,7 @@ var WelcomePageView = Backbone.View.extend(
                 content: 'Create a pathway individually',
                 placement: 'left',
                 delay: 100,
-                trigger: 'hover'
+                trigger: 'manual'
             });
 
             this.$el.find('#collaborativeUsage').popover({
@@ -42,27 +42,32 @@ var WelcomePageView = Backbone.View.extend(
                     return $('#collaborativePopoverContent').html();
                 },
                 placement: 'right',
-                delay: 300,
-                trigger: 'hover'
+                delay: 200,
+                trigger: 'manual'
             });
 
         },
         localUsageHandler: function(event)
         {
+            $('.popover').popover('hide');
             this.$el.find('.welcomePageCheckable').removeClass('active');
             $(event.currentTarget).addClass('active');
+            this.$el.find('#localUsage').popover('show');
             this.$el.find('.continueRow').css('visibility', 'visible');
             this.modelSelection = this.modelSelectionMap.LOCAL;
         },
         collaborativeUsageHandler: function(event)
         {
+            $('.popover').popover('hide');
             this.$el.find('.welcomePageCheckable').removeClass('active');
             $(event.currentTarget).addClass('active');
+            this.$el.find('#collaborativeUsage').popover('show');
             this.$el.find('.continueRow').css('visibility', 'visible');
             this.modelSelection = this.modelSelectionMap.COLLAB;
         },
         continueButtonHandler: function(event)
         {
+            $('.popover').hide();
             var self = this;
             this.$el.find('.welcomePageLoading').show();
             function postHandler()

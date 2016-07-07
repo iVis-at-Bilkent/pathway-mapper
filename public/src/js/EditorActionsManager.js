@@ -53,9 +53,10 @@ module.exports = (function()
     {
         if(this.isCollaborative)
         {
-            this.layoutProperties = _.clone(newLayoutProps);
-            //Notify observers on each collaborator
-            self.editorActionsManager.notifyObservers();
+            // Call a real time function that updated real time object and
+            // its callback (updateLayoutPropertiesCallback) will handle sync of this object
+            // across collaborators
+            this.realTimeManager.updateLayoutProperties(newLayoutProps);
         }
         else
         {
@@ -63,6 +64,13 @@ module.exports = (function()
         }
     };
 
+    EditorActionsManager.prototype.updateLayoutPropertiesCallback = function(newLayoutProps)
+    {
+        this.layoutProperties = _.clone(newLayoutProps);
+        //Notify observers to reflect changes on colalborative object to the views
+        this.notifyObservers();
+    };
+    
     EditorActionsManager.prototype.performLayout = function()
     {
         cy.layout(this.layoutProperties);
@@ -618,7 +626,6 @@ module.exports = (function()
         }
     };
 
-
     EditorActionsManager.prototype.changeName = function(ele, newName)
     {
         if (this.isCollaborative)
@@ -646,10 +653,8 @@ module.exports = (function()
         this.changeNameCy(cyEle, ele.name);
     };
 
-
     //Utility Functions
     //TODO move functions thar are inside class functions here
-
 
     return EditorActionsManager;
 

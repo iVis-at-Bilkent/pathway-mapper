@@ -118,81 +118,81 @@
         <h3 class="modal-title">Layout Properties</h3>
       </div>
       <div class="modal-body">
-        <form role="form" id="sendVerificationForm">
+        <form role="form" id="layoutPropsForm">
           <div class="input-group">
-            <label class="control-label col-sm-4" for="fullName">Node Repulsion:</label>
+            <label class="control-label col-sm-4" for="node-repulsion">Node Repulsion:</label>
             <div class="col-sm-8">
-              <input id="node-repulsion" type="text" class="form-control" value= <%= nodeRepulsion %> >
+              <input id="node-repulsion" type="text" class="form-control" value=<%= nodeRepulsion %> >
             </div>
           </div>
           <div class="input-group">
-            <label class="control-label col-sm-4" for="fullName">Node Overlap:</label>
+            <label class="control-label col-sm-4" for="node-overlap">Node Overlap:</label>
             <div class="col-sm-8">
               <input id="node-overlap" type="text" class="form-control" value= <%= nodeOverlap %> >
             </div>
           </div>
           <div class="input-group">
-            <label class="control-label col-sm-4" for="fullName">Ideal Edge Length:</label>
+            <label class="control-label col-sm-4" for="ideal-edge-length">Ideal Edge Length:</label>
             <div class="col-sm-8">
               <input id="ideal-edge-length" type="text" class="form-control" value= <%= idealEdgeLength %> >
             </div>
           </div>
           <div class="input-group">
-            <label class="control-label col-sm-4" for="fullName">Edge Elasticity:</label>
+            <label class="control-label col-sm-4" for="edge-elasticity">Edge Elasticity:</label>
             <div class="col-sm-8">
               <input id="edge-elasticity" type="text" class="form-control" value= <%= edgeElasticity %> >
             </div>
           </div>
           <div class="input-group">
-            <label class="control-label col-sm-4" for="fullName">Nesting Factor:</label>
+            <label class="control-label col-sm-4" for="nesting-factor">Nesting Factor:</label>
             <div class="col-sm-8">
               <input id="nesting-factor" type="text" class="form-control" value= <%= nestingFactor %> >
             </div>
           </div>
           <div class="input-group">
-            <label class="control-label col-sm-4" for="fullName">Number of Iterations:</label>
+            <label class="control-label col-sm-4" for="num-iter">Number of Iterations:</label>
             <div class="col-sm-8">
               <input id="num-iter" type="text" class="form-control" value= <%= numIter %> >
             </div>
           </div>
           <div class="input-group">
-            <label class="control-label col-sm-4" for="fullName">Gravity:</label>
+            <label class="control-label col-sm-4" for="gravity">Gravity:</label>
             <div class="col-sm-8">
               <input id="gravity" type="text" class="form-control" value= <%= gravity %> >
             </div>
           </div>
           <div class="input-group">
-            <label class="control-label col-sm-4" for="fullName">Gravity Range:</label>
+            <label class="control-label col-sm-4" for="grav-range">Gravity Range:</label>
             <div class="col-sm-8">
               <input id="grav-range" type="text" class="form-control" value= <%= gravityRange %> >
             </div>
           </div>
           <div class="input-group">
-            <label class="control-label col-sm-4" for="fullName">Compound Gravity:</label>
+            <label class="control-label col-sm-4" for="comp-grav">Compound Gravity:</label>
             <div class="col-sm-8">
               <input id="comp-grav" type="text" class="form-control" value= <%= gravityCompound %> >
             </div>
           </div>
           <div class="input-group">
-            <label class="control-label col-sm-4" for="fullName">Compound Gravity Range:</label>
+            <label class="control-label col-sm-4" for="comp-gravRange">Compound Gravity Range:</label>
             <div class="col-sm-8">
               <input id="comp-gravRange" type="text" class="form-control" value= <%= gravityRangeCompound %> >
             </div>
           </div>
           <div class="input-group">
-            <label class="control-label col-sm-4" for="fullName">Tile Disconnected:</label>
+            <label class="control-label col-sm-4" for="tile">Tile Disconnected:</label>
             <div class="col-sm-8 leftText">
               <input id="tile" type="checkbox" class="input-small layout-text" <% if (tile){ %> checked<%}%>>
             </div>
           </div>
           <div class="input-group">
-            <label class="control-label col-sm-4" for="fullName">Animate:</label>
+            <label class="control-label col-sm-4" for="animate">Animate:</label>
             <div class="col-sm-8 leftText">
               <input id="animate" type="checkbox" class="input-small layout-text" <% if (animate){ %> checked<%}%>>
             </div>
           </div>
           <div class="input-group">
-            <label class="control-label col-sm-4" for="fullName">Incremental:</label>
+            <label class="control-label col-sm-4" factiveor="randomize">Incremental:</label>
             <div class="col-sm-8 leftText">
               <input id="randomize" type="checkbox" class="input-small layout-text" <% if (!randomize){ %> checked<%}%>>
             </div>
@@ -498,7 +498,6 @@
           <i class="fa fa-check"></i>
           Local
         </div>
-        <!--<span class="buttonsSeparator">OR</span>-->
         <div id="collaborativeUsage" class="welcomePageCheckable" >
           <i class="fa fa-check"></i>
           Collaborative

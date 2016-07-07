@@ -12,6 +12,7 @@ var layoutProps = Backbone.View.extend(
     this.copyProperties(this.editorActionsManagerRef.layoutProperties);
 
     //Subscribe this object as observer to the editor actions manager
+    //So that it will be notified when necessary easily
     this.editorActionsManagerRef.registerObserver(this);
   },
   copyProperties: function (params)
@@ -45,6 +46,8 @@ var layoutProps = Backbone.View.extend(
     this.currentLayoutProperties.animate = this.$el.find("#animate").is(':checked');
     this.currentLayoutProperties.randomize = !(this.$el.find("#randomize").is(':checked'));
 
+    // Call a function from editor actions manager that saves layout properties on local usage and
+    // Updates real time model in collaborative usage
     this.editorActionsManagerRef.saveLayoutProperties(this.currentLayoutProperties);
     this.$el.modal('toggle');
   },
@@ -73,6 +76,8 @@ var layoutProps = Backbone.View.extend(
   //For observer observable pattern usage !!!!
   notify: function()
   {
+    //Editor actiosn manager notified us here, that means layout properties on editor actions manager
+    //is changed. reflect it to view
     this.copyProperties(this.editorActionsManagerRef.layoutProperties);
     this.changeParameters();
   }

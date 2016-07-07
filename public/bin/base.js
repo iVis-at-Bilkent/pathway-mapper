@@ -47647,6 +47647,7 @@ var layoutProps = Backbone.View.extend(
     this.copyProperties(this.editorActionsManagerRef.layoutProperties);
 
     //Subscribe this object as observer to the editor actions manager
+    //So that it will be notified when necessary easily
     this.editorActionsManagerRef.registerObserver(this);
   },
   copyProperties: function (params)
@@ -47680,6 +47681,8 @@ var layoutProps = Backbone.View.extend(
     this.currentLayoutProperties.animate = this.$el.find("#animate").is(':checked');
     this.currentLayoutProperties.randomize = !(this.$el.find("#randomize").is(':checked'));
 
+    // Call a function from editor actions manager that saves layout properties on local usage and
+    // Updates real time model in collaborative usage
     this.editorActionsManagerRef.saveLayoutProperties(this.currentLayoutProperties);
     this.$el.modal('toggle');
   },
@@ -47708,6 +47711,8 @@ var layoutProps = Backbone.View.extend(
   //For observer observable pattern usage !!!!
   notify: function()
   {
+    //Editor actiosn manager notified us here, that means layout properties on editor actions manager
+    //is changed. reflect it to view
     this.copyProperties(this.editorActionsManagerRef.layoutProperties);
     this.changeParameters();
   }
@@ -47750,7 +47755,7 @@ var WelcomePageView = Backbone.View.extend(
                 content: 'Create a pathway individually',
                 placement: 'left',
                 delay: 100,
-                trigger: 'hover'
+                trigger: 'manual'
             });
 
             this.$el.find('#collaborativeUsage').popover({
@@ -47760,27 +47765,32 @@ var WelcomePageView = Backbone.View.extend(
                     return $('#collaborativePopoverContent').html();
                 },
                 placement: 'right',
-                delay: 300,
-                trigger: 'hover'
+                delay: 200,
+                trigger: 'manual'
             });
 
         },
         localUsageHandler: function(event)
         {
+            $('.popover').popover('hide');
             this.$el.find('.welcomePageCheckable').removeClass('active');
             $(event.currentTarget).addClass('active');
+            this.$el.find('#localUsage').popover('show');
             this.$el.find('.continueRow').css('visibility', 'visible');
             this.modelSelection = this.modelSelectionMap.LOCAL;
         },
         collaborativeUsageHandler: function(event)
         {
+            $('.popover').popover('hide');
             this.$el.find('.welcomePageCheckable').removeClass('active');
             $(event.currentTarget).addClass('active');
+            this.$el.find('#collaborativeUsage').popover('show');
             this.$el.find('.continueRow').css('visibility', 'visible');
             this.modelSelection = this.modelSelectionMap.COLLAB;
         },
         continueButtonHandler: function(event)
         {
+            $('.popover').hide();
             var self = this;
             this.$el.find('.welcomePageLoading').show();
             function postHandler()
@@ -48288,9 +48298,10 @@ module.exports = (function()
     {
         if(this.isCollaborative)
         {
-            this.layoutProperties = _.clone(newLayoutProps);
-            //Notify observers on each collaborator
-            self.editorActionsManager.notifyObservers();
+            // Call a real time function that updated real time object and
+            // its callback (updateLayoutPropertiesCallback) will handle sync of this object
+            // across collaborators
+            this.realTimeManager.updateLayoutProperties(newLayoutProps);
         }
         else
         {
@@ -48298,6 +48309,13 @@ module.exports = (function()
         }
     };
 
+    EditorActionsManager.prototype.updateLayoutPropertiesCallback = function(newLayoutProps)
+    {
+        this.layoutProperties = _.clone(newLayoutProps);
+        //Notify observers to reflect changes on colalborative object to the views
+        this.notifyObservers();
+    };
+    
     EditorActionsManager.prototype.performLayout = function()
     {
         cy.layout(this.layoutProperties);
@@ -48853,7 +48871,6 @@ module.exports = (function()
         }
     };
 
-
     EditorActionsManager.prototype.changeName = function(ele, newName)
     {
         if (this.isCollaborative)
@@ -48881,10 +48898,8 @@ module.exports = (function()
         this.changeNameCy(cyEle, ele.name);
     };
 
-
     //Utility Functions
     //TODO move functions thar are inside class functions here
-
 
     return EditorActionsManager;
 
@@ -49702,7 +49717,8 @@ module.exports = (function()
 
         var nodeMap = model.createMap();
         var edgeMap = model.createMap();
-        var layoutProperties = model.create(LayoutPropertiesR, {});
+        //Set initial layout properties here when real time document is created initially
+        var layoutProperties = model.create(LayoutPropertiesR, window.editorActionsManager.layoutProperties);
 
         root.set(this.NODEMAP_NAME, nodeMap);
         root.set(this.EDGEMAP_NAME, edgeMap);
@@ -49721,6 +49737,7 @@ module.exports = (function()
 
         var nodeMap = root.get(this.NODEMAP_NAME);
         var edgeMap = root.get(this.EDGEMAP_NAME);
+        var realTimeLayoutProperties = root.get(this.LAYOUT_PROPS_NAME);
 
         var nodeMapEntries = nodeMap.values();
         var edgeMapEntries = edgeMap.values();
@@ -49728,6 +49745,9 @@ module.exports = (function()
         //Add real time nodes to local graph
         window.editorActionsManager.addNewNodesLocally(nodeMapEntries);
         window.editorActionsManager.addNewEdgesLocally(edgeMapEntries);
+        
+        //TODO update layout properties !!
+        window.editorActionsManager.updateLayoutPropertiesCallback(realTimeLayoutProperties);
 
         //Keep a reference to the file !
         this.realTimeDoc = doc;
@@ -50168,7 +50188,6 @@ module.exports = (function()
         model.endCompoundOperation();
     };
 
-
     //Google Real Time's custom object ids are retrieved in this way
     RealTimeManager.prototype.getCustomObjId = function(object)
     {
@@ -50225,8 +50244,6 @@ module.exports = (function()
         }
         return tree;
     };
-
-
 
     RealTimeManager.prototype.createRealTimeObjectDefinitions = function()
     {
@@ -50288,7 +50305,7 @@ module.exports = (function()
             function updateLayoutPropsHandler(event)
             {
                 var layoutProps = event.currentTarget;
-                window.editorActionsManager.saveLayoutProperties(layoutProps);
+                window.editorActionsManager.updateLayoutPropertiesCallback(layoutProps);
             }
 
             this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateLayoutPropsHandler);
@@ -51111,15 +51128,14 @@ $(window).load(function()
 
         realTimeManager.authorize(realTimeAuthCallback, false);
     }
-
-
+    
     var welPage = new WelcomePageView({
         el: $('.welcomePageContainer'),
         localUsageCallback: localUsageCallback,
         collaborativeUsageCallback: collaborativeUsageCallback
     }).render();
 
-    //TODO SHAME ! ! !
+    //TODO SHAME  !!!  ⍾ ⍾ ⍾ ⍾ ⍾
     var uri = window.location.search;
     if (uri.length > 0)
     {
