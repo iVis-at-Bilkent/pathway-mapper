@@ -40,8 +40,7 @@ module.exports = (function($)
       {
         event.preventDefault();
         var nodeID = $(this).attr('nodeid');
-        var nodeSymbol = this.cy.$('#'+nodeID)[0]._private.data['name'];
-        var self = this;
+        var nodeSymbol = self.cy.$('#'+nodeID)[0]._private.data['name'];
         var parent = $(this).parent();
         parent.empty().append('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>');
 
@@ -79,7 +78,7 @@ module.exports = (function($)
     }
 
     return wrapper;
-  }
+  };
 
   QtipManager.prototype.addQtipToElements = function(eles)
   {
@@ -112,7 +111,7 @@ module.exports = (function($)
       node.qtip(qTipOpts);
     });
 
-  }
+  };
   
 
   //Utility Functions

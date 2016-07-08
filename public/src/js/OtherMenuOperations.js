@@ -35,13 +35,14 @@ module.exports = (function()
             var clickedNodeType = $(event.target).text();
             var nodeData =
             {
-                group: "nodes",
-                data: {type: clickedNodeType.toUpperCase(), name:'New ' + clickedNodeType }
+                type: clickedNodeType.toUpperCase(),
+                name:'New ' + clickedNodeType
             };
+
             var posData =
             {
-                x: 100,
-                y: 100
+                x: cy.width()/2,
+                y: cy.height()/2
             };
 
             window.editorActionsManager.addNode(nodeData, posData);

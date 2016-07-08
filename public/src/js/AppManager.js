@@ -145,7 +145,63 @@ module.exports = (function()
                 {
                     api.show();
                 }
+
+                // cy.style()
+                //     .selector('node')
+                //     .style('height', 30)
+                //     .style('background-image', function(ele)
+                //     {
+                //         var eleBBox = ele.boundingBox();
+                //
+                //
+                //         //Experimental data overlay part !
+                //         var dataURI = "data:image/svg+xml,";
+                //         var svgNameSpace = 'http://www.w3.org/2000/svg';
+                //
+                //
+                //         var svg = document.createElementNS(svgNameSpace,'svg');
+                //         //TODO it seems this should be set according to the node size !
+                //         svg.setAttribute('width', eleBBox.w);
+                //         svg.setAttribute('height', eleBBox.h);
+                //         //This is important you need to include this to succesfully render in cytoscape.js!
+                //         svg.setAttribute('xmlns', svgNameSpace);
+                //
+                //         //Background Rect
+                //         var rect = document.createElementNS(svgNameSpace, 'rect');
+                //         rect.setAttribute('x', 0);
+                //         rect.setAttribute('y', 0);
+                //         rect.setAttribute('width', eleBBox.w);
+                //         rect.setAttribute('height', eleBBox.h);
+                //         rect.setAttribute('style', "fill:rgb(255,255,255);opacity:0");
+                //
+                //         //Overlay Data Rect
+                //         var overLayRectBBox =
+                //         {
+                //             w: 40,
+                //             h: 10,
+                //             x: eleBBox.w/2 - 20,
+                //             y: eleBBox.h/2 + 5
+                //         };
+                //
+                //         var overlayRect = document.createElementNS(svgNameSpace, 'rect');
+                //         overlayRect.setAttribute('x', overLayRectBBox.x);
+                //         overlayRect.setAttribute('y', overLayRectBBox.y );
+                //         overlayRect.setAttribute('width', overLayRectBBox.w);
+                //         overlayRect.setAttribute('height', overLayRectBBox.h);
+                //         overlayRect.setAttribute('style', "fill:rgb(255,0,0)");
+                //
+                //         svg.appendChild(rect);
+                //         svg.appendChild(overlayRect);
+                //         return dataURI+svg.outerHTML;
+                //     })
+                //     .update();
+
+
+
+
             }
+
+
         });
         
         cy.on('free', 'node', function (e)
@@ -167,6 +223,8 @@ module.exports = (function()
             };
             that.editorActionsManager.updateGlobalOptions(newState);
         });
+
+        cy.on('click')
     };
 
     return AppManager;

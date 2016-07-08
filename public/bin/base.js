@@ -48288,7 +48288,63 @@ module.exports = (function()
                 {
                     api.show();
                 }
+
+                // cy.style()
+                //     .selector('node')
+                //     .style('height', 30)
+                //     .style('background-image', function(ele)
+                //     {
+                //         var eleBBox = ele.boundingBox();
+                //
+                //
+                //         //Experimental data overlay part !
+                //         var dataURI = "data:image/svg+xml,";
+                //         var svgNameSpace = 'http://www.w3.org/2000/svg';
+                //
+                //
+                //         var svg = document.createElementNS(svgNameSpace,'svg');
+                //         //TODO it seems this should be set according to the node size !
+                //         svg.setAttribute('width', eleBBox.w);
+                //         svg.setAttribute('height', eleBBox.h);
+                //         //This is important you need to include this to succesfully render in cytoscape.js!
+                //         svg.setAttribute('xmlns', svgNameSpace);
+                //
+                //         //Background Rect
+                //         var rect = document.createElementNS(svgNameSpace, 'rect');
+                //         rect.setAttribute('x', 0);
+                //         rect.setAttribute('y', 0);
+                //         rect.setAttribute('width', eleBBox.w);
+                //         rect.setAttribute('height', eleBBox.h);
+                //         rect.setAttribute('style', "fill:rgb(255,255,255);opacity:0");
+                //
+                //         //Overlay Data Rect
+                //         var overLayRectBBox =
+                //         {
+                //             w: 40,
+                //             h: 10,
+                //             x: eleBBox.w/2 - 20,
+                //             y: eleBBox.h/2 + 5
+                //         };
+                //
+                //         var overlayRect = document.createElementNS(svgNameSpace, 'rect');
+                //         overlayRect.setAttribute('x', overLayRectBBox.x);
+                //         overlayRect.setAttribute('y', overLayRectBBox.y );
+                //         overlayRect.setAttribute('width', overLayRectBBox.w);
+                //         overlayRect.setAttribute('height', overLayRectBBox.h);
+                //         overlayRect.setAttribute('style', "fill:rgb(255,0,0)");
+                //
+                //         svg.appendChild(rect);
+                //         svg.appendChild(overlayRect);
+                //         return dataURI+svg.outerHTML;
+                //     })
+                //     .update();
+
+
+
+
             }
+
+
         });
         
         cy.on('free', 'node', function (e)
@@ -48310,6 +48366,8 @@ module.exports = (function()
             };
             that.editorActionsManager.updateGlobalOptions(newState);
         });
+
+        cy.on('click')
     };
 
     return AppManager;
@@ -50039,24 +50097,15 @@ module.exports = (function()
       selector: 'node',
       style:
       {
-        'content': function(ele){
-          return contentFunction(ele);
-        },
-        'text-valign': function(ele)
-        {
-          return 'center';
-        },
+        'label': 'data(name)',
+        'text-valign': 'center',
+        'text-halign': 'center',
+        'text-margin-y': 10,
         'color': '#1e2829',
         'width': 60,
         'height': 15,
-        // 'background-image-opacity': 1,
-        // 'background-image': function (ele)
-        // {
-        //   return backgroundImageHandler(ele);
-        // },
         'background-color': '#fff',
         'background-opacity': 0.5,
-        'text-margin-y' : 50,
         'shape': function(ele)
         {
           return parentNodeShapeFunc( ele );
@@ -50127,15 +50176,6 @@ module.exports = (function()
         'opacity': 1
       }
     },
-    // {
-    //     selector: 'edge.segments',
-    //     style:
-    //     {
-    //       'curve-style': 'segments',
-    //       'segment-distances': '0 100',
-    //       'segment-weights': '0 1'
-    //     }
-    // },
     {
       selector: ':selected',
       style:
@@ -50156,14 +50196,6 @@ module.exports = (function()
       case "PROCESS": return 10; break;
       default: return 5; break;
     }
-  }
-
-  var contentFunction = function( ele )
-  {
-    if (ele._private.data.name) {
-      return ele._private.data.name;
-    }
-    return 'newNode';
   }
 
   var vTextPositionFunction = function( ele )
@@ -50271,25 +50303,7 @@ module.exports = (function()
       default: return "solid"; break;
     }
   }
-
-  var backgroundImageHandler = function(ele)
-  {
-    var dataURI = "data:image/svg+xml;utf8,";
-    var svgNameSpace = 'http://www.w3.org/2000/svg';
-
-    var svg = document.createElementNS(svgNameSpace,'svg');
-    // svg.setAttribute('width', 10);
-    // svg.setAttribute('height', 10);
-
-    var rect = document.createElementNS(svgNameSpace, 'rect');
-    rect.setAttribute('width', 5);
-    rect.setAttribute('height', 5);
-    rect.setAttribute('style', "fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)");
-
-    svg.appendChild(rect);
-    return dataURI+svg.outerHTML;
-  }
-
+  
   return styleSheet;
 })();
 
@@ -50333,13 +50347,14 @@ module.exports = (function()
             var clickedNodeType = $(event.target).text();
             var nodeData =
             {
-                group: "nodes",
-                data: {type: clickedNodeType.toUpperCase(), name:'New ' + clickedNodeType }
+                type: clickedNodeType.toUpperCase(),
+                name:'New ' + clickedNodeType
             };
+
             var posData =
             {
-                x: 100,
-                y: 100
+                x: cy.width()/2,
+                y: cy.height()/2
             };
 
             window.editorActionsManager.addNode(nodeData, posData);
@@ -50474,8 +50489,7 @@ module.exports = (function($)
       {
         event.preventDefault();
         var nodeID = $(this).attr('nodeid');
-        var nodeSymbol = this.cy.$('#'+nodeID)[0]._private.data['name'];
-        var self = this;
+        var nodeSymbol = self.cy.$('#'+nodeID)[0]._private.data['name'];
         var parent = $(this).parent();
         parent.empty().append('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>');
 
@@ -50513,7 +50527,7 @@ module.exports = (function($)
     }
 
     return wrapper;
-  }
+  };
 
   QtipManager.prototype.addQtipToElements = function(eles)
   {
@@ -50546,7 +50560,7 @@ module.exports = (function($)
       node.qtip(qTipOpts);
     });
 
-  }
+  };
   
 
   //Utility Functions

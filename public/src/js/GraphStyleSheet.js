@@ -5,24 +5,15 @@ module.exports = (function()
       selector: 'node',
       style:
       {
-        'content': function(ele){
-          return contentFunction(ele);
-        },
-        'text-valign': function(ele)
-        {
-          return 'center';
-        },
+        'label': 'data(name)',
+        'text-valign': 'center',
+        'text-halign': 'center',
+        'text-margin-y': 10,
         'color': '#1e2829',
         'width': 60,
         'height': 15,
-        // 'background-image-opacity': 1,
-        // 'background-image': function (ele)
-        // {
-        //   return backgroundImageHandler(ele);
-        // },
         'background-color': '#fff',
         'background-opacity': 0.5,
-        'text-margin-y' : 50,
         'shape': function(ele)
         {
           return parentNodeShapeFunc( ele );
@@ -93,15 +84,6 @@ module.exports = (function()
         'opacity': 1
       }
     },
-    // {
-    //     selector: 'edge.segments',
-    //     style:
-    //     {
-    //       'curve-style': 'segments',
-    //       'segment-distances': '0 100',
-    //       'segment-weights': '0 1'
-    //     }
-    // },
     {
       selector: ':selected',
       style:
@@ -122,14 +104,6 @@ module.exports = (function()
       case "PROCESS": return 10; break;
       default: return 5; break;
     }
-  }
-
-  var contentFunction = function( ele )
-  {
-    if (ele._private.data.name) {
-      return ele._private.data.name;
-    }
-    return 'newNode';
   }
 
   var vTextPositionFunction = function( ele )
@@ -237,25 +211,7 @@ module.exports = (function()
       default: return "solid"; break;
     }
   }
-
-  var backgroundImageHandler = function(ele)
-  {
-    var dataURI = "data:image/svg+xml;utf8,";
-    var svgNameSpace = 'http://www.w3.org/2000/svg';
-
-    var svg = document.createElementNS(svgNameSpace,'svg');
-    // svg.setAttribute('width', 10);
-    // svg.setAttribute('height', 10);
-
-    var rect = document.createElementNS(svgNameSpace, 'rect');
-    rect.setAttribute('width', 5);
-    rect.setAttribute('height', 5);
-    rect.setAttribute('style', "fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)");
-
-    svg.appendChild(rect);
-    return dataURI+svg.outerHTML;
-  }
-
+  
   return styleSheet;
 })();
 
