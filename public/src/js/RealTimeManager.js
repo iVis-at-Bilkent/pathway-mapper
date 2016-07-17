@@ -134,11 +134,11 @@ module.exports = (function()
         root.get(this.EDGEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, edgeAddRemoveHandler);
 
         //Just for debugging
-        var debugRButton = document.getElementById('debugR');
+        /*var debugRButton = document.getElementById('debugR');
         debugRButton.addEventListener('click', function(event)
         {
             gapi.drive.realtime.debug();
-        });
+        });*/
 
         this.postFileLoad();
     };
@@ -336,7 +336,6 @@ module.exports = (function()
 
             self.addNewEdge(edgeData);
         });
-        
     };
 
     RealTimeManager.prototype.removeAllElements = function()
@@ -739,13 +738,11 @@ module.exports = (function()
         this.source = params.source || "undefined";
         this.target = params.target || "undefined";
         model.endCompoundOperation();
-
     };
 
     var LayoutPropertiesRInitializer = function(params)
     {
         var model = gapi.drive.realtime.custom.getModel(this);
-        model.beginCompoundOperation();
         this.name = params.name || 'undefined';
         this.nodeRepulsion = params.nodeRepulsion || 'undefined';
         this.nodeOverlap = params.nodeOverlap || 'undefined';
@@ -760,7 +757,6 @@ module.exports = (function()
         this.gravityRangeCompound = params.gravityRangeCompound || 'undefined';
         this.gravityCompound = params.gravityCompound || 'undefined';
         this.gravityRange = params.gravityRange || 'undefined';
-        model.endCompoundOperation();
     };
 
     var GlobalOptionsRInitializer = function(params)

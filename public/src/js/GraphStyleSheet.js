@@ -5,15 +5,12 @@ module.exports = (function()
       selector: 'node',
       style:
       {
-        'content': function(ele){
-          return contentFunction(ele);
-        },
+        'label': 'data(name)',
         'text-valign': 'center',
         'text-halign': 'center',
-        'text-margin-y': 10,
         'color': '#1e2829',
-        'width': 60,
-        'height': 15,
+        'width': 130,
+        'height': 60,
         // 'background-image-opacity': 1,
         // 'background-image': function (ele)
         // {
@@ -33,7 +30,7 @@ module.exports = (function()
         {
           return nodeBorderColorFunction(ele);
         },
-        'font-size': 7
+        'font-size': 14
       }
     },
     {
@@ -48,7 +45,7 @@ module.exports = (function()
         {
           return 'bottom';
         },
-        'text-margin-y' : 50,
+        'text-margin-y' : 2,
         'padding-left': function(ele){ return compoundPaddingFunction(ele); },
         'padding-right': function(ele){ return compoundPaddingFunction(ele); },
         'padding-bottom': function(ele){ return compoundPaddingFunction(ele); },
@@ -274,5 +271,3 @@ module.exports = (function()
 
   return styleSheet;
 })();
-
-

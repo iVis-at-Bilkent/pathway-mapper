@@ -143,7 +143,6 @@ module.exports = (function($)
 
     $('#fileinput').on('change', function()
     {
-
         var file = this.files[0];
         // Create a new FormData object.
         var formData = new FormData();
@@ -161,7 +160,6 @@ module.exports = (function($)
         request.open("POST", "/loadGraph");
         request.send(formData);
         $('#fileinput').val(null);
-
     });
 
     $('#mergeInput').on('change', function()

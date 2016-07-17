@@ -6,7 +6,6 @@
   <!-- Google Real Time Style  -->
   <!-- Load Styles -->
   <!-- <link href="https://www.gstatic.com/realtime/quickstart-styles.css" rel="stylesheet" type="text/css"/> -->
-  <script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
 
   <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" charset="utf-8">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -290,6 +289,12 @@
                   </li>
                 </ul>
               </li>
+              <li class="dropdown DataDropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Data <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a role="loadGenomic" href="#">Load Genomic Data</a></li>
+                </ul>
+              </li>
               <li class="dropdown layoutDropDown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Layout <span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -539,6 +544,12 @@
 <div class="hiddenfile">
   <form method="post">
     <input type="file" id="mergeInput" name="graphFile" />
+  </form>
+</div>
+
+<div class="hiddenfile">
+  <form method="post">
+    <input type="file" id="genomicDataInput" name="graphFile" />
   </form>
 </div>
 

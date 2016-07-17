@@ -142,7 +142,7 @@ module.exports = (function()
 
         if (posData)
         {
-            newNode.renderedPosition =
+            newNode.position =
             {
                 x: posData.x,
                 y: posData.y

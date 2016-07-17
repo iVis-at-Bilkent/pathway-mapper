@@ -133,6 +133,11 @@ module.exports = (function($, $$)
                                     }
                                 }
 
+                                //Adjust position according to the zoom level and pan !
+                                //To set rendered position !!!
+                                //TODO refactor this !
+                                relX = relX / cy.zoom() + cy.extent().x1;
+                                relY = relY / cy.zoom() + cy.extent().y1;
                                 nodeAddClass.editorActionsManager.addNode(nodeData,{x: relX,y: relY});
 
                             }

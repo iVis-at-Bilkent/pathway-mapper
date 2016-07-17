@@ -59,6 +59,8 @@ module.exports = (function()
             style: styleSheet,
             // elements: allEles,
             ready: function(){},
+            textureOnViewport: false,
+            motionBlur: true,
             layout: {name: 'preset'}
         });
 
@@ -135,117 +137,17 @@ module.exports = (function()
         {
             var eventIsDirect = (e.cyTarget === this);
 
-            if( eventIsDirect )
-            {
+            if( eventIsDirect ) {
                 //Remove qtips
                 $(".qtip").remove();
                 that.qtipManager.addQtipToElements(e.cyTarget);
                 var api = this.qtip('api');
-                if (api)
-                {
+                if (api) {
                     api.show();
                 }
-
-
-                cy.style()
-                    .selector('node[type="GENE"]')
-                    .style('height', 40)
-                    .style('text-margin-y',50)
-                    .style('background-image', function(ele)
-                    {
-                        var eleBBox = ele.boundingBox();
-
-                        //Experimental data overlay part !
-                        var dataURI = "data:image/svg+xml,";
-
-                        var svgNameSpace = 'http://www.w3.org/2000/svg';
-
-                        var svg = document.createElementNS(svgNameSpace,'svg');
-                        //It seems this should be set according to the node size !
-                        svg.setAttribute('width', eleBBox.w);
-                        svg.setAttribute('height', eleBBox.h);
-                        //This is important you need to include this to succesfully render in cytoscape.js!
-                        svg.setAttribute('xmlns', svgNameSpace);
-
-                        //Overlay Data Rect
-                        var overLayRectBBox =
-                        {
-                            w: 50,
-                            h: 10,
-                            x: eleBBox.w/2 - 25,
-                            y: eleBBox.h/2 + 5
-                        };
-
-
-                        //Leftmost rectangle
-                        genomicDataRectangleGenerator(
-                            overLayRectBBox.x,
-                            overLayRectBBox.y,
-                            overLayRectBBox.w/3,
-                            overLayRectBBox.h,
-                            0,
-                            svg
-                        );
-
-                        //Middle rectangle
-                        genomicDataRectangleGenerator(
-                            overLayRectBBox.x + overLayRectBBox.w/3,
-                            overLayRectBBox.y,
-                            overLayRectBBox.w/3,
-                            overLayRectBBox.h,
-                            60,
-                            svg);
-
-                        //Rightmost rectangle
-                        genomicDataRectangleGenerator(
-                            overLayRectBBox.x + 2*overLayRectBBox.w/3,
-                            overLayRectBBox.y,
-                            overLayRectBBox.w/3,
-                            overLayRectBBox.h,
-                            80,
-                            svg);
-
-                        function genomicDataRectangleGenerator(x,y,w,h,percent,parentSVG)
-                        {
-
-                            var _percent = (percent < 20) ? 20:percent;
-                            var percentColor =  255 -  _percent * (255/100);
-                            //Rectangle Part
-                            var overlayRect = document.createElementNS(svgNameSpace, 'rect');
-                            overlayRect.setAttribute('x', x);
-                            overlayRect.setAttribute('y', y );
-                            overlayRect.setAttribute('width', w);
-                            overlayRect.setAttribute('height', h);
-                            overlayRect.setAttribute('style', "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:rgb(255,"+percentColor+","+percentColor+")");
-
-
-                            //Text Part
-                            var text = (percent < 1) ? '<1%':percent+'%';
-                            var fontSize = 6;
-                            var textLength = text.length;
-                            var xOffset = (textLength > 2) ? 3:4;
-                            var yOffset = fontSize/3;
-
-                            var svgText = document.createElementNS(svgNameSpace, 'text');
-                            svgText.setAttribute('x', x + xOffset );
-                            svgText.setAttribute('y', y + h/2 + yOffset );
-                            svgText.setAttribute('font-family', 'Verdana');
-                            svgText.setAttribute('font-size', fontSize);
-                            svgText.innerHTML = text;
-
-                            parentSVG.appendChild(overlayRect);
-                            parentSVG.appendChild(svgText);
-                        }
-
-
-                        return dataURI+svg.outerHTML;
-                    })
-                    .update();
             }
-
-
         });
-        
+
         cy.on('free', 'node', function (e)
         {
             //Collect all nodes with descendants in case of compounds
@@ -266,23 +168,32 @@ module.exports = (function()
             that.editorActionsManager.updateGlobalOptions(newState);
         });
 
+        //TODO fix this when cytoscape is updated !!!
+        //Due to cytoscape.js bug, only workaround that worked :(
+        cy.on('add', 'node', function(event)
+        {
+            cy.style().update();
+        });
+
         cy.on('click')
     };
 
     var overlayExprData = false;
     $('#exprData').on('click', function (evt)
     {
-
         overlayExprData = !overlayExprData;
         if (overlayExprData)
         {
             $(evt.target).text('Remove Data Overlay');
             cy.style()
                 .selector('node[type="GENE"]')
-                .style('height', 40)
-                .style('text-margin-y',50)
+                .style('height', 60)
+                .style('text-margin-y',-20)
                 .style('background-image', function(ele)
                 {
+                    var overlayRecBoxW = 110;
+                    var overlayRecBoxH = 25;
+
                     var eleBBox = ele.boundingBox();
 
                     //Experimental data overlay part !
@@ -297,13 +208,14 @@ module.exports = (function()
                     //This is important you need to include this to succesfully render in cytoscape.js!
                     svg.setAttribute('xmlns', svgNameSpace);
 
+
                     //Overlay Data Rect
                     var overLayRectBBox =
                     {
-                        w: 50,
-                        h: 10,
-                        x: eleBBox.w/2 - 25,
-                        y: eleBBox.h/2 + 5
+                        w: overlayRecBoxW,
+                        h: overlayRecBoxH,
+                        x: eleBBox.w/2 - overlayRecBoxW/2,
+                        y: eleBBox.h/2 + overlayRecBoxH/2 - 20
                     };
 
 
@@ -351,9 +263,9 @@ module.exports = (function()
 
                         //Text Part
                         var text = (percent < 1) ? '<1%':percent+'%';
-                        var fontSize = 6;
+                        var fontSize = 14;
                         var textLength = text.length;
-                        var xOffset = (textLength > 2) ? 3:4;
+                        var xOffset = (textLength > 2) ? 5:6;
                         var yOffset = fontSize/3;
 
                         var svgText = document.createElementNS(svgNameSpace, 'text');
@@ -377,7 +289,8 @@ module.exports = (function()
             $(evt.target).text('Preview Data Overlay');
             cy.style()
                 .selector('node[type="GENE"]')
-                .style('height', 15)
+                .style('height', 60)
+                .style('text-margin-y',0)
                 .style('background-image', function(ele)
                 {
                     var eleBBox = ele.boundingBox();

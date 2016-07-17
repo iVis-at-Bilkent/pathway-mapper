@@ -27,6 +27,24 @@ module.exports = (function()
         console.log(dataURI+svg.innerHTML);
     }
 
+    $('#genomicDataInput').on('change', function()
+    {
+        var file = this.files[0];
+        // Create a new FormData object.
+        var formData = new FormData();
+        formData.append('graphFile', file);
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function ()
+        {
+            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+            {
+
+            }
+        };
+        request.open("POST", "/loadGraph");
+        request.send(formData);
+        $('#fileinput').val(null);
+    });
     return GenomicDataOverlayManager;
 
 })();
