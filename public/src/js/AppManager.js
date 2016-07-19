@@ -11,6 +11,7 @@ var panzoomOpts = require('./PanzoomOptions.js');
 var styleSheet = require('./GraphStyleSheet.js');
 var edgeHandleOpts = require('./EdgeHandlesOptions.js');
 var LayoutProperties = require('./BackboneViews/LayoutPropertiesView.js');
+var GenomicDataExplorerView = require('./BackboneViews/GenomicDataExplorerView.js');
 
 //Other requires
 require('./FileOperationsManager.js');
@@ -77,6 +78,11 @@ module.exports = (function()
         //Render layout properties view after editor actions manager is created !
         this.layoutPropertiesView = new LayoutProperties({
             el: $('#layoutPropertiesDiv'),
+            editorActionsManager: this.editorActionsManager
+        }).render();
+
+        this.genomicDataExplorerView = new GenomicDataExplorerView({
+            el: $('#genomicDataExplorerDiv'),
             editorActionsManager: this.editorActionsManager
         }).render();
 
@@ -177,133 +183,6 @@ module.exports = (function()
 
         cy.on('click')
     };
-
-    var overlayExprData = false;
-    $('#exprData').on('click', function (evt)
-    {
-        overlayExprData = !overlayExprData;
-        if (overlayExprData)
-        {
-            $(evt.target).text('Remove Data Overlay');
-            cy.style()
-                .selector('node[type="GENE"]')
-                .style('height', 60)
-                .style('text-margin-y',-20)
-                .style('background-image', function(ele)
-                {
-                    var overlayRecBoxW = 110;
-                    var overlayRecBoxH = 25;
-
-                    var eleBBox = ele.boundingBox();
-
-                    //Experimental data overlay part !
-                    var dataURI = "data:image/svg+xml,";
-
-                    var svgNameSpace = 'http://www.w3.org/2000/svg';
-
-                    var svg = document.createElementNS(svgNameSpace,'svg');
-                    //It seems this should be set according to the node size !
-                    svg.setAttribute('width', eleBBox.w);
-                    svg.setAttribute('height', eleBBox.h);
-                    //This is important you need to include this to succesfully render in cytoscape.js!
-                    svg.setAttribute('xmlns', svgNameSpace);
-
-
-                    //Overlay Data Rect
-                    var overLayRectBBox =
-                    {
-                        w: overlayRecBoxW,
-                        h: overlayRecBoxH,
-                        x: eleBBox.w/2 - overlayRecBoxW/2,
-                        y: eleBBox.h/2 + overlayRecBoxH/2 - 20
-                    };
-
-
-                    //Leftmost rectangle
-                    genomicDataRectangleGenerator(
-                        overLayRectBBox.x,
-                        overLayRectBBox.y,
-                        overLayRectBBox.w/3,
-                        overLayRectBBox.h,
-                        0,
-                        svg
-                    );
-
-                    //Middle rectangle
-                    genomicDataRectangleGenerator(
-                        overLayRectBBox.x + overLayRectBBox.w/3,
-                        overLayRectBBox.y,
-                        overLayRectBBox.w/3,
-                        overLayRectBBox.h,
-                        60,
-                        svg);
-
-                    //Rightmost rectangle
-                    genomicDataRectangleGenerator(
-                        overLayRectBBox.x + 2*overLayRectBBox.w/3,
-                        overLayRectBBox.y,
-                        overLayRectBBox.w/3,
-                        overLayRectBBox.h,
-                        80,
-                        svg);
-
-                    function genomicDataRectangleGenerator(x,y,w,h,percent,parentSVG)
-                    {
-
-                        var _percent = (percent < 20) ? 20:percent;
-                        var percentColor =  255 -  _percent * (255/100);
-                        //Rectangle Part
-                        var overlayRect = document.createElementNS(svgNameSpace, 'rect');
-                        overlayRect.setAttribute('x', x);
-                        overlayRect.setAttribute('y', y );
-                        overlayRect.setAttribute('width', w);
-                        overlayRect.setAttribute('height', h);
-                        overlayRect.setAttribute('style', "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:rgb(255,"+percentColor+","+percentColor+")");
-
-
-                        //Text Part
-                        var text = (percent < 1) ? '<1%':percent+'%';
-                        var fontSize = 14;
-                        var textLength = text.length;
-                        var xOffset = (textLength > 2) ? 5:6;
-                        var yOffset = fontSize/3;
-
-                        var svgText = document.createElementNS(svgNameSpace, 'text');
-                        svgText.setAttribute('x', x + xOffset );
-                        svgText.setAttribute('y', y + h/2 + yOffset );
-                        svgText.setAttribute('font-family', 'Verdana');
-                        svgText.setAttribute('font-size', fontSize);
-                        svgText.innerHTML = text;
-
-                        parentSVG.appendChild(overlayRect);
-                        parentSVG.appendChild(svgText);
-                    }
-
-
-                    return dataURI+svg.outerHTML;
-                })
-                .update();
-        }
-        else
-        {
-            $(evt.target).text('Preview Data Overlay');
-            cy.style()
-                .selector('node[type="GENE"]')
-                .style('height', 60)
-                .style('text-margin-y',0)
-                .style('background-image', function(ele)
-                {
-                    var eleBBox = ele.boundingBox();
-
-                    //Experimental data overlay part !
-                    var dataURI = "data:image/svg+xml,";
-
-                    return dataURI;
-                })
-                .update();
-        }
-    })
-
+    
     return AppManager;
-
 })();

@@ -1,3 +1,5 @@
+var GenomicDataOverlayManager = require('./GenomicDataOverlayManager.js');
+
 module.exports = (function()
 {
     "use strict";
@@ -32,6 +34,7 @@ module.exports = (function()
 
         this.layoutProperties = _.clone(this.defaultLayoutProperties);
         this.observers = [];
+        this.genomicDataOverlayManager = new GenomicDataOverlayManager();
     };
 
     //Simple observer-observable pattern for views!!!!!
@@ -48,6 +51,20 @@ module.exports = (function()
             observer.notify();
         }
     };
+
+    EditorActionsManager.prototype.registerGenomicDataObserver = function(observer)
+    {
+        this.genomicDataOverlayManager.registerObserver(observer);
+    }
+
+    EditorActionsManager.prototype.updateGenomicDataVisibility = function(dataMap)
+    {
+        for (var _key in dataMap) 
+        {
+            this.genomicDataOverlayManager.updateGenomicDataVisibility(_key, dataMap[_key]);
+        }
+        this.genomicDataOverlayManager.showGenomicData();
+    }
 
     //Global options related functions, zoom etc..
     EditorActionsManager.prototype.getGlobalOptions = function()
@@ -687,6 +704,11 @@ module.exports = (function()
         cyEle.position({x: ele.x, y: ele.y});
         this.changeNameCy(cyEle, ele.name);
     };
+
+    EditorActionsManager.prototype.addGenomicData = function(genomicData)
+    {
+        this.genomicDataOverlayManager.addGenomicData(genomicData);
+    }
 
     //Utility Functions
     //TODO move functions thar are inside class functions here

@@ -127,5 +127,6 @@ module.exports = (function()
         request.send(formData);
         $('#fileinput').val(null);
     });
+    
 
 })();

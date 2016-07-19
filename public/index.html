@@ -289,7 +289,7 @@
                   </li>
                 </ul>
               </li>
-              <li class="dropdown DataDropdown">
+              <li class="dropdown dataDropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Data <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a role="loadGenomic" href="#">Load Genomic Data</a></li>
@@ -390,7 +390,6 @@
 </div>
 
 <div class="welcomePageContainer centerText">
-
 </div>
 
 <footer>
@@ -534,7 +533,35 @@
   </div>
 </script>
 
+<div id='genomicDataExplorerDiv' class="modal fade" tabindex="-1" role="dialog">
+</div><!-- /.modal -->
 
+<script id="genomicDataExplorerTemplate" type="text/template" class="template">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Genomic Data Explorer</h3>
+      </div>
+      <div class="modal-body">
+        <div class="wrapper">
+          <div class="genomicDataContentDiv">
+          </div>
+          <button id="load-genomic" class=" btn genomicLoadButton" >Load Genomic Data</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button id="save-genomic" class="btn btn-default" >Save Changes</button>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div>
+</script>
+
+<!---->
+<!--File input related html elements-->
+<!---->
 <div class="hiddenfile">
   <form id="fileUploadForm" method="post">
     <input type="file" id="fileinput" name="graphFile" />

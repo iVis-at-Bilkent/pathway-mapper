@@ -27196,7 +27196,7 @@ define.eventAliasesOn( fabfn );
 
 module.exports = Fabric;
 
-},{"./define":62,"./is":101,"./promise":104,"./thread":116,"./util":118,"os":178}],99:[function(require,module,exports){
+},{"./define":62,"./is":101,"./promise":104,"./thread":116,"./util":118,"os":180}],99:[function(require,module,exports){
 /*!
 Ported by Xueqiao Xu <xueqiaoxu@gmail.com>;
 
@@ -32843,7 +32843,7 @@ define.eventAliasesOn( thdfn );
 module.exports = Thread;
 
 }).call(this,"/node_modules/cytoscape/src")
-},{"./define":62,"./event":63,"./is":101,"./promise":104,"./util":118,"./window":125,"child_process":177,"path":179}],117:[function(require,module,exports){
+},{"./define":62,"./event":63,"./is":101,"./promise":104,"./util":118,"./window":125,"child_process":179,"path":181}],117:[function(require,module,exports){
 'use strict';
 
 var is = require( '../is' );
@@ -50494,6 +50494,7 @@ var panzoomOpts = require('./PanzoomOptions.js');
 var styleSheet = require('./GraphStyleSheet.js');
 var edgeHandleOpts = require('./EdgeHandlesOptions.js');
 var LayoutProperties = require('./BackboneViews/LayoutPropertiesView.js');
+var GenomicDataExplorerView = require('./BackboneViews/GenomicDataExplorerView.js');
 
 //Other requires
 require('./FileOperationsManager.js');
@@ -50560,6 +50561,11 @@ module.exports = (function()
         //Render layout properties view after editor actions manager is created !
         this.layoutPropertiesView = new LayoutProperties({
             el: $('#layoutPropertiesDiv'),
+            editorActionsManager: this.editorActionsManager
+        }).render();
+
+        this.genomicDataExplorerView = new GenomicDataExplorerView({
+            el: $('#genomicDataExplorerDiv'),
             editorActionsManager: this.editorActionsManager
         }).render();
 
@@ -50660,138 +50666,11 @@ module.exports = (function()
 
         cy.on('click')
     };
-
-    var overlayExprData = false;
-    $('#exprData').on('click', function (evt)
-    {
-        overlayExprData = !overlayExprData;
-        if (overlayExprData)
-        {
-            $(evt.target).text('Remove Data Overlay');
-            cy.style()
-                .selector('node[type="GENE"]')
-                .style('height', 60)
-                .style('text-margin-y',-20)
-                .style('background-image', function(ele)
-                {
-                    var overlayRecBoxW = 110;
-                    var overlayRecBoxH = 25;
-
-                    var eleBBox = ele.boundingBox();
-
-                    //Experimental data overlay part !
-                    var dataURI = "data:image/svg+xml,";
-
-                    var svgNameSpace = 'http://www.w3.org/2000/svg';
-
-                    var svg = document.createElementNS(svgNameSpace,'svg');
-                    //It seems this should be set according to the node size !
-                    svg.setAttribute('width', eleBBox.w);
-                    svg.setAttribute('height', eleBBox.h);
-                    //This is important you need to include this to succesfully render in cytoscape.js!
-                    svg.setAttribute('xmlns', svgNameSpace);
-
-
-                    //Overlay Data Rect
-                    var overLayRectBBox =
-                    {
-                        w: overlayRecBoxW,
-                        h: overlayRecBoxH,
-                        x: eleBBox.w/2 - overlayRecBoxW/2,
-                        y: eleBBox.h/2 + overlayRecBoxH/2 - 20
-                    };
-
-
-                    //Leftmost rectangle
-                    genomicDataRectangleGenerator(
-                        overLayRectBBox.x,
-                        overLayRectBBox.y,
-                        overLayRectBBox.w/3,
-                        overLayRectBBox.h,
-                        0,
-                        svg
-                    );
-
-                    //Middle rectangle
-                    genomicDataRectangleGenerator(
-                        overLayRectBBox.x + overLayRectBBox.w/3,
-                        overLayRectBBox.y,
-                        overLayRectBBox.w/3,
-                        overLayRectBBox.h,
-                        60,
-                        svg);
-
-                    //Rightmost rectangle
-                    genomicDataRectangleGenerator(
-                        overLayRectBBox.x + 2*overLayRectBBox.w/3,
-                        overLayRectBBox.y,
-                        overLayRectBBox.w/3,
-                        overLayRectBBox.h,
-                        80,
-                        svg);
-
-                    function genomicDataRectangleGenerator(x,y,w,h,percent,parentSVG)
-                    {
-
-                        var _percent = (percent < 20) ? 20:percent;
-                        var percentColor =  255 -  _percent * (255/100);
-                        //Rectangle Part
-                        var overlayRect = document.createElementNS(svgNameSpace, 'rect');
-                        overlayRect.setAttribute('x', x);
-                        overlayRect.setAttribute('y', y );
-                        overlayRect.setAttribute('width', w);
-                        overlayRect.setAttribute('height', h);
-                        overlayRect.setAttribute('style', "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:rgb(255,"+percentColor+","+percentColor+")");
-
-
-                        //Text Part
-                        var text = (percent < 1) ? '<1%':percent+'%';
-                        var fontSize = 14;
-                        var textLength = text.length;
-                        var xOffset = (textLength > 2) ? 5:6;
-                        var yOffset = fontSize/3;
-
-                        var svgText = document.createElementNS(svgNameSpace, 'text');
-                        svgText.setAttribute('x', x + xOffset );
-                        svgText.setAttribute('y', y + h/2 + yOffset );
-                        svgText.setAttribute('font-family', 'Verdana');
-                        svgText.setAttribute('font-size', fontSize);
-                        svgText.innerHTML = text;
-
-                        parentSVG.appendChild(overlayRect);
-                        parentSVG.appendChild(svgText);
-                    }
-
-
-                    return dataURI+svg.outerHTML;
-                })
-                .update();
-        }
-        else
-        {
-            $(evt.target).text('Preview Data Overlay');
-            cy.style()
-                .selector('node[type="GENE"]')
-                .style('height', 60)
-                .style('text-margin-y',0)
-                .style('background-image', function(ele)
-                {
-                    var eleBBox = ele.boundingBox();
-
-                    //Experimental data overlay part !
-                    var dataURI = "data:image/svg+xml,";
-
-                    return dataURI;
-                })
-                .update();
-        }
-    })
-
+    
     return AppManager;
-
 })();
 
-},{"../../lib/js/cose-bilkent/src/index.js":158,"./BackboneViews/LayoutPropertiesView.js":161,"./ContextMenuManager.js":163,"./DragDropNodeAddPlugin.js":164,"./EdgeHandlesOptions.js":165,"./EditorActionsManager.js":166,"./FileOperationsManager.js":167,"./GraphStyleSheet.js":168,"./OtherMenuOperations.js":169,"./PanzoomOptions.js":170,"./QtipManager.js":171,"./ViewOperationsManager.js":175,"cytoscape":100,"cytoscape-cxtmenu":15,"cytoscape-navigator":16,"cytoscape-panzoom":17,"cytoscape-qtip":18}],160:[function(require,module,exports){
+},{"../../lib/js/cose-bilkent/src/index.js":158,"./BackboneViews/GenomicDataExplorerView.js":161,"./BackboneViews/LayoutPropertiesView.js":162,"./ContextMenuManager.js":164,"./DragDropNodeAddPlugin.js":165,"./EdgeHandlesOptions.js":166,"./EditorActionsManager.js":167,"./FileOperationsManager.js":168,"./GraphStyleSheet.js":170,"./OtherMenuOperations.js":171,"./PanzoomOptions.js":172,"./QtipManager.js":173,"./ViewOperationsManager.js":177,"cytoscape":100,"cytoscape-cxtmenu":15,"cytoscape-navigator":16,"cytoscape-panzoom":17,"cytoscape-qtip":18}],160:[function(require,module,exports){
 /*
  * Copyright 2013 Memorial-Sloan Kettering Cancer Center.
  *
@@ -50971,6 +50850,95 @@ var BioGeneView = Backbone.View.extend({
 module.exports = BioGeneView;
 
 },{}],161:[function(require,module,exports){
+//Genomic data file part
+$('#genomicDataInput').on('change', function()
+{
+    var file = this.files[0];
+    // Create a new FormData object.
+    var formData = new FormData();
+    formData.append('graphFile', file);
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function ()
+    {
+        if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+        {
+            window.editorActionsManager.addGenomicData(request.responseText);
+        }
+    };
+    request.open("POST", "/loadGraph");
+    request.send(formData);
+    $('#genomicDataInput').val(null);
+});
+
+//Genomic data menu part
+$(".dataDropdown li a").click(function(event)
+{
+    event.preventDefault();
+    var dropdownLinkRole = $(event.target).attr('role');
+
+    if (dropdownLinkRole == 'loadGenomic')
+    {
+        $('#genomicDataExplorerDiv').modal('show');
+    }
+});
+
+var genomicDataExplorer = Backbone.View.extend(
+    {
+        cachedTpl: _.template($("#genomicDataExplorerTemplate").html()),
+        events:
+        {
+            'click #load-genomic': 'loadGenomicDataHandler',
+            'click #save-genomic': 'saveHandler',
+        },
+        initialize: function (options)
+        {
+            this.$el.append(this.cachedTpl());
+            this.editorActionsManagerRef = options.editorActionsManager;
+            this.editorActionsManagerRef.registerGenomicDataObserver(this);
+        },
+        render: function ()
+        {
+        },
+        saveHandler: function(event)
+        {
+            var dataMap = {};
+            this.$el.find('.genomicDataContentDiv label').each(function ()
+            {
+                var jqEl = $(this);
+                var cancerType = jqEl.text();
+                var isChecked = jqEl.find('input').is(':checked');
+                dataMap[cancerType] = isChecked;
+            });
+            this.editorActionsManagerRef.updateGenomicDataVisibility(dataMap);
+
+        },
+        loadGenomicDataHandler: function()
+        {
+            $('#genomicDataInput').trigger('click');
+        },
+        //For observer observable pattern
+        notify: function(data)
+        {
+            this.$el.find('.genomicDataContentDiv').empty();
+
+            var cancerTypes = this.editorActionsManagerRef.genomicDataOverlayManager.visibleGenomicDataMapByType;
+            this.$el.find('.genomicDataContentDiv').append('<h4 class="modal-title">Following genomic data will be overlaid on nodes from left to right:</h4>');
+            var checkboxDiv = $('<div class="genomicChecboxDiv"></div>');
+            for (var cancerType in cancerTypes)
+            {
+                var checkboxContent = $('<label class="checkbox"><input type="checkbox" value="">'+cancerType+'</label>');
+                checkboxContent.find('input').attr('checked', cancerTypes[cancerType]);
+                checkboxDiv.append(checkboxContent);
+            }
+            this.$el.find('.genomicDataContentDiv').append(checkboxDiv);
+
+            console.log(cancerTypes);
+        }
+    });
+
+module.exports = genomicDataExplorer;
+
+},{}],162:[function(require,module,exports){
 var layoutProps = Backbone.View.extend(
 {
   currentLayoutProperties: null,
@@ -51058,7 +51026,7 @@ var layoutProps = Backbone.View.extend(
 
 module.exports = layoutProps;
 
-},{}],162:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 var WelcomePageView = Backbone.View.extend(
     {
         cachedTpl: _.template($("#welcomePageTemplate").html()),
@@ -51157,7 +51125,7 @@ var WelcomePageView = Backbone.View.extend(
 
 module.exports = WelcomePageView;
 
-},{}],163:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 ;
 module.exports = (function()
 {
@@ -51326,7 +51294,7 @@ module.exports = (function()
 
 }());
 
-},{}],164:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 ;
 module.exports = (function($, $$)
 {
@@ -51501,7 +51469,7 @@ module.exports = (function($, $$)
 
 })(window.$, window.cytoscape);
 
-},{}],165:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 ;
 // the default values of each option are outlined below:
 var edgeHandleDefaults =
@@ -51587,7 +51555,9 @@ var edgeHandleDefaults =
 
 module.exports = edgeHandleDefaults;
 
-},{}],166:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
+var GenomicDataOverlayManager = require('./GenomicDataOverlayManager.js');
+
 module.exports = (function()
 {
     "use strict";
@@ -51622,6 +51592,7 @@ module.exports = (function()
 
         this.layoutProperties = _.clone(this.defaultLayoutProperties);
         this.observers = [];
+        this.genomicDataOverlayManager = new GenomicDataOverlayManager();
     };
 
     //Simple observer-observable pattern for views!!!!!
@@ -51638,6 +51609,20 @@ module.exports = (function()
             observer.notify();
         }
     };
+
+    EditorActionsManager.prototype.registerGenomicDataObserver = function(observer)
+    {
+        this.genomicDataOverlayManager.registerObserver(observer);
+    }
+
+    EditorActionsManager.prototype.updateGenomicDataVisibility = function(dataMap)
+    {
+        for (var _key in dataMap) 
+        {
+            this.genomicDataOverlayManager.updateGenomicDataVisibility(_key, dataMap[_key]);
+        }
+        this.genomicDataOverlayManager.showGenomicData();
+    }
 
     //Global options related functions, zoom etc..
     EditorActionsManager.prototype.getGlobalOptions = function()
@@ -52278,6 +52263,11 @@ module.exports = (function()
         this.changeNameCy(cyEle, ele.name);
     };
 
+    EditorActionsManager.prototype.addGenomicData = function(genomicData)
+    {
+        this.genomicDataOverlayManager.addGenomicData(genomicData);
+    }
+
     //Utility Functions
     //TODO move functions thar are inside class functions here
 
@@ -52285,7 +52275,7 @@ module.exports = (function()
 
 })();
 
-},{}],167:[function(require,module,exports){
+},{"./GenomicDataOverlayManager.js":169}],168:[function(require,module,exports){
 var SaveLoadUtilities = require('./SaveLoadUtility.js');
 
 
@@ -52510,7 +52500,239 @@ module.exports = (function($)
 
 })(window.$)
 
-},{"./SaveLoadUtility.js":174}],168:[function(require,module,exports){
+},{"./SaveLoadUtility.js":176}],169:[function(require,module,exports){
+/**
+ *
+ */
+
+module.exports = (function()
+{
+    var GenomicDataOverlayManager = function ()
+    {
+        this.cancerTypes = [];
+        this.genomicDataMap = {};
+        this.visibleGenomicDataMapByType = {};
+        this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT = 3;
+
+        //Observer-observable pattern related stuff
+        this.observers = [];
+    };
+
+    GenomicDataOverlayManager.prototype.addGenomicData = function(genomicData)
+    {
+        this.parseGenomicData(genomicData);
+        this.notifyObservers();
+    };
+
+    GenomicDataOverlayManager.prototype.updateGenomicDataVisibility = function(_key, isVisible)
+    {
+        if(_key in this.visibleGenomicDataMapByType)
+            this.visibleGenomicDataMapByType[_key] = isVisible;
+    };
+
+    GenomicDataOverlayManager.prototype.hideGenomicData = function()
+    {
+        cy.style()
+            .selector('node[type="GENE"]')
+            .style('text-margin-y', 0)
+            .style('background-image', function(ele)
+            {
+                var dataURI = "data:image/svg+xml,";
+                return dataURI;
+            })
+            .update();
+    }
+
+    GenomicDataOverlayManager.prototype.showGenomicData = function()
+    {
+        var self = this;
+
+        //Count the genomic data that will be displayed on nodes' body
+        var genomicDataBoxCount = 0;
+        for (var cancerType in self.visibleGenomicDataMapByType)
+        {
+            if(self.visibleGenomicDataMapByType[cancerType])
+                genomicDataBoxCount++;
+        }
+
+        if (genomicDataBoxCount < 1)
+        {
+            //Hide all genomic data and return
+            this.hideGenomicData();
+            return;
+        }
+
+        cy.style()
+            .selector('node[type="GENE"]')
+            .style('text-margin-y', function (ele)
+            {
+                var nodeLabel = ele.data('name');
+                //If there is no genomic data for this node return !
+                if(!(nodeLabel in self.genomicDataMap))
+                    return 0;
+
+                return -20;
+            })
+            .style('background-image', function(ele)
+            {
+                //Experimental data overlay part !
+                var dataURI = "data:image/svg+xml,";
+                var svgNameSpace = 'http://www.w3.org/2000/svg';
+                var nodeLabel = ele.data('name');
+
+                //If there is no genomic data for this node return !
+                if(!(nodeLabel in self.genomicDataMap))
+                    return dataURI;
+
+                var overlayRecBoxW = 130;
+                var overlayRecBoxH = 25;
+                var eleBBox = ele.boundingBox();
+
+                var svg = document.createElementNS(svgNameSpace,'svg');
+                //It seems this should be set according to the node size !
+                svg.setAttribute('width', eleBBox.w);
+                svg.setAttribute('height', eleBBox.h);
+                //This is important you need to include this to succesfully render in cytoscape.js!
+                svg.setAttribute('xmlns', svgNameSpace);
+
+                //Overlay Data Rect
+                var overLayRectBBox =
+                {
+                    w: overlayRecBoxW,
+                    h: overlayRecBoxH,
+                    x: eleBBox.w/2 - overlayRecBoxW/2,
+                    y: eleBBox.h/2 + overlayRecBoxH/2 - 20
+                };
+
+                var genomicFrequencyData = self.genomicDataMap[nodeLabel];
+
+                var maxGenomicDataBoxCount = (genomicDataBoxCount > 3) ? 3:genomicDataBoxCount;
+                var genomicBoxCounter = 0;
+                for (var cancerType in genomicFrequencyData)
+                {
+                    if(!self.visibleGenomicDataMapByType[cancerType])
+                        continue;
+
+                    genomicDataRectangleGenerator(
+                        overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w/maxGenomicDataBoxCount,
+                        overLayRectBBox.y,
+                        overLayRectBBox.w/maxGenomicDataBoxCount,
+                        overLayRectBBox.h,
+                        genomicFrequencyData[cancerType],
+                        svg
+                    );
+                    genomicBoxCounter++;
+                }
+
+
+                function genomicDataRectangleGenerator(x,y,w,h,percent,parentSVG)
+                {
+                    var isNegativePercent = (percent < 0);
+                    var _percent = (Math.abs(percent) < 10) ? 10:Math.abs(percent);
+                    var percentColor =  255 -  _percent * (255/100);
+
+                    var colorString = "";
+                    if (isNegativePercent)
+                        colorString = "rgb("+Math.round(percentColor)+","+Math.round(percentColor)+",255)";
+                    else
+                        colorString = "rgb(255,"+Math.round(percentColor)+","+Math.round(percentColor)+")";
+
+                    //Rectangle Part
+                    var overlayRect = document.createElementNS(svgNameSpace, 'rect');
+                    overlayRect.setAttribute('x', x);
+                    overlayRect.setAttribute('y', y );
+                    overlayRect.setAttribute('width', w);
+                    overlayRect.setAttribute('height', h);
+                    overlayRect.setAttribute('style', "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:"+colorString+";");
+
+                    //Text Part
+                    var text = percent+'%';
+                    var fontSize = 14;
+                    var textLength = text.length;
+                    var xOffset = w/2 - textLength * 4;
+                    var yOffset = fontSize/3;
+
+                    var svgText = document.createElementNS(svgNameSpace, 'text');
+                    svgText.setAttribute('x', x + xOffset );
+                    svgText.setAttribute('y', y + h/2 + yOffset );
+                    svgText.setAttribute('font-family', 'Verdana');
+                    svgText.setAttribute('font-size', fontSize);
+                    svgText.innerHTML = text;
+
+                    parentSVG.appendChild(overlayRect);
+                    parentSVG.appendChild(svgText);
+                }
+
+                return dataURI+svg.outerHTML;
+            })
+            .update();
+    }
+
+    GenomicDataOverlayManager.prototype.parseGenomicData = function(genomicData)
+    {
+        this.genomicDataMap = {};
+        this.cancerTypes = [];
+        this.visibleGenomicDataMapByType = {};
+
+        // By lines
+        var lines = genomicData.split('\n');
+        //First line is meta data !
+        var metaLineColumns = lines[0].split('\t');
+
+        //Parse cancer types
+        for (var i = 1;  i < metaLineColumns.length; i++)
+        {
+            this.cancerTypes.push(metaLineColumns[i]);
+            //Update initially visible genomic data boxes !
+            if(i-1 < this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT)
+                this.visibleGenomicDataMapByType[this.cancerTypes[i-1]] = true;
+            else
+                this.visibleGenomicDataMapByType[this.cancerTypes[i-1]] = false;
+        }
+
+        // parse genomic data
+        for(var i =1; i < lines.length; i++)
+        {
+            //EOF check
+            if (lines[i].length == 0)
+                break;
+
+            //Split each line by tab and parse genomic data content
+            var lineContent = lines[i].split('\t');
+            var geneSymbol = lineContent[0];
+
+            //If current gene entry is not  in genomic data map create new map
+            if(!(geneSymbol in this.genomicDataMap))
+                this.genomicDataMap[geneSymbol] = {};
+
+            //Add each entry of genomic data
+            for (var j = 1; j < lineContent.length; j++)
+            {
+                this.genomicDataMap[geneSymbol][this.cancerTypes[j-1]] = lineContent[j];
+            }
+        }
+    };
+
+    //Simple observer-observable pattern for views!!!!!
+    GenomicDataOverlayManager.prototype.registerObserver = function(observer)
+    {
+        this.observers.push(observer);
+    };
+
+    GenomicDataOverlayManager.prototype.notifyObservers = function()
+    {
+        for (var i in this.observers)
+        {
+            var observer = this.observers[i];
+            observer.notify();
+        }
+    };
+    
+    return GenomicDataOverlayManager;
+
+})();
+
+},{}],170:[function(require,module,exports){
 module.exports = (function()
 {
   var styleSheet = [
@@ -52522,7 +52744,7 @@ module.exports = (function()
         'text-valign': 'center',
         'text-halign': 'center',
         'color': '#1e2829',
-        'width': 130,
+        'width': 140,
         'height': 60,
         // 'background-image-opacity': 1,
         // 'background-image': function (ele)
@@ -52785,7 +53007,7 @@ module.exports = (function()
   return styleSheet;
 })();
 
-},{}],169:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 module.exports = (function()
 {
     'use strict';
@@ -52915,9 +53137,10 @@ module.exports = (function()
         request.send(formData);
         $('#fileinput').val(null);
     });
+    
 
 })();
-},{}],170:[function(require,module,exports){
+},{}],172:[function(require,module,exports){
 var panzoomOptions =
 {
   // the default values of each option are outlined below:
@@ -52943,7 +53166,7 @@ var panzoomOptions =
 
 module.exports = panzoomOptions;
 
-},{}],171:[function(require,module,exports){
+},{}],173:[function(require,module,exports){
 ;
 
 var BackboneView = require('./BackboneViews/BioGeneView.js');
@@ -53070,7 +53293,7 @@ module.exports = (function($)
 
 }(window.$));
 
-},{"./BackboneViews/BioGeneView.js":160}],172:[function(require,module,exports){
+},{"./BackboneViews/BioGeneView.js":160}],174:[function(require,module,exports){
 module.exports = (function()
 {
     "use strict";
@@ -53845,7 +54068,7 @@ module.exports = (function()
 
 })();
 
-},{}],173:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 /**
  * @license
  * Realtime Utils 1.0.0
@@ -54295,7 +54518,7 @@ module.exports = (function(){
     };
 })();
 
-},{}],174:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 var SaveLoadUtils =
 {
   //Exports given json graph(based on cy.export()) into a string
@@ -54431,7 +54654,7 @@ var SaveLoadUtils =
 
 module.exports = SaveLoadUtils;
 
-},{}],175:[function(require,module,exports){
+},{}],177:[function(require,module,exports){
 module.exports = (function($)
 {
     'use strict';
@@ -54561,7 +54784,7 @@ module.exports = (function($)
 
 })(window.$)
 
-},{}],176:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
 //Import node modules here !
 var $ = window.$ = window.jQuery = require('jquery');
 var _ = window._ = require('underscore');
@@ -54631,9 +54854,9 @@ $(window).load(function()
 });
 
 
-},{"./AppManager":159,"./BackboneViews/WelcomePageView.js":162,"./RealTimeManager":172,"./RealTimeUtils":173,"backbone":1,"bootstrap":2,"jquery":126,"underscore":127}],177:[function(require,module,exports){
+},{"./AppManager":159,"./BackboneViews/WelcomePageView.js":163,"./RealTimeManager":174,"./RealTimeUtils":175,"backbone":1,"bootstrap":2,"jquery":126,"underscore":127}],179:[function(require,module,exports){
 
-},{}],178:[function(require,module,exports){
+},{}],180:[function(require,module,exports){
 exports.endianness = function () { return 'LE' };
 
 exports.hostname = function () {
@@ -54680,7 +54903,7 @@ exports.tmpdir = exports.tmpDir = function () {
 
 exports.EOL = '\n';
 
-},{}],179:[function(require,module,exports){
+},{}],181:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -54908,7 +55131,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":180}],180:[function(require,module,exports){
+},{"_process":182}],182:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -55001,4 +55224,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[176]);
+},{}]},{},[178]);
