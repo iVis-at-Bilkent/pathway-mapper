@@ -13,12 +13,87 @@ module.exports = (function()
 
         //Observer-observable pattern related stuff
         this.observers = [];
+
     };
 
-    GenomicDataOverlayManager.prototype.addGenomicData = function(genomicData)
+    GenomicDataOverlayManager.prototype.addGenomicDataLocally = function(genomicData)
     {
         this.parseGenomicData(genomicData);
         this.notifyObservers();
+    };
+
+    GenomicDataOverlayManager.prototype.removeGenomicData = function(geneSymbol)
+    {
+        this.genomicDataMap = {};
+    }
+    
+    GenomicDataOverlayManager.prototype.addGenomicData = function(data)
+    {
+        this.genomicDataMap = data;
+    }
+
+    GenomicDataOverlayManager.prototype.removeGenomicVisData = function(cancerType)
+    {
+        this.visibleGenomicDataMapByType = {};
+    }
+
+    GenomicDataOverlayManager.prototype.addGenomicVisData = function(data)
+    {
+        this.visibleGenomicDataMapByType = data;
+    }
+
+    GenomicDataOverlayManager.prototype.prepareGenomicDataRealTime = function(genomicData)
+    {
+        var genomicDataMap = {};
+        var cancerTypes = [];
+        var visibleGenomicDataMapByType = {};
+
+        // By lines
+        var lines = genomicData.split('\n');
+        //First line is meta data !
+        var metaLineColumns = lines[0].split('\t');
+
+        //Parse cancer types
+        for (var i = 1;  i < metaLineColumns.length; i++)
+        {
+            cancerTypes.push(metaLineColumns[i]);
+            //Update initially visible genomic data boxes !
+            if(i-1 < this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT)
+                visibleGenomicDataMapByType[cancerTypes[i-1]] = true;
+            else
+                visibleGenomicDataMapByType[cancerTypes[i-1]] = false;
+        }
+
+        // parse genomic data
+        for(var i =1; i < lines.length; i++)
+        {
+            //EOF check
+            if (lines[i].length == 0)
+                break;
+
+            //Split each line by tab and parse genomic data content
+            var lineContent = lines[i].split('\t');
+            var geneSymbol = lineContent[0];
+
+            //If current gene entry is not  in genomic data map create new map
+            if(!(geneSymbol in genomicDataMap))
+                genomicDataMap[geneSymbol] = {};
+
+            //Add each entry of genomic data
+            for (var j = 1; j < lineContent.length; j++)
+            {
+                genomicDataMap[geneSymbol][cancerTypes[j-1]] = lineContent[j];
+            }
+        }
+
+        var returnObj =         
+        {
+            'genomicDataMap': genomicDataMap,
+            'visibilityMap': visibleGenomicDataMapByType
+        };
+
+        return returnObj;
+
     };
 
     GenomicDataOverlayManager.prototype.updateGenomicDataVisibility = function(_key, isVisible)
@@ -59,8 +134,19 @@ module.exports = (function()
             return;
         }
 
+        //Just an utility function to calculate required width for genes for genomic data !
+        function getRequiredWidthForGenomicData()
+        {
+            var term = (genomicDataBoxCount > 3)? genomicDataBoxCount-3:0;
+            return 130 + term * 35;
+        }
+
         cy.style()
             .selector('node[type="GENE"]')
+            .style('width', function (ele)
+            {
+                return getRequiredWidthForGenomicData();
+            })
             .style('text-margin-y', function (ele)
             {
                 var nodeLabel = ele.data('name');
@@ -81,13 +167,14 @@ module.exports = (function()
                 if(!(nodeLabel in self.genomicDataMap))
                     return dataURI;
 
-                var overlayRecBoxW = 130;
-                var overlayRecBoxH = 25;
                 var eleBBox = ele.boundingBox();
+                var reqWidth = getRequiredWidthForGenomicData();
 
+                var overlayRecBoxW = reqWidth - 10;
+                var overlayRecBoxH = 25;
                 var svg = document.createElementNS(svgNameSpace,'svg');
                 //It seems this should be set according to the node size !
-                svg.setAttribute('width', eleBBox.w);
+                svg.setAttribute('width', reqWidth);
                 svg.setAttribute('height', eleBBox.h);
                 //This is important you need to include this to succesfully render in cytoscape.js!
                 svg.setAttribute('xmlns', svgNameSpace);
@@ -97,13 +184,13 @@ module.exports = (function()
                 {
                     w: overlayRecBoxW,
                     h: overlayRecBoxH,
-                    x: eleBBox.w/2 - overlayRecBoxW/2,
+                    x: reqWidth/2 - overlayRecBoxW/2,
                     y: eleBBox.h/2 + overlayRecBoxH/2 - 20
                 };
 
                 var genomicFrequencyData = self.genomicDataMap[nodeLabel];
 
-                var maxGenomicDataBoxCount = (genomicDataBoxCount > 3) ? 3:genomicDataBoxCount;
+                var maxGenomicDataBoxCount = /*(genomicDataBoxCount > 3) ? 3:*/genomicDataBoxCount;
                 var genomicBoxCounter = 0;
                 for (var cancerType in genomicFrequencyData)
                 {

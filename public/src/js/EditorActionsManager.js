@@ -59,11 +59,22 @@ module.exports = (function()
 
     EditorActionsManager.prototype.updateGenomicDataVisibility = function(dataMap)
     {
-        for (var _key in dataMap) 
+        if(this.isCollaborative)
         {
-            this.genomicDataOverlayManager.updateGenomicDataVisibility(_key, dataMap[_key]);
+            //TODO compound OP
+            this.realTimeManager.clearGenomicVisData();
+
+            //TODO clear visibility map
+            this.realTimeManager.addGenomicVisibilityData('visMap', dataMap);
         }
-        this.genomicDataOverlayManager.showGenomicData();
+        else
+        {
+            for (var _key in dataMap)
+            {
+                this.genomicDataOverlayManager.updateGenomicDataVisibility(_key, dataMap[_key]);
+            }
+            this.genomicDataOverlayManager.showGenomicData();
+        }
     }
 
     //Global options related functions, zoom etc..
@@ -303,7 +314,6 @@ module.exports = (function()
 
     EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(event)
     {
-
         //Get real time edge object and sync it to node addition or removal
         var edge = event.newValue;
         var edgeID = event.property;
@@ -707,7 +717,59 @@ module.exports = (function()
 
     EditorActionsManager.prototype.addGenomicData = function(genomicData)
     {
-        this.genomicDataOverlayManager.addGenomicData(genomicData);
+        if(this.isCollaborative)
+        {
+            //TODO compound OP
+            this.realTimeManager.clearGenomicData();
+            this.realTimeManager.clearGenomicVisData();
+
+            //TODO clear visibility map
+            var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataRealTime(genomicData);
+            var genomicDataMap = parsedGenomicData.genomicDataMap;
+            var visibilityMap = parsedGenomicData.visibilityMap;
+            this.realTimeManager.addGenomicData('genomicData', genomicDataMap);
+            this.realTimeManager.addGenomicVisibilityData('visMap', visibilityMap);
+        }
+        else
+            this.genomicDataOverlayManager.addGenomicDataLocally(genomicData);
+    }
+
+    EditorActionsManager.prototype.realTimeGenomicDataHandler = function(event)
+    {
+
+        var newData = event.newValue;
+        var geneSymbol = event.property;
+
+        //Addition
+        if(newData)
+        {
+            this.genomicDataOverlayManager.addGenomicData(newData);
+        }
+        //Removal
+        else
+        {   
+            this.genomicDataOverlayManager.removeGenomicData(geneSymbol);
+        }
+    }
+
+    EditorActionsManager.prototype.realTimeGenomicDataVsibilityHandler = function(event)
+    {
+
+        var data = event.newValue;
+
+        //Addition
+        if(data)
+        {
+            this.genomicDataOverlayManager.addGenomicVisData(data);
+        }
+        //Removal
+        else
+        {
+            this.genomicDataOverlayManager.removeGenomicVisData(data);
+        }
+        this.genomicDataOverlayManager.showGenomicData();
+        this.genomicDataOverlayManager.notifyObservers();
+
     }
 
     //Utility Functions

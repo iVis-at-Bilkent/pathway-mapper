@@ -50910,7 +50910,6 @@ var genomicDataExplorer = Backbone.View.extend(
                 dataMap[cancerType] = isChecked;
             });
             this.editorActionsManagerRef.updateGenomicDataVisibility(dataMap);
-
         },
         loadGenomicDataHandler: function()
         {
@@ -51617,11 +51616,22 @@ module.exports = (function()
 
     EditorActionsManager.prototype.updateGenomicDataVisibility = function(dataMap)
     {
-        for (var _key in dataMap) 
+        if(this.isCollaborative)
         {
-            this.genomicDataOverlayManager.updateGenomicDataVisibility(_key, dataMap[_key]);
+            //TODO compound OP
+            this.realTimeManager.clearGenomicVisData();
+
+            //TODO clear visibility map
+            this.realTimeManager.addGenomicVisibilityData('visMap', dataMap);
         }
-        this.genomicDataOverlayManager.showGenomicData();
+        else
+        {
+            for (var _key in dataMap)
+            {
+                this.genomicDataOverlayManager.updateGenomicDataVisibility(_key, dataMap[_key]);
+            }
+            this.genomicDataOverlayManager.showGenomicData();
+        }
     }
 
     //Global options related functions, zoom etc..
@@ -51861,7 +51871,6 @@ module.exports = (function()
 
     EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(event)
     {
-
         //Get real time edge object and sync it to node addition or removal
         var edge = event.newValue;
         var edgeID = event.property;
@@ -52265,7 +52274,59 @@ module.exports = (function()
 
     EditorActionsManager.prototype.addGenomicData = function(genomicData)
     {
-        this.genomicDataOverlayManager.addGenomicData(genomicData);
+        if(this.isCollaborative)
+        {
+            //TODO compound OP
+            this.realTimeManager.clearGenomicData();
+            this.realTimeManager.clearGenomicVisData();
+
+            //TODO clear visibility map
+            var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataRealTime(genomicData);
+            var genomicDataMap = parsedGenomicData.genomicDataMap;
+            var visibilityMap = parsedGenomicData.visibilityMap;
+            this.realTimeManager.addGenomicData('genomicData', genomicDataMap);
+            this.realTimeManager.addGenomicVisibilityData('visMap', visibilityMap);
+        }
+        else
+            this.genomicDataOverlayManager.addGenomicDataLocally(genomicData);
+    }
+
+    EditorActionsManager.prototype.realTimeGenomicDataHandler = function(event)
+    {
+
+        var newData = event.newValue;
+        var geneSymbol = event.property;
+
+        //Addition
+        if(newData)
+        {
+            this.genomicDataOverlayManager.addGenomicData(newData);
+        }
+        //Removal
+        else
+        {   
+            this.genomicDataOverlayManager.removeGenomicData(geneSymbol);
+        }
+    }
+
+    EditorActionsManager.prototype.realTimeGenomicDataVsibilityHandler = function(event)
+    {
+
+        var data = event.newValue;
+
+        //Addition
+        if(data)
+        {
+            this.genomicDataOverlayManager.addGenomicVisData(data);
+        }
+        //Removal
+        else
+        {
+            this.genomicDataOverlayManager.removeGenomicVisData(data);
+        }
+        this.genomicDataOverlayManager.showGenomicData();
+        this.genomicDataOverlayManager.notifyObservers();
+
     }
 
     //Utility Functions
@@ -52516,12 +52577,87 @@ module.exports = (function()
 
         //Observer-observable pattern related stuff
         this.observers = [];
+
     };
 
-    GenomicDataOverlayManager.prototype.addGenomicData = function(genomicData)
+    GenomicDataOverlayManager.prototype.addGenomicDataLocally = function(genomicData)
     {
         this.parseGenomicData(genomicData);
         this.notifyObservers();
+    };
+
+    GenomicDataOverlayManager.prototype.removeGenomicData = function(geneSymbol)
+    {
+        this.genomicDataMap = {};
+    }
+    
+    GenomicDataOverlayManager.prototype.addGenomicData = function(data)
+    {
+        this.genomicDataMap = data;
+    }
+
+    GenomicDataOverlayManager.prototype.removeGenomicVisData = function(cancerType)
+    {
+        this.visibleGenomicDataMapByType = {};
+    }
+
+    GenomicDataOverlayManager.prototype.addGenomicVisData = function(data)
+    {
+        this.visibleGenomicDataMapByType = data;
+    }
+
+    GenomicDataOverlayManager.prototype.prepareGenomicDataRealTime = function(genomicData)
+    {
+        var genomicDataMap = {};
+        var cancerTypes = [];
+        var visibleGenomicDataMapByType = {};
+
+        // By lines
+        var lines = genomicData.split('\n');
+        //First line is meta data !
+        var metaLineColumns = lines[0].split('\t');
+
+        //Parse cancer types
+        for (var i = 1;  i < metaLineColumns.length; i++)
+        {
+            cancerTypes.push(metaLineColumns[i]);
+            //Update initially visible genomic data boxes !
+            if(i-1 < this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT)
+                visibleGenomicDataMapByType[cancerTypes[i-1]] = true;
+            else
+                visibleGenomicDataMapByType[cancerTypes[i-1]] = false;
+        }
+
+        // parse genomic data
+        for(var i =1; i < lines.length; i++)
+        {
+            //EOF check
+            if (lines[i].length == 0)
+                break;
+
+            //Split each line by tab and parse genomic data content
+            var lineContent = lines[i].split('\t');
+            var geneSymbol = lineContent[0];
+
+            //If current gene entry is not  in genomic data map create new map
+            if(!(geneSymbol in genomicDataMap))
+                genomicDataMap[geneSymbol] = {};
+
+            //Add each entry of genomic data
+            for (var j = 1; j < lineContent.length; j++)
+            {
+                genomicDataMap[geneSymbol][cancerTypes[j-1]] = lineContent[j];
+            }
+        }
+
+        var returnObj =         
+        {
+            'genomicDataMap': genomicDataMap,
+            'visibilityMap': visibleGenomicDataMapByType
+        };
+
+        return returnObj;
+
     };
 
     GenomicDataOverlayManager.prototype.updateGenomicDataVisibility = function(_key, isVisible)
@@ -52562,8 +52698,19 @@ module.exports = (function()
             return;
         }
 
+        //Just an utility function to calculate required width for genes for genomic data !
+        function getRequiredWidthForGenomicData()
+        {
+            var term = (genomicDataBoxCount > 3)? genomicDataBoxCount-3:0;
+            return 130 + term * 35;
+        }
+
         cy.style()
             .selector('node[type="GENE"]')
+            .style('width', function (ele)
+            {
+                return getRequiredWidthForGenomicData();
+            })
             .style('text-margin-y', function (ele)
             {
                 var nodeLabel = ele.data('name');
@@ -52584,13 +52731,14 @@ module.exports = (function()
                 if(!(nodeLabel in self.genomicDataMap))
                     return dataURI;
 
-                var overlayRecBoxW = 130;
-                var overlayRecBoxH = 25;
                 var eleBBox = ele.boundingBox();
+                var reqWidth = getRequiredWidthForGenomicData();
 
+                var overlayRecBoxW = reqWidth - 10;
+                var overlayRecBoxH = 25;
                 var svg = document.createElementNS(svgNameSpace,'svg');
                 //It seems this should be set according to the node size !
-                svg.setAttribute('width', eleBBox.w);
+                svg.setAttribute('width', reqWidth);
                 svg.setAttribute('height', eleBBox.h);
                 //This is important you need to include this to succesfully render in cytoscape.js!
                 svg.setAttribute('xmlns', svgNameSpace);
@@ -52600,13 +52748,13 @@ module.exports = (function()
                 {
                     w: overlayRecBoxW,
                     h: overlayRecBoxH,
-                    x: eleBBox.w/2 - overlayRecBoxW/2,
+                    x: reqWidth/2 - overlayRecBoxW/2,
                     y: eleBBox.h/2 + overlayRecBoxH/2 - 20
                 };
 
                 var genomicFrequencyData = self.genomicDataMap[nodeLabel];
 
-                var maxGenomicDataBoxCount = (genomicDataBoxCount > 3) ? 3:genomicDataBoxCount;
+                var maxGenomicDataBoxCount = /*(genomicDataBoxCount > 3) ? 3:*/genomicDataBoxCount;
                 var genomicBoxCounter = 0;
                 for (var cancerType in genomicFrequencyData)
                 {
@@ -52744,7 +52892,7 @@ module.exports = (function()
         'text-valign': 'center',
         'text-halign': 'center',
         'color': '#1e2829',
-        'width': 140,
+        'width': 130,
         'height': 60,
         // 'background-image-opacity': 1,
         // 'background-image': function (ele)
@@ -53311,7 +53459,10 @@ module.exports = (function()
         this.EDGEMAP_NAME = 'edges';
         this.LAYOUT_PROPS_NAME = 'layoutProperties';
         this.GLOBAL_OPTS_NAME = 'globalOptions';
-
+        //For storing genomic data information per gene
+        this.GENOMIC_DATA_MAP_NAME = 'genomicDataMap';
+        //For storing visibility information of genomic data according to the cancer type
+        this.VISIBLE_GENOMIC_DATA_MAP_NAME = 'visibleGenomicDataMapByType';
 
         // Create a new instance of the realtime utility with your client ID.
         this.realtimeUtils = new utils.RealtimeUtils({
@@ -53379,10 +53530,17 @@ module.exports = (function()
         var layoutProperties = model.create(LayoutPropertiesR, window.editorActionsManager.layoutProperties);
         var globalOptions = model.create(GlobalOptionsR, window.editorActionsManager.getGlobalOptions());
 
+        //Genomic data related maps
+        var genomicDataMap = model.createMap();
+        var genomicDataVisibilityMap = model.createMap();
+
+
         root.set(this.NODEMAP_NAME, nodeMap);
         root.set(this.EDGEMAP_NAME, edgeMap);
         root.set(this.LAYOUT_PROPS_NAME, layoutProperties);
         root.set(this.GLOBAL_OPTS_NAME, globalOptions);
+        root.set(this.GENOMIC_DATA_MAP_NAME, genomicDataMap);
+        root.set(this.VISIBLE_GENOMIC_DATA_MAP_NAME, genomicDataVisibilityMap);
     };
 
     /*
@@ -53399,6 +53557,8 @@ module.exports = (function()
         var edgeMap = root.get(this.EDGEMAP_NAME);
         var realTimeLayoutProperties = root.get(this.LAYOUT_PROPS_NAME);
         var globalOptions = root.get(this.GLOBAL_OPTS_NAME);
+        var genomicDataMap = root.get(this.GENOMIC_DATA_MAP_NAME);
+        var visDataMap = root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME);
 
         var nodeMapEntries = nodeMap.values();
         var edgeMapEntries = edgeMap.values();
@@ -53411,6 +53571,11 @@ module.exports = (function()
         window.editorActionsManager.updateLayoutPropertiesCallback(realTimeLayoutProperties);
         window.editorActionsManager.changeGlobalOptions(globalOptions);
 
+        //TODO sync already set genomic data !
+        window.editorActionsManager.genomicDataOverlayManager.genomicDataMap = genomicDataMap.get('genomicData');
+        window.editorActionsManager.genomicDataOverlayManager.visibleGenomicDataMapByType = visDataMap.get('visMap');
+        window.editorActionsManager.genomicDataOverlayManager.showGenomicData();
+        window.editorActionsManager.genomicDataOverlayManager.notifyObservers();
         //Keep a reference to the file !
         this.realTimeDoc = doc;
 
@@ -53425,19 +53590,75 @@ module.exports = (function()
             window.editorActionsManager.realTimeEdgeAddRemoveEventCallBack(event);
         };
 
+        var genomicDataAddRemoveHandler = function(event)
+        {
+            window.editorActionsManager.realTimeGenomicDataHandler(event);
+        };
+
+        var genomicDataVisibilityChangeHandler = function(event)
+        {
+            window.editorActionsManager.realTimeGenomicDataVsibilityHandler(event);
+        }
+
         //Event listeners for edge and node map
         root.get(this.NODEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddRemoveHandler);
         root.get(this.EDGEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, edgeAddRemoveHandler);
+        root.get(this.GENOMIC_DATA_MAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, genomicDataAddRemoveHandler);
+        root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, genomicDataVisibilityChangeHandler);;
 
         //Just for debugging
-        /*var debugRButton = document.getElementById('debugR');
-        debugRButton.addEventListener('click', function(event)
-        {
-            gapi.drive.realtime.debug();
-        });*/
+        // var debugRButton = document.getElementById('debugR');
+        // debugRButton.addEventListener('click', function(event)
+        // {
+        //     gapi.drive.realtime.debug();
+        // });
 
         this.postFileLoad();
     };
+
+    RealTimeManager.prototype.clearGenomicData = function()
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var genomicMap =  root.get(this.GENOMIC_DATA_MAP_NAME);
+        var genomicMapKeys = genomicMap.keys();
+        model.beginCompoundOperation();
+        for (var i in genomicMapKeys)
+        {
+            genomicMap.delete(genomicMapKeys[i]);
+        }
+        model.endCompoundOperation();
+    }
+
+    RealTimeManager.prototype.clearGenomicVisData = function()
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var map =  root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME);
+        var mapKeys = map.keys();
+        model.beginCompoundOperation();
+        for (var i in mapKeys)
+        {
+            map.delete(mapKeys[i]);
+        }
+        model.endCompoundOperation();
+    }
+
+    RealTimeManager.prototype.addGenomicData = function(_key, geneData)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var genomicMap =  root.get(this.GENOMIC_DATA_MAP_NAME);
+        genomicMap.set(_key, geneData);
+    }
+
+    RealTimeManager.prototype.addGenomicVisibilityData = function(cancerType, isVisible)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var map =  root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME);
+        map.set(cancerType, isVisible);
+    }
 
     RealTimeManager.prototype.addNewNode = function(nodeData, posData)
     {

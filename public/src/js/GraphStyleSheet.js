@@ -9,7 +9,7 @@ module.exports = (function()
         'text-valign': 'center',
         'text-halign': 'center',
         'color': '#1e2829',
-        'width': 140,
+        'width': 130,
         'height': 60,
         // 'background-image-opacity': 1,
         // 'background-image': function (ele)
