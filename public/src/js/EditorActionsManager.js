@@ -64,7 +64,6 @@ module.exports = (function()
             //TODO compound OP
             this.realTimeManager.clearGenomicVisData();
 
-            //TODO clear visibility map
             this.realTimeManager.addGenomicVisibilityData('visMap', dataMap);
         }
         else
@@ -715,13 +714,30 @@ module.exports = (function()
         this.changeNameCy(cyEle, ele.name);
     };
 
+    EditorActionsManager.prototype.removeGenomicData = function()
+    {
+        if(this.isCollaborative)
+        {
+            this.realTimeManager.clearGenomicData();
+            this.realTimeManager.clearGenomicVisData();
+        }
+        else
+        {
+            //TODO wrap this in afunction in genomic data overlay manager
+            this.genomicDataOverlayManager.removeGenomicData();
+            this.genomicDataOverlayManager.removeGenomicVisData();
+            this.genomicDataOverlayManager.hideGenomicData();
+            this.genomicDataOverlayManager.notifyObservers();
+        }
+
+    }
+
     EditorActionsManager.prototype.addGenomicData = function(genomicData)
     {
         if(this.isCollaborative)
         {
             //TODO compound OP
-            this.realTimeManager.clearGenomicData();
-            this.realTimeManager.clearGenomicVisData();
+            this.removeGenomicData();
 
             //TODO clear visibility map
             var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataRealTime(genomicData);
@@ -731,7 +747,9 @@ module.exports = (function()
             this.realTimeManager.addGenomicVisibilityData('visMap', visibilityMap);
         }
         else
+        {
             this.genomicDataOverlayManager.addGenomicDataLocally(genomicData);
+        }
     }
 
     EditorActionsManager.prototype.realTimeGenomicDataHandler = function(event)

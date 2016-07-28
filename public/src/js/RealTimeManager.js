@@ -132,6 +132,7 @@ module.exports = (function()
         window.editorActionsManager.genomicDataOverlayManager.visibleGenomicDataMapByType = visDataMap.get('visMap');
         window.editorActionsManager.genomicDataOverlayManager.showGenomicData();
         window.editorActionsManager.genomicDataOverlayManager.notifyObservers();
+
         //Keep a reference to the file !
         this.realTimeDoc = doc;
 

@@ -19,10 +19,11 @@ module.exports = (function()
     GenomicDataOverlayManager.prototype.addGenomicDataLocally = function(genomicData)
     {
         this.parseGenomicData(genomicData);
+        this.showGenomicData();
         this.notifyObservers();
     };
 
-    GenomicDataOverlayManager.prototype.removeGenomicData = function(geneSymbol)
+    GenomicDataOverlayManager.prototype.removeGenomicData = function()
     {
         this.genomicDataMap = {};
     }
@@ -32,7 +33,7 @@ module.exports = (function()
         this.genomicDataMap = data;
     }
 
-    GenomicDataOverlayManager.prototype.removeGenomicVisData = function(cancerType)
+    GenomicDataOverlayManager.prototype.removeGenomicVisData = function()
     {
         this.visibleGenomicDataMapByType = {};
     }
@@ -107,6 +108,10 @@ module.exports = (function()
         cy.style()
             .selector('node[type="GENE"]')
             .style('text-margin-y', 0)
+            .style('width', function (ele)
+            {
+                return 130;
+            })
             .style('background-image', function(ele)
             {
                 var dataURI = "data:image/svg+xml,";
@@ -154,7 +159,7 @@ module.exports = (function()
                 if(!(nodeLabel in self.genomicDataMap))
                     return 0;
 
-                return -20;
+                return -15;
             })
             .style('background-image', function(ele)
             {
@@ -185,7 +190,7 @@ module.exports = (function()
                     w: overlayRecBoxW,
                     h: overlayRecBoxH,
                     x: reqWidth/2 - overlayRecBoxW/2,
-                    y: eleBBox.h/2 + overlayRecBoxH/2 - 20
+                    y: eleBBox.h/2 + overlayRecBoxH/2 - 18
                 };
 
                 var genomicFrequencyData = self.genomicDataMap[nodeLabel];
@@ -217,7 +222,10 @@ module.exports = (function()
 
                     var colorString = "";
                     if (isNegativePercent)
+                    {
                         colorString = "rgb("+Math.round(percentColor)+","+Math.round(percentColor)+",255)";
+                        percent = percent.substring(1);
+                    }
                     else
                         colorString = "rgb(255,"+Math.round(percentColor)+","+Math.round(percentColor)+")";
 
@@ -239,7 +247,7 @@ module.exports = (function()
                     var svgText = document.createElementNS(svgNameSpace, 'text');
                     svgText.setAttribute('x', x + xOffset );
                     svgText.setAttribute('y', y + h/2 + yOffset );
-                    svgText.setAttribute('font-family', 'Verdana');
+                    svgText.setAttribute('font-family', 'Arial');
                     svgText.setAttribute('font-size', fontSize);
                     svgText.innerHTML = text;
 

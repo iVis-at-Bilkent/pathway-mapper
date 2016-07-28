@@ -10,7 +10,7 @@ module.exports = (function()
         'text-halign': 'center',
         'color': '#1e2829',
         'width': 130,
-        'height': 60,
+        'height': 52,
         // 'background-image-opacity': 1,
         // 'background-image': function (ele)
         // {

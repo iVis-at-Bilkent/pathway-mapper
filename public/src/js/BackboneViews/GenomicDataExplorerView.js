@@ -21,12 +21,21 @@ $('#genomicDataInput').on('change', function()
 //Genomic data menu part
 $(".dataDropdown li a").click(function(event)
 {
+
     event.preventDefault();
     var dropdownLinkRole = $(event.target).attr('role');
 
     if (dropdownLinkRole == 'loadGenomic')
     {
+        $('#genomicDataInput').trigger('click');
+    }
+    else if (dropdownLinkRole == 'dataViewSettings')
+    {
         $('#genomicDataExplorerDiv').modal('show');
+    }
+    else if(dropdownLinkRole == 'removeGenomicData')
+    {
+        window.editorActionsManager.removeGenomicData();
     }
 });
 
@@ -35,7 +44,6 @@ var genomicDataExplorer = Backbone.View.extend(
         cachedTpl: _.template($("#genomicDataExplorerTemplate").html()),
         events:
         {
-            'click #load-genomic': 'loadGenomicDataHandler',
             'click #save-genomic': 'saveHandler',
         },
         initialize: function (options)
@@ -43,6 +51,7 @@ var genomicDataExplorer = Backbone.View.extend(
             this.$el.append(this.cachedTpl());
             this.editorActionsManagerRef = options.editorActionsManager;
             this.editorActionsManagerRef.registerGenomicDataObserver(this);
+            this.$el.find('.genomicDataContentDiv').append('<h4 class="modal-title">There is currently no data to show</h4>');
         },
         render: function ()
         {
@@ -59,25 +68,30 @@ var genomicDataExplorer = Backbone.View.extend(
             });
             this.editorActionsManagerRef.updateGenomicDataVisibility(dataMap);
         },
-        loadGenomicDataHandler: function()
-        {
-            $('#genomicDataInput').trigger('click');
-        },
         //For observer observable pattern
         notify: function(data)
         {
             this.$el.find('.genomicDataContentDiv').empty();
 
             var cancerTypes = this.editorActionsManagerRef.genomicDataOverlayManager.visibleGenomicDataMapByType;
-            this.$el.find('.genomicDataContentDiv').append('<h4 class="modal-title">Following genomic data will be overlaid on nodes from left to right:</h4>');
-            var checkboxDiv = $('<div class="genomicChecboxDiv"></div>');
-            for (var cancerType in cancerTypes)
+            if(Object.keys(cancerTypes).length === 0)
             {
-                var checkboxContent = $('<label class="checkbox"><input type="checkbox" value="">'+cancerType+'</label>');
-                checkboxContent.find('input').attr('checked', cancerTypes[cancerType]);
-                checkboxDiv.append(checkboxContent);
+                this.$el.find('.genomicDataContentDiv').append('<h4 class="modal-title">There is currently no data to show</h4>');
             }
-            this.$el.find('.genomicDataContentDiv').append(checkboxDiv);
+            else
+            {
+                this.$el.find('.genomicDataContentDiv').append('<h4 class="modal-title">Data Set To Show:</h4>');
+                var checkboxDiv = $('<div class="genomicChecboxDiv"></div>');
+                for (var cancerType in cancerTypes)
+                {
+                    var checkboxContent = $('<label class="checkbox"><input type="checkbox" value="">'+cancerType+'</label>');
+                    checkboxContent.find('input').attr('checked', cancerTypes[cancerType]);
+                    checkboxDiv.append(checkboxContent);
+                }
+                this.$el.find('.genomicDataContentDiv').append(checkboxDiv);
+            }
+
+
 
             console.log(cancerTypes);
         }

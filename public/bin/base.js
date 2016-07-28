@@ -50873,12 +50873,21 @@ $('#genomicDataInput').on('change', function()
 //Genomic data menu part
 $(".dataDropdown li a").click(function(event)
 {
+
     event.preventDefault();
     var dropdownLinkRole = $(event.target).attr('role');
 
     if (dropdownLinkRole == 'loadGenomic')
     {
+        $('#genomicDataInput').trigger('click');
+    }
+    else if (dropdownLinkRole == 'dataViewSettings')
+    {
         $('#genomicDataExplorerDiv').modal('show');
+    }
+    else if(dropdownLinkRole == 'removeGenomicData')
+    {
+        window.editorActionsManager.removeGenomicData();
     }
 });
 
@@ -50887,7 +50896,6 @@ var genomicDataExplorer = Backbone.View.extend(
         cachedTpl: _.template($("#genomicDataExplorerTemplate").html()),
         events:
         {
-            'click #load-genomic': 'loadGenomicDataHandler',
             'click #save-genomic': 'saveHandler',
         },
         initialize: function (options)
@@ -50895,6 +50903,7 @@ var genomicDataExplorer = Backbone.View.extend(
             this.$el.append(this.cachedTpl());
             this.editorActionsManagerRef = options.editorActionsManager;
             this.editorActionsManagerRef.registerGenomicDataObserver(this);
+            this.$el.find('.genomicDataContentDiv').append('<h4 class="modal-title">There is currently no data to show</h4>');
         },
         render: function ()
         {
@@ -50911,25 +50920,30 @@ var genomicDataExplorer = Backbone.View.extend(
             });
             this.editorActionsManagerRef.updateGenomicDataVisibility(dataMap);
         },
-        loadGenomicDataHandler: function()
-        {
-            $('#genomicDataInput').trigger('click');
-        },
         //For observer observable pattern
         notify: function(data)
         {
             this.$el.find('.genomicDataContentDiv').empty();
 
             var cancerTypes = this.editorActionsManagerRef.genomicDataOverlayManager.visibleGenomicDataMapByType;
-            this.$el.find('.genomicDataContentDiv').append('<h4 class="modal-title">Following genomic data will be overlaid on nodes from left to right:</h4>');
-            var checkboxDiv = $('<div class="genomicChecboxDiv"></div>');
-            for (var cancerType in cancerTypes)
+            if(Object.keys(cancerTypes).length === 0)
             {
-                var checkboxContent = $('<label class="checkbox"><input type="checkbox" value="">'+cancerType+'</label>');
-                checkboxContent.find('input').attr('checked', cancerTypes[cancerType]);
-                checkboxDiv.append(checkboxContent);
+                this.$el.find('.genomicDataContentDiv').append('<h4 class="modal-title">There is currently no data to show</h4>');
             }
-            this.$el.find('.genomicDataContentDiv').append(checkboxDiv);
+            else
+            {
+                this.$el.find('.genomicDataContentDiv').append('<h4 class="modal-title">Data Set To Show:</h4>');
+                var checkboxDiv = $('<div class="genomicChecboxDiv"></div>');
+                for (var cancerType in cancerTypes)
+                {
+                    var checkboxContent = $('<label class="checkbox"><input type="checkbox" value="">'+cancerType+'</label>');
+                    checkboxContent.find('input').attr('checked', cancerTypes[cancerType]);
+                    checkboxDiv.append(checkboxContent);
+                }
+                this.$el.find('.genomicDataContentDiv').append(checkboxDiv);
+            }
+
+
 
             console.log(cancerTypes);
         }
@@ -51621,7 +51635,6 @@ module.exports = (function()
             //TODO compound OP
             this.realTimeManager.clearGenomicVisData();
 
-            //TODO clear visibility map
             this.realTimeManager.addGenomicVisibilityData('visMap', dataMap);
         }
         else
@@ -52272,13 +52285,30 @@ module.exports = (function()
         this.changeNameCy(cyEle, ele.name);
     };
 
+    EditorActionsManager.prototype.removeGenomicData = function()
+    {
+        if(this.isCollaborative)
+        {
+            this.realTimeManager.clearGenomicData();
+            this.realTimeManager.clearGenomicVisData();
+        }
+        else
+        {
+            //TODO wrap this in afunction in genomic data overlay manager
+            this.genomicDataOverlayManager.removeGenomicData();
+            this.genomicDataOverlayManager.removeGenomicVisData();
+            this.genomicDataOverlayManager.hideGenomicData();
+            this.genomicDataOverlayManager.notifyObservers();
+        }
+
+    }
+
     EditorActionsManager.prototype.addGenomicData = function(genomicData)
     {
         if(this.isCollaborative)
         {
             //TODO compound OP
-            this.realTimeManager.clearGenomicData();
-            this.realTimeManager.clearGenomicVisData();
+            this.removeGenomicData();
 
             //TODO clear visibility map
             var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataRealTime(genomicData);
@@ -52288,7 +52318,9 @@ module.exports = (function()
             this.realTimeManager.addGenomicVisibilityData('visMap', visibilityMap);
         }
         else
+        {
             this.genomicDataOverlayManager.addGenomicDataLocally(genomicData);
+        }
     }
 
     EditorActionsManager.prototype.realTimeGenomicDataHandler = function(event)
@@ -52583,10 +52615,11 @@ module.exports = (function()
     GenomicDataOverlayManager.prototype.addGenomicDataLocally = function(genomicData)
     {
         this.parseGenomicData(genomicData);
+        this.showGenomicData();
         this.notifyObservers();
     };
 
-    GenomicDataOverlayManager.prototype.removeGenomicData = function(geneSymbol)
+    GenomicDataOverlayManager.prototype.removeGenomicData = function()
     {
         this.genomicDataMap = {};
     }
@@ -52596,7 +52629,7 @@ module.exports = (function()
         this.genomicDataMap = data;
     }
 
-    GenomicDataOverlayManager.prototype.removeGenomicVisData = function(cancerType)
+    GenomicDataOverlayManager.prototype.removeGenomicVisData = function()
     {
         this.visibleGenomicDataMapByType = {};
     }
@@ -52671,6 +52704,10 @@ module.exports = (function()
         cy.style()
             .selector('node[type="GENE"]')
             .style('text-margin-y', 0)
+            .style('width', function (ele)
+            {
+                return 130;
+            })
             .style('background-image', function(ele)
             {
                 var dataURI = "data:image/svg+xml,";
@@ -52718,7 +52755,7 @@ module.exports = (function()
                 if(!(nodeLabel in self.genomicDataMap))
                     return 0;
 
-                return -20;
+                return -15;
             })
             .style('background-image', function(ele)
             {
@@ -52749,7 +52786,7 @@ module.exports = (function()
                     w: overlayRecBoxW,
                     h: overlayRecBoxH,
                     x: reqWidth/2 - overlayRecBoxW/2,
-                    y: eleBBox.h/2 + overlayRecBoxH/2 - 20
+                    y: eleBBox.h/2 + overlayRecBoxH/2 - 18
                 };
 
                 var genomicFrequencyData = self.genomicDataMap[nodeLabel];
@@ -52781,7 +52818,10 @@ module.exports = (function()
 
                     var colorString = "";
                     if (isNegativePercent)
+                    {
                         colorString = "rgb("+Math.round(percentColor)+","+Math.round(percentColor)+",255)";
+                        percent = percent.substring(1);
+                    }
                     else
                         colorString = "rgb(255,"+Math.round(percentColor)+","+Math.round(percentColor)+")";
 
@@ -52803,7 +52843,7 @@ module.exports = (function()
                     var svgText = document.createElementNS(svgNameSpace, 'text');
                     svgText.setAttribute('x', x + xOffset );
                     svgText.setAttribute('y', y + h/2 + yOffset );
-                    svgText.setAttribute('font-family', 'Verdana');
+                    svgText.setAttribute('font-family', 'Arial');
                     svgText.setAttribute('font-size', fontSize);
                     svgText.innerHTML = text;
 
@@ -52893,7 +52933,7 @@ module.exports = (function()
         'text-halign': 'center',
         'color': '#1e2829',
         'width': 130,
-        'height': 60,
+        'height': 52,
         // 'background-image-opacity': 1,
         // 'background-image': function (ele)
         // {
@@ -53576,6 +53616,7 @@ module.exports = (function()
         window.editorActionsManager.genomicDataOverlayManager.visibleGenomicDataMapByType = visDataMap.get('visMap');
         window.editorActionsManager.genomicDataOverlayManager.showGenomicData();
         window.editorActionsManager.genomicDataOverlayManager.notifyObservers();
+
         //Keep a reference to the file !
         this.realTimeDoc = doc;
 
