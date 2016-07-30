@@ -410,7 +410,7 @@ footer {
 
 .navbar-nav > li > a {
   color: white !important;
-  font-weight: bold !important; }
+  font-weight: 500 !important; }
 
 .navbar-nav > li > a:hover {
   color: #1abc9c !important; }

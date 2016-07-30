@@ -50903,10 +50903,15 @@ var genomicDataExplorer = Backbone.View.extend(
             this.$el.append(this.cachedTpl());
             this.editorActionsManagerRef = options.editorActionsManager;
             this.editorActionsManagerRef.registerGenomicDataObserver(this);
-            this.$el.find('.genomicDataContentDiv').append('<h4 class="modal-title">There is currently no data to show</h4>');
+            this.renderEmptyView();
         },
         render: function ()
         {
+        },
+        renderEmptyView: function()
+        {
+            this.$el.find('.genomicDataContentDiv').append('<h4 class="modal-title">There is currently no data to show</h4>');
+            this.$el.find('#save-genomic').hide();
         },
         saveHandler: function(event)
         {
@@ -50926,9 +50931,9 @@ var genomicDataExplorer = Backbone.View.extend(
             this.$el.find('.genomicDataContentDiv').empty();
 
             var cancerTypes = this.editorActionsManagerRef.genomicDataOverlayManager.visibleGenomicDataMapByType;
-            if(Object.keys(cancerTypes).length === 0)
+            if(cancerTypes && Object.keys(cancerTypes).length === 0)
             {
-                this.$el.find('.genomicDataContentDiv').append('<h4 class="modal-title">There is currently no data to show</h4>');
+                this.renderEmptyView();
             }
             else
             {
@@ -50941,11 +50946,8 @@ var genomicDataExplorer = Backbone.View.extend(
                     checkboxDiv.append(checkboxContent);
                 }
                 this.$el.find('.genomicDataContentDiv').append(checkboxDiv);
+                this.$el.find('#save-genomic').show();
             }
-
-
-
-            console.log(cancerTypes);
         }
     });
 
