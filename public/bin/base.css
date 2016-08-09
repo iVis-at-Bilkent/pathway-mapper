@@ -59,6 +59,8 @@
   font-size: 1.3em !important; }
   #ui-cytoscape-nodeadd-icon .explanationText {
     font: 14px helvetica neue, helvetica, arial, sans-serif; }
+  #ui-cytoscape-nodeadd-icon img {
+    width: 140px; }
 
 .ui-cytoscape-nodeadd-nodediv {
   z-index: 99999;
@@ -371,6 +373,8 @@ body {
   .edgePaletteWrapper .edge-palette a {
     margin-bottom: 5px;
     border-radius: 6px; }
+    .edgePaletteWrapper .edge-palette a img {
+      width: 50px; }
 
 footer {
   background-color: #eeeeee;

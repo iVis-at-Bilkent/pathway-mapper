@@ -51329,7 +51329,7 @@ module.exports = (function($, $$)
             height: 30,   //height of the icon container
             width: 30,    //width of the icon container
             padding: 5,  //padding of the icon container(from right & top)
-            backgroundColorDiv: '#fff',   //background color of the icon container
+            backgroundColorDiv: '#fbfbfb',   //background color of the icon container
             borderColorDiv: '#fff',    //border color of the icon container
             borderWidthDiv: '0px',    //border width of the icon container
             borderRadiusDiv: '5px',    //border radius of the icon container
@@ -51367,7 +51367,7 @@ module.exports = (function($, $$)
                             dragContainer.append($nodeadd);
                             var $nodeDragHandle = $('<div class="ui-cytoscape-nodeadd-nodediv"> \
                                                 <span id="ui-cytoscape-nodeadd-icon" class="draggable" nodeType="'+ component.nodeType +'">\
-                                                  <img src="./assets/'+component.nodeType+'.png" alt="" />\
+                                                  <img style="width:140px;" src="./assets/'+component.nodeType+'.png" alt="" />\
                                                 </span>\
                                               </div>');
                             $nodeadd.append($nodeDragHandle);
@@ -52625,7 +52625,7 @@ module.exports = (function()
     {
         this.genomicDataMap = {};
     }
-    
+
     GenomicDataOverlayManager.prototype.addGenomicData = function(data)
     {
         this.genomicDataMap = data;
@@ -52685,7 +52685,7 @@ module.exports = (function()
             }
         }
 
-        var returnObj =         
+        var returnObj =
         {
             'genomicDataMap': genomicDataMap,
             'visibilityMap': visibleGenomicDataMapByType
@@ -52819,7 +52819,11 @@ module.exports = (function()
                     var percentColor =  255 -  _percent * (255/100);
 
                     var colorString = "";
-                    if (isNegativePercent)
+                    if(percent == 0)
+                    {
+                        colorString = "rgb(255,255,255)";
+                    }
+                    else if (isNegativePercent)
                     {
                         colorString = "rgb("+Math.round(percentColor)+","+Math.round(percentColor)+",255)";
                         percent = percent.substring(1);
@@ -52917,7 +52921,7 @@ module.exports = (function()
             observer.notify();
         }
     };
-    
+
     return GenomicDataOverlayManager;
 
 })();

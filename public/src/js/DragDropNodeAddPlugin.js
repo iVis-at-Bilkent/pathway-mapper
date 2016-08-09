@@ -17,7 +17,7 @@ module.exports = (function($, $$)
             height: 30,   //height of the icon container
             width: 30,    //width of the icon container
             padding: 5,  //padding of the icon container(from right & top)
-            backgroundColorDiv: '#fff',   //background color of the icon container
+            backgroundColorDiv: '#fbfbfb',   //background color of the icon container
             borderColorDiv: '#fff',    //border color of the icon container
             borderWidthDiv: '0px',    //border width of the icon container
             borderRadiusDiv: '5px',    //border radius of the icon container
@@ -55,7 +55,7 @@ module.exports = (function($, $$)
                             dragContainer.append($nodeadd);
                             var $nodeDragHandle = $('<div class="ui-cytoscape-nodeadd-nodediv"> \
                                                 <span id="ui-cytoscape-nodeadd-icon" class="draggable" nodeType="'+ component.nodeType +'">\
-                                                  <img src="./assets/'+component.nodeType+'.png" alt="" />\
+                                                  <img style="width:140px;" src="./assets/'+component.nodeType+'.png" alt="" />\
                                                 </span>\
                                               </div>');
                             $nodeadd.append($nodeDragHandle);

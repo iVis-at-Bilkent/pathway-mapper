@@ -27,7 +27,7 @@ module.exports = (function()
     {
         this.genomicDataMap = {};
     }
-    
+
     GenomicDataOverlayManager.prototype.addGenomicData = function(data)
     {
         this.genomicDataMap = data;
@@ -87,7 +87,7 @@ module.exports = (function()
             }
         }
 
-        var returnObj =         
+        var returnObj =
         {
             'genomicDataMap': genomicDataMap,
             'visibilityMap': visibleGenomicDataMapByType
@@ -221,7 +221,11 @@ module.exports = (function()
                     var percentColor =  255 -  _percent * (255/100);
 
                     var colorString = "";
-                    if (isNegativePercent)
+                    if(percent == 0)
+                    {
+                        colorString = "rgb(255,255,255)";
+                    }
+                    else if (isNegativePercent)
                     {
                         colorString = "rgb("+Math.round(percentColor)+","+Math.round(percentColor)+",255)";
                         percent = percent.substring(1);
@@ -319,7 +323,7 @@ module.exports = (function()
             observer.notify();
         }
     };
-    
+
     return GenomicDataOverlayManager;
 
 })();
