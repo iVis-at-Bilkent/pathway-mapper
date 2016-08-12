@@ -234,40 +234,5 @@ module.exports = (function()
     }
   }
 
-  // var backgroundImageHandler = function(ele)
-  // {
-  //   var dataURI = "data:image/svg+xml,";
-  //   var svgNameSpace = 'http://www.w3.org/2000/svg';
-  //
-  //
-  //   var svg = document.createElementNS(svgNameSpace,'svg');
-  //   //TODO it seems this should be set according to the node size !
-  //   svg.setAttribute('width', 60);
-  //   svg.setAttribute('height', 15);
-  //   //This is important you need to include this to succesfully render in cytoscape.js!
-  //   svg.setAttribute('xmlns', svgNameSpace);
-  //
-  //   //Background Rect
-  //   var rect = document.createElementNS(svgNameSpace, 'rect');
-  //   rect.setAttribute('x', 0);
-  //   rect.setAttribute('y', 0);
-  //   rect.setAttribute('width', 60);
-  //   rect.setAttribute('height', 15);
-  //   rect.setAttribute('style', "fill:rgb(255,255,255);opacity:0");
-  //
-  //   //Overlay Data Rect
-  //   var overlayRect = document.createElementNS(svgNameSpace, 'rect');
-  //   overlayRect.setAttribute('x', 30);
-  //   overlayRect.setAttribute('y', 7);
-  //   overlayRect.setAttribute('width', 10);
-  //   overlayRect.setAttribute('height', 10);
-  //   overlayRect.setAttribute('style', "fill:rgb(255,0,0)");
-  //
-  //   svg.appendChild(rect);
-  //   svg.appendChild(overlayRect);
-  //
-  //   return dataURI+svg.outerHTML;
-  // }
-
   return styleSheet;
 })();

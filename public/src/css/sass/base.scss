@@ -17,6 +17,32 @@ body {
 $appContentHeight: 850px;
 
 
+.cy-panzoom{
+  // position: absolute;
+  /* float: right; */
+  // top: 14px;
+  right: 120px;
+  z-index: 100;
+}
+
+.cytoscape-navigatorView{
+  background: $menuHoverColor;
+
+}
+
+.cytoscape-navigator-wrapper{
+  position: absolute;
+  border: 2px solid #2F4154;
+  border-radius: 6px;
+  background: #fff;
+  z-index: 100;
+  width: 300px;
+  height: 200px;
+  bottom: 81px;
+  right: 64px;
+  overflow: hidden;
+}
+
 .btn:focus {
   outline: none !important;
 }
@@ -181,13 +207,7 @@ footer{
   font-weight: bold;
 }
 
-.cy-panzoom{
-  // position: absolute;
-  /* float: right; */
-  // top: 14px;
-  right: 120px;
-  z-index: 100;
-}
+
 
 .pnl
 {
@@ -204,7 +224,7 @@ footer{
     text-align: center;
     padding: 15px 5px 15px 5px;
     color: white;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 900;
   }
 

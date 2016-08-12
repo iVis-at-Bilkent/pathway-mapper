@@ -22,6 +22,8 @@ var QtipManager = require('./QtipManager.js');
 var ContextMenuManager = require('./ContextMenuManager.js');
 var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
 var EditorActionsManager = require('./EditorActionsManager.js');
+var grid_guide = require('cytoscape-grid-guide');
+
 
 
 module.exports = (function()
@@ -48,6 +50,7 @@ module.exports = (function()
         cyqtip( cytoscape, $ ); // register extension
         regCose( cytoscape ); // register extension
         navigator( cytoscape ); // register extension
+        grid_guide( cytoscape, $ ); // register extension
 
 
         window.edgeAddingMode = 0;
@@ -122,24 +125,57 @@ module.exports = (function()
         //Edge Handles initialization
         cy.edgehandles( edgeHandleOpts );
 
-        // //Navigator for cytoscape js
-        // var navDefaults = {
-        //     container: false // can be a HTML or jQuery element or jQuery selector
-        //     , viewLiveFramerate: 0 // set false to update graph pan only on drag end; set 0 to do it instantly; set a number (frames per second) to update not more than N times per second
-        //     , thumbnailEventFramerate: 30 // max thumbnail's updates per second triggered by graph updates
-        //     , thumbnailLiveFramerate: false // max thumbnail's updates per second. Set false to disable
-        //     , dblClickDelay: 200 // milliseconds
-        //     , removeCustomContainer: true // destroy the container specified by user on plugin destroy
-        //     , rerenderDelay: 100 // ms to throttle rerender updates to the panzoom for performance
-        // };
-        //
-        // var nav = cy.navigator( navDefaults ); // get navigator instance, nav
+        //Navigator for cytoscape js
+        var navDefaults = {
+            container: '.cytoscape-navigator-wrapper' // can be a HTML or jQuery element or jQuery selector
+            , viewLiveFramerate: 0 // set false to update graph pan only on drag end; set 0 to do it instantly; set a number (frames per second) to update not more than N times per second
+            , thumbnailEventFramerate: 10 // max thumbnail's updates per second triggered by graph updates
+            , thumbnailLiveFramerate: false // max thumbnail's updates per second. Set false to disable
+            , dblClickDelay: 200 // milliseconds
+            , removeCustomContainer: true // destroy the container specified by user on plugin destroy
+            , rerenderDelay: 100 // ms to throttle rerender updates to the panzoom for performance
+        };
+
+        var nav = cy.navigator( navDefaults ); // get navigator instance, nav
+        var gridGuide = cy.gridGuide({
+            snapToGrid: false, // Snap to grid functionality
+            discreteDrag: false, // Discrete Drag
+            guidelines: true, // Guidelines on dragging nodes
+            resize: false, // Adjust node sizes to cell sizes
+            parentPadding: false, // Adjust parent sizes to cell sizes by padding
+            drawGrid: true, // Draw grid background
+            // Guidelines
+            guidelinesStackOrder: 4, // z-index of guidelines
+            guidelinesTolerance: 3.00, // Tolerance distance for rendered positions of nodes' interaction.
+            guidelinesStyle: { // Set ctx properties of line. Properties are here:
+                lineWidth: 2.0,
+                strokeStyle: "#000000",
+                lineDash: [7, 15] // read https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
+            },
+        });
     };
 
     AppManager.prototype.initCyHandlers = function()
     {
         var that = this;
-        cy.on('click', 'node', function( e )
+
+        var tappedBefore;
+        var tappedTimeout;
+        cy.on('tap', function(event) {
+            var tappedNow = event.cyTarget;
+            if (tappedTimeout && tappedBefore) {
+                clearTimeout(tappedTimeout);
+            }
+            if(tappedBefore === tappedNow) {
+                tappedNow.trigger('doubleTap');
+                tappedBefore = null;
+            } else {
+                tappedTimeout = setTimeout(function(){ tappedBefore = null; }, 300);
+                tappedBefore = tappedNow;
+            }
+        });
+
+        cy.on('doubleTap', 'node', function(e)
         {
             var eventIsDirect = (e.cyTarget === this);
 
@@ -148,11 +184,16 @@ module.exports = (function()
                 $(".qtip").remove();
                 that.qtipManager.addQtipToElements(e.cyTarget);
                 var api = this.qtip('api');
-                if (api) {
+                if (api) {http://tcga.patika.org/?id=0Bw_PI-3eTpPqRl92QWxFWTJTcTg
                     api.show();
                 }
             }
         });
+
+        // cy.on('click', 'node', function( e )
+        // {
+        //
+        // });
 
         cy.on('free', 'node', function (e)
         {
@@ -178,11 +219,12 @@ module.exports = (function()
         //Due to cytoscape.js bug, only workaround that worked :(
         cy.on('add', 'node', function(event)
         {
+            // event.cyTarget.select();
             cy.style().update();
         });
 
         cy.on('click')
     };
-    
+
     return AppManager;
 })();

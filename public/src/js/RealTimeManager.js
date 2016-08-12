@@ -132,6 +132,7 @@ module.exports = (function()
         window.editorActionsManager.genomicDataOverlayManager.visibleGenomicDataMapByType = visDataMap.get('visMap');
         window.editorActionsManager.genomicDataOverlayManager.showGenomicData();
         window.editorActionsManager.genomicDataOverlayManager.notifyObservers();
+        cy.fit(50);
 
         //Keep a reference to the file !
         this.realTimeDoc = doc;
@@ -354,7 +355,7 @@ module.exports = (function()
             {
                 var refNodeId = refNode.id();
                 var nodeData = refNode.data();
-                var posData = refNode.renderedPosition();
+                var posData = refNode.position();
 
                 var newNodeData =
                 {

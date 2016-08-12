@@ -32,6 +32,7 @@ module.exports = (function()
     //Node context menu
     this.cy.cxtmenu({
       selector: 'node',
+      openMenuEvents: 'cxttapstart',
       activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
       commands:
           [
@@ -124,6 +125,7 @@ module.exports = (function()
     //Edge context menu
     this.cy.cxtmenu({
       selector: 'edge',
+      openMenuEvents: 'cxttapstart',
       activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
       commands: [
         {
