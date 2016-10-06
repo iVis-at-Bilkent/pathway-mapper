@@ -49,6 +49,9 @@ var WelcomePageView = Backbone.View.extend(
         },
         localUsageHandler: function(event)
         {
+            if(this.modelSelection == this.modelSelectionMap.LOCAL)
+                return;
+
             $('.popover').popover('hide');
             this.$el.find('.welcomePageCheckable').removeClass('active');
             $(event.currentTarget).addClass('active');
@@ -58,6 +61,9 @@ var WelcomePageView = Backbone.View.extend(
         },
         collaborativeUsageHandler: function(event)
         {
+            if(this.modelSelection == this.modelSelectionMap.COLLAB)
+                return;
+
             $('.popover').popover('hide');
             this.$el.find('.welcomePageCheckable').removeClass('active');
             $(event.currentTarget).addClass('active');

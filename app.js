@@ -31,7 +31,25 @@ function indexGetHandler(req,res){
 ********************************/
 function loadGraphHandler(req, res)
 {
-  fs.readFile(req.file.path, {encoding: 'utf-8'}, function(err,data)
+    fs.readFile(req.file.path, {encoding: 'utf-8'}, function(err,data)
+    {
+      if (!err)
+      {
+        res.writeHead(200, {'Content-Type': 'multipart/form-data'});
+        res.write(data);
+        res.end();
+      }
+      else
+      {
+          console.log(err);
+      }
+      fs.unlinkSync(req.file.path);
+    });
+}
+
+function loadSampleFile(req, res)
+{
+  fs.readFile('./samples/sample1.txt', {encoding: 'utf-8'}, function(err,data)
   {
       if (!err)
       {
@@ -43,7 +61,25 @@ function loadGraphHandler(req, res)
       {
           console.log(err);
       }
-      fs.unlinkSync(req.file.path);
+      // fs.unlinkSync('./samples/sample1.txt');
+  });
+}
+
+function loadSampleGenomicData(req, res)
+{
+  fs.readFile('./samples/sampleGenomicData.txt', {encoding: 'utf-8'}, function(err,data)
+  {
+      if (!err)
+      {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write(data);
+        res.end();
+      }
+      else
+      {
+          console.log(err);
+      }
+      // fs.unlinkSync('./samples/sample1.txt');
   });
 }
 
@@ -78,6 +114,8 @@ function biogeneDataHandler(req,res)
   GET Requests
 ********************************/
 app.get('/',indexGetHandler);
+app.get('/sampleGraph', loadSampleFile);
+app.get('/sampleGenomicData', loadSampleGenomicData);
 
 
 /*******************************

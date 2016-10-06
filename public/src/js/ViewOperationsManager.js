@@ -4,8 +4,14 @@ module.exports = (function($)
 
     function handleNodeAlignment(param)
     {
-        var nodes = cy.nodes(':selected');
+        var tmpNodes = window.editorActionsManager.selecteNodeStack;
+        var nodes = cy.collection();
         var nodeMap = {};
+
+        for (var key in tmpNodes)
+        {
+            nodes = nodes.add(tmpNodes[key]);
+        }
 
         nodes.forEach(function(node,index)
         {

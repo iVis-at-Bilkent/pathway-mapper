@@ -581,7 +581,6 @@ module.exports = (function()
                         traverseTree(tmpNode, sameNodeId);
                     }
                 }
-
             }
         }
 

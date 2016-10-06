@@ -16,13 +16,17 @@ var GenomicDataExplorerView = require('./BackboneViews/GenomicDataExplorerView.j
 //Other requires
 require('./FileOperationsManager.js');
 require('./OtherMenuOperations.js');
+require('./GenomicMenuOperations.js');
 require('./ViewOperationsManager.js');
+require('./GraphUtilities.js');
+
 
 var QtipManager = require('./QtipManager.js');
 var ContextMenuManager = require('./ContextMenuManager.js');
 var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
 var EditorActionsManager = require('./EditorActionsManager.js');
 var grid_guide = require('cytoscape-grid-guide');
+
 
 
 
@@ -41,7 +45,32 @@ module.exports = (function()
         this.initCyJS();
         //Initialize cytoscape based handlers here
         this.initCyHandlers();
+
+        var that = this;
+        window.onresize = function()
+        {
+          that.placePanzoomAndOverlay();
+        }
     };
+
+    AppManager.prototype.placePanzoomAndOverlay = function()
+    {
+      //TODO place navigator !!!
+      var offset = 5;
+      var topCy = $('.cyContainer').offset().top;
+      var leftCy = $('.cyContainer').offset().left;
+      var heightCy = $('.cyContainer').outerHeight();
+      var widthCy = $('.cyContainer').outerWidth();
+      var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
+      var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
+      var heightPanzoom = $('.cy-panzoom').outerHeight();
+      var widthPanzoom = $('.cy-panzoom').outerWidth();
+      $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
+      $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
+
+      $('.cy-panzoom').css('top', topCy + 5);
+      $('.cy-panzoom').css('left', widthCy + leftCy - 55);
+    }
 
     AppManager.prototype.initCyJS = function()
     {
@@ -137,6 +166,8 @@ module.exports = (function()
         };
 
         var nav = cy.navigator( navDefaults ); // get navigator instance, nav
+
+
         var gridGuide = cy.gridGuide({
             snapToGrid: false, // Snap to grid functionality
             discreteDrag: false, // Discrete Drag
@@ -146,13 +177,15 @@ module.exports = (function()
             drawGrid: true, // Draw grid background
             // Guidelines
             guidelinesStackOrder: 4, // z-index of guidelines
-            guidelinesTolerance: 3.00, // Tolerance distance for rendered positions of nodes' interaction.
+            guidelinesTolerance: 2.00, // Tolerance distance for rendered positions of nodes' interaction.
             guidelinesStyle: { // Set ctx properties of line. Properties are here:
                 lineWidth: 2.0,
                 strokeStyle: "#000000",
                 lineDash: [7, 15] // read https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
             },
         });
+
+        this.placePanzoomAndOverlay();
     };
 
     AppManager.prototype.initCyHandlers = function()
@@ -184,16 +217,21 @@ module.exports = (function()
                 $(".qtip").remove();
                 that.qtipManager.addQtipToElements(e.cyTarget);
                 var api = this.qtip('api');
-                if (api) {http://tcga.patika.org/?id=0Bw_PI-3eTpPqRl92QWxFWTJTcTg
+                if (api) {
                     api.show();
                 }
             }
         });
 
-        // cy.on('click', 'node', function( e )
-        // {
-        //
-        // });
+        cy.on('select', 'node', function( e )
+        {
+            window.editorActionsManager.pushSelectedNodeStack(e.cyTarget);
+        });
+
+        cy.on('unselect', 'node', function( e )
+        {
+            window.editorActionsManager.removeElementFromSelectedNodeStack(e.cyTarget);
+        });
 
         cy.on('free', 'node', function (e)
         {
@@ -221,6 +259,7 @@ module.exports = (function()
         {
             // event.cyTarget.select();
             cy.style().update();
+            cy.forceRender();
         });
 
         cy.on('click')

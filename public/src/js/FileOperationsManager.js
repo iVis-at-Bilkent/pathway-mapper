@@ -1,6 +1,5 @@
 var SaveLoadUtilities = require('./SaveLoadUtility.js');
 
-
 module.exports = (function($)
 {
     'use strict';
@@ -129,6 +128,21 @@ module.exports = (function($)
         $(".fileNameContent span").text('pathway.txt');
     }
 
+    function sampleFileRequestHandler()
+    {
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function ()
+      {
+          if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+          {
+              var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+              window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
+          }
+      };
+      request.open("GET", "/sampleGraph");
+      request.send();
+    }
+
     //Jquery handles
     $('#saveGraphBtn').on('click', function(evt)
     {
@@ -197,6 +211,10 @@ module.exports = (function($)
         {
             $('#fileinput').trigger('click');
         }
+        else if (dropdownLinkRole == 'sample')
+        {
+            sampleFileRequestHandler();
+        }
         else if (dropdownLinkRole == 'new')
         {
             window.editorActionsManager.removeAllElements();
@@ -214,6 +232,10 @@ module.exports = (function($)
         else if (dropdownLinkRole == 'png')
         {
             saveAsPNG();
+        }
+        else if (dropdownLinkRole == 'svg')
+        {
+            window.editorActionsManager.exportSVG();
         }
     });
 

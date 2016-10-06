@@ -1,4 +1,6 @@
 var GenomicDataOverlayManager = require('./GenomicDataOverlayManager.js');
+var SVGExporter = require('./SVGExporter.js');
+
 
 module.exports = (function()
 {
@@ -35,7 +37,33 @@ module.exports = (function()
         this.layoutProperties = _.clone(this.defaultLayoutProperties);
         this.observers = [];
         this.genomicDataOverlayManager = new GenomicDataOverlayManager();
+        this.svgExporter = new SVGExporter();
+
+        this.selecteNodeStack = {};
     };
+
+    //Related to order the nodes according to the selection of user
+    EditorActionsManager.prototype.pushSelectedNodeStack = function(ele)
+    {
+        this.selecteNodeStack[ele.id()] = ele;
+    }
+
+    EditorActionsManager.prototype.removeElementFromSelectedNodeStack = function(ele)
+    {
+        var nodeID = ele.id();
+        if (nodeID in this.selecteNodeStack)
+            delete this.selecteNodeStack[ele.id()];
+    }
+
+    EditorActionsManager.prototype.clearSelectedNodeStack = function()
+    {
+        this.selecteNodeStack = {};
+    }
+
+    EditorActionsManager.prototype.exportSVG = function()
+    {
+        this.svgExporter.exportGraph(this.cy.nodes(), this.cy.edges());
+    }
 
     //Simple observer-observable pattern for views!!!!!
     EditorActionsManager.prototype.registerObserver = function(observer)
@@ -713,6 +741,11 @@ module.exports = (function()
         cyEle.position({x: ele.x, y: ele.y});
         this.changeNameCy(cyEle, ele.name);
     };
+
+    EditorActionsManager.prototype.getGenomicDataSVG = function(node)
+    {
+        return this.genomicDataOverlayManager.generateSVGForNode(node);
+    }
 
     EditorActionsManager.prototype.removeGenomicData = function()
     {

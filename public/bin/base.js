@@ -5657,7 +5657,7 @@ module.exports = function (opts, cy, $, debounce) {
     function calcDistance(p1, p2) {
         return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
     }
-    
+
     function getExtraDim(node, paddingDim) {
 
     }
@@ -5812,6 +5812,7 @@ module.exports = function (opts, cy, $, debounce) {
     }
 
 };
+
 },{}],22:[function(require,module,exports){
 ;(function(){ 'use strict';
 
@@ -28472,7 +28473,7 @@ define.eventAliasesOn( fabfn );
 
 module.exports = Fabric;
 
-},{"./define":72,"./is":111,"./promise":114,"./thread":126,"./util":128,"os":190}],109:[function(require,module,exports){
+},{"./define":72,"./is":111,"./promise":114,"./thread":126,"./util":128,"os":193}],109:[function(require,module,exports){
 /*!
 Ported by Xueqiao Xu <xueqiaoxu@gmail.com>;
 
@@ -34119,7 +34120,7 @@ define.eventAliasesOn( thdfn );
 module.exports = Thread;
 
 }).call(this,"/node_modules/cytoscape/src")
-},{"./define":72,"./event":73,"./is":111,"./promise":114,"./util":128,"./window":135,"child_process":189,"path":191}],127:[function(require,module,exports){
+},{"./define":72,"./event":73,"./is":111,"./promise":114,"./util":128,"./window":135,"child_process":192,"path":194}],127:[function(require,module,exports){
 'use strict';
 
 var is = require( '../is' );
@@ -51775,13 +51776,17 @@ var GenomicDataExplorerView = require('./BackboneViews/GenomicDataExplorerView.j
 //Other requires
 require('./FileOperationsManager.js');
 require('./OtherMenuOperations.js');
+require('./GenomicMenuOperations.js');
 require('./ViewOperationsManager.js');
+require('./GraphUtilities.js');
+
 
 var QtipManager = require('./QtipManager.js');
 var ContextMenuManager = require('./ContextMenuManager.js');
 var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
 var EditorActionsManager = require('./EditorActionsManager.js');
 var grid_guide = require('cytoscape-grid-guide');
+
 
 
 
@@ -51800,7 +51805,32 @@ module.exports = (function()
         this.initCyJS();
         //Initialize cytoscape based handlers here
         this.initCyHandlers();
+
+        var that = this;
+        window.onresize = function()
+        {
+          that.placePanzoomAndOverlay();
+        }
     };
+
+    AppManager.prototype.placePanzoomAndOverlay = function()
+    {
+      //TODO place navigator !!!
+      var offset = 5;
+      var topCy = $('.cyContainer').offset().top;
+      var leftCy = $('.cyContainer').offset().left;
+      var heightCy = $('.cyContainer').outerHeight();
+      var widthCy = $('.cyContainer').outerWidth();
+      var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
+      var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
+      var heightPanzoom = $('.cy-panzoom').outerHeight();
+      var widthPanzoom = $('.cy-panzoom').outerWidth();
+      $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
+      $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
+
+      $('.cy-panzoom').css('top', topCy + 5);
+      $('.cy-panzoom').css('left', widthCy + leftCy - 55);
+    }
 
     AppManager.prototype.initCyJS = function()
     {
@@ -51896,6 +51926,8 @@ module.exports = (function()
         };
 
         var nav = cy.navigator( navDefaults ); // get navigator instance, nav
+
+
         var gridGuide = cy.gridGuide({
             snapToGrid: false, // Snap to grid functionality
             discreteDrag: false, // Discrete Drag
@@ -51905,13 +51937,15 @@ module.exports = (function()
             drawGrid: true, // Draw grid background
             // Guidelines
             guidelinesStackOrder: 4, // z-index of guidelines
-            guidelinesTolerance: 3.00, // Tolerance distance for rendered positions of nodes' interaction.
+            guidelinesTolerance: 2.00, // Tolerance distance for rendered positions of nodes' interaction.
             guidelinesStyle: { // Set ctx properties of line. Properties are here:
                 lineWidth: 2.0,
                 strokeStyle: "#000000",
                 lineDash: [7, 15] // read https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
             },
         });
+
+        this.placePanzoomAndOverlay();
     };
 
     AppManager.prototype.initCyHandlers = function()
@@ -51943,16 +51977,21 @@ module.exports = (function()
                 $(".qtip").remove();
                 that.qtipManager.addQtipToElements(e.cyTarget);
                 var api = this.qtip('api');
-                if (api) {http://tcga.patika.org/?id=0Bw_PI-3eTpPqRl92QWxFWTJTcTg
+                if (api) {
                     api.show();
                 }
             }
         });
 
-        // cy.on('click', 'node', function( e )
-        // {
-        //
-        // });
+        cy.on('select', 'node', function( e )
+        {
+            window.editorActionsManager.pushSelectedNodeStack(e.cyTarget);
+        });
+
+        cy.on('unselect', 'node', function( e )
+        {
+            window.editorActionsManager.removeElementFromSelectedNodeStack(e.cyTarget);
+        });
 
         cy.on('free', 'node', function (e)
         {
@@ -51980,6 +52019,7 @@ module.exports = (function()
         {
             // event.cyTarget.select();
             cy.style().update();
+            cy.forceRender();
         });
 
         cy.on('click')
@@ -51988,7 +52028,7 @@ module.exports = (function()
     return AppManager;
 })();
 
-},{"../../lib/js/cose-bilkent/src/index.js":168,"./BackboneViews/GenomicDataExplorerView.js":171,"./BackboneViews/LayoutPropertiesView.js":172,"./ContextMenuManager.js":174,"./DragDropNodeAddPlugin.js":175,"./EdgeHandlesOptions.js":176,"./EditorActionsManager.js":177,"./FileOperationsManager.js":178,"./GraphStyleSheet.js":180,"./OtherMenuOperations.js":181,"./PanzoomOptions.js":182,"./QtipManager.js":183,"./ViewOperationsManager.js":187,"cytoscape":110,"cytoscape-cxtmenu":15,"cytoscape-grid-guide":22,"cytoscape-navigator":26,"cytoscape-panzoom":27,"cytoscape-qtip":28}],170:[function(require,module,exports){
+},{"../../lib/js/cose-bilkent/src/index.js":168,"./BackboneViews/GenomicDataExplorerView.js":171,"./BackboneViews/LayoutPropertiesView.js":172,"./ContextMenuManager.js":174,"./DragDropNodeAddPlugin.js":175,"./EdgeHandlesOptions.js":176,"./EditorActionsManager.js":177,"./FileOperationsManager.js":178,"./GenomicMenuOperations.js":180,"./GraphStyleSheet.js":181,"./GraphUtilities.js":182,"./OtherMenuOperations.js":183,"./PanzoomOptions.js":184,"./QtipManager.js":185,"./ViewOperationsManager.js":190,"cytoscape":110,"cytoscape-cxtmenu":15,"cytoscape-grid-guide":22,"cytoscape-navigator":26,"cytoscape-panzoom":27,"cytoscape-qtip":28}],170:[function(require,module,exports){
 /*
  * Copyright 2013 Memorial-Sloan Kettering Cancer Center.
  *
@@ -52168,46 +52208,6 @@ var BioGeneView = Backbone.View.extend({
 module.exports = BioGeneView;
 
 },{}],171:[function(require,module,exports){
-//Genomic data file part
-$('#genomicDataInput').on('change', function()
-{
-    var file = this.files[0];
-    // Create a new FormData object.
-    var formData = new FormData();
-    formData.append('graphFile', file);
-    var request = new XMLHttpRequest();
-    request.onreadystatechange = function ()
-    {
-        if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
-        {
-            window.editorActionsManager.addGenomicData(request.responseText);
-        }
-    };
-    request.open("POST", "/loadGraph");
-    request.send(formData);
-    $('#genomicDataInput').val(null);
-});
-
-//Genomic data menu part
-$(".dataDropdown li a").click(function(event)
-{
-
-    event.preventDefault();
-    var dropdownLinkRole = $(event.target).attr('role');
-
-    if (dropdownLinkRole == 'loadGenomic')
-    {
-        $('#genomicDataInput').trigger('click');
-    }
-    else if (dropdownLinkRole == 'dataViewSettings')
-    {
-        $('#genomicDataExplorerDiv').modal('show');
-    }
-    else if(dropdownLinkRole == 'removeGenomicData')
-    {
-        window.editorActionsManager.removeGenomicData();
-    }
-});
 
 var genomicDataExplorer = Backbone.View.extend(
     {
@@ -52411,6 +52411,9 @@ var WelcomePageView = Backbone.View.extend(
         },
         localUsageHandler: function(event)
         {
+            if(this.modelSelection == this.modelSelectionMap.LOCAL)
+                return;
+
             $('.popover').popover('hide');
             this.$el.find('.welcomePageCheckable').removeClass('active');
             $(event.currentTarget).addClass('active');
@@ -52420,6 +52423,9 @@ var WelcomePageView = Backbone.View.extend(
         },
         collaborativeUsageHandler: function(event)
         {
+            if(this.modelSelection == this.modelSelectionMap.COLLAB)
+                return;
+
             $('.popover').popover('hide');
             this.$el.find('.welcomePageCheckable').removeClass('active');
             $(event.currentTarget).addClass('active');
@@ -52892,6 +52898,8 @@ module.exports = edgeHandleDefaults;
 
 },{}],177:[function(require,module,exports){
 var GenomicDataOverlayManager = require('./GenomicDataOverlayManager.js');
+var SVGExporter = require('./SVGExporter.js');
+
 
 module.exports = (function()
 {
@@ -52928,7 +52936,33 @@ module.exports = (function()
         this.layoutProperties = _.clone(this.defaultLayoutProperties);
         this.observers = [];
         this.genomicDataOverlayManager = new GenomicDataOverlayManager();
+        this.svgExporter = new SVGExporter();
+
+        this.selecteNodeStack = {};
     };
+
+    //Related to order the nodes according to the selection of user
+    EditorActionsManager.prototype.pushSelectedNodeStack = function(ele)
+    {
+        this.selecteNodeStack[ele.id()] = ele;
+    }
+
+    EditorActionsManager.prototype.removeElementFromSelectedNodeStack = function(ele)
+    {
+        var nodeID = ele.id();
+        if (nodeID in this.selecteNodeStack)
+            delete this.selecteNodeStack[ele.id()];
+    }
+
+    EditorActionsManager.prototype.clearSelectedNodeStack = function()
+    {
+        this.selecteNodeStack = {};
+    }
+
+    EditorActionsManager.prototype.exportSVG = function()
+    {
+        this.svgExporter.exportGraph(this.cy.nodes(), this.cy.edges());
+    }
 
     //Simple observer-observable pattern for views!!!!!
     EditorActionsManager.prototype.registerObserver = function(observer)
@@ -53607,6 +53641,11 @@ module.exports = (function()
         this.changeNameCy(cyEle, ele.name);
     };
 
+    EditorActionsManager.prototype.getGenomicDataSVG = function(node)
+    {
+        return this.genomicDataOverlayManager.generateSVGForNode(node);
+    }
+
     EditorActionsManager.prototype.removeGenomicData = function()
     {
         if(this.isCollaborative)
@@ -53690,9 +53729,8 @@ module.exports = (function()
 
 })();
 
-},{"./GenomicDataOverlayManager.js":179}],178:[function(require,module,exports){
+},{"./GenomicDataOverlayManager.js":179,"./SVGExporter.js":188}],178:[function(require,module,exports){
 var SaveLoadUtilities = require('./SaveLoadUtility.js');
-
 
 module.exports = (function($)
 {
@@ -53822,6 +53860,21 @@ module.exports = (function($)
         $(".fileNameContent span").text('pathway.txt');
     }
 
+    function sampleFileRequestHandler()
+    {
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function ()
+      {
+          if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+          {
+              var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+              window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
+          }
+      };
+      request.open("GET", "/sampleGraph");
+      request.send();
+    }
+
     //Jquery handles
     $('#saveGraphBtn').on('click', function(evt)
     {
@@ -53890,6 +53943,10 @@ module.exports = (function($)
         {
             $('#fileinput').trigger('click');
         }
+        else if (dropdownLinkRole == 'sample')
+        {
+            sampleFileRequestHandler();
+        }
         else if (dropdownLinkRole == 'new')
         {
             window.editorActionsManager.removeAllElements();
@@ -53908,6 +53965,10 @@ module.exports = (function($)
         {
             saveAsPNG();
         }
+        else if (dropdownLinkRole == 'svg')
+        {
+            window.editorActionsManager.exportSVG();
+        }
     });
 
     //Initial file name click handler
@@ -53915,7 +53976,7 @@ module.exports = (function($)
 
 })(window.$)
 
-},{"./SaveLoadUtility.js":186}],179:[function(require,module,exports){
+},{"./SaveLoadUtility.js":189}],179:[function(require,module,exports){
 /**
  *
  */
@@ -53994,7 +54055,7 @@ module.exports = (function()
             var lineContent = lines[i].split('\t');
             var geneSymbol = lineContent[0];
 
-            //If current gene entry is not  in genomic data map create new map
+            //If current gene entry is not  in genomic data map create new hashmap entry
             if(!(geneSymbol in genomicDataMap))
                 genomicDataMap[geneSymbol] = {};
 
@@ -54036,19 +54097,141 @@ module.exports = (function()
                 return dataURI;
             })
             .update();
+    };
+
+    GenomicDataOverlayManager.prototype.countVisibleGenomicDataByType = function()
+    {
+        //Count the genomic data that will be displayed on nodes' body
+        var genomicDataBoxCount = 0;
+        for (var cancerType in this.visibleGenomicDataMapByType)
+        {
+            if(this.visibleGenomicDataMapByType[cancerType])
+                genomicDataBoxCount++;
+        }
+        return genomicDataBoxCount;
+    };
+
+    GenomicDataOverlayManager.prototype.generateSVGForNode = function(ele)
+    {
+        var genomicDataBoxCount = this.countVisibleGenomicDataByType();
+
+        //Experimental data overlay part !
+        var dataURI = "data:image/svg+xml,";
+        var svgNameSpace = 'http://www.w3.org/2000/svg';
+        var nodeLabel = ele.data('name');
+
+        //If there is no genomic data for this node return !
+        if(!(nodeLabel in this.genomicDataMap))
+            return dataURI;
+
+        var eleBBox = ele.boundingBox();
+        var reqWidth = getRequiredWidthForGenomicData();
+
+        var overlayRecBoxW = reqWidth - 10;
+        var overlayRecBoxH = 25;
+        var svg = document.createElementNS(svgNameSpace,'svg');
+        //It seems this should be set according to the node size !
+        svg.setAttribute('width', reqWidth);
+        svg.setAttribute('height', eleBBox.h);
+        //This is important you need to include this to succesfully render in cytoscape.js!
+        svg.setAttribute('xmlns', svgNameSpace);
+
+        //Overlay Data Rect
+        var overLayRectBBox =
+        {
+            w: overlayRecBoxW,
+            h: overlayRecBoxH,
+            x: reqWidth/2 - overlayRecBoxW/2,
+            y: eleBBox.h/2 + overlayRecBoxH/2 - 18
+        };
+
+        var genomicFrequencyData = this.genomicDataMap[nodeLabel];
+
+        var maxGenomicDataBoxCount = /*(genomicDataBoxCount > 3) ? 3:*/genomicDataBoxCount;
+        var genomicBoxCounter = 0;
+        for (var cancerType in genomicFrequencyData)
+        {
+            if(!this.visibleGenomicDataMapByType[cancerType])
+                continue;
+
+            genomicDataRectangleGenerator(
+                overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w/maxGenomicDataBoxCount,
+                overLayRectBBox.y,
+                overLayRectBBox.w/maxGenomicDataBoxCount,
+                overLayRectBBox.h,
+                genomicFrequencyData[cancerType],
+                svg
+            );
+            genomicBoxCounter++;
+        }
+
+        function genomicDataRectangleGenerator(x,y,w,h,percent,parentSVG)
+        {
+            var isNegativePercent = (percent < 0);
+            var _percent = Math.abs(percent);
+            //Handle special cases here !
+            _percent = (_percent < 0.5) ? 2 : Math.round(_percent);
+            _percent =  (_percent == 1) ? 2 : _percent;
+            //Here we are using non linear regression
+            //Fitting points of (0,0), (25,140), (50,220), (100, 255)
+            var percentColor =  255 - (-7.118 + 53.9765 * Math.log(_percent));
+
+            var colorString = "";
+            if(percent == 0)
+            {
+                colorString = "rgb(255,255,255)";
+            }
+            else if (isNegativePercent)
+            {
+                colorString = "rgb("+Math.round(percentColor)+","+Math.round(percentColor)+",255)";
+                percent = percent.substring(1);
+            }
+            else
+                colorString = "rgb(255,"+Math.round(percentColor)+","+Math.round(percentColor)+")";
+
+            //Rectangle Part
+            var overlayRect = document.createElementNS(svgNameSpace, 'rect');
+            overlayRect.setAttribute('x', x);
+            overlayRect.setAttribute('y', y );
+            overlayRect.setAttribute('width', w);
+            overlayRect.setAttribute('height', h);
+            overlayRect.setAttribute('style', "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:"+colorString+";");
+
+            //Text Part
+            var textPercent = (percent < 0.5 && percent > 0) ? '<0.5':Math.round(percent);
+            var text = textPercent+'%';
+            var fontSize = 14;
+            var textLength = text.length;
+            var xOffset = w/2 - textLength * 4;
+            var yOffset = fontSize/3;
+
+            var svgText = document.createElementNS(svgNameSpace, 'text');
+            svgText.setAttribute('x', x + xOffset );
+            svgText.setAttribute('y', y + h/2 + yOffset );
+            svgText.setAttribute('font-family', 'Arial');
+            svgText.setAttribute('font-size', fontSize);
+            svgText.innerHTML = text;
+
+            parentSVG.appendChild(overlayRect);
+            parentSVG.appendChild(svgText);
+        }
+
+        return svg;
+    };
+
+
+    //Just an utility function to calculate required width for genes for genomic data !
+    function getRequiredWidthForGenomicData(genomicDataBoxCount)
+    {
+        var term = (genomicDataBoxCount > 3)? genomicDataBoxCount-3:0;
+        return 150 + term * 35;
     }
 
     GenomicDataOverlayManager.prototype.showGenomicData = function()
     {
         var self = this;
 
-        //Count the genomic data that will be displayed on nodes' body
-        var genomicDataBoxCount = 0;
-        for (var cancerType in self.visibleGenomicDataMapByType)
-        {
-            if(self.visibleGenomicDataMapByType[cancerType])
-                genomicDataBoxCount++;
-        }
+        var genomicDataBoxCount = this.countVisibleGenomicDataByType();
 
         if (genomicDataBoxCount < 1)
         {
@@ -54057,18 +54240,11 @@ module.exports = (function()
             return;
         }
 
-        //Just an utility function to calculate required width for genes for genomic data !
-        function getRequiredWidthForGenomicData()
-        {
-            var term = (genomicDataBoxCount > 3)? genomicDataBoxCount-3:0;
-            return 130 + term * 35;
-        }
-
         cy.style()
             .selector('node[type="GENE"]')
             .style('width', function (ele)
             {
-                return getRequiredWidthForGenomicData();
+                return getRequiredWidthForGenomicData(genomicDataBoxCount);
             })
             .style('text-margin-y', function (ele)
             {
@@ -54077,107 +54253,13 @@ module.exports = (function()
                 if(!(nodeLabel in self.genomicDataMap))
                     return 0;
 
+                //Else shift label in Y axis
                 return -15;
             })
             .style('background-image', function(ele)
             {
-                //Experimental data overlay part !
                 var dataURI = "data:image/svg+xml,";
-                var svgNameSpace = 'http://www.w3.org/2000/svg';
-                var nodeLabel = ele.data('name');
-
-                //If there is no genomic data for this node return !
-                if(!(nodeLabel in self.genomicDataMap))
-                    return dataURI;
-
-                var eleBBox = ele.boundingBox();
-                var reqWidth = getRequiredWidthForGenomicData();
-
-                var overlayRecBoxW = reqWidth - 10;
-                var overlayRecBoxH = 25;
-                var svg = document.createElementNS(svgNameSpace,'svg');
-                //It seems this should be set according to the node size !
-                svg.setAttribute('width', reqWidth);
-                svg.setAttribute('height', eleBBox.h);
-                //This is important you need to include this to succesfully render in cytoscape.js!
-                svg.setAttribute('xmlns', svgNameSpace);
-
-                //Overlay Data Rect
-                var overLayRectBBox =
-                {
-                    w: overlayRecBoxW,
-                    h: overlayRecBoxH,
-                    x: reqWidth/2 - overlayRecBoxW/2,
-                    y: eleBBox.h/2 + overlayRecBoxH/2 - 18
-                };
-
-                var genomicFrequencyData = self.genomicDataMap[nodeLabel];
-
-                var maxGenomicDataBoxCount = /*(genomicDataBoxCount > 3) ? 3:*/genomicDataBoxCount;
-                var genomicBoxCounter = 0;
-                for (var cancerType in genomicFrequencyData)
-                {
-                    if(!self.visibleGenomicDataMapByType[cancerType])
-                        continue;
-
-                    genomicDataRectangleGenerator(
-                        overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w/maxGenomicDataBoxCount,
-                        overLayRectBBox.y,
-                        overLayRectBBox.w/maxGenomicDataBoxCount,
-                        overLayRectBBox.h,
-                        genomicFrequencyData[cancerType],
-                        svg
-                    );
-                    genomicBoxCounter++;
-                }
-
-
-                function genomicDataRectangleGenerator(x,y,w,h,percent,parentSVG)
-                {
-                    var isNegativePercent = (percent < 0);
-                    var _percent = (Math.abs(percent) < 10) ? 10:Math.abs(percent);
-                    var percentColor =  255 -  _percent * (255/100);
-
-                    var colorString = "";
-                    if(percent == 0)
-                    {
-                        colorString = "rgb(255,255,255)";
-                    }
-                    else if (isNegativePercent)
-                    {
-                        colorString = "rgb("+Math.round(percentColor)+","+Math.round(percentColor)+",255)";
-                        percent = percent.substring(1);
-                    }
-                    else
-                        colorString = "rgb(255,"+Math.round(percentColor)+","+Math.round(percentColor)+")";
-
-                    //Rectangle Part
-                    var overlayRect = document.createElementNS(svgNameSpace, 'rect');
-                    overlayRect.setAttribute('x', x);
-                    overlayRect.setAttribute('y', y );
-                    overlayRect.setAttribute('width', w);
-                    overlayRect.setAttribute('height', h);
-                    overlayRect.setAttribute('style', "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:"+colorString+";");
-
-                    //Text Part
-                    var text = percent+'%';
-                    var fontSize = 14;
-                    var textLength = text.length;
-                    var xOffset = w/2 - textLength * 4;
-                    var yOffset = fontSize/3;
-
-                    var svgText = document.createElementNS(svgNameSpace, 'text');
-                    svgText.setAttribute('x', x + xOffset );
-                    svgText.setAttribute('y', y + h/2 + yOffset );
-                    svgText.setAttribute('font-family', 'Arial');
-                    svgText.setAttribute('font-size', fontSize);
-                    svgText.innerHTML = text;
-
-                    parentSVG.appendChild(overlayRect);
-                    parentSVG.appendChild(svgText);
-                }
-
-                return dataURI+svg.outerHTML;
+                return dataURI + self.generateSVGForNode(ele).outerHTML;
             })
             .update();
     }
@@ -54247,6 +54329,68 @@ module.exports = (function()
 })();
 
 },{}],180:[function(require,module,exports){
+/**
+ * Created by istemi on 29.08.2016.
+ */
+
+module.exports = (function ($)
+{
+    //Genomic data file part
+    $('#genomicDataInput').on('change', function()
+    {
+        var file = this.files[0];
+        // Create a new FormData object.
+        var formData = new FormData();
+        formData.append('graphFile', file);
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function ()
+        {
+            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+            {
+                window.editorActionsManager.addGenomicData(request.responseText);
+            }
+        };
+        request.open("POST", "/loadGraph");
+        request.send(formData);
+        $('#genomicDataInput').val(null);
+    });
+
+    //Genomic data menu part
+    $(".dataDropdown li a").click(function(event)
+    {
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
+
+        if (dropdownLinkRole == 'loadGenomic')
+        {
+            $('#genomicDataInput').trigger('click');
+        }
+        else if (dropdownLinkRole == 'dataViewSettings')
+        {
+            $('#genomicDataExplorerDiv').modal('show');
+        }
+        else if (dropdownLinkRole == 'loadSampleGenomicData')
+        {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function ()
+            {
+                if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+                {
+                    window.editorActionsManager.addGenomicData(request.responseText);
+                }
+            };
+            request.open("GET", "/sampleGenomicData");
+            request.send();
+        }
+        else if(dropdownLinkRole == 'removeGenomicData')
+        {
+            window.editorActionsManager.removeGenomicData();
+        }
+    });
+})(window.$);
+
+
+},{}],181:[function(require,module,exports){
 module.exports = (function()
 {
   var styleSheet = [
@@ -54258,7 +54402,7 @@ module.exports = (function()
         'text-valign': 'center',
         'text-halign': 'center',
         'color': '#1e2829',
-        'width': 130,
+        'width': 150,
         'height': 52,
         // 'background-image-opacity': 1,
         // 'background-image': function (ele)
@@ -54486,7 +54630,63 @@ module.exports = (function()
   return styleSheet;
 })();
 
-},{}],181:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
+/**
+ * Created by istemi on 27.09.2016.
+ */
+
+module.exports = (function () {
+
+    var GraphUtilities = function()
+    {
+
+    }
+    
+    /*
+     * Creates graph hierarchy from given cytoscape.js node collection
+     *
+     * @param nodes {array}: cy node collection
+     * @return {array}: Tree representation in array, entries are root level nodes. node.children gives children nodes
+     * of each node in the returned array.
+     * a node in corresponding level.
+     *
+     * */
+    GraphUtilities.prototype.createGraphHierarchy = function(nodes)
+    {
+        //Some arrays and maps for creating graph hierarchy
+        var tree = [];
+        var mappedArr = {};
+
+        // First map the nodes of the array to an object -> create a hash table.
+        for (var i = 0, len = nodes.length; i < len; i++)
+        {
+            var arrElem = nodes[i];
+            mappedArr[arrElem.id()] = arrElem;
+            mappedArr[arrElem.id()].childNodes = [];
+        }
+
+        for (var id in mappedArr)
+        {
+            var mappedElem = mappedArr[id];
+
+            // If the element is not at the root level, add it to its parent array of children.
+            if (mappedElem.parent().length > 0)
+            {
+                mappedArr[mappedElem.parent().id()].childNodes.push(mappedElem);
+            }
+            // If the element is at the root level, add it to first level elements array.
+            else
+            {
+                tree.push(mappedElem);
+            }
+        }
+        return tree;
+    };
+
+
+    window.GraphUtilities = new GraphUtilities();
+})();
+},{}],183:[function(require,module,exports){
 module.exports = (function()
 {
     'use strict';
@@ -54619,7 +54819,7 @@ module.exports = (function()
     
 
 })();
-},{}],182:[function(require,module,exports){
+},{}],184:[function(require,module,exports){
 var panzoomOptions =
 {
   // the default values of each option are outlined below:
@@ -54645,7 +54845,7 @@ var panzoomOptions =
 
 module.exports = panzoomOptions;
 
-},{}],183:[function(require,module,exports){
+},{}],185:[function(require,module,exports){
 ;
 
 var BackboneView = require('./BackboneViews/BioGeneView.js');
@@ -54772,7 +54972,7 @@ module.exports = (function($)
 
 }(window.$));
 
-},{"./BackboneViews/BioGeneView.js":170}],184:[function(require,module,exports){
+},{"./BackboneViews/BioGeneView.js":170}],186:[function(require,module,exports){
 module.exports = (function()
 {
     "use strict";
@@ -55356,7 +55556,6 @@ module.exports = (function()
                         traverseTree(tmpNode, sameNodeId);
                     }
                 }
-
             }
         }
 
@@ -55622,7 +55821,7 @@ module.exports = (function()
 
 })();
 
-},{}],185:[function(require,module,exports){
+},{}],187:[function(require,module,exports){
 /**
  * @license
  * Realtime Utils 1.0.0
@@ -56072,7 +56271,505 @@ module.exports = (function(){
     };
 })();
 
-},{}],186:[function(require,module,exports){
+},{}],188:[function(require,module,exports){
+/**
+ *
+ */
+var SaveLoadUtilities = require('./SaveLoadUtility.js');
+
+module.exports = (function ()
+{
+    var SVGExporter = function ()
+    {
+        this.SVGNameSpace = 'http://www.w3.org/2000/svg';
+        this.svg = document.createElementNS(this.SVGNameSpace,'svg');
+
+
+        this.NODE_FILL_COLOR = "rgb(255,255,255)";
+        this.FAMILY_FILL_COLOR = "rgb(204,204,204)";
+        this.NODE_STROKE_COLOR = "rgb(0,0,0)";
+        this.COMPARTMENT_STROKE_WIDTH = 2;
+        this.NODE_STROKE_WIDTH = 1;
+        this.NODE_OPACITY = 0.5;
+        this.ROUNDING_FACTOR = 6;
+
+        this.GENOMICDATA_LABEL_Y_OFFSET = -15;
+        this.EDGE_WIDTH = 1;
+        this.T_WIDTH = 2;
+        this.T_HEIGHT  = 8;
+        //This is the offset between node body and arrow head
+        this.T_ARROW_HEAD_OFFSET = 2;
+        this.TRIANGLE_ARROW_HEAD_HEIGHT = 8;
+        this.TRIANGLE_ARROW_HEAD_WIDTH  = 8;
+        this.DASH_PARAMETERS = "5, 3";
+        this.COMPOUND_MARGIN = 8;
+
+        this.NODE_FONT_SIZE = 14;
+
+    }
+
+    SVGExporter.prototype.resetSVG = function ()
+    {
+        this.svg = document.createElementNS(this.SVGNameSpace,'svg');
+    }
+
+    SVGExporter.prototype.exportGraph = function (nodes, edges)
+    {
+        //Set viewport of output SVG
+        var cyBounds = cy.extent();
+        this.svg.setAttribute('viewBox', cyBounds.x1 +" "+cyBounds.y1+" "+cyBounds.w+" "+cyBounds.h);
+
+        var that = this;
+        var nodeMap = {};
+
+        var nodeTree = window.GraphUtilities.createGraphHierarchy(nodes);
+        var traverseFunction = function(node)
+        {
+            //Create SVG for current node
+            nodeMap[node.id()] = node;
+            var genomicDataSVG = window.editorActionsManager.getGenomicDataSVG(node).children;
+            that.svg.appendChild(that.createRect(node));
+            var labelOffset = (genomicDataSVG && genomicDataSVG.length > 0) ? that.GENOMICDATA_LABEL_Y_OFFSET:0;
+            that.svg.appendChild(that.createText(node, labelOffset));
+
+            //Append Genomic Data SVG here
+            if (genomicDataSVG)
+            {
+                while(genomicDataSVG.length > 0)
+                {
+                    var elemSVG = genomicDataSVG[0];
+                    var nodePosition = node.position();
+                    var svgX = elemSVG.getAttribute('x');
+                    var svgY = elemSVG.getAttribute('y');
+                    elemSVG.setAttribute('x', nodePosition.x - node.width()/2 + parseFloat(svgX));
+                    elemSVG.setAttribute('y', nodePosition.y - node.height()/2 + parseFloat(svgY));
+                    that.svg.appendChild(elemSVG);
+                }
+            }
+
+            //Traverse children
+            if (node.childNodes)
+            {
+                for (var i in node.childNodes)
+                {
+                    traverseFunction(node.childNodes[i]);
+                }
+            }
+        };
+
+        //Traverse node hierarchy
+        for (var i in nodeTree)
+        {
+            var rootLevelNode = nodeTree[i];
+            traverseFunction(rootLevelNode);
+        }
+
+        edges.forEach(function (edge)
+        {
+            var source = nodeMap[edge.source().id()];
+            var target = nodeMap[edge.target().id()];
+            that.drawEdge(edge, source, target);
+        });
+
+        var fileName = 'SVGFile.svg';
+        var returnString = this.svg.outerHTML;
+        var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, fileName);
+
+        //Reset SVG finally
+        this.resetSVG();
+    };
+
+    SVGExporter.prototype.drawEdge = function (edge, source, target)
+    {
+        var edgeType = edge.data().type;
+
+        var sourceRectangle =
+        {
+            x: source.position().x,
+            y: source.position().y,
+            width: source.width(),
+            height: source.height()
+        };
+
+        var targetRectangle =
+        {
+            x: target.position().x,
+            y: target.position().y,
+            width: target.width(),
+            height: target.height()
+        };
+
+        //If source or target node is compound node adjust their width and height according to compound margins
+        if(source.isParent())
+        {
+            sourceRectangle.width += this.COMPOUND_MARGIN;
+            sourceRectangle.height += this.COMPOUND_MARGIN;
+        }
+
+        if(target.isParent())
+        {
+            targetRectangle.width += this.COMPOUND_MARGIN;
+            targetRectangle.height += this.COMPOUND_MARGIN;
+        }
+
+        //Calculate cipping points by Cohen Sutherland algorithm
+        var clipPoints = this.findClippingPoints(sourceRectangle, targetRectangle);
+
+        //Calculate unit vector pointing from source clipping coordinates to target clipping coordinates
+        var unitV = unitVector(
+        {
+            x: clipPoints.targetClipPoints.x - clipPoints.sourceClipPoints.x,
+            y: clipPoints.targetClipPoints.y - clipPoints.sourceClipPoints.y
+        });
+        var inverseUnitV = scale(unitV, -1);
+
+        var targetX = clipPoints.targetClipPoints.x;
+        var targetY = clipPoints.targetClipPoints.y;
+
+        //Draw Triangle arrow head
+        if(edgeType == "ACTIVATES" || edgeType == "INDUCES")
+        {
+            targetX = clipPoints.targetClipPoints.x + this.TRIANGLE_ARROW_HEAD_HEIGHT * inverseUnitV.x;
+            targetY = clipPoints.targetClipPoints.y + this.TRIANGLE_ARROW_HEAD_HEIGHT * inverseUnitV.y;
+
+            var point1Vector = rotateVector(unitV, Math.PI/2);
+            var point2Vector = rotateVector(unitV, -Math.PI/2);
+
+            point1Vector = scale(point1Vector, this.TRIANGLE_ARROW_HEAD_WIDTH/2);
+            point2Vector = scale(point2Vector, this.TRIANGLE_ARROW_HEAD_WIDTH/2);
+
+            var point1X = targetX + point1Vector.x;
+            var point1Y = targetY + point1Vector.y;
+
+            var point2X = targetX + point2Vector.x;
+            var point2Y = targetY + point2Vector.y;
+
+            var polySVG = document.createElementNS(this.SVGNameSpace, 'polygon');
+            polySVG.setAttribute('points',
+                point1X + "," +
+                point1Y + "," +
+                point2X + "," +
+                point2Y + "," +
+                clipPoints.targetClipPoints.x + "," +
+                clipPoints.targetClipPoints.y );
+
+            this.svg.appendChild(polySVG);
+        }
+        //Draw T type arrow head
+        else if (edgeType == "INHIBITS" || edgeType == "REPRESSES")
+        {
+            targetX = clipPoints.targetClipPoints.x + this.T_ARROW_HEAD_OFFSET * inverseUnitV.x;
+            targetY = clipPoints.targetClipPoints.y + this.T_ARROW_HEAD_OFFSET * inverseUnitV.y;
+
+            //Calculate T shape points
+            var point1Vector = rotateVector(unitV, Math.PI/2);
+            var point2Vector = rotateVector(unitV, -Math.PI/2);
+            point1Vector = scale(point1Vector, this.T_HEIGHT/2);
+            point2Vector = scale(point2Vector, this.T_HEIGHT/2);
+
+            var point1X = targetX + point1Vector.x;
+            var point1Y = targetY + point1Vector.y;
+            var point2X = targetX + point2Vector.x;
+            var point2Y = targetY + point2Vector.y;
+
+            //Draw edge arrow line here !
+            var lineSVG = document.createElementNS(this.SVGNameSpace, 'line');
+            lineSVG.setAttribute('x1', point1X);
+            lineSVG.setAttribute('y1', point1Y);
+            lineSVG.setAttribute('x2', point2X);
+            lineSVG.setAttribute('y2', point2Y);
+            lineSVG.setAttribute('stroke-width', this.T_WIDTH);
+            lineSVG.setAttribute('stroke', 'black');
+            this.svg.appendChild(lineSVG);
+        }
+
+        //Draw edge line here !
+        var lineSVG = document.createElementNS(this.SVGNameSpace, 'line');
+        lineSVG.setAttribute('x1', clipPoints.sourceClipPoints.x);
+        lineSVG.setAttribute('y1', clipPoints.sourceClipPoints.y);
+        lineSVG.setAttribute('x2', targetX);
+        lineSVG.setAttribute('y2', targetY);
+        lineSVG.setAttribute('stroke-width', this.EDGE_WIDTH);
+        lineSVG.setAttribute('stroke', 'black');
+
+        //Draw dashed if induces or represses interaction
+        if(edgeType == "INDUCES" || edgeType == "REPRESSES")
+        {
+            lineSVG.setAttribute('stroke-dasharray', this.DASH_PARAMETERS);
+        }
+
+        this.svg.appendChild(lineSVG);
+    };
+
+    /**
+     *
+     * **/
+    SVGExporter.prototype.findClippingPoints = function (sourceRectangle, targetRectangle)
+    {
+        var sourceAABB =
+        {
+            xMin: sourceRectangle.x - sourceRectangle.width/2,
+            xMax: sourceRectangle.x + sourceRectangle.width/2,
+            yMin: sourceRectangle.y - sourceRectangle.height/2,
+            yMax: sourceRectangle.y + sourceRectangle.height/2
+        };
+
+        var targetAABB =
+        {
+            xMin: targetRectangle.x - targetRectangle.width/2,
+            xMax: targetRectangle.x + targetRectangle.width/2,
+            yMin: targetRectangle.y - targetRectangle.height/2,
+            yMax: targetRectangle.y + targetRectangle.height/2
+        };
+
+
+        var line1 =
+        {
+            x1: sourceRectangle.x,
+            y1: sourceRectangle.y,
+            x2: targetRectangle.x,
+            y2: targetRectangle.y
+        };
+
+        var line2 =
+        {
+            x1: targetRectangle.x,
+            y1: targetRectangle.y,
+            x2: sourceRectangle.x,
+            y2: sourceRectangle.y
+        };
+
+        var returnObj =
+        {
+            sourceClipPoints: clipLine(line1, sourceAABB),
+            targetClipPoints: clipLine(line2, targetAABB)
+        };
+
+        return returnObj;
+    };
+
+    SVGExporter.prototype.createRect = function (node)
+    {
+        var nodeRectangle = document.createElementNS(this.SVGNameSpace, 'rect');
+        var nodePosition = node.position();
+        if(node.isParent())
+        {
+            nodeRectangle.setAttribute('x', nodePosition.x - node.width()/2 - this.COMPOUND_MARGIN/2);
+            nodeRectangle.setAttribute('y', nodePosition.y - node.height()/2 - this.COMPOUND_MARGIN/2);
+            nodeRectangle.setAttribute('width', node.width() + this.COMPOUND_MARGIN);
+            nodeRectangle.setAttribute('height', node.height() + this.COMPOUND_MARGIN);
+        }
+        else
+        {
+            nodeRectangle.setAttribute('x', nodePosition.x - node.width()/2);
+            nodeRectangle.setAttribute('y', nodePosition.y - node.height()/2);
+            nodeRectangle.setAttribute('width', node.width());
+            nodeRectangle.setAttribute('height', node.height());
+        }
+
+        nodeRectangle = this.createStyleForNodes(node, nodeRectangle);
+
+        return nodeRectangle;
+    };
+
+    SVGExporter.prototype.createText = function(node, genomicDataOffset)
+    {
+        var verticalTextOffset = 5;
+        var nodePosition = node.position();
+        var svgText = document.createElementNS(this.SVGNameSpace, 'text');
+
+        if(node.isParent())
+        {
+            verticalTextOffset = 20;
+            svgText.setAttribute('x', nodePosition.x );
+            svgText.setAttribute('y', nodePosition.y + node.height()/2 + verticalTextOffset );
+        }
+        else
+        {
+            svgText.setAttribute('x', nodePosition.x );
+            svgText.setAttribute('y', nodePosition.y + verticalTextOffset + genomicDataOffset);
+        }
+
+
+        svgText.setAttribute('font-family', 'Arial');
+        svgText.setAttribute('text-anchor', "middle" );
+        svgText.setAttribute('font-size', this.NODE_FONT_SIZE);
+        svgText.innerHTML = node.data().name;
+        return svgText;
+    };
+
+    SVGExporter.prototype.createStyleForNodes = function(node, nodeRectangle)
+    {
+        var nodeType = node.data().type;
+        var strokeWidth = this.NODE_STROKE_WIDTH;
+        var strokeColor = this.NODE_STROKE_COLOR;
+        var fillColor = this.NODE_FILL_COLOR;
+        var opacity = this.NODE_OPACITY;
+
+        if (nodeType == 'GENE' || nodeType == "COMPARTMENT")
+        {
+            nodeRectangle.setAttribute('rx', this.ROUNDING_FACTOR);
+            nodeRectangle.setAttribute('ry', this.ROUNDING_FACTOR);
+
+            if(nodeType == "COMPARTMENT")
+                strokeWidth = this.COMPARTMENT_STROKE_WIDTH;
+        }
+
+        if(nodeType == "PROCESS")
+            opacity = 0;
+
+        if(nodeType == "FAMILY")
+            fillColor = this.FAMILY_FILL_COLOR;
+
+        var styleString = "stroke-width:"+ strokeWidth + ";" +
+            "stroke:"+ strokeColor + ";" +
+            "opacity:"+ opacity + ";" +
+            "fill:" + fillColor + ";";
+
+        nodeRectangle.setAttribute('style', styleString);
+
+        return nodeRectangle
+    };
+
+
+    /**
+     * Cohen Sutherland Line Clipping algorithm implementation
+     * **/
+    function clipLine(line, rectangle)
+    {
+        //Clipping regions encoded with different integers !
+        var INSIDE = 0;
+        var LEFT = 1;
+        var RIGHT = 2;
+        var BOTTOM = 4;
+        var TOP = 8;
+
+        /*
+         *  Get outcode of given point compared to the rectangle
+         * */
+        function getOutCode(point, rectangle)
+        {
+            var outcode = INSIDE;
+
+            if(point.x < rectangle.xMin)
+                outcode = outcode | LEFT;
+            else if(point.x > rectangle.xMax)
+                outcode = outcode | RIGHT;
+
+            if(point.y < rectangle.yMin)
+                outcode = outcode | TOP;
+            else if(point.y > rectangle.yMax)
+                outcode = outcode | BOTTOM;
+
+            return outcode;
+        };
+
+        var outcode0 = getOutCode({x: line.x1, y: line.y1},rectangle);
+        var outcode1 = getOutCode({x: line.x2, y: line.y2},rectangle);
+
+        var slope = (line.y2 - line.y1) / (line.x2 - line.x1);
+        var returnCoords = {x: line.x1, y: line.y1, slope: slope};
+
+
+        //Main clipping loop
+        var accept = false;
+        while(true)
+        {
+            // Bitwise OR is 0. Trivially accept and get out of loop
+            if (!(outcode0 | outcode1))
+            {
+                accept = true;
+                break;
+            }
+            // Bitwise AND is not 0. Trivially reject and get out of loop
+            else if (outcode0 & outcode1)
+            {
+                break;
+            }
+            else
+            {
+                var outCode = (outcode0) ? outcode0 : outcode1;
+
+                if (outCode & TOP)
+                {
+                    returnCoords.x = line.x1 + (rectangle.yMin - line.y1) / slope;
+                    returnCoords.y = rectangle.yMin;
+                }
+                else if (outCode & BOTTOM)
+                {
+                    returnCoords.x = line.x1 + (rectangle.yMax - line.y1) / slope;
+                    returnCoords.y = rectangle.yMax;
+                }
+                else if (outCode & RIGHT)
+                {
+                    returnCoords.x = rectangle.xMax;
+                    returnCoords.y = line.y1 + slope * (rectangle.xMax - line.x1);
+                }
+                else if (outCode & LEFT)
+                {
+                    returnCoords.x = rectangle.xMin;
+                    returnCoords.y = line.y1 + slope * (rectangle.xMin - line.x1);
+                }
+
+                // Now we move outside point to intersection point to clip
+                // and get ready for next pass.
+                if (outCode == outcode0)
+                {
+                    outcode0 = getOutCode({x: returnCoords.x, y: returnCoords.y}, rectangle);
+                }
+                else
+                {
+                    outcode1 = getOutCode({x: returnCoords.x, y: returnCoords.y}, rectangle);
+                }
+            }
+        }
+
+        return returnCoords;
+    }
+
+    /**
+     * Utility vector functions
+     * */
+    function dotProduct (v1, v2)
+    {
+        var newX = v1.x * v2.x;
+        var newY = v1.y * v2.y;
+
+        return {x: newX, y: newY};
+    }
+
+    function unitVector(v)
+    {
+        var inverseLength = 1 / Math.sqrt(v.x*v.x + v.y*v.y);
+
+        return{
+            x: v.x * inverseLength,
+            y: v.y * inverseLength
+        };
+    }
+
+    function rotateVector(v, radians)
+    {
+        var newX = (v.x * Math.cos(radians)) - (v.y * Math.sin(radians));
+        var newY = (v.x * Math.sin(radians)) + (v.y * Math.cos(radians));
+
+        return {x: newX, y: newY};
+    }
+
+    function scale(v, scalar)
+    {
+        var newX = (v.x * scalar);
+        var newY = (v.y * scalar);
+
+        return {x: newX, y: newY};
+    }
+
+
+    return SVGExporter;
+})();
+
+},{"./SaveLoadUtility.js":189}],189:[function(require,module,exports){
 var SaveLoadUtils =
 {
   //Exports given json graph(based on cy.export()) into a string
@@ -56208,15 +56905,21 @@ var SaveLoadUtils =
 
 module.exports = SaveLoadUtils;
 
-},{}],187:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 module.exports = (function($)
 {
     'use strict';
 
     function handleNodeAlignment(param)
     {
-        var nodes = cy.nodes(':selected');
+        var tmpNodes = window.editorActionsManager.selecteNodeStack;
+        var nodes = cy.collection();
         var nodeMap = {};
+
+        for (var key in tmpNodes)
+        {
+            nodes = nodes.add(tmpNodes[key]);
+        }
 
         nodes.forEach(function(node,index)
         {
@@ -56338,7 +57041,7 @@ module.exports = (function($)
 
 })(window.$)
 
-},{}],188:[function(require,module,exports){
+},{}],191:[function(require,module,exports){
 //Import node modules here !
 var $ = window.$ = window.jQuery = require('jquery');
 var _ = window._ = require('underscore');
@@ -56408,9 +57111,9 @@ $(window).load(function()
 });
 
 
-},{"./AppManager":169,"./BackboneViews/WelcomePageView.js":173,"./RealTimeManager":184,"./RealTimeUtils":185,"backbone":1,"bootstrap":2,"jquery":136,"underscore":137}],189:[function(require,module,exports){
+},{"./AppManager":169,"./BackboneViews/WelcomePageView.js":173,"./RealTimeManager":186,"./RealTimeUtils":187,"backbone":1,"bootstrap":2,"jquery":136,"underscore":137}],192:[function(require,module,exports){
 
-},{}],190:[function(require,module,exports){
+},{}],193:[function(require,module,exports){
 exports.endianness = function () { return 'LE' };
 
 exports.hostname = function () {
@@ -56457,7 +57160,7 @@ exports.tmpdir = exports.tmpDir = function () {
 
 exports.EOL = '\n';
 
-},{}],191:[function(require,module,exports){
+},{}],194:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -56685,7 +57388,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":192}],192:[function(require,module,exports){
+},{"_process":195}],195:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -56778,4 +57481,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[188]);
+},{}]},{},[191]);
