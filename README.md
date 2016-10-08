@@ -29,6 +29,9 @@ and following interaction types:
 
 To create a node, drag and drop it from the Node Palette. Similarly, to create an interaction, first select an interaction type from the Interaction Palette. Then, click on the green circle on top of the source node and drag it to the target node.
 
+Below is a screenshot showing a sample pathway constructed with PathwayMapper:
+![alt text](https://github.com/iVis-at-Bilkent/pathway-mapper/tree/master/public/assets/sample-pathway.png "Sample pathway")
+
 ### Aligning Nodes
 
 Alignment guidelines help us align nodes manually in a vertical or horizontal manner. Alternatively, one may select two or more nodes and align using View > Align Selected menu item. Alignment is performed with respect to the firstly selected node.
@@ -51,13 +54,33 @@ After layout:
 
 ### Exporting To / Importing From A Text File
 
-The user may persist the current pathway onto the disk and import it back later on. Pathway content is organized as follows in the text file:
+The user may persist the current pathway onto the disk and import it back later on. Pathway content is organized as follows in a tab-delimited text file:<br>
+--NODE_NAME	NODE_ID	NODE_TYPE	PARENT_ID	POSX	POSY--<br>
+PTEN	PTEN	GENE	-1	444	46	<br>
+PIK3CA	PIK3CA	GENE	-1	360	139	<br>
+...<br>
+--EDGE_ID	SOURCE	TARGET	EDGE_TYPE<br>
+PTEN-PIK3CA	PTEN	PIK3CA	INHIBITS<br>
+...
+
+### Exporting As Image
+
+The user may export the current pathway as an image in one of the following formats: JPG, PNG or SVG.
 
 ### Viewing Experiment Data
 
-At any point during pathway editing, the user may upload and view a related experimental data set from a text file.
+At any point during pathway editing, the user may upload and overlay an associated experimental data set from a text file.
 
-The experiment data files are organized as follows:
+The tab-delimited experiment data files are organized as follows, where after the gene name one or more data sets follow:<br>
+gene	lung	ovarian	breast<br>
+PTEN	-7	-20	10<br>
+PIK3CA	18	40	-50<br>
+...<br>
+
+Here positive value signify activation percentage and are shown with a white-red color scale, whereas negative values signify inactivation shown with a white-blue color scale. The experiment file may contain an arbitrary number of data sets, and its view can be customized through Alteration % > Data View Settings dialog.
+
+Below is a screenshot showing sample experiment data overlaid on our sample data:
+![alt text](https://github.com/iVis-at-Bilkent/pathway-mapper/tree/master/public/assets/sample-data.png "Sample experiment data")
 
 ## Team
 
