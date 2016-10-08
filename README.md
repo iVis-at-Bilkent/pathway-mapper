@@ -30,27 +30,37 @@ and following interaction types:
 To create a node, drag and drop it from the Node Palette. Similarly, to create an interaction, first select an interaction type from the Interaction Palette. Then, click on the green circle on top of the source node and drag it to the target node.
 
 Below is a screenshot showing a sample pathway constructed with PathwayMapper:
-![alt text](https://github.com/iVis-at-Bilkent/pathway-mapper/tree/master/public/assets/sample-pathway.png "Sample pathway")
+<p align="center">
+  <img src="public/assets/sample-pathway.png" width="350"/>
+</p>
 
 ### Aligning Nodes
 
 Alignment guidelines help us align nodes manually in a vertical or horizontal manner. Alternatively, one may select two or more nodes and align using View > Align Selected menu item. Alignment is performed with respect to the firstly selected node.
 
-Before alignment:
-![alt text](https://github.com/iVis-at-Bilkent/pathway-mapper/tree/master/public/assets/align-before.png "Before vertical center alignment of four nodes with respect to the firstly selected gene KRAS")
+Before vertical center alignment of four nodes with respect to the firstly selected gene KRAS:
+<p align="center">
+  <img src="public/assets/align-before.png" width="350"/>
+</p>
 
 After alignment:
-![alt text](https://github.com/iVis-at-Bilkent/pathway-mapper/tree/master/public/assets/align-after.png "After alignment")
+<p align="center">
+  <img src="public/assets/align-after.png" width="350"/>
+</p>
 
 ### Performing Automatic Layout
 
 At any point, the user may want to rearrange the layout of the pathway. By default, automatic layout is performed incrementally, starting with the current positions of nodes. If you'd rather perform a static layout from scratch, you may check the Incremental option under Layout > Layout Properties.
 
-Before layout:
-![alt text](https://github.com/iVis-at-Bilkent/pathway-mapper/tree/master/public/assets/layout-before.png "A pathway randomly laid out")
+A pathway randomly laid out:
+<p align="center">
+  <img src="public/assets/layout-before.png" width="350"/>
+</p>
 
-After layout:
-![alt text](https://github.com/iVis-at-Bilkent/pathway-mapper/tree/master/public/assets/layout-after.png "The same pathway after automatic layout")
+The same pathway after automatic layout:
+<p align="center">
+  <img src="public/assets/layout-after.png" width="350"/>
+</p>
 
 ### Exporting To / Importing From A Text File
 
@@ -80,7 +90,9 @@ PIK3CA	18	40	-50<br>
 Here positive value signify activation percentage and are shown with a white-red color scale, whereas negative values signify inactivation shown with a white-blue color scale. The experiment file may contain an arbitrary number of data sets, and its view can be customized through Alteration % > Data View Settings dialog.
 
 Below is a screenshot showing sample experiment data overlaid on our sample data:
-![alt text](https://github.com/iVis-at-Bilkent/pathway-mapper/tree/master/public/assets/sample-data.png "Sample experiment data")
+<p align="center">
+  <img src="public/assets/sample-data.png" width="350"/>
+</p>
 
 ## Team
 
