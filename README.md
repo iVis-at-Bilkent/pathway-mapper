@@ -102,6 +102,13 @@ Below is a screenshot showing sample experiment data overlaid on our sample data
   <img src="public/assets/sample-data.png" width="400"/>
 </p>
 
+When the user unchecks the experiment data for "lung" through Alteration % > Data View Settings (first of the set of three), we get:
+<p align="center">
+  <img src="public/assets/sample-data-no-lung.png" width="400"/>
+</p>
+
+### Collaborative Editing
+
 ## Team
 
   * [Istemi Bahceci](https://github.com/istemi-bahceci), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis) and Jianjiong Gao, Nikolaus Schultz of [Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
