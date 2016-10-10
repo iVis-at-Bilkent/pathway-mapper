@@ -62,7 +62,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.exportSVG = function()
     {
-        this.svgExporter.exportGraph(this.cy.nodes(), this.cy.edges());
+        return this.svgExporter.exportGraph(this.cy.nodes(), this.cy.edges());
     }
 
     //Simple observer-observable pattern for views!!!!!
@@ -176,10 +176,37 @@ module.exports = (function()
 
     EditorActionsManager.prototype.addNodesCy = function(nodes)
     {
+        var nodeArr = [];
         for (var i in nodes)
         {
-            this.addNodetoCy(nodes[i].data, nodes[i].position);
+            var nodeData = nodes[i].data;
+            var posData = nodes[i].position;
+
+            var newNode =
+            {
+                group: "nodes",
+                data: nodeData
+            };
+
+            if (nodeData.parent === undefined )
+            {
+                delete newNode.data.parent;
+            }
+
+            if (posData)
+            {
+                newNode.position =
+                {
+                    x: posData.x,
+                    y: posData.y
+                }
+            }
+            nodeArr[i] = newNode;
         }
+
+        this.cy.add(nodeArr);
+        this.cy.nodes().updateCompoundBounds();
+
     };
 
     EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)

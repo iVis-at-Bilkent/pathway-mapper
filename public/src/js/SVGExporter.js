@@ -10,7 +10,6 @@ module.exports = (function ()
         this.SVGNameSpace = 'http://www.w3.org/2000/svg';
         this.svg = document.createElementNS(this.SVGNameSpace,'svg');
 
-
         this.NODE_FILL_COLOR = "rgb(255,255,255)";
         this.FAMILY_FILL_COLOR = "rgb(204,204,204)";
         this.NODE_STROKE_COLOR = "rgb(0,0,0)";
@@ -29,9 +28,8 @@ module.exports = (function ()
         this.TRIANGLE_ARROW_HEAD_WIDTH  = 8;
         this.DASH_PARAMETERS = "5, 3";
         this.COMPOUND_MARGIN = 8;
-
         this.NODE_FONT_SIZE = 14;
-
+        
     }
 
     SVGExporter.prototype.resetSVG = function ()
@@ -41,6 +39,8 @@ module.exports = (function ()
 
     SVGExporter.prototype.exportGraph = function (nodes, edges)
     {
+        //Reset SVG
+        this.resetSVG();
         //Set viewport of output SVG
         var cyBounds = cy.extent();
         this.svg.setAttribute('viewBox', cyBounds.x1 +" "+cyBounds.y1+" "+cyBounds.w+" "+cyBounds.h);
@@ -97,13 +97,7 @@ module.exports = (function ()
             that.drawEdge(edge, source, target);
         });
 
-        var fileName = 'SVGFile.svg';
-        var returnString = this.svg.outerHTML;
-        var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, fileName);
-
-        //Reset SVG finally
-        this.resetSVG();
+        return this.svg.outerHTML;
     };
 
     SVGExporter.prototype.drawEdge = function (edge, source, target)
@@ -332,6 +326,7 @@ module.exports = (function ()
         var strokeColor = this.NODE_STROKE_COLOR;
         var fillColor = this.NODE_FILL_COLOR;
         var opacity = this.NODE_OPACITY;
+        var strokeOpacity = 1;
 
         if (nodeType == 'GENE' || nodeType == "COMPARTMENT")
         {
@@ -343,15 +338,22 @@ module.exports = (function ()
         }
 
         if(nodeType == "PROCESS")
+        {
             opacity = 0;
+            strokeOpacity = 0;
+        }
 
         if(nodeType == "FAMILY")
+        {
             fillColor = this.FAMILY_FILL_COLOR;
+            strokeColor = this.FAMILY_FILL_COLOR;
+        }
 
         var styleString = "stroke-width:"+ strokeWidth + ";" +
             "stroke:"+ strokeColor + ";" +
-            "opacity:"+ opacity + ";" +
-            "fill:" + fillColor + ";";
+            "fill-opacity:"+ opacity + ";" +
+            "fill:" + fillColor + ";" +
+            "stroke-opacity:" + strokeOpacity + ";" ;
 
         nodeRectangle.setAttribute('style', styleString);
 

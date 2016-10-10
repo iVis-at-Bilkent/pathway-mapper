@@ -705,77 +705,77 @@ SOFTWARE.
               }
             }
 
-            for( var i = 0; i < targets.length; i++ ) {
-              var target = targets[ i ];
-
-              switch( options().edgeType( source, target ) ) {
-                case 'node':
-
-                  var p1 = source.position();
-                  var p2 = target.position();
-                  var p;
-
-                  if( source.id() === target.id() ) {
-                    p = {
-                      x: p1.x + options().nodeLoopOffset,
-                      y: p1.y + options().nodeLoopOffset
-                    };
-                  } else {
-                    p = {
-                      x: ( p1.x + p2.x ) / 2,
-                      y: ( p1.y + p2.y ) / 2
-                    };
-                  }
-
-                  var interNode = cy.add( $.extend( true, {
-                    group: 'nodes',
-                    position: p
-                  }, options().nodeParams( source, target ) ) ).addClass( classes );
-
-                  var source2inter = cy.add( $.extend( true, {
-                    group: 'edges',
-                    data: {
-                      source: source.id(),
-                      target: interNode.id(),
-                      type: options().ghostEdgeType
-
-                    }
-                  }, options().edgeParams( source, target, 0 ) ) ).addClass( classes );
-
-                  var inter2target = cy.add( $.extend( true, {
-                    group: 'edges',
-                    data: {
-                      source: interNode.id(),
-                      target: target.id(),
-                      type: options().ghostEdgeType
-
-                    }
-                  }, options().edgeParams( source, target, 1 ) ) ).addClass( classes );
-
-                  added = added.add( interNode ).add( source2inter ).add( inter2target );
-
-                  break;
-
-                case 'flat':
-                  var edge = cy.add( $.extend( true, {
-                    group: 'edges',
-                    data: {
-                      source: source.id(),
-                      target: target.id(),
-                      type: options().ghostEdgeType
-
-                    }
-                  }, options().edgeParams( source, target, 0 ) ) ).addClass( classes );
-
-                  added = added.add( edge );
-
-                  break;
-
-                default:
-                  target.removeClass( 'edgehandles-target' );
-                  break; // don't add anything
-              }
-            }
+            // for( var i = 0; i < targets.length; i++ ) {
+            //   var target = targets[ i ];
+            //
+            //   switch( options().edgeType( source, target ) ) {
+            //     case 'node':
+            //
+            //       var p1 = source.position();
+            //       var p2 = target.position();
+            //       var p;
+            //
+            //       if( source.id() === target.id() ) {
+            //         p = {
+            //           x: p1.x + options().nodeLoopOffset,
+            //           y: p1.y + options().nodeLoopOffset
+            //         };
+            //       } else {
+            //         p = {
+            //           x: ( p1.x + p2.x ) / 2,
+            //           y: ( p1.y + p2.y ) / 2
+            //         };
+            //       }
+            //
+            //       var interNode = cy.add( $.extend( true, {
+            //         group: 'nodes',
+            //         position: p
+            //       }, options().nodeParams( source, target ) ) ).addClass( classes );
+            //
+            //       var source2inter = cy.add( $.extend( true, {
+            //         group: 'edges',
+            //         data: {
+            //           source: source.id(),
+            //           target: interNode.id(),
+            //           type: options().ghostEdgeType
+            //
+            //         }
+            //       }, options().edgeParams( source, target, 0 ) ) ).addClass( classes );
+            //
+            //       var inter2target = cy.add( $.extend( true, {
+            //         group: 'edges',
+            //         data: {
+            //           source: interNode.id(),
+            //           target: target.id(),
+            //           type: options().ghostEdgeType
+            //
+            //         }
+            //       }, options().edgeParams( source, target, 1 ) ) ).addClass( classes );
+            //
+            //       added = added.add( interNode ).add( source2inter ).add( inter2target );
+            //
+            //       break;
+            //
+            //     case 'flat':
+            //       var edge = cy.add( $.extend( true, {
+            //         group: 'edges',
+            //         data: {
+            //           source: source.id(),
+            //           target: target.id(),
+            //           type: options().ghostEdgeType
+            //
+            //         }
+            //       }, options().edgeParams( source, target, 0 ) ) ).addClass( classes );
+            //
+            //       added = added.add( edge );
+            //
+            //       break;
+            //
+            //     default:
+            //       target.removeClass( 'edgehandles-target' );
+            //       break; // don't add anything
+            //   }
+            // }
 
             if( !preview ) {
               options().complete( source, targets, added );

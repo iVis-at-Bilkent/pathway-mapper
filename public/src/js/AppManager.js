@@ -261,8 +261,6 @@ module.exports = (function()
             cy.style().update();
             cy.forceRender();
         });
-
-        cy.on('click')
     };
 
     return AppManager;

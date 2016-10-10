@@ -52021,8 +52021,6 @@ module.exports = (function()
             cy.style().update();
             cy.forceRender();
         });
-
-        cy.on('click')
     };
 
     return AppManager;
@@ -52850,7 +52848,31 @@ var edgeHandleDefaults =
   start: function( sourceNode )
   {
     // fired when edgehandles interaction starts (drag on handle)
+    var type = this.getGlobalEdgeType();
+    cy.edgehandles('option', 'ghostEdgeType', type);
+  },
+  complete: function( sourceNode, targetNodes, addedEntities )
+  {
+       // Remove recently added edge !
+       // FBI takes this case from now on :O
+       // We will take care of addition in our manager :)
+      window.editorActionsManager.addEdge({
+        source: sourceNode.id(),
+        target: targetNodes[0].id(),
+        type: this.getGlobalEdgeType()
+      });
+  },
+  stop: function( sourceNode ) 
+  {
+    // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
+    //TODO refactor this, so terrible for now
+    $('.edge-palette a').blur().removeClass('active');
+    window.edgeAddingMode == -1;
+    cy.edgehandles('disable');
 
+  },
+  getGlobalEdgeType: function()
+  {
     var type = "NONE";
     if (window.edgeAddingMode == 1)
     {
@@ -52872,25 +52894,7 @@ var edgeHandleDefaults =
     {
       type = 'BINDS';
     }
-
-    cy.edgehandles('option', 'ghostEdgeType', type);
-  },
-  complete: function( sourceNode, targetNodes, addedEntities )
-  {
-       // Remove recently added edge ! 
-       // FBI takes this case from now on :O
-       // We will take care of addition in our manager :)
-      cy.remove(addedEntities);
-      window.editorActionsManager.addEdge(addedEntities[0].data());
-  },
-  stop: function( sourceNode ) 
-  {
-    // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
-    //TODO refactor this, so terrible for now
-    $('.edge-palette a').blur().removeClass('active');
-    window.edgeAddingMode == -1;
-    cy.edgehandles('disable');
-
+    return type;
   }
 };
 
@@ -52961,7 +52965,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.exportSVG = function()
     {
-        this.svgExporter.exportGraph(this.cy.nodes(), this.cy.edges());
+        return this.svgExporter.exportGraph(this.cy.nodes(), this.cy.edges());
     }
 
     //Simple observer-observable pattern for views!!!!!
@@ -53075,10 +53079,37 @@ module.exports = (function()
 
     EditorActionsManager.prototype.addNodesCy = function(nodes)
     {
+        var nodeArr = [];
         for (var i in nodes)
         {
-            this.addNodetoCy(nodes[i].data, nodes[i].position);
+            var nodeData = nodes[i].data;
+            var posData = nodes[i].position;
+
+            var newNode =
+            {
+                group: "nodes",
+                data: nodeData
+            };
+
+            if (nodeData.parent === undefined )
+            {
+                delete newNode.data.parent;
+            }
+
+            if (posData)
+            {
+                newNode.position =
+                {
+                    x: posData.x,
+                    y: posData.y
+                }
+            }
+            nodeArr[i] = newNode;
         }
+
+        this.cy.add(nodeArr);
+        this.cy.nodes().updateCompoundBounds();
+
     };
 
     EditorActionsManager.prototype.addNodetoCy = function(nodeData, posData)
@@ -53967,7 +53998,10 @@ module.exports = (function($)
         }
         else if (dropdownLinkRole == 'svg')
         {
-            window.editorActionsManager.exportSVG();
+            var returnString = window.editorActionsManager.exportSVG();
+            var fileName = 'pathway.svg';
+            var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, fileName);
         }
     });
 
@@ -56284,7 +56318,6 @@ module.exports = (function ()
         this.SVGNameSpace = 'http://www.w3.org/2000/svg';
         this.svg = document.createElementNS(this.SVGNameSpace,'svg');
 
-
         this.NODE_FILL_COLOR = "rgb(255,255,255)";
         this.FAMILY_FILL_COLOR = "rgb(204,204,204)";
         this.NODE_STROKE_COLOR = "rgb(0,0,0)";
@@ -56303,9 +56336,8 @@ module.exports = (function ()
         this.TRIANGLE_ARROW_HEAD_WIDTH  = 8;
         this.DASH_PARAMETERS = "5, 3";
         this.COMPOUND_MARGIN = 8;
-
         this.NODE_FONT_SIZE = 14;
-
+        
     }
 
     SVGExporter.prototype.resetSVG = function ()
@@ -56315,6 +56347,8 @@ module.exports = (function ()
 
     SVGExporter.prototype.exportGraph = function (nodes, edges)
     {
+        //Reset SVG
+        this.resetSVG();
         //Set viewport of output SVG
         var cyBounds = cy.extent();
         this.svg.setAttribute('viewBox', cyBounds.x1 +" "+cyBounds.y1+" "+cyBounds.w+" "+cyBounds.h);
@@ -56371,13 +56405,7 @@ module.exports = (function ()
             that.drawEdge(edge, source, target);
         });
 
-        var fileName = 'SVGFile.svg';
-        var returnString = this.svg.outerHTML;
-        var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, fileName);
-
-        //Reset SVG finally
-        this.resetSVG();
+        return this.svg.outerHTML;
     };
 
     SVGExporter.prototype.drawEdge = function (edge, source, target)
@@ -56606,6 +56634,7 @@ module.exports = (function ()
         var strokeColor = this.NODE_STROKE_COLOR;
         var fillColor = this.NODE_FILL_COLOR;
         var opacity = this.NODE_OPACITY;
+        var strokeOpacity = 1;
 
         if (nodeType == 'GENE' || nodeType == "COMPARTMENT")
         {
@@ -56617,15 +56646,22 @@ module.exports = (function ()
         }
 
         if(nodeType == "PROCESS")
+        {
             opacity = 0;
+            strokeOpacity = 0;
+        }
 
         if(nodeType == "FAMILY")
+        {
             fillColor = this.FAMILY_FILL_COLOR;
+            strokeColor = this.FAMILY_FILL_COLOR;
+        }
 
         var styleString = "stroke-width:"+ strokeWidth + ";" +
             "stroke:"+ strokeColor + ";" +
-            "opacity:"+ opacity + ";" +
-            "fill:" + fillColor + ";";
+            "fill-opacity:"+ opacity + ";" +
+            "fill:" + fillColor + ";" +
+            "stroke-opacity:" + strokeOpacity + ";" ;
 
         nodeRectangle.setAttribute('style', styleString);
 
@@ -56846,7 +56882,6 @@ var SaveLoadUtils =
     var nodes = [];
     var edges = [];
 
-
     // By lines
     var lines = graphText.split('\n');
     var edgesStartIndex = -1;
@@ -56856,7 +56891,7 @@ var SaveLoadUtils =
     {
       // If we encounter a blank line, that means we need to parse edges from now on !
       // so skip blank line and edge meta line
-      if (lines[i].length == 0)
+      if (lines[i].length == 0 || lines[i] === "")
       {
         edgesStartIndex = i + 2;
         break;
@@ -56868,10 +56903,23 @@ var SaveLoadUtils =
       var nodeID = lineData[1];
       var nodeType = lineData[2];
       var parentID = lineData[3];
-      var posX = lineData[4];
-      var posY = lineData[5];
+      var posX = (lineData.length > 4) ? lineData[4] : "0";
+      var posY = (lineData.length > 5) ? lineData[5] : "0";
 
-      var newNode = {group: 'nodes', data:{id: nodeID, name: nodeName, type:nodeType} ,position:{x: parseInt(posX), y:parseInt(posY)}};
+      var newNode = {
+        group: 'nodes',
+        data:
+        {
+          id: nodeID,
+          name: nodeName,
+          type:nodeType
+        },
+        position:
+        {
+          x: parseInt(posX),
+          y: parseInt(posY)
+        }
+      };
 
       if ( parentID != '-1')
       {

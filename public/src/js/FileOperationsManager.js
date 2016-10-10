@@ -235,7 +235,10 @@ module.exports = (function($)
         }
         else if (dropdownLinkRole == 'svg')
         {
-            window.editorActionsManager.exportSVG();
+            var returnString = window.editorActionsManager.exportSVG();
+            var fileName = 'pathway.svg';
+            var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, fileName);
         }
     });
 

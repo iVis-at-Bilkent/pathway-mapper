@@ -37,7 +37,31 @@ var edgeHandleDefaults =
   start: function( sourceNode )
   {
     // fired when edgehandles interaction starts (drag on handle)
+    var type = this.getGlobalEdgeType();
+    cy.edgehandles('option', 'ghostEdgeType', type);
+  },
+  complete: function( sourceNode, targetNodes, addedEntities )
+  {
+       // Remove recently added edge !
+       // FBI takes this case from now on :O
+       // We will take care of addition in our manager :)
+      window.editorActionsManager.addEdge({
+        source: sourceNode.id(),
+        target: targetNodes[0].id(),
+        type: this.getGlobalEdgeType()
+      });
+  },
+  stop: function( sourceNode ) 
+  {
+    // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
+    //TODO refactor this, so terrible for now
+    $('.edge-palette a').blur().removeClass('active');
+    window.edgeAddingMode == -1;
+    cy.edgehandles('disable');
 
+  },
+  getGlobalEdgeType: function()
+  {
     var type = "NONE";
     if (window.edgeAddingMode == 1)
     {
@@ -59,25 +83,7 @@ var edgeHandleDefaults =
     {
       type = 'BINDS';
     }
-
-    cy.edgehandles('option', 'ghostEdgeType', type);
-  },
-  complete: function( sourceNode, targetNodes, addedEntities )
-  {
-       // Remove recently added edge ! 
-       // FBI takes this case from now on :O
-       // We will take care of addition in our manager :)
-      cy.remove(addedEntities);
-      window.editorActionsManager.addEdge(addedEntities[0].data());
-  },
-  stop: function( sourceNode ) 
-  {
-    // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
-    //TODO refactor this, so terrible for now
-    $('.edge-palette a').blur().removeClass('active');
-    window.edgeAddingMode == -1;
-    cy.edgehandles('disable');
-
+    return type;
   }
 };
 

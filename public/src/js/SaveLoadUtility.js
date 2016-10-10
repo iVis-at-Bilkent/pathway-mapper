@@ -74,7 +74,6 @@ var SaveLoadUtils =
     var nodes = [];
     var edges = [];
 
-
     // By lines
     var lines = graphText.split('\n');
     var edgesStartIndex = -1;
@@ -84,7 +83,7 @@ var SaveLoadUtils =
     {
       // If we encounter a blank line, that means we need to parse edges from now on !
       // so skip blank line and edge meta line
-      if (lines[i].length == 0)
+      if (lines[i].length == 0 || lines[i] === "")
       {
         edgesStartIndex = i + 2;
         break;
@@ -96,10 +95,23 @@ var SaveLoadUtils =
       var nodeID = lineData[1];
       var nodeType = lineData[2];
       var parentID = lineData[3];
-      var posX = lineData[4];
-      var posY = lineData[5];
+      var posX = (lineData.length > 4) ? lineData[4] : "0";
+      var posY = (lineData.length > 5) ? lineData[5] : "0";
 
-      var newNode = {group: 'nodes', data:{id: nodeID, name: nodeName, type:nodeType} ,position:{x: parseInt(posX), y:parseInt(posY)}};
+      var newNode = {
+        group: 'nodes',
+        data:
+        {
+          id: nodeID,
+          name: nodeName,
+          type:nodeType
+        },
+        position:
+        {
+          x: parseInt(posX),
+          y: parseInt(posY)
+        }
+      };
 
       if ( parentID != '-1')
       {
