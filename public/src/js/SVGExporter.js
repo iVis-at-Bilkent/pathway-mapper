@@ -11,7 +11,8 @@ module.exports = (function ()
         this.svg = document.createElementNS(this.SVGNameSpace,'svg');
 
         this.NODE_FILL_COLOR = "rgb(255,255,255)";
-        this.FAMILY_FILL_COLOR = "rgb(204,204,204)";
+        this.FAMILY_FILL_COLOR = "rgb(255,255,255)";
+        this.FAMILY_STROKE_COLOR = "rgb(204,204,204)";
         this.NODE_STROKE_COLOR = "rgb(0,0,0)";
         this.COMPARTMENT_STROKE_WIDTH = 2;
         this.NODE_STROKE_WIDTH = 1;
@@ -346,7 +347,7 @@ module.exports = (function ()
         if(nodeType == "FAMILY")
         {
             fillColor = this.FAMILY_FILL_COLOR;
-            strokeColor = this.FAMILY_FILL_COLOR;
+            strokeColor = this.FAMILY_STROKE_COLOR;
         }
 
         var styleString = "stroke-width:"+ strokeWidth + ";" +

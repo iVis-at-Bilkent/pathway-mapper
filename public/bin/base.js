@@ -51786,8 +51786,7 @@ var ContextMenuManager = require('./ContextMenuManager.js');
 var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
 var EditorActionsManager = require('./EditorActionsManager.js');
 var grid_guide = require('cytoscape-grid-guide');
-
-
+// var undoRedo = require('cytoscape.js-undo-redo');
 
 
 module.exports = (function()
@@ -51840,7 +51839,7 @@ module.exports = (function()
         regCose( cytoscape ); // register extension
         navigator( cytoscape ); // register extension
         grid_guide( cytoscape, $ ); // register extension
-
+        //undoRedo(cytoscape); // register extension
 
         window.edgeAddingMode = 0;
         // var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
@@ -54604,13 +54603,14 @@ module.exports = (function()
 
   var nodeBackgroundColorFunction = function( ele )
   {
-    switch (ele._private.data['type'])
-    {
-      case "GENE": return "#fff"; break;
-      case "FAMILY": return "#CCCCCC"; break;
-      case "COMPARTMENT": return "#fff"; break;
-      default: return "#fff"; break;
-    }
+    // switch (ele._private.data['type'])
+    // {
+    //   case "GENE": return "#fff"; break;
+    //   case "FAMILY": return "#CCCCCC"; break;
+    //   case "COMPARTMENT": return "#fff"; break;
+    //   default: return "#fff"; break;
+    // }
+    return "#fff";
   }
 
   var nodeBorderColorFunction = function( ele )
@@ -56319,7 +56319,8 @@ module.exports = (function ()
         this.svg = document.createElementNS(this.SVGNameSpace,'svg');
 
         this.NODE_FILL_COLOR = "rgb(255,255,255)";
-        this.FAMILY_FILL_COLOR = "rgb(204,204,204)";
+        this.FAMILY_FILL_COLOR = "rgb(255,255,255)";
+        this.FAMILY_STROKE_COLOR = "rgb(204,204,204)";
         this.NODE_STROKE_COLOR = "rgb(0,0,0)";
         this.COMPARTMENT_STROKE_WIDTH = 2;
         this.NODE_STROKE_WIDTH = 1;
@@ -56654,7 +56655,7 @@ module.exports = (function ()
         if(nodeType == "FAMILY")
         {
             fillColor = this.FAMILY_FILL_COLOR;
-            strokeColor = this.FAMILY_FILL_COLOR;
+            strokeColor = this.FAMILY_STROKE_COLOR;
         }
 
         var styleString = "stroke-width:"+ strokeWidth + ";" +
@@ -56882,8 +56883,11 @@ var SaveLoadUtils =
     var nodes = [];
     var edges = [];
 
+
     // By lines
-    var lines = graphText.split('\n');
+    // Match all new line character representations
+    var seperator = /\r?\n|\r/;
+    var lines = graphText.split(seperator);
     var edgesStartIndex = -1;
 
     // start from first line skip node meta data

@@ -26,8 +26,7 @@ var ContextMenuManager = require('./ContextMenuManager.js');
 var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
 var EditorActionsManager = require('./EditorActionsManager.js');
 var grid_guide = require('cytoscape-grid-guide');
-
-
+// var undoRedo = require('cytoscape.js-undo-redo');
 
 
 module.exports = (function()
@@ -80,7 +79,7 @@ module.exports = (function()
         regCose( cytoscape ); // register extension
         navigator( cytoscape ); // register extension
         grid_guide( cytoscape, $ ); // register extension
-
+        //undoRedo(cytoscape); // register extension
 
         window.edgeAddingMode = 0;
         // var allEles = SaveLoadUtilities.parseGraph(sampleGraph);

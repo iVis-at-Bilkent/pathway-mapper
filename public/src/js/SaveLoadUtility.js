@@ -74,8 +74,11 @@ var SaveLoadUtils =
     var nodes = [];
     var edges = [];
 
+
     // By lines
-    var lines = graphText.split('\n');
+    // Match all new line character representations
+    var seperator = /\r?\n|\r/;
+    var lines = graphText.split(seperator);
     var edgesStartIndex = -1;
 
     // start from first line skip node meta data

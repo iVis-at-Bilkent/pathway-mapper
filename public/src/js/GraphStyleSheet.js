@@ -177,13 +177,14 @@ module.exports = (function()
 
   var nodeBackgroundColorFunction = function( ele )
   {
-    switch (ele._private.data['type'])
-    {
-      case "GENE": return "#fff"; break;
-      case "FAMILY": return "#CCCCCC"; break;
-      case "COMPARTMENT": return "#fff"; break;
-      default: return "#fff"; break;
-    }
+    // switch (ele._private.data['type'])
+    // {
+    //   case "GENE": return "#fff"; break;
+    //   case "FAMILY": return "#CCCCCC"; break;
+    //   case "COMPARTMENT": return "#fff"; break;
+    //   default: return "#fff"; break;
+    // }
+    return "#fff";
   }
 
   var nodeBorderColorFunction = function( ele )
