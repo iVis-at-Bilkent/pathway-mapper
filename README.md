@@ -1,6 +1,6 @@
 # PathwayMapper
 
-A web based pathway curation tool for interactive creation, editing, sharing cancer pathways. The tool provides collaborative creation of pathways using Google Real Time API. 
+A web based pathway curation tool for interactive creation, editing, and sharing of cancer pathways. The tool also provides collaborative creation of pathways using Google Real Time API. 
 
 ## Software
 
@@ -21,6 +21,7 @@ PathwayMapper is distributed under [GNU Affero General Public License](https://w
 PathwayMapper allows creation of following node types:
 - Gene
 - Family: subset of genes grouped together under a parent compound node for analysis purposes
+- Complex: molecular complex of member genes represented with a parent compound node
 - Compartment: a cellular location for genes and interactions represented with a parent compound node
 - Process
 
@@ -70,14 +71,21 @@ The same pathway after automatic layout:
 
 The user may persist the current pathway onto the disk and import it back later on. Pathway content is organized as follows in a tab-delimited text file:
 ```
+PTEN and the PI3-Kinase Pathway
+
+This pathway ...
+
 --NODE_NAME	NODE_ID	NODE_TYPE	PARENT_ID	POSX	POSY--
 PTEN	PTEN	GENE	-1	444	46	
 PIK3CA	PIK3CA	GENE	-1	360	139	
 ...
+
 --EDGE_ID	SOURCE	TARGET	EDGE_TYPE
 PTEN-PIK3CA	PTEN	PIK3CA	INHIBITS
 ...
 ```
+
+Here the first line contains the pathway title followed by a single empty line. Then comes a description of the pathway, again followed by a single empty line. After that comes nodes with properties name, ID, type, parent ID, x, and y positions, where parent ID and location information are optional. This is succeeded with a single empty line, followed by edges with properties ID, source ID, target ID, and type.
 
 ### Exporting As Image
 
@@ -108,6 +116,10 @@ When the user unchecks the experiment data for "lung" through Alteration % > Dat
 </p>
 
 ### Collaborative Editing
+
+Should you choose "Collaborative" on the welcome page, your editing session will be given a unique ID and you will have the option of sharing the URL containing this ID with desired person(s) and construct / edit a pathway collaboratively.
+
+Any changes made by any person working on the pathway with the same URL will be shared / reflected to other people currently viweing / editing the same pathway.
 
 ## Team
 
