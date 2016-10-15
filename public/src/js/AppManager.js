@@ -20,7 +20,6 @@ require('./GenomicMenuOperations.js');
 require('./ViewOperationsManager.js');
 require('./GraphUtilities.js');
 
-
 var QtipManager = require('./QtipManager.js');
 var ContextMenuManager = require('./ContextMenuManager.js');
 var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
@@ -29,7 +28,7 @@ var grid_guide = require('cytoscape-grid-guide');
 // var undoRedo = require('cytoscape.js-undo-redo');
 
 
-module.exports = (function()
+ module.exports = (function()
 {
     function AppManager(isCollaborative,realTimeManager)
     {

@@ -1,7 +1,6 @@
 module.exports = (function()
 {
-  var styleSheet = [
-    {
+  var styleSheet = [{
       selector: 'node',
       style:
       {

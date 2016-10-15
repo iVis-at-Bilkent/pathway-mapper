@@ -19,7 +19,8 @@ app.use('/node_modules/filesaverjs', express.static(__dirname + '/node_modules/f
 
 var multerInstance = multer({dest:'./uploads/'});
 
-var APP_PORT = 80;
+var APP_PORT = 3000;
+//var APP_PORT = 80;
 
 //get handler for index.html
 function indexGetHandler(req,res){
@@ -110,12 +111,38 @@ function biogeneDataHandler(req,res)
   })
 
 }
+
+function loadPathway(req, res)
+{
+    var pathwayName = req.query.filename;
+    console.log(pathwayName);
+
+    fs.readFile('./samples/' + pathwayName, {encoding: 'utf-8'}, function(err,data)
+    {
+        if (!err)
+        {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(data);
+            res.end();
+        }
+        else
+        {
+            res.writeHead(501, {'Content-Type': 'text/html'});
+            res.write("Error retrieving pathway");
+            res.end();
+        }
+        // fs.unlinkSync('./samples/sample1.txt');
+    });
+}
+
 /*******************************
   GET Requests
 ********************************/
 app.get('/',indexGetHandler);
 app.get('/sampleGraph', loadSampleFile);
+app.get('/pathway', loadPathway);
 app.get('/sampleGenomicData', loadSampleGenomicData);
+
 
 
 /*******************************

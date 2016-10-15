@@ -51780,7 +51780,6 @@ require('./GenomicMenuOperations.js');
 require('./ViewOperationsManager.js');
 require('./GraphUtilities.js');
 
-
 var QtipManager = require('./QtipManager.js');
 var ContextMenuManager = require('./ContextMenuManager.js');
 var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
@@ -51789,7 +51788,7 @@ var grid_guide = require('cytoscape-grid-guide');
 // var undoRedo = require('cytoscape.js-undo-redo');
 
 
-module.exports = (function()
+ module.exports = (function()
 {
     function AppManager(isCollaborative,realTimeManager)
     {
@@ -54426,8 +54425,7 @@ module.exports = (function ($)
 },{}],181:[function(require,module,exports){
 module.exports = (function()
 {
-  var styleSheet = [
-    {
+  var styleSheet = [{
       selector: 'node',
       style:
       {
@@ -57105,15 +57103,41 @@ require('./RealTimeUtils');//Google's real time utility lib which is customized 
 var WelcomePageView = require('./BackboneViews/WelcomePageView.js');
 var AppManager = require('./AppManager');
 var RealTimeModule = require('./RealTimeManager');
-
+var SaveLoadUtilities = require('./SaveLoadUtility.js');
 
 //Wait all components to load
 $(window).load(function()
 {
+    function getLocalPathway(pathwayName)
+    {
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function ()
+        {
+            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+            {
+                var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+                window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
+            }
+            else
+            {
+                console.log(request.responseText);
+            }
+        };
+        request.open("GET", "/pathway?filename="+pathwayName);
+        request.send();
+    }
+
     var localUsageCallback = function(postSuccess)
     {
         var appInstance = new AppManager(false);
         postSuccess();
+
+        var uri = window.location.search;
+        if (uri.length > 0)
+        {
+            var pathwayName = uri.substring(uri.indexOf("=") + 1 , uri.length);
+            getLocalPathway(pathwayName);
+        }
     }
 
     //TODO urgent comment needed with a rested mind !
@@ -57123,20 +57147,26 @@ $(window).load(function()
 
         var realTimeAuthCallback = function(response)
         {
+            //Authentication fails initially, pop up authentication window
             if(response.error)
             {
                 function popUpAuthHandler(response)
                 {
+                    //Authentication fails
                     if(response.error)
                         console.log(response.error);
-                    
+
+                    //Authentication succesfull
                     var appInstance = new AppManager(true,realTimeManager);
                     realTimeManager.initRealTimeAPI();
                 }
+
+                //Trigger authentication
                 realTimeManager.authorize(popUpAuthHandler, true);
             }
             else
             {
+                //Authentication succesfull
                 var appInstance = new AppManager(true,realTimeManager);
                 realTimeManager.initRealTimeAPI();
             }
@@ -57155,15 +57185,29 @@ $(window).load(function()
     var uri = window.location.search;
     if (uri.length > 0)
     {
-        $('.landingContent h3').hide();
-        $('.welPageButtons').hide();
-        $('#collaborativeUsage').click();
-        $('.continueButton').click().hide();
+        var uriTerm = uri.substring(1,uri.indexOf("="));
+
+        if(uriTerm === "id")
+        {
+            //Trigger collaborative usage, if there is existing pathway id
+            $('.landingContent h3').hide();
+            $('.welPageButtons').hide();
+            $('#collaborativeUsage').click();
+            $('.continueButton').click().hide();
+        }
+        else if(uriTerm === "filename")
+        {
+            //Trigger collaborative usage, if there is existing pathway id
+            $('.landingContent h3').hide();
+            $('.welPageButtons').hide();
+            $('#localUsage').click();
+            $('.continueButton').click().hide();
+        }
     }
 });
 
 
-},{"./AppManager":169,"./BackboneViews/WelcomePageView.js":173,"./RealTimeManager":186,"./RealTimeUtils":187,"backbone":1,"bootstrap":2,"jquery":136,"underscore":137}],192:[function(require,module,exports){
+},{"./AppManager":169,"./BackboneViews/WelcomePageView.js":173,"./RealTimeManager":186,"./RealTimeUtils":187,"./SaveLoadUtility.js":189,"backbone":1,"bootstrap":2,"jquery":136,"underscore":137}],192:[function(require,module,exports){
 
 },{}],193:[function(require,module,exports){
 exports.endianness = function () { return 'LE' };
