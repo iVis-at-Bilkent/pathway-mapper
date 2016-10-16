@@ -21,6 +21,7 @@ module.exports = (function()
         {
           return parentNodeShapeFunc( ele );
         },
+        'shape-polygon-points': generateComplexPoints(),
         'border-width': function(ele)
         {
           return borderWidthFunction( ele );
@@ -40,6 +41,7 @@ module.exports = (function()
         {
           return parentNodeShapeFunc( ele );
         },
+        'shape-polygon-points': generateComplexPoints(),
         'text-valign': function(ele)
         {
           return 'bottom';
@@ -117,7 +119,7 @@ module.exports = (function()
       case "PROCESS": return 10; break;
       default: return 5; break;
     }
-  }
+  };
 
   var contentFunction = function( ele )
   {
@@ -125,7 +127,7 @@ module.exports = (function()
       return ele._private.data.name;
     }
     return 'newNode';
-  }
+  };
 
   var vTextPositionFunction = function( ele )
   {
@@ -136,7 +138,7 @@ module.exports = (function()
       case "COMPARTMENT": return 'top'; break;
       default: return 'center'; break;
     }
-  }
+  };
 
   var borderWidthFunction = function( ele )
   {
@@ -148,7 +150,7 @@ module.exports = (function()
       case "COMPARTMENT": return 2; break;
       default: return 0.5; break;
     }
-  }
+  };
 
   var parentBorderWidthFunction = function( ele )
   {
@@ -160,7 +162,7 @@ module.exports = (function()
       case "COMPARTMENT": return 2; break;
       default: return 0.5; break;
     }
-  }
+  };
 
   var parentNodeShapeFunc = function( ele )
   {
@@ -170,9 +172,10 @@ module.exports = (function()
       case "PROCESS": return "roundrectangle"; break;
       case "FAMILY": return "rectangle"; break;
       case "COMPARTMENT": return "roundrectangle"; break;
+      case "COMPLEX": return "polygon"; break;
       default: return "roundrectangle"; break;
     }
-  }
+  };
 
   var nodeBackgroundColorFunction = function( ele )
   {
@@ -184,7 +187,7 @@ module.exports = (function()
     //   default: return "#fff"; break;
     // }
     return "#fff";
-  }
+  };
 
   var nodeBorderColorFunction = function( ele )
   {
@@ -195,7 +198,7 @@ module.exports = (function()
       case "COMPARTMENT": return "#000000"; break;
       default: return "#000000"; break;
     }
-  }
+  };
 
   var edgeColorHandler = function( ele )
   {
@@ -208,7 +211,7 @@ module.exports = (function()
     //   default: return "#989898"; break;
     // }
     return "#1b1b1b";
-  }
+  };
 
   var edgeTargetArrowTypeHandler = function( ele )
   {
@@ -220,7 +223,7 @@ module.exports = (function()
       case "BINDS": return "none"; break;
       default: return "none"; break;
     }
-  }
+  };
 
   var edgeLineTypeHandler = function( ele )
   {
@@ -232,7 +235,33 @@ module.exports = (function()
       case "BINDS": return "solid"; break;
       default: return "solid"; break;
     }
-  }
+  };
+
+  function generateComplexPoints()
+  {
+    var complexOffset  = 0.15;
+    var points = [];
+    points[0] = {x: -1, y: -1+ 2*complexOffset};
+    points[1] = {x: -1 + complexOffset, y: -1};
+
+    points[2] = {x:  1 - complexOffset, y: -1};
+    points[3] = {x:  1 , y: -1 + 2*complexOffset};
+
+    points[4] = {x:  1 , y:  1 - 2*complexOffset};
+    points[5] = {x:  1 - complexOffset , y:  1};
+
+    points[6] = {x:  -1 + complexOffset , y:  1};
+    points[7] = {x:  -1, y:  1 - 2*complexOffset};
+
+    var returnString = "";
+    for (var i = 0;  i < 8; i++)
+    {
+      returnString += points[i].x + " " + points[i].y;
+      if(i != 7)
+        returnString = returnString + " ";
+    }
+    return returnString;
+  };
 
   return styleSheet;
 })();

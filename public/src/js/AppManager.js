@@ -5,6 +5,8 @@ var cxtmenu = require('cytoscape-cxtmenu');
 var navigator = require('cytoscape-navigator');
 var cyqtip = require('cytoscape-qtip');
 var regCose = require("../../lib/js/cose-bilkent/src/index.js");
+var grid_guide = require('cytoscape-grid-guide');
+var undoRedo = require('cytoscape.js-undo-redo');
 
 //Panzoom options
 var panzoomOpts = require('./PanzoomOptions.js');
@@ -24,8 +26,7 @@ var QtipManager = require('./QtipManager.js');
 var ContextMenuManager = require('./ContextMenuManager.js');
 var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
 var EditorActionsManager = require('./EditorActionsManager.js');
-var grid_guide = require('cytoscape-grid-guide');
-// var undoRedo = require('cytoscape.js-undo-redo');
+
 
 
  module.exports = (function()

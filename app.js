@@ -115,8 +115,6 @@ function biogeneDataHandler(req,res)
 function loadPathway(req, res)
 {
     var pathwayName = req.query.filename;
-    console.log(pathwayName);
-
     fs.readFile('./samples/' + pathwayName, {encoding: 'utf-8'}, function(err,data)
     {
         if (!err)
