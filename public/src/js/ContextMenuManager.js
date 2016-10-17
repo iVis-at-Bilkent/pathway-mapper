@@ -73,7 +73,8 @@ module.exports = (function()
                   return;
                 }
 
-                classRef.editorActionsManager.changeParents(selectedNodes);
+                //classRef.editorActionsManager.changeParents(selectedNodes);
+                selectedNodes.move({parent: null});
               }
             },
             {
@@ -116,7 +117,8 @@ module.exports = (function()
                 }
 
                 var compId = ele.id();
-                classRef.editorActionsManager.changeParents(selectedNodes, compId);
+                selectedNodes.move({parent: compId});
+                //classRef.editorActionsManager.changeParents(selectedNodes, compId);
               }
             }
           ]

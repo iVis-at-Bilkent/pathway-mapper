@@ -20,7 +20,6 @@ module.exports = (function()
             window.edgeAddingMode = $(event.target).attr('edgeTypeIndex');
             cy.edgehandles('enable');
         }
-
     });
 
 
@@ -55,7 +54,7 @@ module.exports = (function()
             window.edgeAddingMode = edgeTypeIndex;
             cy.edgehandles('enable');
         }
-        else
+        else if(dropdownLinkRole == 'deleteSelected')
         //delete
         {
             var selectedEles = cy.elements(':selected');
@@ -63,6 +62,16 @@ module.exports = (function()
             {
                 window.editorActionsManager.removeElement(ele);
             });
+        }
+        else if(dropdownLinkRole == 'undo')
+        //undo
+        {
+            window.undoRedoManager.undo();
+        }
+        else if(dropdownLinkRole == 'redo')
+        //redo
+        {
+            window.undoRedoManager.redo();
         }
     });
 

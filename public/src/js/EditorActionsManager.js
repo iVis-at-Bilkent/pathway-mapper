@@ -150,7 +150,8 @@ module.exports = (function()
 
     EditorActionsManager.prototype.performLayout = function()
     {
-        cy.layout(this.layoutProperties);
+        window.undoRedoManager.do("layout", this.layoutProperties);
+        // cy.layout(this.layoutProperties);
     };
 
     //Node Related Functions
@@ -231,8 +232,10 @@ module.exports = (function()
             }
         }
 
-        this.cy.add(newNode);
+        //this.cy.add(newNode);
         this.cy.nodes().updateCompoundBounds();
+        window.undoRedoManager.do("add", newNode);
+
     };
 
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
@@ -359,11 +362,15 @@ module.exports = (function()
 
     EditorActionsManager.prototype.addNewEdgetoCy = function(edgeData)
     {
-        this.cy.add(
-            {
-                group: "edges",
-                data: edgeData
-            });
+        var newEdge =
+        {
+            group: "edges",
+            data: edgeData
+        };
+
+        window.undoRedoManager.do("add", newEdge);
+        //this.cy.add(newEdge);
+
     };
 
     EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(event)
@@ -452,6 +459,8 @@ module.exports = (function()
     EditorActionsManager.prototype.removeElementCy = function(ele)
     {
         this.cy.remove(ele);
+        window.undoRedoManager.do("remove", ele);
+
     };
 
     EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
@@ -498,11 +507,12 @@ module.exports = (function()
         }
 
 
-        var removedNodes = removeNodes(eles);
+        var removedEles = removeNodes(eles);
+        window.undoRedoManager.do("remove", removedEles);
 
-        for (var i = 0; i < removedNodes.length; i++)
+        for (var i = 0; i < removedEles.length; i++)
         {
-            var removedNode = removedNodes[i];
+            var removedNode = removedEles[i];
 
             //Just alter the parent id of corresponding nodes !
             if (removedNode.isEdge() || lockedNodes[removedNode.id()])
@@ -516,7 +526,8 @@ module.exports = (function()
             }
         }
 
-        self.cy.add(removedNodes);
+        self.cy.add(removedEles);
+        window.undoRedoManager.do("add", removedEles);
         self.cy.nodes().updateCompoundBounds();
     };
 

@@ -6,7 +6,7 @@ var navigator = require('cytoscape-navigator');
 var cyqtip = require('cytoscape-qtip');
 var regCose = require("../../lib/js/cose-bilkent/src/index.js");
 var grid_guide = require('cytoscape-grid-guide');
-var undoRedo = require('cytoscape.js-undo-redo');
+var undoRedo = require('cytoscape-undo-redo');
 
 //Panzoom options
 var panzoomOpts = require('./PanzoomOptions.js');
@@ -79,7 +79,7 @@ var EditorActionsManager = require('./EditorActionsManager.js');
         regCose( cytoscape ); // register extension
         navigator( cytoscape ); // register extension
         grid_guide( cytoscape, $ ); // register extension
-        //undoRedo(cytoscape); // register extension
+        undoRedo(cytoscape); // register extension
 
         window.edgeAddingMode = 0;
         // var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
@@ -184,8 +184,22 @@ var EditorActionsManager = require('./EditorActionsManager.js');
             },
         });
 
+         window.undoRedoManager = cy.undoRedo();
+
         this.placePanzoomAndOverlay();
     };
+
+    $(document).keydown(function(e)
+    {
+        if( e.which === 89 && e.ctrlKey )
+        {
+            window.undoRedoManager.redo();
+        }
+        else if( e.which === 90 && e.ctrlKey )
+        {
+            window.undoRedoManager.undo();
+        }
+    });
 
     AppManager.prototype.initCyHandlers = function()
     {
