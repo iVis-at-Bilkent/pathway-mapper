@@ -8280,6 +8280,68 @@ SOFTWARE.
             }
             return nodesData;
         }
+        
+        function changeParent(param) {
+          var result = {
+          };
+
+          var nodes = param.nodes;
+
+          var transferedNodeMap = {};
+
+          // Map the nodes included in the original node list
+          for (var i = 0; i < param.nodes.length; i++) {
+            var node = param.nodes[i];
+            transferedNodeMap[node.id()] = true;
+          }
+
+          if (!param.firstTime) {
+            // If it is not the first time get the updated nodes
+            nodes = cy.nodes().filter(function (i, ele) {
+              return (transferedNodeMap[ele.id()]);
+            });
+          }
+
+          result.posDiffX = -1 * param.posDiffX;
+          result.posDiffY = -1 * param.posDiffY;
+
+          result.parentData = {}; // For undo / redo cases it keeps the previous parent info per node
+
+          // Fill parent data
+          for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            result.parentData[node.id()] = node.data('parent');
+          }
+
+          var newParentId;
+
+          if (param.firstTime) {
+            newParentId = param.parentData == undefined ? null : param.parentData;
+            nodes.move({"parent": newParentId});
+          }
+          else {
+            for (var i = 0; i < nodes.length; i++) {
+              var node = nodes[i];
+
+              newParentId = param.parentData[node.id()] == undefined ? null : param.parentData[node.id()];
+              node.move({"parent": newParentId});
+            }
+          }
+
+          var posDiff = {
+            x: param.posDiffX,
+            y: param.posDiffY
+          };
+
+          // We should get the updated nodes to move them
+          result.nodes = cy.nodes().filter(function (i, ele) {
+            return (transferedNodeMap[ele.id()]);
+          });
+
+          moveNodes(posDiff, result.nodes);
+
+          return result;
+        }
 
         // Default actions
         function defaultActions() {
@@ -8391,6 +8453,14 @@ SOFTWARE.
                     },
                     _undo: function (nodesData) {
                         return returnToPositionsAndSizes(nodesData);
+                    }
+                },
+                "changeParent": {
+                    _do: function (args) {
+                        return changeParent(args);
+                    },
+                    _undo: function (args) {
+                        return changeParent(args);
                     }
                 }
             };
@@ -28919,7 +28989,7 @@ define.eventAliasesOn( fabfn );
 
 module.exports = Fabric;
 
-},{"./define":73,"./is":112,"./promise":115,"./thread":127,"./util":129,"os":194}],110:[function(require,module,exports){
+},{"./define":73,"./is":112,"./promise":115,"./thread":127,"./util":129,"os":195}],110:[function(require,module,exports){
 /*!
 Ported by Xueqiao Xu <xueqiaoxu@gmail.com>;
 
@@ -34566,7 +34636,7 @@ define.eventAliasesOn( thdfn );
 module.exports = Thread;
 
 }).call(this,"/node_modules/cytoscape/src")
-},{"./define":73,"./event":74,"./is":112,"./promise":115,"./util":129,"./window":136,"child_process":193,"path":195}],128:[function(require,module,exports){
+},{"./define":73,"./event":74,"./is":112,"./promise":115,"./util":129,"./window":136,"child_process":194,"path":196}],128:[function(require,module,exports){
 'use strict';
 
 var is = require( '../is' );
@@ -52220,6 +52290,7 @@ var styleSheet = require('./GraphStyleSheet.js');
 var edgeHandleOpts = require('./EdgeHandlesOptions.js');
 var LayoutProperties = require('./BackboneViews/LayoutPropertiesView.js');
 var GenomicDataExplorerView = require('./BackboneViews/GenomicDataExplorerView.js');
+var PathwayDetailsView = require('./BackboneViews/PathwayDetailsView.js');
 
 //Other requires
 require('./FileOperationsManager.js');
@@ -52321,6 +52392,10 @@ var EditorActionsManager = require('./EditorActionsManager.js');
         this.genomicDataExplorerView = new GenomicDataExplorerView({
             el: $('#genomicDataExplorerDiv'),
             editorActionsManager: this.editorActionsManager
+        }).render();
+
+        this.pathwayDetailsView = new PathwayDetailsView({
+            el: $('#pathwayDetailsDiv')
         }).render();
 
         //Initialize panzoom
@@ -52485,7 +52560,7 @@ var EditorActionsManager = require('./EditorActionsManager.js');
     return AppManager;
 })();
 
-},{"../../lib/js/cose-bilkent/src/index.js":169,"./BackboneViews/GenomicDataExplorerView.js":172,"./BackboneViews/LayoutPropertiesView.js":173,"./ContextMenuManager.js":175,"./DragDropNodeAddPlugin.js":176,"./EdgeHandlesOptions.js":177,"./EditorActionsManager.js":178,"./FileOperationsManager.js":179,"./GenomicMenuOperations.js":181,"./GraphStyleSheet.js":182,"./GraphUtilities.js":183,"./OtherMenuOperations.js":184,"./PanzoomOptions.js":185,"./QtipManager.js":186,"./ViewOperationsManager.js":191,"cytoscape":111,"cytoscape-cxtmenu":15,"cytoscape-grid-guide":22,"cytoscape-navigator":26,"cytoscape-panzoom":27,"cytoscape-qtip":28,"cytoscape-undo-redo":29}],171:[function(require,module,exports){
+},{"../../lib/js/cose-bilkent/src/index.js":169,"./BackboneViews/GenomicDataExplorerView.js":172,"./BackboneViews/LayoutPropertiesView.js":173,"./BackboneViews/PathwayDetailsView.js":174,"./ContextMenuManager.js":176,"./DragDropNodeAddPlugin.js":177,"./EdgeHandlesOptions.js":178,"./EditorActionsManager.js":179,"./FileOperationsManager.js":180,"./GenomicMenuOperations.js":182,"./GraphStyleSheet.js":183,"./GraphUtilities.js":184,"./OtherMenuOperations.js":185,"./PanzoomOptions.js":186,"./QtipManager.js":187,"./ViewOperationsManager.js":192,"cytoscape":111,"cytoscape-cxtmenu":15,"cytoscape-grid-guide":22,"cytoscape-navigator":26,"cytoscape-panzoom":27,"cytoscape-qtip":28,"cytoscape-undo-redo":29}],171:[function(require,module,exports){
 /*
  * Copyright 2013 Memorial-Sloan Kettering Cancer Center.
  *
@@ -52817,6 +52892,47 @@ var layoutProps = Backbone.View.extend(
 module.exports = layoutProps;
 
 },{}],174:[function(require,module,exports){
+var pathwayDetails = Backbone.View.extend(
+{
+    currentLayoutProperties: null,
+    events:
+    {
+        'click #savePathwayDetails': 'saveHandler'
+    },
+    initialize: function (options)
+    {
+        this.properties =
+        {
+            pathwayName: "pathway.txt",
+            pathwayTitle: "New Pathway",
+            pathwayDescription: "..."
+        };
+    },
+    saveHandler: function(event)
+    {
+        this.properties.pathwayName = this.$el.find("#pName").val();
+        this.properties.pathwayTitle = this.$el.find("#pTitle").val();
+        this.properties.pathwayDescription = this.$el.find("#pDesc").val();
+
+    },
+    copyProperties: function (params)
+    {
+        this.currentLayoutProperties = _.clone(params);
+    },
+    render: function ()
+    {
+        this.template = _.template($("#pathwayDetailsTemplate").html());
+        var tplContent = this.template(this.properties);
+        this.$el.empty();
+        this.$el.append(tplContent);
+        this.delegateEvents();
+        this.$el;
+    }
+});
+
+module.exports = pathwayDetails;
+
+},{}],175:[function(require,module,exports){
 var WelcomePageView = Backbone.View.extend(
     {
         cachedTpl: _.template($("#welcomePageTemplate").html()),
@@ -52921,7 +53037,7 @@ var WelcomePageView = Backbone.View.extend(
 
 module.exports = WelcomePageView;
 
-},{}],175:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 ;
 module.exports = (function()
 {
@@ -52949,14 +53065,15 @@ module.exports = (function()
           {
             window.editorActionsManager.performLayout();
           }
-        },
-      ]
+        }
+      ],
+      openMenuEvents: 'cxttap' // cytoscape events that will open the menu (space separated)
     });
 
     //Node context menu
     this.cy.cxtmenu({
       selector: 'node',
-      openMenuEvents: 'cxttapstart',
+      openMenuEvents: 'cxttap',
       activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
       commands:
           [
@@ -52965,11 +53082,7 @@ module.exports = (function()
               select: function(ele)
               {
                 var selectedNodes = cy.nodes(':selected').union(ele);
-                var nodesToBeRemoved = selectedNodes.remove();
-                nodesToBeRemoved.forEach(function(node, index)
-                {
-                  classRef.editorActionsManager.removeElement(node);
-                });
+                classRef.editorActionsManager.removeElementsCy(selectedNodes);
               }
             },
             {
@@ -52997,8 +53110,7 @@ module.exports = (function()
                   return;
                 }
 
-                //classRef.editorActionsManager.changeParents(selectedNodes);
-                selectedNodes.move({parent: null});
+                classRef.editorActionsManager.changeParents(selectedNodes, null);
               }
             },
             {
@@ -53041,8 +53153,7 @@ module.exports = (function()
                 }
 
                 var compId = ele.id();
-                selectedNodes.move({parent: compId});
-                //classRef.editorActionsManager.changeParents(selectedNodes, compId);
+                classRef.editorActionsManager.changeParents(selectedNodes, compId);
               }
             }
           ]
@@ -53051,7 +53162,7 @@ module.exports = (function()
     //Edge context menu
     this.cy.cxtmenu({
       selector: 'edge',
-      openMenuEvents: 'cxttapstart',
+      openMenuEvents: 'cxttap',
       activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
       commands: [
         {
@@ -53059,11 +53170,7 @@ module.exports = (function()
           select: function(ele)
           {
             var selectedEdges = cy.edges(':selected').union(ele);
-            selectedEdges.forEach(function(edge, index)
-            {
-              classRef.editorActionsManager.removeElement(edge);
-            });
-
+            classRef.editorActionsManager.removeElementsCy(selectedEdges);
           }
         }
       ]
@@ -53088,13 +53195,13 @@ module.exports = (function()
     }
     return false;
   }
-  
+
 
   return CxtMenu;
 
 }());
 
-},{}],176:[function(require,module,exports){
+},{}],177:[function(require,module,exports){
 ;
 module.exports = (function($, $$)
 {
@@ -53269,7 +53376,7 @@ module.exports = (function($, $$)
 
 })(window.$, window.cytoscape);
 
-},{}],177:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
 ;
 // the default values of each option are outlined below:
 var edgeHandleDefaults =
@@ -53361,7 +53468,7 @@ var edgeHandleDefaults =
 
 module.exports = edgeHandleDefaults;
 
-},{}],178:[function(require,module,exports){
+},{}],179:[function(require,module,exports){
 var GenomicDataOverlayManager = require('./GenomicDataOverlayManager.js');
 var SVGExporter = require('./SVGExporter.js');
 
@@ -53514,8 +53621,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.performLayout = function()
     {
-        window.undoRedoManager.do("layout", this.layoutProperties);
-        // cy.layout(this.layoutProperties);
+        window.undoRedoManager.do("layout", {options: this.layoutProperties, eles: null});
     };
 
     //Node Related Functions
@@ -53713,10 +53819,19 @@ module.exports = (function()
 
     EditorActionsManager.prototype.addEdgesCy = function(edges)
     {
+        var newEdges = [];
+
+
         for (var i in edges)
         {
-            this.addNewEdgetoCy(edges[i].data);
+            var newEdge =
+            {
+                group: "edges",
+                data: edges[i].data
+            };
+            newEdges.push(newEdge);
         }
+        cy.add(newEdges);
     };
 
     EditorActionsManager.prototype.addNewEdgeRealTime = function(edgeData)
@@ -53824,7 +53939,11 @@ module.exports = (function()
     {
         this.cy.remove(ele);
         window.undoRedoManager.do("remove", ele);
+    };
 
+    EditorActionsManager.prototype.removeElementsCy = function(ele)
+    {
+        window.undoRedoManager.do("remove", ele);
     };
 
     EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
@@ -53840,7 +53959,16 @@ module.exports = (function()
         }
         else
         {
-            this.changeParentCy(eles, newParentId);
+            var parentData = newParentId ? newParentId : null;
+            //this.changeParentCy(eles, newParentId);
+            var param = {
+                firstTime: true,
+                parentData: parentData, // It keeps the newParentId (Just an id for each nodes for the first time)
+                nodes: eles,
+                posDiffX: 0,
+                posDiffY: 0
+            };
+            window.undoRedoManager.do('changeParent', param);
         }
     };
 
@@ -54232,65 +54360,13 @@ module.exports = (function()
 
 })();
 
-},{"./GenomicDataOverlayManager.js":180,"./SVGExporter.js":189}],179:[function(require,module,exports){
+},{"./GenomicDataOverlayManager.js":181,"./SVGExporter.js":190}],180:[function(require,module,exports){
 var SaveLoadUtilities = require('./SaveLoadUtility.js');
 
 module.exports = (function($)
 {
     'use strict';
 
-    function focusOutHandler(event)
-    {
-        var inputFileName = $(".fileNameContent input");
-        var oldFileName = inputFileName.attr('oldFileName');
-        var parentEl = inputFileName.parent();
-        parentEl.empty();
-        var newFileName = $('<span>'+oldFileName+'</span>');
-        newFileName.click(fileNameClickFunction);
-        parentEl.append(newFileName);
-    }
-
-    function fileNameClickFunction(event)
-    {
-        event.preventDefault();
-        switchToInputView();
-    }
-
-    function fileNameEditFunction(event)
-    {
-        var key = event.charCode ? event.charCode : event.keyCode ? event.keyCode : 0;
-        //Enter key
-        if(key == 13)
-        {
-            event.preventDefault();
-            switchToFileNameView();
-        }
-    }
-
-    function switchToFileNameView()
-    {
-        var el = $(".fileNameContent input");
-        var parentEl = el.parent();
-        var fileName = el.val();
-        parentEl.empty();
-        var newFileName = $('<span>'+fileName+'</span>');
-        newFileName.click(fileNameClickFunction);
-        parentEl.append(newFileName);
-    }
-
-    function switchToInputView()
-    {
-        var el = $(".fileNameContent span");
-        var fileName = el.text();
-        var parentEl = el.parent();
-        parentEl.empty();
-        var inputField = $('<input class="form-control" type="text" oldFileName="'+fileName+'"/>');
-        inputField.val(fileName);
-        inputField.keydown(fileNameEditFunction);
-        inputField.focusout(focusOutHandler);
-        parentEl.append(inputField);
-        inputField.focus();
-    }
 
     // see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
     function b64toBlob(b64Data, contentType, sliceSize) {
@@ -54339,28 +54415,35 @@ module.exports = (function($)
         saveAs(blob, "pathway.png");
     }
 
-    function saveGraph(){
-        var fileName = getFileName();
-        var graphJSON = cy.json();
-        var returnString = SaveLoadUtilities.exportGraph(graphJSON);
+    function saveGraph()
+    {
+
+        var pathwayData = getPathwayData();
+        pathwayData.graphJSON = cy.json();
+
+        var returnString = SaveLoadUtilities.exportGraph(pathwayData);
         var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, fileName);
+        saveAs(blob, pathwayData.fileName);
     }
 
 
-    function getFileName()
+    function getPathwayData()
     {
-        return $(".fileNameContent span").text();
+        var pathwayData =
+        {
+            fileName: $("#pName").val(),
+            pathwayTitle: $("#pTitle").val(),
+            pathwayDescription: $("#pDesc").val()
+        };
+
+        return pathwayData;
     }
 
-    function changeFileName(text)
+    function changePathwayDetails(pathwayData)
     {
-        $(".fileNameContent span").text(text);
-    }
-
-    function resetFileName()
-    {
-        $(".fileNameContent span").text('pathway.txt');
+        $("#pName").val(pathwayData.fileName);
+        $("#pTitle").text(pathwayData.pathwayTitle);
+        $("#pDesc").text(pathwayData.pathwayDescription);
     }
 
     function sampleFileRequestHandler()
@@ -54370,8 +54453,15 @@ module.exports = (function($)
       {
           if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
           {
-              var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-              window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
+              var graphData = SaveLoadUtilities.parseGraph(request.responseText);
+              window.editorActionsManager.loadFile(graphData.nodes, graphData.edges);
+
+              changePathwayDetails(
+                  {
+                      fileName: "samplePathway.txt",
+                      pathwayTitle: graphData.title,
+                      pathwayDescription: graphData.pathwayDescription
+                  });
           }
       };
       request.open("GET", "/sampleGraph");
@@ -54401,9 +54491,15 @@ module.exports = (function($)
         {
             if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
             {
-                var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-                window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
-                changeFileName(file.name);
+                var graphData = SaveLoadUtilities.parseGraph(request.responseText);
+                window.editorActionsManager.loadFile(graphData.nodes, graphData.edges);
+
+                changePathwayDetails(
+                {
+                    fileName: file.name,
+                    pathwayTitle: graphData.title,
+                    pathwayDescription: graphData.pathwayDescription
+                });
             }
         };
         request.open("POST", "/loadGraph");
@@ -54422,14 +54518,19 @@ module.exports = (function($)
         {
             if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
             {
-                var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-                window.editorActionsManager.mergeGraph(allEles.nodes,allEles.edges);
+                var graphData = SaveLoadUtilities.parseGraph(request.responseText);
+                window.editorActionsManager.mergeGraph(graphData.nodes,graphData.edges);
                 //TODO change file name maybe, probabyly  not necessary ?
             }
         };
         request.open("POST", "/loadGraph");
         request.send(formData);
         $('#mergeInput').val(null);
+    });
+
+    $('#pathwayDetailsBtn').on('click', function(evt)
+    {
+        $('#pathwayDetailsDiv').modal('show');
     });
 
     //File drop down handler
@@ -54453,8 +54554,6 @@ module.exports = (function($)
         else if (dropdownLinkRole == 'new')
         {
             window.editorActionsManager.removeAllElements();
-            //TODO change filename in collaborative mode ??
-            resetFileName();
         }
         else if (dropdownLinkRole == 'merge')
         {
@@ -54477,12 +54576,9 @@ module.exports = (function($)
         }
     });
 
-    //Initial file name click handler
-    $(".fileNameContent span").click(fileNameClickFunction);
-
 })(window.$)
 
-},{"./SaveLoadUtility.js":190}],180:[function(require,module,exports){
+},{"./SaveLoadUtility.js":191}],181:[function(require,module,exports){
 /**
  *
  */
@@ -54834,7 +54930,7 @@ module.exports = (function()
 
 })();
 
-},{}],181:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
 /**
  * Created by istemi on 29.08.2016.
  */
@@ -54896,7 +54992,7 @@ module.exports = (function ($)
 })(window.$);
 
 
-},{}],182:[function(require,module,exports){
+},{}],183:[function(require,module,exports){
 module.exports = (function()
 {
   var styleSheet = [{
@@ -55165,7 +55261,7 @@ module.exports = (function()
   return styleSheet;
 })();
 
-},{}],183:[function(require,module,exports){
+},{}],184:[function(require,module,exports){
 /**
  * Created by istemi on 27.09.2016.
  */
@@ -55221,7 +55317,7 @@ module.exports = (function () {
 
     window.GraphUtilities = new GraphUtilities();
 })();
-},{}],184:[function(require,module,exports){
+},{}],185:[function(require,module,exports){
 module.exports = (function()
 {
     'use strict';
@@ -55363,7 +55459,7 @@ module.exports = (function()
     
 
 })();
-},{}],185:[function(require,module,exports){
+},{}],186:[function(require,module,exports){
 var panzoomOptions =
 {
   // the default values of each option are outlined below:
@@ -55389,7 +55485,7 @@ var panzoomOptions =
 
 module.exports = panzoomOptions;
 
-},{}],186:[function(require,module,exports){
+},{}],187:[function(require,module,exports){
 ;
 
 var BackboneView = require('./BackboneViews/BioGeneView.js');
@@ -55516,7 +55612,7 @@ module.exports = (function($)
 
 }(window.$));
 
-},{"./BackboneViews/BioGeneView.js":171}],187:[function(require,module,exports){
+},{"./BackboneViews/BioGeneView.js":171}],188:[function(require,module,exports){
 module.exports = (function()
 {
     "use strict";
@@ -56365,7 +56461,7 @@ module.exports = (function()
 
 })();
 
-},{}],188:[function(require,module,exports){
+},{}],189:[function(require,module,exports){
 /**
  * @license
  * Realtime Utils 1.0.0
@@ -56815,7 +56911,7 @@ module.exports = (function(){
     };
 })();
 
-},{}],189:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 /**
  *
  */
@@ -57316,18 +57412,21 @@ module.exports = (function ()
     return SVGExporter;
 })();
 
-},{"./SaveLoadUtility.js":190}],190:[function(require,module,exports){
+},{"./SaveLoadUtility.js":191}],191:[function(require,module,exports){
 var SaveLoadUtils =
 {
   //Exports given json graph(based on cy.export()) into a string
-  exportGraph: function(graphJSON)
+  exportGraph: function(pathwayDetails)
   {
+    var returnString = pathwayDetails.pathwayTitle + '\n\n';
+    returnString += pathwayDetails.pathwayDescription +'\n\n';
+
     //Get nodes and edges
-    var nodes = graphJSON.elements.nodes;
-    var edges = graphJSON.elements.edges;
+    var nodes = pathwayDetails.graphJSON.elements.nodes;
+    var edges = pathwayDetails.graphJSON.elements.edges;
 
     //Prepare Meta Line
-    var returnString = '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY--'+'\n';
+     returnString += '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY--'+'\n';
 
     if (nodes)
     {
@@ -57389,6 +57488,7 @@ var SaveLoadUtils =
   },
   parseGraph: function(graphText)
   {
+
     var allEles = [];
     var nodes = [];
     var edges = [];
@@ -57400,8 +57500,11 @@ var SaveLoadUtils =
     var lines = graphText.split(seperator);
     var edgesStartIndex = -1;
 
+    var title = lines[0];
+    var description = lines[2];
+
     // start from first line skip node meta data
-    for(var i =1; i < lines.length; i++)
+    for(var i = 5; i < lines.length; i++)
     {
       // If we encounter a blank line, that means we need to parse edges from now on !
       // so skip blank line and edge meta line
@@ -57461,13 +57564,13 @@ var SaveLoadUtils =
       edges.push(newEdge);
     }
 
-    return {nodes: nodes, edges: edges};
+    return {title: title, description: description, nodes: nodes, edges: edges};
   }
 }
 
 module.exports = SaveLoadUtils;
 
-},{}],191:[function(require,module,exports){
+},{}],192:[function(require,module,exports){
 module.exports = (function($)
 {
     'use strict';
@@ -57603,7 +57706,7 @@ module.exports = (function($)
 
 })(window.$)
 
-},{}],192:[function(require,module,exports){
+},{}],193:[function(require,module,exports){
 //Import node modules here !
 var $ = window.$ = window.jQuery = require('jquery');
 var _ = window._ = require('underscore');
@@ -57719,9 +57822,9 @@ $(window).load(function()
 });
 
 
-},{"./AppManager":170,"./BackboneViews/WelcomePageView.js":174,"./RealTimeManager":187,"./RealTimeUtils":188,"./SaveLoadUtility.js":190,"backbone":1,"bootstrap":2,"jquery":137,"underscore":138}],193:[function(require,module,exports){
+},{"./AppManager":170,"./BackboneViews/WelcomePageView.js":175,"./RealTimeManager":188,"./RealTimeUtils":189,"./SaveLoadUtility.js":191,"backbone":1,"bootstrap":2,"jquery":137,"underscore":138}],194:[function(require,module,exports){
 
-},{}],194:[function(require,module,exports){
+},{}],195:[function(require,module,exports){
 exports.endianness = function () { return 'LE' };
 
 exports.hostname = function () {
@@ -57768,7 +57871,7 @@ exports.tmpdir = exports.tmpDir = function () {
 
 exports.EOL = '\n';
 
-},{}],195:[function(require,module,exports){
+},{}],196:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -57996,7 +58099,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":196}],196:[function(require,module,exports){
+},{"_process":197}],197:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -58089,4 +58192,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[192]);
+},{}]},{},[193]);

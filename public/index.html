@@ -340,9 +340,30 @@
             <div class="pnl-header">
               Network
             </div>
-            <div class="pnl-body">
-              <div class="fileNameContent centerText">
-                <span>pathway.txt</span>
+            <div class="pnl-body pathwayPanel">
+              <!--<div>-->
+                <!--<div style="float: left">-->
+                  <!--<label>File Name:</label>-->
+                <!--</div>-->
+                <!--<div  id="pFileName" class="fileNameContent" style="float: right; margin-left: 5px;"  contenteditable="true">-->
+                  <!--pathway.txt-->
+                <!--</div>-->
+              <!--</div>-->
+              <!--<div>-->
+                <!--<div style="float: left">-->
+                  <!--<label>Title:</label>-->
+                <!--</div>-->
+                <!--<div  id="pTitle" class="fileNameContent" style="float: right; margin-left: 5px;"  contenteditable="true">-->
+                  <!--pathway.txt-->
+                <!--</div>-->
+              <!--</div>-->
+                <!--<label style="width: 100%; text-align: center;">Pathway Description:</label>-->
+                <!--<textarea id="pDescription">...</textarea>-->
+              <!--</div>-->
+              <div class="buttonContainer">
+                <button id="pathwayDetailsBtn" type="button" class="btn btn-default">
+                  <i class="fui-upload"></i> Details...
+                </button>
               </div>
               <div class="buttonContainer">
                 <button id="loadGraphBtn" type="button" class="btn btn-default">
@@ -563,6 +584,47 @@
           <button id="save-genomic" class="btn btn-default" >Save Changes</button>
         </div>
       </div>
+    </div><!-- /.modal-content -->
+  </div>
+</script>
+
+<div id='pathwayDetailsDiv' class="modal fade" tabindex="-1" role="dialog">
+</div><!-- /.modal -->
+
+<script id="pathwayDetailsTemplate" type="text/template" class="template">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Pathway Details</h3>
+      </div>
+      <div class="modal-body">
+        <form role="form" id="pathwayDetailsForm">
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="node-repulsion">File Name:</label>
+            <div class="col-sm-8">
+              <input id="pName" type="text" class="form-control" value=<%= pathwayName %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="pTitle">Pathway Title:</label>
+            <div class="col-sm-8">
+              <textarea class="form-control" rows="1" id="pTitle"><%= pathwayTitle %></textarea>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="pDesc">Pathway Description:</label>
+            <div class="col-sm-8">
+              <textarea class="form-control" rows="3" id="pDesc"><%= pathwayDescription %></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!--<div class="modal-footer">-->
+        <!--<div>-->
+          <!--<button id="savePathwayDetails" class="btn btn-default" >Save</button>-->
+        <!--</div>-->
+      <!--</div>-->
     </div><!-- /.modal-content -->
   </div>
 </script>

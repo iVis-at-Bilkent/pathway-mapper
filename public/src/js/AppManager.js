@@ -14,6 +14,7 @@ var styleSheet = require('./GraphStyleSheet.js');
 var edgeHandleOpts = require('./EdgeHandlesOptions.js');
 var LayoutProperties = require('./BackboneViews/LayoutPropertiesView.js');
 var GenomicDataExplorerView = require('./BackboneViews/GenomicDataExplorerView.js');
+var PathwayDetailsView = require('./BackboneViews/PathwayDetailsView.js');
 
 //Other requires
 require('./FileOperationsManager.js');
@@ -115,6 +116,10 @@ var EditorActionsManager = require('./EditorActionsManager.js');
         this.genomicDataExplorerView = new GenomicDataExplorerView({
             el: $('#genomicDataExplorerDiv'),
             editorActionsManager: this.editorActionsManager
+        }).render();
+
+        this.pathwayDetailsView = new PathwayDetailsView({
+            el: $('#pathwayDetailsDiv')
         }).render();
 
         //Initialize panzoom

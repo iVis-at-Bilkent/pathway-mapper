@@ -1,14 +1,17 @@
 var SaveLoadUtils =
 {
   //Exports given json graph(based on cy.export()) into a string
-  exportGraph: function(graphJSON)
+  exportGraph: function(pathwayDetails)
   {
+    var returnString = pathwayDetails.pathwayTitle + '\n\n';
+    returnString += pathwayDetails.pathwayDescription +'\n\n';
+
     //Get nodes and edges
-    var nodes = graphJSON.elements.nodes;
-    var edges = graphJSON.elements.edges;
+    var nodes = pathwayDetails.graphJSON.elements.nodes;
+    var edges = pathwayDetails.graphJSON.elements.edges;
 
     //Prepare Meta Line
-    var returnString = '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY--'+'\n';
+     returnString += '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY--'+'\n';
 
     if (nodes)
     {
@@ -70,6 +73,7 @@ var SaveLoadUtils =
   },
   parseGraph: function(graphText)
   {
+
     var allEles = [];
     var nodes = [];
     var edges = [];
@@ -81,8 +85,11 @@ var SaveLoadUtils =
     var lines = graphText.split(seperator);
     var edgesStartIndex = -1;
 
+    var title = lines[0];
+    var description = lines[2];
+
     // start from first line skip node meta data
-    for(var i =1; i < lines.length; i++)
+    for(var i = 5; i < lines.length; i++)
     {
       // If we encounter a blank line, that means we need to parse edges from now on !
       // so skip blank line and edge meta line
@@ -142,7 +149,7 @@ var SaveLoadUtils =
       edges.push(newEdge);
     }
 
-    return {nodes: nodes, edges: edges};
+    return {title: title, description: description, nodes: nodes, edges: edges};
   }
 }
 

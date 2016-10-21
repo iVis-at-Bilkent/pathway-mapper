@@ -150,8 +150,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.performLayout = function()
     {
-        window.undoRedoManager.do("layout", this.layoutProperties);
-        // cy.layout(this.layoutProperties);
+        window.undoRedoManager.do("layout", {options: this.layoutProperties, eles: null});
     };
 
     //Node Related Functions
@@ -349,10 +348,19 @@ module.exports = (function()
 
     EditorActionsManager.prototype.addEdgesCy = function(edges)
     {
+        var newEdges = [];
+
+
         for (var i in edges)
         {
-            this.addNewEdgetoCy(edges[i].data);
+            var newEdge =
+            {
+                group: "edges",
+                data: edges[i].data
+            };
+            newEdges.push(newEdge);
         }
+        cy.add(newEdges);
     };
 
     EditorActionsManager.prototype.addNewEdgeRealTime = function(edgeData)
@@ -460,7 +468,11 @@ module.exports = (function()
     {
         this.cy.remove(ele);
         window.undoRedoManager.do("remove", ele);
+    };
 
+    EditorActionsManager.prototype.removeElementsCy = function(ele)
+    {
+        window.undoRedoManager.do("remove", ele);
     };
 
     EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
@@ -476,7 +488,16 @@ module.exports = (function()
         }
         else
         {
-            this.changeParentCy(eles, newParentId);
+            var parentData = newParentId ? newParentId : null;
+            //this.changeParentCy(eles, newParentId);
+            var param = {
+                firstTime: true,
+                parentData: parentData, // It keeps the newParentId (Just an id for each nodes for the first time)
+                nodes: eles,
+                posDiffX: 0,
+                posDiffY: 0
+            };
+            window.undoRedoManager.do('changeParent', param);
         }
     };
 

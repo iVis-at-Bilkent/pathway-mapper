@@ -25,14 +25,15 @@ module.exports = (function()
           {
             window.editorActionsManager.performLayout();
           }
-        },
-      ]
+        }
+      ],
+      openMenuEvents: 'cxttap' // cytoscape events that will open the menu (space separated)
     });
 
     //Node context menu
     this.cy.cxtmenu({
       selector: 'node',
-      openMenuEvents: 'cxttapstart',
+      openMenuEvents: 'cxttap',
       activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
       commands:
           [
@@ -41,11 +42,7 @@ module.exports = (function()
               select: function(ele)
               {
                 var selectedNodes = cy.nodes(':selected').union(ele);
-                var nodesToBeRemoved = selectedNodes.remove();
-                nodesToBeRemoved.forEach(function(node, index)
-                {
-                  classRef.editorActionsManager.removeElement(node);
-                });
+                classRef.editorActionsManager.removeElementsCy(selectedNodes);
               }
             },
             {
@@ -73,8 +70,7 @@ module.exports = (function()
                   return;
                 }
 
-                //classRef.editorActionsManager.changeParents(selectedNodes);
-                selectedNodes.move({parent: null});
+                classRef.editorActionsManager.changeParents(selectedNodes, null);
               }
             },
             {
@@ -117,8 +113,7 @@ module.exports = (function()
                 }
 
                 var compId = ele.id();
-                selectedNodes.move({parent: compId});
-                //classRef.editorActionsManager.changeParents(selectedNodes, compId);
+                classRef.editorActionsManager.changeParents(selectedNodes, compId);
               }
             }
           ]
@@ -127,7 +122,7 @@ module.exports = (function()
     //Edge context menu
     this.cy.cxtmenu({
       selector: 'edge',
-      openMenuEvents: 'cxttapstart',
+      openMenuEvents: 'cxttap',
       activeFillColor: contextMenuSelectionColor, // the colour used to indicate the selected command
       commands: [
         {
@@ -135,11 +130,7 @@ module.exports = (function()
           select: function(ele)
           {
             var selectedEdges = cy.edges(':selected').union(ele);
-            selectedEdges.forEach(function(edge, index)
-            {
-              classRef.editorActionsManager.removeElement(edge);
-            });
-
+            classRef.editorActionsManager.removeElementsCy(selectedEdges);
           }
         }
       ]
@@ -164,7 +155,7 @@ module.exports = (function()
     }
     return false;
   }
-  
+
 
   return CxtMenu;
 

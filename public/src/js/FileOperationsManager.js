@@ -4,58 +4,6 @@ module.exports = (function($)
 {
     'use strict';
 
-    function focusOutHandler(event)
-    {
-        var inputFileName = $(".fileNameContent input");
-        var oldFileName = inputFileName.attr('oldFileName');
-        var parentEl = inputFileName.parent();
-        parentEl.empty();
-        var newFileName = $('<span>'+oldFileName+'</span>');
-        newFileName.click(fileNameClickFunction);
-        parentEl.append(newFileName);
-    }
-
-    function fileNameClickFunction(event)
-    {
-        event.preventDefault();
-        switchToInputView();
-    }
-
-    function fileNameEditFunction(event)
-    {
-        var key = event.charCode ? event.charCode : event.keyCode ? event.keyCode : 0;
-        //Enter key
-        if(key == 13)
-        {
-            event.preventDefault();
-            switchToFileNameView();
-        }
-    }
-
-    function switchToFileNameView()
-    {
-        var el = $(".fileNameContent input");
-        var parentEl = el.parent();
-        var fileName = el.val();
-        parentEl.empty();
-        var newFileName = $('<span>'+fileName+'</span>');
-        newFileName.click(fileNameClickFunction);
-        parentEl.append(newFileName);
-    }
-
-    function switchToInputView()
-    {
-        var el = $(".fileNameContent span");
-        var fileName = el.text();
-        var parentEl = el.parent();
-        parentEl.empty();
-        var inputField = $('<input class="form-control" type="text" oldFileName="'+fileName+'"/>');
-        inputField.val(fileName);
-        inputField.keydown(fileNameEditFunction);
-        inputField.focusout(focusOutHandler);
-        parentEl.append(inputField);
-        inputField.focus();
-    }
 
     // see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
     function b64toBlob(b64Data, contentType, sliceSize) {
@@ -104,28 +52,35 @@ module.exports = (function($)
         saveAs(blob, "pathway.png");
     }
 
-    function saveGraph(){
-        var fileName = getFileName();
-        var graphJSON = cy.json();
-        var returnString = SaveLoadUtilities.exportGraph(graphJSON);
+    function saveGraph()
+    {
+
+        var pathwayData = getPathwayData();
+        pathwayData.graphJSON = cy.json();
+
+        var returnString = SaveLoadUtilities.exportGraph(pathwayData);
         var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, fileName);
+        saveAs(blob, pathwayData.fileName);
     }
 
 
-    function getFileName()
+    function getPathwayData()
     {
-        return $(".fileNameContent span").text();
+        var pathwayData =
+        {
+            fileName: $("#pName").val(),
+            pathwayTitle: $("#pTitle").val(),
+            pathwayDescription: $("#pDesc").val()
+        };
+
+        return pathwayData;
     }
 
-    function changeFileName(text)
+    function changePathwayDetails(pathwayData)
     {
-        $(".fileNameContent span").text(text);
-    }
-
-    function resetFileName()
-    {
-        $(".fileNameContent span").text('pathway.txt');
+        $("#pName").val(pathwayData.fileName);
+        $("#pTitle").text(pathwayData.pathwayTitle);
+        $("#pDesc").text(pathwayData.pathwayDescription);
     }
 
     function sampleFileRequestHandler()
@@ -135,8 +90,15 @@ module.exports = (function($)
       {
           if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
           {
-              var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-              window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
+              var graphData = SaveLoadUtilities.parseGraph(request.responseText);
+              window.editorActionsManager.loadFile(graphData.nodes, graphData.edges);
+
+              changePathwayDetails(
+                  {
+                      fileName: "samplePathway.txt",
+                      pathwayTitle: graphData.title,
+                      pathwayDescription: graphData.pathwayDescription
+                  });
           }
       };
       request.open("GET", "/sampleGraph");
@@ -166,9 +128,15 @@ module.exports = (function($)
         {
             if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
             {
-                var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-                window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
-                changeFileName(file.name);
+                var graphData = SaveLoadUtilities.parseGraph(request.responseText);
+                window.editorActionsManager.loadFile(graphData.nodes, graphData.edges);
+
+                changePathwayDetails(
+                {
+                    fileName: file.name,
+                    pathwayTitle: graphData.title,
+                    pathwayDescription: graphData.pathwayDescription
+                });
             }
         };
         request.open("POST", "/loadGraph");
@@ -187,14 +155,19 @@ module.exports = (function($)
         {
             if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
             {
-                var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-                window.editorActionsManager.mergeGraph(allEles.nodes,allEles.edges);
+                var graphData = SaveLoadUtilities.parseGraph(request.responseText);
+                window.editorActionsManager.mergeGraph(graphData.nodes,graphData.edges);
                 //TODO change file name maybe, probabyly  not necessary ?
             }
         };
         request.open("POST", "/loadGraph");
         request.send(formData);
         $('#mergeInput').val(null);
+    });
+
+    $('#pathwayDetailsBtn').on('click', function(evt)
+    {
+        $('#pathwayDetailsDiv').modal('show');
     });
 
     //File drop down handler
@@ -218,8 +191,6 @@ module.exports = (function($)
         else if (dropdownLinkRole == 'new')
         {
             window.editorActionsManager.removeAllElements();
-            //TODO change filename in collaborative mode ??
-            resetFileName();
         }
         else if (dropdownLinkRole == 'merge')
         {
@@ -241,8 +212,5 @@ module.exports = (function($)
             saveAs(blob, fileName);
         }
     });
-
-    //Initial file name click handler
-    $(".fileNameContent span").click(fileNameClickFunction);
 
 })(window.$)

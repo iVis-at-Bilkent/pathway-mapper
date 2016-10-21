@@ -3,6 +3,7 @@
 @import 'dragDropNodeAdd';
 @import 'dropDown';
 @import "layoutPropertiesModal";
+@import "pathwayDetailsModal";
 @import 'qtipStyle';
 @import "utilities";
 @import "styleGlobals";
@@ -48,35 +49,35 @@ $appContentHeight: 850px;
 }
 
 
-.fileNameContent
+.pathwayPanel
 {
-  font: 14px helvetica neue, helvetica, arial, sans-serif;
-  color: #2f4154;
-  // font-weight: bold;
-  //margin-bottom: 20px;
-  height: 50px;
-
-  span{
-    position: relative;
-    top: 10px;
-    cursor: pointer;
+  label{
   }
 
-  span:hover{
-    color: $menuHoverColor;
-  }
-
-  //input{
-  //  width: 100px;
-  //}
-
-  .form-control:focus
+  .fileNameContent
   {
-    border: 2px solid $menuHoverColor;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $menuHoverColor;
+    font: 14px helvetica neue, helvetica, arial, sans-serif;
     color: #2f4154;
+    margin-bottom: 10px;
+    padding: 5px;
+    cursor: pointer;
+    min-width: 100px;
+  }
+
+  div[contenteditable="true"]:focus{
+    outline: 2px solid $menuHoverColor;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $menuHoverColor;
+    background-color: white;
+  }
+  textarea{
+    width: 170px;
+    height: 50px;
+    margin-bottom: 10px;
+    z-index: 999999;
   }
 }
+
+
 
 .mainContentWrapper{
   display: flex;

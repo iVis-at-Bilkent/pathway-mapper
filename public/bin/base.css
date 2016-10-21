@@ -124,6 +124,15 @@
 #layoutPropertiesDiv .modal-footer button {
   border: none !important; }
 
+#pathwayDetailsDiv .modal, #pathwayDetailsDiv .modal-body {
+  max-height: 100%; }
+  #pathwayDetailsDiv .modal .form-control:focus, #pathwayDetailsDiv .modal-body .form-control:focus {
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.075), 0 0 8px #1abc9c;
+    color: #2f4154; }
+
+#pathwayDetailsDiv .modal-footer button {
+  border: none !important; }
+
 .qtipLabel {
   margin-top: 10px; }
 
@@ -346,20 +355,24 @@ body {
 .btn:focus {
   outline: none !important; }
 
-.fileNameContent {
+.pathwayPanel .fileNameContent {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
   color: #2f4154;
-  height: 50px; }
-  .fileNameContent span {
-    position: relative;
-    top: 10px;
-    cursor: pointer; }
-  .fileNameContent span:hover {
-    color: #1abc9c; }
-  .fileNameContent .form-control:focus {
-    border: 2px solid #1abc9c;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #1abc9c;
-    color: #2f4154; }
+  margin-bottom: 10px;
+  padding: 5px;
+  cursor: pointer;
+  min-width: 100px; }
+
+.pathwayPanel div[contenteditable="true"]:focus {
+  outline: 2px solid #1abc9c;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #1abc9c;
+  background-color: white; }
+
+.pathwayPanel textarea {
+  width: 170px;
+  height: 50px;
+  margin-bottom: 10px;
+  z-index: 999999; }
 
 .mainContentWrapper {
   display: flex; }
