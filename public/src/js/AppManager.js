@@ -51,6 +51,8 @@ var EditorActionsManager = require('./EditorActionsManager.js');
         {
           that.placePanzoomAndOverlay();
         }
+
+        window.appManager = this;
     };
 
     AppManager.prototype.placePanzoomAndOverlay = function()

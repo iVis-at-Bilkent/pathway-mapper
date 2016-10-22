@@ -52327,6 +52327,8 @@ var EditorActionsManager = require('./EditorActionsManager.js');
         {
           that.placePanzoomAndOverlay();
         }
+
+        window.appManager = this;
     };
 
     AppManager.prototype.placePanzoomAndOverlay = function()
@@ -52927,6 +52929,7 @@ var pathwayDetails = Backbone.View.extend(
         this.$el.append(tplContent);
         this.delegateEvents();
         this.$el;
+        return this;
     }
 });
 
@@ -53780,7 +53783,7 @@ module.exports = (function()
             parent: realtimeNode.parent
         };
 
-        if (realtimeNode.x != "undefined" && realtimeNode.y != "unedfined")
+        if (realtimeNode.x != "undefined" && realtimeNode.y != "undefined")
         {
             this.addNodetoCy(nodeData, {x: realtimeNode.x, y: realtimeNode.y});
         }
@@ -53915,35 +53918,31 @@ module.exports = (function()
     {
         if (this.isCollaborative)
         {
-            var self = this;
-            ele.forEach(function (elem, index)
-            {
-                var connectedEdges = elem.connectedEdges();
-
-                //Remove all connected edges also !
-                connectedEdges.forEach(function (edge, j)
-                {
-                    self.removeElementFromRealTime(edge);
-                });
-
-                self.removeElementFromRealTime(elem);
-            });
+            this.removeElementsFromRealTime(ele);
         }
         else
         {
-            this.removeElementCy(ele);
+            this.removeElementsCy(ele);
         }
     };
 
     EditorActionsManager.prototype.removeElementCy = function(ele)
     {
-        this.cy.remove(ele);
         window.undoRedoManager.do("remove", ele);
     };
 
     EditorActionsManager.prototype.removeElementsCy = function(ele)
     {
         window.undoRedoManager.do("remove", ele);
+    };
+
+    EditorActionsManager.prototype.removeElementsFromRealTime = function(eles)
+    {
+        var self = this;
+        eles.forEach(function (ele, i)
+        {
+            self.realTimeManager.removeElement(ele.id());
+        });
     };
 
     EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
@@ -54530,6 +54529,7 @@ module.exports = (function($)
 
     $('#pathwayDetailsBtn').on('click', function(evt)
     {
+        window.appManager.pathwayDetailsView.render();
         $('#pathwayDetailsDiv').modal('show');
     });
 
@@ -55378,10 +55378,7 @@ module.exports = (function()
         //delete
         {
             var selectedEles = cy.elements(':selected');
-            selectedEles.forEach(function (ele, index)
-            {
-                window.editorActionsManager.removeElement(ele);
-            });
+            window.editorActionsManager.removeElement(selectedEles);
         }
         else if(dropdownLinkRole == 'undo')
         //undo

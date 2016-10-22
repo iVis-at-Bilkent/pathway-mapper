@@ -167,6 +167,7 @@ module.exports = (function($)
 
     $('#pathwayDetailsBtn').on('click', function(evt)
     {
+        window.appManager.pathwayDetailsView.render();
         $('#pathwayDetailsDiv').modal('show');
     });
 

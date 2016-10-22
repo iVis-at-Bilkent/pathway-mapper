@@ -309,7 +309,7 @@ module.exports = (function()
             parent: realtimeNode.parent
         };
 
-        if (realtimeNode.x != "undefined" && realtimeNode.y != "unedfined")
+        if (realtimeNode.x != "undefined" && realtimeNode.y != "undefined")
         {
             this.addNodetoCy(nodeData, {x: realtimeNode.x, y: realtimeNode.y});
         }
@@ -444,35 +444,31 @@ module.exports = (function()
     {
         if (this.isCollaborative)
         {
-            var self = this;
-            ele.forEach(function (elem, index)
-            {
-                var connectedEdges = elem.connectedEdges();
-
-                //Remove all connected edges also !
-                connectedEdges.forEach(function (edge, j)
-                {
-                    self.removeElementFromRealTime(edge);
-                });
-
-                self.removeElementFromRealTime(elem);
-            });
+            this.removeElementsFromRealTime(ele);
         }
         else
         {
-            this.removeElementCy(ele);
+            this.removeElementsCy(ele);
         }
     };
 
     EditorActionsManager.prototype.removeElementCy = function(ele)
     {
-        this.cy.remove(ele);
         window.undoRedoManager.do("remove", ele);
     };
 
     EditorActionsManager.prototype.removeElementsCy = function(ele)
     {
         window.undoRedoManager.do("remove", ele);
+    };
+
+    EditorActionsManager.prototype.removeElementsFromRealTime = function(eles)
+    {
+        var self = this;
+        eles.forEach(function (ele, i)
+        {
+            self.realTimeManager.removeElement(ele.id());
+        });
     };
 
     EditorActionsManager.prototype.removeElementFromRealTime = function(ele)

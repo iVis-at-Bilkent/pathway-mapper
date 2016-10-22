@@ -58,10 +58,7 @@ module.exports = (function()
         //delete
         {
             var selectedEles = cy.elements(':selected');
-            selectedEles.forEach(function (ele, index)
-            {
-                window.editorActionsManager.removeElement(ele);
-            });
+            window.editorActionsManager.removeElement(selectedEles);
         }
         else if(dropdownLinkRole == 'undo')
         //undo

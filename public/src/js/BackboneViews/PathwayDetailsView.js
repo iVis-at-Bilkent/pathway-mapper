@@ -33,6 +33,7 @@ var pathwayDetails = Backbone.View.extend(
         this.$el.append(tplContent);
         this.delegateEvents();
         this.$el;
+        return this;
     }
 });
 
