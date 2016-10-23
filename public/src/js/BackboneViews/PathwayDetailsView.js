@@ -11,7 +11,7 @@ var pathwayDetails = Backbone.View.extend(
         {
             pathwayName: "pathway.txt",
             pathwayTitle: "New Pathway",
-            pathwayDescription: "..."
+            pathwayDescription: ""
         };
     },
     saveHandler: function(event)

@@ -60,13 +60,13 @@
   #ui-cytoscape-nodeadd-icon .explanationText {
     font: 14px helvetica neue, helvetica, arial, sans-serif; }
   #ui-cytoscape-nodeadd-icon img {
-    width: 140px; }
+    width: 110px; }
 
 .ui-cytoscape-nodeadd-nodediv {
   z-index: 99999;
   padding: 3px;
   text-align: center;
-  width: 140px;
+  width: 110px;
   /* Fix for line trail left by drag (in Chrome)*/
   -webkit-backface-visibility: hidden;
   /* Fix for plugin to render correctly when Bootstrap is being used*/
@@ -78,7 +78,8 @@
   cursor: pointer; }
 
 .dropdown-submenu {
-  position: relative; }
+  position: relative;
+  font-size: 12px !important; }
 
 .dropdown-submenu > .dropdown-menu {
   top: 0;
@@ -94,7 +95,8 @@
   display: block; }
 
 .dropdown-submenu > .dropdown-menu > li > a {
-  color: #fff !important; }
+  color: #fff !important;
+  font-size: 12px !important; }
 
 .dropdown-submenu > .dropdown-menu > li > a:hover {
   color: #fff !important;
@@ -378,8 +380,9 @@ body {
   display: flex; }
 
 .sideBarWrapper {
-  min-width: 190px;
-  max-width: 190px; }
+  min-width: 130px;
+  max-width: 130px;
+  font-size: 12px; }
 
 .control-label {
   text-align: left;
@@ -403,11 +406,14 @@ body {
       border: none !important; }
   .edgePaletteWrapper .edge-palette .list-group-item.active, .edgePaletteWrapper .edge-palette .list-group-item.active:focus, .edgePaletteWrapper .edge-palette .list-group-item.active:hover {
     background-color: #1abc9c !important; }
+  .edgePaletteWrapper .edge-palette .list-group-item {
+    padding: 7px 5px; }
   .edgePaletteWrapper .edge-palette a {
     margin-bottom: 5px;
-    border-radius: 6px; }
+    border-radius: 6px;
+    font-size: 12px; }
     .edgePaletteWrapper .edge-palette a img {
-      width: 50px; }
+      width: 30px; }
 
 footer {
   background-color: #eeeeee;
@@ -424,7 +430,8 @@ footer {
 
 .navbar-nav > .open > .dropdown-menu > li > a {
   color: #fff !important;
-  border-radius: 4px !important; }
+  border-radius: 4px !important;
+  font-size: 12px !important; }
 
 .navbar-nav > .open > .dropdown-menu {
   background-color: #2f4154 !important; }
@@ -440,14 +447,16 @@ footer {
 .navbar {
   border-radius: 0px 0px 6px 6px;
   background-color: #2f4154;
-  border: none !important; }
+  border: none !important;
+  margin-bottom: 10px !important; }
 
 .navbar-nav a {
   transition: all 0.2s linear; }
 
 .navbar-nav > li > a {
   color: white !important;
-  font-weight: 500 !important; }
+  font-weight: 500 !important;
+  font-size: 12px; }
 
 .navbar-nav > li > a:hover {
   color: #1abc9c !important; }
@@ -458,7 +467,7 @@ footer {
   font-weight: bold; }
 
 .pnl {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   border-radius: 6px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 -1px 1px rgba(0, 0, 0, 0.15); }
   .pnl .pnl-header {
@@ -466,19 +475,19 @@ footer {
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
     text-align: center;
-    padding: 15px 5px 15px 5px;
+    padding: 8px 5px 5px 5px;
     color: white;
     font-size: 12px;
     font-weight: 900; }
   .pnl .pnl-body {
     background-color: #eff0f2;
-    padding: 15px 10px 15px 10px;
+    padding: 4px 2px 4px 2px;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px; }
     .pnl .pnl-body .buttonContainer > button {
       border: none !important; }
     .pnl .pnl-body .dragButtonContainer {
-      width: 140px;
+      width: 115px;
       margin-left: auto;
       margin-right: auto; }
 
@@ -498,7 +507,8 @@ footer {
   text-align: center;
   margin-bottom: 5px; }
   .buttonContainer button {
-    width: 75%; }
+    font-size: 12px;
+    width: 85%; }
 
 .cyContainer {
   border: 3px solid #1abc9c;
@@ -507,7 +517,7 @@ footer {
   padding-right: 0 !important;
   padding-left: 0 !important;
   width: 100%;
-  margin-left: 20px; }
+  margin-left: 10px; }
 
 #cy {
   height: 100%; }

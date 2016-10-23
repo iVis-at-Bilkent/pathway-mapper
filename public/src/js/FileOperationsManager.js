@@ -78,7 +78,7 @@ module.exports = (function($)
 
     function changePathwayDetails(pathwayData)
     {
-        $("#pName").val(pathwayData.fileName);
+        $("#pName").text(pathwayData.fileName);
         $("#pTitle").text(pathwayData.pathwayTitle);
         $("#pDesc").text(pathwayData.pathwayDescription);
     }

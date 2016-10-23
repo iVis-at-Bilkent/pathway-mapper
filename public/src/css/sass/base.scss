@@ -84,8 +84,9 @@ $appContentHeight: 850px;
 }
 
 .sideBarWrapper{
-  min-width: 190px;
-  max-width: 190px;
+  min-width: 130px;
+  max-width: 130px;
+  font-size: 12px;
 }
 
 .control-label
@@ -124,12 +125,17 @@ $appContentHeight: 850px;
       background-color: $menuHoverColor !important;
     }
 
+    .list-group-item{
+      padding: 7px 5px;
+    }
+
     a
     {
       margin-bottom: 5px;
       border-radius: 6px;
+      font-size: 12px;
       img{
-        width: 50px;
+        width: 30px;
       }
     }
   }
@@ -158,6 +164,7 @@ footer{
     // padding: 6px 9px !important;
     color: #fff !important;
     border-radius: 4px !important;
+    font-size: 12px !important;
 }
 
  .navbar-nav>.open>.dropdown-menu {
@@ -181,6 +188,7 @@ footer{
   border-radius: 0px 0px 6px 6px;
   background-color: $menubgColor;
   border: none !important;
+  margin-bottom: 10px !important;
 }
 
 .navbar-nav{
@@ -193,6 +201,7 @@ footer{
 {
   color: rgb(255, 255, 255) !important;
   font-weight: 500 !important;
+  font-size: 12px;
 }
 
 .navbar-nav>li>a:hover
@@ -212,7 +221,7 @@ footer{
 
 .pnl
 {
-   margin-bottom: 15px;
+   margin-bottom: 10px;
    border-radius: 6px;
    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 -1px 1px rgba(0, 0, 0, 0.15);;
 
@@ -223,7 +232,7 @@ footer{
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
     text-align: center;
-    padding: 15px 5px 15px 5px;
+    padding: 8px 5px 5px 5px;
     color: white;
     font-size: 12px;
     font-weight: 900;
@@ -232,7 +241,7 @@ footer{
   .pnl-body
   {
     background-color: #eff0f2;
-    padding: 15px 10px 15px 10px;
+    padding: 4px 2px 4px 2px;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
 
@@ -241,7 +250,7 @@ footer{
     }
     .dragButtonContainer
     {
-      width: 140px;
+      width: 115px;
       margin-left: auto;
       margin-right: auto;
     }
@@ -269,7 +278,8 @@ footer{
   margin-bottom: 5px;
 
   button{
-    width: 75%;
+    font-size: 12px;
+    width: 85%;
   }
 }
 
@@ -284,7 +294,7 @@ footer{
   padding-right: 0 !important;
   padding-left: 0 !important;
   width: 100%;
-  margin-left: 20px;
+  margin-left: 10px;
 
 }
 

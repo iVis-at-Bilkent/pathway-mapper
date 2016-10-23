@@ -41,7 +41,6 @@ module.exports = (function()
         {
           return parentNodeShapeFunc( ele );
         },
-        'shape-polygon-points': generateComplexPoints(),
         'text-valign': function(ele)
         {
           return 'bottom';
@@ -159,6 +158,7 @@ module.exports = (function()
       case "GENE": return 0.5; break;
       case "PROCESS": return 1.0; break;
       case "FAMILY": return 1.0; break;
+      case "COMPLEX": return 1.0; break;
       case "COMPARTMENT": return 2; break;
       default: return 0.5; break;
     }
@@ -172,7 +172,7 @@ module.exports = (function()
       case "PROCESS": return "roundrectangle"; break;
       case "FAMILY": return "rectangle"; break;
       case "COMPARTMENT": return "roundrectangle"; break;
-      case "COMPLEX": return "polygon"; break;
+      case "COMPLEX": return "roundrectangle"; break;
       default: return "roundrectangle"; break;
     }
   };
@@ -195,6 +195,7 @@ module.exports = (function()
     {
       case "GENE": return "#000000"; break;
       case "FAMILY": return "#CCCCCC"; break;
+      case "COMPLEX": return "#000000"; break;
       case "COMPARTMENT": return "#000000"; break;
       default: return "#000000"; break;
     }
@@ -237,31 +238,6 @@ module.exports = (function()
     }
   };
 
-  function generateComplexPoints()
-  {
-    var complexOffset  = 0.15;
-    var points = [];
-    points[0] = {x: -1, y: -1+ 2*complexOffset};
-    points[1] = {x: -1 + complexOffset, y: -1};
-
-    points[2] = {x:  1 - complexOffset, y: -1};
-    points[3] = {x:  1 , y: -1 + 2*complexOffset};
-
-    points[4] = {x:  1 , y:  1 - 2*complexOffset};
-    points[5] = {x:  1 - complexOffset , y:  1};
-
-    points[6] = {x:  -1 + complexOffset , y:  1};
-    points[7] = {x:  -1, y:  1 - 2*complexOffset};
-
-    var returnString = "";
-    for (var i = 0;  i < 8; i++)
-    {
-      returnString += points[i].x + " " + points[i].y;
-      if(i != 7)
-        returnString = returnString + " ";
-    }
-    return returnString;
-  };
 
   return styleSheet;
 })();

@@ -1,6 +1,9 @@
 
+
+
 .dropdown-submenu {
     position: relative;
+    font-size: 12px !important;
 }
 
 .dropdown-submenu>.dropdown-menu {
@@ -21,7 +24,7 @@
 
 .dropdown-submenu>.dropdown-menu>li>a{
   color: #fff !important;
-
+  font-size: 12px !important;
 }
 .dropdown-submenu>.dropdown-menu>li>a:hover{
   color: #fff !important;
