@@ -9,6 +9,8 @@
 @import "styleGlobals";
 @import "welcomePage";
 @import "genomicDataExplorer";
+@import "contextMenu";
+
 
 body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
@@ -302,4 +304,9 @@ footer{
 {
   height: 100%;
   // width: 100%;
+}
+
+.btn:focus {
+  outline: none !important;
+  background-color: #fff !important;
 }

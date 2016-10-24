@@ -99,6 +99,8 @@ module.exports = (function($)
                       pathwayTitle: graphData.title,
                       pathwayDescription: graphData.pathwayDescription
                   });
+
+              resetUndoStack();
           }
       };
       request.open("GET", "/sampleGraph");
@@ -137,6 +139,8 @@ module.exports = (function($)
                     pathwayTitle: graphData.title,
                     pathwayDescription: graphData.pathwayDescription
                 });
+
+                resetUndoStack();
             }
         };
         request.open("POST", "/loadGraph");
@@ -158,6 +162,8 @@ module.exports = (function($)
                 var graphData = SaveLoadUtilities.parseGraph(request.responseText);
                 window.editorActionsManager.mergeGraph(graphData.nodes,graphData.edges);
                 //TODO change file name maybe, probabyly  not necessary ?
+
+                resetUndoStack();
             }
         };
         request.open("POST", "/loadGraph");
@@ -184,6 +190,10 @@ module.exports = (function($)
         else if (dropdownLinkRole == 'load')
         {
             $('#fileinput').trigger('click');
+        }
+        else if (dropdownLinkRole == 'details')
+        {
+            $('#pathwayDetailsBtn').trigger('click');
         }
         else if (dropdownLinkRole == 'sample')
         {
@@ -213,5 +223,10 @@ module.exports = (function($)
             saveAs(blob, fileName);
         }
     });
+    
+    function resetUndoStack()
+    {
+        window.undoRedoManager.reset();
+    }
 
 })(window.$)

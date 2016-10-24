@@ -1,12 +1,14 @@
 //Cytoscape related requires !
 var cytoscape =  window.cytoscape = require('cytoscape');
 var panzoom = require('cytoscape-panzoom');
-var cxtmenu = require('cytoscape-cxtmenu');
+//var cxtmenu = require('cytoscape-cxtmenu');
 var navigator = require('cytoscape-navigator');
 var cyqtip = require('cytoscape-qtip');
 var regCose = require("../../lib/js/cose-bilkent/src/index.js");
 var grid_guide = require('cytoscape-grid-guide');
 var undoRedo = require('cytoscape-undo-redo');
+var contextMenus = require('cytoscape-context-menus');
+
 
 //Panzoom options
 var panzoomOpts = require('./PanzoomOptions.js');
@@ -77,12 +79,14 @@ var EditorActionsManager = require('./EditorActionsManager.js');
     AppManager.prototype.initCyJS = function()
     {
         panzoom( cytoscape, $ );  // register extension
-        cxtmenu( cytoscape, $ ); // register extension
+        //cxtmenu( cytoscape, $ ); // register extension
         cyqtip( cytoscape, $ ); // register extension
         regCose( cytoscape ); // register extension
         navigator( cytoscape ); // register extension
         grid_guide( cytoscape, $ ); // register extension
         undoRedo(cytoscape); // register extension
+        contextMenus( cytoscape, $ ); // register extension
+
 
         window.edgeAddingMode = 0;
         // var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
@@ -144,6 +148,11 @@ var EditorActionsManager = require('./EditorActionsManager.js');
                             // icon: 'fa fa-square-o'
                         },
                         {
+                            container: $('#complexNodeDiv'),
+                            nodeType: 'Complex',
+                            icon: 'fa fa-square-o'
+                        },
+                        {
                             container: $('#compartmentNodeDiv'),
                             nodeType: 'Compartment',
                             icon: 'fa fa-square-o'
@@ -198,11 +207,11 @@ var EditorActionsManager = require('./EditorActionsManager.js');
 
     $(document).keydown(function(e)
     {
-        if( e.which === 89 && e.ctrlKey )
+        if( e.which === 89 && (e.ctrlKey || event.metaKey) )
         {
             window.undoRedoManager.redo();
         }
-        else if( e.which === 90 && e.ctrlKey )
+        else if( e.which === 90 && (e.ctrlKey || event.metaKey) )
         {
             window.undoRedoManager.undo();
         }

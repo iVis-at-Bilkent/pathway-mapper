@@ -1,0 +1,199 @@
+<!DOCTYPE>
+
+<html>
+
+	<head>
+		<title>cytoscape-context-menus.js demo</title>
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+                 <link href="cytoscape-context-menus.css" rel="stylesheet" type="text/css" />
+                
+                <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+		<script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
+
+		<!-- for testing with local version of cytoscape.js -->
+		<!--<script src="../cytoscape.js/build/cytoscape.js"></script>-->
+
+		<script src="cytoscape-context-menus.js"></script>
+
+		<style>
+			body {
+				font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
+				font-size: 14px;
+			}
+
+			#cy {
+				position: absolute;
+				left: 0;
+				top: 0;
+				bottom: 0;
+				right: 0;
+				z-index: 999;
+			}
+
+			h1 {
+				opacity: 0.5;
+				font-size: 1em;
+				font-weight: bold;
+			}
+                        
+                        .custom-menu-item {
+                            border-bottom-color: maroon !important;
+                        }
+                        
+                        .custom-menu-item {
+                            border-top-left-radius: 5px !important;
+                            border-top-right-radius: 5px !important;
+                        }
+                        
+                        .custom-menu-item {
+                            border-bottom-left-radius: 5px !important;
+                            border-bottom-right-radius: 5px !important;
+                        }
+                        
+                        .custom-context-menu {
+                            border-color: maroon !important;
+                            border-radius: 5px !important;
+                        }
+		</style>
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function(){
+
+				var cy = window.cy = cytoscape({
+					container: document.getElementById('cy'),
+
+					style: [
+						{
+							selector: 'node',
+							style: {
+								'content': 'data(name)'
+							}
+						},
+
+						{
+							selector: 'edge',
+							style: {
+								'target-arrow-shape': 'triangle'
+							}
+						},
+
+						{
+							selector: ':selected',
+							style: {
+
+							}
+						}
+					],
+
+					elements: {
+						nodes: [
+							{ data: { id: 'j', name: 'Jerry' } },
+							{ data: { id: 'e', name: 'Elaine' } },
+							{ data: { id: 'k', name: 'Kramer' } },
+							{ data: { id: 'g', name: 'George' } }
+						],
+						edges: [
+							{ data: { source: 'j', target: 'e' } },
+							{ data: { source: 'j', target: 'k' } },
+							{ data: { source: 'j', target: 'g' } },
+							{ data: { source: 'e', target: 'j' } },
+							{ data: { source: 'e', target: 'k' } },
+							{ data: { source: 'k', target: 'j' } },
+							{ data: { source: 'k', target: 'e' } },
+							{ data: { source: 'k', target: 'g' } },
+							{ data: { source: 'g', target: 'j' } }
+						]
+					},
+				});
+
+                                var selectAllOfTheSameType = function(ele) {
+                                    cy.elements().unselect();
+                                    if(ele.isNode()) {
+                                        cy.nodes().select();
+                                    }
+                                    else if(ele.isEdge()) {
+                                        cy.edges().select();
+                                    }
+                                };
+
+				// demo your core ext
+				cy.contextMenus({
+                                    menuItems: [
+                                        {
+                                            id: 'remove',
+                                            title: 'remove',
+                                            selector: 'node, edge',
+                                            onClickFunction: function (event) {
+                                              event.cyTarget.remove();
+                                            },
+                                            hasTrailingDivider: true
+                                          },
+                                          {
+                                            id: 'hide',
+                                            title: 'hide',
+                                            selector: '*',
+                                            onClickFunction: function (event) {
+                                              event.cyTarget.hide();
+                                            },
+                                            disabled: false
+                                          },
+                                          {
+                                            id: 'add-node',
+                                            title: 'add node',
+                                            coreAsWell: true,
+                                            onClickFunction: function (event) {
+                                              var data = {
+                                                  group: 'nodes'
+                                              };
+                                              
+                                              cy.add({
+                                                  data: data,
+                                                  position: {
+                                                      x: event.cyPosition.x,
+                                                      y: event.cyPosition.y
+                                                  }
+                                              });
+                                            }
+                                          },
+                                          {
+                                            id: 'remove-selected',
+                                            title: 'remove selected',
+                                            coreAsWell: true,
+                                            onClickFunction: function (event) {
+                                              cy.$(':selected').remove();
+                                            }
+                                          },
+                                          {
+                                            id: 'select-all-nodes',
+                                            title: 'select all nodes',
+                                            selector: 'node',
+                                            onClickFunction: function (event) {
+                                              selectAllOfTheSameType(event.cyTarget);
+                                            }
+                                          },
+                                          {
+                                            id: 'select-all-edges',
+                                            title: 'select all edges',
+                                            selector: 'edge',
+                                            onClickFunction: function (event) {
+                                              selectAllOfTheSameType(event.cyTarget);
+                                            }
+                                          }
+                                        ],
+                                        menuItemClasses: ['custom-menu-item'],
+                                        contextMenuClasses: ['custom-context-menu']
+                                      });
+			});
+		</script>
+	</head>
+
+	<body>
+		<h1>cytoscape-context-menus demo</h1>
+
+		<div id="cy"></div>
+
+	</body>
+
+</html>

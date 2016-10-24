@@ -13,9 +13,11 @@ var app = express();
 app.use(express.static('public'));
 app.use('/node_modules/bootstrap', express.static(__dirname + '/node_modules/bootstrap/'));
 app.use('/node_modules/cytoscape-panzoom', express.static(__dirname + '/node_modules/cytoscape-panzoom/'));
+app.use('/node_modules/cytoscape-context-menus', express.static(__dirname + '/node_modules/cytoscape-context-menus/'));
 app.use('/node_modules/cytoscape-navigator', express.static(__dirname + '/node_modules/cytoscape-navigator/'));
 app.use('/node_modules/qtip2', express.static(__dirname + '/node_modules/qtip2/'));
 app.use('/node_modules/filesaverjs', express.static(__dirname + '/node_modules/filesaverjs/'));
+
 
 var multerInstance = multer({dest:'./uploads/'});
 

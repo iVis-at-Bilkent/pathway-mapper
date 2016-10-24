@@ -21,7 +21,6 @@ module.exports = (function()
         {
           return parentNodeShapeFunc( ele );
         },
-        'shape-polygon-points': generateComplexPoints(),
         'border-width': function(ele)
         {
           return borderWidthFunction( ele );
@@ -114,6 +113,7 @@ module.exports = (function()
     switch (ele._private.data['type'])
     {
       case "FAMILY": return 5; break;
+      case "COMPLEX": return '5'; break;
       case "COMPARTMENT": return 10; break;
       case "PROCESS": return 10; break;
       default: return 5; break;
@@ -134,6 +134,7 @@ module.exports = (function()
     {
       case "GENE": return 'center'; break;
       case "FAMILY": return 'top'; break;
+      case "COMPLEX": return 'top'; break;
       case "COMPARTMENT": return 'top'; break;
       default: return 'center'; break;
     }
@@ -158,7 +159,7 @@ module.exports = (function()
       case "GENE": return 0.5; break;
       case "PROCESS": return 1.0; break;
       case "FAMILY": return 1.0; break;
-      case "COMPLEX": return 1.0; break;
+      case "COMPLEX": return 0.5; break;
       case "COMPARTMENT": return 2; break;
       default: return 0.5; break;
     }
@@ -172,7 +173,7 @@ module.exports = (function()
       case "PROCESS": return "roundrectangle"; break;
       case "FAMILY": return "rectangle"; break;
       case "COMPARTMENT": return "roundrectangle"; break;
-      case "COMPLEX": return "roundrectangle"; break;
+      case "COMPLEX": return "rectangle"; break;
       default: return "roundrectangle"; break;
     }
   };
