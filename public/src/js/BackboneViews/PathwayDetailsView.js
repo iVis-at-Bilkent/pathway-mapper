@@ -21,6 +21,12 @@ var pathwayDetails = Backbone.View.extend(
         this.properties.pathwayDescription = this.$el.find("#pDesc").val();
 
     },
+    updatePathwayProperties: function(data)
+    {
+        this.properties.pathwayName = data.fileName;
+        this.properties.pathwayTitle = data.pathwayTitle;
+        this.properties.pathwayDescription = data.pathwayDescription;
+    },
     copyProperties: function (params)
     {
         this.currentLayoutProperties = _.clone(params);
@@ -32,7 +38,13 @@ var pathwayDetails = Backbone.View.extend(
         this.$el.empty();
         this.$el.append(tplContent);
         this.delegateEvents();
-        this.$el;
+
+        //Disable input enter event
+        this.$el.find('input').on('keypress', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+            }
+        });
         return this;
     }
 });

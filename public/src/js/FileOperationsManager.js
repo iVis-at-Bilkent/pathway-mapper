@@ -78,9 +78,7 @@ module.exports = (function($)
 
     function changePathwayDetails(pathwayData)
     {
-        $("#pName").text(pathwayData.fileName);
-        $("#pTitle").text(pathwayData.pathwayTitle);
-        $("#pDesc").text(pathwayData.pathwayDescription);
+        window.appManager.pathwayDetailsView.updatePathwayProperties(pathwayData);
     }
 
     function sampleFileRequestHandler()
@@ -97,7 +95,7 @@ module.exports = (function($)
                   {
                       fileName: "samplePathway.txt",
                       pathwayTitle: graphData.title,
-                      pathwayDescription: graphData.pathwayDescription
+                      pathwayDescription: graphData.description
                   });
 
               resetUndoStack();
@@ -137,7 +135,7 @@ module.exports = (function($)
                 {
                     fileName: file.name,
                     pathwayTitle: graphData.title,
-                    pathwayDescription: graphData.pathwayDescription
+                    pathwayDescription: graphData.description
                 });
 
                 resetUndoStack();

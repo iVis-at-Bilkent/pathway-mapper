@@ -128,7 +128,15 @@ module.exports = (function($, $$)
                                 var nodeData = {type: nodeType, name:'New '+ $(ui.helper).attr('nodeType')};
                                 if (parent)
                                 {
-                                    if (!(nodeType == "COMPARTMENT" && parent.data().type == "FAMILY" )) {
+                                    if(parent.data().type == "FAMILY" || parent.data().type == "COMPLEX")
+                                    {
+                                        if(nodeType != "COMPARTMENT" && nodeType != "PROCESS")
+                                        {
+                                            nodeData.parent = parent.id();
+                                        }
+                                    }
+                                    else
+                                    {
                                         nodeData.parent = parent.id();
                                     }
                                 }

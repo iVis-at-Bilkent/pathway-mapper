@@ -52726,8 +52726,8 @@ var layoutProps = Backbone.View.extend(
     var tplContent = this.template(templateProperties);
     this.$el.empty();
     this.$el.append(tplContent);
+
     this.delegateEvents();
-    this.$el;
   },
   saveLayoutHandler: function(event)
   {
@@ -52749,7 +52749,6 @@ var layoutProps = Backbone.View.extend(
     // Call a function from editor actions manager that saves layout properties on local usage and
     // Updates real time model in collaborative usage
     this.editorActionsManagerRef.saveLayoutProperties(this.currentLayoutProperties);
-    this.$el.modal('toggle');
   },
   changeParameters: function()
   {
@@ -52809,6 +52808,12 @@ var pathwayDetails = Backbone.View.extend(
         this.properties.pathwayDescription = this.$el.find("#pDesc").val();
 
     },
+    updatePathwayProperties: function(data)
+    {
+        this.properties.pathwayName = data.fileName;
+        this.properties.pathwayTitle = data.pathwayTitle;
+        this.properties.pathwayDescription = data.pathwayDescription;
+    },
     copyProperties: function (params)
     {
         this.currentLayoutProperties = _.clone(params);
@@ -52820,7 +52825,13 @@ var pathwayDetails = Backbone.View.extend(
         this.$el.empty();
         this.$el.append(tplContent);
         this.delegateEvents();
-        this.$el;
+
+        //Disable input enter event
+        this.$el.find('input').on('keypress', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+            }
+        });
         return this;
     }
 });
@@ -52954,7 +52965,7 @@ module.exports = (function()
       menuItems: [
         {
           id: 'remove', // ID of menu item
-          title: 'Remove', // Title of menu item
+          title: 'Delete', // Title of menu item
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           selector: 'node, edge',
@@ -52974,18 +52985,23 @@ module.exports = (function()
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           selector: 'node',
-          onClickFunction: function (event) {
+          onClickFunction: function (event)
+          {
             var ele = event.cyTarget;
             var selectedNodes = cy.nodes(':selected');
+            var containerType = ele.data('type');
+            var validNodes = cy.collection();
 
             //Do nothing if node is GENE
             if (ele._private.data['type'] === 'GENE' || selectedNodes.size() < 1) {
               return;
             }
             //Prevent actions like adding root node to children & addition to itself
-            else {
+            else
+            {
               var notValid = false;
-              selectedNodes.forEach(function (tmpNode, i) {
+              selectedNodes.forEach(function (tmpNode, i)
+              {
                 if (ele.id() == tmpNode.id()) {
                   notValid = true;
                   return false;
@@ -53004,8 +53020,26 @@ module.exports = (function()
               }
             }
 
+
+            selectedNodes.forEach(function (tmpNode, i)
+            {
+
+              if(containerType == "FAMILY" || containerType == "COMPLEX")
+              {
+                if(tmpNode.data('type') != "COMPARTMENT" && tmpNode.data('type') != "PROCESS")
+                {
+                  validNodes = validNodes.add(tmpNode);
+                }
+              }
+              else
+              {
+                validNodes = validNodes.add(tmpNode);
+              }
+
+            });
+
             var compId = ele.id();
-            classRef.editorActionsManager.changeParents(selectedNodes, compId);
+            classRef.editorActionsManager.changeParents(validNodes, compId);
           },
           disabled: false, // Whether the item will be created as disabled
           hasTrailingDivider: true, // Whether the item will have a trailing divider
@@ -53223,7 +53257,15 @@ module.exports = (function($, $$)
                                 var nodeData = {type: nodeType, name:'New '+ $(ui.helper).attr('nodeType')};
                                 if (parent)
                                 {
-                                    if (!(nodeType == "COMPARTMENT" && parent.data().type == "FAMILY" )) {
+                                    if(parent.data().type == "FAMILY" || parent.data().type == "COMPLEX")
+                                    {
+                                        if(nodeType != "COMPARTMENT" && nodeType != "PROCESS")
+                                        {
+                                            nodeData.parent = parent.id();
+                                        }
+                                    }
+                                    else
+                                    {
                                         nodeData.parent = parent.id();
                                     }
                                 }
@@ -53387,7 +53429,7 @@ module.exports = (function()
             numIter: 2500,
             tile: true,
             animate: "end",
-            randomize: true,
+            randomize: false,
             gravityRangeCompound: 1.5,
             // Gravity force (constant) for compounds
             gravityCompound: 1.0,
@@ -54328,9 +54370,7 @@ module.exports = (function($)
 
     function changePathwayDetails(pathwayData)
     {
-        $("#pName").text(pathwayData.fileName);
-        $("#pTitle").text(pathwayData.pathwayTitle);
-        $("#pDesc").text(pathwayData.pathwayDescription);
+        window.appManager.pathwayDetailsView.updatePathwayProperties(pathwayData);
     }
 
     function sampleFileRequestHandler()
@@ -54347,7 +54387,7 @@ module.exports = (function($)
                   {
                       fileName: "samplePathway.txt",
                       pathwayTitle: graphData.title,
-                      pathwayDescription: graphData.pathwayDescription
+                      pathwayDescription: graphData.description
                   });
 
               resetUndoStack();
@@ -54387,7 +54427,7 @@ module.exports = (function($)
                 {
                     fileName: file.name,
                     pathwayTitle: graphData.title,
-                    pathwayDescription: graphData.pathwayDescription
+                    pathwayDescription: graphData.description
                 });
 
                 resetUndoStack();
@@ -55055,7 +55095,7 @@ module.exports = (function()
     switch (ele._private.data['type'])
     {
       case "GENE": return 0.5; break;
-      case "PROCESS": return 1.0; break;
+      case "PROCESS": return 0; break;
       case "FAMILY": return 1.0; break;
       case "COMPLEX": return 0.5; break;
       case "COMPARTMENT": return 2; break;
@@ -57569,7 +57609,10 @@ module.exports = (function($)
         {
             //Move locally and let editor actions manager know a move happened
             //If in collaborative mode editor actions manager will update collaborative model
-            node.position({x: newPos.x+dx, y:newPos.y+dy});
+            node.position({
+                x: newPos.x+dx,
+                y:newPos.y+dy
+            });
             window.editorActionsManager.moveElements(node);
         }
     }
@@ -57600,6 +57643,7 @@ var SaveLoadUtilities = require('./SaveLoadUtility.js');
 //Wait all components to load
 $(window).load(function()
 {
+    
     function getLocalPathway(pathwayName)
     {
         var request = new XMLHttpRequest();

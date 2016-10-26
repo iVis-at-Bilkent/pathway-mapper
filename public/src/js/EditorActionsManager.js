@@ -25,7 +25,7 @@ module.exports = (function()
             numIter: 2500,
             tile: true,
             animate: "end",
-            randomize: true,
+            randomize: false,
             gravityRangeCompound: 1.5,
             // Gravity force (constant) for compounds
             gravityCompound: 1.0,

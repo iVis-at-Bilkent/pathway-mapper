@@ -26,8 +26,8 @@ var layoutProps = Backbone.View.extend(
     var tplContent = this.template(templateProperties);
     this.$el.empty();
     this.$el.append(tplContent);
+
     this.delegateEvents();
-    this.$el;
   },
   saveLayoutHandler: function(event)
   {
@@ -49,7 +49,6 @@ var layoutProps = Backbone.View.extend(
     // Call a function from editor actions manager that saves layout properties on local usage and
     // Updates real time model in collaborative usage
     this.editorActionsManagerRef.saveLayoutProperties(this.currentLayoutProperties);
-    this.$el.modal('toggle');
   },
   changeParameters: function()
   {

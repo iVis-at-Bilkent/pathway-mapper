@@ -19,7 +19,7 @@ module.exports = (function()
       menuItems: [
         {
           id: 'remove', // ID of menu item
-          title: 'Remove', // Title of menu item
+          title: 'Delete', // Title of menu item
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           selector: 'node, edge',
@@ -39,18 +39,23 @@ module.exports = (function()
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           selector: 'node',
-          onClickFunction: function (event) {
+          onClickFunction: function (event)
+          {
             var ele = event.cyTarget;
             var selectedNodes = cy.nodes(':selected');
+            var containerType = ele.data('type');
+            var validNodes = cy.collection();
 
             //Do nothing if node is GENE
             if (ele._private.data['type'] === 'GENE' || selectedNodes.size() < 1) {
               return;
             }
             //Prevent actions like adding root node to children & addition to itself
-            else {
+            else
+            {
               var notValid = false;
-              selectedNodes.forEach(function (tmpNode, i) {
+              selectedNodes.forEach(function (tmpNode, i)
+              {
                 if (ele.id() == tmpNode.id()) {
                   notValid = true;
                   return false;
@@ -69,8 +74,26 @@ module.exports = (function()
               }
             }
 
+
+            selectedNodes.forEach(function (tmpNode, i)
+            {
+
+              if(containerType == "FAMILY" || containerType == "COMPLEX")
+              {
+                if(tmpNode.data('type') != "COMPARTMENT" && tmpNode.data('type') != "PROCESS")
+                {
+                  validNodes = validNodes.add(tmpNode);
+                }
+              }
+              else
+              {
+                validNodes = validNodes.add(tmpNode);
+              }
+
+            });
+
             var compId = ele.id();
-            classRef.editorActionsManager.changeParents(selectedNodes, compId);
+            classRef.editorActionsManager.changeParents(validNodes, compId);
           },
           disabled: false, // Whether the item will be created as disabled
           hasTrailingDivider: true, // Whether the item will have a trailing divider

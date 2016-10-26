@@ -119,7 +119,10 @@ module.exports = (function($)
         {
             //Move locally and let editor actions manager know a move happened
             //If in collaborative mode editor actions manager will update collaborative model
-            node.position({x: newPos.x+dx, y:newPos.y+dy});
+            node.position({
+                x: newPos.x+dx,
+                y:newPos.y+dy
+            });
             window.editorActionsManager.moveElements(node);
         }
     }

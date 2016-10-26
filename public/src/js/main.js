@@ -14,6 +14,7 @@ var SaveLoadUtilities = require('./SaveLoadUtility.js');
 //Wait all components to load
 $(window).load(function()
 {
+    
     function getLocalPathway(pathwayName)
     {
         var request = new XMLHttpRequest();

@@ -157,7 +157,7 @@ module.exports = (function()
     switch (ele._private.data['type'])
     {
       case "GENE": return 0.5; break;
-      case "PROCESS": return 1.0; break;
+      case "PROCESS": return 0; break;
       case "FAMILY": return 1.0; break;
       case "COMPLEX": return 0.5; break;
       case "COMPARTMENT": return 2; break;
