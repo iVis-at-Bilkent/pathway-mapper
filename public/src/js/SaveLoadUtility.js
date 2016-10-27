@@ -92,6 +92,8 @@ var SaveLoadUtils =
     if (lines[0].includes("--NODE_NAME"))
     {
       graphDataIndex = 1;
+      title = "New Pathway";
+      description = "";
     }
 
     // start from first line skip node meta data
