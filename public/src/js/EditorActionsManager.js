@@ -234,7 +234,6 @@ module.exports = (function()
         //this.cy.add(newNode);
         this.cy.nodes().updateCompoundBounds();
         window.undoRedoManager.do("add", newNode);
-
     };
 
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
@@ -256,46 +255,6 @@ module.exports = (function()
         {
             this.addNewNodeLocally(node)
         }
-    };
-
-    EditorActionsManager.prototype.addNewNodesLocally = function(realTimeNodeArray)
-    {
-        var nodeList = [];
-        for (var i in realTimeNodeArray)
-        {
-            var realTimeNode= realTimeNodeArray[i];
-
-            var nodeID = this.realTimeManager.getCustomObjId(realTimeNode);
-            var nodeData =
-            {
-                group: 'nodes',
-                data:
-                {
-                    id: nodeID,
-                    type: realTimeNode.type,
-                    name: realTimeNode.name,
-                    parent: realTimeNode.parent
-                }
-            };
-
-            if (nodeData.data.parent === undefined )
-            {
-                delete nodeData.data.parent;
-            }
-
-            if (realTimeNode.x && realTimeNode.y)
-            {
-                nodeData.position =
-                {
-                    x: realTimeNode.x,
-                    y: realTimeNode.y
-                }
-            }
-
-            nodeList.push(nodeData);
-        }
-        this.cy.add(nodeList);
-        this.cy.nodes().updateCompoundBounds();
     };
 
     EditorActionsManager.prototype.addNewNodeLocally = function(realtimeNode)
@@ -401,13 +360,55 @@ module.exports = (function()
         }
     };
 
-    EditorActionsManager.prototype.addNewEdgesLocally = function(realTimeEdgeArray)
+    EditorActionsManager.prototype.addNewElementsLocally = function(realTimeNodeArray, realTimeEdgeArray)
     {
+        var nodeList = [];
+        var nodeMap = {};
+
+        for (var i in realTimeNodeArray)
+        {
+            var realTimeNode= realTimeNodeArray[i];
+
+            var nodeID = this.realTimeManager.getCustomObjId(realTimeNode);
+            var nodeData =
+            {
+                group: 'nodes',
+                data:
+                {
+                    id: nodeID,
+                    type: realTimeNode.type,
+                    name: realTimeNode.name,
+                    parent: realTimeNode.parent
+                }
+            };
+
+            if (nodeData.data.parent === undefined )
+            {
+                delete nodeData.data.parent;
+            }
+
+            if (realTimeNode.x && realTimeNode.y)
+            {
+                nodeData.position =
+                {
+                    x: realTimeNode.x,
+                    y: realTimeNode.y
+                }
+            }
+
+            nodeMap[nodeID] = nodeData;
+            nodeList.push(nodeData);
+        }
+
         var edgeList = [];
         for (var i in realTimeEdgeArray)
         {
             var edge= realTimeEdgeArray[i];
             var edgeID = this.realTimeManager.getCustomObjId(edge);
+
+            //If source and and target is somehow lost in remote model do not create this edge
+            if(!(edge.source in nodeMap && edge.target in nodeMap))
+                continue
 
             var edgeData =
             {
@@ -423,8 +424,12 @@ module.exports = (function()
 
             edgeList.push(edgeData);
         }
+
+        this.cy.add(nodeList);
         this.cy.add(edgeList);
-    };
+
+        this.cy.nodes().updateCompoundBounds();
+    }
 
     EditorActionsManager.prototype.addNewEdgeLocally = function(edge)
     {

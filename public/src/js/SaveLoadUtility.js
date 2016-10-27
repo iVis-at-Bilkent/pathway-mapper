@@ -78,18 +78,24 @@ var SaveLoadUtils =
     var nodes = [];
     var edges = [];
 
-
     // By lines
     // Match all new line character representations
     var seperator = /\r?\n|\r/;
     var lines = graphText.split(seperator);
     var edgesStartIndex = -1;
+    var graphDataIndex = 5;
 
     var title = lines[0];
     var description = lines[2];
 
+    //TODO Legacy pathways workaround
+    if (lines[0].includes("--NODE_NAME"))
+    {
+      graphDataIndex = 1;
+    }
+
     // start from first line skip node meta data
-    for(var i = 5; i < lines.length; i++)
+    for(var i = graphDataIndex; i < lines.length; i++)
     {
       // If we encounter a blank line, that means we need to parse edges from now on !
       // so skip blank line and edge meta line

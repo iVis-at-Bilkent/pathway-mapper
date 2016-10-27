@@ -120,8 +120,7 @@ module.exports = (function()
         var edgeMapEntries = edgeMap.values();
 
         //Add real time nodes to local graph
-        window.editorActionsManager.addNewNodesLocally(nodeMapEntries);
-        window.editorActionsManager.addNewEdgesLocally(edgeMapEntries);
+        window.editorActionsManager.addNewElementsLocally(nodeMapEntries, edgeMapEntries);
 
         //Update layout properties & global options!!
         window.editorActionsManager.updateLayoutPropertiesCallback(realTimeLayoutProperties);
