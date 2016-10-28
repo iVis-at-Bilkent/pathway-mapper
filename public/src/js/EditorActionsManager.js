@@ -253,7 +253,7 @@ module.exports = (function()
         //Addition Operation
         else
         {
-            this.addNewNodeLocally(node)
+            this.addNewNodeLocally(node);
         }
     };
 

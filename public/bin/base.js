@@ -52213,6 +52213,27 @@ var EditorActionsManager = require('./EditorActionsManager.js');
           that.placePanzoomAndOverlay();
         }
 
+        //TODO undo redo is not working properly in collaborative mode 
+        if(!this.isCollaborative)
+        {
+            $(document).keydown(function(e)
+            {
+                if( e.which === 89 && (e.ctrlKey || event.metaKey) )
+                {
+                    window.undoRedoManager.redo();
+                }
+                else if( e.which === 90 && (e.ctrlKey || event.metaKey) )
+                {
+                    window.undoRedoManager.undo();
+                }
+            });
+        }
+        else
+        {
+            $('a[role="redo"]').hide();
+            $('a[role="undo"]').hide();
+        }
+
         window.appManager = this;
     };
 
@@ -52364,17 +52385,6 @@ var EditorActionsManager = require('./EditorActionsManager.js');
         this.placePanzoomAndOverlay();
     };
 
-    $(document).keydown(function(e)
-    {
-        if( e.which === 89 && (e.ctrlKey || event.metaKey) )
-        {
-            window.undoRedoManager.redo();
-        }
-        else if( e.which === 90 && (e.ctrlKey || event.metaKey) )
-        {
-            window.undoRedoManager.undo();
-        }
-    });
 
     AppManager.prototype.initCyHandlers = function()
     {
@@ -53657,7 +53667,7 @@ module.exports = (function()
         //Addition Operation
         else
         {
-            this.addNewNodeLocally(node)
+            this.addNewNodeLocally(node);
         }
     };
 
@@ -54639,7 +54649,7 @@ module.exports = (function()
             .style('text-margin-y', 0)
             .style('width', function (ele)
             {
-                return 130;
+                return 150;
             })
             .style('background-image', function(ele)
             {
@@ -55229,6 +55239,49 @@ module.exports = (function () {
             if (mappedElem.parent().length > 0)
             {
                 mappedArr[mappedElem.parent().id()].childNodes.push(mappedElem);
+            }
+            // If the element is at the root level, add it to first level elements array.
+            else
+            {
+                tree.push(mappedElem);
+            }
+        }
+        return tree;
+    };
+
+    /*
+     * Creates graph hierarchy from given flat list of nodes list, nodes list is assumed to have parent-child
+     * relationship by a field 'parent' which represents to the id of the parent node This function is specific
+     * for the needs of TCGA Pathway Curation Tool 04/07/2016
+     *
+     * @param nodes {array}: flat list of nodes of a graph
+     * @return {array}: Tree representation in array, entries are root level nodes. node.children gives children nodes
+     * of each node in the returned array.
+     * a node in corresponding level.
+     *
+     * */
+    GraphUtilities.prototype.createGraphHierarchyRealTime = function(nodes)
+    {
+        //Some arrays and maps for creating graph hierarchy
+        var tree = [];
+        var mappedArr = {};
+
+        // First map the nodes of the array to an object -> create a hash table.
+        for (var i = 0, len = nodes.length; i < len; i++)
+        {
+            var arrElem = nodes[i];
+            mappedArr[arrElem.data.id] = arrElem;
+            mappedArr[arrElem.data.id].children = [];
+        }
+
+        for (var id in mappedArr)
+        {
+            var mappedElem = mappedArr[id];
+
+            // If the element is not at the root level, add it to its parent array of children.
+            if (mappedElem.data.parent)
+            {
+                mappedArr[mappedElem.data.parent].children.push(mappedElem);
             }
             // If the element is at the root level, add it to first level elements array.
             else
@@ -56018,7 +56071,7 @@ module.exports = (function()
         }
 
         //Create graph hierarchy from given list of flat nodes
-        var tree = this.createGraphHierarchy(nodes);
+        var tree = window.GraphUtilities.createGraphHierarchyRealTime(nodes);
         //Traverse from root nodes of tree
         for (var i in tree)
         {
@@ -56121,7 +56174,7 @@ module.exports = (function()
         }
 
         //Traverse from root nodes of tree
-        var tree = this.createGraphHierarchy(nodes);
+        var tree = window.GraphUtilities.createGraphHierarchyRealTime(nodes);
         for (var i in tree)
         {
             var rootLevelNode = tree[i];
@@ -57428,6 +57481,8 @@ var SaveLoadUtils =
     if (lines[0].includes("--NODE_NAME"))
     {
       graphDataIndex = 1;
+      title = "New Pathway";
+      description = "";
     }
 
     // start from first line skip node meta data

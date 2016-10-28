@@ -54,6 +54,27 @@ var EditorActionsManager = require('./EditorActionsManager.js');
           that.placePanzoomAndOverlay();
         }
 
+        //TODO undo redo is not working properly in collaborative mode 
+        if(!this.isCollaborative)
+        {
+            $(document).keydown(function(e)
+            {
+                if( e.which === 89 && (e.ctrlKey || event.metaKey) )
+                {
+                    window.undoRedoManager.redo();
+                }
+                else if( e.which === 90 && (e.ctrlKey || event.metaKey) )
+                {
+                    window.undoRedoManager.undo();
+                }
+            });
+        }
+        else
+        {
+            $('a[role="redo"]').hide();
+            $('a[role="undo"]').hide();
+        }
+
         window.appManager = this;
     };
 
@@ -205,17 +226,6 @@ var EditorActionsManager = require('./EditorActionsManager.js');
         this.placePanzoomAndOverlay();
     };
 
-    $(document).keydown(function(e)
-    {
-        if( e.which === 89 && (e.ctrlKey || event.metaKey) )
-        {
-            window.undoRedoManager.redo();
-        }
-        else if( e.which === 90 && (e.ctrlKey || event.metaKey) )
-        {
-            window.undoRedoManager.undo();
-        }
-    });
 
     AppManager.prototype.initCyHandlers = function()
     {

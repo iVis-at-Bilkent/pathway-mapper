@@ -110,7 +110,7 @@ module.exports = (function()
             .style('text-margin-y', 0)
             .style('width', function (ele)
             {
-                return 130;
+                return 150;
             })
             .style('background-image', function(ele)
             {

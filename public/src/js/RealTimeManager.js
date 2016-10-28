@@ -481,7 +481,7 @@ module.exports = (function()
         }
 
         //Create graph hierarchy from given list of flat nodes
-        var tree = this.createGraphHierarchy(nodes);
+        var tree = window.GraphUtilities.createGraphHierarchyRealTime(nodes);
         //Traverse from root nodes of tree
         for (var i in tree)
         {
@@ -584,7 +584,7 @@ module.exports = (function()
         }
 
         //Traverse from root nodes of tree
-        var tree = this.createGraphHierarchy(nodes);
+        var tree = window.GraphUtilities.createGraphHierarchyRealTime(nodes);
         for (var i in tree)
         {
             var rootLevelNode = tree[i];
