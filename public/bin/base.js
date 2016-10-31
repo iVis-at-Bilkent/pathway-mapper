@@ -52678,6 +52678,7 @@ var genomicDataExplorer = Backbone.View.extend(
                 dataMap[cancerType] = isChecked;
             });
             this.editorActionsManagerRef.updateGenomicDataVisibility(dataMap);
+            this.$el.modal('toggle');
         },
         //For observer observable pattern
         notify: function(data)
@@ -52759,6 +52760,7 @@ var layoutProps = Backbone.View.extend(
     // Call a function from editor actions manager that saves layout properties on local usage and
     // Updates real time model in collaborative usage
     this.editorActionsManagerRef.saveLayoutProperties(this.currentLayoutProperties);
+    this.$el.modal('toggle');
   },
   changeParameters: function()
   {
@@ -52816,6 +52818,7 @@ var pathwayDetails = Backbone.View.extend(
         this.properties.pathwayName = this.$el.find("#pName").val();
         this.properties.pathwayTitle = this.$el.find("#pTitle").val();
         this.properties.pathwayDescription = this.$el.find("#pDesc").val();
+        this.$el.modal('toggle');
 
     },
     updatePathwayProperties: function(data)

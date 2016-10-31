@@ -19,6 +19,7 @@ var pathwayDetails = Backbone.View.extend(
         this.properties.pathwayName = this.$el.find("#pName").val();
         this.properties.pathwayTitle = this.$el.find("#pTitle").val();
         this.properties.pathwayDescription = this.$el.find("#pDesc").val();
+        this.$el.modal('toggle');
 
     },
     updatePathwayProperties: function(data)

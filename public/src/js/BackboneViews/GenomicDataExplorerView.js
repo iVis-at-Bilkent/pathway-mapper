@@ -32,6 +32,7 @@ var genomicDataExplorer = Backbone.View.extend(
                 dataMap[cancerType] = isChecked;
             });
             this.editorActionsManagerRef.updateGenomicDataVisibility(dataMap);
+            this.$el.modal('toggle');
         },
         //For observer observable pattern
         notify: function(data)
