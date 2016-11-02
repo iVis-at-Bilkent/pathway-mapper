@@ -28872,7 +28872,7 @@ define.eventAliasesOn( fabfn );
 
 module.exports = Fabric;
 
-},{"./define":73,"./is":112,"./promise":115,"./thread":127,"./util":129,"os":195}],110:[function(require,module,exports){
+},{"./define":73,"./is":112,"./promise":115,"./thread":127,"./util":129,"os":196}],110:[function(require,module,exports){
 /*!
 Ported by Xueqiao Xu <xueqiaoxu@gmail.com>;
 
@@ -34519,7 +34519,7 @@ define.eventAliasesOn( thdfn );
 module.exports = Thread;
 
 }).call(this,"/node_modules/cytoscape/src")
-},{"./define":73,"./event":74,"./is":112,"./promise":115,"./util":129,"./window":136,"child_process":194,"path":196}],128:[function(require,module,exports){
+},{"./define":73,"./event":74,"./is":112,"./promise":115,"./util":129,"./window":136,"child_process":195,"path":197}],128:[function(require,module,exports){
 'use strict';
 
 var is = require( '../is' );
@@ -57757,6 +57757,118 @@ module.exports = (function($)
 })(window.$)
 
 },{}],193:[function(require,module,exports){
+module.exports = (function()
+{
+    function CBioPortalAccessor()
+    {
+        this.cancerStudies = {};
+        this.GET_ALL_CANCER_STUDIES_URL  = "http://www.cbioportal.org/webservice.do?cmd=getCancerStudies";
+        this.GET_GENETIC_PROFILES_URL = "http://www.cbioportal.org/webservice.do?cmd=getGeneticProfiles&cancer_study_id=";
+
+        this.fetchCancerStudies();
+        this.getAllGeneticProfiles("acbc_mskcc_2015", function(data){
+            console.log(data);
+        });
+    }
+
+    //cancer_study_id	name	description
+    CBioPortalAccessor.prototype.fetchCancerStudies = function ()
+    {
+        var request = new XMLHttpRequest();
+        var self = this;
+        request.onreadystatechange = function ()
+        {
+            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+            {
+                // By lines
+                // Match all new line character representations
+                var seperator = /\r?\n|\r/;
+                var lines = request.responseText.split(seperator);
+
+                // start from first line skip node meta data
+                for(var i = 1; i < lines.length; i++)
+                {
+                    if (lines[i].length <= 0)
+                        continue;
+
+                    var lineData = lines[i].split('\t');
+                    self.cancerStudies[lineData[0]] = lineData;
+                }
+                //console.log(self.cancerStudies);
+            }
+        };
+        request.open("GET", this.GET_ALL_CANCER_STUDIES_URL);
+        request.send();
+    };
+
+    //genetic_profile_id	genetic_profile_name	genetic_profile_description	cancer_study_id	genetic_alteration_type
+    CBioPortalAccessor.prototype.getAllGeneticProfiles = function (cancerStudy, callbackFunction)
+    {
+        var outData = {};
+        var request = new XMLHttpRequest();
+        var self = this;
+        request.onreadystatechange = function ()
+        {
+            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+            {
+                // By lines
+                // Match all new line character representations
+                var seperator = /\r?\n|\r/;
+                var lines = request.responseText.split(seperator);
+
+                // start from first line skip node meta data
+                for(var i = 1; i < lines.length; i++)
+                {
+                    if (lines[i].length <= 0)
+                        continue;
+
+                    var lineData = lines[i].split('\t');
+                    outData[lineData[0]] = lineData;
+                }
+
+                callbackFunction(outData);
+            }
+        };
+        request.open("GET", this.GET_GENETIC_PROFILES_URL + cancerStudy);
+        request.send();
+    };
+
+    //genetic_profile_id	genetic_profile_name	genetic_profile_description	cancer_study_id	genetic_alteration_type
+    CBioPortalAccessor.prototype.getAllGeneticProfiles = function (cancerStudy, callbackFunction)
+    {
+        var outData = {};
+        var request = new XMLHttpRequest();
+        var self = this;
+        request.onreadystatechange = function ()
+        {
+            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+            {
+                // By lines
+                // Match all new line character representations
+                var seperator = /\r?\n|\r/;
+                var lines = request.responseText.split(seperator);
+
+                // start from first line skip node meta data
+                for(var i = 1; i < lines.length; i++)
+                {
+                    if (lines[i].length <= 0)
+                        continue;
+
+                    var lineData = lines[i].split('\t');
+                    outData[lineData[0]] = lineData;
+                }
+
+                callbackFunction(outData);
+            }
+        };
+        request.open("GET", this.GET_GENETIC_PROFILES_URL + cancerStudy);
+        request.send();
+    };
+
+    return CBioPortalAccessor;
+
+})();
+},{}],194:[function(require,module,exports){
 //Import node modules here !
 var $ = window.$ = window.jQuery = require('jquery');
 var _ = window._ = require('underscore');
@@ -57769,11 +57881,13 @@ var WelcomePageView = require('./BackboneViews/WelcomePageView.js');
 var AppManager = require('./AppManager');
 var RealTimeModule = require('./RealTimeManager');
 var SaveLoadUtilities = require('./SaveLoadUtility.js');
+var CBioPortalAccessor = require('./cBioPortalAccessor.js');
 
 //Wait all components to load
 $(window).load(function()
 {
-    
+    var testPortalAccessor = new CBioPortalAccessor();
+
     function getLocalPathway(pathwayName)
     {
         var request = new XMLHttpRequest();
@@ -57873,9 +57987,9 @@ $(window).load(function()
 });
 
 
-},{"./AppManager":170,"./BackboneViews/WelcomePageView.js":175,"./RealTimeManager":188,"./RealTimeUtils":189,"./SaveLoadUtility.js":191,"backbone":1,"bootstrap":2,"jquery":137,"underscore":138}],194:[function(require,module,exports){
+},{"./AppManager":170,"./BackboneViews/WelcomePageView.js":175,"./RealTimeManager":188,"./RealTimeUtils":189,"./SaveLoadUtility.js":191,"./cBioPortalAccessor.js":193,"backbone":1,"bootstrap":2,"jquery":137,"underscore":138}],195:[function(require,module,exports){
 
-},{}],195:[function(require,module,exports){
+},{}],196:[function(require,module,exports){
 exports.endianness = function () { return 'LE' };
 
 exports.hostname = function () {
@@ -57922,7 +58036,7 @@ exports.tmpdir = exports.tmpDir = function () {
 
 exports.EOL = '\n';
 
-},{}],196:[function(require,module,exports){
+},{}],197:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -58150,7 +58264,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":197}],197:[function(require,module,exports){
+},{"_process":198}],198:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -58243,4 +58357,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[193]);
+},{}]},{},[194]);

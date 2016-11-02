@@ -148,7 +148,6 @@ function getTemplateFileData(req, res)
             var lines = data.split(seperator);
             var lastStudy = "";
 
-            // start from first line skip node meta data
             for(var i = 0; i < lines.length; i++)
             {
                 var line = lines[i];
