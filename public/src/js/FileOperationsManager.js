@@ -221,6 +221,31 @@ module.exports = (function($)
             saveAs(blob, fileName);
         }
     });
+
+    $('#fileinput').on('change', function()
+    {
+        var file = this.files[0];
+        // Create a new FormData object.
+        var formData = new FormData();
+        formData.append('graphFile', file);
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function ()
+        {
+            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+            {
+                var graphData = SaveLoadUtilities.parseGraph(request.responseText);
+                window.editorActionsManager.loadFile(graphData.nodes, graphData.edges);
+                changePathwayDetails({
+                        fileName: file.name,
+                        pathwayTitle: graphData.title,
+                        pathwayDescription: graphData.description
+                    });
+            }
+        };
+        request.open("POST", "/loadGraph");
+        request.send(formData);
+        $('#fileinput').val(null);
+    });
     
     function resetUndoStack()
     {

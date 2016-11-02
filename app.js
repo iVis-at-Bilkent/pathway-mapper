@@ -135,6 +135,48 @@ function loadPathway(req, res)
     });
 }
 
+function getTemplateFileData(req, res)
+{
+    fs.readFile('./samples/sampleMeta.txt', {encoding: 'utf-8'}, function(err,data)
+    {
+        if (!err)
+        {
+            var outData = {};
+            // By lines
+            // Match all new line character representations
+            var seperator = /\r?\n|\r/;
+            var lines = data.split(seperator);
+            var lastStudy = "";
+
+            // start from first line skip node meta data
+            for(var i = 0; i < lines.length; i++)
+            {
+                var line = lines[i];
+                if(line.indexOf("--") >= 0)
+                {
+                    lastStudy = line.substring(line.indexOf("--") + 2, line.length);
+                    outData[lastStudy] = [];
+                    continue;
+                }
+                else
+                {
+                    if (line.length > 0)
+                        outData[lastStudy].push(line);
+                }
+            }
+
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(JSON.stringify(outData));
+            res.end();
+        }
+        else
+        {
+            console.log(err);
+        }
+        // fs.unlinkSync('./samples/sample1.txt');
+    });
+}
+
 /*******************************
   GET Requests
 ********************************/
@@ -142,7 +184,7 @@ app.get('/',indexGetHandler);
 app.get('/sampleGraph', loadSampleFile);
 app.get('/pathway', loadPathway);
 app.get('/sampleGenomicData', loadSampleGenomicData);
-
+app.get('/getTemplateFileData', getTemplateFileData);
 
 
 /*******************************

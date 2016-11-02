@@ -52188,7 +52188,7 @@ var QtipManager = require('./QtipManager.js');
 var ContextMenuManager = require('./ContextMenuManager.js');
 var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
 var EditorActionsManager = require('./EditorActionsManager.js');
-
+var SaveLoadUtilities = require('./SaveLoadUtility.js');
 
 
  module.exports = (function()
@@ -52198,6 +52198,7 @@ var EditorActionsManager = require('./EditorActionsManager.js');
         this.isCollaborative = isCollaborative;
         this.realTimeManager = realTimeManager;
         this.init();
+        this.createSampleMenu();
     }
 
     AppManager.prototype.init = function()
@@ -52255,6 +52256,64 @@ var EditorActionsManager = require('./EditorActionsManager.js');
       $('.cy-panzoom').css('top', topCy + 5);
       $('.cy-panzoom').css('left', widthCy + leftCy - 55);
     }
+
+    AppManager.prototype.createSampleMenu = function ()
+    {
+        //Get template file data first
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function ()
+        {
+            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+            {
+                var templateData = JSON.parse(request.responseText);
+
+                for (var key in templateData)
+                {
+                    if (templateData.hasOwnProperty(key))
+                    {
+                        var newSubMenu = $('<li class="dropdown-submenu" id="'+ key +'">' +
+                                                '<a href="#">'+key+'</a>' +
+                                           '</li>');
+                        var newElement = $('<ul class="dropdown-menu"></ul>');
+
+                        for(var i in templateData[key])
+                        {
+                            var newPath = templateData[key][i];
+                            var sampleLink = $('<li><a  path="'+ newPath + '" href="#">'+ newPath.substring(0, newPath.length-4) +'</a></li>');
+                            sampleLink.on('click', sampleMenuClickHandler);
+                            newElement.append(sampleLink);
+                            newSubMenu.append(newElement);
+                        }
+
+                        $('#sampleSubMenu').append(newSubMenu);
+                    }
+                }
+            }
+        };
+
+
+        function sampleMenuClickHandler(event)
+        {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if(request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+                    var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+                    window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
+                }
+            };
+
+            //Send request for selected pathway
+            var pathwayName = event.target.text;
+            request.open("GET", "/pathway?filename=" + pathwayName + ".txt");
+            request.send();
+        }
+
+
+        request.open("GET", "/getTemplateFileData");
+        request.send();
+    };
+
+
 
     AppManager.prototype.initCyJS = function()
     {
@@ -52464,7 +52523,7 @@ var EditorActionsManager = require('./EditorActionsManager.js');
     return AppManager;
 })();
 
-},{"../../lib/js/cose-bilkent/src/index.js":169,"./BackboneViews/GenomicDataExplorerView.js":172,"./BackboneViews/LayoutPropertiesView.js":173,"./BackboneViews/PathwayDetailsView.js":174,"./ContextMenuManager.js":176,"./DragDropNodeAddPlugin.js":177,"./EdgeHandlesOptions.js":178,"./EditorActionsManager.js":179,"./FileOperationsManager.js":180,"./GenomicMenuOperations.js":182,"./GraphStyleSheet.js":183,"./GraphUtilities.js":184,"./OtherMenuOperations.js":185,"./PanzoomOptions.js":186,"./QtipManager.js":187,"./ViewOperationsManager.js":192,"cytoscape":111,"cytoscape-context-menus":15,"cytoscape-grid-guide":22,"cytoscape-navigator":26,"cytoscape-panzoom":27,"cytoscape-qtip":28,"cytoscape-undo-redo":29}],171:[function(require,module,exports){
+},{"../../lib/js/cose-bilkent/src/index.js":169,"./BackboneViews/GenomicDataExplorerView.js":172,"./BackboneViews/LayoutPropertiesView.js":173,"./BackboneViews/PathwayDetailsView.js":174,"./ContextMenuManager.js":176,"./DragDropNodeAddPlugin.js":177,"./EdgeHandlesOptions.js":178,"./EditorActionsManager.js":179,"./FileOperationsManager.js":180,"./GenomicMenuOperations.js":182,"./GraphStyleSheet.js":183,"./GraphUtilities.js":184,"./OtherMenuOperations.js":185,"./PanzoomOptions.js":186,"./QtipManager.js":187,"./SaveLoadUtility.js":191,"./ViewOperationsManager.js":192,"cytoscape":111,"cytoscape-context-menus":15,"cytoscape-grid-guide":22,"cytoscape-navigator":26,"cytoscape-panzoom":27,"cytoscape-qtip":28,"cytoscape-undo-redo":29}],171:[function(require,module,exports){
 /*
  * Copyright 2013 Memorial-Sloan Kettering Cancer Center.
  *
@@ -54531,6 +54590,31 @@ module.exports = (function($)
             saveAs(blob, fileName);
         }
     });
+
+    $('#fileinput').on('change', function()
+    {
+        var file = this.files[0];
+        // Create a new FormData object.
+        var formData = new FormData();
+        formData.append('graphFile', file);
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function ()
+        {
+            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+            {
+                var graphData = SaveLoadUtilities.parseGraph(request.responseText);
+                window.editorActionsManager.loadFile(graphData.nodes, graphData.edges);
+                changePathwayDetails({
+                        fileName: file.name,
+                        pathwayTitle: graphData.title,
+                        pathwayDescription: graphData.description
+                    });
+            }
+        };
+        request.open("POST", "/loadGraph");
+        request.send(formData);
+        $('#fileinput').val(null);
+    });
     
     function resetUndoStack()
     {
@@ -55413,28 +55497,6 @@ module.exports = (function()
             $('#quickHelpModal').modal('show');
         }
     });
-
-    $('#fileinput').on('change', function()
-    {
-        var file = this.files[0];
-        // Create a new FormData object.
-        var formData = new FormData();
-        formData.append('graphFile', file);
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function ()
-        {
-            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
-            {
-                var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-                window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
-                changeFileName(file.name);
-            }
-        };
-        request.open("POST", "/loadGraph");
-        request.send(formData);
-        $('#fileinput').val(null);
-    });
-    
 
 })();
 },{}],186:[function(require,module,exports){
