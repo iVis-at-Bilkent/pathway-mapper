@@ -4,17 +4,17 @@ A web based pathway curation tool for interactive creation, editing, and sharing
 
 ## Software
 
-Used technologies: Cytoscape.js, Node.js, Backbone.js. 
+PathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).
 
-A sample deployment can be found [here](http://tcga.patika.org).
+It used the following libraries: Cytoscape.js, node.js, backbone.js. 
 
-To run the clone of the project in your computer, run
+To run the clone of the project in your computer, run:
 ```
 sudo npm run-debug build
 ```
-this launches the application on port 80 if it is not in use.
+This launches the application on port 80 if it is not in use.
 
-PathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).
+A sample deployment can be found [here](http://tcga.patika.org).
 
 ### Adding Genes and Interactions
 
@@ -51,6 +51,13 @@ Before vertical center alignment of four nodes with respect to the firstly selec
 After alignment:
 <p align="center">
   <img src="public/assets/align-after.png" width="400"/>
+</p>
+
+### Sample TCGA Pathways
+
+A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) are available under Network > Samples menu sorted alphabetically by cancer type. For instance, following is the PI3K pathway in Glioblastoma:
+<p align="center">
+  <img src="public/assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="400"/>
 </p>
 
 ### Performing Automatic Layout
@@ -123,4 +130,4 @@ Any changes made by any person working on the pathway with the same URL will be 
 
 ## Team
 
-  * [Istemi Bahceci](https://github.com/istemi-bahceci), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis) and Jianjiong Gao, Nikolaus Schultz of [Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
+  * [Istemi Bahceci](https://github.com/istemi-bahceci), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis) and Konnor C. La, Jianjiong Gao, Nikolaus Schultz of [Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
