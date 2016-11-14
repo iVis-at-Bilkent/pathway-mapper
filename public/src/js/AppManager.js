@@ -120,15 +120,14 @@ var SaveLoadUtilities = require('./SaveLoadUtility.js');
                         for(var i in templateData[key])
                         {
                             var newPath = templateData[key][i];
-                            var sampleLink = $('<li><a  path="'+ newPath + '" href="#">'+ newPath.substring(0, newPath.length-4) +'</a></li>');
+                            var pathwayName = newPath.replaceAll("-", " ").substring(0, newPath.length-4);
+                            var sampleLink = $('<li><a  path="'+ newPath + '" href="#">'+ pathwayName +'</a></li>');
                             sampleLink.on('click', sampleMenuClickHandler);
 
                             //Add it to pan cancer menu
                             if(key.includes('PanCancer'))
                             {
                                 //panCancerSubMenu
-                                var sampleLink = $('<li><a  path="'+ newPath + '" href="#">'+ newPath.substring(0, newPath.length-4) +'</a></li>');
-                                sampleLink.on('click', sampleMenuClickHandler);
                                 $('#panCancerSubMenu').append(sampleLink);
                             }
                             else

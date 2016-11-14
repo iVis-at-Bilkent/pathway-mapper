@@ -67,5 +67,4 @@ PanCancer-TGF-B-signaling-pathway.txt
 PanCancer-TP53-pathway.txt
 PanCancer-TP53-RB Pathway-pathway.txt
 PanCancer-WNT-signaling-pathway.txt
---Creighton
 Creighton-PI3K-pathway.txt
