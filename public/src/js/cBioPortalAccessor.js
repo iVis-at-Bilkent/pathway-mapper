@@ -6,10 +6,10 @@ module.exports = (function()
         this.GET_ALL_CANCER_STUDIES_URL  = "http://www.cbioportal.org/webservice.do?cmd=getCancerStudies";
         this.GET_GENETIC_PROFILES_URL = "http://www.cbioportal.org/webservice.do?cmd=getGeneticProfiles&cancer_study_id=";
 
-        this.fetchCancerStudies();
-        this.getAllGeneticProfiles("acbc_mskcc_2015", function(data){
-            console.log(data);
-        });
+        // this.fetchCancerStudies();
+        // this.getAllGeneticProfiles("acbc_mskcc_2015", function(data){
+        //     console.log(data);
+        // });
     }
 
     //cancer_study_id	name	description

@@ -52279,8 +52279,8 @@ var SaveLoadUtilities = require('./SaveLoadUtility.js');
                         for(var i in templateData[key])
                         {
                             var newPath = templateData[key][i];
-                            var pathwayName = newPath.replaceAll("-", " ").substring(0, newPath.length-4);
-                            var sampleLink = $('<li><a  path="'+ newPath + '" href="#">'+ pathwayName +'</a></li>');
+                            var pName = newPath.replace(/-/gi, " ").substring(0, newPath.length-4);
+                            var sampleLink = $('<li><a  path="'+ newPath + '" href="#">'+ pName +'</a></li>');
                             sampleLink.on('click', sampleMenuClickHandler);
 
                             //Add it to pan cancer menu
@@ -52319,8 +52319,8 @@ var SaveLoadUtilities = require('./SaveLoadUtility.js');
             };
 
             //Send request for selected pathway
-            var pathwayName = event.target.text;
-            request.open("GET", "/pathway?filename=" + pathwayName + ".txt");
+            var pathwayName = event.target.attributes[0].value;
+            request.open("GET", "/pathway?filename=" + pathwayName);
             request.send();
         }
 
@@ -57781,10 +57781,10 @@ module.exports = (function()
         this.GET_ALL_CANCER_STUDIES_URL  = "http://www.cbioportal.org/webservice.do?cmd=getCancerStudies";
         this.GET_GENETIC_PROFILES_URL = "http://www.cbioportal.org/webservice.do?cmd=getGeneticProfiles&cancer_study_id=";
 
-        this.fetchCancerStudies();
-        this.getAllGeneticProfiles("acbc_mskcc_2015", function(data){
-            console.log(data);
-        });
+        // this.fetchCancerStudies();
+        // this.getAllGeneticProfiles("acbc_mskcc_2015", function(data){
+        //     console.log(data);
+        // });
     }
 
     //cancer_study_id	name	description
