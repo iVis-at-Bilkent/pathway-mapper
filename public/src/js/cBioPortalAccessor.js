@@ -74,8 +74,9 @@ module.exports = (function()
         request.send();
     };
 
-    //genetic_profile_id	genetic_profile_name	genetic_profile_description	cancer_study_id	genetic_alteration_type
-    CBioPortalAccessor.prototype.getAllGeneticProfiles = function (cancerStudy, callbackFunction)
+
+    //http://www.cbioportal.org/webservice.do?cmd=getProfileData&case_set_id=gbm_tcga_all&genetic_profile_id=gbm_tcga_mutations&gene_list=BRCA1+BRCA2+TP53
+    CBioPortalAccessor.prototype.getProfileData = function (cancerStudy, callbackFunction)
     {
         var outData = {};
         var request = new XMLHttpRequest();

@@ -8,6 +8,7 @@ BLCA-2014-TP53-RB-pathway.txt
 --BRCA
 BRCA-2012-RTK-RAS-PI(3)K-pathway.txt
 BRCA-2012-TP53-pathway.txt
+BRCA-2012-Cell-cycle-signaling-pathway.txt
 --COADREAD
 COADREAD-2012-RTK-RAS-PI(3)K-pathway.txt
 COADREAD-2012-TGF-B-signaling-pathway.txt
@@ -47,4 +48,23 @@ SKCM-2015-Cell-cycle-signaling-pathway.txt
 SKCM-2015-Histone-modification-pathway.txt
 SKCM-2015-RTK-RAS-PI(3)K-pathway.txt
 SKCM-2015-TP53-pathway.txt
+--STAD
 STAD-2014-RTK-RAS-PI(3)K-pathway.txt
+--THCA
+THCA-2014-RTK-RAS-PI(3)K-pathway.txt
+--UCEC
+UCEC-2013-RTK-RAS-PI(3)K-pathway.txt
+--PanCancer
+PanCancer-Apoptosis-pathway.txt
+PanCancer-Cell-cycle-signaling-pathway.txt
+PanCancer-DNA-repair-pathway.txt
+PanCancer-Histone-modification-pathway.txt
+PanCancer-Notch-signaling-pathway.txt
+PanCancer-Oxidative-stress-response-pathway.txt
+PanCancer-PI3K-pathway.txt
+PanCancer-RTK-RAS-PI(3)K-pathway.txt
+PanCancer-TGF-B-signaling-pathway.txt
+PanCancer-TP53-pathway.txt
+PanCancer-TP53-RB Pathway-pathway.txt
+PanCancer-WNT-signaling-pathway.txt
+--Creighton

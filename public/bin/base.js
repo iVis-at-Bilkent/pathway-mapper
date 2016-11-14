@@ -52271,21 +52271,38 @@ var SaveLoadUtilities = require('./SaveLoadUtility.js');
                 {
                     if (templateData.hasOwnProperty(key))
                     {
-                        var newSubMenu = $('<li class="dropdown-submenu" id="'+ key +'">' +
+                        var newTCGAMenu = $('<li class="dropdown-submenu" id="'+ key +'">' +
                                                 '<a href="#">'+key+'</a>' +
                                            '</li>');
-                        var newElement = $('<ul class="dropdown-menu"></ul>');
+                        var newTCGAPathway = $('<ul class="dropdown-menu"></ul>');
 
                         for(var i in templateData[key])
                         {
                             var newPath = templateData[key][i];
                             var sampleLink = $('<li><a  path="'+ newPath + '" href="#">'+ newPath.substring(0, newPath.length-4) +'</a></li>');
                             sampleLink.on('click', sampleMenuClickHandler);
-                            newElement.append(sampleLink);
-                            newSubMenu.append(newElement);
+
+                            //Add it to pan cancer menu
+                            if(key.includes('PanCancer'))
+                            {
+                                //panCancerSubMenu
+                                var sampleLink = $('<li><a  path="'+ newPath + '" href="#">'+ newPath.substring(0, newPath.length-4) +'</a></li>');
+                                sampleLink.on('click', sampleMenuClickHandler);
+                                $('#panCancerSubMenu').append(sampleLink);
+                            }
+                            else
+                            {
+                                newTCGAPathway.append(sampleLink);
+                                newTCGAMenu.append(newTCGAPathway);
+                            }
                         }
 
-                        $('#sampleSubMenu').append(newSubMenu);
+                        //Add sub menus if they do not include pancaner and creighton
+                        if( !key.includes('PanCancer') && !key.includes('Creighton') )
+                        {
+                            $('#sampleSubMenu').append(newTCGAMenu);
+                        }
+
                     }
                 }
             }
@@ -57833,8 +57850,9 @@ module.exports = (function()
         request.send();
     };
 
-    //genetic_profile_id	genetic_profile_name	genetic_profile_description	cancer_study_id	genetic_alteration_type
-    CBioPortalAccessor.prototype.getAllGeneticProfiles = function (cancerStudy, callbackFunction)
+
+    //http://www.cbioportal.org/webservice.do?cmd=getProfileData&case_set_id=gbm_tcga_all&genetic_profile_id=gbm_tcga_mutations&gene_list=BRCA1+BRCA2+TP53
+    CBioPortalAccessor.prototype.getProfileData = function (cancerStudy, callbackFunction)
     {
         var outData = {};
         var request = new XMLHttpRequest();
