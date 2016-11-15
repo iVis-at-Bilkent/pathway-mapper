@@ -53,14 +53,14 @@ After alignment:
   <img src="public/assets/align-after.png" width="400"/>
 </p>
 
-### Sample TCGA Pathways
+### Sample TCGA and PanCancer Pathways
 
-A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) are available under Network > Samples menu sorted alphabetically by cancer type. For instance, following is the PI3K pathway in Glioblastoma:
+A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) and PanCancer studies are available under Network > TCGA and PanCancer menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
 <p align="center">
   <img src="public/assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="500"/>
 </p>
 
-The same pathway can be opened up in PathwayMapper using <a href="http://tcga.patika.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">this</a>.
+The same pathway can be opened up in PathwayMapper with URL <a href="http://tcga.patika.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://tcga.patika.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
 
 ### Performing Automatic Layout
 
