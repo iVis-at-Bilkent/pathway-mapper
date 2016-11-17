@@ -130,6 +130,31 @@ Should you choose "Collaborative" on the welcome page, you will be first prompte
 
 Any changes made by any person working on the pathway with the same URL will be shared / reflected to other people currently viweing / editing the same pathway.
 
+### Runninc Local Instance
+In order to run local instance of the tool please follow the steps below:
+
+
+Firstly clone PathwayMapper to your local machine and navigate to the local repository:
+
+- Installation
+```
+git clone https://github.com/iVis-at-Bilkent/pathway-mapper.git
+cd patway-mapper
+npm install ( Required only once to install dependencies )
+```
+
+- Running the tool
+```
+npm run
+```
+
+
+Please note that app runs on the port 3000 by default. To change the port that tool runs on, change the associated variable in app.js file:
+```
+var APP_PORT = 3000;
+```
+
+
 ## Team
 
   * [Istemi Bahceci](https://github.com/istemi-bahceci), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis) and Konnor C. La, Jianjiong Gao, Nikolaus Schultz of [Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
