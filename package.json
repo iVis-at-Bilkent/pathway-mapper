@@ -15,7 +15,8 @@
     "watch-server": "nodemon app.js",
     "release-build": "npm run build-min-js & npm run build-min-css",
     "build-cose": "npm run build-js",
-    "debug-build": "npm run watch-js & npm run watch-css & npm run watch-server & npm run watch-cose "
+    "debug-build": "npm run watch-js & npm run watch-css & npm run watch-server & npm run watch-cose ",
+    "start": "npm run build-min-js & npm run build-min-css & node app.js"
   },
   "author": "Istemi Bahceci",
   "license": "BSD-2-Clause",
@@ -45,6 +46,7 @@
     "multer": "~1.1.0",
     "npm": "^3.9.6",
     "qtip2": "~3.0.2",
+    "uglifyjs": "^2.4.10",
     "underscore": "~1.8.3"
   }
 }

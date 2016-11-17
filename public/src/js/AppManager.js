@@ -156,6 +156,11 @@ var SaveLoadUtilities = require('./SaveLoadUtility.js');
                 if(request.readyState === XMLHttpRequest.DONE && request.status === 200) {
                     var allEles = SaveLoadUtilities.parseGraph(request.responseText);
                     window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
+                    window.appManager.pathwayDetailsView.updatePathwayProperties({
+                        fileName: allEles.title + ".txt",
+                        pathwayTitle: allEles.title,
+                        pathwayDescription: allEles.description
+                    });
                 }
             };
 

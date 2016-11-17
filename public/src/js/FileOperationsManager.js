@@ -93,7 +93,7 @@ module.exports = (function($)
 
               changePathwayDetails(
                   {
-                      fileName: "samplePathway.txt",
+                      fileName: graphData.name,
                       pathwayTitle: graphData.title,
                       pathwayDescription: graphData.description
                   });

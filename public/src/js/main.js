@@ -26,6 +26,11 @@ $(window).load(function()
             {
                 var allEles = SaveLoadUtilities.parseGraph(request.responseText);
                 window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
+                window.appManager.pathwayDetailsView.updatePathwayProperties({
+                    fileName: allEles.title + ".txt",
+                    pathwayTitle: allEles.title,
+                    pathwayDescription: allEles.description
+                });
             }
             else
             {
