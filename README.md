@@ -6,15 +6,39 @@ A web based pathway curation tool for interactive creation, editing, and sharing
 
 PathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).
 
-It used the following libraries: Cytoscape.js, node.js, backbone.js. 
+It uses the following libraries: Cytoscape.js, node.js, backbone.js. 
 
+A sample deployment can be found [here](http://tcga.patika.org).
+
+<!---
 To run the clone of the project in your computer, run:
 ```
 sudo npm run-debug build
 ```
 This launches the application on port 80 if it is not in use.
+--->
 
-A sample deployment can be found [here](http://tcga.patika.org).
+#### Running a Local Instance
+In order to deploy and run a local instance of the tool, please follow the steps below:
+
+Firstly, clone PathwayMapper to your local machine, and navigate to the local repository:
+
+- Installation
+```
+git clone https://github.com/iVis-at-Bilkent/pathway-mapper.git
+cd patway-mapper
+npm install ( Required only once to install dependencies )
+```
+
+- Running the tool
+```
+npm run
+```
+
+Please note that the app runs on the port 3000 by default. To change the port that tool runs on, change the associated variable in app.js file:
+```
+var APP_PORT = 3000;
+```
 
 ### Adding Genes and Interactions
 
@@ -129,31 +153,6 @@ When the user unchecks the experiment data for "lung" through Alteration % > Dat
 Should you choose "Collaborative" on the welcome page, you will be first prompted for Google account authentication since the shared data model will be stored in a shared document at Google Drive folder of the user. Then your editing session will be given a unique ID and you will have the option of sharing the URL containing this ID with desired person(s) and construct / edit a pathways in real time with support for concurrent modifications and built-in conflict resolution.
 
 Any changes made by any person working on the pathway with the same URL will be shared / reflected to other people currently viweing / editing the same pathway.
-
-### Runninc Local Instance
-In order to run local instance of the tool please follow the steps below:
-
-
-Firstly clone PathwayMapper to your local machine and navigate to the local repository:
-
-- Installation
-```
-git clone https://github.com/iVis-at-Bilkent/pathway-mapper.git
-cd patway-mapper
-npm install ( Required only once to install dependencies )
-```
-
-- Running the tool
-```
-npm run
-```
-
-
-Please note that app runs on the port 3000 by default. To change the port that tool runs on, change the associated variable in app.js file:
-```
-var APP_PORT = 3000;
-```
-
 
 ## Team
 
