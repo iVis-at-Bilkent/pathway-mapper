@@ -27,12 +27,12 @@ Firstly, clone PathwayMapper to your local machine, and navigate to the local re
 ```
 git clone https://github.com/iVis-at-Bilkent/pathway-mapper.git
 cd patway-mapper
-npm install ( Required only once to install dependencies )
+npm install 
 ```
 
 - Running the tool
 ```
-npm run
+npm start
 ```
 
 Please note that the app runs on the port 3000 by default. To change the port that tool runs on, change the associated variable in app.js file:
