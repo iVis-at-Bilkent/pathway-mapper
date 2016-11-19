@@ -21,8 +21,8 @@ app.use('/node_modules/filesaverjs', express.static(__dirname + '/node_modules/f
 
 var multerInstance = multer({dest:'./uploads/'});
 
-var APP_PORT = 3000;
-//var APP_PORT = 80;
+//var APP_PORT = 3000;
+var APP_PORT = 80;
 
 //get handler for index.html
 function indexGetHandler(req,res){

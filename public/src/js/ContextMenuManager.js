@@ -27,7 +27,7 @@ module.exports = (function()
             var ele = event.cyTarget;
             // The function to be executed on click
             var selectedElements = cy.nodes(':selected').union(ele);
-            classRef.editorActionsManager.removeElementsCy(selectedElements);
+            classRef.editorActionsManager.removeElement(selectedElements);
           },
           disabled: false, // Whether the item will be created as disabled
           hasTrailingDivider: true, // Whether the item will have a trailing divider
