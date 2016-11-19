@@ -305,10 +305,11 @@
               <li class="dropdown dataDropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Alteration % <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><a role="loadGenomic" href="#">Load Genomic Data...</a></li>
-                  <li><a role="loadSampleGenomicData" href="#">Load Sample Genomic Data</a></li>
-                  <li><a role="dataViewSettings" href="#">Data View Settings...</a></li>
-                  <li><a role="removeGenomicData" href="#">Remove Genomic Data</a></li>
+                  <li><a role="loadGenomic" href="#">Load From File...</a></li>
+                  <li><a role="loadPortal" href="#">Load From cBioPortal...</a></li>
+                  <li><a role="loadSampleGenomicData" href="#">Load Sample</a></li>
+                  <li><a role="dataViewSettings" href="#">View Settings...</a></li>
+                  <li><a role="removeGenomicData" href="#">Remove Data</a></li>
                 </ul>
               </li>
               <li class="dropdown layoutDropDown">
@@ -598,6 +599,21 @@
 </script>
 
 <div id='pathwayDetailsDiv' class="modal fade" tabindex="-1" role="dialog">
+</div><!-- /.modal -->
+
+<div id='cbioPortalAccessDiv' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Profile Data from cBioPortal </h3>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div><!-- /.modal-content -->
+  </div>
 </div><!-- /.modal -->
 
 <script id="pathwayDetailsTemplate" type="text/template" class="template">

@@ -2,18 +2,15 @@ module.exports = (function()
 {
     function CBioPortalAccessor()
     {
-        this.cancerStudies = {};
         this.GET_ALL_CANCER_STUDIES_URL  = "http://www.cbioportal.org/webservice.do?cmd=getCancerStudies";
         this.GET_GENETIC_PROFILES_URL = "http://www.cbioportal.org/webservice.do?cmd=getGeneticProfiles&cancer_study_id=";
         this.GET_PROFILE_DATA_URL = "http://www.cbioportal.org/webservice.do?cmd=getProfileData";
 
+        //TEST PART
         this.fetchCancerStudies();
         this.getAllGeneticProfiles("acbc_mskcc_2015", function(data){
             console.log(data);
         });
-
-        //params
-        //caseSetId, geneticProfileId, genes
         this.getProfileData(
             {
                 caseSetId: "gbm_tcga",
@@ -27,11 +24,13 @@ module.exports = (function()
         );
     }
 
-    //cancer_study_id	name	description
-    CBioPortalAccessor.prototype.fetchCancerStudies = function ()
+    /*
+    * Retrieves all cancer studies from cBioPortal
+    * **/
+    CBioPortalAccessor.prototype.fetchCancerStudies = function (callbackFunction)
     {
+        var cancerStudies = {};
         var request = new XMLHttpRequest();
-        var self = this;
         request.onreadystatechange = function ()
         {
             if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
@@ -48,16 +47,18 @@ module.exports = (function()
                         continue;
 
                     var lineData = lines[i].split('\t');
-                    self.cancerStudies[lineData[0]] = lineData;
+                    cancerStudies[lineData[0]] = lineData;
                 }
-                //console.log(self.cancerStudies);
+                callbackFunction(cancerStudies);
             }
         };
         request.open("GET", this.GET_ALL_CANCER_STUDIES_URL);
         request.send();
     };
 
-    //genetic_profile_id	genetic_profile_name	genetic_profile_description	cancer_study_id	genetic_alteration_type
+    /*
+    * Retrieves all genetic profiles for given cancerStudy from cBioPortal
+    * **/
     CBioPortalAccessor.prototype.getAllGeneticProfiles = function (cancerStudy, callbackFunction)
     {
         var outData = {};
@@ -90,7 +91,17 @@ module.exports = (function()
     };
 
 
-    //http://www.cbioportal.org/webservice.do?cmd=getProfileData&case_set_id=gbm_tcga_all&genetic_profile_id=gbm_tcga_mutations&gene_list=BRCA1+BRCA2+TP53
+
+    /*
+    *
+    *    Retrieves profile data associated with the parameters below from cBioPortal
+    *    @params
+         {
+            caseSetId: "gbm_tcga",
+            geneticProfileId: "gbm_tcga_mutations",
+            genes: ["BRCA1", "BRCA2", "TP53"]
+          }
+    * */
     CBioPortalAccessor.prototype.getProfileData = function ( params, callbackFunction)
     {
         //params
@@ -103,24 +114,34 @@ module.exports = (function()
         {
             if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
             {
-                console.log(request.responseText);
-
-                /*// By lines
+                // By lines
                 // Match all new line character representations
                 var seperator = /\r?\n|\r/;
                 var lines = request.responseText.split(seperator);
+                //Total number of tumor samples in the response
+                var tumorSamples = lines[2].split('\t');
+                var numOfTumorSamples = tumorSamples.length - 2;
 
-                // start from first line skip node meta data
-                for(var i = 1; i < lines.length; i++)
+                // skip meta parts
+                for(var i = 3; i < lines.length; i++)
                 {
                     if (lines[i].length <= 0)
                         continue;
 
+                    //Iterate over samples for each gene to calculate profile data
                     var lineData = lines[i].split('\t');
-                    outData[lineData[0]] = lineData;
+                    var profileDataAlteration = 0;
+                    for(var j = 2; j < lineData.length; j++)
+                    {
+                        if(lineData[j] !== 'NaN')
+                            profileDataAlteration++;
+                    }
+
+                    //
+                    outData[lineData[1]] = ( profileDataAlteration / numOfTumorSamples ) * 100;
                 }
 
-                callbackFunction(outData);*/
+                callbackFunction(outData);
             }
         };
 

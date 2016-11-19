@@ -34,6 +34,10 @@ module.exports = (function ($)
         {
             $('#genomicDataInput').trigger('click');
         }
+        else if (dropdownLinkRole == 'loadPortal')
+        {
+            $('#cbioPortalAccessDiv').modal('show');
+        }
         else if (dropdownLinkRole == 'dataViewSettings')
         {
             $('#genomicDataExplorerDiv').modal('show');
