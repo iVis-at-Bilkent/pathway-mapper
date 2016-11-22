@@ -17,6 +17,7 @@ var edgeHandleOpts = require('./EdgeHandlesOptions.js');
 var LayoutProperties = require('./BackboneViews/LayoutPropertiesView.js');
 var GenomicDataExplorerView = require('./BackboneViews/GenomicDataExplorerView.js');
 var PathwayDetailsView = require('./BackboneViews/PathwayDetailsView.js');
+var CBioPortalAccessView = require('./BackboneViews/CbioPortalAccessView.js');
 
 //Other requires
 require('./FileOperationsManager.js');
@@ -24,158 +25,153 @@ require('./OtherMenuOperations.js');
 require('./GenomicMenuOperations.js');
 require('./ViewOperationsManager.js');
 require('./GraphUtilities.js');
+require('bootstrap-select');
 
 var QtipManager = require('./QtipManager.js');
 var ContextMenuManager = require('./ContextMenuManager.js');
 var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
 var EditorActionsManager = require('./EditorActionsManager.js');
 var SaveLoadUtilities = require('./SaveLoadUtility.js');
+var CBioPortalAccessor = require('./cBioPortalAccessor.js');
 
 
- module.exports = (function()
-{
-    function AppManager(isCollaborative,realTimeManager)
-    {
-        this.isCollaborative = isCollaborative;
-        this.realTimeManager = realTimeManager;
-        this.init();
-        this.createSampleMenu();
-    }
+ module.exports = (function() {
+     function AppManager(isCollaborative, realTimeManager) {
+         this.isCollaborative = isCollaborative;
+         this.realTimeManager = realTimeManager;
+         this.init();
+         this.createSampleMenu();
+         this.createCBioPortalAccessModal();
+     }
 
-    AppManager.prototype.init = function()
-    {
-        //Initializes cytoscape
-        this.initCyJS();
-        //Initialize cytoscape based handlers here
-        this.initCyHandlers();
+     AppManager.prototype.init = function () {
+         //Initializes cytoscape
+         this.initCyJS();
+         //Initialize cytoscape based handlers here
+         this.initCyHandlers();
 
-        var that = this;
-        window.onresize = function()
-        {
-          that.placePanzoomAndOverlay();
-        }
+         var that = this;
+         window.onresize = function () {
+             that.placePanzoomAndOverlay();
+         }
 
-        //TODO undo redo is not working properly in collaborative mode 
-        if(!this.isCollaborative)
-        {
-            $(document).keydown(function(e)
-            {
-                if( e.which === 89 && (e.ctrlKey || event.metaKey) )
-                {
-                    window.undoRedoManager.redo();
-                }
-                else if( e.which === 90 && (e.ctrlKey || event.metaKey) )
-                {
-                    window.undoRedoManager.undo();
-                }
-            });
-        }
-        else
-        {
-            $('a[role="redo"]').hide();
-            $('a[role="undo"]').hide();
-        }
+         //TODO undo redo is not working properly in collaborative mode 
+         if (!this.isCollaborative) {
+             $(document).keydown(function (e) {
+                 if (e.which === 89 && (e.ctrlKey || event.metaKey)) {
+                     window.undoRedoManager.redo();
+                 }
+                 else if (e.which === 90 && (e.ctrlKey || event.metaKey)) {
+                     window.undoRedoManager.undo();
+                 }
+             });
+         }
+         else {
+             $('a[role="redo"]').hide();
+             $('a[role="undo"]').hide();
+         }
 
-        window.appManager = this;
-    };
+         window.appManager = this;
+     };
 
-    AppManager.prototype.placePanzoomAndOverlay = function()
-    {
-      //TODO place navigator !!!
-      var offset = 5;
-      var topCy = $('.cyContainer').offset().top;
-      var leftCy = $('.cyContainer').offset().left;
-      var heightCy = $('.cyContainer').outerHeight();
-      var widthCy = $('.cyContainer').outerWidth();
-      var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
-      var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
-      var heightPanzoom = $('.cy-panzoom').outerHeight();
-      var widthPanzoom = $('.cy-panzoom').outerWidth();
-      $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
-      $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
+     AppManager.prototype.placePanzoomAndOverlay = function () {
+         //TODO place navigator !!!
+         var offset = 5;
+         var topCy = $('.cyContainer').offset().top;
+         var leftCy = $('.cyContainer').offset().left;
+         var heightCy = $('.cyContainer').outerHeight();
+         var widthCy = $('.cyContainer').outerWidth();
+         var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
+         var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
+         var heightPanzoom = $('.cy-panzoom').outerHeight();
+         var widthPanzoom = $('.cy-panzoom').outerWidth();
+         $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
+         $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
 
-      $('.cy-panzoom').css('top', topCy + 5);
-      $('.cy-panzoom').css('left', widthCy + leftCy - 55);
-    }
+         $('.cy-panzoom').css('top', topCy + 5);
+         $('.cy-panzoom').css('left', widthCy + leftCy - 55);
+     }
 
-    AppManager.prototype.createSampleMenu = function ()
-    {
-        //Get template file data first
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function ()
-        {
-            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
-            {
-                var templateData = JSON.parse(request.responseText);
+     AppManager.prototype.createSampleMenu = function ()
+     {
+         //Get template file data first
+         var request = new XMLHttpRequest();
+         request.onreadystatechange = function () {
+             if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+                 var templateData = JSON.parse(request.responseText);
 
-                for (var key in templateData)
-                {
-                    if (templateData.hasOwnProperty(key))
-                    {
-                        var newTCGAMenu = $('<li class="dropdown-submenu" id="'+ key +'">' +
-                                                '<a href="#">'+key+'</a>' +
-                                           '</li>');
-                        var newTCGAPathway = $('<ul class="dropdown-menu"></ul>');
+                 for (var key in templateData) {
+                     if (templateData.hasOwnProperty(key)) {
+                         var newTCGAMenu = $('<li class="dropdown-submenu" id="' + key + '">' +
+                             '<a href="#">' + key + '</a>' +
+                             '</li>');
+                         var newTCGAPathway = $('<ul class="dropdown-menu"></ul>');
 
-                        for(var i in templateData[key])
-                        {
-                            var newPath = templateData[key][i];
-                            var pName = newPath.replace(/-/gi, " ").substring(0, newPath.length-4);
-                            var sampleLink = $('<li><a  path="'+ newPath + '" href="#">'+ pName +'</a></li>');
-                            sampleLink.on('click', sampleMenuClickHandler);
+                         for (var i in templateData[key]) {
+                             var newPath = templateData[key][i];
+                             var pName = newPath.replace(/-/gi, " ").substring(0, newPath.length - 4);
+                             var sampleLink = $('<li><a  path="' + newPath + '" href="#">' + pName + '</a></li>');
+                             sampleLink.on('click', sampleMenuClickHandler);
 
-                            //Add it to pan cancer menu
-                            if(key.includes('PanCancer'))
-                            {
-                                //panCancerSubMenu
-                                $('#panCancerSubMenu').append(sampleLink);
-                            }
-                            else
-                            {
-                                newTCGAPathway.append(sampleLink);
-                                newTCGAMenu.append(newTCGAPathway);
-                            }
-                        }
+                             //Add it to pan cancer menu
+                             if (key.includes('PanCancer')) {
+                                 //panCancerSubMenu
+                                 $('#panCancerSubMenu').append(sampleLink);
+                             }
+                             else {
+                                 newTCGAPathway.append(sampleLink);
+                                 newTCGAMenu.append(newTCGAPathway);
+                             }
+                         }
 
-                        //Add sub menus if they do not include pancaner and creighton
-                        if( !key.includes('PanCancer') && !key.includes('Creighton') )
-                        {
-                            $('#sampleSubMenu').append(newTCGAMenu);
-                        }
+                         //Add sub menus if they do not include pancaner and creighton
+                         if (!key.includes('PanCancer') && !key.includes('Creighton')) {
+                             $('#sampleSubMenu').append(newTCGAMenu);
+                         }
 
-                    }
-                }
-            }
-        };
+                     }
+                 }
+             }
+         };
 
 
-        function sampleMenuClickHandler(event)
-        {
-            var request = new XMLHttpRequest();
-            request.onreadystatechange = function () {
-                if(request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-                    var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-                    window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
-                    window.appManager.pathwayDetailsView.updatePathwayProperties({
-                        fileName: allEles.title + ".txt",
-                        pathwayTitle: allEles.title,
-                        pathwayDescription: allEles.description
-                    });
-                }
-            };
+         function sampleMenuClickHandler(event) {
+             var request = new XMLHttpRequest();
+             request.onreadystatechange = function () {
+                 if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+                     var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+                     window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
+                     window.appManager.pathwayDetailsView.updatePathwayProperties({
+                         fileName: allEles.title + ".txt",
+                         pathwayTitle: allEles.title,
+                         pathwayDescription: allEles.description
+                     });
+                 }
+             };
 
-            //Send request for selected pathway
-            var pathwayName = event.target.attributes[0].value;
-            request.open("GET", "/pathway?filename=" + pathwayName);
-            request.send();
-        }
-
-
-        request.open("GET", "/getTemplateFileData");
-        request.send();
-    };
+             //Send request for selected pathway
+             var pathwayName = event.target.attributes[0].value;
+             request.open("GET", "/pathway?filename=" + pathwayName);
+             request.send();
+         }
 
 
+         request.open("GET", "/getTemplateFileData");
+         request.send();
+     };
+
+     AppManager.prototype.createCBioPortalAccessModal = function ()
+     {
+         var portalAccessor = new CBioPortalAccessor();
+         var self = this;
+         portalAccessor.fetchCancerStudies(function (cancerStudies)
+         {
+             self.portalAccessView = new CBioPortalAccessView({
+                 el: $("#cbioPortalAccessDiv"),
+                 cancerStudies: cancerStudies
+             });
+         });
+     }
 
     AppManager.prototype.initCyJS = function()
     {

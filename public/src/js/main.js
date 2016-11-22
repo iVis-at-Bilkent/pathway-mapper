@@ -10,13 +10,10 @@ var WelcomePageView = require('./BackboneViews/WelcomePageView.js');
 var AppManager = require('./AppManager');
 var RealTimeModule = require('./RealTimeManager');
 var SaveLoadUtilities = require('./SaveLoadUtility.js');
-var CBioPortalAccessor = require('./cBioPortalAccessor.js');
 
 //Wait all components to load
 $(window).load(function()
 {
-    var testPortalAccessor = new CBioPortalAccessor();
-
     function getLocalPathway(pathwayName)
     {
         var request = new XMLHttpRequest();

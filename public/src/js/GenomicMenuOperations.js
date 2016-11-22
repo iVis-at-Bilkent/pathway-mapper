@@ -36,7 +36,7 @@ module.exports = (function ($)
         }
         else if (dropdownLinkRole == 'loadPortal')
         {
-            $('#cbioPortalAccessDiv').modal('show');
+            window.appManager.portalAccessView.render();
         }
         else if (dropdownLinkRole == 'dataViewSettings')
         {

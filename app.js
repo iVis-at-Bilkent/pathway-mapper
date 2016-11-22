@@ -17,6 +17,8 @@ app.use('/node_modules/cytoscape-context-menus', express.static(__dirname + '/no
 app.use('/node_modules/cytoscape-navigator', express.static(__dirname + '/node_modules/cytoscape-navigator/'));
 app.use('/node_modules/qtip2', express.static(__dirname + '/node_modules/qtip2/'));
 app.use('/node_modules/filesaverjs', express.static(__dirname + '/node_modules/filesaverjs/'));
+app.use('/node_modules/bootstrap-select', express.static(__dirname + '/node_modules/bootstrap-select/'));
+
 
 
 var multerInstance = multer({dest:'./uploads/'});

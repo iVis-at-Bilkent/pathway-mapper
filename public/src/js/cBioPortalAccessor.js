@@ -7,21 +7,21 @@ module.exports = (function()
         this.GET_PROFILE_DATA_URL = "http://www.cbioportal.org/webservice.do?cmd=getProfileData";
 
         //TEST PART
-        this.fetchCancerStudies();
-        this.getAllGeneticProfiles("acbc_mskcc_2015", function(data){
-            console.log(data);
-        });
-        this.getProfileData(
-            {
-                caseSetId: "gbm_tcga",
-                geneticProfileId: "gbm_tcga_mutations",
-                genes: ["BRCA1", "BRCA2", "TP53"]
-            },
-            function(data)
-            {
-                console.log(data);
-            }
-        );
+        // this.fetchCancerStudies();
+        // this.getAllGeneticProfiles("acbc_mskcc_2015", function(data){
+        //     console.log(data);
+        // });
+        // this.getProfileData(
+        //     {
+        //         caseSetId: "gbm_tcga",
+        //         geneticProfileId: "gbm_tcga_mutations",
+        //         genes: ["BRCA1", "BRCA2", "TP53"]
+        //     },
+        //     function(data)
+        //     {
+        //         console.log(data);
+        //     }
+        // );
     }
 
     /*
@@ -147,7 +147,8 @@ module.exports = (function()
 
         //Create query URL
         var queryURL = this.GET_PROFILE_DATA_URL;
-        queryURL += "&case_set_id=" + params.caseSetId + "_all";
+        //Fetch sequenced case list !!
+        queryURL += "&case_set_id=" + params.caseSetId + "_sequenced";
         queryURL += "&genetic_profile_id=" + params.geneticProfileId;
         queryURL += "&gene_list=";
 
