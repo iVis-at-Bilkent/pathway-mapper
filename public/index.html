@@ -13,7 +13,9 @@
   <link rel="stylesheet" href="node_modules/cytoscape-navigator/cytoscape.js-navigator.css" charset="utf-8">
   <link rel="stylesheet" href="node_modules/bootstrap-select/dist/css/bootstrap-select.min.css" charset="utf-8">
   <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.css">
-  <link rel="stylesheet" href="bin/base.min.css" charset="utf-8">
+  <!--For debugging-->
+  <link rel="stylesheet" href="bin/base.css" charset="utf-8">
+  <!--<link rel="stylesheet" href="bin/base.min.css" charset="utf-8">-->
 </head>
 <body>
 
@@ -610,12 +612,19 @@
         <h3 class="modal-title">Profile Data from cBioPortal </h3>
       </div>
       <div class="modal-body">
-        <div id="cancerDropDown">
+        <div class="section">
+          <div id="cancerDropDown">
+          </div>
         </div>
-        <div id="dataTypeSelection">
+        <div class="section">
+          <div id="dataTypeSelection">
+          </div>
         </div>
       </div>
       <div class="modal-footer">
+        <div>
+          <button id="getProfileData" class="btn btn-default" >Load Data</button>
+        </div>
       </div>
     </div><!-- /.modal-content -->
   </div>

@@ -42,6 +42,17 @@ module.exports = (function()
         this.selecteNodeStack = {};
     };
 
+    //Get all gene symbols
+    EditorActionsManager.prototype.getGeneSymbols = function()
+    {
+        var geneSymbols = [];
+        this.cy.nodes().forEach( function (gene)
+        {
+            geneSymbols.push(gene.data().name);
+        });
+        return geneSymbols;
+    }
+
     //Related to order the nodes according to the selection of user
     EditorActionsManager.prototype.pushSelectedNodeStack = function(ele)
     {
@@ -842,6 +853,18 @@ module.exports = (function()
         else
         {
             this.genomicDataOverlayManager.addGenomicDataLocally(genomicData);
+        }
+    }
+
+    EditorActionsManager.prototype.addPortalGenomicData = function(genomicData)
+    {
+        if(this.isCollaborative)
+        {
+            console.log("collaborative portal data ?")
+        }
+        else
+        {
+            this.genomicDataOverlayManager.addPortalGenomicData(genomicData);
         }
     }
 

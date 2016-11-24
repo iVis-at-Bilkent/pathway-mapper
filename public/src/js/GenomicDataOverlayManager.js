@@ -23,6 +23,36 @@ module.exports = (function()
         this.notifyObservers();
     };
 
+    GenomicDataOverlayManager.prototype.addPortalGenomicData = function(genomicData)
+    {
+        this.genomicDataMap = (this.genomicDataMap) ? this.genomicDataMap:{};
+        this.cancerTypes = (this.cancerTypes) ? this.cancerTypes:[];
+        this.visibleGenomicDataMapByType = (this.visibleGenomicDataMapByType) ? this.visibleGenomicDataMapByType:{};
+
+
+        for (var cancerProfile in genomicData)
+        {
+            if((cancerProfile in this.cancerTypes))
+                continue;
+
+            this.cancerTypes.push(cancerProfile);
+            this.visibleGenomicDataMapByType[cancerProfile] = true;
+
+
+            for (var geneSymbol in genomicData[cancerProfile])
+            {
+                if(!this.genomicDataMap[geneSymbol])
+                    this.genomicDataMap[geneSymbol] = {};
+
+
+                this.genomicDataMap[geneSymbol][cancerProfile] = String(genomicData[cancerProfile][geneSymbol].toFixed(2));
+            }
+        }
+
+        this.showGenomicData();
+        this.notifyObservers();
+    };
+
     GenomicDataOverlayManager.prototype.removeGenomicData = function()
     {
         this.genomicDataMap = {};

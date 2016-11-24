@@ -164,14 +164,16 @@ var CBioPortalAccessor = require('./cBioPortalAccessor.js');
      {
          var portalAccessor = new CBioPortalAccessor();
          var self = this;
+
+         this.portalAccessView = new CBioPortalAccessView({
+             el: $("#cbioPortalAccessDiv")
+         });
+
          portalAccessor.fetchCancerStudies(function (cancerStudies)
          {
-             self.portalAccessView = new CBioPortalAccessView({
-                 el: $("#cbioPortalAccessDiv"),
-                 cancerStudies: cancerStudies
-             });
+             self.portalAccessView.updateCancerStudies(cancerStudies);
          });
-     }
+     };
 
     AppManager.prototype.initCyJS = function()
     {
