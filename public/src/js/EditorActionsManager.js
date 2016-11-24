@@ -860,7 +860,10 @@ module.exports = (function()
     {
         if(this.isCollaborative)
         {
-            console.log("collaborative portal data ?")
+            //TODO not a nice workaround
+            this.genomicDataOverlayManager.addPortalGenomicData(genomicData);
+            this.realTimeManager.addGenomicData('genomicData', this.genomicDataOverlayManager.genomicDataMap);
+            this.realTimeManager.addGenomicVisibilityData('visMap', this.genomicDataOverlayManager.visibleGenomicDataMapByType);
         }
         else
         {
