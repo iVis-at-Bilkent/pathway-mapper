@@ -8,7 +8,7 @@ PathwayMapper is distributed under [GNU Affero General Public License](https://w
 
 It uses the following libraries: Cytoscape.js, node.js, backbone.js. 
 
-A sample deployment can be found [here](http://tcga.patika.org).
+A sample deployment can be found [here](http://pathwaymapper.org).
 
 <!---
 To run the clone of the project in your computer, run:
@@ -84,7 +84,7 @@ A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) and 
   <img src="public/assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="500"/>
 </p>
 
-The same pathway can be opened up in PathwayMapper with URL <a href="http://tcga.patika.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://tcga.patika.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
+The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
 
 ### Performing Automatic Layout
 
@@ -157,4 +157,4 @@ Any changes made by any person working on the pathway with the same URL will be 
 
 ## Team
 
-  * [Istemi Bahceci](https://github.com/istemi-bahceci), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis) and Konnor C. La, Jianjiong Gao, Nikolaus Schultz of [Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
+  * [Istemi Bahceci](https://github.com/istemi-bahceci), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and Konnor C. La, [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
