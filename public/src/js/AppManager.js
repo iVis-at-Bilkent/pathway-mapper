@@ -17,6 +17,7 @@ var edgeHandleOpts = require('./EdgeHandlesOptions.js');
 var LayoutProperties = require('./BackboneViews/LayoutPropertiesView.js');
 var GenomicDataExplorerView = require('./BackboneViews/GenomicDataExplorerView.js');
 var PathwayDetailsView = require('./BackboneViews/PathwayDetailsView.js');
+var GridOptionsView = require('./BackboneViews/GridOptionsView.js');
 var CBioPortalAccessView = require('./BackboneViews/CbioPortalAccessView.js');
 
 //Other requires
@@ -141,6 +142,7 @@ var CBioPortalAccessor = require('./cBioPortalAccessor.js');
                  if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
                      var allEles = SaveLoadUtilities.parseGraph(request.responseText);
                      window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
+                     window.undoRedoManager.reset();
                      window.appManager.pathwayDetailsView.updatePathwayProperties({
                          fileName: allEles.title + ".txt",
                          pathwayTitle: allEles.title,
@@ -218,6 +220,10 @@ var CBioPortalAccessor = require('./cBioPortalAccessor.js');
             editorActionsManager: this.editorActionsManager
         }).render();
 
+        this.gridOptionsView = new GridOptionsView({
+            el: $('#gridOptionsDiv')
+        }).render();
+
         this.genomicDataExplorerView = new GenomicDataExplorerView({
             el: $('#genomicDataExplorerDiv'),
             editorActionsManager: this.editorActionsManager
@@ -280,24 +286,7 @@ var CBioPortalAccessor = require('./cBioPortalAccessor.js');
         };
 
         var nav = cy.navigator( navDefaults ); // get navigator instance, nav
-
-
-        var gridGuide = cy.gridGuide({
-            snapToGrid: false, // Snap to grid functionality
-            discreteDrag: false, // Discrete Drag
-            guidelines: true, // Guidelines on dragging nodes
-            resize: false, // Adjust node sizes to cell sizes
-            parentPadding: false, // Adjust parent sizes to cell sizes by padding
-            drawGrid: true, // Draw grid background
-            // Guidelines
-            guidelinesStackOrder: 4, // z-index of guidelines
-            guidelinesTolerance: 2.00, // Tolerance distance for rendered positions of nodes' interaction.
-            guidelinesStyle: { // Set ctx properties of line. Properties are here:
-                lineWidth: 2.0,
-                strokeStyle: "#000000",
-                lineDash: [7, 15] // read https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
-            },
-        });
+        
 
          window.undoRedoManager = cy.undoRedo();
 

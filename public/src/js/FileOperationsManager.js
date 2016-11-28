@@ -200,6 +200,7 @@ module.exports = (function($)
         else if (dropdownLinkRole == 'new')
         {
             window.editorActionsManager.removeAllElements();
+            resetUndoStack();
         }
         else if (dropdownLinkRole == 'merge')
         {

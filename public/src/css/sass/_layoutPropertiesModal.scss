@@ -1,13 +1,13 @@
-#layoutPropertiesDiv{
+#layoutPropertiesDiv, #gridOptionsDiv{
   .modal,.modal-body
   {
     max-height: 100%;
 
-    .form-control:focus {
-      border: 2px solid $menuHoverColor;
-      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $menuHoverColor;
-      color: #2f4154;
-    }
+    //.form-control:focus {
+    //  border: 2px solid $menuHoverColor;
+    //  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $menuHoverColor;
+    //  color: #2f4154;
+    //}
 
   }
 

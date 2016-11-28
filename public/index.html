@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="node_modules/cytoscape-navigator/cytoscape.js-navigator.css" charset="utf-8">
   <link rel="stylesheet" href="node_modules/bootstrap-select/dist/css/bootstrap-select.min.css" charset="utf-8">
   <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.css">
+  <link rel="stylesheet" href="lib/js/bootstrap-color-picker/css/bootstrap-colorpicker.min.css" charset="utf-8">
+
   <!--For debugging-->
   <link rel="stylesheet" href="bin/base.css" charset="utf-8">
   <!--<link rel="stylesheet" href="bin/base.min.css" charset="utf-8">-->
@@ -283,7 +285,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li class="dropdown-submenu">
-                    <a tabindex="-1" href="#">Align Selected</a>
+                    <a tabindex="-1" role="alignment" href="#">Align Selected</a>
                     <ul class="dropdown-menu">
                       <li class="dropdown-submenu">
                         <a tabindex="-1" href="#">Vertical</a>
@@ -303,6 +305,7 @@
                       </li>
                     </ul>
                   </li>
+                  <li><a tabindex="-1" role="grid" href="#">Grid...</a></li>
                 </ul>
               </li>
               <li class="dropdown dataDropdown">
@@ -353,25 +356,6 @@
               Network
             </div>
             <div class="pnl-body pathwayPanel">
-              <!--<div>-->
-                <!--<div style="float: left">-->
-                  <!--<label>File Name:</label>-->
-                <!--</div>-->
-                <!--<div  id="pFileName" class="fileNameContent" style="float: right; margin-left: 5px;"  contenteditable="true">-->
-                  <!--pathway.txt-->
-                <!--</div>-->
-              <!--</div>-->
-              <!--<div>-->
-                <!--<div style="float: left">-->
-                  <!--<label>Title:</label>-->
-                <!--</div>-->
-                <!--<div  id="pTitle" class="fileNameContent" style="float: right; margin-left: 5px;"  contenteditable="true">-->
-                  <!--pathway.txt-->
-                <!--</div>-->
-              <!--</div>-->
-                <!--<label style="width: 100%; text-align: center;">Pathway Description:</label>-->
-                <!--<textarea id="pDescription">...</textarea>-->
-              <!--</div>-->
               <div class="buttonContainer">
                 <button id="pathwayDetailsBtn" type="button" class="btn btn-default">
                   <i class="fui-upload"></i> Details...
@@ -435,35 +419,35 @@
 
 
 <!--<footer>-->
-  <!--<div class="container">-->
-    <!--<div class="row">-->
-      <!--<div class="col-xs-7">-->
-        <!--<h3 class="footer-title">About TCGA Pathway Curation Tool</h3>-->
-        <!--<p>-->
-          <!--This is a curation tool for TCGA pan-cancer pathway people for preparing the topology and layout of these pathways using a uniform notation.-->
-        <!--</p>-->
+<!--<div class="container">-->
+<!--<div class="row">-->
+<!--<div class="col-xs-7">-->
+<!--<h3 class="footer-title">About TCGA Pathway Curation Tool</h3>-->
+<!--<p>-->
+<!--This is a curation tool for TCGA pan-cancer pathway people for preparing the topology and layout of these pathways using a uniform notation.-->
+<!--</p>-->
 
 
-        <!--&lt;!&ndash; <a class="footer-brand" href="http://designmodo.com" target="_blank">-->
-          <!--<img src="docs/assets/img/footer/logo.png" alt="Designmodo.com" />-->
-        <!--</a> &ndash;&gt;-->
-      <!--</div> &lt;!&ndash; /col-xs-7 &ndash;&gt;-->
+<!--&lt;!&ndash; <a class="footer-brand" href="http://designmodo.com" target="_blank">-->
+<!--<img src="docs/assets/img/footer/logo.png" alt="Designmodo.com" />-->
+<!--</a> &ndash;&gt;-->
+<!--</div> &lt;!&ndash; /col-xs-7 &ndash;&gt;-->
 
-      <!--<div class="col-xs-5">-->
-        <!--&lt;!&ndash; <div class="footer-banner">-->
-          <!--<h3 class="footer-title">TCGAViz is Open Source !</h3>-->
-          <!--<p class="pvl">-->
-            <!--<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://designmodo.com/flat-free/" data-text="Flat UI Free - PSD&amp;amp;HTML User Interface Kit" data-via="designmodo">Tweet</a>-->
-            <!--<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>-->
-            <!--<iframe src="http://ghbtns.com/github-btn.html?user=designmodo&repo=Flat-UI&type=watch&count=true" height="20" width="107" frameborder="0" scrolling="0" style="width:105px; height: 20px;" allowTransparency="true"></iframe>-->
-            <!--<iframe src="http://ghbtns.com/github-btn.html?user=designmodo&repo=Flat-UI&type=fork&count=true" height="20" width="107" frameborder="0" scrolling="0" style="width:105px; height: 20px;" allowTransparency="true"></iframe>-->
-            <!--<iframe src="http://ghbtns.com/github-btn.html?user=designmodo&type=follow&count=true" height="20" width="195" frameborder="0" scrolling="0" style="width:195px; height: 20px;" allowTransparency="true"></iframe>-->
-          <!--</p>-->
-           <!--Go to: <a href="http://designmodo.com/flat" target="_blank">designmodo.com/flat</a>-->
-        <!--</div> &ndash;&gt;-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
+<!--<div class="col-xs-5">-->
+<!--&lt;!&ndash; <div class="footer-banner">-->
+<!--<h3 class="footer-title">TCGAViz is Open Source !</h3>-->
+<!--<p class="pvl">-->
+<!--<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://designmodo.com/flat-free/" data-text="Flat UI Free - PSD&amp;amp;HTML User Interface Kit" data-via="designmodo">Tweet</a>-->
+<!--<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>-->
+<!--<iframe src="http://ghbtns.com/github-btn.html?user=designmodo&repo=Flat-UI&type=watch&count=true" height="20" width="107" frameborder="0" scrolling="0" style="width:105px; height: 20px;" allowTransparency="true"></iframe>-->
+<!--<iframe src="http://ghbtns.com/github-btn.html?user=designmodo&repo=Flat-UI&type=fork&count=true" height="20" width="107" frameborder="0" scrolling="0" style="width:105px; height: 20px;" allowTransparency="true"></iframe>-->
+<!--<iframe src="http://ghbtns.com/github-btn.html?user=designmodo&type=follow&count=true" height="20" width="195" frameborder="0" scrolling="0" style="width:195px; height: 20px;" allowTransparency="true"></iframe>-->
+<!--</p>-->
+<!--Go to: <a href="http://designmodo.com/flat" target="_blank">designmodo.com/flat</a>-->
+<!--</div> &ndash;&gt;-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
 <!--</footer>-->
 
 
@@ -604,6 +588,9 @@
 <div id='pathwayDetailsDiv' class="modal fade" tabindex="-1" role="dialog">
 </div><!-- /.modal -->
 
+<div id='gridOptionsDiv' class="modal fade" tabindex="-1" role="dialog">
+</div><!-- /.modal -->
+
 <div id='cbioPortalAccessDiv' class="modal fade" tabindex="-1" role="dialog">
   <div id="cbioPortalModal" class="modal-dialog">
     <div class="modal-content">
@@ -668,6 +655,59 @@
   </div>
 </script>
 
+<script id="gridOptionsTemplate" type="text/template" class="template">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Grid Options</h3>
+      </div>
+      <div class="modal-body">
+        <div class="modal-body">
+          <form role="form" id="gripOptionsForm">
+            <div class="input-group">
+              <label class="control-label col-sm-4" for="showGrid">Show Grid:</label>
+              <div class="col-sm-8 leftText">
+                <input id="showGrid" type="checkbox" class="input-small layout-text" <% if (drawGrid){ %> checked<%}%>>
+              </div>
+            </div>
+            <div class="input-group">
+              <label class="control-label col-sm-4" for="showGuides">Show Grid Guidelines:</label>
+              <div class="col-sm-8 leftText">
+                <input id="showGuides" type="checkbox" class="input-small layout-text" <% if (guidelines){ %> checked<%}%>>
+              </div>
+            </div>
+            <div class="input-group">
+              <label class="control-label col-sm-4" for="showGuides">Snap to Grid:</label>
+              <div class="col-sm-8 leftText">
+                <input id="snapToGrid" type="checkbox" class="input-small layout-text" <% if (snapToGrid){ %> checked<%}%>>
+              </div>
+            </div>
+            <div class="input-group">
+              <label class="control-label col-sm-4" for="gridSize">Grid Size:</label>
+              <div class="col-sm-8">
+                <input id="gridSize" type="text" class="form-control" value=<%= gridSpacing %> >
+              </div>
+            </div>
+            <div id="colorPickerDiv" class="input-group colorpicker-component">
+              <label class="control-label col-sm-4" for="gridSize">Grid Color:</label>
+              <div class="col-sm-8">
+                <input id="colorPickerInput" type="text" class="form-control" />
+                <span id="colorPickerButton" class="input-group-addon"><i></i></span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button id="applyGridOptions" class="btn btn-default" > Save </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
 <!---->
 <!--File input related html elements-->
 <!---->
@@ -694,11 +734,14 @@
 <!-- Load the Realtime JavaScript library -->
 <script src="https://apis.google.com/js/api.js"></script>
 <script src="lib/js/FileSaver.js" charset="utf-8"></script>
+
 <!--For debugging-->
 <script src="bin/base.js"></script>
 <!--<script src="bin/base.min.js"></script>-->
 <script src="lib/js/cytoscape-edgeHandles.js" charset="utf-8"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.js"></script>
 <script src="https://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>
+<script src="lib/js/bootstrap-color-picker/js/bootstrap-colorpicker.min.js" charset="utf-8"></script>
+
 </body>
 </html>

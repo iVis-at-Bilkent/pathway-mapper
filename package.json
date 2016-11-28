@@ -29,7 +29,7 @@
     "bootstrap": "~3.3.6",
     "bootstrap-select": "^1.12.0",
     "clean-css": "^3.4.21",
-    "cytoscape": "2.7.5",
+    "cytoscape": "2.7.11",
     "cytoscape-context-menus": "^2.0.3",
     "cytoscape-cose-bilkent": "^1.3.3",
     "cytoscape-edgehandles": "~2.3.2",
@@ -52,6 +52,7 @@
     "multer": "~1.1.0",
     "npm": "^3.9.6",
     "qtip2": "~3.0.2",
+    "spectrum-colorpicker": "^1.8.0",
     "uglifyjs": "^2.4.10",
     "underscore": "~1.8.3"
   }

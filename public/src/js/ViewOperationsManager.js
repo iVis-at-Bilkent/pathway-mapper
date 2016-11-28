@@ -131,7 +131,16 @@ module.exports = (function($)
     {
         event.preventDefault();
         var dropdownLinkRole = $(event.target).attr('role');
-        handleNodeAlignment(dropdownLinkRole);
+        
+        if(dropdownLinkRole == "alignment")
+        {
+            handleNodeAlignment(dropdownLinkRole);
+        }
+        else if(dropdownLinkRole == "grid")
+        {
+            $("#gridOptionsDiv").modal('show');
+        }
+        
     });
 
 })(window.$)

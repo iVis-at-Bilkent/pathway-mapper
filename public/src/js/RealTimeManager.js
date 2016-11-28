@@ -4,7 +4,7 @@ module.exports = (function()
 
     var RealTimeManager = function(postFileLoadCallback)
     {
-        this.clientId = '781185170494-n5v6ukdtorbs0p8au8svibjdobaad35c.apps.googleusercontent.com';
+        this.clientId = '122039910543-b7u74aijsqne9iv5rk2tgm3529ped4d0.apps.googleusercontent.com';
 
         // if (!/^([0-9])$/.test(clientId[0]))
         // {
