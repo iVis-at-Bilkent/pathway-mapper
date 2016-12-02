@@ -1,6 +1,9 @@
 # PathwayMapper
 
-A web based pathway curation tool for interactive creation, editing, and sharing of cancer pathways. The tool also provides collaborative creation of pathways using Google Real Time API. 
+PathwayMapper is a web based pathway curation tool for interactive creation, editing, and sharing of cancer pathways. The tool supports remote users to collaborate and concurrently modify pathways using Google Real Time API with built-in conflict resolution. 
+<p align="center">
+  <img src="public/assets/sample-screenshot.png" width="400"/>
+</p>
 
 ## Software
 
@@ -60,7 +63,7 @@ To create a node, drag and drop it from the Node Palette. Similarly, to create a
 
 Below is a screenshot showing a sample pathway constructed with PathwayMapper:
 <p align="center">
-  <img src="public/assets/sample-pathway.png" width="400"/>
+  <img src="public/assets/sample-pathway.png" width="320"/>
 </p>
 
 ### Aligning Nodes
@@ -69,19 +72,19 @@ Alignment guidelines help us align nodes manually in a vertical or horizontal ma
 
 Before vertical center alignment of four nodes with respect to the firstly selected gene KRAS:
 <p align="center">
-  <img src="public/assets/align-before.png" width="400"/>
+  <img src="public/assets/align-before.png" width="320"/>
 </p>
 
 After alignment:
 <p align="center">
-  <img src="public/assets/align-after.png" width="400"/>
+  <img src="public/assets/align-after.png" width="320"/>
 </p>
 
 ### Sample TCGA and PanCancer Pathways
 
 A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) and PanCancer studies are available under Network > TCGA and PanCancer menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
 <p align="center">
-  <img src="public/assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="500"/>
+  <img src="public/assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="440"/>
 </p>
 
 The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
@@ -122,7 +125,7 @@ Here the first line contains the pathway title followed by a single empty line. 
 
 ### Exporting As Image
 
-The user may export the current pathway as an image in one of the following formats: JPG, PNG or SVG.
+The user may export the current pathway as a static image (JPG and PNG) or in scalable vector graphics (SVG).
 
 ### Viewing Experiment Data
 
@@ -146,6 +149,11 @@ Below is a screenshot showing sample experiment data overlaid on our sample data
 When the user unchecks the experiment data for "lung" through Alteration % > Data View Settings (first of the set of three), we get:
 <p align="center">
   <img src="public/assets/sample-data-no-lung.png" width="400"/>
+</p>
+
+The user may also fetch alteration frequencies available on cBioPortal database through Alteration % > Load from cBioPortal... dialog. The dialog will let the user select a cancer study followed by data type(s) available for that studey in the database, and overlay the related data set(s) on the pathway in addition to any currently available data set.
+<p align="center">
+  <img src="public/assets/sample-from-cbioportal.png" width="280"/>
 </p>
 
 ### Collaborative Editing
