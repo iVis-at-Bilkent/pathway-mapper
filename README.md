@@ -2,7 +2,7 @@
 
 PathwayMapper is a web based pathway curation tool for interactive creation, editing, and sharing of cancer pathways. The tool supports remote users to collaborate and concurrently modify pathways using Google Real Time API with built-in conflict resolution. 
 <p align="center">
-  <img src="public/assets/sample-screenshot.png" width="400"/>
+  <img src="public/assets/sample-screenshot.png" width="440"/>
 </p>
 
 ## Software
@@ -160,7 +160,7 @@ The user may also fetch alteration frequencies available on cBioPortal database 
 
 Should you choose "Collaborative" on the welcome page, you will be first prompted for Google account authentication since the shared data model will be stored in a shared document at Google Drive folder of the user. Then your editing session will be given a unique ID and you will have the option of sharing the URL containing this ID with desired person(s) and construct / edit a pathways in real time with support for concurrent modifications and built-in conflict resolution.
 
-Any changes made by any person working on the pathway with the same URL will be shared / reflected to other people currently viweing / editing the same pathway. Below is a short example illustrating collaborative usage: 
+Any changes made by any person working on the pathway with the same URL will be shared / reflected to other people currently viweing / editing the same pathway. Below is a short video illustrating collaborative usage: 
 <a href="http://www.cs.bilkent.edu.tr/~ivis/PathwayMapper/Collaboration-with-PM.mp4" target="_blank"><p align="center"><img src="public/assets/collaboration-with-PM.png" width="460"/></p></a>
 
 ## Team
