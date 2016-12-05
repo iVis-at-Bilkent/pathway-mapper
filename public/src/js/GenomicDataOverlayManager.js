@@ -176,8 +176,8 @@ module.exports = (function()
             return dataURI;
 
         var eleBBox = ele.boundingBox();
-        var reqWidth = getRequiredWidthForGenomicData();
-
+        var reqWidth = getRequiredWidthForGenomicData(genomicDataBoxCount);
+        console.log( " reqW" + reqWidth);
         var overlayRecBoxW = reqWidth - 10;
         var overlayRecBoxH = 25;
         var svg = document.createElementNS(svgNameSpace,'svg');
