@@ -288,7 +288,6 @@ var CBioPortalAccessor = require('./cBioPortalAccessor.js');
         var nav = cy.navigator( navDefaults ); // get navigator instance, nav
         
 
-         window.undoRedoManager = cy.undoRedo();
 
         this.placePanzoomAndOverlay();
     };

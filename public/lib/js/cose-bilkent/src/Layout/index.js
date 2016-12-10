@@ -206,7 +206,8 @@ _CoSELayout.prototype.run = function () {
   // First I need to create the data structure to pass to the worker
   var pData = {
     'nodes': [],
-    'edges': []
+    'edges': [],
+    'randomizeFlag': this.options.randomize
   };
 
   //Map the ids of nodes in the list to check if a node is in the list in constant time
@@ -353,46 +354,48 @@ _CoSELayout.prototype.run = function () {
       var e1 = gm_t.add(layout_t.newEdge(), sourceNode, targetNode);
     }
 
-
-    //This part is experimental and
-    //responsible for creating dummy nodes inside compounds to keep compound nodes compact !
-    var graphs = gm_t.getGraphs();
-    var size = graphs.length;
-    var i;
-    var dummyNodes = [];
-    var dummyEdges = [];
-    var graph;
-
-    for (i = 0; i < size; i++)
+    if(pData.randomizeFlag != "true")
     {
-      graph = graphs[i];
+      //This part is experimental and
+      //responsible for creating dummy nodes inside compounds to keep compound nodes compact !
+      var graphs = gm_t.getGraphs();
+      var size = graphs.length;
+      var i;
+      var dummyNodes = [];
+      var dummyEdges = [];
+      var graph;
 
-      //If nodes are connected inside compounds do nothing !
-      if(graph.getEdges().length > 0 )
+      for (i = 0; i < size; i++)
       {
-        continue;
-      }
+        graph = graphs[i];
 
-      var centerX = (graph.getLeft() + graph.getRight())/2;
-      var centerY = (graph.getLeft() + graph.getRight())/2;
-
-      var children = graph.getNodes();
-      var dummyNode = new CoSENode(gm_t, {x: centerX, y:centerY}, {width: 1, height: 1});
-      dummyNode.id = i+"_dummy";
-      dummyNodes.push(dummyNode);
-      graph.add(dummyNode);
-
-      //Children of each graph
-      for (var k = 0; k < children.length; k++)
-      {
-        //Do not create any edge that connects the dummy node to itself
-        if(children[k].id == dummyNode.id)
+        //If nodes are connected inside compounds do nothing !
+        if(graph.getEdges().length > 0 )
+        {
           continue;
+        }
 
-        var newEdge = layout_t.newEdge();
-        newEdge.id = children[k].id + "_" + dummyNode.id;
-        dummyEdges.push({dummyEdge: newEdge, parentGraph: graph});
-        graph.add(newEdge, children[k], dummyNode);
+        var centerX = (graph.getLeft() + graph.getRight())/2;
+        var centerY = (graph.getLeft() + graph.getRight())/2;
+
+        var children = graph.getNodes();
+        var dummyNode = new CoSENode(gm_t, {x: centerX, y:centerY}, {width: 1, height: 1});
+        dummyNode.id = i+"_dummy";
+        dummyNodes.push(dummyNode);
+        graph.add(dummyNode);
+
+        //Children of each graph
+        for (var k = 0; k < children.length; k++)
+        {
+          //Do not create any edge that connects the dummy node to itself
+          if(children[k].id == dummyNode.id)
+            continue;
+
+          var newEdge = layout_t.newEdge();
+          newEdge.id = children[k].id + "_" + dummyNode.id;
+          dummyEdges.push({dummyEdge: newEdge, parentGraph: graph});
+          graph.add(newEdge, children[k], dummyNode);
+        }
       }
     }
 
@@ -412,17 +415,20 @@ _CoSELayout.prototype.run = function () {
       };
     }
 
-    //Delete created dummy nodes and edges here
-    for (var i = 0; i < dummyNodes.length; i++)
+    if(pData.randomizeFlag != "true")
     {
-      var nodeInst = dummyNodes[i];
-      nodeInst.getOwner().remove(nodeInst);
-    }
+      //Delete created dummy nodes and edges here
+      for (var i = 0; i < dummyNodes.length; i++)
+      {
+        var nodeInst = dummyNodes[i];
+        nodeInst.getOwner().remove(nodeInst);
+      }
 
-    for (var i = 0; i < dummyEdges.length; i++)
-    {
-      var edgeInst = dummyEdges[i];
-      edgeInst.parentGraph.remove(edgeInst.dummyEdge);
+      for (var i = 0; i < dummyEdges.length; i++)
+      {
+        var edgeInst = dummyEdges[i];
+        edgeInst.parentGraph.remove(edgeInst.dummyEdge);
+      }
     }
 
     var seeds = {};

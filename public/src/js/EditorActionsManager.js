@@ -39,7 +39,50 @@ module.exports = (function()
         this.genomicDataOverlayManager = new GenomicDataOverlayManager();
         this.svgExporter = new SVGExporter();
 
-        this.selecteNodeStack = {};
+        this.selecteNodeStack = {}
+        window.undoRedoManager = cy.undoRedo();
+        window.undoRedoManager.action("changePositions", this.doChangePosition, this.undoChangePosition);
+
+
+    };
+
+    /*
+    * Undo redo for changing positions of nodes via programatically (node.position)
+    * **/
+    EditorActionsManager.prototype.doChangePosition = function(movedNodes)
+    {
+        var newMovedNodes = [];
+
+        for(var i = 0; i < movedNodes.length; i++)
+        {
+            var currentNodePosition =
+            {
+                x: movedNodes[i].node.position().x,
+                y: movedNodes[i].node.position().y
+            };
+            newMovedNodes.push({node: movedNodes[i].node, oldPosition: currentNodePosition, nextPosition: movedNodes[i].nextPosition});
+            movedNodes[i].node.position(movedNodes[i].nextPosition);
+        }
+
+        return newMovedNodes;
+    };
+
+    EditorActionsManager.prototype.undoChangePosition = function(movedNodes)
+    {
+        var newMovedNodes = [];
+
+        for(var i = 0; i < movedNodes.length; i++)
+        {
+            var currentNodePosition =
+            {
+                x: movedNodes[i].node.position().x,
+                y: movedNodes[i].node.position().y
+            };
+            newMovedNodes.push({node: movedNodes[i].node, oldPosition: movedNodes[i].oldPosition, nextPosition: currentNodePosition});
+            movedNodes[i].node.position(movedNodes[i].oldPosition);
+        }
+
+        return newMovedNodes;
     };
 
     //Get all gene symbols
@@ -628,7 +671,7 @@ module.exports = (function()
         this.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
     };
 
-    EditorActionsManager.prototype.moveElements = function(ele)
+    EditorActionsManager.prototype.moveElements = function(ele, position)
     {
         var classRef = this;
         //Sync movement to real time api
@@ -639,6 +682,11 @@ module.exports = (function()
                 classRef.realTimeManager.moveElement(ele);
             });
         }
+    };
+
+    EditorActionsManager.prototype.handleChangePositionByAlignment = function(movedNodeArr)
+    {
+        window.undoRedoManager.do("changePositions", movedNodeArr)
     };
 
     EditorActionsManager.prototype.mergeGraph = function(nodes, edges)

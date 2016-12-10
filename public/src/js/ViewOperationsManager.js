@@ -1,12 +1,15 @@
 module.exports = (function($)
 {
-    'use strict';
+    'use strict'
+
+    var movedNodes = [];
 
     function handleNodeAlignment(param)
     {
         var tmpNodes = window.editorActionsManager.selecteNodeStack;
         var nodes = cy.collection();
         var nodeMap = {};
+        movedNodes = [];
 
         for (var key in tmpNodes)
         {
@@ -39,10 +42,10 @@ module.exports = (function($)
                 {
                     var newPosition = calculateNewPosition(param, node, firstBbox)
                     //Recursively traverse leaf nodes
-                    moveNode(node,0,0,newPosition);
+                    changePosition(node,0,0,newPosition);
                 }
-
             });
+            window.editorActionsManager.handleChangePositionByAlignment(movedNodes);
         }
     }
 
@@ -91,7 +94,7 @@ module.exports = (function($)
     }
 
     //Recursively move leaf nodes
-    function moveNode(node, dx, dy, newPos)
+    function changePosition(node, dx, dy, newPos)
     {
         if (node.isParent())
         {
@@ -106,11 +109,11 @@ module.exports = (function($)
                 //If further compound node is found, set position accordingly
                 if (childNode.isParent())
                 {
-                    moveNode(childNode, 0, 0, {x: newPos.x+_dx, y:newPos.y+_dy});
+                    changePosition(childNode, 0, 0, {x: newPos.x+_dx, y:newPos.y+_dy});
                 }
                 else
                 {
-                    moveNode(childNode, _dx, _dy, newPos);
+                    changePosition(childNode, _dx, _dy, newPos);
                 }
 
             });
@@ -119,11 +122,13 @@ module.exports = (function($)
         {
             //Move locally and let editor actions manager know a move happened
             //If in collaborative mode editor actions manager will update collaborative model
-            node.position({
+            var position =
+            {
                 x: newPos.x+dx,
-                y:newPos.y+dy
-            });
-            window.editorActionsManager.moveElements(node);
+                y: newPos.y+dy
+            };
+
+            movedNodes.push({node: node, nextPosition: position, oldPosition: null});
         }
     }
 
