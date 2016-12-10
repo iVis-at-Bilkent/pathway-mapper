@@ -42,8 +42,36 @@ module.exports = (function()
         this.selecteNodeStack = {}
         window.undoRedoManager = cy.undoRedo();
         window.undoRedoManager.action("changePositions", this.doChangePosition, this.undoChangePosition);
+        window.undoRedoManager.action("changeName", this.doChangename, this.undoChangeName);
+
+    };
 
 
+    /*
+     * Undo redo for changing name of nodes
+     * **/
+    EditorActionsManager.prototype.doChangename = function(args)
+    {
+
+        var currentName = args.node.data('name');
+        var newArgs = {node: args.node, newName: args.newName, oldName: currentName};
+
+        args.node.data('name', args.newName);
+        args.node.css('content', args.newName);
+
+        return newArgs;
+    };
+
+    EditorActionsManager.prototype.undoChangeName = function(args)
+    {
+
+        var currentName = args.node.data('name');
+        var newArgs = {node: args.node, newName: args.oldName, oldName: currentName};
+
+        args.node.data('name', args.oldName);
+        args.node.css('content', args.oldName);
+
+        return newArgs;
     };
 
     /*
@@ -83,6 +111,19 @@ module.exports = (function()
         }
 
         return newMovedNodes;
+    };
+
+    EditorActionsManager.prototype.postLayout = function()
+    {
+        if (this.isCollaborative)
+        {
+            this.editorActionsManager.moveElements(cy.nodes());
+            var newState = {
+                zoomLevel: cy.zoom(),
+                panLevel: cy.pan()
+            };
+            this.editorActionsManager.updateGlobalOptions(newState);
+        }
     };
 
     //Get all gene symbols
@@ -204,7 +245,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.performLayout = function()
     {
-        window.undoRedoManager.do("layout", {options: this.layoutProperties, eles: null});
+        window.undoRedoManager.do("layout", {options: this.layoutProperties, eles: null, zoom: cy.zoom(), pan: cy.pan()});
     };
 
     //Node Related Functions
@@ -848,8 +889,9 @@ module.exports = (function()
 
     EditorActionsManager.prototype.changeNameCy = function(ele, newName)
     {
-        ele.data('name', newName);
-        ele.css('content', newName);
+        var currentName = ele.data('name');
+        var args = {node: ele, oldName: currentName, newName: newName};
+        window.undoRedoManager.do('changeName', args);
     };
 
     EditorActionsManager.prototype.updateElementCallback = function(ele, id)

@@ -4,7 +4,8 @@ var panzoom = require('cytoscape-panzoom');
 //var cxtmenu = require('cytoscape-cxtmenu');
 var navigator = require('cytoscape-navigator');
 var cyqtip = require('cytoscape-qtip');
-var regCose = require("../../lib/js/cose-bilkent/src/index.js");
+// var regCose = require("../../lib/js/cose-bilkent/src/index.js");
+var regCose = require('cytoscape-cose-bilkent');
 var grid_guide = require('cytoscape-grid-guide');
 var undoRedo = require('cytoscape-undo-redo');
 var contextMenus = require('cytoscape-context-menus');
@@ -350,12 +351,7 @@ var CBioPortalAccessor = require('./cBioPortalAccessor.js');
 
         cy.on('layoutstop', function(event)
         {
-            that.editorActionsManager.moveElements(cy.nodes());
-            var newState = {
-                zoomLevel: cy.zoom(),
-                panLevel: cy.pan()
-            };
-            that.editorActionsManager.updateGlobalOptions(newState);
+            that.editorActionsManager.postLayout();
         });
 
         //TODO fix this when cytoscape is updated !!!
