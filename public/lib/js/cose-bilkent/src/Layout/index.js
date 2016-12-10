@@ -206,8 +206,7 @@ _CoSELayout.prototype.run = function () {
   // First I need to create the data structure to pass to the worker
   var pData = {
     'nodes': [],
-    'edges': [],
-    'randomizeFlag': this.options.randomize
+    'edges': []
   };
 
   //Map the ids of nodes in the list to check if a node is in the list in constant time
@@ -231,7 +230,9 @@ _CoSELayout.prototype.run = function () {
     var posX = lnode.rect.x;
     var posY = lnode.rect.y;
     var h = lnode.rect.height;
-    var dummy_parent_id = cyNode.data('dummy_parent_id');
+    var dummy_parent_id = null;
+    if(cyNode.scratch('coseBilkent') && cyNode.scratch('coseBilkent').dummy_parent_id)
+      dummy_parent_id = cyNode.scratch('coseBilkent').dummy_parent_id;
 
     pData[ 'nodes' ].push({
       id: nodeId,
@@ -354,48 +355,45 @@ _CoSELayout.prototype.run = function () {
       var e1 = gm_t.add(layout_t.newEdge(), sourceNode, targetNode);
     }
 
-    if(pData.randomizeFlag != "true")
+    // This part is experimental and
+    // responsible for creating dummy nodes inside compounds to keep compound nodes compact !
+    var graphs = gm_t.getGraphs();
+    var size = graphs.length;
+    var i;
+    var dummyNodes = [];
+    var dummyEdges = [];
+    var graph;
+
+    for (i = 1; i < size; i++)
     {
-      //This part is experimental and
-      //responsible for creating dummy nodes inside compounds to keep compound nodes compact !
-      var graphs = gm_t.getGraphs();
-      var size = graphs.length;
-      var i;
-      var dummyNodes = [];
-      var dummyEdges = [];
-      var graph;
+      graph = graphs[i];
 
-      for (i = 0; i < size; i++)
+      //If nodes are connected inside compounds do nothing !
+      if(graph.getEdges().length > 0 )
       {
-        graph = graphs[i];
+        continue;
+      }
 
-        //If nodes are connected inside compounds do nothing !
-        if(graph.getEdges().length > 0 )
-        {
+      var centerX = (graph.getLeft() + graph.getRight())/2;
+      var centerY = (graph.getLeft() + graph.getRight())/2;
+
+      var children = graph.getNodes();
+      var dummyNode = new CoSENode(gm_t, {x: centerX, y:centerY}, {width: 1, height: 1});
+      dummyNode.id = i+"_dummy";
+      dummyNodes.push(dummyNode);
+      graph.add(dummyNode);
+
+      //Children of each graph
+      for (var k = 0; k < children.length; k++)
+      {
+        //Do not create any edge that connects the dummy node to itself
+        if(children[k].id == dummyNode.id)
           continue;
-        }
 
-        var centerX = (graph.getLeft() + graph.getRight())/2;
-        var centerY = (graph.getLeft() + graph.getRight())/2;
-
-        var children = graph.getNodes();
-        var dummyNode = new CoSENode(gm_t, {x: centerX, y:centerY}, {width: 1, height: 1});
-        dummyNode.id = i+"_dummy";
-        dummyNodes.push(dummyNode);
-        graph.add(dummyNode);
-
-        //Children of each graph
-        for (var k = 0; k < children.length; k++)
-        {
-          //Do not create any edge that connects the dummy node to itself
-          if(children[k].id == dummyNode.id)
-            continue;
-
-          var newEdge = layout_t.newEdge();
-          newEdge.id = children[k].id + "_" + dummyNode.id;
-          dummyEdges.push({dummyEdge: newEdge, parentGraph: graph});
-          graph.add(newEdge, children[k], dummyNode);
-        }
+        var newEdge = layout_t.newEdge();
+        newEdge.id = children[k].id + "_" + dummyNode.id;
+        dummyEdges.push({dummyEdge: newEdge, parentGraph: graph});
+        graph.add(newEdge, children[k], dummyNode);
       }
     }
 
@@ -415,20 +413,17 @@ _CoSELayout.prototype.run = function () {
       };
     }
 
-    if(pData.randomizeFlag != "true")
+    //Delete created dummy nodes and edges here
+    for (var i = 0; i < dummyNodes.length; i++)
     {
-      //Delete created dummy nodes and edges here
-      for (var i = 0; i < dummyNodes.length; i++)
-      {
-        var nodeInst = dummyNodes[i];
-        nodeInst.getOwner().remove(nodeInst);
-      }
+      var nodeInst = dummyNodes[i];
+      nodeInst.getOwner().remove(nodeInst);
+    }
 
-      for (var i = 0; i < dummyEdges.length; i++)
-      {
-        var edgeInst = dummyEdges[i];
-        edgeInst.parentGraph.remove(edgeInst.dummyEdge);
-      }
+    for (var i = 0; i < dummyEdges.length; i++)
+    {
+      var edgeInst = dummyEdges[i];
+      edgeInst.parentGraph.remove(edgeInst.dummyEdge);
     }
 
     var seeds = {};
@@ -492,7 +487,7 @@ _CoSELayout.prototype.run = function () {
     }
 
     t1.stop();
-    after.options.eles.nodes().removeData('dummy_parent_id');
+    after.options.eles.nodes().removeScratch('coseBilkent');
   });
 
   t1.on('message', function (e) {
@@ -504,10 +499,11 @@ _CoSELayout.prototype.run = function () {
     var pData = e.message.pData;
     if (pData != null) {
       after.options.eles.nodes().positions(function (i, ele) {
-        if (ele.data('dummy_parent_id')) {
+        if (ele.scratch('coseBilkent') && ele.scratch('coseBilkent').dummy_parent_id) {
+          var dummyParent = ele.scratch('coseBilkent').dummy_parent_id;
           return {
-            x: pData[ele.data('dummy_parent_id')].x,
-            y: pData[ele.data('dummy_parent_id')].y
+            x: dummyParent.x,
+            y: dummyParent.y
           };
         }
         var theId = ele.data('id');
@@ -679,10 +675,15 @@ _CoSELayout.prototype.groupZeroDegreeMembers = function () {
 
         for (var i = 0; i < tempMemberGroups[p_id].length; i++) {
           if (i == 0) {
-            dummy.data('tempchildren', []);
+            dummy.scratch('coseBilkent', {tempchildren: []});
           }
           var node = tempMemberGroups[p_id][i];
-          node.data('dummy_parent_id', dummyCompoundId);
+          var scratchObj = node.scratch('coseBilkent');
+          if(!scratchObj) {
+              scratchObj = {};
+              node.scratch('coseBilkent', scratchObj);
+          }
+          scratchObj['dummy_parent_id'] = dummyCompoundId;
           this.options.cy.add({
             group: "nodes",
             data: {parent: dummyCompoundId, width: node.width(), height: node.height()
@@ -693,7 +694,7 @@ _CoSELayout.prototype.groupZeroDegreeMembers = function () {
           tempchild.css('width', tempchild.data('width'));
           tempchild.css('height', tempchild.data('height'));
           tempchild.width();
-          dummy.data('tempchildren').push(tempchild);
+          dummy.scratch('coseBilkent').tempchildren.push(tempchild);
         }
       }
     }
@@ -781,7 +782,7 @@ _CoSELayout.prototype.repopulateZeroDegreeMembers = function (tiledPack) {
     // Adjust the positions of nodes wrt its compound
     this.adjustLocations(tiledPack[i], compoundNode.rect.x, compoundNode.rect.y, horizontalMargin, verticalMargin);
 
-    var tempchildren = compound.data('tempchildren');
+    var tempchildren = compound.scratch('coseBilkent').tempchildren;
     for (var i = 0; i < tempchildren.length; i++) {
       tempchildren[i].remove();
     }
@@ -859,7 +860,7 @@ _CoSELayout.prototype.tileNodes = function (nodes) {
     var node = nodes[i];
     var lNode = _CoSELayout.idToLNode[node.id()];
 
-    if (!node.data('dummy_parent_id')) {
+    if (!node.scratch('coseBilkent')  || !node.scratch('coseBilkent').dummy_parent_id) {
       var owner = lNode.owner;
       owner.remove(lNode);
 
