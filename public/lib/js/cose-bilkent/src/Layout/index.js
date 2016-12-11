@@ -364,7 +364,7 @@ _CoSELayout.prototype.run = function () {
     var dummyEdges = [];
     var graph;
 
-    for (i = 1; i < size; i++)
+    for (i = 0; i < size; i++)
     {
       graph = graphs[i];
 
@@ -374,11 +374,12 @@ _CoSELayout.prototype.run = function () {
         continue;
       }
 
+      graph.updateBounds(true);
       var centerX = (graph.getLeft() + graph.getRight())/2;
-      var centerY = (graph.getLeft() + graph.getRight())/2;
-
+      var centerY = (graph.getTop() + graph.getBottom())/2;
       var children = graph.getNodes();
-      var dummyNode = new CoSENode(gm_t, {x: centerX, y:centerY}, {width: 1, height: 1});
+
+      var dummyNode = new CoSENode(gm_t, new PointD(centerX, centerY), new DimensionD(1,1));
       dummyNode.id = i+"_dummy";
       dummyNodes.push(dummyNode);
       graph.add(dummyNode);
