@@ -819,7 +819,7 @@ SOFTWARE.
 
             node.removeClass( 'edgehandles-hover' );
 
-            clearTimeout( hoverTimeout );
+            //clearTimeout( hoverTimeout );
 
             if( options().toggleOffOnLeave ) {
               var source = sourceNode;
