@@ -104,8 +104,41 @@ module.exports = (function()
         'shadow-color' : '#f1c40f',
         'shadow-opacity': 1.0
       }
+    },
+    // some style for the Edge Handles !!!
+    {
+      selector: '.edgehandles-hover',
+      css: {
+        'background-color': '#1abc9c'
+      }
+    },
+
+    {
+      selector: '.edgehandles-source',
+      css: {
+        'border-width': 2,
+        'border-color': '#1abc9c'
+      }
+    },
+
+    {
+      selector: '.edgehandles-target',
+      css: {
+        'border-width': 2,
+        'border-color': '#1abc9c'
+      }
+    },
+
+    {
+      selector: '.edgehandles-preview, .edgehandles-ghost-edge',
+      css: {
+        'line-color': '#1abc9c',
+        'target-arrow-color': '#1abc9c',
+        'source-arrow-color': '#1abc9c'
+      }
     }
   ];
+
 
 
   var compoundPaddingFunction = function( ele )
