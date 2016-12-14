@@ -52,7 +52,7 @@ var edgeHandleDefaults =
         type: this.getGlobalEdgeType()
       });
   },
-  stop: function( sourceNode ) 
+  stop: function( sourceNode )
   {
     // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
     //TODO refactor this, so terrible for now
