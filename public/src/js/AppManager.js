@@ -36,8 +36,10 @@ var EditorActionsManager = require('./EditorActionsManager.js');
 var SaveLoadUtilities = require('./SaveLoadUtility.js');
 var CBioPortalAccessor = require('./cBioPortalAccessor.js');
 
+var notify = require('bootstrap-notify');
 
- module.exports = (function() {
+ module.exports = (function()
+ {
      function AppManager(isCollaborative, realTimeManager) {
          this.isCollaborative = isCollaborative;
          this.realTimeManager = realTimeManager;
@@ -287,8 +289,6 @@ var CBioPortalAccessor = require('./cBioPortalAccessor.js');
         };
 
         var nav = cy.navigator( navDefaults ); // get navigator instance, nav
-        
-
 
         this.placePanzoomAndOverlay();
     };
@@ -362,6 +362,7 @@ var CBioPortalAccessor = require('./cBioPortalAccessor.js');
             cy.style().update();
             cy.forceRender();
         });
+        
     };
 
     return AppManager;
