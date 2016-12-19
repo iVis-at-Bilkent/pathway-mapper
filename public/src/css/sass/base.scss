@@ -22,12 +22,14 @@ body {
 
 $appContentHeight: 850px;
 
-#colorPickerInput
+input[type="color"]
 {
-  width: 287px;
-  border-top-right-radius: 0px !important;
-  border-bottom-right-radius: 0 !important;
 
+  padding: 2px 2px 2px 2px;
+}
+
+input[type="color"]:hover{
+  cursor: pointer;
 }
 
 #colorPickerButton

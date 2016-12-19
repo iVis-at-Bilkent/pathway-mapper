@@ -26,33 +26,6 @@ module.exports = (function()
     //Edit drop down handler
     $(".editDropDown li a").click(function(event)
     {
-        $.notify({
-            // options
-            icon: 'glyphicon glyphicon-ok',
-            message: 'Data is loaded ...',
-        },{
-            // settings
-            element: 'body',
-            position: null,
-            type: "pastel-warning",
-            allow_dismiss: true,
-            newest_on_top: false,
-            showProgressbar: false,
-            placement: {
-                from: "bottom",
-                align: "right"
-            },
-            delay: 0,
-            offset: 20,
-            spacing: 10,
-            z_index: 1031,
-            mouse_over: null,
-            animate: {
-                enter: 'animated fadeInUp',
-                exit: 'animated fadeOut'
-            }
-        });
-
         event.preventDefault();
         var dropdownLinkRole = $(event.target).attr('role');
 
