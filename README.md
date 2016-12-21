@@ -43,6 +43,32 @@ Please note that the app runs on the port 3000 by default. To change the port th
 var APP_PORT = 3000;
 ```
 
+#### Running Tool in Developement Mode
+In order to run a local instance of the tool in developement mode, please follow the steps below:
+
+Firstly, navigate to PathwayMapper repository. In index.html file uncomment the line with base.css and comment the line with base.min.css:
+```
+  <!--For debugging-->
+  <!--<link rel="stylesheet" href="bin/base.css" charset="utf-8">-->
+  <link rel="stylesheet" href="bin/base.min.css" charset="utf-8">
+```
+
+Similarly do the same for base.js and base.min.js file:
+```
+<!--For debugging-->
+<!--<script src="bin/base.js"></script>-->
+<script src="bin/base.min.js"></script>
+```
+
+After that run the tool with the following command:
+```
+sudo npm run debug-build
+```
+
+After tool runs, all of your changes on src folder will be reflected to tool that runs without need of re-deploying it. 
+
+Please note that the app runs on the port 3000 by default. To change the port follow the same steps in previous section.
+
 ### Adding Genes and Interactions
 
 PathwayMapper allows creation of following node types:
