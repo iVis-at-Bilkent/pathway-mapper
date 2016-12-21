@@ -15,8 +15,8 @@
   <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.css">
 
   <!--For debugging-->
-  <link rel="stylesheet" href="bin/base.css" charset="utf-8">
-  <!--<link rel="stylesheet" href="bin/base.min.css" charset="utf-8">-->
+  <!--<link rel="stylesheet" href="bin/base.css" charset="utf-8">-->
+  <link rel="stylesheet" href="bin/base.min.css" charset="utf-8">
 </head>
 <body>
 
@@ -655,7 +655,7 @@
 </script>
 
 <script id="gridOptionsTemplate" type="text/template" class="template">
-  <div class="modal-dialog">
+  <div class="modal-dialog gridModal">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -665,32 +665,32 @@
         <div class="modal-body">
           <form role="form" id="gripOptionsForm">
             <div class="input-group">
-              <label class="control-label col-sm-4" for="showGrid">Show Grid:</label>
-              <div class="col-sm-8 leftText">
+              <label class="control-label col-sm-8" for="showGrid">Show Grid:</label>
+              <div class="col-sm-4 leftText">
                 <input id="showGrid" type="checkbox" class="input-small layout-text" <% if (drawGrid){ %> checked<%}%>>
               </div>
             </div>
             <div class="input-group">
-              <label class="control-label col-sm-4" for="showGuides">Show Grid Guidelines:</label>
-              <div class="col-sm-8 leftText">
+              <label class="control-label col-sm-8" for="showGuides">Show Grid Guidelines:</label>
+              <div class="col-sm-4 leftText">
                 <input id="showGuides" type="checkbox" class="input-small layout-text" <% if (guidelines){ %> checked<%}%>>
               </div>
             </div>
             <div class="input-group">
-              <label class="control-label col-sm-4" for="showGuides">Snap to Grid:</label>
-              <div class="col-sm-8 leftText">
+              <label class="control-label col-sm-8" for="showGuides">Snap to Grid:</label>
+              <div class="col-sm-4 leftText">
                 <input id="snapToGrid" type="checkbox" class="input-small layout-text" <% if (snapToGrid){ %> checked<%}%>>
               </div>
             </div>
             <div class="input-group">
-              <label class="control-label col-sm-4" for="gridSize">Grid Size:</label>
-              <div class="col-sm-8">
+              <label class="control-label col-sm-8" for="gridSize">Grid Size:</label>
+              <div class="col-sm-4">
                 <input id="gridSize" type="text" class="form-control" value=<%= gridSpacing %> >
               </div>
             </div>
             <div id="colorPickerDiv" class="input-group colorpicker-component">
-              <label class="control-label col-sm-4" for="gridSize">Guideline Color:</label>
-              <div class="col-sm-8">
+              <label class="control-label col-sm-8" for="gridSize">Guideline Color:</label>
+              <div class="col-sm-4">
                 <input  value="#000000" type="color" class="form-control" />
               </div>
             </div>
@@ -734,8 +734,8 @@
 <script src="lib/js/FileSaver.js" charset="utf-8"></script>
 
 <!--For debugging-->
- <script src="bin/base.js"></script>
-<!--<script src="bin/base.min.js"></script>-->
+ <!--<script src="bin/base.js"></script>-->
+<script src="bin/base.min.js"></script>
 <script src="lib/js/cytoscape-edgeHandles.js" charset="utf-8"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.js"></script>
 <script src="https://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>

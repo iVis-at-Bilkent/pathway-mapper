@@ -35,7 +35,7 @@ module.exports = (function ($)
                 from: "bottom",
                 align: "right"
             },
-            delay: 0,
+            delay: 5000,
             offset: 20,
             spacing: 10,
             z_index: 1031,
