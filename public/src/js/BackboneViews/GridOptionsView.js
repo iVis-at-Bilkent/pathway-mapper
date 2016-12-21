@@ -39,8 +39,6 @@ var gridOptionsView = Backbone.View.extend(
             var tplContent = this.template(templateProperties);
             this.$el.empty();
             this.$el.append(tplContent);
-            this.$el.find('#colorPickerDiv').colorpicker();
-
             this.delegateEvents();
         },
         saveProperties: function(event)
@@ -49,7 +47,7 @@ var gridOptionsView = Backbone.View.extend(
             this.currentProperties.drawGrid = this.$el.find("#showGrid").is(':checked');
             this.currentProperties.guidelines = this.$el.find("#showGuides").is(':checked');
             this.currentProperties.snapToGrid = this.$el.find("#snapToGrid").is(':checked');
-            this.currentProperties.guidelinesStyle.strokeStyle = this.$el.find("#colorPickerInput").val();
+            this.currentProperties.guidelinesStyle.strokeStyle = this.$el.find('input[type="color"]').val();
 
 
             //TODO update grid options
@@ -62,7 +60,7 @@ var gridOptionsView = Backbone.View.extend(
             this.$el.find("#gridSize").val(this.currentProperties.gridSize);
             this.$el.find("#showGrid")[0].checked = this.currentProperties.showGrid;
             this.$el.find("#showGuides")[0].checked = this.currentProperties.showGuides;
-            this.$el.find("#colorPickerInput").val(this.currentProperties.guidelinesStyle.strokeStyle);
+            this.$el.find('input[type="color"]').val(this.currentProperties.guidelinesStyle.strokeStyle);
         },
         defaultLayoutHandler: function(event)
         {

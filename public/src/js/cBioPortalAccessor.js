@@ -48,6 +48,10 @@ module.exports = (function()
                 }
                 callbackFunction(cancerStudies);
             }
+            else if  (request.readyState === XMLHttpRequest.DONE && request.status != 200)
+            {
+                window.notificationManager.createNotification("Error retrieving cancer studies", "fail")
+            }
         };
         request.open("GET", this.GET_ALL_CANCER_STUDIES_URL);
         request.send();
@@ -85,6 +89,10 @@ module.exports = (function()
                 }
 
                 callbackFunction(outData);
+            }
+            else if (request.readyState === XMLHttpRequest.DONE && request.status != 200)
+            {
+                window.notificationManager.createNotification("Error retrieving genetic profiles", "fail")
             }
         };
         request.open("GET", this.GET_GENETIC_PROFILES_URL + cancerStudy);
@@ -195,6 +203,10 @@ module.exports = (function()
             if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
             {
                 self.calcAlterationPercentages(request.responseText, params.geneticProfileId, callbackFunction);
+                window.notificationManager.createNotification(
+                    "Profile data " + params.geneticProfileId + " is succesfully loaded from cBioPortal ",
+                    "success");
+
             }
         };
 

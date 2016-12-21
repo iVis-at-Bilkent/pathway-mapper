@@ -9,6 +9,7 @@ var regCose = require("../../lib/js/cose-bilkent/src/index.js");
 var grid_guide = require('cytoscape-grid-guide');
 var undoRedo = require('cytoscape-undo-redo');
 var contextMenus = require('cytoscape-context-menus');
+require('bootstrap-select');
 
 
 //Panzoom options
@@ -27,7 +28,6 @@ require('./OtherMenuOperations.js');
 require('./GenomicMenuOperations.js');
 require('./ViewOperationsManager.js');
 require('./GraphUtilities.js');
-require('bootstrap-select');
 
 var QtipManager = require('./QtipManager.js');
 var ContextMenuManager = require('./ContextMenuManager.js');
@@ -37,6 +37,7 @@ var SaveLoadUtilities = require('./SaveLoadUtility.js');
 var CBioPortalAccessor = require('./cBioPortalAccessor.js');
 
 var notify = require('bootstrap-notify');
+window.notificationManager = require('./NotificationFactory');
 
  module.exports = (function()
  {
@@ -362,7 +363,7 @@ var notify = require('bootstrap-notify');
             cy.style().update();
             cy.forceRender();
         });
-        
+
     };
 
     return AppManager;
