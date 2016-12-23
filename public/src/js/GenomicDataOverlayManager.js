@@ -177,7 +177,6 @@ module.exports = (function()
 
         var eleBBox = ele.boundingBox();
         var reqWidth = getRequiredWidthForGenomicData(genomicDataBoxCount);
-        console.log( " reqW" + reqWidth);
         var overlayRecBoxW = reqWidth - 10;
         var overlayRecBoxH = 25;
         var svg = document.createElementNS(svgNameSpace,'svg');
@@ -200,71 +199,105 @@ module.exports = (function()
 
         var maxGenomicDataBoxCount = /*(genomicDataBoxCount > 3) ? 3:*/genomicDataBoxCount;
         var genomicBoxCounter = 0;
-        for (var cancerType in genomicFrequencyData)
+
+        for (var cancerType in this.visibleGenomicDataMapByType)
         {
             if(!this.visibleGenomicDataMapByType[cancerType])
                 continue;
 
-            genomicDataRectangleGenerator(
-                overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w/maxGenomicDataBoxCount,
-                overLayRectBBox.y,
-                overLayRectBBox.w/maxGenomicDataBoxCount,
-                overLayRectBBox.h,
-                genomicFrequencyData[cancerType],
-                svg
-            );
+            if(genomicFrequencyData[cancerType])
+            {
+                genomicDataRectangleGenerator(
+                    overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w/maxGenomicDataBoxCount,
+                    overLayRectBBox.y,
+                    overLayRectBBox.w/maxGenomicDataBoxCount,
+                    overLayRectBBox.h,
+                    genomicFrequencyData[cancerType],
+                    svg
+                );
+            }
+            else
+            {
+                genomicDataRectangleGenerator(
+                    overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w/maxGenomicDataBoxCount,
+                    overLayRectBBox.y,
+                    overLayRectBBox.w/maxGenomicDataBoxCount,
+                    overLayRectBBox.h,
+                    null,
+                    svg
+                );
+            }
+
             genomicBoxCounter++;
         }
 
         function genomicDataRectangleGenerator(x,y,w,h,percent,parentSVG)
         {
-            var isNegativePercent = (percent < 0);
-            var _percent = Math.abs(percent);
-            //Handle special cases here !
-            _percent = (_percent < 0.5) ? 2 : Math.round(_percent);
-            _percent =  (_percent == 1) ? 2 : _percent;
-            //Here we are using non linear regression
-            //Fitting points of (0,0), (25,140), (50,220), (100, 255)
-            var percentColor =  255 - (-7.118 + 53.9765 * Math.log(_percent));
+            if(percent)
+            {
+                var isNegativePercent = (percent < 0);
+                var _percent = Math.abs(percent);
+                //Handle special cases here !
+                _percent = (_percent < 0.5) ? 2 : Math.round(_percent);
+                _percent =  (_percent == 1) ? 2 : _percent;
+                //Here we are using non linear regression
+                //Fitting points of (0,0), (25,140), (50,220), (100, 255)
+                var percentColor =  255 - (-7.118 + 53.9765 * Math.log(_percent));
 
-            var colorString = "";
-            if(percent == 0)
-            {
-                colorString = "rgb(255,255,255)";
-            }
-            else if (isNegativePercent)
-            {
-                colorString = "rgb("+Math.round(percentColor)+","+Math.round(percentColor)+",255)";
-                percent = percent.substring(1);
+                var colorString = "";
+                if(percent == 0)
+                {
+                    colorString = "rgb(255,255,255)";
+                }
+                else if (isNegativePercent)
+                {
+                    colorString = "rgb("+Math.round(percentColor)+","+Math.round(percentColor)+",255)";
+                    percent = percent.substring(1);
+                }
+                else
+                    colorString = "rgb(255,"+Math.round(percentColor)+","+Math.round(percentColor)+")";
+
+                //Rectangle Part
+                var overlayRect = document.createElementNS(svgNameSpace, 'rect');
+                overlayRect.setAttribute('x', x);
+                overlayRect.setAttribute('y', y );
+                overlayRect.setAttribute('width', w);
+                overlayRect.setAttribute('height', h);
+                overlayRect.setAttribute('style', "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:"+colorString+";");
+
+                //Text Part
+                var textPercent = (percent < 0.5 && percent > 0) ? '<0.5':Math.round(percent);
+                var text = textPercent+'%';
+                var fontSize = 14;
+                var textLength = text.length;
+                var xOffset = w/2 - textLength * 4;
+                var yOffset = fontSize/3;
+
+                var svgText = document.createElementNS(svgNameSpace, 'text');
+                svgText.setAttribute('x', x + xOffset );
+                svgText.setAttribute('y', y + h/2 + yOffset );
+                svgText.setAttribute('font-family', 'Arial');
+                svgText.setAttribute('font-size', fontSize);
+                svgText.innerHTML = text;
+
+                parentSVG.appendChild(overlayRect);
+                parentSVG.appendChild(svgText);
             }
             else
-                colorString = "rgb(255,"+Math.round(percentColor)+","+Math.round(percentColor)+")";
+            {
 
-            //Rectangle Part
-            var overlayRect = document.createElementNS(svgNameSpace, 'rect');
-            overlayRect.setAttribute('x', x);
-            overlayRect.setAttribute('y', y );
-            overlayRect.setAttribute('width', w);
-            overlayRect.setAttribute('height', h);
-            overlayRect.setAttribute('style', "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:"+colorString+";");
+                colorString = "rgb(210,210,210)";
 
-            //Text Part
-            var textPercent = (percent < 0.5 && percent > 0) ? '<0.5':Math.round(percent);
-            var text = textPercent+'%';
-            var fontSize = 14;
-            var textLength = text.length;
-            var xOffset = w/2 - textLength * 4;
-            var yOffset = fontSize/3;
+                //Rectangle Part
+                var overlayRect = document.createElementNS(svgNameSpace, 'rect');
+                overlayRect.setAttribute('x', x);
+                overlayRect.setAttribute('y', y );
+                overlayRect.setAttribute('width', w);
+                overlayRect.setAttribute('height', h);
+                overlayRect.setAttribute('style', "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:"+colorString+";");
 
-            var svgText = document.createElementNS(svgNameSpace, 'text');
-            svgText.setAttribute('x', x + xOffset );
-            svgText.setAttribute('y', y + h/2 + yOffset );
-            svgText.setAttribute('font-family', 'Arial');
-            svgText.setAttribute('font-size', fontSize);
-            svgText.innerHTML = text;
-
-            parentSVG.appendChild(overlayRect);
-            parentSVG.appendChild(svgText);
+                parentSVG.appendChild(overlayRect);
+            }
         }
 
         return svg;
@@ -317,9 +350,9 @@ module.exports = (function()
 
     GenomicDataOverlayManager.prototype.parseGenomicData = function(genomicData)
     {
-        this.genomicDataMap = {};
-        this.cancerTypes = [];
-        this.visibleGenomicDataMapByType = {};
+        this.genomicDataMap = this.genomicDataMap || {};
+        this.cancerTypes = this.cancerTypes || [];
+        this.visibleGenomicDataMapByType = this.visibleGenomicDataMapByType || {};
 
         // By lines
         var lines = genomicData.split('\n');
@@ -378,5 +411,3 @@ module.exports = (function()
     return GenomicDataOverlayManager;
 
 })();
-
-
