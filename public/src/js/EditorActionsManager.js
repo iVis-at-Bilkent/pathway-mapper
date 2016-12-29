@@ -117,12 +117,12 @@ module.exports = (function()
     {
         if (this.isCollaborative)
         {
-            this.editorActionsManager.moveElements(cy.nodes());
+            this.moveElements(cy.nodes());
             var newState = {
                 zoomLevel: cy.zoom(),
                 panLevel: cy.pan()
             };
-            this.editorActionsManager.updateGlobalOptions(newState);
+            this.updateGlobalOptions(newState);
         }
     };
 
