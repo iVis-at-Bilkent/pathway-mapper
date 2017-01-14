@@ -23,34 +23,26 @@ module.exports = (function()
         this.notifyObservers();
     };
 
-    GenomicDataOverlayManager.prototype.addPortalGenomicData = function(genomicData)
+    GenomicDataOverlayManager.prototype.preparePortalGenomicDataRealTime = function(genomicData)
     {
-        this.genomicDataMap = (this.genomicDataMap) ? this.genomicDataMap:{};
-        this.cancerTypes = (this.cancerTypes) ? this.cancerTypes:[];
-        this.visibleGenomicDataMapByType = (this.visibleGenomicDataMapByType) ? this.visibleGenomicDataMapByType:{};
+        console.log(genomicData);
+        var geneMap = {};
+        var visMap = {};
 
-
-        for (var cancerProfile in genomicData)
+        for (var cancerKey in genomicData)
         {
-            if((cancerProfile in this.cancerTypes))
-                continue;
-
-            this.cancerTypes.push(cancerProfile);
-            this.visibleGenomicDataMapByType[cancerProfile] = true;
-
-
-            for (var geneSymbol in genomicData[cancerProfile])
+            for (var geneSymbol in genomicData[cancerKey])
             {
-                if(!this.genomicDataMap[geneSymbol])
-                    this.genomicDataMap[geneSymbol] = {};
-
-
-                this.genomicDataMap[geneSymbol][cancerProfile] = String(genomicData[cancerProfile][geneSymbol].toFixed(2));
+                geneMap[geneSymbol] = {};
+                geneMap[geneSymbol][cancerKey] = genomicData[cancerKey][geneSymbol];
             }
+            visMap[cancerKey]  = true;
         }
 
-        this.showGenomicData();
-        this.notifyObservers();
+        return {
+            'genomicDataMap': geneMap,
+            'visibilityMap': visMap
+        };
     };
 
     GenomicDataOverlayManager.prototype.removeGenomicData = function()
@@ -68,10 +60,40 @@ module.exports = (function()
         this.visibleGenomicDataMapByType = {};
     }
 
-    GenomicDataOverlayManager.prototype.addGenomicVisData = function(data)
+    GenomicDataOverlayManager.prototype.addGenomicData = function(geneSymbol, data)
     {
-        this.visibleGenomicDataMapByType = data;
+        this.genomicDataMap[geneSymbol] = data;
     }
+
+    GenomicDataOverlayManager.prototype.addPortalGenomicData = function(data)
+    {
+        for (var cancerStudy in data)
+        {
+            this.visibleGenomicDataMapByType[cancerStudy] = true;
+            var cancerData = data[cancerStudy];
+
+            for (var geneSymbol in cancerData)
+            {
+                if (this.genomicDataMap[geneSymbol] == undefined)
+                    this.genomicDataMap[geneSymbol] = {};
+
+                this.genomicDataMap[geneSymbol][cancerStudy] = data[cancerStudy][geneSymbol].toFixed(2);
+            }
+        }
+        this.showGenomicData();
+        this.notifyObservers();
+    }
+
+    GenomicDataOverlayManager.prototype.removeGenomicData = function(geneSymbol)
+    {
+        this.genomicDataMap[geneSymbol] = {};
+    }
+
+    GenomicDataOverlayManager.prototype.addGenomicVisData = function(key, data)
+    {
+        this.visibleGenomicDataMapByType[key] = data;
+    };
+
 
     GenomicDataOverlayManager.prototype.prepareGenomicDataRealTime = function(genomicData)
     {
@@ -200,12 +222,15 @@ module.exports = (function()
         var maxGenomicDataBoxCount = /*(genomicDataBoxCount > 3) ? 3:*/genomicDataBoxCount;
         var genomicBoxCounter = 0;
 
-        for (var cancerType in this.visibleGenomicDataMapByType)
+        //Needs to be sorted since insertion order could be different due to collaborative mode callbacks
+        var sortedKeys = _.keys(this.visibleGenomicDataMapByType).sort();
+        for (var i in sortedKeys)
         {
+            var cancerType = sortedKeys[i];
             if(!this.visibleGenomicDataMapByType[cancerType])
                 continue;
 
-            if(genomicFrequencyData[cancerType])
+            if(genomicFrequencyData[cancerType] != undefined)
             {
                 genomicDataRectangleGenerator(
                     overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w/maxGenomicDataBoxCount,
@@ -411,3 +436,5 @@ module.exports = (function()
     return GenomicDataOverlayManager;
 
 })();
+
+
