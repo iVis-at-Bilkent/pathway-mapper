@@ -155,6 +155,9 @@ function getTemplateFileData(req, res)
                 var line = lines[i];
                 if(line.indexOf("--") >= 0)
                 {
+                    if(outData[lastStudy] != undefined)
+                        outData[lastStudy] = outData[lastStudy].sort();
+
                     lastStudy = line.substring(line.indexOf("--") + 2, line.length);
                     outData[lastStudy] = [];
                     continue;
