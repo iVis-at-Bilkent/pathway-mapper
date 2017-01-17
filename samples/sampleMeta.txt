@@ -54,6 +54,10 @@ STAD-2014-RTK-RAS-PI(3)K-pathway.txt
 THCA-2014-RTK-RAS-PI(3)K-pathway.txt
 --UCEC
 UCEC-2013-RTK-RAS-PI(3)K-pathway.txt
+--ESAD
+ESAD-2017-Cell-cycle-pathway.txt
+ESAD-2017-RTK-RAS-PI(3)K-pathway.txt
+ESAD-2017-WNT-CTNNB1-pathway.txt
 --PanCancer
 PanCancer-Apoptosis-pathway.txt
 PanCancer-Cell-cycle-signaling-pathway.txt
@@ -67,4 +71,7 @@ PanCancer-TGF-B-signaling-pathway.txt
 PanCancer-TP53-pathway.txt
 PanCancer-TP53-RB Pathway-pathway.txt
 PanCancer-WNT-signaling-pathway.txt
+PanCancer-MYC-pathway.txt
+Xiao-HR-pathway.txt
+Xiao-MMR-pathway.txt
 Creighton-PI3K-pathway.txt
