@@ -185,9 +185,8 @@ module.exports = (function()
         if(this.isCollaborative)
         {
             //TODO compound OP
-            this.realTimeManager.clearGenomicVisData();
-
-            this.realTimeManager.addGenomicVisibilityData('visMap', dataMap);
+            // this.realTimeManager.clearGenomicVisData();
+            this.realTimeManager.addGenomicVisibilityData(dataMap);
         }
         else
         {
@@ -930,15 +929,13 @@ module.exports = (function()
     {
         if(this.isCollaborative)
         {
-            //TODO compound OP
-            this.removeGenomicData();
+            // //TODO compound OP
+            // this.removeGenomicData();
 
             //TODO clear visibility map
             var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataRealTime(genomicData);
-            var genomicDataMap = parsedGenomicData.genomicDataMap;
-            var visibilityMap = parsedGenomicData.visibilityMap;
-            this.realTimeManager.addGenomicData('genomicData', genomicDataMap);
-            this.realTimeManager.addGenomicVisibilityData('visMap', visibilityMap);
+            this.realTimeManager.addGenomicData(parsedGenomicData.genomicDataMap);
+            this.realTimeManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
         }
         else
         {
@@ -951,9 +948,9 @@ module.exports = (function()
         if(this.isCollaborative)
         {
             //TODO not a nice workaround
-            this.genomicDataOverlayManager.addPortalGenomicData(genomicData);
-            this.realTimeManager.addGenomicData('genomicData', this.genomicDataOverlayManager.genomicDataMap);
-            this.realTimeManager.addGenomicVisibilityData('visMap', this.genomicDataOverlayManager.visibleGenomicDataMapByType);
+            var parsedGenomicData = this.genomicDataOverlayManager.preparePortalGenomicDataRealTime(genomicData);
+            this.realTimeManager.addGenomicData(parsedGenomicData.genomicDataMap);
+            this.realTimeManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
         }
         else
         {
@@ -967,14 +964,13 @@ module.exports = (function()
         var newData = event.newValue;
         var geneSymbol = event.property;
 
-        //Addition
         if(newData)
         {
-            this.genomicDataOverlayManager.addGenomicData(newData);
+            this.genomicDataOverlayManager.addGenomicData(geneSymbol, newData);
         }
         //Removal
         else
-        {   
+        {
             this.genomicDataOverlayManager.removeGenomicData(geneSymbol);
         }
     }
@@ -983,20 +979,21 @@ module.exports = (function()
     {
 
         var data = event.newValue;
+        var key = event.property;
 
         //Addition
-        if(data)
+        if(data != undefined)
         {
-            this.genomicDataOverlayManager.addGenomicVisData(data);
+            this.genomicDataOverlayManager.addGenomicVisData(key, data);
         }
         //Removal
         else
         {
             this.genomicDataOverlayManager.removeGenomicVisData(data);
         }
+
         this.genomicDataOverlayManager.showGenomicData();
         this.genomicDataOverlayManager.notifyObservers();
-
     }
 
     //Utility Functions

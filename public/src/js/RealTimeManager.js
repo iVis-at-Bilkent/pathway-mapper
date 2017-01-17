@@ -126,9 +126,20 @@ module.exports = (function()
         window.editorActionsManager.updateLayoutPropertiesCallback(realTimeLayoutProperties);
         window.editorActionsManager.changeGlobalOptions(globalOptions);
 
-        //TODO sync already set genomic data !
-        window.editorActionsManager.genomicDataOverlayManager.genomicDataMap = genomicDataMap.get('genomicData');
-        window.editorActionsManager.genomicDataOverlayManager.visibleGenomicDataMapByType = visDataMap.get('visMap');
+        //Sync already available genomic data !
+        var genomicDataMapKeys = genomicDataMap.keys();
+        var visibilityMapKeys = visDataMap.keys();
+
+        //Sync already available data from cloud model
+        for (var key in genomicDataMapKeys) {
+            window.editorActionsManager.genomicDataOverlayManager.genomicDataMap[genomicDataMapKeys[key]] = genomicDataMap.get(genomicDataMapKeys[key]);
+        }
+
+        for (var key in visibilityMapKeys)
+        {
+            window.editorActionsManager.genomicDataOverlayManager.visibleGenomicDataMapByType[visibilityMapKeys[key]] = visDataMap.get(visibilityMapKeys[key]);
+        }
+
         window.editorActionsManager.genomicDataOverlayManager.showGenomicData();
         window.editorActionsManager.genomicDataOverlayManager.notifyObservers();
         cy.fit(50);
@@ -158,20 +169,19 @@ module.exports = (function()
         }
 
         //Event listeners for edge and node map
-        root.get(this.NODEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, nodeAddRemoveHandler);
-        root.get(this.EDGEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, edgeAddRemoveHandler);
-        root.get(this.GENOMIC_DATA_MAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, genomicDataAddRemoveHandler);
-        root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED, genomicDataVisibilityChangeHandler);;
+        root.get(this.NODEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
+            nodeAddRemoveHandler);
+        root.get(this.EDGEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
+            edgeAddRemoveHandler);
+        root.get(this.GENOMIC_DATA_MAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
+            genomicDataAddRemoveHandler);
+        root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
+            genomicDataVisibilityChangeHandler);;
 
-        //Just for debugging
-        // var debugRButton = document.getElementById('debugR');
-        // debugRButton.addEventListener('click', function(event)
-        // {
-        //     gapi.drive.realtime.debug();
-        // });
 
         this.postFileLoad();
     };
+
 
     RealTimeManager.prototype.clearGenomicData = function()
     {
@@ -201,20 +211,46 @@ module.exports = (function()
         model.endCompoundOperation();
     }
 
-    RealTimeManager.prototype.addGenomicData = function(_key, geneData)
+    RealTimeManager.prototype.addGenomicData = function(geneData)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
         var genomicMap =  root.get(this.GENOMIC_DATA_MAP_NAME);
-        genomicMap.set(_key, geneData);
+
+        //Iterate over all genmoic data which is mapped by geneSymbol to list of alteration values
+        //that are also mapped by cancer name and associated value
+        model.beginCompoundOperation();
+        for (var geneSymbol in geneData)
+        {
+            var genomicMapEntry = {};
+            if(genomicMap.has(geneSymbol))
+                genomicMapEntry = _.clone(genomicMap.get(geneSymbol));
+
+            for (var cancerType in geneData[geneSymbol])
+            {
+                if(!(cancerType in genomicMapEntry))
+                    genomicMapEntry[cancerType] =  parseInt(geneData[geneSymbol][cancerType]).toFixed(2);
+            }
+
+            genomicMap.set(geneSymbol, genomicMapEntry);
+        }
+        model.endCompoundOperation();
+
     }
 
-    RealTimeManager.prototype.addGenomicVisibilityData = function(cancerType, isVisible)
+
+    RealTimeManager.prototype.addGenomicVisibilityData = function(visMap)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
         var map =  root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME);
-        map.set(cancerType, isVisible);
+
+        model.beginCompoundOperation();
+        for (var cancerStudy in visMap)
+        {
+            map.set(cancerStudy, visMap[cancerStudy]);
+        }
+        model.endCompoundOperation();
     }
 
     RealTimeManager.prototype.addNewNode = function(nodeData, posData)
@@ -272,7 +308,7 @@ module.exports = (function()
         }
         else
         {
-            throw new Error('Element does not exists in Real Time');
+            throw new Error('Element does not exist in Real Time');
 
         }
     };
@@ -296,7 +332,7 @@ module.exports = (function()
         }
         else
         {
-            throw new Error('Element does not exists in nodes !!! ');
+            throw new Error('Element does not exist in nodes !!! ');
 
         }
         
@@ -319,7 +355,7 @@ module.exports = (function()
         }
         else
         {
-            throw new Error('Element does not exists in nodes !!! ');
+            throw new Error('Element does not exist in nodes !!! ');
 
         }
 
