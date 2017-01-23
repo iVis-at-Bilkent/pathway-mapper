@@ -39,11 +39,10 @@ module.exports = (function()
         this.genomicDataOverlayManager = new GenomicDataOverlayManager();
         this.svgExporter = new SVGExporter();
 
-        this.selecteNodeStack = {}
+        this.selecteNodeStack = {};
         window.undoRedoManager = cy.undoRedo();
         window.undoRedoManager.action("changePositions", this.doChangePosition, this.undoChangePosition);
         window.undoRedoManager.action("changeName", this.doChangename, this.undoChangeName);
-
     };
 
 
@@ -124,6 +123,25 @@ module.exports = (function()
             };
             this.updateGlobalOptions(newState);
         }
+    };
+    
+    /*
+    * Gets the first empty index from the list in cloud model
+    * **/
+    EditorActionsManager.prototype.getEmptyGroupID = function()
+    {
+        if(this.isCollaborative)
+            return this.realTimeManager.getEmptyGroupID();
+        else
+            return this.genomicDataOverlayManager.getEmptyGroupID();
+    };
+
+    /*
+     * Gets the first empty index from the list in cloud model
+     * **/
+    EditorActionsManager.prototype.groupGenomicData = function(cancerNames, groupID)
+    {
+        return this.realTimeManager.groupGenomicData(cancerNames, groupID);
     };
 
     //Get all gene symbols
@@ -912,13 +930,11 @@ module.exports = (function()
         if(this.isCollaborative)
         {
             this.realTimeManager.clearGenomicData();
-            this.realTimeManager.clearGenomicVisData();
         }
         else
         {
             //TODO wrap this in afunction in genomic data overlay manager
-            this.genomicDataOverlayManager.removeGenomicData();
-            this.genomicDataOverlayManager.removeGenomicVisData();
+            this.genomicDataOverlayManager.clearAllGenomicData();
             this.genomicDataOverlayManager.hideGenomicData();
             this.genomicDataOverlayManager.notifyObservers();
         }
@@ -927,40 +943,43 @@ module.exports = (function()
 
     EditorActionsManager.prototype.addGenomicData = function(genomicData)
     {
+        //TODO clear visibility map
+        var groupID = window.editorActionsManager.getEmptyGroupID();
+
         if(this.isCollaborative)
         {
-            // //TODO compound OP
-            // this.removeGenomicData();
 
-            //TODO clear visibility map
             var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataRealTime(genomicData);
             this.realTimeManager.addGenomicData(parsedGenomicData.genomicDataMap);
+            this.realTimeManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
+                groupID);
             this.realTimeManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
+
         }
         else
         {
-            this.genomicDataOverlayManager.addGenomicDataLocally(genomicData);
+            this.genomicDataOverlayManager.addGenomicDataLocally(genomicData, groupID);
         }
     }
 
-    EditorActionsManager.prototype.addPortalGenomicData = function(genomicData)
+    EditorActionsManager.prototype.addPortalGenomicData = function(genomicData, groupID)
     {
         if(this.isCollaborative)
         {
-            //TODO not a nice workaround
             var parsedGenomicData = this.genomicDataOverlayManager.preparePortalGenomicDataRealTime(genomicData);
             this.realTimeManager.addGenomicData(parsedGenomicData.genomicDataMap);
+            this.realTimeManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
+                groupID);
             this.realTimeManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
         }
         else
         {
-            this.genomicDataOverlayManager.addPortalGenomicData(genomicData);
+            this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
         }
     }
 
     EditorActionsManager.prototype.realTimeGenomicDataHandler = function(event)
     {
-
         var newData = event.newValue;
         var geneSymbol = event.property;
 
@@ -973,6 +992,26 @@ module.exports = (function()
         {
             this.genomicDataOverlayManager.removeGenomicData(geneSymbol);
         }
+    }
+
+
+    EditorActionsManager.prototype.realTimeGenomicDataGroupChangeHandler = function(event)
+    {
+        var data = event.newValue;
+        var key = event.property;
+
+        //Addition
+        if(data != undefined)
+        {
+            this.genomicDataOverlayManager.addGenomicGroupData(key, data);
+        }
+        // //Removal
+        // else
+        // {
+        //
+        // }
+        this.genomicDataOverlayManager.showGenomicData();
+        this.genomicDataOverlayManager.notifyObservers();
     }
 
     EditorActionsManager.prototype.realTimeGenomicDataVsibilityHandler = function(event)

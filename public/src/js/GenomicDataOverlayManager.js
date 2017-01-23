@@ -6,26 +6,31 @@ module.exports = (function()
 {
     var GenomicDataOverlayManager = function ()
     {
-        this.cancerTypes = [];
         this.genomicDataMap = {};
         this.visibleGenomicDataMapByType = {};
+        this.groupedGenomicDataMap = {};
+        this.groupedGenomicDataCount = 0;
         this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT = 3;
 
         //Observer-observable pattern related stuff
         this.observers = [];
-
     };
 
-    GenomicDataOverlayManager.prototype.addGenomicDataLocally = function(genomicData)
+    GenomicDataOverlayManager.prototype.getEmptyGroupID = function()
     {
-        this.parseGenomicData(genomicData);
+        var oldCount = this.groupedGenomicDataCount;
+        this.groupedGenomicDataCount++;
+    }
+
+    GenomicDataOverlayManager.prototype.addGenomicDataLocally = function(genomicData, groupID)
+    {
+        this.parseGenomicData(genomicData, groupID);
         this.showGenomicData();
         this.notifyObservers();
     };
 
     GenomicDataOverlayManager.prototype.preparePortalGenomicDataRealTime = function(genomicData)
     {
-        console.log(genomicData);
         var geneMap = {};
         var visMap = {};
 
@@ -65,11 +70,24 @@ module.exports = (function()
         this.genomicDataMap[geneSymbol] = data;
     }
 
-    GenomicDataOverlayManager.prototype.addPortalGenomicData = function(data)
+    GenomicDataOverlayManager.prototype.addGenomicGroupData = function(groupID, data)
+    {
+        this.groupedGenomicDataMap[groupID] = data;
+    }
+
+    GenomicDataOverlayManager.prototype.addPortalGenomicData = function(data, groupID)
     {
         for (var cancerStudy in data)
         {
             this.visibleGenomicDataMapByType[cancerStudy] = true;
+
+            //Group current cancer study according to the groupID
+            if(this.groupedGenomicDataMap[groupID] == undefined)
+                this.groupedGenomicDataMap[groupID] = [];
+
+            this.groupedGenomicDataMap[groupID].push(cancerStudy);
+
+
             var cancerData = data[cancerStudy];
 
             for (var geneSymbol in cancerData)
@@ -80,8 +98,17 @@ module.exports = (function()
                 this.genomicDataMap[geneSymbol][cancerStudy] = data[cancerStudy][geneSymbol].toFixed(2);
             }
         }
+
         this.showGenomicData();
         this.notifyObservers();
+    }
+
+    GenomicDataOverlayManager.prototype.clearAllGenomicData = function()
+    {
+        this.genomicDataMap = {};
+        this.visibleGenomicDataMapByType = {};
+        this.groupedGenomicDataMap = {};
+        this.groupedGenomicDataCount = 0;
     }
 
     GenomicDataOverlayManager.prototype.removeGenomicData = function(geneSymbol)
@@ -93,7 +120,6 @@ module.exports = (function()
     {
         this.visibleGenomicDataMapByType[key] = data;
     };
-
 
     GenomicDataOverlayManager.prototype.prepareGenomicDataRealTime = function(genomicData)
     {
@@ -222,39 +248,42 @@ module.exports = (function()
         var maxGenomicDataBoxCount = /*(genomicDataBoxCount > 3) ? 3:*/genomicDataBoxCount;
         var genomicBoxCounter = 0;
 
-        //Needs to be sorted since insertion order could be different due to collaborative mode callbacks
-        var sortedKeys = _.keys(this.visibleGenomicDataMapByType).sort();
-        for (var i in sortedKeys)
+
+        for (var i in this.groupedGenomicDataMap)
         {
-            var cancerType = sortedKeys[i];
-            if(!this.visibleGenomicDataMapByType[cancerType])
-                continue;
-
-            if(genomicFrequencyData[cancerType] != undefined)
+            for (var j in this.groupedGenomicDataMap[i])
             {
-                genomicDataRectangleGenerator(
-                    overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w/maxGenomicDataBoxCount,
-                    overLayRectBBox.y,
-                    overLayRectBBox.w/maxGenomicDataBoxCount,
-                    overLayRectBBox.h,
-                    genomicFrequencyData[cancerType],
-                    svg
-                );
-            }
-            else
-            {
-                genomicDataRectangleGenerator(
-                    overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w/maxGenomicDataBoxCount,
-                    overLayRectBBox.y,
-                    overLayRectBBox.w/maxGenomicDataBoxCount,
-                    overLayRectBBox.h,
-                    null,
-                    svg
-                );
-            }
+                var cancerType = this.groupedGenomicDataMap[i][j];
+                if(!this.visibleGenomicDataMapByType[cancerType])
+                    continue;
 
-            genomicBoxCounter++;
+                if(genomicFrequencyData[cancerType] != undefined)
+                {
+                    genomicDataRectangleGenerator(
+                        overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w/maxGenomicDataBoxCount,
+                        overLayRectBBox.y,
+                        overLayRectBBox.w/maxGenomicDataBoxCount,
+                        overLayRectBBox.h,
+                        genomicFrequencyData[cancerType],
+                        svg
+                    );
+                }
+                else
+                {
+                    genomicDataRectangleGenerator(
+                        overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w/maxGenomicDataBoxCount,
+                        overLayRectBBox.y,
+                        overLayRectBBox.w/maxGenomicDataBoxCount,
+                        overLayRectBBox.h,
+                        null,
+                        svg
+                    );
+                }
+
+                genomicBoxCounter++;
+            }
         }
+
 
         function genomicDataRectangleGenerator(x,y,w,h,percent,parentSVG)
         {
@@ -332,7 +361,7 @@ module.exports = (function()
     //Just an utility function to calculate required width for genes for genomic data !
     function getRequiredWidthForGenomicData(genomicDataBoxCount)
     {
-        var term = (genomicDataBoxCount > 3)? genomicDataBoxCount-3:0;
+        var term = (genomicDataBoxCount > 3) ? genomicDataBoxCount-3:0;
         return 150 + term * 35;
     }
 
@@ -373,11 +402,12 @@ module.exports = (function()
             .update();
     }
 
-    GenomicDataOverlayManager.prototype.parseGenomicData = function(genomicData)
+    GenomicDataOverlayManager.prototype.parseGenomicData = function(genomicData, groupID)
     {
         this.genomicDataMap = this.genomicDataMap || {};
-        this.cancerTypes = this.cancerTypes || [];
         this.visibleGenomicDataMapByType = this.visibleGenomicDataMapByType || {};
+        this.groupedGenomicDataMap = this.groupedGenomicDataMap || {};
+        var cancerTypes =  [];
 
         // By lines
         var lines = genomicData.split('\n');
@@ -387,12 +417,17 @@ module.exports = (function()
         //Parse cancer types
         for (var i = 1;  i < metaLineColumns.length; i++)
         {
-            this.cancerTypes.push(metaLineColumns[i]);
+            cancerTypes.push(metaLineColumns[i]);
             //Update initially visible genomic data boxes !
             if(i-1 < this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT)
-                this.visibleGenomicDataMapByType[this.cancerTypes[i-1]] = true;
+                this.visibleGenomicDataMapByType[cancerTypes[i-1]] = true;
             else
-                this.visibleGenomicDataMapByType[this.cancerTypes[i-1]] = false;
+                this.visibleGenomicDataMapByType[cancerTypes[i-1]] = false;
+
+            if(this.groupedGenomicDataMap[groupID] != undefined)
+                this.groupedGenomicDataMap[groupID] = [];
+
+            this.groupedGenomicDataMap[groupID].push(cancerTypes[i-1]);
         }
 
         // parse genomic data
@@ -413,7 +448,7 @@ module.exports = (function()
             //Add each entry of genomic data
             for (var j = 1; j < lineContent.length; j++)
             {
-                this.genomicDataMap[geneSymbol][this.cancerTypes[j-1]] = lineContent[j];
+                this.genomicDataMap[geneSymbol][cancerTypes[j-1]] = lineContent[j];
             }
         }
     };

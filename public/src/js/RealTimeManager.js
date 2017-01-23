@@ -19,6 +19,8 @@ module.exports = (function()
         this.GENOMIC_DATA_MAP_NAME = 'genomicDataMap';
         //For storing visibility information of genomic data according to the cancer type
         this.VISIBLE_GENOMIC_DATA_MAP_NAME = 'visibleGenomicDataMapByType';
+        this.GENOMIC_DATA_GROUP_NAME = 'genomicDataGroupList';
+        this.GENOMIC_DATA_GROUP_COUNT = 'genomicDataGroupCount';
 
         // Create a new instance of the realtime utility with your client ID.
         this.realtimeUtils = new utils.RealtimeUtils({
@@ -52,9 +54,9 @@ module.exports = (function()
             self.onFileInitialize(model);
         };
 
-        var loadFileCallback = function(model)
+        var loadFileCallback = function(doc)
         {
-            self.onFileLoaded(model);
+            self.onFileLoaded(doc);
         };
 
         if (id)
@@ -89,6 +91,8 @@ module.exports = (function()
         //Genomic data related maps
         var genomicDataMap = model.createMap();
         var genomicDataVisibilityMap = model.createMap();
+        var genomicDataGroupMap = model.createMap();
+        var genomicDataGroupCount = model.createString("0");
 
 
         root.set(this.NODEMAP_NAME, nodeMap);
@@ -97,6 +101,9 @@ module.exports = (function()
         root.set(this.GLOBAL_OPTS_NAME, globalOptions);
         root.set(this.GENOMIC_DATA_MAP_NAME, genomicDataMap);
         root.set(this.VISIBLE_GENOMIC_DATA_MAP_NAME, genomicDataVisibilityMap);
+        root.set(this.GENOMIC_DATA_GROUP_NAME, genomicDataGroupMap);
+        root.set(this.GENOMIC_DATA_GROUP_COUNT, genomicDataGroupCount);
+
     };
 
     /*
@@ -105,16 +112,26 @@ module.exports = (function()
     */
     RealTimeManager.prototype.onFileLoaded =  function(doc)
     {
-        // this.realTimeDoc = doc;
-        var model = doc.getModel();
-        var root = model.getRoot();
+        //Keep a reference to the file !
+        this.realTimeDoc = doc;
+        var root = this.realTimeDoc.getModel().getRoot();
 
+        this.syncInitialCloudData(root);
+        this.initCloudEventHandlers(root);
+
+        this.postFileLoad();
+    };
+
+    RealTimeManager.prototype.syncInitialCloudData = function(root)
+    {
         var nodeMap = root.get(this.NODEMAP_NAME);
         var edgeMap = root.get(this.EDGEMAP_NAME);
         var realTimeLayoutProperties = root.get(this.LAYOUT_PROPS_NAME);
         var globalOptions = root.get(this.GLOBAL_OPTS_NAME);
         var genomicDataMap = root.get(this.GENOMIC_DATA_MAP_NAME);
         var visDataMap = root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME);
+        var groupedGenomicDataMap = root.get(this.GENOMIC_DATA_GROUP_NAME);
+        var groupedGenomicDataCount = root.get(this.GENOMIC_DATA_GROUP_COUNT);
 
         var nodeMapEntries = nodeMap.values();
         var edgeMapEntries = edgeMap.values();
@@ -129,24 +146,35 @@ module.exports = (function()
         //Sync already available genomic data !
         var genomicDataMapKeys = genomicDataMap.keys();
         var visibilityMapKeys = visDataMap.keys();
+        var groupedGenomicDataKeys = groupedGenomicDataMap.keys();
 
         //Sync already available data from cloud model
         for (var key in genomicDataMapKeys) {
-            window.editorActionsManager.genomicDataOverlayManager.genomicDataMap[genomicDataMapKeys[key]] = genomicDataMap.get(genomicDataMapKeys[key]);
+            window.editorActionsManager.genomicDataOverlayManager.genomicDataMap[genomicDataMapKeys[key]] =
+                genomicDataMap.get(genomicDataMapKeys[key]);
         }
 
         for (var key in visibilityMapKeys)
         {
-            window.editorActionsManager.genomicDataOverlayManager.visibleGenomicDataMapByType[visibilityMapKeys[key]] = visDataMap.get(visibilityMapKeys[key]);
+            window.editorActionsManager.genomicDataOverlayManager.visibleGenomicDataMapByType[visibilityMapKeys[key]] =
+                visDataMap.get(visibilityMapKeys[key]);
         }
+
+        for (var key in groupedGenomicDataKeys)
+        {
+            window.editorActionsManager.genomicDataOverlayManager.groupedGenomicDataMap[groupedGenomicDataKeys[key]] =
+                groupedGenomicDataMap.get(groupedGenomicDataKeys[key]);
+        }
+        //Does not seem necessary for not but just for sake of completeness
+        window.editorActionsManager.genomicDataOverlayManager.groupedGenomicDataCount = groupedGenomicDataCount;
 
         window.editorActionsManager.genomicDataOverlayManager.showGenomicData();
         window.editorActionsManager.genomicDataOverlayManager.notifyObservers();
         cy.fit(50);
+    };
 
-        //Keep a reference to the file !
-        this.realTimeDoc = doc;
-
+    RealTimeManager.prototype.initCloudEventHandlers = function(root)
+    {
         //Setup event handlers for maps
         var nodeAddRemoveHandler = function(event)
         {
@@ -168,6 +196,11 @@ module.exports = (function()
             window.editorActionsManager.realTimeGenomicDataVsibilityHandler(event);
         }
 
+        var genomicDataGroupChangeHandler = function(event)
+        {
+            window.editorActionsManager.realTimeGenomicDataGroupChangeHandler(event);
+        }
+
         //Event listeners for edge and node map
         root.get(this.NODEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
             nodeAddRemoveHandler);
@@ -176,40 +209,71 @@ module.exports = (function()
         root.get(this.GENOMIC_DATA_MAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
             genomicDataAddRemoveHandler);
         root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
-            genomicDataVisibilityChangeHandler);;
+            genomicDataVisibilityChangeHandler);
+        root.get(this.GENOMIC_DATA_GROUP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
+            genomicDataGroupChangeHandler);
+    }
 
-
-        this.postFileLoad();
+    /*
+     * Gets the first empty index from the list in cloud model
+     * and increments counter by 1
+     * **/
+    RealTimeManager.prototype.getEmptyGroupID = function()
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var count = root.get(this.GENOMIC_DATA_GROUP_COUNT);
+        var returnCount = parseInt(count.getText());
+        count.setText(""+(returnCount + 1));
+        return returnCount;
     };
 
+
+    /*
+     * Gets the first empty index from the list in cloud model
+     * **/
+    RealTimeManager.prototype.groupGenomicData = function(cancerNames, inGroupId)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var genomicGroupMap =  root.get(this.GENOMIC_DATA_GROUP_NAME);
+        var genomicVisMap =  root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME);
+
+        var groupID = ""+inGroupId;
+
+
+        var currentGroup = [];
+
+        if(genomicGroupMap.has(groupID))
+            currentGroup = _.clone(genomicGroupMap.get(groupID));
+
+        for (var i in cancerNames)
+        {
+            if (!genomicVisMap.has(cancerNames[i]))
+                currentGroup.push(cancerNames[i]);
+        }
+
+        genomicGroupMap.set(groupID, currentGroup);
+
+    };
 
     RealTimeManager.prototype.clearGenomicData = function()
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
         var genomicMap =  root.get(this.GENOMIC_DATA_MAP_NAME);
-        var genomicMapKeys = genomicMap.keys();
+        var visMap =  root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME);
+        var genomicDataGroupMap =  root.get(this.GENOMIC_DATA_GROUP_NAME);
+        var genomicDataGroupCount = root.get(this.GENOMIC_DATA_GROUP_COUNT);
+
         model.beginCompoundOperation();
-        for (var i in genomicMapKeys)
-        {
-            genomicMap.delete(genomicMapKeys[i]);
-        }
+        genomicMap.clear();
+        visMap.clear();
+        genomicDataGroupMap.clear();
+        genomicDataGroupCount.setText("0");
         model.endCompoundOperation();
     }
 
-    RealTimeManager.prototype.clearGenomicVisData = function()
-    {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var map =  root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME);
-        var mapKeys = map.keys();
-        model.beginCompoundOperation();
-        for (var i in mapKeys)
-        {
-            map.delete(mapKeys[i]);
-        }
-        model.endCompoundOperation();
-    }
 
     RealTimeManager.prototype.addGenomicData = function(geneData)
     {
@@ -470,8 +534,7 @@ module.exports = (function()
             this.removeElement(edgeMapKeys[index]);
         }
     };
-
-
+    
     RealTimeManager.prototype.loadGraph = function(nodes, edges)
     {
         var model = this.realTimeDoc.getModel();

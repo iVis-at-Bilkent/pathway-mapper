@@ -116,6 +116,8 @@ var cbioPortalAccessView = Backbone.View.extend(
             var geneSymbols = window.editorActionsManager.getGeneSymbols();
             
             var self = this;
+            var collaborativeGroupID = window.editorActionsManager.getEmptyGroupID();
+
             for (var i = 0;  i < checkedDataTypes.length; i++)
             {
                 self.portalAccessor.getProfileData({
@@ -125,7 +127,7 @@ var cbioPortalAccessView = Backbone.View.extend(
                 },
                 function (data)
                 {
-                    window.editorActionsManager.addPortalGenomicData(data);
+                    window.editorActionsManager.addPortalGenomicData(data, collaborativeGroupID);
                 });
             }
 

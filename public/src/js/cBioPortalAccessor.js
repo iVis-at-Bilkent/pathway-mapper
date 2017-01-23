@@ -121,8 +121,7 @@ module.exports = (function()
             return this.MUTATION;
         }
     }
-
-
+    
 
     CBioPortalAccessor.prototype.calcAlterationPercentages = function(paramLines, geneticProfileId, callbackFunction)
     {
