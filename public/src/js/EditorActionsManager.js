@@ -943,8 +943,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.addGenomicData = function(genomicData)
     {
-        //TODO clear visibility map
-        var groupID = window.editorActionsManager.getEmptyGroupID();
+        var groupID = this.getEmptyGroupID();
 
         if(this.isCollaborative)
         {

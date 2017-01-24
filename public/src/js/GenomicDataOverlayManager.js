@@ -20,6 +20,7 @@ module.exports = (function()
     {
         var oldCount = this.groupedGenomicDataCount;
         this.groupedGenomicDataCount++;
+        return oldCount;
     }
 
     GenomicDataOverlayManager.prototype.addGenomicDataLocally = function(genomicData, groupID)
@@ -424,7 +425,7 @@ module.exports = (function()
             else
                 this.visibleGenomicDataMapByType[cancerTypes[i-1]] = false;
 
-            if(this.groupedGenomicDataMap[groupID] != undefined)
+            if(this.groupedGenomicDataMap[groupID] == undefined)
                 this.groupedGenomicDataMap[groupID] = [];
 
             this.groupedGenomicDataMap[groupID].push(cancerTypes[i-1]);

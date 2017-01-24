@@ -120,6 +120,26 @@ module.exports = (function()
         this.initCloudEventHandlers(root);
 
         this.postFileLoad();
+        var self = this;
+
+        $('#undoCollab').on('click', function(e){
+            self.undo();
+        });
+        $('#redoCollab').on('click', function(e){
+            self.redo();
+        });
+    };
+
+    RealTimeManager.prototype.undo = function()
+    {
+        var model = this.realTimeDoc.getModel();
+        model.undo();
+    };
+
+    RealTimeManager.prototype.redo = function()
+    {
+        var model = this.realTimeDoc.getModel();
+        model.redo();
     };
 
     RealTimeManager.prototype.syncInitialCloudData = function(root)
@@ -194,12 +214,12 @@ module.exports = (function()
         var genomicDataVisibilityChangeHandler = function(event)
         {
             window.editorActionsManager.realTimeGenomicDataVsibilityHandler(event);
-        }
+        };
 
         var genomicDataGroupChangeHandler = function(event)
         {
             window.editorActionsManager.realTimeGenomicDataGroupChangeHandler(event);
-        }
+        };
 
         //Event listeners for edge and node map
         root.get(this.NODEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
@@ -212,7 +232,7 @@ module.exports = (function()
             genomicDataVisibilityChangeHandler);
         root.get(this.GENOMIC_DATA_GROUP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
             genomicDataGroupChangeHandler);
-    }
+    };
 
     /*
      * Gets the first empty index from the list in cloud model
