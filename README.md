@@ -46,7 +46,7 @@ var APP_PORT = 3000;
 #### Running Tool in Developement Mode
 In order to run a local instance of the tool in developement mode, please follow the steps below:
 
-Firstly, navigate to PathwayMapper repository. In index.html file uncomment the line with base.css and comment the line with base.min.css:
+Firstly navigate to PathwayMapper repository. In index.html file uncomment the line with base.css and comment the line with base.min.css:
 ```
   <!--For debugging-->
   <!--<link rel="stylesheet" href="bin/base.css" charset="utf-8">-->
@@ -58,6 +58,14 @@ Similarly do the same for base.js and base.min.js file:
 <!--For debugging-->
 <!--<script src="bin/base.js"></script>-->
 <script src="bin/base.min.js"></script>
+```
+
+Some additional npm dependencies are needed in developement mode:
+
+```
+sudo npm install nodemon -g
+sudo npm install browserify -g
+sudo npm install node-sass -g
 ```
 
 After that run the tool with the following command:
