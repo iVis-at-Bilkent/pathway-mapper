@@ -9,6 +9,7 @@ var regCose = require("../../lib/js/cose-bilkent/src/index.js");
 var grid_guide = require('cytoscape-grid-guide');
 var undoRedo = require('cytoscape-undo-redo');
 var contextMenus = require('cytoscape-context-menus');
+// var nodeResize = require('cytoscape-node-resize');
 require('bootstrap-select');
 
 
@@ -191,6 +192,7 @@ window.notificationManager = require('./NotificationFactory');
         grid_guide( cytoscape, $ ); // register extension
         undoRedo(cytoscape); // register extension
         contextMenus( cytoscape, $ ); // register extension
+        // nodeResize( cytoscape, $ );
 
 
         window.edgeAddingMode = 0;
@@ -290,6 +292,47 @@ window.notificationManager = require('./NotificationFactory');
         };
 
         var nav = cy.navigator( navDefaults ); // get navigator instance, nav
+
+        // cy.nodeResize({
+        //     padding: 5, // spacing between node and grapples/rectangle
+        //     undoable: true, // and if cy.undoRedo exists
+        //
+        //     grappleSize: 8, // size of square dots
+        //     grappleColor: "green", // color of grapples
+        //     inactiveGrappleStroke: "inside 1px blue",
+        //     boundingRectangle: true, // enable/disable bounding rectangle
+        //     boundingRectangleLineDash: [4, 8], // line dash of bounding rectangle
+        //     boundingRectangleLineColor: "red",
+        //     boundingRectangleLineWidth: 1.5,
+        //     zIndex: 999,
+        //
+        //     minWidth: function (node) {
+        //         var data = node.data("resizeMinWidth");
+        //         return data ? data : 15;
+        //     }, // a function returns min width of node
+        //     minHeight: function (node) {
+        //         var data = node.data("resizeMinHeight");
+        //         return data ? data : 15;
+        //     }, // a function returns min height of node
+        //
+        //     isFixedAspectRatioResizeMode: function (node) { return node.is(".fixedAspectRatioResizeMode") },// with only 4 active grapples (at corners)
+        //     isNoResizeMode: function (node) { return node.is(".noResizeMode, :parent") }, // no active grapples
+        //
+        //     cursors: { // See http://www.w3schools.com/cssref/tryit.asp?filename=trycss_cursor
+        //         // May take any "cursor" css property
+        //         default: "default", // to be set after resizing finished or mouseleave
+        //         inactive: "not-allowed",
+        //         nw: "nw-resize",
+        //         n: "n-resize",
+        //         ne: "ne-resize",
+        //         e: "e-resize",
+        //         se: "se-resize",
+        //         s: "s-resize",
+        //         sw: "sw-resize",
+        //         w: "w-resize"
+        //     }
+        // });
+
 
         this.placePanzoomAndOverlay();
     };

@@ -22,6 +22,19 @@ module.exports = (function()
         }
     });
 
+    $("#findGeneArea").keypress(function(event)
+    {
+        //event.preventDefault();
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+            var searchedGene = event.currentTarget.value;
+            var selector = "node[name = '" + searchedGene + "']";
+            var nodesToSelect  = cy.filter(selector);
+            //Unselect selected nodes
+            cy.$(':selected').unselect();
+            nodesToSelect.select();
+        }
+    });
 
     //Edit drop down handler
     $(".editDropDown li a").click(function(event)
