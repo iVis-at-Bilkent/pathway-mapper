@@ -55,6 +55,7 @@
     "spectrum-colorpicker": "^1.8.0",
     "uglifyjs": "^2.4.10",
     "underscore": "~1.8.3",
-    "cytoscape-node-resize": "~2.0.4"
+    "cytoscape-node-resize": "~2.0.4",
+    "ocanvas": "~2.8.7"
   }
 }

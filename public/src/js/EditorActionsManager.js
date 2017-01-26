@@ -742,6 +742,14 @@ module.exports = (function()
         }
     };
 
+    EditorActionsManager.prototype.resizeElements = function(ele)
+    {
+        //Sync movement to real time api
+        if(this.isCollaborative) {
+            this.realTimeManager.resizeElement(ele);
+        }
+    };
+
     EditorActionsManager.prototype.handleChangePositionByAlignment = function(movedNodeArr)
     {
         window.undoRedoManager.do("changePositions", movedNodeArr)
@@ -917,6 +925,8 @@ module.exports = (function()
         var nodeID = id;
         var cyEle = this.cy.$("#" + nodeID);
         cyEle.position({x: ele.x, y: ele.y});
+        cyEle.style("width", ele.w + "px");
+        cyEle.style("height", ele.h + "px");
         this.changeNameCy(cyEle, ele.name);
     };
 

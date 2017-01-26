@@ -419,7 +419,34 @@ module.exports = (function()
             throw new Error('Element does not exist in nodes !!! ');
 
         }
-        
+
+    };
+
+    RealTimeManager.prototype.resizeElement = function(ele)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap =  root.get(this.NODEMAP_NAME);
+
+        var elementID = ele.id();
+        var newWidth = ele.width();
+        var newHeight = ele.height();
+        console.log(newWidth);
+        console.log(newHeight);
+
+        if (nodeMap.has(elementID))
+        {
+            var tmpNode = nodeMap.get(elementID);
+            model.beginCompoundOperation();
+            tmpNode.w = newWidth;
+            tmpNode.h = newHeight;
+            model.endCompoundOperation();
+        }
+        else
+        {
+            throw new Error('Element does not exist in nodes !!! ');
+        }
+
     };
 
     RealTimeManager.prototype.changeName = function(ele, newName)
@@ -440,7 +467,6 @@ module.exports = (function()
         else
         {
             throw new Error('Element does not exist in nodes !!! ');
-
         }
 
     };
@@ -834,6 +860,8 @@ module.exports = (function()
         NodeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
         NodeR.prototype.x = gapi.drive.realtime.custom.collaborativeField('x');
         NodeR.prototype.y = gapi.drive.realtime.custom.collaborativeField('y');
+        NodeR.prototype.w = gapi.drive.realtime.custom.collaborativeField('w');
+        NodeR.prototype.h = gapi.drive.realtime.custom.collaborativeField('h');
         NodeR.prototype.parent = gapi.drive.realtime.custom.collaborativeField('parent');
 
         // EdgeR;
@@ -919,6 +947,8 @@ module.exports = (function()
         this.parent = params.parent || "undefined";
         this.x = params.x || "undefined";
         this.y = params.y || "undefined";
+        this.w = params.w || "undefined";
+        this.h = params.h || "undefined";
         model.endCompoundOperation();
     };
 
