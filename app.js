@@ -9,6 +9,9 @@ var qs = require("querystring");
 
 
 var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
 // app.use(multer);
 app.use(express.static('public'));
 app.use('/node_modules/bootstrap', express.static(__dirname + '/node_modules/bootstrap/'));
@@ -197,7 +200,53 @@ app.get('/getTemplateFileData', getTemplateFileData);
 app.post('/loadGraph', multerInstance.single('graphFile'), loadGraphHandler);
 app.post('/getBioGeneData', multerInstance.array(), biogeneDataHandler);
 
-app.listen(APP_PORT, function ()
+
+/*******************************
+ Socket.io related chat functions
+ ********************************/
+
+io.on('connection', function(socket)
+{
+    var addedUser = false;
+    var USER_DISCONNECTED_EVENT = "disconnect";
+    var NEW_MESSAGE_EVENT = "newMessage";
+    var USER_JOINED_EVENT = "userJoined";
+
+    socket.on(NEW_MESSAGE_EVENT, function(data)
+    {
+        socket.broadcast.emit(NEW_MESSAGE_EVENT, data);
+    });
+
+    // when the client emits 'add user', this listens and executes
+    socket.on(USER_JOINED_EVENT, function (username)
+    {
+        if (addedUser) return;
+
+        // we store the username in the socket session for this client
+        socket.userName = username;
+        addedUser = true;
+
+        console.log("User " + socket.userName  + " is connected");
+
+        // echo globally (all clients) that a person has connected
+        io.emit(USER_JOINED_EVENT,
+        {
+            username: socket.username
+        });
+    });
+
+    socket.on(USER_DISCONNECTED_EVENT, function()
+    {
+        console.log("User " + socket.userName  + " is disconnected");
+        socket.broadcast.emit(USER_DISCONNECTED_EVENT, "User " + socket.userName  + " is disconnected");
+    });
+
+});
+
+/*******************************
+  Server
+ ********************************/
+http.listen(APP_PORT, function ()
 {
   console.log('TCGA Pathway Curation Tool up and running on port ' + APP_PORT);
 });
