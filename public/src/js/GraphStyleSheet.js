@@ -105,6 +105,30 @@ module.exports = (function()
         'shadow-opacity': 1.0
       }
     },
+    {
+        selector: '.highlighted',
+        style:
+            {
+                'border-width':3,
+                'shadow-color' : '#1abc9c',
+                'background-color': '#1abc9c',
+                'shadow-opacity': 1.0
+            }
+    },
+
+    {
+        selector: '.highlightedEdge',
+        style:
+            {
+                'width': 3,
+                'border-width':4,
+                'shadow-color' : '#1abc9c',
+                'background-color': '#1abc9c',
+                'shadow-opacity': 1.0
+            }
+    },
+
+
     // some style for the Edge Handles !!!
     {
       selector: '.edgehandles-hover',

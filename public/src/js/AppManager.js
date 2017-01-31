@@ -22,6 +22,7 @@ var LayoutProperties = require('./BackboneViews/LayoutPropertiesView.js');
 var GenomicDataExplorerView = require('./BackboneViews/GenomicDataExplorerView.js');
 var PathwayDetailsView = require('./BackboneViews/PathwayDetailsView.js');
 var GridOptionsView = require('./BackboneViews/GridOptionsView.js');
+var NodeResizeOptionsView = require('./BackboneViews/NodeResizeOptionsView.js');
 var CBioPortalAccessView = require('./BackboneViews/CbioPortalAccessView.js');
 
 //Other requires
@@ -231,6 +232,10 @@ window.notificationManager = require('./NotificationFactory');
             el: $('#gridOptionsDiv')
         }).render();
 
+        this.nodeResizeOptionsView = new NodeResizeOptionsView({
+            el: $('#nodeResizeOptionsDiv')
+        }).render();
+
         this.genomicDataExplorerView = new GenomicDataExplorerView({
             el: $('#genomicDataExplorerDiv'),
             editorActionsManager: this.editorActionsManager
@@ -318,7 +323,9 @@ window.notificationManager = require('./NotificationFactory');
             }, // a function returns min height of node
 
             isFixedAspectRatioResizeMode: function (node) { return node.is(".fixedAspectRatioResizeMode") },// with only 4 active grapples (at corners)
-            isNoResizeMode: function (node) { return node.is(".noResizeMode, :parent") }, // no active grapples
+            isNoResizeMode: function (node) {
+                return undefined;
+            }, // no active grapples
 
             cursors: { // See http://www.w3schools.com/cssref/tryit.asp?filename=trycss_cursor
                 // May take any "cursor" css property

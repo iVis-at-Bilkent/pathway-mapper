@@ -306,6 +306,11 @@
                     </ul>
                   </li>
                   <li><a tabindex="-1" role="grid" href="#">Grid...</a></li>
+                  <li><a tabindex="-1" role="nodeResize" href="#">Node Resize</a></li>
+                  <li><a tabindex="-1" role="hideSelectedNodes" href="#">Hide Selected nodes</a></li>
+                  <li><a tabindex="-1" role="showAllNodes" href="#">Show All Nodes</a></li>
+                  <li><a tabindex="-1" role="highlightNeighbors" href="#">Highlight Neighbors of Selected</a></li>
+                  <li><a tabindex="-1" role="removeHighlight" href="#">Remove Highlight</a></li>
                 </ul>
               </li>
               <li class="dropdown dataDropdown">
@@ -608,6 +613,9 @@
 <div id='gridOptionsDiv' class="modal fade" tabindex="-1" role="dialog">
 </div><!-- /.modal -->
 
+<div id='nodeResizeOptionsDiv' class="modal fade" tabindex="-1" role="dialog">
+</div><!-- /.modal -->
+
 <div id='cbioPortalAccessDiv' class="modal fade" tabindex="-1" role="dialog">
   <div id="cbioPortalModal" class="modal-dialog">
     <div class="modal-content">
@@ -718,6 +726,32 @@
       <div class="modal-footer">
         <div>
           <button id="applyGridOptions" class="btn btn-default" > Save </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+
+<script id="nodeResizeOptionsTemplate" type="text/template" class="template">
+  <div class="modal-dialog nodeResizeModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Node Resize Options</h3>
+      </div>
+      <div class="modal-body">
+        <div class="modal-body">
+          <form role="form" id="nodeResizeOptionsForm">
+            <div class="input-group">
+              <h1><%= jsVariable %></h1>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button id="applyNodeResizeOptions" class="btn btn-default" > Save </button>
         </div>
       </div>
     </div>

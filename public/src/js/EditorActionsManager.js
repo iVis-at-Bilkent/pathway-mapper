@@ -750,6 +750,41 @@ module.exports = (function()
         }
     };
 
+    EditorActionsManager.prototype.showAllNodes = function()
+    {
+        var hid = cy.nodes(":hidden");
+        hid.show();
+    };
+
+    EditorActionsManager.prototype.hideSelectedNodes = function()
+    {
+        //Hides the selected elements
+        var sel = cy.nodes(":selected");
+        sel.hide();
+        //Hides the parents if they have no children
+        cy.nodes(":parent").each( function(i, parent)
+        {
+            if (parent.children(":visible").empty()) parent.hide();
+        });
+    };
+
+    EditorActionsManager.prototype.highlightNeighbors = function()
+    {
+        var sel = cy.elements(":selected");
+        var neighbors = sel.neighborhood();
+        neighbors.each(function(i, n)
+        {
+            if (n.isEdge()) n.addClass("highlightedEdge");
+            else n.addClass("highlighted");
+        });
+    };
+
+    EditorActionsManager.prototype.removeHighlight = function()
+    {
+        cy.$().removeClass("highlighted");
+        cy.$().removeClass("highlightedEdge");
+    };
+
     EditorActionsManager.prototype.handleChangePositionByAlignment = function(movedNodeArr)
     {
         window.undoRedoManager.do("changePositions", movedNodeArr)

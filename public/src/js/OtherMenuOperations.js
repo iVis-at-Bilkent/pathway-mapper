@@ -28,7 +28,7 @@ module.exports = (function()
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if(keycode == '13'){
             var searchedGene = event.currentTarget.value;
-            var selector = "node[name = '" + searchedGene + "']";
+            var selector = "node[name @*= '" + searchedGene + "']";
             var nodesToSelect  = cy.filter(selector);
             //Unselect selected nodes
             cy.$(':selected').unselect();

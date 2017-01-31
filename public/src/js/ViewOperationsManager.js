@@ -141,6 +141,26 @@ module.exports = (function($)
         {
             $("#gridOptionsDiv").modal('show');
         }
+        else if (dropdownLinkRole == "nodeResize")
+        {
+            $("#nodeResizeOptionsDiv").modal('show');
+        }
+        else if (dropdownLinkRole == "showAllNodes")
+        {
+            editorActionsManager.showAllNodes();
+        }
+        else if (dropdownLinkRole == "hideSelectedNodes")
+        {
+            editorActionsManager.hideSelectedNodes();
+        }
+        else if (dropdownLinkRole == "highlightNeighbors")
+        {
+            editorActionsManager.highlightNeighbors();
+        }
+        else if (dropdownLinkRole == "removeHighlight")
+        {
+            editorActionsManager.removeHighlight();
+        }
         else
         {
             handleNodeAlignment(dropdownLinkRole);
