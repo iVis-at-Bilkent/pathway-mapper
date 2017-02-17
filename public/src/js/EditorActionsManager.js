@@ -43,6 +43,7 @@ module.exports = (function()
         window.undoRedoManager = cy.undoRedo();
         window.undoRedoManager.action("changePositions", this.doChangePosition, this.undoChangePosition);
         window.undoRedoManager.action("changeName", this.doChangename, this.undoChangeName);
+        window.undoRedoManager.action("hideNode", this.doHide, this.undoHide);
     };
 
 
@@ -110,6 +111,21 @@ module.exports = (function()
         }
 
         return newMovedNodes;
+    };
+
+    /*
+     * Undo redo for hiding nodes
+     * **/
+    EditorActionsManager.prototype.doHide = function(args)
+    {
+        args.hide();
+        return args;
+    };
+
+    EditorActionsManager.prototype.undoHide = function(args)
+    {
+        args.show();
+        return args;
     };
 
     EditorActionsManager.prototype.postLayout = function()
@@ -758,14 +774,30 @@ module.exports = (function()
 
     EditorActionsManager.prototype.hideSelectedNodes = function()
     {
+
+        // //Previously
+        // //Hides the selected elements
+        // var sel = cy.nodes(":selected");
+        // sel.hide();
+        // //Hides the parents if they have no children
+        // cy.nodes(":parent").each( function(i, parent)
+        // {
+        //     if (parent.children(":visible").empty())  parent.hide();
+        // });
+
+
         //Hides the selected elements
         var sel = cy.nodes(":selected");
+        var nodesToHide = sel;
         sel.hide();
         //Hides the parents if they have no children
         cy.nodes(":parent").each( function(i, parent)
         {
-            if (parent.children(":visible").empty()) parent.hide();
+            if (parent.children(":visible").empty())
+                nodesToHide = nodesToHide.add(parent);
         });
+        sel.show();
+        window.undoRedoManager.do('hideNode', nodesToHide);
     };
 
     EditorActionsManager.prototype.highlightNeighbors = function()
