@@ -775,28 +775,24 @@ module.exports = (function()
     EditorActionsManager.prototype.hideSelectedNodes = function()
     {
 
-        // //Previously
-        // //Hides the selected elements
-        // var sel = cy.nodes(":selected");
-        // sel.hide();
-        // //Hides the parents if they have no children
-        // cy.nodes(":parent").each( function(i, parent)
-        // {
-        //     if (parent.children(":visible").empty())  parent.hide();
-        // });
-
-
         //Hides the selected elements
         var sel = cy.nodes(":selected");
         var nodesToHide = sel;
-        sel.hide();
+        var b = true;
         //Hides the parents if they have no children
-        cy.nodes(":parent").each( function(i, parent)
+        sel.parent().each( function(i, parent)
         {
-            if (parent.children(":visible").empty())
-                nodesToHide = nodesToHide.add(parent);
+            b=true;
+            parent.children().each(function(j,ch)
+                {
+                    if (!ch.selected())
+                    {
+                        if (ch.visible()) b=false;
+                    }
+                }
+            );
+            if (b==true) nodesToHide = nodesToHide.add(parent);
         });
-        sel.show();
         window.undoRedoManager.do('hideNode', nodesToHide);
     };
 
