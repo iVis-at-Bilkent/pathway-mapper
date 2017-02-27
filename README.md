@@ -114,9 +114,9 @@ After alignment:
   <img src="public/assets/align-after.png" width="320"/>
 </p>
 
-### Sample TCGA and PanCancer Pathways
+### Sample TCGA Pathways
 
-A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) and PanCancer studies are available under Network > TCGA and PanCancer menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
+A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) studies are available under Network > TCGA menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
 <p align="center">
   <img src="public/assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="440"/>
 </p>
@@ -195,7 +195,7 @@ The user may also fetch alteration frequencies available on cBioPortal database 
 Should you choose "Collaborative" on the welcome page, you will be first prompted for Google account authentication since the shared data model will be stored in a shared document at Google Drive folder of the user. Then your editing session will be given a unique ID and you will have the option of sharing the URL containing this ID with desired person(s) and construct / edit a pathways in real time with support for concurrent modifications and built-in conflict resolution.
 
 Any changes made by any person working on the pathway with the same URL will be shared / reflected to other people currently viweing / editing the same pathway. Below is a short video illustrating collaborative usage: 
-<a href="http://www.cs.bilkent.edu.tr/~ivis/PathwayMapper/Collaboration-with-PM.mp4" target="_blank"><p align="center"><img src="public/assets/collaboration-with-PM.png" width="460"/></p></a>
+<a href="https://www.youtube.com/watch?v=pKITXqbDyOc&feature=youtu.be" target="_blank"><p align="center"><img src="public/assets/collaboration-with-PM.png" width="460"/></p></a>
 
 ## Team
 
