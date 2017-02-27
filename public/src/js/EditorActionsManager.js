@@ -44,6 +44,8 @@ module.exports = (function()
         window.undoRedoManager.action("changePositions", this.doChangePosition, this.undoChangePosition);
         window.undoRedoManager.action("changeName", this.doChangename, this.undoChangeName);
         window.undoRedoManager.action("hideNode", this.doHide, this.undoHide);
+        window.undoRedoManager.action("highlightNeighbors", this.doHighlight, this.undoHighlight);
+
     };
 
 
@@ -125,6 +127,26 @@ module.exports = (function()
     EditorActionsManager.prototype.undoHide = function(args)
     {
         args.show();
+        return args;
+    };
+
+    /*
+     * Undo redo for highlighting neigbors of selected nodes
+     * **/
+    EditorActionsManager.prototype.doHighlight = function(args)
+    {
+        args.each(function(i, n)
+        {
+            if (n.isEdge()) n.addClass("highlightedEdge");
+            else n.addClass("highlighted");
+        });
+        return args;
+    };
+
+    EditorActionsManager.prototype.undoHighlight = function(args)
+    {
+        args.removeClass("highlighted");
+        args.removeClass("highlightedEdge");
         return args;
     };
 
@@ -800,11 +822,9 @@ module.exports = (function()
     {
         var sel = cy.elements(":selected");
         var neighbors = sel.neighborhood();
-        neighbors.each(function(i, n)
-        {
-            if (n.isEdge()) n.addClass("highlightedEdge");
-            else n.addClass("highlighted");
-        });
+
+
+        window.undoRedoManager.do('highlightNeighbors', neighbors);
     };
 
     EditorActionsManager.prototype.removeHighlight = function()
