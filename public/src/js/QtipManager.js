@@ -211,7 +211,7 @@ module.exports = (function($)
               },
               title: function()
               {
-                return 'EDGE DETAILS';
+                return 'INTERACTION DETAILS';
               }
             },
             position: {
