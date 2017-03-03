@@ -24,11 +24,10 @@ module.exports = (function($)
     {
       for (var key in argData)
       {
-        var pubmedID = argData[key];
+          var pubmedID = argData[key];
 
-        // if (isInitialDisplay)
-        //   if (!_.contains(pubmedData, pubmedID))
-        //     continue;
+          if (isNaN(pubmedID))
+            continue;
 
           var pubmedIDRemoveButton = $("<i edgeID='"+ edge.id() +"' class='fa fa-times qtipRemovePmedID' aria-hidden='true'></i>");
           pubmedIDRemoveButton.on('click', function(event)
@@ -73,7 +72,7 @@ module.exports = (function($)
     {
       var edgeID = $(this).find('input').attr('edgeid');
       var pumbedIDs = $(this).find('input').val().split(';');
-      $(this).find('input').val("")
+      $(this).find('input').val("");
 
       if($('.pubmedIDList').children().length == 0)
       {
@@ -185,7 +184,7 @@ module.exports = (function($)
               },
               title: function()
               {
-                return capitalizeFirstLetter(ele.data().type.toLowerCase()) + ' Details';
+                return ele.data().type.toUpperCase() + ' DETAILS';
               }
             },
             position: {
@@ -212,7 +211,7 @@ module.exports = (function($)
               },
               title: function()
               {
-                return 'Edge Details';
+                return 'EDGE DETAILS';
               }
             },
             position: {

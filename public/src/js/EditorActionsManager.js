@@ -128,13 +128,17 @@ module.exports = (function()
 
     EditorActionsManager.prototype.addPubmedIDs = function(edge, pubmedIDs)
     {
-      if (this.isCollaborative) {
+      if (this.isCollaborative)
+      {
         this.realTimeManager.addPubmedIDs(edge.id(), pubmedIDs);
       }
       else
       {
         var pubmedArray = edge.data('pubmedIDs');
-        pubmedArray.push.apply(pubmedArray,pubmedIDs);
+        var validPubmedIDs = _.filter(pubmedIDs, function(id){
+          return !isNaN(id);
+        });
+        pubmedArray.push.apply(pubmedArray,validPubmedIDs);
         pubmedArray = edge.data('pubmedIDs');
         edge.data('pubmedIDs', _.uniq(pubmedArray));
       }

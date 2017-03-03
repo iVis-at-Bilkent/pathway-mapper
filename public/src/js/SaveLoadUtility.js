@@ -126,7 +126,7 @@ var SaveLoadUtils =
 
     //Put a blank line between nodes and edges
     returnString += '\n';
-    returnString += 'PARTICIPANT_A\PARTICIPANT_B\TYPE\tPUBMED_IDS\n';
+    returnString += 'PARTICIPANT_A\tPARTICIPANT_B\tTYPE\tPUBMED_IDS\n';
 
     if (edges) {
       //Write edges
