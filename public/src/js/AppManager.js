@@ -60,7 +60,7 @@ window.notificationManager = require('./NotificationFactory');
              that.placePanzoomAndOverlay();
          }
 
-         //TODO undo redo is not working properly in collaborative mode 
+         //TODO undo redo is not working properly in collaborative mode
          if (!this.isCollaborative) {
              $(document).keydown(function (e) {
                  if (e.which === 89 && (e.ctrlKey || event.metaKey)) {
@@ -330,9 +330,29 @@ window.notificationManager = require('./NotificationFactory');
             }
         });
 
+        // cy.on('doubleTap', 'edge', function(e)
+        // {
+        //     var eventIsDirect = (e.cyTarget === this);
+        //     $(".qtip").remove();
+        //
+        //     if( eventIsDirect ) {
+        //         that.qtipManager.addQtipToElements(e.cyTarget);
+        //     }
+        // });
+
         cy.on('select', 'node', function( e )
         {
             window.editorActionsManager.pushSelectedNodeStack(e.cyTarget);
+        });
+
+        cy.on('select', 'edge', function( e )
+        {
+          var eventIsDirect = (e.cyTarget === this);
+          $(".qtip").remove();
+
+          if( eventIsDirect ) {
+              that.qtipManager.addQtipToElements(e.cyTarget);
+          }
         });
 
         cy.on('unselect', 'node', function( e )

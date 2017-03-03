@@ -5,13 +5,100 @@ var BackboneView = require('./BackboneViews/BioGeneView.js');
 module.exports = (function($)
 {
   "use strict";
-  
+
   var QtipManager =function (cy)
   {
     this.cy = cy;
   };
 
-  QtipManager.prototype.generateQtipContentHTML = function(ele)
+  QtipManager.prototype.generateEdgeQtipContentHTML = function(edge)
+  {
+    var self = this;
+    var edgeData = edge.data();
+    var textInput = $('<div class="col-xs-6 inputCol"><input type="text" class="form-control" edgeid="' + edge.id() + '"value=""></div>');
+    var pubmedIDList = $('<div class="pubmedIDList"></div>');
+    var pubmedURL = 'https://www.ncbi.nlm.nih.gov/pubmed/';
+    var pubmedData = edge.data('pubmedIDs');
+
+    function generatePubmedLinks(argData, isInitialDisplay)
+    {
+      for (var key in argData)
+      {
+        var pubmedID = argData[key];
+
+        // if (isInitialDisplay)
+        //   if (!_.contains(pubmedData, pubmedID))
+        //     continue;
+
+          var pubmedIDRemoveButton = $("<i edgeID='"+ edge.id() +"' class='fa fa-times qtipRemovePmedID' aria-hidden='true'></i>");
+          pubmedIDRemoveButton.on('click', function(event)
+          {
+            $(event.target).parent().remove();
+            var edge = cy.$('#'+$(event.target).attr('edgeId'));
+            var pubmedId = [$(event.target).parent().find('a').text()];
+            window.editorActionsManager.removePubmedID(edge, pubmedId);
+            if($('.pubmedIDList').children().length < 3)
+            {
+              $('.pubmedIDList').children().remove();
+            }
+          });
+
+          var pubmedContent = $("<div>\
+                                <label>\
+                                  <a target='_blank' href="
+                                    + pubmedURL
+                                    + pubmedID +">"+
+                                    + pubmedID +
+                                  "</a>" +
+                                "</label>\
+                                </div>");
+          pubmedContent.first().append(pubmedIDRemoveButton);
+          pubmedIDList.append(pubmedContent);
+      }
+    }
+
+    function generatePubmedLinksHeader()
+    {
+      pubmedIDList.append($('<hr/>'));
+      pubmedIDList.append($('<label class="col-xs-12 pubmedIDLabel">Pubmed IDs</label>'));
+    }
+
+    if (pubmedData.length > 0)
+    {
+      generatePubmedLinksHeader();
+      generatePubmedLinks(pubmedData, true);
+    }
+
+    textInput.change(function()
+    {
+      var edgeID = $(this).find('input').attr('edgeid');
+      var pumbedIDs = $(this).find('input').val().split(';');
+      $(this).find('input').val("")
+
+      if($('.pubmedIDList').children().length == 0)
+      {
+        generatePubmedLinksHeader();
+      }
+
+      //TODO call associated Editor Actions Manager function
+      window.editorActionsManager.addPubmedIDs(edge, pumbedIDs);
+
+      generatePubmedLinks(pumbedIDs, false);
+
+    });
+
+    var wrapper = $('<div></div>');
+    var row = $('<div class="row">\
+                 <div class="col-xs-6 qtipLabel">Add  PubmedID(s):</div>\
+              </div>');
+
+    row.append(textInput);
+    wrapper.append(row);
+    wrapper.append(pubmedIDList);
+    return wrapper;
+  }
+
+  QtipManager.prototype.generateNodeQtipContentHTML = function(ele)
   {
     var self = this;
     var nodeData = ele.data();
@@ -83,36 +170,66 @@ module.exports = (function($)
   QtipManager.prototype.addQtipToElements = function(eles)
   {
     var self = this;
-    eles.forEach(function(node,i)
+    eles.forEach(function(ele,i)
     {
-      var qTipOpts =
+      var qTipOpts = {};
+      if (ele.isNode())
       {
-        content:
-        {
-          text:  function()
+          qTipOpts =
           {
-            return self.generateQtipContentHTML(this);
-          },
-          title: function()
-          {
-            return capitalizeFirstLetter(node.data().type.toLowerCase()) + ' Details';
-          }
-        },
-        position: {
-          my: 'top center',
-          at: 'bottom center'
-        },
-        style:
-        {
-          classes: 'qtip-tipsy qtip-rounded',
-          width: 400
-        }
-      };
-      node.qtip(qTipOpts);
-    });
+            content:
+            {
+              text:  function()
+              {
+                return self.generateNodeQtipContentHTML(this);
+              },
+              title: function()
+              {
+                return capitalizeFirstLetter(ele.data().type.toLowerCase()) + ' Details';
+              }
+            },
+            position: {
+              my: 'top center',
+              at: 'bottom center'
+            },
+            style:
+            {
+              classes: 'qtip-tipsy qtip-rounded',
+              width: 400
+            }
+          };
 
+      }
+      else if(ele.isEdge())
+      {
+          qTipOpts =
+          {
+            content:
+            {
+              text:  function()
+              {
+                return self.generateEdgeQtipContentHTML(this);
+              },
+              title: function()
+              {
+                return 'Edge Details';
+              }
+            },
+            position: {
+              my: 'top center',
+              at: 'bottom center'
+            },
+            style:
+            {
+              classes: 'qtip-tipsy qtip-rounded',
+              width: 400
+            }
+          };
+      }
+      ele.qtip(qTipOpts);
+    });
   };
-  
+
 
   //Utility Functions
   function capitalizeFirstLetter(string)

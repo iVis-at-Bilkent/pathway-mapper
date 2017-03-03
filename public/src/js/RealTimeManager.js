@@ -119,6 +119,31 @@ module.exports = (function()
         var nodeMapEntries = nodeMap.values();
         var edgeMapEntries = edgeMap.values();
 
+        //TODO Workaround for legacy pathways
+        //Workaround for backward compatibility of legacy pathways
+        for (var i = 0; i < edgeMapEntries.length; i++)
+        {
+          var tmpEdge = edgeMapEntries[i];
+
+          if (tmpEdge.pubmedIDs == undefined)
+          {
+            var newEdge = model.create(EdgeR,
+            {
+                type: tmpEdge.type,
+                source: tmpEdge.source,
+                target: tmpEdge.target,
+                pubmedID: model.createList()
+            });
+            var tmpEdgeID = this.getCustomObjId(tmpEdge);
+            var newID = this.getCustomObjId(newEdge);
+            edgeMap.delete(tmpEdgeID);
+            edgeMap.set(newID, newEdge);
+          }
+        }
+        edgeMapEntries = edgeMap.values();
+        //End of workaround
+
+
         //Add real time nodes to local graph
         window.editorActionsManager.addNewElementsLocally(nodeMapEntries, edgeMapEntries);
 
@@ -177,7 +202,6 @@ module.exports = (function()
             genomicDataAddRemoveHandler);
         root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
             genomicDataVisibilityChangeHandler);;
-
 
         this.postFileLoad();
     };
@@ -284,7 +308,8 @@ module.exports = (function()
             {
                 type: edgeData.type,
                 source: edgeData.source,
-                target: edgeData.target
+                target: edgeData.target,
+                pubmedID: edgeData.pubmedID
             });
 
         var realTimeGeneratedID = this.getCustomObjId(newEdge);
@@ -333,10 +358,68 @@ module.exports = (function()
         else
         {
             throw new Error('Element does not exist in nodes !!! ');
-
         }
-        
+
     };
+
+    RealTimeManager.prototype.addPubmedIDs = function(edgeID, pubmedIDs)
+    {
+      var model = this.realTimeDoc.getModel();
+      var root = model.getRoot();
+      var edgeMap =  root.get(this.EDGEMAP_NAME);
+
+      if (edgeMap.has(edgeID))
+      {
+          var tmpEdge = edgeMap.get(edgeID);
+          var nonDuplicateArray = [];
+          for (var i = 0; i < pubmedIDs.length; i++)
+          {
+            if (tmpEdge.pubmedIDs.indexOf(pubmedIDs[i]) < 0)
+            {
+              nonDuplicateArray.push(pubmedIDs[i]);
+            }
+          }
+          model.beginCompoundOperation();
+          tmpEdge.pubmedIDs.pushAll(nonDuplicateArray);
+          model.endCompoundOperation();
+      }
+      else
+      {
+          throw new Error('Edge does not exist in real time !!! ');
+      }
+    }
+
+    RealTimeManager.prototype.removePubmedID = function(edgeID, pubmedIDs)
+    {
+      var model = this.realTimeDoc.getModel();
+      var root = model.getRoot();
+      var edgeMap =  root.get(this.EDGEMAP_NAME);
+
+      if (edgeMap.has(edgeID))
+      {
+          var tmpEdge = edgeMap.get(edgeID);
+          var removedIndices = [];
+          for (var i = 0; i < pubmedIDs.length; i++)
+          {
+            var tmpID = pubmedIDs[i];
+            var index = tmpEdge.pubmedIDs.indexOf(tmpID);
+            if (index >= 0)
+            {
+              removedIndices.push(index);
+            }
+          }
+          model.beginCompoundOperation();
+          for (var i = 0; i < removedIndices.length; i++) {
+            tmpEdge.pubmedIDs.remove(removedIndices[i]);
+          }
+          model.endCompoundOperation();
+
+      }
+      else
+      {
+          throw new Error('Edge does not exist in real time !!! ');
+      }
+    }
 
     RealTimeManager.prototype.changeName = function(ele, newName)
     {
@@ -370,7 +453,7 @@ module.exports = (function()
         var nodeLookupTable = {};
 
         var self = this;
-        
+
         function traverseFromRoot(rootNode, parId)
         {
             /*
@@ -378,7 +461,7 @@ module.exports = (function()
              create new real time node with given parentId,
              pass id of this real time node to children,
              repeat in a recursive manner
-             after that restore the edges that dissapear by removed nodes 
+             after that restore the edges that dissapear by removed nodes
              during change parent
              */
 
@@ -433,7 +516,7 @@ module.exports = (function()
 
             var newSource = nodeLookupTable[edgeData.source];
             var newTarget = nodeLookupTable[edgeData.target];
-            
+
             if (newSource)
             {
                 edgeData.source = newSource;
@@ -735,7 +818,7 @@ module.exports = (function()
 
     RealTimeManager.prototype.createRealTimeObjectDefinitions = function()
     {
-        //Register our custom objects go Google Real Time API
+        //Register our custom objects Google Real Time API
         gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
         gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
         gapi.drive.realtime.custom.registerType(LayoutPropertiesR, 'LayoutPropertiesR');
@@ -757,6 +840,7 @@ module.exports = (function()
         EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
         EdgeR.prototype.target = gapi.drive.realtime.custom.collaborativeField('target');
         EdgeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
+        EdgeR.prototype.pubmedIDs = gapi.drive.realtime.custom.collaborativeField('pubmedIDs');
 
         //LayoutPropertiesR
         LayoutPropertiesR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
@@ -777,16 +861,16 @@ module.exports = (function()
         //GlobalOptionsR
         GlobalOptionsR.prototype.zoomLevel = gapi.drive.realtime.custom.collaborativeField('zoomLevel');
         GlobalOptionsR.prototype.panLevel = gapi.drive.realtime.custom.collaborativeField('panLevel');
-        
+
         //Attribute changed handlers !!!
         var self = this;
 
-        function registerAttributeChangeHandlersNodeR()
+        function registerAttributeChangeHandlersElements()
         {
             function updateElementHandler(event)
             {
-                var node = event.currentTarget;
-                window.editorActionsManager.updateElementCallback(node, self.getCustomObjId(node));
+                var ele = event.currentTarget;
+                window.editorActionsManager.updateElementCallback(ele, self.getCustomObjId(ele));
             }
 
             this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateElementHandler);
@@ -815,7 +899,8 @@ module.exports = (function()
         }
 
         //Register attribute changed handlers
-        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersNodeR);
+        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersElements);
+        gapi.drive.realtime.custom.setOnLoaded(EdgeR, registerAttributeChangeHandlersElements);
         gapi.drive.realtime.custom.setOnLoaded(LayoutPropertiesR, registerAttributeChangeHandlersLayoutPropertiesR);
         gapi.drive.realtime.custom.setOnLoaded(GlobalOptionsR, registerAttributeChangeHandlersGlobalOptionsR);
 
@@ -846,6 +931,18 @@ module.exports = (function()
         this.type = params.type || "undefined";
         this.source = params.source || "undefined";
         this.target = params.target || "undefined";
+        if (params.pubmedIDs)
+        {
+          if(this.pubmedIDs == undefined)
+          {
+            this.pubmedIDs = model.createList();
+          }
+          this.pubmedIDs.pushAll(params.pubmedIDs);
+        }
+        else
+        {
+          this.pubmedIDs = model.createList();
+        }
         model.endCompoundOperation();
     };
 

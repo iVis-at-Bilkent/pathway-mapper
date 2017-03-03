@@ -52,17 +52,17 @@ module.exports = (function($)
         saveAs(blob, "pathway.png");
     }
 
-    function saveGraph()
+    function saveGraph(isSIFNX)
     {
 
         var pathwayData = getPathwayData();
         pathwayData.graphJSON = cy.json();
 
-        var returnString = SaveLoadUtilities.exportGraph(pathwayData);
+        var returnString = (isSIFNX) ? SaveLoadUtilities.exportAsSIFNX(pathwayData):
+                                       SaveLoadUtilities.exportGraph(pathwayData);
         var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
         saveAs(blob, pathwayData.fileName);
     }
-
 
     function getPathwayData()
     {
@@ -183,7 +183,11 @@ module.exports = (function($)
 
         if (dropdownLinkRole == 'save')
         {
-            saveGraph();
+            saveGraph(false);
+        }
+        else if (dropdownLinkRole == 'sifnx')
+        {
+            saveGraph(true);
         }
         else if (dropdownLinkRole == 'load')
         {
@@ -247,7 +251,7 @@ module.exports = (function($)
         request.send(formData);
         $('#fileinput').val(null);
     });
-    
+
     function resetUndoStack()
     {
         window.undoRedoManager.reset();

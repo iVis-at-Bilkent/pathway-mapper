@@ -48,7 +48,7 @@ var SaveLoadUtils =
 
     //Put a blank line between nodes and edges
     returnString += '\n';
-    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\n';
+    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\tPUBMED_IDS\n';
 
     if (edges) {
       //Write edges
@@ -58,15 +58,101 @@ var SaveLoadUtils =
         var edgeType = edges[i].data.type;
         var source = edges[i].data.source;
         var target = edges[i].data.target;
+        var pubmedIDs = edges[i].data.pubmedIDs;
+        var pubmedString = "";
+
+        if (pubmedIDs != undefined) {
+            for (var j = 0; j < pubmedIDs.length; j++)
+            {
+              pubmedString += pubmedIDs[j];
+              if (j != pubmedIDs.length - 1)
+                  pubmedString += ";"
+            }
+        }
 
         returnString += edgeID + '\t' +
                         source + '\t' +
                         target + '\t' +
-                        edgeType + '\n';
+                        edgeType + '\t' +
+                        pubmedString + '\n';
+      }
+    }
+
+    //Finally return a string that includes whole graph lovely and peacefully :)
+    return returnString;
+  },
+  exportAsSIFNX: function(pathwayDetails)
+  {
+    var returnString = "";
+
+    //Get nodes and edges
+    var nodes = pathwayDetails.graphJSON.elements.nodes;
+    var edges = pathwayDetails.graphJSON.elements.edges;
+
+    //Prepare Meta Line
+    returnString += 'NAME\tTYPE\tPARENT_ID\tPOSX\tPOSY\tPATHWAY'+'\n';
+
+    if (nodes)
+    {
+      for (var i = 0; i < nodes.length; i++)
+      {
+        //Node specific data fields
+        var nodeName = nodes[i].data.name;
+        var nodeType = nodes[i].data.type;
+        var parentID = nodes[i].data.parent;
+        var pos = nodes[i].position;
+
+        //Check if node has a parent, if not set parent id -1
+        if (nodes[i].data.parent)
+        {
+          parentID = nodes[i].data.parent;
+        }
+        else
+        {
+          parentID = -1;
+        }
+
+        // Write a line for a node
+        returnString +=  nodeName + '\t' +
+                         nodeType + '\t' +
+                         parentID + '\t' +
+                         parseInt(pos.x) + '\t' +
+                         parseInt(pos.y) + '\t' +
+                         pathwayDetails.pathwayTitle + '\n';
       }
     }
 
 
+
+    //Put a blank line between nodes and edges
+    returnString += '\n';
+    returnString += 'PARTICIPANT_A\PARTICIPANT_B\TYPE\tPUBMED_IDS\n';
+
+    if (edges) {
+      //Write edges
+      for (var i = 0; i < edges.length; i++)
+      {
+        var edgeType = edges[i].data.type;
+        var source = edges[i].data.source;
+        var target = edges[i].data.target;
+        var pubmedIDs = edges[i].data.pubmedIDs;
+        var pubmedString = "";
+
+        if (pubmedIDs != undefined) {
+            for (var j = 0; j < pubmedIDs.length; j++)
+            {
+              pubmedString += pubmedIDs[j];
+              if (j != pubmedIDs.length - 1)
+                  pubmedString += ";"
+            }
+        }
+
+        returnString += cy.$('#'+ source).data('name') + '\t' +
+                        cy.$('#'+ target).data('name')  + '\t' +
+                        edgeType + '\t' +
+                        pubmedString + '\n';
+      }
+    }
 
     //Finally return a string that includes whole graph lovely and peacefully :)
     return returnString;
@@ -152,8 +238,18 @@ var SaveLoadUtils =
       var edgeSource = lineData[1];
       var edgeTarget = lineData[2];
       var edgeType = lineData[3];
+      var pubmedIDs = (lineData.length > 4) ? lineData[4].split(';') : [];
 
-      newEdge = {group: 'edges', data:{id: edgeID, type: edgeType, source: edgeSource, target: edgeTarget}};
+      newEdge = {
+        group: 'edges', data:
+        {
+          id: edgeID,
+          type: edgeType,
+          source: edgeSource,
+          target: edgeTarget,
+          pubmedIDs: pubmedIDs
+        }
+      };
       edges.push(newEdge);
     }
 

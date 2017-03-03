@@ -126,6 +126,33 @@ module.exports = (function()
         }
     };
 
+    EditorActionsManager.prototype.addPubmedIDs = function(edge, pubmedIDs)
+    {
+      if (this.isCollaborative) {
+        this.realTimeManager.addPubmedIDs(edge.id(), pubmedIDs);
+      }
+      else
+      {
+        var pubmedArray = edge.data('pubmedIDs');
+        pubmedArray.push.apply(pubmedArray,pubmedIDs);
+        pubmedArray = edge.data('pubmedIDs');
+        edge.data('pubmedIDs', _.uniq(pubmedArray));
+      }
+    }
+
+    EditorActionsManager.prototype.removePubmedID = function(edge, pubmedIDs)
+    {
+      if (this.isCollaborative)
+      {
+        this.realTimeManager.removePubmedID(edge.id(), pubmedIDs);
+      }
+      else
+      {
+        var pubmedArray = edge.data('pubmedIDs');
+        edge.data('pubmedIDs', _.difference(pubmedArray, pubmedIDs));
+      }
+    }
+
     //Get all gene symbols
     EditorActionsManager.prototype.getGeneSymbols = function()
     {
@@ -430,8 +457,6 @@ module.exports = (function()
         };
 
         window.undoRedoManager.do("add", newEdge);
-        //this.cy.add(newEdge);
-
     };
 
     EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(event)
@@ -512,7 +537,8 @@ module.exports = (function()
                     id: edgeID,
                     type: edge.type,
                     source: edge.source,
-                    target: edge.target
+                    target: edge.target,
+                    pubmedIDs: edge.pubmedIDs.asArray()
                 }
             };
 
@@ -533,7 +559,8 @@ module.exports = (function()
             id: edgeID,
             type: edge.type,
             source: edge.source,
-            target: edge.target
+            target: edge.target,
+            pubmedIDs: edge.pubmedIDs.asArray()
         };
         this.addNewEdgetoCy(edgeData);
     };
@@ -895,11 +922,20 @@ module.exports = (function()
 
     EditorActionsManager.prototype.updateElementCallback = function(ele, id)
     {
-        //Remove element from existing graph
-        var nodeID = id;
-        var cyEle = this.cy.$("#" + nodeID);
-        cyEle.position({x: ele.x, y: ele.y});
-        this.changeNameCy(cyEle, ele.name);
+        var eleID = id;
+        var cyEle = this.cy.$("#" + eleID);
+
+        if (cyEle.isNode())
+        {
+          cyEle.position({x: ele.x, y: ele.y});
+          this.changeNameCy(cyEle, ele.name);
+        }
+        else if(cyEle.isEdge())
+        {
+          var pubmedArray = ele.pubmedIDs.asArray();
+          console.log(pubmedArray);
+          cyEle.data('pubmedIDs', pubmedArray);
+        }
     };
 
     EditorActionsManager.prototype.getGenomicDataSVG = function(node)

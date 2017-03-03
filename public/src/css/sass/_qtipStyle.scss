@@ -2,6 +2,27 @@
   margin-top: 10px;
 }
 
+.pubmedIDLabel{
+  text-align: center;
+}
+
+.pubmedIDList{
+  a{
+    cursor: pointer;
+  }
+}
+
+.qtipRemovePmedID
+{
+  float: right;
+}
+
+.qtipRemovePmedID:hover
+{
+  color: #1abc9c;
+  cursor: pointer;
+};
+
 .geneDetails{
   margin-top: 10px;
 }
