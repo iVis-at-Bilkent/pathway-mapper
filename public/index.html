@@ -17,7 +17,7 @@
 
   <!--For debugging-->
   <link rel="stylesheet" href="bin/base.css" charset="utf-8">
-  <!--<link rel="stylesheet" href="bin/base.min.css" charset="utf-8">-->
+  <!-- <link rel="stylesheet" href="bin/base.min.css" charset="utf-8"> -->
 </head>
 <body>
 
@@ -34,7 +34,7 @@
           <img src="./assets/i-vis.png" alt="" />
         </div>
         <div class="aboutImageContent">
-          <img src="./assets/cbio.png" alt="" />
+          <label>MSKCC</label>
         </div>
         <div class="adressText">
           <p>i-Vis information Visualization Group</p>
@@ -236,11 +236,11 @@
                     <ul class="dropdown-menu" id="sampleSubMenu">
                     </ul>
                   </li>
-                  <li class="dropdown-submenu" id="panCancerMenu">
+                  <!-- <li class="dropdown-submenu" id="panCancerMenu">
                     <a tabindex="-1" href="#">PanCancer</a>
                     <ul class="dropdown-menu" id="panCancerSubMenu">
                     </ul>
-                  </li>
+                  </li> -->
                   <li><a role="merge" href="#">Merge With...</a></li>
                   <li><a role="save" href="#">Export</a></li>
                   <li class="dropdown-submenu">
@@ -249,6 +249,7 @@
                       <li><a  edgeTypeIndex='1' role="jpeg" href="#">JPEG</a></li>
                       <li><a  edgeTypeIndex='1' role="png"  href="#">PNG</a></li>
                       <li><a  edgeTypeIndex='1' role="svg"  href="#">SVG</a></li>
+                      <li><a  edgeTypeIndex='1' role="sifnx"  href="#">SIFNX</a></li>
                     </ul>
                   </li>
                 </ul>
@@ -334,6 +335,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a role="help" href="#">Quick Help</a></li>
+		  <li><a role="howToUse" href="#">How to Use</a></li>
                   <!-- <li><a role="node_legend" href="#">Node Legend</a></li>
                   <li><a role="edge_legend" href="#">Interaction Legend</a></li> -->
                   <li><a role="about" href="#">About</a></li>
@@ -437,41 +439,6 @@
 
 <div class="welcomePageContainer centerText">
 </div>
-
-
-
-<!--<footer>-->
-<!--<div class="container">-->
-<!--<div class="row">-->
-<!--<div class="col-xs-7">-->
-<!--<h3 class="footer-title">About TCGA Pathway Curation Tool</h3>-->
-<!--<p>-->
-<!--This is a curation tool for TCGA pan-cancer pathway people for preparing the topology and layout of these pathways using a uniform notation.-->
-<!--</p>-->
-
-
-<!--&lt;!&ndash; <a class="footer-brand" href="http://designmodo.com" target="_blank">-->
-<!--<img src="docs/assets/img/footer/logo.png" alt="Designmodo.com" />-->
-<!--</a> &ndash;&gt;-->
-<!--</div> &lt;!&ndash; /col-xs-7 &ndash;&gt;-->
-
-<!--<div class="col-xs-5">-->
-<!--&lt;!&ndash; <div class="footer-banner">-->
-<!--<h3 class="footer-title">TCGAViz is Open Source !</h3>-->
-<!--<p class="pvl">-->
-<!--<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://designmodo.com/flat-free/" data-text="Flat UI Free - PSD&amp;amp;HTML User Interface Kit" data-via="designmodo">Tweet</a>-->
-<!--<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>-->
-<!--<iframe src="http://ghbtns.com/github-btn.html?user=designmodo&repo=Flat-UI&type=watch&count=true" height="20" width="107" frameborder="0" scrolling="0" style="width:105px; height: 20px;" allowTransparency="true"></iframe>-->
-<!--<iframe src="http://ghbtns.com/github-btn.html?user=designmodo&repo=Flat-UI&type=fork&count=true" height="20" width="107" frameborder="0" scrolling="0" style="width:105px; height: 20px;" allowTransparency="true"></iframe>-->
-<!--<iframe src="http://ghbtns.com/github-btn.html?user=designmodo&type=follow&count=true" height="20" width="195" frameborder="0" scrolling="0" style="width:195px; height: 20px;" allowTransparency="true"></iframe>-->
-<!--</p>-->
-<!--Go to: <a href="http://designmodo.com/flat" target="_blank">designmodo.com/flat</a>-->
-<!--</div> &ndash;&gt;-->
-<!--</div>-->
-<!--</div>-->
-<!--</div>-->
-<!--</footer>-->
-
 
 <!-- BioGeneView template for backbone.js -->
 <script type="text/template" id="biogene-template">
@@ -786,8 +753,8 @@
 <script src="lib/js/FileSaver.js" charset="utf-8"></script>
 
 <!--For debugging-->
- <script src="bin/base.js"></script>
-<!--<script src="bin/base.min.js"></script>-->
+<script src="bin/base.js"></script>
+<!-- <script src="bin/base.min.js"></script> -->
 <script src="lib/js/cytoscape-edgeHandles.js" charset="utf-8"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.js"></script>
 <script src="https://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>

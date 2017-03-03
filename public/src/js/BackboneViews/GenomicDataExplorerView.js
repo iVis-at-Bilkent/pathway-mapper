@@ -40,6 +40,7 @@ var genomicDataExplorer = Backbone.View.extend(
             this.$el.find('.genomicDataContentDiv').empty();
 
             var cancerTypes = this.editorActionsManagerRef.genomicDataOverlayManager.visibleGenomicDataMapByType;
+            var sortedKeys = _.keys(this.editorActionsManagerRef.genomicDataOverlayManager.visibleGenomicDataMapByType).sort();
             if(cancerTypes && Object.keys(cancerTypes).length === 0)
             {
                 this.renderEmptyView();
@@ -48,10 +49,10 @@ var genomicDataExplorer = Backbone.View.extend(
             {
                 this.$el.find('.genomicDataContentDiv').append('<h4 class="modal-title">Data Set To Show:</h4>');
                 var checkboxDiv = $('<div class="genomicChecboxDiv"></div>');
-                for (var cancerType in cancerTypes)
+                for (var sortedIndex in sortedKeys)
                 {
-                    var checkboxContent = $('<label class="checkbox"><input type="checkbox" value="">'+cancerType+'</label>');
-                    checkboxContent.find('input').attr('checked', cancerTypes[cancerType]);
+                    var checkboxContent = $('<label class="checkbox"><input type="checkbox" value="">'+sortedKeys[sortedIndex]+'</label>');
+                    checkboxContent.find('input').attr('checked', sortedKeys[sortedIndex]);
                     checkboxDiv.append(checkboxContent);
                 }
                 this.$el.find('.genomicDataContentDiv').append(checkboxDiv);

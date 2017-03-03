@@ -125,6 +125,10 @@ module.exports = (function()
         {
             $('#quickHelpModal').modal('show');
         }
+	else if(dropdownLinkRole == 'howToUse')
+	{
+	   window.open('https://github.com/iVis-at-Bilkent/pathway-mapper/blob/master/README.md', '_blank');	
+	}
     });
 
 })();

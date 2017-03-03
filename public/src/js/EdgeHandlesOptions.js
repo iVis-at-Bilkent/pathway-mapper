@@ -49,7 +49,8 @@ var edgeHandleDefaults =
       window.editorActionsManager.addEdge({
         source: sourceNode.id(),
         target: targetNodes[0].id(),
-        type: this.getGlobalEdgeType()
+        type: this.getGlobalEdgeType(),
+        pubmedIDs: []
       });
   },
   stop: function( sourceNode )
