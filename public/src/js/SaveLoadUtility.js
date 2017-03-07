@@ -40,7 +40,7 @@ var SaveLoadUtils =
                          nodeType + '\t' +
                          parentID + '\t' +
                          parseInt(pos.x) + '\t' +
-                         parseInt(pos.y) + '\t\n';
+                         parseInt(pos.y) + '\n';
       }
     }
 
