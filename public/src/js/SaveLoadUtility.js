@@ -48,7 +48,7 @@ var SaveLoadUtils =
 
     //Put a blank line between nodes and edges
     returnString += '\n';
-    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\tPUBMED_IDS\n';
+    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\INTERACTION_PUBMED_ID\n';
 
     if (edges) {
       //Write edges
@@ -89,8 +89,38 @@ var SaveLoadUtils =
     var nodes = pathwayDetails.graphJSON.elements.nodes;
     var edges = pathwayDetails.graphJSON.elements.edges;
 
-    //Prepare Meta Line
-    returnString += 'NAME\tTYPE\tPARENT_ID\tPOSX\tPOSY\tPATHWAY'+'\n';
+    returnString += 'PARTICIPANT_A\tINTERACTION_TYPE\tPARTICIPANT_B\tINTERACTION_PUBMED_ID\tPATHWAY_NAMES\n';
+
+    if (edges) {
+      //Write edges
+      for (var i = 0; i < edges.length; i++)
+      {
+        var edgeType = edges[i].data.type;
+        var source = edges[i].data.source;
+        var target = edges[i].data.target;
+        var pubmedIDs = edges[i].data.pubmedIDs;
+        var pubmedString = "";
+
+        if (pubmedIDs != undefined) {
+            for (var j = 0; j < pubmedIDs.length; j++)
+            {
+              pubmedString += pubmedIDs[j];
+              if (j != pubmedIDs.length - 1)
+                  pubmedString += ";"
+            }
+        }
+
+        returnString += cy.$('#'+ source).data('name') + '\t' +
+                        edgeType + '\t' +
+                        cy.$('#'+ target).data('name')  + '\t' +
+                        pubmedString + '\t' +
+                        pathwayDetails.pathwayTitle + '\n';
+      }
+    }
+
+    //Put a blank line between nodes and edges
+    returnString += '\n';
+    returnString += 'PARTICIPANT\tPARTICIPANT_TYPE\tPARENT_ID\tPOSX\tPOSY'+'\n';
 
     if (nodes)
     {
@@ -117,40 +147,7 @@ var SaveLoadUtils =
                          nodeType + '\t' +
                          parentID + '\t' +
                          parseInt(pos.x) + '\t' +
-                         parseInt(pos.y) + '\t' +
-                         pathwayDetails.pathwayTitle + '\n';
-      }
-    }
-
-
-
-    //Put a blank line between nodes and edges
-    returnString += '\n';
-    returnString += 'PARTICIPANT_A\tPARTICIPANT_B\tTYPE\tPUBMED_IDS\n';
-
-    if (edges) {
-      //Write edges
-      for (var i = 0; i < edges.length; i++)
-      {
-        var edgeType = edges[i].data.type;
-        var source = edges[i].data.source;
-        var target = edges[i].data.target;
-        var pubmedIDs = edges[i].data.pubmedIDs;
-        var pubmedString = "";
-
-        if (pubmedIDs != undefined) {
-            for (var j = 0; j < pubmedIDs.length; j++)
-            {
-              pubmedString += pubmedIDs[j];
-              if (j != pubmedIDs.length - 1)
-                  pubmedString += ";"
-            }
-        }
-
-        returnString += cy.$('#'+ source).data('name') + '\t' +
-                        cy.$('#'+ target).data('name')  + '\t' +
-                        edgeType + '\t' +
-                        pubmedString + '\n';
+                         parseInt(pos.y) + '\n';
       }
     }
 
