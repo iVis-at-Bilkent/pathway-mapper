@@ -180,7 +180,6 @@ module.exports = (function()
         edgeMapEntries = edgeMap.values();
         //End of workaround
 
-
         //Add real time nodes to local graph
         window.editorActionsManager.addNewElementsLocally(nodeMapEntries, edgeMapEntries);
 
@@ -361,6 +360,22 @@ module.exports = (function()
         }
         model.endCompoundOperation();
     }
+
+    RealTimeManager.prototype.changeVisibility = function(nodesToHide, isHidden)
+    {
+      var model = this.realTimeDoc.getModel();
+      var root = model.getRoot();
+      var nodeMap =  root.get(this.NODEMAP_NAME);
+
+      nodesToHide.forEach(function(ele, index){
+        var nodeID = ele.id();
+        if (nodeMap.has(nodeID))
+        {
+          var realTimeNode = nodeMap.get(nodeID);
+          realTimeNode.isHidden = isHidden;
+        }
+      });
+    };
 
     RealTimeManager.prototype.addNewNode = function(nodeData, posData)
     {
@@ -945,6 +960,7 @@ module.exports = (function()
         NodeR.prototype.w = gapi.drive.realtime.custom.collaborativeField('w');
         NodeR.prototype.h = gapi.drive.realtime.custom.collaborativeField('h');
         NodeR.prototype.parent = gapi.drive.realtime.custom.collaborativeField('parent');
+        NodeR.prototype.isHidden = gapi.drive.realtime.custom.collaborativeField('isHidden');
 
         // EdgeR;
         EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
@@ -1033,6 +1049,7 @@ module.exports = (function()
         this.y = params.y || "undefined";
         this.w = params.w || "undefined";
         this.h = params.h || "undefined";
+        this.isHidden = params.isHidden || false;
         model.endCompoundOperation();
     };
 

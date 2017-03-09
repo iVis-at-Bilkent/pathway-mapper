@@ -827,7 +827,6 @@ module.exports = (function()
 
     EditorActionsManager.prototype.hideSelectedNodes = function()
     {
-
         //Hides the selected elements
         var sel = cy.nodes(":selected");
         var nodesToHide = sel;
@@ -846,7 +845,11 @@ module.exports = (function()
             );
             if (b==true) nodesToHide = nodesToHide.add(parent);
         });
-        window.undoRedoManager.do('hideNode', nodesToHide);
+
+        if (this.isCollaborative)
+          this.realTimeManager.changeVisibility(nodesToHide, true);
+        else
+          window.undoRedoManager.do('hideNode', nodesToHide);
     };
 
     EditorActionsManager.prototype.highlightNeighbors = function()
@@ -1033,6 +1036,14 @@ module.exports = (function()
         window.undoRedoManager.do('changeName', args);
     };
 
+    EditorActionsManager.prototype.updateVisibility = function(ele, isHidden)
+    {
+        if (isHidden)
+          window.undoRedoManager.do('hideNode', ele);
+        else
+          window.undoRedoManager.do('showNode', ele);
+    };
+
     EditorActionsManager.prototype.updateElementCallback = function(ele, id)
     {
         var eleID = id;
@@ -1041,6 +1052,7 @@ module.exports = (function()
         if (cyEle.isNode())
         {
           cyEle.position({x: ele.x, y: ele.y});
+          this.updateVisibility(cyEle, ele.isHidden);
           this.changeNameCy(cyEle, ele.name);
         }
         else if(cyEle.isEdge())

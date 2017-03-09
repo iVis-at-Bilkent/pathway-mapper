@@ -232,9 +232,9 @@ window.notificationManager = require('./NotificationFactory');
             el: $('#gridOptionsDiv')
         }).render();
 
-        this.nodeResizeOptionsView = new NodeResizeOptionsView({
-            el: $('#nodeResizeOptionsDiv')
-        }).render();
+        // this.nodeResizeOptionsView = new NodeResizeOptionsView({
+        //     el: $('#nodeResizeOptionsDiv')
+        // }).render();
 
         this.genomicDataExplorerView = new GenomicDataExplorerView({
             el: $('#genomicDataExplorerDiv'),
