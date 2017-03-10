@@ -90,35 +90,6 @@ var SaveLoadUtils =
     var edges = pathwayDetails.graphJSON.elements.edges;
     var nodeMap = {};
 
-    returnString += 'PARTICIPANT_A\tINTERACTION_TYPE\tPARTICIPANT_B\tINTERACTION_PUBMED_ID\tPATHWAY_NAMES\n';
-
-    if (edges) {
-      //Write edges
-      for (var i = 0; i < edges.length; i++)
-      {
-        var edgeType = edges[i].data.type;
-        var source = edges[i].data.source;
-        var target = edges[i].data.target;
-        var pubmedIDs = edges[i].data.pubmedIDs;
-        var pubmedString = "";
-
-        if (pubmedIDs != undefined) {
-            for (var j = 0; j < pubmedIDs.length; j++)
-            {
-              pubmedString += pubmedIDs[j];
-              if (j != pubmedIDs.length - 1)
-                  pubmedString += ";"
-            }
-        }
-
-        returnString += cy.$('#'+ source).data('name') + '\t' +
-                        edgeType + '\t' +
-                        cy.$('#'+ target).data('name')  + '\t' +
-                        pubmedString + '\t' +
-                        pathwayDetails.pathwayTitle + '\n';
-      }
-    }
-
     //Put a blank line between nodes and edges
     returnString += '\n';
     returnString += 'PARTICIPANT\tPARTICIPANT_TYPE\tPARENT_ID\tPOSX\tPOSY'+'\n';
