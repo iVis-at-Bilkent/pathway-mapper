@@ -6,6 +6,7 @@ var fs = require('fs');
 var path = require('path');
 var request = require('request');
 var qs = require("querystring");
+var SaveLoadUtilities = require('./public/src/js/SaveLoadUtility.js');
 
 
 var app = express();
@@ -119,19 +120,36 @@ function biogeneDataHandler(req,res)
 function loadPathway(req, res)
 {
     var pathwayName = req.query.filename;
+    var format = req.query.format;
     fs.readFile('./samples/' + pathwayName, {encoding: 'utf-8'}, function(err,data)
     {
         if (!err)
         {
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.write(data);
-            res.end();
+          var outData = data;
+          if(format === "SIFNX")
+          {
+            var parsedGraph = SaveLoadUtilities.parseGraph(data);
+            var pathwayData = {
+              pathwayTitle: parsedGraph.title,
+              graphJSON: {
+                elements: {
+                  nodes: parsedGraph.nodes,
+                  edges: parsedGraph.edges
+                }
+            }}
+            outData = SaveLoadUtilities.exportAsSIFNX(pathwayData);
+          }
+
+          res.writeHead(200, {'Content-Type': 'text/html'});
+          res.write(outData);
+          res.end();
+
         }
         else
         {
-            res.writeHead(501, {'Content-Type': 'text/html'});
-            res.write("Error retrieving pathway");
-            res.end();
+          res.writeHead(501, {'Content-Type': 'text/html'});
+          res.write("Error retrieving pathway");
+          res.end();
         }
         // fs.unlinkSync('./samples/sample1.txt');
     });

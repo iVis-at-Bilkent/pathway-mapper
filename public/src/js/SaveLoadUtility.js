@@ -88,6 +88,7 @@ var SaveLoadUtils =
     //Get nodes and edges
     var nodes = pathwayDetails.graphJSON.elements.nodes;
     var edges = pathwayDetails.graphJSON.elements.edges;
+    var nodeMap = {};
 
     //Prepare Meta Line
     returnString += 'NAME\tTYPE\tPARENT_ID\tPOSX\tPOSY\tPATHWAY'+'\n';
@@ -101,6 +102,8 @@ var SaveLoadUtils =
         var nodeType = nodes[i].data.type;
         var parentID = nodes[i].data.parent;
         var pos = nodes[i].position;
+
+        nodeMap[nodes[i].data.id] = nodes[i];
 
         //Check if node has a parent, if not set parent id -1
         if (nodes[i].data.parent)
@@ -147,8 +150,8 @@ var SaveLoadUtils =
             }
         }
 
-        returnString += cy.$('#'+ source).data('name') + '\t' +
-                        cy.$('#'+ target).data('name')  + '\t' +
+        returnString += nodeMap[source].data.name + '\t' +
+                        nodeMap[target].data.name  + '\t' +
                         edgeType + '\t' +
                         pubmedString + '\n';
       }

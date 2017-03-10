@@ -85,7 +85,7 @@ $(window).load(function()
 
         realTimeManager.authorize(realTimeAuthCallback, false);
     }
-    
+
     var welPage = new WelcomePageView({
         el: $('.welcomePageContainer'),
         localUsageCallback: localUsageCallback,
@@ -116,4 +116,3 @@ $(window).load(function()
         }
     }
 });
-
