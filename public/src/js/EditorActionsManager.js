@@ -44,6 +44,7 @@ module.exports = (function()
         window.undoRedoManager.action("changePositions", this.doChangePosition, this.undoChangePosition);
         window.undoRedoManager.action("changeName", this.doChangename, this.undoChangeName);
         window.undoRedoManager.action("hideNode", this.doHide, this.undoHide);
+        window.undoRedoManager.action("showAllNodes", this.doShowAll, this.undoShowAll);
         window.undoRedoManager.action("highlightNeighbors", this.doHighlight, this.undoHighlight);
 
     };
@@ -127,6 +128,21 @@ module.exports = (function()
     EditorActionsManager.prototype.undoHide = function(args)
     {
         args.show();
+        return args;
+    };
+
+    /*
+     * Undo redo for showing all nodes
+     * **/
+    EditorActionsManager.prototype.doShowAll = function(args)
+    {
+        args.show();
+        return args;
+    };
+
+    EditorActionsManager.prototype.undoShowAll = function(args)
+    {
+        args.hide();
         return args;
     };
 
@@ -822,7 +838,11 @@ module.exports = (function()
     EditorActionsManager.prototype.showAllNodes = function()
     {
         var hid = cy.nodes(":hidden");
-        hid.show();
+        if (this.isCollaborative)
+            this.realTimeManager.changeVisibility(hid, false);
+        else
+            window.undoRedoManager.do('showAllNodes', hid);
+        //hid.show();
     };
 
     EditorActionsManager.prototype.hideSelectedNodes = function()
@@ -1041,7 +1061,7 @@ module.exports = (function()
         if (isHidden)
           window.undoRedoManager.do('hideNode', ele);
         else
-          window.undoRedoManager.do('showNode', ele);
+          window.undoRedoManager.do('showAllNodes', ele);
     };
 
     EditorActionsManager.prototype.updateElementCallback = function(ele, id)
