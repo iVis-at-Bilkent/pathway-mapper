@@ -37,20 +37,23 @@ function indexGetHandler(req,res){
 ********************************/
 function loadGraphHandler(req, res)
 {
-    fs.readFile(req.file.path, {encoding: 'utf-8'}, function(err,data)
+    if(req.file)
     {
-      if (!err)
+      fs.readFile(req.file.path, {encoding: 'utf-8'}, function(err,data)
       {
-        res.writeHead(200, {'Content-Type': 'multipart/form-data'});
-        res.write(data);
-        res.end();
-      }
-      else
-      {
-          console.log(err);
-      }
-      fs.unlinkSync(req.file.path);
-    });
+        if (!err)
+        {
+          res.writeHead(200, {'Content-Type': 'multipart/form-data'});
+          res.write(data);
+          res.end();
+        }
+        else
+        {
+            console.log(err);
+        }
+        fs.unlinkSync(req.file.path);
+      });
+    }
 }
 
 function loadSampleFile(req, res)
