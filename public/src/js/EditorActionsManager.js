@@ -46,7 +46,7 @@ module.exports = (function()
         window.undoRedoManager.action("hideNode", this.doHide, this.undoHide);
         window.undoRedoManager.action("showAllNodes", this.doShowAll, this.undoShowAll);
         window.undoRedoManager.action("highlightNeighbors", this.doHighlight, this.undoHighlight);
-
+        window.undoRedoManager.action("removeHighlight", this.doRemoveHighlightAll, this.undoRemoveHighlightAll);
     };
 
 
@@ -163,6 +163,26 @@ module.exports = (function()
     {
         args.removeClass("highlighted");
         args.removeClass("highlightedEdge");
+        return args;
+    };
+
+    /*
+     * Undo redo for showing all nodes
+     * **/
+    EditorActionsManager.prototype.doRemoveHighlightAll = function(args)
+    {
+        args.removeClass("highlighted");
+        args.removeClass("highlightedEdge");
+        return args;
+    };
+
+    EditorActionsManager.prototype.undoRemoveHighlightAll = function(args)
+    {
+        args.each(function(i, n)
+        {
+            if (n.isEdge()) n.addClass("highlightedEdge");
+            else n.addClass("highlighted");
+        });
         return args;
     };
 
@@ -876,15 +896,27 @@ module.exports = (function()
     {
         var sel = cy.elements(":selected");
         var neighbors = sel.neighborhood();
-
-
-        window.undoRedoManager.do('highlightNeighbors', neighbors);
+        if (this.isCollaborative)
+            this.realTimeManager.changeHighlight(neighbors, true);
+        else
+            window.undoRedoManager.do('highlightNeighbors', neighbors);
     };
 
     EditorActionsManager.prototype.removeHighlight = function()
     {
-        cy.$().removeClass("highlighted");
-        cy.$().removeClass("highlightedEdge");
+        var nodesToRemoveHighlight = cy.collection();
+        cy.elements().forEach(function(ele, index){
+            if (ele.hasClass('highlighted') || ele.hasClass('highlightedEdge'))
+                nodesToRemoveHighlight = nodesToRemoveHighlight.add(ele);
+        });
+
+        if (this.isCollaborative)
+            this.realTimeManager.changeHighlight(nodesToRemoveHighlight, false);
+        else
+            window.undoRedoManager.do('removeHighlight', nodesToRemoveHighlight);
+
+        /*cy.$().removeClass("highlighted");
+        cy.$().removeClass("highlightedEdge");*/
     };
 
     EditorActionsManager.prototype.handleChangePositionByAlignment = function(movedNodeArr)
@@ -1064,6 +1096,14 @@ module.exports = (function()
           window.undoRedoManager.do('showAllNodes', ele);
     };
 
+    EditorActionsManager.prototype.updateHighlight = function(ele, isHighlighted)
+    {
+        if (isHighlighted)
+            window.undoRedoManager.do('highlightNeighbors', ele);
+        else
+            window.undoRedoManager.do('removeHighlight', ele);
+    };
+
     EditorActionsManager.prototype.updateElementCallback = function(ele, id)
     {
         var eleID = id;
@@ -1073,6 +1113,7 @@ module.exports = (function()
         {
           cyEle.position({x: ele.x, y: ele.y});
           this.updateVisibility(cyEle, ele.isHidden);
+          this.updateHighlight(cyEle, ele.isHighlighted);
           this.changeNameCy(cyEle, ele.name);
         }
         else if(cyEle.isEdge())

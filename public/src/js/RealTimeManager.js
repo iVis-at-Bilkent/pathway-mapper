@@ -377,6 +377,22 @@ module.exports = (function()
       });
     };
 
+    RealTimeManager.prototype.changeHighlight = function(nodesToHighlight, isHighlighted)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap =  root.get(this.NODEMAP_NAME);
+
+        nodesToHighlight.forEach(function(ele, index){
+            var nodeID = ele.id();
+            if (nodeMap.has(nodeID))
+            {
+                var realTimeNode = nodeMap.get(nodeID);
+                realTimeNode.isHighlighted = isHighlighted;
+            }
+        });
+    };
+
     RealTimeManager.prototype.addNewNode = function(nodeData, posData)
     {
         var model = this.realTimeDoc.getModel();
@@ -961,6 +977,7 @@ module.exports = (function()
         NodeR.prototype.h = gapi.drive.realtime.custom.collaborativeField('h');
         NodeR.prototype.parent = gapi.drive.realtime.custom.collaborativeField('parent');
         NodeR.prototype.isHidden = gapi.drive.realtime.custom.collaborativeField('isHidden');
+        NodeR.prototype.isHighlighted = gapi.drive.realtime.custom.collaborativeField('isHighlighted');
 
         // EdgeR;
         EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
@@ -1050,6 +1067,7 @@ module.exports = (function()
         this.w = params.w || "undefined";
         this.h = params.h || "undefined";
         this.isHidden = params.isHidden || false;
+        this.isHighlighted = params.isHighlighted || false;
         model.endCompoundOperation();
     };
 
