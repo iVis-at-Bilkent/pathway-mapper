@@ -21,7 +21,7 @@ module.exports = (function ($)
 
         $.notify({
             // options
-            icon: 'glyphicon glyphicon-ok',
+            icon: (type == "success") ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-info-sign',
             message: message
         },{
             // settings

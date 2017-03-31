@@ -15,8 +15,8 @@
   <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.css">
 
   <!--For debugging-->
-  <!-- <link rel="stylesheet" href="bin/base.css" charset="utf-8"> -->
-  <link rel="stylesheet" href="bin/base.min.css" charset="utf-8">
+   <link rel="stylesheet" href="bin/base.css" charset="utf-8">
+  <!--<link rel="stylesheet" href="bin/base.min.css" charset="utf-8">-->
 </head>
 <body>
 
@@ -306,6 +306,13 @@
                     </ul>
                   </li>
                   <li><a tabindex="-1" role="grid" href="#">Grid...</a></li>
+                </ul>
+              </li>
+              <li class="dropdown highlightDropDown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Highlight <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a role="highlightInvalidGenes" href="#">Highlight Invalid Genes</a></li>
+                  <li><a role="removeHighlights" href="#">Remove Highlights</a></li>
                 </ul>
               </li>
               <li class="dropdown dataDropdown">
@@ -701,8 +708,8 @@
 <script src="lib/js/FileSaver.js" charset="utf-8"></script>
 
 <!--For debugging-->
-<!-- <script src="bin/base.js"></script> -->
-<script src="bin/base.min.js"></script>
+ <script src="bin/base.js"></script>
+<!--<script src="bin/base.min.js"></script>-->
 <script src="lib/js/cytoscape-edgeHandles.js" charset="utf-8"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.js"></script>
 <script src="https://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>

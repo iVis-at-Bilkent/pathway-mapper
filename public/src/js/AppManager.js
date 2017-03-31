@@ -9,6 +9,7 @@ var regCose = require("../../lib/js/cose-bilkent/src/index.js");
 var grid_guide = require('cytoscape-grid-guide');
 var undoRedo = require('cytoscape-undo-redo');
 var contextMenus = require('cytoscape-context-menus');
+var viewUtilities = require('cytoscape-view-utilities');
 require('bootstrap-select');
 
 
@@ -76,6 +77,8 @@ window.notificationManager = require('./NotificationFactory');
              $('a[role="undo"]').hide();
          }
 
+         //Create portal accessor
+         window.portalAccessor = new CBioPortalAccessor();
          window.appManager = this;
      };
 
@@ -168,14 +171,13 @@ window.notificationManager = require('./NotificationFactory');
 
      AppManager.prototype.createCBioPortalAccessModal = function ()
      {
-         var portalAccessor = new CBioPortalAccessor();
          var self = this;
 
          this.portalAccessView = new CBioPortalAccessView({
              el: $("#cbioPortalAccessDiv")
          });
 
-         portalAccessor.fetchCancerStudies(function (cancerStudies)
+         window.portalAccessor.fetchCancerStudies(function (cancerStudies)
          {
              self.portalAccessView.updateCancerStudies(cancerStudies);
          });
@@ -191,6 +193,8 @@ window.notificationManager = require('./NotificationFactory');
         grid_guide( cytoscape, $ ); // register extension
         undoRedo(cytoscape); // register extension
         contextMenus( cytoscape, $ ); // register extension
+        viewUtilities( cytoscape, $ ); // register extension
+
 
 
         window.edgeAddingMode = 0;
@@ -290,6 +294,38 @@ window.notificationManager = require('./NotificationFactory');
         };
 
         var nav = cy.navigator( navDefaults ); // get navigator instance, nav
+
+        var viewUtilitiesOpts = {
+            node: {
+                highlighted: {
+                    'border-width': 2,
+                    'border-color': '#bc1142'
+                }, // styles for when nodes are highlighted.
+                unhighlighted: {
+                    'opacity': function (ele) {
+                        // We return the same opacity because to override the unhibhlighted ele opacity in view-utilities
+                        return ele.css('opacity');
+                    }
+                }// styles for when nodes are unhighlighted.}
+            },
+            edge: {
+                highlighted: {}, // styles for when edges are highlighted.
+                unhighlighted: {
+                    'opacity': function (ele) {
+                        // We return the same opacity because to override the unhibhlighted ele opacity in view-utilities
+                        return ele.css('opacity');
+                    }
+                } // styles for when edges are unhighlighted.
+            },
+            setVisibilityOnHide: false, // whether to set visibility on hide/show
+            setDisplayOnHide: true, // whether to set display on hide/show
+            neighbor: function(node){ // return desired neighbors of tapheld node
+                return false;
+            },
+            neighborSelectTime: 500 //ms, time to taphold to select desired neighbors
+        }
+
+        window.viewUtilities = cy.viewUtilities(viewUtilitiesOpts);
 
         this.placePanzoomAndOverlay();
     };

@@ -39,13 +39,34 @@ module.exports = (function()
         this.genomicDataOverlayManager = new GenomicDataOverlayManager();
         this.svgExporter = new SVGExporter();
 
-        this.selecteNodeStack = {}
+        this.selecteNodeStack = {};
         window.undoRedoManager = cy.undoRedo();
         window.undoRedoManager.action("changePositions", this.doChangePosition, this.undoChangePosition);
         window.undoRedoManager.action("changeName", this.doChangename, this.undoChangeName);
+        window.undoRedoManager.action("highlightInvalidGenes", this.doHighlightInvalidGenes, this.undoHighlightInvalidGenes);
+        window.undoRedoManager.action("removeHighlightInvalidGenes", this.undoHighlightInvalidGenes, this.doHighlightInvalidGenes);
 
     };
 
+    EditorActionsManager.prototype.highlightInvalidGenesInitially = function(invalidGenesIDs)
+    {
+        for (var i in invalidGenesIDs)
+        {
+            cy.$('#'+invalidGenesIDs[i]).addClass('invalidGeneHighlight');
+        }
+    };
+
+    EditorActionsManager.prototype.doHighlightInvalidGenes = function(args)
+    {
+        args.addClass('invalidGeneHighlight');
+        return args;
+    };
+
+    EditorActionsManager.prototype.undoHighlightInvalidGenes = function(args)
+    {
+        args.removeClass('invalidGeneHighlight');
+        return args;
+    }
 
     /*
      * Undo redo for changing name of nodes
@@ -163,9 +184,81 @@ module.exports = (function()
         var geneSymbols = [];
         this.cy.nodes().forEach( function (gene)
         {
-            geneSymbols.push(gene.data().name);
+            if(gene.data().type === "GENE")
+                geneSymbols.push(gene.data().name);
         });
         return geneSymbols;
+    }
+
+    EditorActionsManager.prototype.validateGenes = function()
+    {
+        var geneSymbols = this.getGeneSymbols();
+        window.portalAccessor.validateGenes(geneSymbols);
+    }
+
+    EditorActionsManager.prototype.removeInvalidGeneHighlights = function()
+    {
+        if (this.isCollaborative)
+        {
+            var geneIDs = [];
+            this.cy.nodes().forEach( function (gene)
+            {
+                if(gene.data().type === "GENE")
+                {
+                    if(gene.hasClass('invalidGeneHighlight'))
+                        geneIDs.push(gene.id());
+                }
+            });
+            this.realTimeManager.changeHighlight(geneIDs, false);
+        }
+        else
+        {
+            window.undoRedoManager.do('removeHighlightInvalidGenes', cy.nodes());
+        }
+    }
+
+    EditorActionsManager.prototype.highlightInvalidGenes = function(validGeneSymbols)
+    {
+        if (this.isCollaborative)
+        {
+            var invalidGenes = [];
+            this.cy.nodes().forEach( function (gene)
+            {
+                if(gene.data().type === "GENE")
+                {
+                    var geneName = gene.data().name;
+                    if(validGeneSymbols.indexOf(geneName) < 0)
+                        invalidGenes.push(gene.id());
+                }
+            });
+            this.realTimeManager.changeHighlight(invalidGenes, true);
+
+            if (invalidGenes.length > 0)
+                window.notificationManager.createNotification("Invalid genes are highlighted","fail");
+            else
+                window.notificationManager.createNotification("All gene symbols are valid","success");
+        }
+        else
+        {
+            var highlightedGenes = cy.collection();
+            this.cy.nodes().forEach( function (gene)
+            {
+                if(gene.data().type === "GENE")
+                {
+                    var geneName = gene.data().name;
+                    if(validGeneSymbols.indexOf(geneName) < 0)
+                        highlightedGenes = highlightedGenes.add(gene);
+                }
+            });
+
+            if (highlightedGenes.size() > 0)
+                window.notificationManager.createNotification("Invalid genes are highlighted","fail");
+            else
+                window.notificationManager.createNotification("All gene symbols are valid","success");
+
+            window.undoRedoManager.do('highlightInvalidGenes', highlightedGenes);
+
+        }
     }
 
     //Related to order the nodes according to the selection of user
@@ -933,6 +1026,15 @@ module.exports = (function()
         {
           cyEle.position({x: ele.x, y: ele.y});
           this.changeNameCy(cyEle, ele.name);
+
+          if(ele.isInvalidGene)
+          {
+              window.undoRedoManager.do('highlightInvalidGenes', cyEle);
+          }
+          else
+          {
+              window.undoRedoManager.do('removeHighlightInvalidGenes', cyEle);
+          }
         }
         else if(cyEle.isEdge())
         {

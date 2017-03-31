@@ -136,7 +136,18 @@ module.exports = (function()
         'target-arrow-color': '#1abc9c',
         'source-arrow-color': '#1abc9c'
       }
-    }
+    },
+    {
+      selector: '.invalidGeneHighlight',
+      style:
+      {
+          /*'shadow-color' : '#ff3c3d',
+          'shadow-opacity': 1.0*/
+          'border-width': 2,
+          'border-color': '#e94332',
+          'color': '#e94332'
+      }
+    },
   ];
 
 

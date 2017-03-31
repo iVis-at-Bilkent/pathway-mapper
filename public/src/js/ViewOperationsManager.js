@@ -148,4 +148,19 @@ module.exports = (function($)
         
     });
 
+    $(".highlightDropDown li a").click(function (event)
+    {
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
+
+        if(dropdownLinkRole == "highlightInvalidGenes")
+        {
+            window.editorActionsManager.validateGenes();
+        }
+        else
+        {
+            window.editorActionsManager.removeInvalidGeneHighlights();
+        }
+    })
+
 })(window.$)
