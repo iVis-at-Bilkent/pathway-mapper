@@ -153,25 +153,41 @@ module.exports = (function()
     {
         args.each(function(i, n)
         {
-            if (n.isEdge()) n.addClass("highlightedEdge");
-            else n.addClass("highlighted");
+            if (n.isEdge())
+              n.addClass("highlightedEdge");
+            else
+              n.addClass("highlightedNode");
         });
         return args;
     };
 
     EditorActionsManager.prototype.undoHighlight = function(args)
     {
-        args.removeClass("highlighted");
+        args.removeClass("highlightedNode");
         args.removeClass("highlightedEdge");
         return args;
     };
+
+    EditorActionsManager.prototype.doHighlightInvalidGenes = function(args)
+    {
+
+        args.addClass("invalidGeneHighlight");
+        return args;
+    };
+
+    EditorActionsManager.prototype.undoHighlightInvalidGenes = function(args)
+    {
+        args.removeClass("invalidGeneHighlight");
+        return args;
+    };
+
 
     /*
      * Undo redo for showing all nodes
      * **/
     EditorActionsManager.prototype.doRemoveHighlightAll = function(args)
     {
-        args.removeClass("highlighted");
+        args.removeClass("highlightedNode");
         args.removeClass("highlightedEdge");
         return args;
     };
@@ -181,7 +197,7 @@ module.exports = (function()
         args.each(function(i, n)
         {
             if (n.isEdge()) n.addClass("highlightedEdge");
-            else n.addClass("highlighted");
+            else n.addClass("highlightedNode");
         });
         return args;
     };
@@ -905,6 +921,7 @@ module.exports = (function()
     EditorActionsManager.prototype.removeHighlight = function()
     {
         var nodesToRemoveHighlight = cy.collection();
+        //TODO cytoscape selectors may provide more handy functionality instead of iterating over !
         cy.elements().forEach(function(ele, index){
             if (ele.hasClass('highlighted') || ele.hasClass('highlightedEdge'))
                 nodesToRemoveHighlight = nodesToRemoveHighlight.add(ele);
