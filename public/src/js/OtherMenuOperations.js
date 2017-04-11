@@ -32,7 +32,9 @@ module.exports = (function()
             var nodesToSelect  = cy.filter(selector);
             //Unselect selected nodes
             cy.$(':selected').unselect();
+            editorActionsManager.removeHighlight();
             nodesToSelect.select();
+            editorActionsManager.highlightSelected();
         }
     });
 

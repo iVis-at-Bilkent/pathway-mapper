@@ -310,8 +310,15 @@
                   <li><a tabindex="-1" role="nodeResize" href="#">Node Resize</a></li>
                   <li><a tabindex="-1" role="hideSelectedNodes" href="#">Hide Selected nodes</a></li>
                   <li><a tabindex="-1" role="showAllNodes" href="#">Show All Nodes</a></li>
-                  <li><a tabindex="-1" role="highlightNeighbors" href="#">Highlight Neighbors of Selected</a></li>
-                  <li><a tabindex="-1" role="removeHighlight" href="#">Remove Highlight</a></li>
+                  <li class="dropdown-submenu">
+                    <a tabindex="-1" href="#">Highlight...</a>
+                    <ul class="dropdown-menu">
+                      <li><a tabindex="-1" role="highlightSelected" href="#">Highlight Selected Nodes</a></li>
+                      <li><a tabindex="-1" role="highlightNeighbors"  href="#">Highlight Neighbors of Selected</a></li>
+                      <li><a tabindex="-1" role="removeHighlight"  href="#">Remove Highlight</a></li>
+                      <li><a tabindex="-1" role="goToSearch"  href="#">Search Genes by Name...</a></li>
+                    </ul>
+                  </li>
                 </ul>
               </li>
               <li class="dropdown dataDropdown">
@@ -418,7 +425,7 @@
               <div class="">
                 <div class="geneSearchDiv">
                   <!-- <li class="list-group-item"><a dropDownIndex='0' href="#">None</a></li> -->
-                  <input type="text" name="geneName" id="findGeneArea">
+                  <input type="text" tabindex="-1" name="geneName" id="findGeneArea">
                 </div>
               </div>
             </div>
@@ -745,6 +752,12 @@
     <input type="file" id="genomicDataInput" name="graphFile" />
   </form>
 </div>
+
+<script>
+    function changeFocus(){
+        document.getElementById("findGeneArea").focus();
+    }
+</script>
 
 <!--Script Includes-->
 <!-- Google Real Time Scripts  -->

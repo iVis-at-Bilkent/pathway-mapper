@@ -153,6 +153,10 @@ module.exports = (function($)
         {
             editorActionsManager.hideSelectedNodes();
         }
+        else if (dropdownLinkRole == "highlightSelected")
+        {
+            editorActionsManager.highlightSelected();
+        }
         else if (dropdownLinkRole == "highlightNeighbors")
         {
             editorActionsManager.highlightNeighbors();
@@ -161,11 +165,14 @@ module.exports = (function($)
         {
             editorActionsManager.removeHighlight();
         }
+        else if (dropdownLinkRole == "goToSearch")
+        {
+            editorActionsManager.goToSearch();
+        }
         else
         {
             handleNodeAlignment(dropdownLinkRole);
         }
-        
     });
 
 })(window.$)

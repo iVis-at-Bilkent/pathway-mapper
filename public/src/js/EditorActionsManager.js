@@ -45,7 +45,7 @@ module.exports = (function()
         window.undoRedoManager.action("changeName", this.doChangename, this.undoChangeName);
         window.undoRedoManager.action("hideNode", this.doHide, this.undoHide);
         window.undoRedoManager.action("showAllNodes", this.doShowAll, this.undoShowAll);
-        window.undoRedoManager.action("highlightNeighbors", this.doHighlight, this.undoHighlight);
+        window.undoRedoManager.action("highlight", this.doHighlight, this.undoHighlight);
         window.undoRedoManager.action("removeHighlight", this.doRemoveHighlightAll, this.undoRemoveHighlightAll);
     };
 
@@ -147,7 +147,7 @@ module.exports = (function()
     };
 
     /*
-     * Undo redo for highlighting neigbors of selected nodes
+     * Undo redo for highlighting of nodes
      * **/
     EditorActionsManager.prototype.doHighlight = function(args)
     {
@@ -167,7 +167,7 @@ module.exports = (function()
     };
 
     /*
-     * Undo redo for showing all nodes
+     * Undo redo for highlight
      * **/
     EditorActionsManager.prototype.doRemoveHighlightAll = function(args)
     {
@@ -892,6 +892,15 @@ module.exports = (function()
           window.undoRedoManager.do('hideNode', nodesToHide);
     };
 
+    EditorActionsManager.prototype.highlightSelected = function()
+    {
+        var sel = cy.elements(":selected");
+        if (this.isCollaborative)
+            this.realTimeManager.changeHighlight(sel, true);
+        else
+            window.undoRedoManager.do('highlight', sel);
+    };
+
     EditorActionsManager.prototype.highlightNeighbors = function()
     {
         var sel = cy.elements(":selected");
@@ -899,7 +908,7 @@ module.exports = (function()
         if (this.isCollaborative)
             this.realTimeManager.changeHighlight(neighbors, true);
         else
-            window.undoRedoManager.do('highlightNeighbors', neighbors);
+            window.undoRedoManager.do('highlight', neighbors);
     };
 
     EditorActionsManager.prototype.removeHighlight = function()
@@ -914,9 +923,11 @@ module.exports = (function()
             this.realTimeManager.changeHighlight(nodesToRemoveHighlight, false);
         else
             window.undoRedoManager.do('removeHighlight', nodesToRemoveHighlight);
+    };
 
-        /*cy.$().removeClass("highlighted");
-        cy.$().removeClass("highlightedEdge");*/
+    EditorActionsManager.prototype.goToSearch = function()
+    {
+        document.getElementById("findGeneArea").focus();
     };
 
     EditorActionsManager.prototype.handleChangePositionByAlignment = function(movedNodeArr)
@@ -1099,7 +1110,7 @@ module.exports = (function()
     EditorActionsManager.prototype.updateHighlight = function(ele, isHighlighted)
     {
         if (isHighlighted)
-            window.undoRedoManager.do('highlightNeighbors', ele);
+            window.undoRedoManager.do('highlight', ele);
         else
             window.undoRedoManager.do('removeHighlight', ele);
     };
