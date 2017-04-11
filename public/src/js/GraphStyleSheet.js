@@ -106,7 +106,7 @@ module.exports = (function()
       }
     },
     {
-        selector: '.highlighted',
+        selector: '.highlightedNode',
         style:
             {
                 'border-width':3,
@@ -115,7 +115,16 @@ module.exports = (function()
                 'shadow-opacity': 1.0
             }
     },
-
+    {
+        selector: '.invalidGeneHighlight',
+        style:
+            {
+                'border-width':3,
+                'shadow-color' : '#e94332',
+                'background-color': '#e94332',
+                'shadow-opacity': 1.0
+            }
+    },
     {
         selector: '.highlightedEdge',
         style:
