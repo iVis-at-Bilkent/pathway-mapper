@@ -316,6 +316,22 @@ module.exports = (function()
         model.endCompoundOperation();
     }
 
+    RealTimeManager.prototype.changeHighlight = function(nodesToHighlight, isHighlighted)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap =  root.get(this.NODEMAP_NAME);
+
+        nodesToHighlight.forEach(function(ele, index){
+            var nodeID = ele.id();
+            if (nodeMap.has(nodeID))
+            {
+                var realTimeNode = nodeMap.get(nodeID);
+                realTimeNode.isHighlighted = isHighlighted;
+            }
+        });
+    };
+
     RealTimeManager.prototype.addNewNode = function(nodeData, posData)
     {
         var model = this.realTimeDoc.getModel();
@@ -401,7 +417,7 @@ module.exports = (function()
 
     };
 
-    RealTimeManager.prototype.changeHighlight = function(nodeIDs, isHiglighted)
+    RealTimeManager.prototype.changeHighlightInvalidGenes = function(nodeIDs, isHiglighted)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -895,6 +911,7 @@ module.exports = (function()
         NodeR.prototype.y = gapi.drive.realtime.custom.collaborativeField('y');
         NodeR.prototype.parent = gapi.drive.realtime.custom.collaborativeField('parent');
         NodeR.prototype.isInvalidGene = gapi.drive.realtime.custom.collaborativeField('isInvalidGene');
+        NodeR.prototype.isHighlighted = gapi.drive.realtime.custom.collaborativeField('isHighlighted');
 
         // EdgeR;
         EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
@@ -1024,6 +1041,7 @@ module.exports = (function()
         this.gravityRangeCompound = params.gravityRangeCompound || 'undefined';
         this.gravityCompound = params.gravityCompound || 'undefined';
         this.gravityRange = params.gravityRange || 'undefined';
+        this.isHighlighted = params.isHighlighted || false;
     };
 
     var GlobalOptionsRInitializer = function(params)

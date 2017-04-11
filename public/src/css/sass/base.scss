@@ -18,6 +18,28 @@
     width: 350px !important;
 }
 
+.geneSearchDiv
+{
+  input{
+    border-radius: 6px;
+    //outline: none;
+    border: 2px solid #2b2b2d;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    width: 100%;
+  }
+
+  input:focus
+  {
+    border-color: $menuHoverColor;
+    outline: none;
+    border-style: solid;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+  }
+}
 
 body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;

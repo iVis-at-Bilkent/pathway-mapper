@@ -157,9 +157,14 @@ module.exports = (function($)
         {
             window.editorActionsManager.validateGenes();
         }
-        else
+        else if(dropdownLinkRole == "removeHighlights")
         {
             window.editorActionsManager.removeInvalidGeneHighlights();
+            window.editorActionsManager.removeHighlight();
+        }
+        else if (dropdownLinkRole == "goToSearch")
+        {
+            editorActionsManager.goToSearch();
         }
     })
 

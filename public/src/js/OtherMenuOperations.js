@@ -22,6 +22,22 @@ module.exports = (function()
         }
     });
 
+    //Find genes handler
+    $("#findGeneArea").keypress(function(event)
+    {
+        //event.preventDefault();
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+            var searchedGene = event.currentTarget.value;
+            var selector = "node[name @*= '" + searchedGene + "']";
+            var nodesToSelect  = cy.filter(selector);
+            //Unselect selected nodes
+            cy.$(':selected').unselect();
+            editorActionsManager.removeHighlight();
+            nodesToSelect.select();
+            editorActionsManager.highlightSelected();
+        }
+    });
 
     //Edit drop down handler
     $(".editDropDown li a").click(function(event)

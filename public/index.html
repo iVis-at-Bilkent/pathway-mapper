@@ -15,8 +15,8 @@
   <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.css">
 
   <!--For debugging-->
-   <!-- <link rel="stylesheet" href="bin/base.css" charset="utf-8"> -->
-  <link rel="stylesheet" href="bin/base.min.css" charset="utf-8">
+  <link rel="stylesheet" href="bin/base.css" charset="utf-8">
+  <!--<link rel="stylesheet" href="bin/base.min.css" charset="utf-8">-->
 </head>
 <body>
 
@@ -311,6 +311,7 @@
               <li class="dropdown highlightDropDown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Highlight <span class="caret"></span></a>
                 <ul class="dropdown-menu">
+                  <li><a tabindex="-1" role="goToSearch"  href="#">Search Genes by Name...</a></li>
                   <li><a role="highlightInvalidGenes" href="#">Highlight Invalid Genes</a></li>
                   <li><a role="removeHighlights" href="#">Remove Highlights</a></li>
                 </ul>
@@ -346,15 +347,6 @@
           </div>
         </div><!-- /.navbar-collapse -->
       </nav><!-- /navbar -->
-    </div>
-    <div class="fileNameWrapper">
-      <div class="row">
-        <div class="col-md-12">
-          <!-- <div class="pull-right fileNameContent">
-            <span>pathway.txt</span>
-          </div> -->
-        </div>
-      </div>
     </div>
     <div class="mainContentWrapper">
       <div class="sideBarWrapper">
@@ -410,6 +402,21 @@
               </div>
             </div>
           </div>
+
+          <div class="pnl">
+            <div class="pnl-header">
+              Search Genes
+            </div>
+            <div class="pnl-body">
+              <div class="">
+                <div class="geneSearchDiv">
+                  <!-- <li class="list-group-item"><a dropDownIndex='0' href="#">None</a></li> -->
+                  <input type="text" tabindex="-1" name="geneName" id="findGeneArea">
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
       <div class="cyContainer">
@@ -708,8 +715,8 @@
 <script src="lib/js/FileSaver.js" charset="utf-8"></script>
 
 <!--For debugging-->
- <!-- <script src="bin/base.js"></script> -->
-<script src="bin/base.min.js"></script>
+<script src="bin/base.js"></script>
+<!--<script src="bin/base.min.js"></script>-->
 <script src="lib/js/cytoscape-edgeHandles.js" charset="utf-8"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.js"></script>
 <script src="https://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>

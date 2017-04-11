@@ -137,6 +137,28 @@ module.exports = (function()
         'source-arrow-color': '#1abc9c'
       }
     },
+
+    {
+        selector: '.highlightedNode',
+        style:
+            {
+                'shadow-color' : '#87D37C',
+                'background-color': '#87D37C',
+                'shadow-opacity': 1.0
+            }
+    },
+
+    {
+        selector: '.highlightedEdge',
+        style:
+            {
+                'width': 3,
+                'border-width':4,
+                'shadow-color' : '#1abc9c',
+                'background-color': '#1abc9c',
+                'shadow-opacity': 1.0
+            }
+    },
     {
       selector: '.invalidGeneHighlight',
       style:
