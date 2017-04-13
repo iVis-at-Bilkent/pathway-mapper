@@ -168,4 +168,15 @@ module.exports = (function($)
         }
     })
 
+    //TODO Toolbar part, we will refactor it later
+    $("#gridGuideToolbarButtons img").click(function (event)
+    {
+        console.log("grid toolbar buttons clicked");
+    });
+
+    $("#viewToolbarButtons img").click(function (event)
+    {
+        console.log("view toolbar buttons clicked");
+    });
+
 })(window.$)

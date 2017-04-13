@@ -28,6 +28,7 @@ require('./FileOperationsManager.js');
 require('./OtherMenuOperations.js');
 require('./GenomicMenuOperations.js');
 require('./ViewOperationsManager.js');
+require('./ToolbarOperationsManager');
 require('./GraphUtilities.js');
 
 var QtipManager = require('./QtipManager.js');

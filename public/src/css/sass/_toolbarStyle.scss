@@ -1,0 +1,33 @@
+.toolbar
+{
+  margin-bottom: 10px;
+  margin-left: 140px;
+  padding: 5px;
+  background-color: #eff0f2;
+  //border: 3px solid $menuHoverColor;
+  border-radius: 6px;
+
+  .toolbar-button
+  {
+    border: 3px solid #eff0f2;
+    border-radius:6px;
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  .toolbar-button:hover
+  {
+    border-color: $menuHoverColor;
+  }
+
+  .btn-group
+  {
+  }
+
+  img
+  {
+    height: 28px;
+    margin-left: 2px;
+    margin-right: 2px;
+  }
+}

@@ -15,8 +15,8 @@
   <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.css">
 
   <!--For debugging-->
-  <!-- <link rel="stylesheet" href="bin/base.css" charset="utf-8"> -->
-  <link rel="stylesheet" href="bin/base.min.css" charset="utf-8">
+   <link rel="stylesheet" href="bin/base.css" charset="utf-8">
+  <!--<link rel="stylesheet" href="bin/base.min.css" charset="utf-8">-->
 </head>
 <body>
 
@@ -348,6 +348,14 @@
         </div><!-- /.navbar-collapse -->
       </nav><!-- /navbar -->
     </div>
+    <div class="toolbar">
+      <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+        <div id="gridGuideToolbarButtons" class="btn-group mr-2" role="group" aria-label="First group">
+          <div class="toolbar-button"><img src="assets/grid.svg"></div>
+          <div class="toolbar-button"><img src="assets/guidelines.svg"></div>
+        </div>
+      </div>
+    </div>
     <div class="mainContentWrapper">
       <div class="sideBarWrapper">
         <div class="sideBar">
@@ -654,7 +662,7 @@
             <div class="input-group">
               <label class="control-label col-sm-8" for="showGuides">Show Grid Guidelines:</label>
               <div class="col-sm-4 leftText">
-                <input id="showGuides" type="checkbox" class="input-small layout-text" <% if (guidelines){ %> checked<%}%>>
+                <input id="showGuides" type="checkbox" class="input-small layout-text" <% if (geometricGuideline){ %> checked<%}%>>
               </div>
             </div>
             <div class="input-group">
@@ -715,8 +723,8 @@
 <script src="lib/js/FileSaver.js" charset="utf-8"></script>
 
 <!--For debugging-->
-<!-- <script src="bin/base.js"></script> -->
-<script src="bin/base.min.js"></script>
+ <script src="bin/base.js"></script>
+<!--<script src="bin/base.min.js"></script>-->
 <script src="lib/js/cytoscape-edgeHandles.js" charset="utf-8"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.js"></script>
 <script src="https://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>
