@@ -176,6 +176,9 @@ module.exports = (function($)
 
     $("#viewToolbarButtons img").click(function (event)
     {
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
+        handleNodeAlignment(dropdownLinkRole);
         console.log("view toolbar buttons clicked");
     });
 
