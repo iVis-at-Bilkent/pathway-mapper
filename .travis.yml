@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+- '4.4.7'
+install:
+- npm install
+script:
+  - PORT=3000 npm run start &
+  - sleep 3s;
+  - curl -I http://localhost:3000 | grep -q '200 OK' || exit 1
+cache:
+  directories:
+  - node_modules
