@@ -8,7 +8,7 @@ var gridOptionsView = Backbone.View.extend(
         {
             this.defaultGridGuideOptions = {
                 // On/Off Modules
-                snapToGrid: true, // Snap to grid functionality
+                snapToGrid: false, // Snap to grid functionality
                 discreteDrag: false, // Discrete Drag
                 distributionGuidelines: true, // Distribution guidelines
                 geometricGuideline: true, // Geometric guidelines
@@ -16,7 +16,7 @@ var gridOptionsView = Backbone.View.extend(
                 centerToEdgeAlignment: false, // Center to edge alignment
                 snapToAlignmentLocation: true, // Snap to alignment location
                 resize: false, // Adjust node sizes to cell sizes
-                parentPadding: true, // Adjust parent sizes to cell sizes by padding
+                parentPadding: false, // Adjust parent sizes to cell sizes by padding
                 drawGrid: false, // Draw grid background
 
                 // General
@@ -73,7 +73,6 @@ var gridOptionsView = Backbone.View.extend(
             this.currentProperties.geometricGuideline = this.$el.find("#showGuides").is(':checked');
             this.currentProperties.snapToGrid = this.$el.find("#snapToGrid").is(':checked');
             this.currentProperties.guidelinesStyle.strokeStyle = this.$el.find('input[type="color"]').val();
-
 
             //TODO update grid options
             cy.gridGuide(this.currentProperties);
