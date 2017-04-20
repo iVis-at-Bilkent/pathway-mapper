@@ -13,9 +13,10 @@
   <link rel="stylesheet" href="node_modules/cytoscape-navigator/cytoscape.js-navigator.css" charset="utf-8">
   <link rel="stylesheet" href="node_modules/bootstrap-select/dist/css/bootstrap-select.min.css" charset="utf-8">
   <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.css">
+  <link rel="stylesheet" type="text/css" href="node_modules/html5tooltipsjs/html5tooltips.css">
 
   <!--For debugging-->
-  <link rel="stylesheet" href="bin/base.css" charset="utf-8">
+   <link rel="stylesheet" href="bin/base.css" charset="utf-8">
   <!--<link rel="stylesheet" href="bin/base.min.css" charset="utf-8">-->
 </head>
 <body>
@@ -348,6 +349,31 @@
         </div><!-- /.navbar-collapse -->
       </nav><!-- /navbar -->
     </div>
+    <div class="toolbar">
+      <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+        <div id="gridGuideToolbarButtons" class="btn-group mr-2" role="group" aria-label="First group">
+          <div class="toolbar-button" data-tooltip="Show Grid"><img src="assets/grid.svg"></div>
+          <div class="toolbar-button" data-tooltip="Snap to Grid"><img src="assets/guidelines.svg"></div>
+        </div>
+        <div id="viewToolbarButtons" class="btn-group mr-2" role="group" aria-label="Second group">
+          <!--<div class="toolbar-button"><img src="assets/align.svg"></div>-->
+          <div class="toolbar-button" data-tooltip="Align Horizontal Top"><img role="hTop" src="assets/align-horizontal-top.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Horizontal Middle"><img role="hMid" src="assets/align-horizontal-middle.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Horizontal Bottom"><img role="hBot" src="assets/align-horizontal-bottom.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Vertical Top"><img role="vLeft" src="assets/align-vertical-left.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Vertical Middle"><img role="vCen" src="assets/align-vertical-center.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Vertical Bottom"><img role="vRight" src="assets/align-vertical-right.svg"></div>
+        </div>
+        <div id="searchGeneToolbar" class="btn-group mr-2">
+                <div class="form-group">
+                    <div class="form-group has-feedback">
+                        <input type="text" class="form-control" id="searchGene" placeholder="Search Genes..."/>
+                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                    </div>
+                </div>
+        </div>
+      </div>
+    </div>
     <div class="mainContentWrapper">
       <div class="sideBarWrapper">
         <div class="sideBar">
@@ -403,19 +429,19 @@
             </div>
           </div>
 
-          <div class="pnl">
-            <div class="pnl-header">
-              Search Genes
-            </div>
-            <div class="pnl-body">
-              <div class="">
-                <div class="geneSearchDiv">
-                  <!-- <li class="list-group-item"><a dropDownIndex='0' href="#">None</a></li> -->
-                  <input type="text" tabindex="-1" name="geneName" id="findGeneArea">
-                </div>
-              </div>
-            </div>
-          </div>
+          <!--<div class="pnl">-->
+            <!--<div class="pnl-header">-->
+              <!--Search Genes-->
+            <!--</div>-->
+            <!--<div class="pnl-body">-->
+              <!--<div class="">-->
+                <!--<div class="geneSearchDiv">-->
+                  <!--&lt;!&ndash; <li class="list-group-item"><a dropDownIndex='0' href="#">None</a></li> &ndash;&gt;-->
+                  <!--<input type="text" tabindex="-1" name="geneName" id="findGeneArea">-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
 
         </div>
       </div>
@@ -654,7 +680,7 @@
             <div class="input-group">
               <label class="control-label col-sm-8" for="showGuides">Show Grid Guidelines:</label>
               <div class="col-sm-4 leftText">
-                <input id="showGuides" type="checkbox" class="input-small layout-text" <% if (guidelines){ %> checked<%}%>>
+                <input id="showGuides" type="checkbox" class="input-small layout-text" <% if (geometricGuideline){ %> checked<%}%>>
               </div>
             </div>
             <div class="input-group">
@@ -715,8 +741,9 @@
 <script src="lib/js/FileSaver.js" charset="utf-8"></script>
 
 <!--For debugging-->
-<script src="bin/base.js"></script>
+ <script src="bin/base.js"></script>
 <!--<script src="bin/base.min.js"></script>-->
+
 <script src="lib/js/cytoscape-edgeHandles.js" charset="utf-8"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.js"></script>
 <script src="https://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>
