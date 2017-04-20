@@ -19,6 +19,7 @@ app.use('/node_modules/cytoscape-navigator', express.static(__dirname + '/node_m
 app.use('/node_modules/qtip2', express.static(__dirname + '/node_modules/qtip2/'));
 app.use('/node_modules/filesaverjs', express.static(__dirname + '/node_modules/filesaverjs/'));
 app.use('/node_modules/bootstrap-select', express.static(__dirname + '/node_modules/bootstrap-select/'));
+app.use('/node_modules/html5tooltipsjs', express.static(__dirname + '/node_modules/html5tooltipsjs/'));
 
 
 
