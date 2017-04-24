@@ -4,6 +4,7 @@ var _ = window._ = require('underscore');
 var Backbone = window.Backbone = require('backbone');
 Backbone.$ = $;
 require('bootstrap');
+var html5tooltips = require('html5tooltipsjs');
 require('./RealTimeUtils');//Google's real time utility lib which is customized also for this tool :)
 
 var WelcomePageView = require('./BackboneViews/WelcomePageView.js');
@@ -91,6 +92,7 @@ $(window).load(function()
         localUsageCallback: localUsageCallback,
         collaborativeUsageCallback: collaborativeUsageCallback
     }).render();
+
 
     //TODO SHAME  !!!  ⍾ ⍾ ⍾ ⍾ ⍾
     var uri = window.location.search;

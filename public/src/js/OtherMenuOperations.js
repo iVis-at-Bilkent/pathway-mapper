@@ -23,7 +23,7 @@ module.exports = (function()
     });
 
     //Find genes handler
-    $("#findGeneArea").keypress(function(event)
+    $("#searchGene").keypress(function(event)
     {
         //event.preventDefault();
         var keycode = (event.keyCode ? event.keyCode : event.which);

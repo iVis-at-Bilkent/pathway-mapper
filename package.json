@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-js": "browserify public/src/js/main.js -o public/bin/base.js",
     "build-css": "node-sass public/src/css/sass/base.scss public/bin/base.css",
-    "build-min-js": "browserify public/src/js/main.js | uglifyjs -o public/bin/base.min.js",
+    "build-min-js": "browserify public/src/js/main.js -o public/bin/base.min.js",
     "build-min-css": "node-sass public/src/css/sass/base.scss | cleancss -o public/bin/base.min.css",
     "watch-js": "nodemon -e js -w public/src/js/ -x 'npm run build-js'",
     "watch-cose": "nodemon -e js -w public/lib/js/cose-bilkent/src/ -x 'npm run build-cose'",
@@ -46,6 +46,7 @@
     "google-auth-library": "^0.9.8",
     "googleapis": "^9.0.0",
     "helmet": "~1.3.0",
+    "html5tooltipsjs": "^1.7.1",
     "install": "^0.8.1",
     "jquery": "^2.2.4",
     "jquery-expander": "~1.7.0",
@@ -54,7 +55,8 @@
     "multer": "~1.1.0",
     "npm": "^3.9.6",
     "qtip2": "~3.0.2",
-    "uglifyjs": "^2.4.10",
+    "request": "^2.81.0",
+    "uglify-js2": "^2.1.11",
     "underscore": "~1.8.3"
   }
 }
