@@ -43,20 +43,20 @@ module.exports = (function()
         window.undoRedoManager = cy.undoRedo();
         window.undoRedoManager.action("changePositions", this.doChangePosition, this.undoChangePosition);
         window.undoRedoManager.action("changeName", this.doChangename, this.undoChangeName);
-        window.undoRedoManager.action("highlightInvalidGenes", this.doHighlightInvalidGenes, this.undoHighlightInvalidGenes);
-        window.undoRedoManager.action("removeHighlightInvalidGenes", this.undoHighlightInvalidGenes, this.doHighlightInvalidGenes);
-        window.undoRedoManager.action("highlightOthers", this.doHighlight, this.undoHighlight);
-        window.undoRedoManager.action("removeHighlight", this.doRemoveHighlightAll, this.undoRemoveHighlightAll);
+        // window.undoRedoManager.action("highlightInvalidGenes", this.doHighlightInvalidGenes, this.undoHighlightInvalidGenes);
+        // window.undoRedoManager.action("removeHighlightInvalidGenes", this.undoHighlightInvalidGenes, this.doHighlightInvalidGenes);
+        // window.undoRedoManager.action("highlightOthers", this.doHighlight, this.undoHighlight);
+        // window.undoRedoManager.action("removeHighlight", this.doRemoveHighlightAll, this.undoRemoveHighlightAll);
 
     };
 
-    EditorActionsManager.prototype.highlightSelected = function()
+    EditorActionsManager.prototype.highlightSelected = function(args)
     {
-        var sel = cy.elements(":selected");
         if (this.isCollaborative)
-            this.realTimeManager.changeHighlight(sel, true);
+            this.realTimeManager.changeHighlight(args, true);
         else
-            window.undoRedoManager.do('highlightOthers', sel);
+            window.editorActionsManager.doHighlight(args);
+            // window.undoRedoManager.do('highlightOthers', args);
     };
 
     /*
@@ -66,8 +66,10 @@ module.exports = (function()
     {
         args.each(function(i, n)
         {
-            if (n.isEdge()) n.addClass("highlightedEdge");
-            else n.addClass("highlightedNode");
+            if(n.hasClass('invalidGene'))
+                n.addClass("invalidGeneHighlight");
+            else
+                n.addClass("highlightedNode");
         });
         return args;
     };
@@ -75,8 +77,6 @@ module.exports = (function()
     EditorActionsManager.prototype.undoHighlight = function(args)
     {
         args.removeClass("highlightedNode");
-        args.removeClass("highlightedEdge");
-        args.unselect();
         return args;
     };
 
@@ -85,14 +85,15 @@ module.exports = (function()
     {
         var nodesToRemoveHighlight = cy.collection();
         cy.elements().forEach(function(ele, index){
-            if (ele.hasClass('highlightedNode') || ele.hasClass('highlightedEdge'))
+            if (ele.hasClass('highlightedNode') || ele.hasClass('invalidGeneHighlight'))
                 nodesToRemoveHighlight = nodesToRemoveHighlight.add(ele);
         });
 
         if (this.isCollaborative)
             this.realTimeManager.changeHighlight(nodesToRemoveHighlight, false);
         else
-            window.undoRedoManager.do('removeHighlight', nodesToRemoveHighlight);
+            window.editorActionsManager.doRemoveHighlightAll(nodesToRemoveHighlight);
+            // window.undoRedoManager.do('removeHighlight', nodesToRemoveHighlight);
     };
 
     /*
@@ -100,9 +101,17 @@ module.exports = (function()
      * **/
     EditorActionsManager.prototype.doRemoveHighlightAll = function(args)
     {
-        args.removeClass("highlightedNode");
-        args.removeClass("highlightedEdge");
-        args.unselect();
+        args.each(function(i, n)
+        {
+            if(n.hasClass('invalidGeneHighlight'))
+            {
+                n.removeClass("invalidGeneHighlight");
+                n.removeClass("highlightedNode");
+                n.addClass("invalidGene");
+            }
+            else
+                n.removeClass("highlightedNode");
+        });
         return args;
     };
 
@@ -110,31 +119,130 @@ module.exports = (function()
     {
         args.each(function(i, n)
         {
-            if (n.isEdge()) n.addClass("highlightedEdge");
-            else n.addClass("highlightedNode");
+            n.addClass("highlightedNode");
         });
         return args;
     };
 
-
-    EditorActionsManager.prototype.highlightInvalidGenesInitially = function(invalidGenesIDs)
+    EditorActionsManager.prototype.validateGenes = function()
     {
+        var geneSymbols = this.getGeneSymbols();
+        window.portalAccessor.validateGenes(geneSymbols);
+    }
+
+    //Get all gene symbols
+    EditorActionsManager.prototype.getGeneSymbols = function()
+    {
+        var geneSymbols = [];
+        this.cy.nodes().forEach( function (gene)
+        {
+            if(gene.data().type === "GENE")
+                geneSymbols.push(gene.data().name);
+        });
+        return geneSymbols;
+    }
+
+    EditorActionsManager.prototype.highlightInvalidGenes = function(validGeneSymbols)
+    {
+        if (this.isCollaborative)
+        {
+            var invalidGenes = [];
+            this.cy.nodes().forEach( function (gene)
+            {
+                if(gene.data().type === "GENE")
+                {
+                    var geneName = gene.data().name;
+                    if(validGeneSymbols.indexOf(geneName) < 0)
+                        invalidGenes.push(gene.id());
+                }
+            });
+            this.realTimeManager.changeHighlightInvalidGenes(invalidGenes, true);
+
+            if (invalidGenes.length > 0)
+                window.notificationManager.createNotification("Invalid genes are highlighted","fail");
+            else
+                window.notificationManager.createNotification("All gene symbols are valid","success");
+        }
+        else
+        {
+            var highlightedGenes = cy.collection();
+            this.cy.nodes().forEach( function (gene)
+            {
+                if(gene.data().type === "GENE")
+                {
+                    var geneName = gene.data().name;
+                    if(validGeneSymbols.indexOf(geneName) < 0)
+                        highlightedGenes = highlightedGenes.add(gene);
+                }
+            });
+
+            if (highlightedGenes.size() > 0)
+                window.notificationManager.createNotification("Invalid genes are highlighted","fail");
+            else
+                window.notificationManager.createNotification("All gene symbols are valid","success");
+
+            window.editorActionsManager.doHighlightInvalidGenes(highlightedGenes);
+            // window.undoRedoManager.do('highlightInvalidGenes', highlightedGenes);
+        }
+    }
+
+    EditorActionsManager.prototype.highlightInvalidGenesInitially = function(invalidHighlightedGenesIDs, invalidGenesIDs, highlightedGenesIDs)
+    {
+        for (var i in invalidHighlightedGenesIDs)
+        {
+            cy.$('#'+invalidHighlightedGenesIDs[i]).addClass('invalidGeneHighlight');
+        }
         for (var i in invalidGenesIDs)
         {
-            cy.$('#'+invalidGenesIDs[i]).addClass('invalidGeneHighlight');
+            cy.$('#'+invalidGenesIDs[i]).addClass('invalidGene');
+        }
+        for (var i in highlightedGenesIDs)
+        {
+            cy.$('#'+highlightedGenesIDs[i]).addClass('highlightedNode');
         }
     };
 
     EditorActionsManager.prototype.doHighlightInvalidGenes = function(args)
     {
-        args.addClass('invalidGeneHighlight');
+        args.each(function(i, n)
+        {
+            if(n.hasClass('highlightedNode'))
+            {
+                n.addClass("invalidGeneHighlight");
+            }
+            else
+                n.addClass("invalidGene");
+        });
         return args;
     };
 
     EditorActionsManager.prototype.undoHighlightInvalidGenes = function(args)
     {
         args.removeClass('invalidGeneHighlight');
+        args.removeClass('invalidGene');
         return args;
+    }
+
+    EditorActionsManager.prototype.removeInvalidGeneHighlights = function()
+    {
+        if (this.isCollaborative)
+        {
+            var geneIDs = [];
+            this.cy.nodes().forEach( function (gene)
+            {
+                if(gene.data().type === "GENE")
+                {
+                    if(gene.hasClass('invalidGeneHighlight') || gene.hasClass('invalidGene'))
+                        geneIDs.push(gene.id());
+                }
+            });
+            this.realTimeManager.changeHighlightInvalidGenes(geneIDs, false);
+        }
+        else
+        {
+            window.editorActionsManager.undoHighlightInvalidGenes(cy.nodes());
+            // window.undoRedoManager.do('removeHighlightInvalidGenes', cy.nodes());
+        }
     }
 
     /*
@@ -245,89 +353,6 @@ module.exports = (function()
         var pubmedArray = edge.data('pubmedIDs');
         edge.data('pubmedIDs', _.difference(pubmedArray, pubmedIDs));
       }
-    }
-
-    //Get all gene symbols
-    EditorActionsManager.prototype.getGeneSymbols = function()
-    {
-        var geneSymbols = [];
-        this.cy.nodes().forEach( function (gene)
-        {
-            if(gene.data().type === "GENE")
-                geneSymbols.push(gene.data().name);
-        });
-        return geneSymbols;
-    }
-
-    EditorActionsManager.prototype.validateGenes = function()
-    {
-        var geneSymbols = this.getGeneSymbols();
-        window.portalAccessor.validateGenes(geneSymbols);
-    }
-
-    EditorActionsManager.prototype.removeInvalidGeneHighlights = function()
-    {
-        if (this.isCollaborative)
-        {
-            var geneIDs = [];
-            this.cy.nodes().forEach( function (gene)
-            {
-                if(gene.data().type === "GENE")
-                {
-                    if(gene.hasClass('invalidGeneHighlight'))
-                        geneIDs.push(gene.id());
-                }
-            });
-            this.realTimeManager.changeHighlightInvalidGenes(geneIDs, false);
-        }
-        else
-        {
-            window.undoRedoManager.do('removeHighlightInvalidGenes', cy.nodes());
-        }
-    }
-
-    EditorActionsManager.prototype.highlightInvalidGenes = function(validGeneSymbols)
-    {
-        if (this.isCollaborative)
-        {
-            var invalidGenes = [];
-            this.cy.nodes().forEach( function (gene)
-            {
-                if(gene.data().type === "GENE")
-                {
-                    var geneName = gene.data().name;
-                    if(validGeneSymbols.indexOf(geneName) < 0)
-                        invalidGenes.push(gene.id());
-                }
-            });
-            this.realTimeManager.changeHighlightInvalidGenes(invalidGenes, true);
-
-            if (invalidGenes.length > 0)
-                window.notificationManager.createNotification("Invalid genes are highlighted","fail");
-            else
-                window.notificationManager.createNotification("All gene symbols are valid","success");
-        }
-        else
-        {
-            var highlightedGenes = cy.collection();
-            this.cy.nodes().forEach( function (gene)
-            {
-                if(gene.data().type === "GENE")
-                {
-                    var geneName = gene.data().name;
-                    if(validGeneSymbols.indexOf(geneName) < 0)
-                        highlightedGenes = highlightedGenes.add(gene);
-                }
-            });
-
-            if (highlightedGenes.size() > 0)
-                window.notificationManager.createNotification("Invalid genes are highlighted","fail");
-            else
-                window.notificationManager.createNotification("All gene symbols are valid","success");
-
-            window.undoRedoManager.do('highlightInvalidGenes', highlightedGenes);
-
-        }
     }
 
     //Related to order the nodes according to the selection of user
@@ -1089,9 +1114,11 @@ module.exports = (function()
     EditorActionsManager.prototype.updateHighlight = function(ele, isHighlighted)
     {
         if (isHighlighted)
-            window.undoRedoManager.do('highlightOthers', ele);
+            window.editorActionsManager.doHighlight(ele);
+            // window.undoRedoManager.do('highlightOthers', ele);
         else
-            window.undoRedoManager.do('removeHighlight', ele);
+            window.editorActionsManager.doRemoveHighlightAll(ele);
+            // window.undoRedoManager.do('removeHighlight', ele);
     };
 
     EditorActionsManager.prototype.updateElementCallback = function(ele, id)
@@ -1107,11 +1134,13 @@ module.exports = (function()
 
           if(ele.isInvalidGene)
           {
-              window.undoRedoManager.do('highlightInvalidGenes', cyEle);
+              window.editorActionsManager.doHighlightInvalidGenes(cyEle);
+              // window.undoRedoManager.do('highlightInvalidGenes', cyEle);
           }
           else
           {
-              window.undoRedoManager.do('removeHighlightInvalidGenes', cyEle);
+              window.editorActionsManager.undoHighlightInvalidGenes(cyEle);
+              // window.undoRedoManager.do('removeHighlightInvalidGenes', cyEle);
           }
         }
         else if(cyEle.isEdge())

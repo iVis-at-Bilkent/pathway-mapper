@@ -31,11 +31,8 @@ module.exports = (function()
             var searchedGene = event.currentTarget.value;
             var selector = "node[name @*= '" + searchedGene + "']";
             var nodesToSelect  = cy.filter(selector);
-            //Unselect selected nodes
-            cy.$(':selected').unselect();
             editorActionsManager.removeHighlight();
-            nodesToSelect.select();
-            editorActionsManager.highlightSelected();
+            editorActionsManager.highlightSelected(nodesToSelect);
         }
     });
 

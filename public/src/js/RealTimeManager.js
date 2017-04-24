@@ -196,17 +196,28 @@ module.exports = (function()
         cy.fit(50);
 
         var invalidGenes = [];
+        var highlightedGenes = [];
+        var invalidHighlightedGenes = [];
         for (var i = 0; i < nodeMapEntries.length; i++)
         {
             var tmpNode = nodeMapEntries[i];
-
-            if (tmpNode.isInvalidGene)
+            if (tmpNode.isInvalidGene && tmpNode.isHighlighted)
+            {
+                var tmpNodeId = this.getCustomObjId(tmpNode);
+                invalidHighlightedGenes.push(tmpNodeId);
+            }
+            else if (tmpNode.isInvalidGene)
             {
                 var tmpNodeId = this.getCustomObjId(tmpNode);
                 invalidGenes.push(tmpNodeId);
             }
+            else if (tmpNode.isHighlighted)
+            {
+                var tmpNodeId = this.getCustomObjId(tmpNode);
+                highlightedGenes.push(tmpNodeId);
+            }
         }
-        window.editorActionsManager.highlightInvalidGenesInitially(invalidGenes);
+        window.editorActionsManager.highlightInvalidGenesInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes);
 
         //Keep a reference to the file !
         this.realTimeDoc = doc;
@@ -417,7 +428,7 @@ module.exports = (function()
 
     };
 
-    RealTimeManager.prototype.changeHighlightInvalidGenes = function(nodeIDs, isHiglighted)
+    RealTimeManager.prototype.changeHighlightInvalidGenes = function(nodeIDs, isInvalid)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -430,7 +441,7 @@ module.exports = (function()
             if(nodeMap.has(nodeID))
             {
                 var collaborativeNode = nodeMap.get(nodeID);
-                collaborativeNode.isInvalidGene = isHiglighted;
+                collaborativeNode.isInvalidGene = isInvalid;
             }
         }
         model.endCompoundOperation();
@@ -999,6 +1010,7 @@ module.exports = (function()
         this.x = params.x || "undefined";
         this.y = params.y || "undefined";
         this.isInvalidGene = params.isInvalidGene || false;
+        this.isHighlighted = params.isHighlighted || false;
         model.endCompoundOperation();
     };
 
@@ -1041,7 +1053,6 @@ module.exports = (function()
         this.gravityRangeCompound = params.gravityRangeCompound || 'undefined';
         this.gravityCompound = params.gravityCompound || 'undefined';
         this.gravityRange = params.gravityRange || 'undefined';
-        this.isHighlighted = params.isHighlighted || false;
     };
 
     var GlobalOptionsRInitializer = function(params)

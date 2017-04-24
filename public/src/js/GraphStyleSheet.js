@@ -139,33 +139,28 @@ module.exports = (function()
     },
 
     {
-        selector: '.highlightedNode',
-        style:
-            {
-                'shadow-color' : '#87D37C',
-                'background-color': '#87D37C',
-                'shadow-opacity': 1.0
-            }
+      selector: '.highlightedNode',
+      style:
+      {
+          'border-width': 4
+      }
     },
-
     {
-        selector: '.highlightedEdge',
-        style:
-            {
-                'width': 3,
-                'border-width':4,
-                'shadow-color' : '#1abc9c',
-                'background-color': '#1abc9c',
-                'shadow-opacity': 1.0
-            }
+      selector: '.invalidGene',
+      style:
+      {
+          'border-width': 2,
+          'border-color': '#e94332',
+          'color': '#e94332'
+      }
     },
     {
       selector: '.invalidGeneHighlight',
       style:
       {
-          /*'shadow-color' : '#ff3c3d',
-          'shadow-opacity': 1.0*/
-          'border-width': 2,
+          'border-width': 4,
+          'font-weight' : 'bold',
+          // 'font-size' : 18,
           'border-color': '#e94332',
           'color': '#e94332'
       }
