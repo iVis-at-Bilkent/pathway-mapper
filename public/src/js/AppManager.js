@@ -24,17 +24,17 @@ var GridOptionsView = require('./BackboneViews/GridOptionsView.js');
 var CBioPortalAccessView = require('./BackboneViews/CbioPortalAccessView.js');
 
 //Other requires
-require('./FileOperationsManager.js');
-require('./OtherMenuOperations.js');
-require('./GenomicMenuOperations.js');
-require('./ViewOperationsManager.js');
-require('./ToolbarOperationsManager');
+require('./MenuBarHandlers.js');
+require('./ToolbarHandlers');
 require('./GraphUtilities.js');
 
 var QtipManager = require('./QtipManager.js');
 var ContextMenuManager = require('./ContextMenuManager.js');
 var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
 var EditorActionsManager = require('./EditorActionsManager.js');
+var GridOptionsManager = require('./GridOptionsManager.js');
+var ViewOperationsManager = require('./ViewOperationsManager.js');
+var FileOperationsManager = require('./FileOperationsManager.js');
 var SaveLoadUtilities = require('./SaveLoadUtility.js');
 var CBioPortalAccessor = require('./cBioPortalAccessor.js');
 
@@ -213,13 +213,17 @@ window.notificationManager = require('./NotificationFactory');
             layout: {name: 'preset'}
         });
 
-        //TODO remove window.editorActionsManager from real time module ASAP !
         //Create Manager Classes
         window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative,
             this.realTimeManager,
             window.cy);
 
-        this.qtipManager = new QtipManager(window.cy), this.editorActionsManager;
+        window.gridOptionsManager = new GridOptionsManager();
+        window.viewOperationsManager = new ViewOperationsManager();
+        window.fileOperationsManager = new FileOperationsManager();
+
+
+        this.qtipManager = new QtipManager(window.cy);
         this.cxtMenuManager = new ContextMenuManager(window.cy, this.editorActionsManager);
         this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editorActionsManager);
 
