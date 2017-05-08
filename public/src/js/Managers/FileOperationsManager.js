@@ -1,4 +1,4 @@
-var SaveLoadUtilities = require('./SaveLoadUtility.js');
+var SaveLoadUtilities = require('./../Utils/SaveLoadUtility.js');
 
 module.exports = (function($)
 {

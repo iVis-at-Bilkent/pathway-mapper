@@ -5,12 +5,12 @@ var Backbone = window.Backbone = require('backbone');
 Backbone.$ = $;
 require('bootstrap');
 var html5tooltips = require('html5tooltipsjs');
-require('./RealTimeUtils');//Google's real time utility lib which is customized also for this tool :)
+require('./Utils/RealTimeUtils');//Google's real time utility lib which is customized also for this tool :)
 
 var WelcomePageView = require('./BackboneViews/WelcomePageView.js');
-var AppManager = require('./AppManager');
-var RealTimeModule = require('./RealTimeManager');
-var SaveLoadUtilities = require('./SaveLoadUtility.js');
+var AppManager = require('./Managers/AppManager');
+var RealTimeModule = require('./Managers/RealTimeManager');
+var SaveLoadUtilities = require('./Utils/SaveLoadUtility.js');
 
 //Wait all components to load
 $(window).load(function()

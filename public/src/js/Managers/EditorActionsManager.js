@@ -1,5 +1,5 @@
 var GenomicDataOverlayManager = require('./GenomicDataOverlayManager.js');
-var SVGExporter = require('./SVGExporter.js');
+var SVGExporter = require('./../Utils/SVGExporter.js');
 
 
 module.exports = (function()
