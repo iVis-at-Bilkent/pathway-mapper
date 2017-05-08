@@ -137,3 +137,4 @@ module.exports = (function($)
 
     return ViewOperationsManager;
 })()
+
