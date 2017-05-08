@@ -217,7 +217,6 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative,
             this.realTimeManager,
             window.cy);
-
         window.gridOptionsManager = new GridOptionsManager();
         window.viewOperationsManager = new ViewOperationsManager();
         window.fileOperationsManager = new FileOperationsManager();
