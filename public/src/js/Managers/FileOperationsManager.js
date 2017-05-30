@@ -120,6 +120,12 @@ module.exports = (function($)
         window.undoRedoManager.reset();
     }
 
+    FileOperationsManager.prototype.createNewPathway = function()
+    {
+        window.editorActionsManager.removeAllElements();
+        window.fileOperationsManager.resetUndoStack();
+    }
+
     return FileOperationsManager;
 
 })(window.$)

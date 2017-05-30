@@ -16,8 +16,8 @@
   <link rel="stylesheet" type="text/css" href="node_modules/html5tooltipsjs/html5tooltips.css">
 
   <!--For debugging-->
-   <!--<link rel="stylesheet" href="bin/base.css" charset="utf-8">-->
-  <link rel="stylesheet" href="bin/base.min.css" charset="utf-8">
+   <link rel="stylesheet" href="bin/base.css" charset="utf-8">
+  <!-- <link rel="stylesheet" href="bin/base.min.css" charset="utf-8"> -->
 </head>
 <body>
 
@@ -350,12 +350,25 @@
       </nav><!-- /navbar -->
     </div>
     <div class="toolbar">
-      <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-        <div id="gridGuideToolbarButtons" class="btn-group mr-2" role="group" aria-label="First group">
+      <div class="btn-toolbar" role="toolbar" >
+        <div id="fileToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="New Pathway"><img src="assets/new.svg" role="new" ></div>
+          <div class="toolbar-button" data-tooltip="Save Pathway"><img src="assets/save.svg" role="save" ></div>
+          <div class="toolbar-button" data-tooltip="Load Pathway"><img src="assets/load.svg" role="load" ></div>
+        </div>
+        <div id="editToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="Undo"><img src="assets/undo.svg" role="undo" ></div>
+          <div class="toolbar-button" data-tooltip="Redo"><img src="assets/redo.svg" role="redo" ></div>
+        </div>
+        <div id="layoutToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="Perform Layout"><img src="assets/layout-cose.svg" role="performLayout" ></div>
+          <div class="toolbar-button" data-tooltip="Layout Properties"><img src="assets/layout-properties.svg" role="layoutProperties" ></div>
+        </div>
+        <div id="gridGuideToolbarButtons" class="btn-group mr-2" role="group" >
           <div class="toolbar-button" data-tooltip="Show Grid"><img src="assets/grid.svg" role="showGrid" ></div>
           <div class="toolbar-button" data-tooltip="Snap to Grid"><img src="assets/guidelines.svg" role="snapToGrid"></div>
         </div>
-        <div id="viewToolbarButtons" class="btn-group mr-2" role="group" aria-label="Second group">
+        <div id="viewToolbarButtons" class="btn-group mr-2" role="group" >
           <!--<div class="toolbar-button"><img src="assets/align.svg"></div>-->
           <div class="toolbar-button" data-tooltip="Align Horizontal Top"><img role="hTop" src="assets/align-horizontal-top.svg"></div>
           <div class="toolbar-button" data-tooltip="Align Horizontal Middle"><img role="hMid" src="assets/align-horizontal-middle.svg"></div>
@@ -363,6 +376,10 @@
           <div class="toolbar-button" data-tooltip="Align Vertical Top"><img role="vLeft" src="assets/align-vertical-left.svg"></div>
           <div class="toolbar-button" data-tooltip="Align Vertical Middle"><img role="vCen" src="assets/align-vertical-center.svg"></div>
           <div class="toolbar-button" data-tooltip="Align Vertical Bottom"><img role="vRight" src="assets/align-vertical-right.svg"></div>
+        </div>
+        <div id="portalToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="Fetch data from cBioPortal"><img role="portalData" src="assets/portal.png"></div>
+          <div class="toolbar-button" data-tooltip="Genomic Data Visibility Settings"><img role="portalSettings" src="assets/settings.svg"></div>
         </div>
         <div id="searchGeneToolbar" class="btn-group mr-2">
                 <div class="form-group">
@@ -741,8 +758,8 @@
 <script src="lib/js/FileSaver.js" charset="utf-8"></script>
 
 <!--For debugging-->
- <!--<script src="bin/base.js"></script>-->
-<script src="bin/base.min.js"></script>
+ <script src="bin/base.js"></script>
+<!-- <script src="bin/base.min.js"></script> -->
 
 <script src="lib/js/cytoscape-edgeHandles.js" charset="utf-8"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.js"></script>

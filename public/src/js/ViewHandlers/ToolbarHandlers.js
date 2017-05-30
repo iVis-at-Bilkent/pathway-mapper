@@ -12,15 +12,112 @@ module.exports = (function ($)
     $("#gridGuideToolbarButtons img").click(function (event)
     {
         var clickedImageRole = $(event.target).attr('role');
+        var imgParent = $(event.target).parent();
+
+        var showGridEle = $( "img[role='showGrid']" );
+        var snapToGridEle = $( "img[role='snapToGrid']" );
+
         if (clickedImageRole === 'snapToGrid')
         {
-            var boolStatus = !window.gridOptionsManager.currentProperties.snapToGrid;
-            window.gridOptionsManager.toggleSnapToGrid(boolStatus);
+            var status;
+            if (imgParent.hasClass('toolbar-button-focused'))
+            {
+              status = false;
+              imgParent.removeClass('toolbar-button-focused');
+            }
+            else
+            {
+              //Other option is active
+              if (showGridEle.parent().hasClass('toolbar-button-focused'))
+              {
+                showGridEle.trigger('click');
+              }
+
+              status = true;
+              imgParent.addClass('toolbar-button-focused');
+            }
+
+            window.gridOptionsManager.setSnapToGuidelines(status);
         }
         else if (clickedImageRole === 'showGrid')
         {
-            var boolStatus = !window.gridOptionsManager.currentProperties.drawGrid;
-            window.gridOptionsManager.toggleShowGrid(boolStatus);
+            var status;
+            if (imgParent.hasClass('toolbar-button-focused'))
+            {
+              status = false;
+              imgParent.removeClass('toolbar-button-focused');
+            }
+            else
+            {
+              //Other option is active
+              if (snapToGridEle.parent().hasClass('toolbar-button-focused'))
+              {
+                snapToGridEle.trigger('click');
+              }
+
+              status = true;
+              imgParent.addClass('toolbar-button-focused');
+            }
+
+            window.gridOptionsManager.setShowGrid(status);
+        }
+    });
+
+    $("#fileToolbarButtons img").click(function (event)
+    {
+        var clickedImageRole = $(event.target).attr('role');
+        if (clickedImageRole === 'new')
+        {
+          window.fileOperationsManager.createNewPathway();
+        }
+        else if (clickedImageRole === 'save')
+        {
+          window.fileOperationsManager.saveGraph(false);
+        }
+        else if (clickedImageRole === 'load')
+        {
+          $('#fileinput').trigger('click');
+        }
+    });
+
+    $("#editToolbarButtons img").click(function (event)
+    {
+        var clickedImageRole = $(event.target).attr('role');
+        if (clickedImageRole === 'undo')
+        {
+          window.undoRedoManager.undo();
+        }
+        else if (clickedImageRole === 'redo')
+        {
+          window.undoRedoManager.redo();
+        }
+    });
+
+    $("#layoutToolbarButtons img").click(function (event)
+    {
+        var clickedImageRole = $(event.target).attr('role');
+
+        if (clickedImageRole === 'performLayout')
+        {
+            window.editorActionsManager.performLayout();
+        }
+        else if (clickedImageRole === 'layoutProperties')
+        {
+            $('#layoutPropertiesDiv').modal('show');
+        }
+    });
+
+    $("#portalToolbarButtons img").click(function (event)
+    {
+        var clickedImageRole = $(event.target).attr('role');
+
+        if (clickedImageRole === 'portalData')
+        {
+          $('#cbioPortalAccessDiv').modal('show');
+        }
+        else if (clickedImageRole === 'portalSettings')
+        {
+            $('#genomicDataExplorerDiv').modal('show');
         }
     });
 

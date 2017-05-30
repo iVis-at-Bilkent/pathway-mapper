@@ -10,7 +10,7 @@ module.exports = (function ()
             geometricGuideline: true, // Geometric guidelines
             initPosAlignment: false, // Guideline to initial mouse position
             centerToEdgeAlignment: false, // Center to edge alignment
-            snapToAlignmentLocation: true, // Snap to alignment location
+            snapToAlignmentLocation: false, // Snap to alignment location
             resize: false, // Adjust node sizes to cell sizes
             parentPadding: false, // Adjust parent sizes to cell sizes by padding
             drawGrid: false, // Draw grid background
@@ -66,15 +66,16 @@ module.exports = (function ()
         return this.defaultGridGuideOptions;
     }
 
-    GridOptionsManager.prototype.toggleSnapToGrid = function(snapToGrid)
+    GridOptionsManager.prototype.setSnapToGuidelines = function(state)
     {
-        this.currentProperties.snapToGrid = snapToGrid;
+        this.currentProperties.snapToAlignmentLocation = state;
         this.refreshGridOptionsExtension();
     }
 
-    GridOptionsManager.prototype.toggleShowGrid = function(drawGrid)
+    GridOptionsManager.prototype.setShowGrid = function(state)
     {
-        this.currentProperties.drawGrid = drawGrid;
+        this.currentProperties.drawGrid = state;
+        this.currentProperties.snapToGrid = state;
         this.refreshGridOptionsExtension();
     }
 

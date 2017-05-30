@@ -1245,11 +1245,6 @@ module.exports = (function()
         this.genomicDataOverlayManager.notifyObservers();
     }
 
-    EditorActionsManager.prototype.goToSearch = function()
-    {
-        document.getElementById("findGeneArea").focus();
-    };
-
     //Utility Functions
     //TODO move functions thar are inside class functions here
 

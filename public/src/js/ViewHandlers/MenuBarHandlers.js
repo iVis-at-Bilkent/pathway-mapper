@@ -32,7 +32,7 @@ module.exports = (function ($)
         }
         else if (dropdownLinkRole == "goToSearch")
         {
-            editorActionsManager.goToSearch();
+          document.getElementById("searchGene").focus();
         }
     });
 
@@ -266,8 +266,7 @@ module.exports = (function ($)
         }
         else if (dropdownLinkRole == 'new')
         {
-            window.editorActionsManager.removeAllElements();
-            window.fileOperationsManager.resetUndoStack();
+            window.fileOperationsManager.createNewPathway();
         }
         else if (dropdownLinkRole == 'merge')
         {
