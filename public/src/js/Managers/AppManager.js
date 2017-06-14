@@ -56,26 +56,10 @@ window.notificationManager = require('./../Utils/NotificationFactory');
          this.initCyJS();
          //Initialize cytoscape based handlers here
          this.initCyHandlers();
-
+         this.initKeyboardHandlers();
          var that = this;
          window.onresize = function () {
              that.placePanzoomAndOverlay();
-         }
-
-         //TODO undo redo is not working properly in collaborative mode
-         if (!this.isCollaborative) {
-             $(document).keydown(function (e) {
-                 if (e.which === 89 && (e.ctrlKey || event.metaKey)) {
-                     window.undoRedoManager.redo();
-                 }
-                 else if (e.which === 90 && (e.ctrlKey || event.metaKey)) {
-                     window.undoRedoManager.undo();
-                 }
-             });
-         }
-         else {
-             $('a[role="redo"]').hide();
-             $('a[role="undo"]').hide();
          }
 
          //Create portal accessor
@@ -425,6 +409,47 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         });
 
     };
+     AppManager.prototype.initKeyboardHandlers = function()
+     {
+         console.log("called during initialization");
+         //TODO undo redo is not working properly in collaborative mode
+         if (!this.isCollaborative) {
+             $(document).keydown(function (e) {
+                 if (e.which === 89 && (e.ctrlKey || event.metaKey)) {
+                     window.undoRedoManager.redo();
+                 }
+                 else if (e.which === 90 && (e.ctrlKey || event.metaKey)) {
+                     window.undoRedoManager.undo();
+                 }
+                 else if (e.which === 8 || e.which === 46) {
+                     var tn = document.activeElement.tagName;
+                     if (tn != "TEXTAREA" && tn != "INPUT")
+                     {
+                         var selectedElements = cy.$(':selected');
+                         editorActionsManager.removeElement(selectedElements);
+                     }
+                 }
+             });
+         }
+         else {
+             $('a[role="redo"]').hide();
+             $('a[role="undo"]').hide();
+             $(document).keydown(function (e) {
+                 if (e.which === 90 && (e.ctrlKey || event.metaKey)) {
+                     window.undoRedoManager.undo();
+                 }
+                 else if (e.which === 8 || e.which === 46) {
+                     var tn = document.activeElement.tagName;
+                     if (tn != "TEXTAREA" && tn != "INPUT")
+                     {
+                         var selectedElements = cy.$(':selected');
+                         editorActionsManager.removeElement(selectedElements);
+                     }
+                 }
+             });
+         }
+
+     };
 
     return AppManager;
 })();
