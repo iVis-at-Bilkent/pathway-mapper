@@ -14,7 +14,7 @@
     "watch-css": "nodemon -e scss -w public/src/css/sass -x 'npm run build-css'",
     "watch-server": "nodemon app.js",
     "release-build": "npm run build-min-js & npm run build-min-css",
-    "build-cose": "npm run build-js",
+    "build-cose": "npm run build-min-js",
     "debug-build": "npm run watch-js & npm run watch-css & npm run watch-server & npm run watch-cose ",
     "watch-js-min": "nodemon -e js -w public/src/js/ -x 'npm run build-min-js'",
     "watch-css-min": "nodemon -e scss -w public/src/css/sass -x 'npm run build-min-css'",
