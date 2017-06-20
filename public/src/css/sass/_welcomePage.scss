@@ -2,7 +2,7 @@
 
 /* The max width is dependant on the container (more info below) */
 .popover{
-  max-width: 400px; /* Max Width of the popover (depending on the container!) */
+  max-width: 410px; /* Max Width of the popover (depending on the container!) */
   span{
     background-color: #e74c3c;
   }
@@ -36,7 +36,7 @@
     padding-top: 70px;
     padding-bottom: 70px;
   }
-  
+
   .welcomePageLoading{
     display: none;
     margin-top: 20px;
@@ -110,11 +110,16 @@
     font-weight: 600;
   }
 
-  .creditInformation a{
-    color: $menuHoverColor;
-  }
+
   .creditInformation {
+    font-weight: 500;
+
+    margin-top: 25px;
     color: $menuHoverColor;
+
+    a {
+      color: $menuHoverColor;
+    }
   }
 
 }
