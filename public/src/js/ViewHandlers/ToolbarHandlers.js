@@ -9,6 +9,7 @@ module.exports = (function ($)
         window.viewOperationsManager.handleNodeAlignment(clickedImageRole);
     });
 
+    //Refactoring needed on this function, too complex in this form !
     $("#gridGuideToolbarButtons img").click(function (event)
     {
         var clickedImageRole = $(event.target).attr('role');
@@ -19,7 +20,7 @@ module.exports = (function ($)
 
         if (clickedImageRole === 'snapToGrid')
         {
-            var status;
+            var status = true;
             if (imgParent.hasClass('toolbar-button-focused'))
             {
               status = false;
@@ -30,10 +31,10 @@ module.exports = (function ($)
               //Other option is active
               if (showGridEle.parent().hasClass('toolbar-button-focused'))
               {
-                showGridEle.trigger('click');
+                showGridEle.parent().removeClass('toolbar-button-focused');
+                window.gridOptionsManager.setShowGrid(false);
               }
 
-              status = true;
               imgParent.addClass('toolbar-button-focused');
             }
 
@@ -41,7 +42,7 @@ module.exports = (function ($)
         }
         else if (clickedImageRole === 'showGrid')
         {
-            var status;
+            var status = true;
             if (imgParent.hasClass('toolbar-button-focused'))
             {
               status = false;
@@ -52,10 +53,10 @@ module.exports = (function ($)
               //Other option is active
               if (snapToGridEle.parent().hasClass('toolbar-button-focused'))
               {
-                snapToGridEle.trigger('click');
+                snapToGridEle.parent().removeClass('toolbar-button-focused');
+                window.gridOptionsManager.setSnapToGuidelines(false);
               }
 
-              status = true;
               imgParent.addClass('toolbar-button-focused');
             }
 

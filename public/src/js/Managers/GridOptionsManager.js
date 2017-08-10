@@ -7,7 +7,7 @@ module.exports = (function ()
             snapToGrid: false, // Snap to grid functionality
             discreteDrag: false, // Discrete Drag
             distributionGuidelines: true, // Distribution guidelines
-            geometricGuideline: true, // Geometric guidelines
+            geometricGuideline: false, // Geometric guidelines
             initPosAlignment: false, // Guideline to initial mouse position
             centerToEdgeAlignment: false, // Center to edge alignment
             snapToAlignmentLocation: false, // Snap to alignment location
@@ -29,7 +29,7 @@ module.exports = (function ()
             guidelinesStackOrder: 4, // z-index of guidelines
             guidelinesTolerance: 2.00, // Tolerance distance for rendered positions of nodes' interaction.
             guidelinesStyle: { // Set ctx properties of line. Properties are here:
-                strokeStyle: "#8b6412", // color of geometric guidelines
+                strokeStyle: "#f97407", // color of geometric guidelines
                 geometricGuidelineRange: 400, // range of geometric guidelines
                 range: 200, // max range of distribution guidelines
                 minDistRange: 10, // min range for distribution guidelines
@@ -68,8 +68,10 @@ module.exports = (function ()
 
     GridOptionsManager.prototype.setSnapToGuidelines = function(state)
     {
+        this.currentProperties.geometricGuideline = state;
         this.currentProperties.snapToAlignmentLocation = state;
         this.refreshGridOptionsExtension();
+        window.appManager.gridOptionsView.changeParameters();
     }
 
     GridOptionsManager.prototype.setShowGrid = function(state)
@@ -77,6 +79,7 @@ module.exports = (function ()
         this.currentProperties.drawGrid = state;
         this.currentProperties.snapToGrid = state;
         this.refreshGridOptionsExtension();
+        window.appManager.gridOptionsView.changeParameters();
     }
 
     GridOptionsManager.prototype.refreshGridOptionsExtension = function()

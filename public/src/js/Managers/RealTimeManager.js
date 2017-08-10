@@ -144,31 +144,6 @@ module.exports = (function()
         }
         edgeMapEntries = edgeMap.values();
 
-        // // Addition of isInvalidGene field if legacy pathways does not have
-        // for (var i = 0; i < nodeMapEntries.length; i++)
-        // {
-        //     var tmpNode = nodeMapEntries[i];
-        //
-        //     if (tmpNode.isInvalidGene == undefined)
-        //     {
-        //         var newNode = model.create(NodeR,
-        //             {
-        //                 name: tmpNode.name,
-        //                 type: tmpNode.type,
-        //                 parent: tmpNode.parent,
-        //                 x: tmpNode.x,
-        //                 y: tmpNode.y,
-        //                 isInvalidGene: false
-        //             });
-        //         var tmpNodeId = this.getCustomObjId(tmpNode);
-        //         var newID = this.getCustomObjId(newNode);
-        //         nodeMap.delete(tmpNodeId);
-        //         nodeMap.set(newID, newNode);
-        //     }
-        // }
-        // nodeMapEntries = nodeMapEntries.values();
-        // End of workaround
-
 
         //Add real time nodes to local graph
         window.editorActionsManager.addNewElementsLocally(nodeMapEntries, edgeMapEntries);
@@ -182,7 +157,8 @@ module.exports = (function()
         var visibilityMapKeys = visDataMap.keys();
 
         //Sync already available data from cloud model
-        for (var key in genomicDataMapKeys) {
+        for (var key in genomicDataMapKeys)
+        {
             window.editorActionsManager.genomicDataOverlayManager.genomicDataMap[genomicDataMapKeys[key]] = genomicDataMap.get(genomicDataMapKeys[key]);
         }
 

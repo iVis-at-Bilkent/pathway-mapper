@@ -365,8 +365,8 @@
           <div class="toolbar-button" data-tooltip="Layout Properties"><img src="assets/layout-properties.svg" role="layoutProperties" ></div>
         </div>
         <div id="gridGuideToolbarButtons" class="btn-group mr-2" role="group" >
-          <div class="toolbar-button" data-tooltip="Show Grid"><img src="assets/grid.svg" role="showGrid" ></div>
-          <div class="toolbar-button" data-tooltip="Snap to Grid"><img src="assets/guidelines.svg" role="snapToGrid"></div>
+          <div class="toolbar-button" data-tooltip="Enable Grid: Show and snap to grid"><img src="assets/grid.svg" role="showGrid" ></div>
+          <div class="toolbar-button" data-tooltip="Snap to: Enable Guidelines: Enable and snap to alignment guidelines"><img src="assets/guidelines.svg" role="snapToGrid"></div>
         </div>
         <div id="viewToolbarButtons" class="btn-group mr-2" role="group" >
           <!--<div class="toolbar-button"><img src="assets/align.svg"></div>-->
@@ -694,21 +694,15 @@
         <div class="modal-body">
           <form role="form" id="gripOptionsForm">
             <div class="input-group">
-              <label class="control-label col-sm-8" for="showGrid">Show Grid:</label>
+              <label class="control-label col-sm-8" for="enableGrid">Enable Grid:</label>
               <div class="col-sm-4 leftText">
-                <input id="showGrid" type="checkbox" class="input-small layout-text" <% if (drawGrid){ %> checked<%}%>>
+                <input id="enableGrid" type="checkbox" class="input-small layout-text" <% if (drawGrid){ %> checked<%}%>>
               </div>
             </div>
             <div class="input-group">
-              <label class="control-label col-sm-8" for="showGuides">Show Grid Guidelines:</label>
+              <label class="control-label col-sm-8" for="enableGuides">Enable Guidelines:</label>
               <div class="col-sm-4 leftText">
-                <input id="showGuides" type="checkbox" class="input-small layout-text" <% if (geometricGuideline){ %> checked<%}%>>
-              </div>
-            </div>
-            <div class="input-group">
-              <label class="control-label col-sm-8" for="showGuides">Snap to Grid:</label>
-              <div class="col-sm-4 leftText">
-                <input id="snapToGrid" type="checkbox" class="input-small layout-text" <% if (snapToGrid){ %> checked<%}%>>
+                <input id="enableGuides" type="checkbox" class="input-small layout-text" <% if (snapToGrid){ %> checked<%}%>>
               </div>
             </div>
             <div class="input-group">

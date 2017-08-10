@@ -20,14 +20,32 @@ var gridOptionsView = Backbone.View.extend(
             this.$el.empty();
             this.$el.append(tplContent);
             this.delegateEvents();
+
+
+            this.$el.find("#enableGrid").change(function(event)
+            {
+              this.$el.find("#enableGuides")[0].checked = "false";
+            });
+
+            this.$el.find("#enableGuides").change(function(event)
+            {
+              this.$el.find("#enableGrid")[0].checked = "false";
+            });
+
+            return this;
         },
         saveProperties: function(event)
         {
             var currentProperties = _.clone(window.gridOptionsManager.currentProperties);
             currentProperties.gridSpacing = Number(this.$el.find("#gridSize").val());
-            currentProperties.drawGrid = this.$el.find("#showGrid").is(':checked');
-            currentProperties.geometricGuideline = this.$el.find("#showGuides").is(':checked');
-            currentProperties.snapToGrid = this.$el.find("#snapToGrid").is(':checked');
+
+            //Enable and snap to grid
+            currentProperties.drawGrid = this.$el.find("#enableGrid").is(':checked');
+            currentProperties.snapToGrid = this.$el.find("#enableGrid").is(':checked');
+
+            //Enable and snap to guidelines
+            currentProperties.geometricGuideline = this.$el.find("#enableGuides").is(':checked');
+            currentProperties.snapToAlignmentLocation = this.$el.find("#enableGuides").is(':checked');
             currentProperties.guidelinesStyle.strokeStyle = this.$el.find('input[type="color"]').val();
 
             //TODO update grid options
@@ -39,8 +57,8 @@ var gridOptionsView = Backbone.View.extend(
         {
             var currentProperties = _.clone(window.gridOptionsManager.currentProperties);
             this.$el.find("#gridSize").val(currentProperties.gridSpacing);
-            this.$el.find("#showGrid")[0].checked = currentProperties.drawGrid;
-            this.$el.find("#showGuides")[0].checked = currentProperties.geometricGuideline;
+            this.$el.find("#enableGrid")[0].checked = currentProperties.drawGrid;
+            this.$el.find("#enableGuides")[0].checked = currentProperties.geometricGuideline;
             this.$el.find('input[type="color"]').val(currentProperties.guidelinesStyle.strokeStyle);
         }
     });
