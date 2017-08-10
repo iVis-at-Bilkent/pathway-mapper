@@ -5,6 +5,11 @@ PathwayMapper is a web based pathway curation tool for interactive creation, edi
   <img src="public/assets/sample-screenshot.png" width="440"/>
 </p>
 
+#### How to Cite Usage
+[Bahceci et al. (2017) "PathwayMapper: a collaborative visual web editor for cancer pathways and genomic data", Bioinformatics](https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btx149).
+
+#### Feedback
+Send any feedback and error reports to at ivis@cs.bilkent.edu.tr.
 ## Software
 
 PathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).

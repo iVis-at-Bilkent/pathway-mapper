@@ -40,7 +40,7 @@ var SaveLoadUtils =
                          nodeType + '\t' +
                          parentID + '\t' +
                          parseInt(pos.x) + '\t' +
-                         parseInt(pos.y) + '\t\n';
+                         parseInt(pos.y) + '\n';
       }
     }
 
@@ -48,7 +48,7 @@ var SaveLoadUtils =
 
     //Put a blank line between nodes and edges
     returnString += '\n';
-    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\tPUBMED_IDS\n';
+    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\INTERACTION_PUBMED_ID\n';
 
     if (edges) {
       //Write edges
@@ -88,9 +88,11 @@ var SaveLoadUtils =
     //Get nodes and edges
     var nodes = pathwayDetails.graphJSON.elements.nodes;
     var edges = pathwayDetails.graphJSON.elements.edges;
+    var nodeMap = {};
 
-    //Prepare Meta Line
-    returnString += 'NAME\tTYPE\tPARENT_ID\tPOSX\tPOSY\tPATHWAY'+'\n';
+    //Put a blank line between nodes and edges
+    returnString += '\n';
+    returnString += 'PARTICIPANT\tPARTICIPANT_TYPE\tPARENT_ID\tPOSX\tPOSY'+'\n';
 
     if (nodes)
     {
@@ -101,6 +103,8 @@ var SaveLoadUtils =
         var nodeType = nodes[i].data.type;
         var parentID = nodes[i].data.parent;
         var pos = nodes[i].position;
+
+        nodeMap[nodes[i].data.id] = nodes[i];
 
         //Check if node has a parent, if not set parent id -1
         if (nodes[i].data.parent)
@@ -147,8 +151,8 @@ var SaveLoadUtils =
             }
         }
 
-        returnString += cy.$('#'+ source).data('name') + '\t' +
-                        cy.$('#'+ target).data('name')  + '\t' +
+        returnString += nodeMap[source].data.name + '\t' +
+                        nodeMap[target].data.name  + '\t' +
                         edgeType + '\t' +
                         pubmedString + '\n';
       }

@@ -14,10 +14,11 @@
   <link rel="stylesheet" href="node_modules/cytoscape-navigator/cytoscape.js-navigator.css" charset="utf-8">
   <link rel="stylesheet" href="node_modules/bootstrap-select/dist/css/bootstrap-select.min.css" charset="utf-8">
   <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.css">
+  <link rel="stylesheet" type="text/css" href="node_modules/html5tooltipsjs/html5tooltips.css">
 
   <!--For debugging-->
-  <link rel="stylesheet" href="bin/base.css" charset="utf-8">
-  <!-- <link rel="stylesheet" href="bin/base.min.css" charset="utf-8"> -->
+   <!-- <link rel="stylesheet" href="bin/base.css" charset="utf-8"> -->
+  <link rel="stylesheet" href="bin/base.min.css" charset="utf-8">
 </head>
 <body>
 
@@ -29,7 +30,7 @@
         <h3 class="modal-title">About</h3>
       </div>
       <div class="modal-body">
-        <h3>PathwayMapper 1.0.0</h3>
+        <h3>PathwayMapper 1.1</h3>
         <div class="aboutImageContent">
           <img src="./assets/i-vis.png" alt="" />
         </div>
@@ -321,6 +322,14 @@
                   </li>
                 </ul>
               </li>
+              <li class="dropdown highlightDropDown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Highlight <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a tabindex="-1" role="goToSearch"  href="#">Search Genes by Name...</a></li>
+                  <li><a role="highlightInvalidGenes" href="#">Identify Invalid Genes</a></li>
+                  <li><a role="removeHighlights" href="#">Remove Highlights</a></li>
+                </ul>
+              </li>
               <li class="dropdown dataDropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Alteration % <span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -353,12 +362,45 @@
         </div><!-- /.navbar-collapse -->
       </nav><!-- /navbar -->
     </div>
-    <div class="fileNameWrapper">
-      <div class="row">
-        <div class="col-md-12">
-          <!-- <div class="pull-right fileNameContent">
-            <span>pathway.txt</span>
-          </div> -->
+    <div class="toolbar">
+      <div class="btn-toolbar" role="toolbar" >
+        <div id="fileToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="New Pathway"><img src="assets/new.svg" role="new" ></div>
+          <div class="toolbar-button" data-tooltip="Save Pathway"><img src="assets/save.svg" role="save" ></div>
+          <div class="toolbar-button" data-tooltip="Load Pathway"><img src="assets/load.svg" role="load" ></div>
+        </div>
+        <div id="editToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="Undo"><img src="assets/undo.svg" role="undo" ></div>
+          <div class="toolbar-button" data-tooltip="Redo"><img src="assets/redo.svg" role="redo" ></div>
+        </div>
+        <div id="layoutToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="Perform Layout"><img src="assets/layout-cose.svg" role="performLayout" ></div>
+          <div class="toolbar-button" data-tooltip="Layout Properties"><img src="assets/layout-properties.svg" role="layoutProperties" ></div>
+        </div>
+        <div id="gridGuideToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="Enable Grid: Show and snap to grid"><img src="assets/grid.svg" role="showGrid" ></div>
+          <div class="toolbar-button" data-tooltip="Snap to: Enable Guidelines: Enable and snap to alignment guidelines"><img src="assets/guidelines.svg" role="snapToGrid"></div>
+        </div>
+        <div id="viewToolbarButtons" class="btn-group mr-2" role="group" >
+          <!--<div class="toolbar-button"><img src="assets/align.svg"></div>-->
+          <div class="toolbar-button" data-tooltip="Align Horizontal Top"><img role="hTop" src="assets/align-horizontal-top.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Horizontal Middle"><img role="hMid" src="assets/align-horizontal-middle.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Horizontal Bottom"><img role="hBot" src="assets/align-horizontal-bottom.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Vertical Top"><img role="vLeft" src="assets/align-vertical-left.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Vertical Middle"><img role="vCen" src="assets/align-vertical-center.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Vertical Bottom"><img role="vRight" src="assets/align-vertical-right.svg"></div>
+        </div>
+        <div id="portalToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="Fetch data from cBioPortal"><img role="portalData" src="assets/portal.png"></div>
+          <div class="toolbar-button" data-tooltip="Genomic Data Visibility Settings"><img role="portalSettings" src="assets/settings.svg"></div>
+        </div>
+        <div id="searchGeneToolbar" class="btn-group mr-2">
+                <div class="form-group">
+                    <div class="form-group has-feedback">
+                        <input type="text" class="form-control" id="searchGene" placeholder="Search Genes..."/>
+                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                    </div>
+                </div>
         </div>
       </div>
     </div>
@@ -417,21 +459,20 @@
             </div>
           </div>
 
-          <div class="pnl">
-            <div class="pnl-header">
-              Find Genes
-            </div>
-            <div class="pnl-body">
-              <div class="">
-                <div class="geneSearchDiv">
-                  <!-- <li class="list-group-item"><a dropDownIndex='0' href="#">None</a></li> -->
-                  <input type="text" tabindex="-1" name="geneName" id="findGeneArea">
-                </div>
-              </div>
-            </div>
-          </div>
-          <!--<button id="undoCollab" class=" btn genomicLoadButton" >UndoCollab</button>-->
-          <!--<button id="redoCollab" class=" btn genomicLoadButton" >RedoCollab</button>-->
+          <!--<div class="pnl">-->
+            <!--<div class="pnl-header">-->
+              <!--Search Genes-->
+            <!--</div>-->
+            <!--<div class="pnl-body">-->
+              <!--<div class="">-->
+                <!--<div class="geneSearchDiv">-->
+                  <!--&lt;!&ndash; <li class="list-group-item"><a dropDownIndex='0' href="#">None</a></li> &ndash;&gt;-->
+                  <!--<input type="text" tabindex="-1" name="geneName" id="findGeneArea">-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+
         </div>
 
       </div>
@@ -516,6 +557,11 @@
     <div class="container">
       <div class="row">
         <h1>Welcome to PathwayMapper</h1>
+        <div class="creditInformation">
+        <a href="https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btx149" target="_blank"><h5>Bahceci et al. (2017) "PathwayMapper: a collaborative visual web editor for cancer pathways and genomic data", Bioinformatics.</h5></a>
+        <a href="mailto:ivis@cs.bilkent.edu.tr?subject=PathwayMapper">ivis@cs.bilkent.edu.tr</a> <br>
+        <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">https://github.com/iVis-at-Bilkent/pathway-mapper</a>
+        </div>
         <h3>Please choose the type of your usage:</h3>
       </div>
       <div class="row welcomePageLoading">
@@ -665,21 +711,15 @@
         <div class="modal-body">
           <form role="form" id="gripOptionsForm">
             <div class="input-group">
-              <label class="control-label col-sm-8" for="showGrid">Show Grid:</label>
+              <label class="control-label col-sm-8" for="enableGrid">Enable Grid:</label>
               <div class="col-sm-4 leftText">
-                <input id="showGrid" type="checkbox" class="input-small layout-text" <% if (drawGrid){ %> checked<%}%>>
+                <input id="enableGrid" type="checkbox" class="input-small layout-text" <% if (drawGrid){ %> checked<%}%>>
               </div>
             </div>
             <div class="input-group">
-              <label class="control-label col-sm-8" for="showGuides">Show Grid Guidelines:</label>
+              <label class="control-label col-sm-8" for="enableGuides">Enable Guidelines:</label>
               <div class="col-sm-4 leftText">
-                <input id="showGuides" type="checkbox" class="input-small layout-text" <% if (guidelines){ %> checked<%}%>>
-              </div>
-            </div>
-            <div class="input-group">
-              <label class="control-label col-sm-8" for="showGuides">Snap to Grid:</label>
-              <div class="col-sm-4 leftText">
-                <input id="snapToGrid" type="checkbox" class="input-small layout-text" <% if (snapToGrid){ %> checked<%}%>>
+                <input id="enableGuides" type="checkbox" class="input-small layout-text" <% if (snapToGrid){ %> checked<%}%>>
               </div>
             </div>
             <div class="input-group">
@@ -766,8 +806,9 @@
 <script src="lib/js/FileSaver.js" charset="utf-8"></script>
 
 <!--For debugging-->
-<script src="bin/base.js"></script>
-<!-- <script src="bin/base.min.js"></script> -->
+ <!-- <script src="bin/base.js"></script> -->
+<script src="bin/base.min.js"></script>
+
 <script src="lib/js/cytoscape-edgeHandles.js" charset="utf-8"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.js"></script>
 <script src="https://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>

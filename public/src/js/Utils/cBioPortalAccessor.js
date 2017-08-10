@@ -7,6 +7,7 @@ module.exports = (function()
         this.GET_PROFILE_DATA_URL = "http://www.cbioportal.org/webservice.do?cmd=getProfileData";
         this.MRNA_EXP_STUDY_NAME = "_mrna_median_Zscores";
         this.CNA_EXP_STUDY_NAME = "_gistic";
+        this.VALIDATE_GENES_URL  = 'http://www.cbioportal.org/api/genes/fetch?geneIdType=HUGO_GENE_SYMBOL&projection=ID'
         this.MUTATION_EXP_STUDY_NAME = "_mutations";
 
 
@@ -226,6 +227,29 @@ module.exports = (function()
         request.open("GET", queryURL);
         request.send();
     };
+
+    CBioPortalAccessor.prototype.validateGenes = function(nodeSymbols)
+    {
+        var request = new XMLHttpRequest();
+        var self = this;
+
+        request.onreadystatechange = function ()
+        {
+            if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
+            {
+                var validGeneSymbols = JSON.parse(request.responseText);
+                var validGeneArray = _.map(validGeneSymbols, function(object)
+                {
+                    return object.hugoGeneSymbol;
+                });
+                window.editorActionsManager.highlightInvalidGenes(validGeneArray);
+            }
+        };
+        var queryURL = this.VALIDATE_GENES_URL;
+        request.open("POST", queryURL);
+        request.setRequestHeader("Content-type", "application/json");
+        request.send(JSON.stringify(nodeSymbols));
+    }
 
     return CBioPortalAccessor;
 

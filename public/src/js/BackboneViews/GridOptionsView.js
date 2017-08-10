@@ -6,70 +6,60 @@ var gridOptionsView = Backbone.View.extend(
         },
         initialize: function (options)
         {
-            this.defaultGridGuideOptions = {
-                snapToGrid: false, // Snap to grid functionality
-                discreteDrag: false, // Discrete Drag
-                guidelines: true, // Guidelines on dragging nodes
-                resize: false, // Adjust node sizes to cell sizes
-                gridSpacing: 20,
-                parentPadding: false, // Adjust parent sizes to cell sizes by padding
-                drawGrid: false, // Draw grid background
-                // Guidelines
-                guidelinesStackOrder: 4, // z-index of guidelines
-                guidelinesTolerance: 2.00, // Tolerance distance for rendered positions of nodes' interaction.
-                guidelinesStyle:
-                { // Set ctx properties of line. Properties are here:
-                    lineWidth: 2.0,
-                    strokeStyle: "#000000",
-                    lineDash: [7, 15] // read https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
-                }
-            };
-
-            this.copyProperties(this.defaultGridGuideOptions);
-            cy.gridGuide(this.currentProperties);
+            this.copyProperties(window.gridOptionsManager.getDefaultOptions());
         },
         copyProperties: function (params)
         {
-            this.currentProperties = _.clone(params);
+           window.gridOptionsManager.changeParameters(params);
         },
         render: function ()
         {
-            var templateProperties = _.clone(this.currentProperties);
+            var templateProperties = _.clone(window.gridOptionsManager.currentProperties);
             this.template = _.template($("#gridOptionsTemplate").html());
             var tplContent = this.template(templateProperties);
             this.$el.empty();
             this.$el.append(tplContent);
             this.delegateEvents();
+
+
+            this.$el.find("#enableGrid").change(function(event)
+            {
+              this.$el.find("#enableGuides")[0].checked = "false";
+            });
+
+            this.$el.find("#enableGuides").change(function(event)
+            {
+              this.$el.find("#enableGrid")[0].checked = "false";
+            });
+
+            return this;
         },
         saveProperties: function(event)
         {
-            this.currentProperties.gridSpacing = Number(this.$el.find("#gridSize").val());
-            this.currentProperties.drawGrid = this.$el.find("#showGrid").is(':checked');
-            this.currentProperties.guidelines = this.$el.find("#showGuides").is(':checked');
-            this.currentProperties.snapToGrid = this.$el.find("#snapToGrid").is(':checked');
-            this.currentProperties.guidelinesStyle.strokeStyle = this.$el.find('input[type="color"]').val();
+            var currentProperties = _.clone(window.gridOptionsManager.currentProperties);
+            currentProperties.gridSpacing = Number(this.$el.find("#gridSize").val());
 
+            //Enable and snap to grid
+            currentProperties.drawGrid = this.$el.find("#enableGrid").is(':checked');
+            currentProperties.snapToGrid = this.$el.find("#enableGrid").is(':checked');
+
+            //Enable and snap to guidelines
+            currentProperties.geometricGuideline = this.$el.find("#enableGuides").is(':checked');
+            currentProperties.snapToAlignmentLocation = this.$el.find("#enableGuides").is(':checked');
+            currentProperties.guidelinesStyle.strokeStyle = this.$el.find('input[type="color"]').val();
 
             //TODO update grid options
-            cy.gridGuide(this.currentProperties);
+            window.gridOptionsManager.changeParameters(currentProperties);
 
             this.$el.modal('toggle');
         },
         changeParameters: function()
         {
-            this.$el.find("#gridSize").val(this.currentProperties.gridSize);
-            this.$el.find("#showGrid")[0].checked = this.currentProperties.showGrid;
-            this.$el.find("#showGuides")[0].checked = this.currentProperties.showGuides;
-            this.$el.find('input[type="color"]').val(this.currentProperties.guidelinesStyle.strokeStyle);
-        },
-        defaultLayoutHandler: function(event)
-        {
-
-        },
-        //For observer observable pattern usage !!!!
-        notify: function()
-        {
-
+            var currentProperties = _.clone(window.gridOptionsManager.currentProperties);
+            this.$el.find("#gridSize").val(currentProperties.gridSpacing);
+            this.$el.find("#enableGrid")[0].checked = currentProperties.drawGrid;
+            this.$el.find("#enableGuides")[0].checked = currentProperties.geometricGuideline;
+            this.$el.find('input[type="color"]').val(currentProperties.guidelinesStyle.strokeStyle);
         }
     });
 

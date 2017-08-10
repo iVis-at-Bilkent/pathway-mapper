@@ -1,4 +1,4 @@
-var CBioPortalAccessor = require('../cBioPortalAccessor.js');
+var CBioPortalAccessor = require('../Utils/cBioPortalAccessor.js');
 
 var cbioPortalAccessView = Backbone.View.extend(
     {

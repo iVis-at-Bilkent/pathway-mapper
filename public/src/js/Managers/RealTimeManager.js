@@ -157,7 +157,9 @@ module.exports = (function()
         var edgeMapEntries = edgeMap.values();
 
         //TODO Workaround for legacy pathways
-        //Workaround for backward compatibility of legacy pathways
+        // Workaround for backward compatibility of legacy pathways
+        // Addition of pubmed id field on server if legacy collaborative
+        // pathways does not have !
         for (var i = 0; i < edgeMapEntries.length; i++)
         {
           var tmpEdge = edgeMapEntries[i];
@@ -178,7 +180,6 @@ module.exports = (function()
           }
         }
         edgeMapEntries = edgeMap.values();
-        //End of workaround
 
         //Add real time nodes to local graph
         window.editorActionsManager.addNewElementsLocally(nodeMapEntries, edgeMapEntries);
@@ -219,6 +220,33 @@ module.exports = (function()
 
     RealTimeManager.prototype.initCloudEventHandlers = function(root)
     {
+        var invalidGenes = [];
+        var highlightedGenes = [];
+        var invalidHighlightedGenes = [];
+        for (var i = 0; i < nodeMapEntries.length; i++)
+        {
+            var tmpNode = nodeMapEntries[i];
+            if (tmpNode.isInvalidGene && tmpNode.isHighlighted)
+            {
+                var tmpNodeId = this.getCustomObjId(tmpNode);
+                invalidHighlightedGenes.push(tmpNodeId);
+            }
+            else if (tmpNode.isInvalidGene)
+            {
+                var tmpNodeId = this.getCustomObjId(tmpNode);
+                invalidGenes.push(tmpNodeId);
+            }
+            else if (tmpNode.isHighlighted)
+            {
+                var tmpNodeId = this.getCustomObjId(tmpNode);
+                highlightedGenes.push(tmpNodeId);
+            }
+        }
+        window.editorActionsManager.highlightInvalidGenesInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes);
+
+        //Keep a reference to the file !
+        this.realTimeDoc = doc;
+
         //Setup event handlers for maps
         var nodeAddRemoveHandler = function(event)
         {
@@ -502,6 +530,26 @@ module.exports = (function()
             throw new Error('Element does not exist in nodes !!! ');
         }
     };
+
+    RealTimeManager.prototype.changeHighlightInvalidGenes = function(nodeIDs, isInvalid)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap =  root.get(this.NODEMAP_NAME);
+
+        model.beginCompoundOperation();
+        for (var i in nodeIDs)
+        {
+            var nodeID = nodeIDs[i];
+            if(nodeMap.has(nodeID))
+            {
+                var collaborativeNode = nodeMap.get(nodeID);
+                collaborativeNode.isInvalidGene = isInvalid;
+            }
+        }
+        model.endCompoundOperation();
+
+    }
 
     RealTimeManager.prototype.addPubmedIDs = function(edgeID, pubmedIDs)
     {
@@ -977,6 +1025,7 @@ module.exports = (function()
         NodeR.prototype.h = gapi.drive.realtime.custom.collaborativeField('h');
         NodeR.prototype.parent = gapi.drive.realtime.custom.collaborativeField('parent');
         NodeR.prototype.isHidden = gapi.drive.realtime.custom.collaborativeField('isHidden');
+        NodeR.prototype.isInvalidGene = gapi.drive.realtime.custom.collaborativeField('isInvalidGene');
         NodeR.prototype.isHighlighted = gapi.drive.realtime.custom.collaborativeField('isHighlighted');
 
         // EdgeR;
@@ -1067,6 +1116,7 @@ module.exports = (function()
         this.w = params.w || "undefined";
         this.h = params.h || "undefined";
         this.isHidden = params.isHidden || false;
+        this.isInvalidGene = params.isInvalidGene || false;
         this.isHighlighted = params.isHighlighted || false;
         model.endCompoundOperation();
     };

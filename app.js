@@ -6,6 +6,7 @@ var fs = require('fs');
 var path = require('path');
 var request = require('request');
 var qs = require("querystring");
+var SaveLoadUtilities = require('./public/src/js/Utils/SaveLoadUtility.js');
 
 
 var app = express();
@@ -21,13 +22,14 @@ app.use('/node_modules/cytoscape-navigator', express.static(__dirname + '/node_m
 app.use('/node_modules/qtip2', express.static(__dirname + '/node_modules/qtip2/'));
 app.use('/node_modules/filesaverjs', express.static(__dirname + '/node_modules/filesaverjs/'));
 app.use('/node_modules/bootstrap-select', express.static(__dirname + '/node_modules/bootstrap-select/'));
+app.use('/node_modules/html5tooltipsjs', express.static(__dirname + '/node_modules/html5tooltipsjs/'));
 
 
 
 var multerInstance = multer({dest:'./uploads/'});
 
 //var APP_PORT = 3000;
-var APP_PORT = 80;
+var APP_PORT = process.env.PORT || 80;
 
 //get handler for index.html
 function indexGetHandler(req,res){
@@ -39,20 +41,23 @@ function indexGetHandler(req,res){
 ********************************/
 function loadGraphHandler(req, res)
 {
-    fs.readFile(req.file.path, {encoding: 'utf-8'}, function(err,data)
+    if(req.file)
     {
-      if (!err)
+      fs.readFile(req.file.path, {encoding: 'utf-8'}, function(err,data)
       {
-        res.writeHead(200, {'Content-Type': 'multipart/form-data'});
-        res.write(data);
-        res.end();
-      }
-      else
-      {
-          console.log(err);
-      }
-      fs.unlinkSync(req.file.path);
-    });
+        if (!err)
+        {
+          res.writeHead(200, {'Content-Type': 'multipart/form-data'});
+          res.write(data);
+          res.end();
+        }
+        else
+        {
+            console.log(err);
+        }
+        fs.unlinkSync(req.file.path);
+      });
+    }
 }
 
 function loadSampleFile(req, res)
@@ -122,19 +127,36 @@ function biogeneDataHandler(req,res)
 function loadPathway(req, res)
 {
     var pathwayName = req.query.filename;
+    var format = req.query.format;
     fs.readFile('./samples/' + pathwayName, {encoding: 'utf-8'}, function(err,data)
     {
         if (!err)
         {
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.write(data);
-            res.end();
+          var outData = data;
+          if(format === "SIFNX")
+          {
+            var parsedGraph = SaveLoadUtilities.parseGraph(data);
+            var pathwayData = {
+              pathwayTitle: parsedGraph.title,
+              graphJSON: {
+                elements: {
+                  nodes: parsedGraph.nodes,
+                  edges: parsedGraph.edges
+                }
+            }}
+            outData = SaveLoadUtilities.exportAsSIFNX(pathwayData);
+          }
+
+          res.writeHead(200, {'Content-Type': 'text/html'});
+          res.write(outData);
+          res.end();
+
         }
         else
         {
-            res.writeHead(501, {'Content-Type': 'text/html'});
-            res.write("Error retrieving pathway");
-            res.end();
+          res.writeHead(501, {'Content-Type': 'text/html'});
+          res.write("Error retrieving pathway");
+          res.end();
         }
         // fs.unlinkSync('./samples/sample1.txt');
     });
@@ -248,5 +270,5 @@ io.on('connection', function(socket)
  ********************************/
 http.listen(APP_PORT, function ()
 {
-  console.log('TCGA Pathway Curation Tool up and running on port ' + APP_PORT);
+  console.log('--- PathwayMapper is up and running on port ' + APP_PORT + ' ---');
 });
