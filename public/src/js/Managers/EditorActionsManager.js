@@ -43,10 +43,12 @@ module.exports = (function()
         window.undoRedoManager = cy.undoRedo();
         window.undoRedoManager.action("changePositions", this.doChangePosition, this.undoChangePosition);
         window.undoRedoManager.action("changeName", this.doChangename, this.undoChangeName);
-        // window.undoRedoManager.action("highlightInvalidGenes", this.doHighlightInvalidGenes, this.undoHighlightInvalidGenes);
-        // window.undoRedoManager.action("removeHighlightInvalidGenes", this.undoHighlightInvalidGenes, this.doHighlightInvalidGenes);
-        // window.undoRedoManager.action("highlightOthers", this.doHighlight, this.undoHighlight);
-        // window.undoRedoManager.action("removeHighlight", this.doRemoveHighlightAll, this.undoRemoveHighlightAll);
+        window.undoRedoManager.action("hideNode", this.doHide, this.undoHide);
+        window.undoRedoManager.action("showAllNodes", this.doShow, this.undoShow);
+        window.undoRedoManager.action("highlightInvalidGenes", this.doHighlightInvalidGenes, this.undoHighlightInvalidGenes);
+        window.undoRedoManager.action("removeHighlightInvalidGenes", this.undoHighlightInvalidGenes, this.doHighlightInvalidGenes);
+        window.undoRedoManager.action("highlightOthers", this.doHighlight, this.undoHighlight);
+        window.undoRedoManager.action("removeHighlight", this.doRemoveHighlightAll, this.undoRemoveHighlightAll);
 
     };
 
@@ -329,13 +331,13 @@ module.exports = (function()
     /*
      * Undo redo for showing all nodes
      * **/
-    EditorActionsManager.prototype.doShowAll = function(args)
+    EditorActionsManager.prototype.doShow = function(args)
     {
         args.show();
         return args;
     };
 
-    EditorActionsManager.prototype.undoShowAll = function(args)
+    EditorActionsManager.prototype.undoShow = function(args)
     {
         args.hide();
         return args;
@@ -1062,7 +1064,6 @@ module.exports = (function()
             this.realTimeManager.changeVisibility(hid, false);
         else
             window.undoRedoManager.do('showAllNodes', hid);
-        //hid.show();
     };
 
     EditorActionsManager.prototype.hideSelectedNodes = function()
@@ -1098,7 +1099,7 @@ module.exports = (function()
         if (this.isCollaborative)
             this.realTimeManager.changeHighlight(sel, true);
         else
-            window.undoRedoManager.do('highlight', sel);
+            window.undoRedoManager.do('highlightOthers', sel);
     };
 
     EditorActionsManager.prototype.highlightNeighbors = function()
@@ -1108,7 +1109,7 @@ module.exports = (function()
         if (this.isCollaborative)
             this.realTimeManager.changeHighlight(neighbors, true);
         else
-            window.undoRedoManager.do('highlight', neighbors);
+            window.undoRedoManager.do('highlightOthers', neighbors);
     };
 
     EditorActionsManager.prototype.removeHighlight = function()
