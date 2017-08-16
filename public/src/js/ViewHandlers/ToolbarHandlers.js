@@ -1,7 +1,42 @@
 module.exports = (function ($)
 {
-
     //TODO Toolbar part, we will refactor it later
+    $("#fileToolbarButtons img").click(function (event)
+    {
+        var clickedImageRole = $(event.target).attr('role');
+        if (clickedImageRole === 'new')
+        {
+            window.fileOperationsManager.createNewPathway();
+        }
+        else if (clickedImageRole === 'save')
+        {
+            window.fileOperationsManager.saveGraph(false);
+        }
+        else if (clickedImageRole === 'load')
+        {
+            $('#fileinput').trigger('click');
+        }
+    });
+
+    $("#editToolbarButtons img").click(function (event)
+    {
+        var clickedImageRole = $(event.target).attr('role');
+        if (clickedImageRole === 'deleteSelected')
+        {
+            var selectedEles = cy.elements(':selected');
+            window.editorActionsManager.removeElement(selectedEles);
+
+        }
+        else if (clickedImageRole === 'undo')
+        {
+            window.undoRedoManager.undo();
+        }
+        else if (clickedImageRole === 'redo')
+        {
+            window.undoRedoManager.redo();
+        }
+    });
+
     $("#viewToolbarButtons img").click(function (event)
     {
         event.preventDefault();
@@ -64,33 +99,31 @@ module.exports = (function ($)
         }
     });
 
-    $("#fileToolbarButtons img").click(function (event)
+    $("#hideShowToolbarButtons img").click(function (event)
     {
         var clickedImageRole = $(event.target).attr('role');
-        if (clickedImageRole === 'new')
+
+        if (clickedImageRole === 'hideSelectedNodes')
         {
-          window.fileOperationsManager.createNewPathway();
+            window.editorActionsManager.hideSelectedNodes();
         }
-        else if (clickedImageRole === 'save')
+        else if (clickedImageRole === 'showAllNodes')
         {
-          window.fileOperationsManager.saveGraph(false);
-        }
-        else if (clickedImageRole === 'load')
-        {
-          $('#fileinput').trigger('click');
+            window.editorActionsManager.showAllNodes();
         }
     });
 
-    $("#editToolbarButtons img").click(function (event)
+    $("#portalToolbarButtons img").click(function (event)
     {
         var clickedImageRole = $(event.target).attr('role');
-        if (clickedImageRole === 'undo')
+
+        if (clickedImageRole === 'portalData')
         {
-          window.undoRedoManager.undo();
+            $('#cbioPortalAccessDiv').modal('show');
         }
-        else if (clickedImageRole === 'redo')
+        else if (clickedImageRole === 'portalSettings')
         {
-          window.undoRedoManager.redo();
+            $('#genomicDataExplorerDiv').modal('show');
         }
     });
 
@@ -108,17 +141,17 @@ module.exports = (function ($)
         }
     });
 
-    $("#portalToolbarButtons img").click(function (event)
+    $("#helpToolbarButtons img").click(function (event)
     {
         var clickedImageRole = $(event.target).attr('role');
 
-        if (clickedImageRole === 'portalData')
+        if (clickedImageRole === 'help')
         {
-          $('#cbioPortalAccessDiv').modal('show');
+            $('#quickHelpModal').modal('show');
         }
-        else if (clickedImageRole === 'portalSettings')
+        else if (clickedImageRole === 'about')
         {
-            $('#genomicDataExplorerDiv').modal('show');
+            $('#aboutModal').modal('show');
         }
     });
 
