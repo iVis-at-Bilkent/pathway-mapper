@@ -308,7 +308,7 @@
                     </ul>
                   </li>
                   <li><a tabindex="-1" role="grid" href="#">Grid...</a></li>
-                  <li><a tabindex="-1" role="nodeResize" href="#">Node Resize</a></li>
+                  <!--<li><a tabindex="-1" role="nodeResize" href="#">Node Resize</a></li>-->
                   <li><a tabindex="-1" role="hideSelectedNodes" href="#">Hide Selected nodes</a></li>
                   <li><a tabindex="-1" role="showAllNodes" href="#">Show All Nodes</a></li>
                 </ul>
@@ -345,7 +345,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a role="help" href="#">Quick Help</a></li>
-		  <li><a role="howToUse" href="#">How to Use</a></li>
+		          <li><a role="howToUse" href="#">How to Use</a></li>
                   <!-- <li><a role="node_legend" href="#">Node Legend</a></li>
                   <li><a role="edge_legend" href="#">Interaction Legend</a></li> -->
                   <li><a role="about" href="#">About</a></li>
@@ -382,8 +382,8 @@
           <div class="toolbar-button" data-tooltip="Snap to: Enable Guidelines: Enable and snap to alignment guidelines"><img src="assets/toolbar/guidelines.svg" role="snapToGrid"></div>
         </div>
         <div id="hideShowToolbarButtons" class="btn-group mr-2" role="group" >
-          <div class="toolbar-button" data-tooltip="Hide selected"><img src="assets/toolbar/hide-selected.svg" role="" ></div>
-          <div class="toolbar-button" data-tooltip="Show all"><img src="assets/toolbar/show-all.svg" role=""></div>
+          <div class="toolbar-button" data-tooltip="Hide selected"><img src="assets/toolbar/hide-selected.svg" role="hideSelectedNodes" ></div>
+          <div class="toolbar-button" data-tooltip="Show all"><img src="assets/toolbar/show-all.svg" role="showAllNodes"></div>
         </div>
         <div id="portalToolbarButtons" class="btn-group mr-2" role="group" >
           <div class="toolbar-button" data-tooltip="Fetch data from cBioPortal"><img role="portalData" src="assets/toolbar/portal.png"></div>
@@ -394,8 +394,8 @@
           <div class="toolbar-button" data-tooltip="Layout Properties"><img src="assets/toolbar/layout-properties.svg" role="layoutProperties" ></div>
         </div>
         <div id="helpToolbarButtons" class="btn-group mr-2" role="group" >
-          <div class="toolbar-button" data-tooltip="Quick Help"><img src="assets/toolbar/quick-help.svg" role="" ></div>
-          <div class="toolbar-button" data-tooltip="About"><img src="assets/toolbar/about.svg" role="" ></div>
+          <div class="toolbar-button" data-tooltip="Quick Help"><img src="assets/toolbar/quick-help.svg" role="help" ></div>
+          <div class="toolbar-button" data-tooltip="About"><img src="assets/toolbar/about.svg" role="about" ></div>
         </div>
         <div id="searchGeneToolbar" class="btn-group mr-2">
                 <div class="form-group">
@@ -461,21 +461,6 @@
               </div>
             </div>
           </div>
-
-          <!--<div class="pnl">-->
-            <!--<div class="pnl-header">-->
-              <!--Search Genes-->
-            <!--</div>-->
-            <!--<div class="pnl-body">-->
-              <!--<div class="">-->
-                <!--<div class="geneSearchDiv">-->
-                  <!--&lt;!&ndash; <li class="list-group-item"><a dropDownIndex='0' href="#">None</a></li> &ndash;&gt;-->
-                  <!--<input type="text" tabindex="-1" name="geneName" id="findGeneArea">-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-
         </div>
 
       </div>
