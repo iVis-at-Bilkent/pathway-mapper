@@ -251,7 +251,12 @@ module.exports = (function ($)
         if(keycode == '13'){
             var searchedGene = event.currentTarget.value;
             var selector = "node[name @*= '" + searchedGene + "']";
-            var nodesToSelect  = cy.filter(selector);
+            var nodesContainingSearchedGene  = cy.filter(selector);
+            var nodesToSelect = cy.collection();
+            nodesContainingSearchedGene.forEach(function(ele, index){
+                if (!ele.hasClass('highlightedNode') &&  !ele.hasClass('invalidGeneHighlight'))
+                    nodesToSelect = nodesToSelect.union(ele);
+            });
             editorActionsManager.highlightBySearch(nodesToSelect);
         }
     });

@@ -163,7 +163,7 @@ module.exports = (function()
             );
             if (b==true) nodesToHide = nodesToHide.add(parent);
         });
-
+        nodesToHide.unselect();
         if (this.isCollaborative)
             this.realTimeManager.changeVisibility(nodesToHide, true);
         else
@@ -343,6 +343,7 @@ module.exports = (function()
     EditorActionsManager.prototype.highlightSelected = function()
     {
         var sel = cy.elements(":selected");
+        sel.unselect();
         if (this.isCollaborative)
             this.realTimeManager.changeHighlight(sel, true);
         else
@@ -354,6 +355,7 @@ module.exports = (function()
         var sel = cy.elements(":selected");
         var neighbors = sel.neighborhood();
         neighbors = neighbors.union(sel);
+        neighbors.unselect();
         if (this.isCollaborative)
             this.realTimeManager.changeHighlight(neighbors, true);
         else
