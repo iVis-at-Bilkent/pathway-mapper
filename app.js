@@ -25,7 +25,6 @@ app.use('/node_modules/bootstrap-select', express.static(__dirname + '/node_modu
 app.use('/node_modules/html5tooltipsjs', express.static(__dirname + '/node_modules/html5tooltipsjs/'));
 
 
-
 var multerInstance = multer({dest:'./uploads/'});
 
 //var APP_PORT = 3000;

@@ -465,7 +465,6 @@ window.notificationManager = require('./../Utils/NotificationFactory');
     };
      AppManager.prototype.initKeyboardHandlers = function()
      {
-         console.log("called during initialization");
          //TODO undo redo is not working properly in collaborative mode
          if (!this.isCollaborative) {
              $(document).keydown(function (e) {

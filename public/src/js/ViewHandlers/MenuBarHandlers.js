@@ -131,18 +131,33 @@ module.exports = (function ($)
         event.preventDefault();
         var dropdownLinkRole = $(event.target).attr('role');
 
-        if(dropdownLinkRole == "highlightInvalidGenes")
+        if (dropdownLinkRole == "goToSearch")
+        {
+            document.getElementById("searchGene").focus();
+        }
+        else if(dropdownLinkRole == "highlightSelected")
+        {
+            window.editorActionsManager.highlightSelected();
+        }
+        else if(dropdownLinkRole == "highlightNeighbors")
+        {
+            window.editorActionsManager.highlightNeighbors();
+        }
+        else if(dropdownLinkRole == "highlightInvalidGenes")
         {
             window.editorActionsManager.validateGenes();
         }
-        else if(dropdownLinkRole == "removeHighlights")
+        else if(dropdownLinkRole == "removeInvalidHighlight")
         {
             window.editorActionsManager.removeInvalidGeneHighlights();
-            window.editorActionsManager.removeHighlight();
         }
-        else if (dropdownLinkRole == "goToSearch")
+        else if(dropdownLinkRole == "removeOtherHighlight")
         {
-            document.getElementById("searchGene").focus();
+            window.editorActionsManager.removeOtherHighlight();
+        }
+        else if(dropdownLinkRole == "removeAllHighlight")
+        {
+            window.editorActionsManager.removeAllHighlight();
         }
     });
 
@@ -237,11 +252,7 @@ module.exports = (function ($)
             var searchedGene = event.currentTarget.value;
             var selector = "node[name @*= '" + searchedGene + "']";
             var nodesToSelect  = cy.filter(selector);
-            //Unselect selected nodes
-            cy.$(':selected').unselect();
-            editorActionsManager.removeHighlight();
-            nodesToSelect.select();
-            editorActionsManager.highlightSelected();
+            editorActionsManager.highlightBySearch(nodesToSelect);
         }
     });
 
