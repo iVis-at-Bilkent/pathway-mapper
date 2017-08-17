@@ -224,48 +224,6 @@ app.post('/getBioGeneData', multerInstance.array(), biogeneDataHandler);
 
 
 /*******************************
- Socket.io related chat functions
- ********************************/
-
-io.on('connection', function(socket)
-{
-    var addedUser = false;
-    var USER_DISCONNECTED_EVENT = "disconnect";
-    var NEW_MESSAGE_EVENT = "newMessage";
-    var USER_JOINED_EVENT = "userJoined";
-
-    socket.on(NEW_MESSAGE_EVENT, function(data)
-    {
-        socket.broadcast.emit(NEW_MESSAGE_EVENT, data);
-    });
-
-    // when the client emits 'add user', this listens and executes
-    socket.on(USER_JOINED_EVENT, function (username)
-    {
-        if (addedUser) return;
-
-        // we store the username in the socket session for this client
-        socket.userName = username;
-        addedUser = true;
-
-        console.log("User " + socket.userName  + " is connected");
-
-        // echo globally (all clients) that a person has connected
-        io.emit(USER_JOINED_EVENT,
-        {
-            username: socket.username
-        });
-    });
-
-    socket.on(USER_DISCONNECTED_EVENT, function()
-    {
-        console.log("User " + socket.userName  + " is disconnected");
-        socket.broadcast.emit(USER_DISCONNECTED_EVENT, "User " + socket.userName  + " is disconnected");
-    });
-
-});
-
-/*******************************
   Server
  ********************************/
 http.listen(APP_PORT, function ()

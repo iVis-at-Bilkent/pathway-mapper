@@ -156,6 +156,30 @@ module.exports = (function()
         var nodeMapEntries = nodeMap.values();
         var edgeMapEntries = edgeMap.values();
 
+        var invalidGenes = [];
+        var highlightedGenes = [];
+        var invalidHighlightedGenes = [];
+        for (var i = 0; i < nodeMapEntries.length; i++)
+        {
+            var tmpNode = nodeMapEntries[i];
+            if (tmpNode.isInvalidGene && tmpNode.isHighlighted)
+            {
+                var tmpNodeId = this.getCustomObjId(tmpNode);
+                invalidHighlightedGenes.push(tmpNodeId);
+            }
+            else if (tmpNode.isInvalidGene)
+            {
+                var tmpNodeId = this.getCustomObjId(tmpNode);
+                invalidGenes.push(tmpNodeId);
+            }
+            else if (tmpNode.isHighlighted)
+            {
+                var tmpNodeId = this.getCustomObjId(tmpNode);
+                highlightedGenes.push(tmpNodeId);
+            }
+        }
+        window.editorActionsManager.highlightInvalidGenesInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes);
+
         //TODO Workaround for legacy pathways
         // Workaround for backward compatibility of legacy pathways
         // Addition of pubmed id field on server if legacy collaborative
@@ -220,33 +244,6 @@ module.exports = (function()
 
     RealTimeManager.prototype.initCloudEventHandlers = function(root)
     {
-        var invalidGenes = [];
-        var highlightedGenes = [];
-        var invalidHighlightedGenes = [];
-        for (var i = 0; i < nodeMapEntries.length; i++)
-        {
-            var tmpNode = nodeMapEntries[i];
-            if (tmpNode.isInvalidGene && tmpNode.isHighlighted)
-            {
-                var tmpNodeId = this.getCustomObjId(tmpNode);
-                invalidHighlightedGenes.push(tmpNodeId);
-            }
-            else if (tmpNode.isInvalidGene)
-            {
-                var tmpNodeId = this.getCustomObjId(tmpNode);
-                invalidGenes.push(tmpNodeId);
-            }
-            else if (tmpNode.isHighlighted)
-            {
-                var tmpNodeId = this.getCustomObjId(tmpNode);
-                highlightedGenes.push(tmpNodeId);
-            }
-        }
-        window.editorActionsManager.highlightInvalidGenesInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes);
-
-        //Keep a reference to the file !
-        this.realTimeDoc = doc;
-
         //Setup event handlers for maps
         var nodeAddRemoveHandler = function(event)
         {

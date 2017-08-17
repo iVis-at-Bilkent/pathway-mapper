@@ -24,7 +24,6 @@ var GenomicDataExplorerView = require('./../BackboneViews/GenomicDataExplorerVie
 var PathwayDetailsView = require('./../BackboneViews/PathwayDetailsView.js');
 var GridOptionsView = require('./../BackboneViews/GridOptionsView.js');
 var CBioPortalAccessView = require('./../BackboneViews/CbioPortalAccessView.js');
-var CBioPortalAccessView = require('./../BackboneViews/CbioPortalAccessView.js');
 
 //Other requires
 require('./../ViewHandlers/MenuBarHandlers.js');
