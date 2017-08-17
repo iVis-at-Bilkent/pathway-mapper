@@ -105,38 +105,6 @@ module.exports = (function()
         'shadow-opacity': 1.0
       }
     },
-    {
-        selector: '.highlightedNode',
-        style:
-            {
-                'border-width':3,
-                'shadow-color' : '#1abc9c',
-                'background-color': '#1abc9c',
-                'shadow-opacity': 1.0
-            }
-    },
-    {
-        selector: '.invalidGeneHighlight',
-        style:
-            {
-                'border-width':3,
-                'shadow-color' : '#e94332',
-                'background-color': '#e94332',
-                'shadow-opacity': 1.0
-            }
-    },
-    {
-        selector: '.highlightedEdge',
-        style:
-            {
-                'width': 3,
-                'border-width':4,
-                'shadow-color' : '#1abc9c',
-                'background-color': '#1abc9c',
-                'shadow-opacity': 1.0
-            }
-    },
-
 
     // some style for the Edge Handles !!!
     {
@@ -172,10 +140,24 @@ module.exports = (function()
     },
 
     {
+        selector: '.highlightedEdge',
+        style:
+            {
+                'width': 3,
+                'border-width':4,
+                'shadow-color' : '#1abc9c',
+                'background-color': '#1abc9c',
+                'shadow-opacity': 1.0
+            }
+    },
+    {
       selector: '.highlightedNode',
       style:
       {
-          'border-width': 4
+          'border-width': 4,
+          'shadow-color' : '#1abc9c',
+          'background-color': '#1abc9c',
+          'shadow-opacity': 1.0
       }
     },
     {
@@ -188,14 +170,17 @@ module.exports = (function()
       }
     },
     {
+      // The css properties when a node is highlighted and an invalid gene
       selector: '.invalidGeneHighlight',
       style:
       {
           'border-width': 4,
           'font-weight' : 'bold',
-          // 'font-size' : 18,
+          'shadow-color' : '#e94332',
+          'background-color': '#e94332',
           'border-color': '#e94332',
-          'color': '#e94332'
+          'color': '#000000',
+          'shadow-opacity': 1.0,
       }
     },
   ];
