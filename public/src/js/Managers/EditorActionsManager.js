@@ -283,8 +283,39 @@ module.exports = (function()
             else
                 window.notificationManager.createNotification("All gene symbols are valid","success");
 
-            // window.editorActionsManager.doHighlightInvalidGenes(highlightedGenes);
-            window.undoRedoManager.do('highlightInvalidGenes', highlightedGenes);
+            var nodesToAddInvalidHighlight = cy.collection();
+            highlightedGenes.forEach(function(ele, index){
+                if (!ele.hasClass('invalidGeneHighlight') &&  !ele.hasClass('invalidGene'))
+                    nodesToAddInvalidHighlight = nodesToAddInvalidHighlight.union(ele);
+            });
+            window.undoRedoManager.do('highlightInvalidGenes', nodesToAddInvalidHighlight);
+        }
+    }
+
+    EditorActionsManager.prototype.removeInvalidGeneHighlights = function(actions)
+    {
+        if (this.isCollaborative)
+        {
+            var geneIDs = [];
+            this.cy.nodes().forEach( function (gene)
+            {
+                if(gene.data().type === "GENE")
+                {
+                    if(gene.hasClass('invalidGeneHighlight') || gene.hasClass('invalidGene'))
+                        geneIDs.push(gene.id());
+                }
+            });
+            this.realTimeManager.changeHighlightInvalidGenes(geneIDs, false);
+        }
+        else
+        {
+            var nodesToRemoveInvalidHighlight = cy.collection();
+            cy.nodes().forEach(function(ele, index){
+                if (ele.hasClass('invalidGeneHighlight') ||  ele.hasClass('invalidGene'))
+                    nodesToRemoveInvalidHighlight = nodesToRemoveInvalidHighlight.union(ele);
+            });
+            actions.push({name: "removeHighlightInvalidGenes", param: nodesToRemoveInvalidHighlight});
+            // window.undoRedoManager.do('removeHighlightInvalidGenes', nodesToRemoveInvalidHighlight);
         }
     }
 
@@ -318,36 +349,19 @@ module.exports = (function()
         return args;
     }
 
-    EditorActionsManager.prototype.removeInvalidGeneHighlights = function()
-    {
-        if (this.isCollaborative)
-        {
-            var geneIDs = [];
-            this.cy.nodes().forEach( function (gene)
-            {
-                if(gene.data().type === "GENE")
-                {
-                    if(gene.hasClass('invalidGeneHighlight') || gene.hasClass('invalidGene'))
-                        geneIDs.push(gene.id());
-                }
-            });
-            this.realTimeManager.changeHighlightInvalidGenes(geneIDs, false);
-        }
-        else
-        {
-            //TODO add as a parameter only highlighted nodes
-            window.undoRedoManager.do('removeHighlightInvalidGenes', cy.nodes());
-        }
-    }
-
     EditorActionsManager.prototype.highlightSelected = function()
     {
         var sel = cy.elements(":selected");
         sel.unselect();
+        var elementsToHighlight = cy.collection();
+        sel.forEach(function(ele, index){
+            if (!ele.hasClass('invalidGeneHighlight') &&  !ele.hasClass('highlightedNode') && !ele.hasClass('highlightedEdge'))
+                elementsToHighlight = elementsToHighlight.union(ele);
+        });
         if (this.isCollaborative)
-            this.realTimeManager.changeHighlight(sel, true);
+            this.realTimeManager.changeHighlight(elementsToHighlight, true);
         else
-            window.undoRedoManager.do('highlightOthers', sel);
+            window.undoRedoManager.do('highlightOthers', elementsToHighlight);
     };
 
     EditorActionsManager.prototype.highlightNeighbors = function()
@@ -356,10 +370,15 @@ module.exports = (function()
         var neighbors = sel.neighborhood();
         neighbors = neighbors.union(sel);
         neighbors.unselect();
+        var elementsToHighlight = cy.collection();
+        neighbors.forEach(function(ele, index){
+            if (!ele.hasClass('invalidGeneHighlight') &&  !ele.hasClass('highlightedNode') && !ele.hasClass('highlightedEdge'))
+                elementsToHighlight = elementsToHighlight.union(ele);
+        });
         if (this.isCollaborative)
-            this.realTimeManager.changeHighlight(neighbors, true);
+            this.realTimeManager.changeHighlight(elementsToHighlight, true);
         else
-            window.undoRedoManager.do('highlightOthers', neighbors);
+            window.undoRedoManager.do('highlightOthers', elementsToHighlight);
     };
 
     EditorActionsManager.prototype.highlightBySearch = function(args)
@@ -370,7 +389,7 @@ module.exports = (function()
             window.undoRedoManager.do('highlightOthers', args);
     };
 
-    EditorActionsManager.prototype.removeOtherHighlight = function()
+    EditorActionsManager.prototype.removeOtherHighlight = function(actions)
     {
         var nodesToRemoveHighlight = cy.collection();
         //TODO cytoscape selectors may provide more handy functionality instead of iterating over !
@@ -382,7 +401,8 @@ module.exports = (function()
         if (this.isCollaborative)
             this.realTimeManager.changeHighlight(nodesToRemoveHighlight, false);
         else
-            window.undoRedoManager.do('removeOtherHighlight', nodesToRemoveHighlight);
+            actions.push({name: "removeOtherHighlight", param: nodesToRemoveHighlight});
+            // window.undoRedoManager.do('removeOtherHighlight', nodesToRemoveHighlight);
     };
 
     /*
@@ -430,8 +450,10 @@ module.exports = (function()
 
     EditorActionsManager.prototype.removeAllHighlight = function()
     {
-        window.editorActionsManager.removeInvalidGeneHighlights();
-        window.editorActionsManager.removeOtherHighlight();
+        var actions = [];
+        window.editorActionsManager.removeInvalidGeneHighlights(actions);
+        window.editorActionsManager.removeOtherHighlight(actions);
+        cy.undoRedo().do("batch", actions);
     };
 
     EditorActionsManager.prototype.postLayout = function()

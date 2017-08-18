@@ -147,14 +147,6 @@ module.exports = (function ($)
         {
             window.editorActionsManager.validateGenes();
         }
-        else if(dropdownLinkRole == "removeInvalidHighlight")
-        {
-            window.editorActionsManager.removeInvalidGeneHighlights();
-        }
-        else if(dropdownLinkRole == "removeOtherHighlight")
-        {
-            window.editorActionsManager.removeOtherHighlight();
-        }
         else if(dropdownLinkRole == "removeAllHighlight")
         {
             window.editorActionsManager.removeAllHighlight();
