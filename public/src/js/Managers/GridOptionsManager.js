@@ -2,15 +2,18 @@ module.exports = (function ()
 {
     function GridOptionsManager()
     {
-        this.defaultGridGuideOptions = {
+        this.defaultGridGuideOptions =
+        {
             // On/Off Modules
-            snapToGrid: false, // Snap to grid functionality
-            discreteDrag: false, // Discrete Drag
-            distributionGuidelines: true, // Distribution guidelines
+            /* From the following four snap options, at most one should be true at a given time */
+            snapToGridOnRelease: false, // Snap to grid on release
+            snapToGridDuringDrag: false, // Snap to grid during drag
+            snapToAlignmentLocationOnRelease: false, // Snap to alignment location on release
+            snapToAlignmentLocationDuringDrag: false, // Snap to alignment location during drag
+            distributionGuidelines: false, // Distribution guidelines
             geometricGuideline: false, // Geometric guidelines
             initPosAlignment: false, // Guideline to initial mouse position
             centerToEdgeAlignment: false, // Center to edge alignment
-            snapToAlignmentLocation: false, // Snap to alignment location
             resize: false, // Adjust node sizes to cell sizes
             parentPadding: false, // Adjust parent sizes to cell sizes by padding
             drawGrid: false, // Draw grid background
@@ -22,17 +25,18 @@ module.exports = (function ()
             zoomDash: true, // Determines whether the size of the dashes should change when the drawing is zoomed in and out if grid is drawn.
             panGrid: true, // Determines whether the grid should move then the user moves the graph if grid is drawn.
             gridStackOrder: -1, // Namely z-index
-            strokeStyle: '#dedede', // Color of grid lines
+            gridColor: '#dedede', // Color of grid lines
             lineWidth: 1.0, // Width of grid lines
 
             // Guidelines
             guidelinesStackOrder: 4, // z-index of guidelines
             guidelinesTolerance: 2.00, // Tolerance distance for rendered positions of nodes' interaction.
             guidelinesStyle: { // Set ctx properties of line. Properties are here:
-                strokeStyle: "#f97407", // color of geometric guidelines
+                strokeStyle: "#8b7d6b", // color of geometric guidelines
                 geometricGuidelineRange: 400, // range of geometric guidelines
-                range: 200, // max range of distribution guidelines
+                range: 100, // max range of distribution guidelines
                 minDistRange: 10, // min range for distribution guidelines
+                distGuidelineOffset: 10, // shift amount of distribution guidelines
                 horizontalDistColor: "#ff0000", // color of horizontal distribution alignment
                 verticalDistColor: "#00ff00", // color of vertical distribution alignment
                 initPosAlignmentColor: "#0000ff", // color of alignment to initial mouse location
@@ -45,6 +49,7 @@ module.exports = (function ()
             // Parent Padding
             parentSpacing: -1 // -1 to set paddings of parents to gridSpacing
         };
+
         this.currentProperties = {};
         this.changeParameters(this.defaultGridGuideOptions);
 
@@ -69,7 +74,7 @@ module.exports = (function ()
     GridOptionsManager.prototype.setSnapToGuidelines = function(state)
     {
         this.currentProperties.geometricGuideline = state;
-        this.currentProperties.snapToAlignmentLocation = state;
+        this.currentProperties.snapToAlignmentLocationDuringDrag = state;
         this.refreshGridOptionsExtension();
         window.appManager.gridOptionsView.changeParameters();
     }
@@ -77,7 +82,7 @@ module.exports = (function ()
     GridOptionsManager.prototype.setShowGrid = function(state)
     {
         this.currentProperties.drawGrid = state;
-        this.currentProperties.snapToGrid = state;
+        this.currentProperties.snapToGridDuringDrag = state;
         this.refreshGridOptionsExtension();
         window.appManager.gridOptionsView.changeParameters();
     }

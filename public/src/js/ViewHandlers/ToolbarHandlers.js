@@ -97,6 +97,7 @@ module.exports = (function ($)
 
             window.gridOptionsManager.setShowGrid(status);
         }
+        window.gridOptionsManager.changeParameters(window.gridOptionsManager.currentProperties);
     });
 
     $("#hideShowToolbarButtons img").click(function (event)

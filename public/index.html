@@ -711,19 +711,13 @@
             <div class="input-group">
               <label class="control-label col-sm-8" for="enableGuides">Enable Guidelines:</label>
               <div class="col-sm-4 leftText">
-                <input id="enableGuides" type="checkbox" class="input-small layout-text" <% if (snapToGrid){ %> checked<%}%>>
+                <input id="enableGuides" type="checkbox" class="input-small layout-text" <% if (geometricGuideline){ %> checked<%}%>>
               </div>
             </div>
             <div class="input-group">
               <label class="control-label col-sm-8" for="gridSize">Grid Size:</label>
               <div class="col-sm-4">
                 <input id="gridSize" type="text" class="form-control" value=<%= gridSpacing %> >
-              </div>
-            </div>
-            <div id="colorPickerDiv" class="input-group colorpicker-component">
-              <label class="control-label col-sm-8" for="gridSize">Guideline Color:</label>
-              <div class="col-sm-4">
-                <input  value="#000000" type="color" class="form-control" />
               </div>
             </div>
           </form>

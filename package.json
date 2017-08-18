@@ -33,7 +33,7 @@
     "cytoscape": "2.7.11",
     "cytoscape-context-menus": "^2.0.3",
     "cytoscape-edgehandles": "~2.3.2",
-    "cytoscape-grid-guide": "git://github.com/iVis-at-Bilkent/cytoscape.js-grid-guide.git#unstable",
+    "cytoscape-grid-guide": "^2.0.1",
     "cytoscape-navigator": "^1.1.2",
     "cytoscape-node-resize": "^2.0.4",
     "cytoscape-panzoom": "~2.2.3",
@@ -57,10 +57,10 @@
     "npm": "^3.9.6",
     "ocanvas": "^2.8.7",
     "qtip2": "~3.0.2",
-    "spectrum-colorpicker": "^1.8.0",
-    "uglifyjs": "^2.4.10",
     "request": "^2.81.0",
+    "spectrum-colorpicker": "^1.8.0",
     "uglify-js2": "^2.1.11",
+    "uglifyjs": "^2.4.10",
     "underscore": "~1.8.3"
   }
 }

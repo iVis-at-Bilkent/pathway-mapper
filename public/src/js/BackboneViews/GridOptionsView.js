@@ -21,35 +21,67 @@ var gridOptionsView = Backbone.View.extend(
             this.$el.append(tplContent);
             this.delegateEvents();
 
-
+            var that = this;
+            //Set options initially false
             this.$el.find("#enableGrid").change(function(event)
             {
-              this.$el.find("#enableGuides")[0].checked = "false";
+                that.$el.find("#enableGuides")[0].checked = false;
             });
 
             this.$el.find("#enableGuides").change(function(event)
             {
-              this.$el.find("#enableGrid")[0].checked = "false";
+                that.$el.find("#enableGrid")[0].checked = false;
             });
 
             return this;
         },
         saveProperties: function(event)
         {
-            var currentProperties = _.clone(window.gridOptionsManager.currentProperties);
-            currentProperties.gridSpacing = Number(this.$el.find("#gridSize").val());
+            var isGridEnabled = this.$el.find("#enableGrid").is(':checked');
+            var isGuidelinesEnabled = this.$el.find("#enableGuides").is(':checked');
 
-            //Enable and snap to grid
-            currentProperties.drawGrid = this.$el.find("#enableGrid").is(':checked');
-            currentProperties.snapToGrid = this.$el.find("#enableGrid").is(':checked');
+            console.log("gridEnabled: " + isGridEnabled + " guideLinesEnabled: " + isGuidelinesEnabled);
 
-            //Enable and snap to guidelines
-            currentProperties.geometricGuideline = this.$el.find("#enableGuides").is(':checked');
-            currentProperties.snapToAlignmentLocation = this.$el.find("#enableGuides").is(':checked');
-            currentProperties.guidelinesStyle.strokeStyle = this.$el.find('input[type="color"]').val();
+            if (!isGridEnabled && !isGuidelinesEnabled)
+            {
+                var showGridEle = $( "img[role='showGrid']" );
+                var snapToGridEle = $( "img[role='snapToGrid']" );
+                var showGridEleParent = showGridEle.parent();
+                var snapToGridEleParent = snapToGridEle.parent();
 
-            //TODO update grid options
-            window.gridOptionsManager.changeParameters(currentProperties);
+                if (showGridEleParent.hasClass('toolbar-button-focused'))
+                {
+                    $("#gridGuideToolbarButtons").find("img[role='showGrid']").trigger("click");
+                }
+
+                if (snapToGridEleParent.hasClass('toolbar-button-focused'))
+                {
+                    $("#gridGuideToolbarButtons").find("img[role='snapToGrid']").trigger("click");
+                }
+
+            }
+            else if(isGridEnabled && !isGuidelinesEnabled)
+            {
+                $("#gridGuideToolbarButtons").find("img[role='showGrid']").trigger("click");
+            }
+            else if(isGuidelinesEnabled && !isGridEnabled)
+            {
+                $("#gridGuideToolbarButtons").find("img[role='snapToGrid']").trigger("click");
+            }
+
+            // var currentProperties = _.clone(window.gridOptionsManager.currentProperties);
+            // currentProperties.gridSpacing = Number(this.$el.find("#gridSize").val());
+            //
+            // //Enable and snap to grid
+            // currentProperties.drawGrid = this.$el.find("#enableGrid").is(':checked');
+            // currentProperties.snapToGridDuringDrag = this.$el.find("#enableGrid").is(':checked');
+            //
+            // //Enable and snap to guidelines
+            // currentProperties.geometricGuideline = this.$el.find("#enableGuides").is(':checked');
+            // currentProperties.snapToAlignmentLocationDuringDrag = this.$el.find("#enableGuides").is(':checked');
+            //
+            // //TODO update grid options
+            // window.gridOptionsManager.changeParameters(currentProperties);
 
             this.$el.modal('toggle');
         },
@@ -59,7 +91,6 @@ var gridOptionsView = Backbone.View.extend(
             this.$el.find("#gridSize").val(currentProperties.gridSpacing);
             this.$el.find("#enableGrid")[0].checked = currentProperties.drawGrid;
             this.$el.find("#enableGuides")[0].checked = currentProperties.geometricGuideline;
-            this.$el.find('input[type="color"]').val(currentProperties.guidelinesStyle.strokeStyle);
         }
     });
 
