@@ -33,8 +33,8 @@ module.exports = (function ()
             guidelinesTolerance: 5.00, // Tolerance distance for rendered positions of nodes' interaction.
             guidelinesStyle: { // Set ctx properties of line. Properties are here:
                 strokeStyle: "#8b7d6b", // color of geometric guidelines
-                geometricGuidelineRange: 400, // range of geometric guidelines
-                range: 300, // max range of distribution guidelines
+                geometricGuidelineRange: 750, // range of geometric guidelines
+                range: 500, // max range of distribution guidelines
                 minDistRange: 10, // min range for distribution guidelines
                 distGuidelineOffset: 10, // shift amount of distribution guidelines
                 horizontalDistColor: "#ff0000", // color of horizontal distribution alignment
