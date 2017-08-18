@@ -77,7 +77,8 @@ input[type="color"]:hover{
   /* float: right; */
   // top: 14px;
   right: 120px;
-  z-index: 100;
+  //Important to order it behind modal backdrops !
+  z-index: 1039;
 }
 
 .cytoscape-navigatorView{
