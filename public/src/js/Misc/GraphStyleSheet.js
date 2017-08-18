@@ -101,6 +101,8 @@ module.exports = (function()
       selector: ':selected',
       style:
       {
+        'line-color' : '#f1c40f' ,
+        'border-color' : '#f1c40f' ,
         'shadow-color' : '#f1c40f',
         'shadow-opacity': 1.0
       }
@@ -155,9 +157,11 @@ module.exports = (function()
       style:
       {
           'border-width': 4,
-          'shadow-color' : '#1abc9c',
-          'background-color': '#1abc9c',
-          'shadow-opacity': 1.0
+          'border-color': '#1abc9c',
+          // 'shadow-color' : '#1abc9c',
+          'background-color': '#fff',
+          // 'background-opacity': 0.5,
+          // 'shadow-opacity': 1.0
       }
     },
     {
@@ -176,11 +180,11 @@ module.exports = (function()
       {
           'border-width': 4,
           'font-weight' : 'bold',
-          'shadow-color' : '#e94332',
-          'background-color': '#e94332',
+          // 'shadow-color' : '#e94332',
+          // 'background-color': '#e94332',
           'border-color': '#e94332',
           'color': '#000000',
-          'shadow-opacity': 1.0,
+          // 'shadow-opacity': 1.0,
       }
     },
   ];

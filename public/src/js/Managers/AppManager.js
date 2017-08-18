@@ -294,7 +294,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             undoable: true, // and if cy.undoRedo exists
 
             grappleSize: 8, // size of square dots
-            grappleColor: "#1abc9c", // color of grapples
+            grappleColor: "#d67614", // color of grapples
             inactiveGrappleStroke: "inside 1px blue",
             boundingRectangle: true, // enable/disable bounding rectangle
             boundingRectangleLineDash: [4, 8], // line dash of bounding rectangle

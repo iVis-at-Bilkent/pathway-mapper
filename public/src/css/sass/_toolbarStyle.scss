@@ -9,6 +9,8 @@
 
   .toolbar-button
   {
+    margin-left: -1px;
+    margin-right: -1px;
     border: 3px solid #eff0f2;
     border-radius:6px;
     display: inline-block;
@@ -27,10 +29,10 @@
 
   .btn-group
   {
-    margin-right: 10px;
+    margin-right: 5px;
     margin-left: 5px;
     border: 2px solid $menubgColor;
-    padding: 3px;
+    padding: 2px;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius:6px;
