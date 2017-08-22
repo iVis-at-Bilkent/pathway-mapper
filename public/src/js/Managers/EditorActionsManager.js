@@ -55,7 +55,11 @@ module.exports = (function()
 
     EditorActionsManager.prototype.handleChangePositionByAlignment = function(movedNodeArr)
     {
-        window.undoRedoManager.do("changePositions", movedNodeArr)
+        console.log(movedNodeArr);
+        if (this.isCollaborative)
+            this.realTimeManager.changeElementsPositionByAlignment(movedNodeArr);
+        else
+            window.undoRedoManager.do("changePositions", movedNodeArr)
     };
 
     /*

@@ -85,7 +85,8 @@ module.exports = (function()
         {
           return edgeLineTypeHandler(ele);
         },
-        'opacity': 1
+        'opacity': 1,
+        'arrow-scale': 1.3
       }
     },
     // {

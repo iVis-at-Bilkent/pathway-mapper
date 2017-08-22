@@ -298,7 +298,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             inactiveGrappleStroke: "inside 1px blue",
             boundingRectangle: true, // enable/disable bounding rectangle
             boundingRectangleLineDash: [4, 8], // line dash of bounding rectangle
-            boundingRectangleLineColor: "#1abc9c",
+            boundingRectangleLineColor: "#d67614,",
             /*#994d00*/
             boundingRectangleLineWidth: 1.5,
             zIndex: 999,
