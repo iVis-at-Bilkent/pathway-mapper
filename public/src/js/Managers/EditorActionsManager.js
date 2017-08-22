@@ -55,7 +55,6 @@ module.exports = (function()
 
     EditorActionsManager.prototype.handleChangePositionByAlignment = function(movedNodeArr)
     {
-        console.log(movedNodeArr);
         if (this.isCollaborative)
             this.realTimeManager.changeElementsPositionByAlignment(movedNodeArr);
         else
@@ -1112,6 +1111,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.resizeElements = function(ele)
     {
+        console.log("executed first");
         //Sync movement to real time api
         if(this.isCollaborative) {
             this.realTimeManager.resizeElement(ele);
@@ -1287,21 +1287,23 @@ module.exports = (function()
 
         if (cyEle.isNode())
         {
-          cyEle.position({x: ele.x, y: ele.y});
-          this.updateVisibility(cyEle, ele.isHidden);
-          this.updateHighlight(cyEle, ele.isHighlighted);
-          this.changeNameCy(cyEle, ele.name);
+            cyEle.position({x: ele.x, y: ele.y});
+            cyEle.style("width", ele.w + "px");
+            cyEle.style("height", ele.h + "px");
+            this.updateVisibility(cyEle, ele.isHidden);
+            this.updateHighlight(cyEle, ele.isHighlighted);
+            this.changeNameCy(cyEle, ele.name);
 
-          if(ele.isInvalidGene)
-          {
-              window.editorActionsManager.doHighlightInvalidGenes(cyEle);
+            if(ele.isInvalidGene)
+            {
+                window.editorActionsManager.doHighlightInvalidGenes(cyEle);
               // window.undoRedoManager.do('highlightInvalidGenes', cyEle);
-          }
-          else
-          {
-              window.editorActionsManager.undoHighlightInvalidGenes(cyEle);
+            }
+            else
+            {
+                window.editorActionsManager.undoHighlightInvalidGenes(cyEle);
               // window.undoRedoManager.do('removeHighlightInvalidGenes', cyEle);
-          }
+            }
         }
         else if(cyEle.isEdge())
         {

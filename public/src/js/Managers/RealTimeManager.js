@@ -529,6 +529,7 @@ module.exports = (function()
 
     RealTimeManager.prototype.resizeElement = function(ele)
     {
+        console.log("Executed");
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
         var nodeMap =  root.get(this.NODEMAP_NAME);
