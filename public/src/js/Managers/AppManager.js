@@ -507,6 +507,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
              $('[role="undo"]').hide();
              $('[role="redo"]').hide();
              document.getElementById("localOrCollaborativeToolbar").style.visibility = "hidden";
+             document.getElementById("localOrCollaborativeToolbar").style.marginLeft = "-11.9px";
          }
      };
 
