@@ -48,7 +48,7 @@ var SaveLoadUtils =
 
     //Put a blank line between nodes and edges
     returnString += '\n';
-    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\INTERACTION_PUBMED_ID\n';
+    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\tINTERACTION_PUBMED_ID\tEDGE_NAME\n';
 
     if (edges) {
       //Write edges
@@ -60,6 +60,7 @@ var SaveLoadUtils =
         var target = edges[i].data.target;
         var pubmedIDs = edges[i].data.pubmedIDs;
         var pubmedString = "";
+        var edgeName = (edges[i].data.name) ? edges[i].data.name : "";
 
         if (pubmedIDs != undefined) {
             for (var j = 0; j < pubmedIDs.length; j++)
@@ -74,7 +75,8 @@ var SaveLoadUtils =
                         source + '\t' +
                         target + '\t' +
                         edgeType + '\t' +
-                        pubmedString + '\n';
+                        pubmedString + '\t' +
+                        edgeName + '\n';
       }
     }
 
@@ -139,6 +141,7 @@ var SaveLoadUtils =
         var edgeType = edges[i].data.type;
         var source = edges[i].data.source;
         var target = edges[i].data.target;
+        var edgeName = edges[i].data.name;
         var pubmedIDs = edges[i].data.pubmedIDs;
         var pubmedString = "";
 
@@ -154,7 +157,8 @@ var SaveLoadUtils =
         returnString += nodeMap[source].data.name + '\t' +
                         nodeMap[target].data.name  + '\t' +
                         edgeType + '\t' +
-                        pubmedString + '\n';
+                        pubmedString + '\t' +
+                        edgeName + '\n';
       }
     }
 
@@ -243,15 +247,18 @@ var SaveLoadUtils =
       var edgeTarget = lineData[2];
       var edgeType = lineData[3];
       var pubmedIDs = (lineData.length > 4) ? lineData[4].split(';') : [];
+      var label = (lineData.length > 5) ? lineData[5] : '';
 
-      newEdge = {
+
+        newEdge = {
         group: 'edges', data:
         {
           id: edgeID,
           type: edgeType,
           source: edgeSource,
           target: edgeTarget,
-          pubmedIDs: pubmedIDs
+          pubmedIDs: pubmedIDs,
+          name: label
         }
       };
       edges.push(newEdge);

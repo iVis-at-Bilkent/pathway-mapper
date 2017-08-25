@@ -112,7 +112,7 @@ module.exports = (function()
     EditorActionsManager.prototype.changeNameCy = function(ele, newName)
     {
         var currentName = ele.data('name');
-        var args = {node: ele, oldName: currentName, newName: newName};
+        var args = {ele: ele, oldName: currentName, newName: newName};
         window.undoRedoManager.do('changeName', args);
     };
 
@@ -122,11 +122,10 @@ module.exports = (function()
     EditorActionsManager.prototype.doChangename = function(args)
     {
 
-        var currentName = args.node.data('name');
-        var newArgs = {node: args.node, newName: args.newName, oldName: currentName};
-
-        args.node.data('name', args.newName);
-        args.node.css('content', args.newName);
+        var currentName = args.ele.data('name');
+        var newArgs = {ele: args.ele, newName: args.newName, oldName: currentName};
+        args.ele.data('name', args.newName);
+        args.ele.css('content', args.newName);
 
         return newArgs;
     };
@@ -134,11 +133,10 @@ module.exports = (function()
     EditorActionsManager.prototype.undoChangeName = function(args)
     {
 
-        var currentName = args.node.data('name');
-        var newArgs = {node: args.node, newName: args.oldName, oldName: currentName};
-
-        args.node.data('name', args.oldName);
-        args.node.css('content', args.oldName);
+        var currentName = args.ele.data('name');
+        var newArgs = {ele: args.ele, newName: args.oldName, oldName: currentName};
+        args.ele.data('name', args.oldName);
+        args.ele.css('content', args.oldName);
 
         return newArgs;
     };
@@ -893,7 +891,8 @@ module.exports = (function()
                     type: edge.type,
                     source: edge.source,
                     target: edge.target,
-                    pubmedIDs: edge.pubmedIDs.asArray()
+                    pubmedIDs: edge.pubmedIDs.asArray(),
+                    name: edge.name
                 }
             };
 
@@ -1280,13 +1279,14 @@ module.exports = (function()
     {
         var eleID = id;
         var cyEle = this.cy.$("#" + eleID);
+        //Common functionalities
+        this.changeNameCy(cyEle, ele.name);
 
         if (cyEle.isNode())
         {
           cyEle.position({x: ele.x, y: ele.y});
           this.updateVisibility(cyEle, ele.isHidden);
           this.updateHighlight(cyEle, ele.isHighlighted);
-          this.changeNameCy(cyEle, ele.name);
 
           if(ele.isInvalidGene)
           {

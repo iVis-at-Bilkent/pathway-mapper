@@ -14,11 +14,11 @@ module.exports = (function($)
   QtipManager.prototype.generateEdgeQtipContentHTML = function(edge)
   {
     var self = this;
-    var edgeData = edge.data();
     var textInput = $('<div class="col-xs-6 inputCol"><input type="text" class="form-control" edgeid="' + edge.id() + '"value=""></div>');
     var pubmedIDList = $('<div class="pubmedIDList"></div>');
     var pubmedURL = 'https://www.ncbi.nlm.nih.gov/pubmed/';
     var pubmedData = edge.data('pubmedIDs');
+    var edgeLabelInput = $('<div class="col-xs-6 inputCol"><input type="text" class="form-control" edgeid="' + edge.id() + '"value="'+ edge.data('name') +'"></div>');
 
     function generatePubmedLinks(argData, isInitialDisplay)
     {
@@ -79,20 +79,39 @@ module.exports = (function($)
         generatePubmedLinksHeader();
       }
 
-      //TODO call associated Editor Actions Manager function
       window.editorActionsManager.addPubmedIDs(edge, pumbedIDs);
 
       generatePubmedLinks(pumbedIDs, false);
 
     });
 
+    edgeLabelInput.change(function()
+    {
+        var edgeID = $(this).find('input').attr('edgeid');
+
+        var cyEdge = self.cy.$('#'+edgeID)[0];
+        var newName = $(this).find('input').val();
+        $(this).find('input').val("");
+
+        //TODO call associated Editor Actions Manager function
+        window.editorActionsManager.changeName(cyEdge, newName);
+    });
+
     var wrapper = $('<div></div>');
-    var row = $('<div class="row">\
+    var pubmedRow = $('<div class="row">\
                  <div class="col-xs-6 qtipLabel">Add  PubmedID(s):</div>\
               </div>');
 
-    row.append(textInput);
-    wrapper.append(row);
+    pubmedRow.append(textInput);
+    var labelRow = $('<div class="row">\
+               <div class="col-xs-6 qtipLabel">Label:</div>\
+            </div>');
+
+    labelRow.append(edgeLabelInput);
+    wrapper.append(labelRow);
+    wrapper.append('<hr/>');
+    pubmedRow.append(textInput);
+    wrapper.append(pubmedRow);
     wrapper.append(pubmedIDList);
     return wrapper;
   }

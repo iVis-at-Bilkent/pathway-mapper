@@ -144,6 +144,7 @@ module.exports = (function()
 
     RealTimeManager.prototype.syncInitialCloudData = function(root)
     {
+        var model = this.realTimeDoc.getModel();
         var nodeMap = root.get(this.NODEMAP_NAME);
         var edgeMap = root.get(this.EDGEMAP_NAME);
         var realTimeLayoutProperties = root.get(this.LAYOUT_PROPS_NAME);
@@ -186,22 +187,29 @@ module.exports = (function()
         // pathways does not have !
         for (var i = 0; i < edgeMapEntries.length; i++)
         {
-          var tmpEdge = edgeMapEntries[i];
+            var tmpEdge = edgeMapEntries[i];
 
-          if (tmpEdge.pubmedIDs == undefined)
-          {
-            var newEdge = model.create(EdgeR,
+            if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined)
             {
-                type: tmpEdge.type,
-                source: tmpEdge.source,
-                target: tmpEdge.target,
-                pubmedID: model.createList()
-            });
-            var tmpEdgeID = this.getCustomObjId(tmpEdge);
-            var newID = this.getCustomObjId(newEdge);
-            edgeMap.delete(tmpEdgeID);
-            edgeMap.set(newID, newEdge);
-          }
+                var pubmedIDs = (tmpEdge.pubmedIDs == undefined) ? model.createList() : tmpEdge.pubmedID;
+                var edgeLabel = (tmpEdge.name == undefined) ? "" : tmpEdge.name;
+
+                var newEdge = model.create(EdgeR,
+                    {
+                        type: tmpEdge.type,
+                        source: tmpEdge.source,
+                        target: tmpEdge.target,
+                        pubmedID: pubmedIDs,
+                        name: edgeLabel
+                    });
+
+
+                var tmpEdgeID = this.getCustomObjId(tmpEdge);
+                var newID = this.getCustomObjId(newEdge);
+                edgeMap.delete(tmpEdgeID);
+                edgeMap.set(newID, newEdge);
+            }
+
         }
         edgeMapEntries = edgeMap.values();
 
@@ -612,20 +620,40 @@ module.exports = (function()
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
         var nodeMap =  root.get(this.NODEMAP_NAME);
+        var edgeMap =  root.get(this.EDGEMAP_NAME);
+
 
         var elementID = ele.id();
 
-        if (nodeMap.has(elementID))
+        if (ele.isNode())
         {
-            var tmpNode = nodeMap.get(elementID);
-            model.beginCompoundOperation();
-            tmpNode.name = newName;
-            model.endCompoundOperation();
+            if (nodeMap.has(elementID))
+            {
+                var tmpNode = nodeMap.get(elementID);
+                model.beginCompoundOperation();
+                tmpNode.name = newName;
+                model.endCompoundOperation();
+            }
+            else
+            {
+                throw new Error('Element does not exist in nodes !!! ');
+            }
         }
         else
         {
-            throw new Error('Element does not exist in nodes !!! ');
+            if (edgeMap.has(elementID))
+            {
+                var tmpEdge = edgeMap.get(elementID);
+                model.beginCompoundOperation();
+                tmpEdge.name = newName;
+                model.endCompoundOperation();
+            }
+            else
+            {
+                throw new Error('Element does not exist in edges !!! ');
+            }
         }
+
 
     };
 
@@ -1030,6 +1058,7 @@ module.exports = (function()
         EdgeR.prototype.target = gapi.drive.realtime.custom.collaborativeField('target');
         EdgeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
         EdgeR.prototype.pubmedIDs = gapi.drive.realtime.custom.collaborativeField('pubmedIDs');
+        EdgeR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
 
         //LayoutPropertiesR
         LayoutPropertiesR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
@@ -1125,6 +1154,8 @@ module.exports = (function()
         this.type = params.type || "undefined";
         this.source = params.source || "undefined";
         this.target = params.target || "undefined";
+        this.name = params.name || "undefined";
+
         if (params.pubmedIDs)
         {
           if(this.pubmedIDs == undefined)
@@ -1137,6 +1168,7 @@ module.exports = (function()
         {
           this.pubmedIDs = model.createList();
         }
+
         model.endCompoundOperation();
     };
 

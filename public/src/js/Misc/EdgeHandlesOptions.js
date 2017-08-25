@@ -50,7 +50,8 @@ var edgeHandleDefaults =
         source: sourceNode.id(),
         target: targetNodes[0].id(),
         type: this.getGlobalEdgeType(),
-        pubmedIDs: []
+        pubmedIDs: [],
+        name: ""
       });
   },
   stop: function( sourceNode )

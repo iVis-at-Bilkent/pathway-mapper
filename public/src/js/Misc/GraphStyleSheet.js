@@ -67,6 +67,7 @@ module.exports = (function()
       selector: 'edge',
       style:
       {
+        'label': 'data(name)',
         'curve-style': 'bezier',
         'target-arrow-shape': function( ele )
         {
