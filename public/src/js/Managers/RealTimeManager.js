@@ -458,7 +458,8 @@ module.exports = (function()
                 type: edgeData.type,
                 source: edgeData.source,
                 target: edgeData.target,
-                pubmedID: edgeData.pubmedID
+                pubmedID: edgeData.pubmedID,
+                name: edgeData.name
             });
 
         var realTimeGeneratedID = this.getCustomObjId(newEdge);

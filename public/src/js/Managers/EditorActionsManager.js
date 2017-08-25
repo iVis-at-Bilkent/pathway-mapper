@@ -917,7 +917,8 @@ module.exports = (function()
             type: edge.type,
             source: edge.source,
             target: edge.target,
-            pubmedIDs: edge.pubmedIDs.asArray()
+            pubmedIDs: edge.pubmedIDs.asArray(),
+            name: edge.name
         };
         this.addNewEdgetoCy(edgeData);
     };
