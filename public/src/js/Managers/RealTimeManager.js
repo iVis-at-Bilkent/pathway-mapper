@@ -510,8 +510,34 @@ module.exports = (function()
         }
     };
 
+    //This function is used for movements of all selected elements wrt alignment selected
+    RealTimeManager.prototype.changeElementsPositionByAlignment = function(coll)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap =  root.get(this.NODEMAP_NAME);
+
+        coll.forEach(function(ele){
+            var elementID = ele.node.id();
+            // var newPos = ele.node.position();
+            if (nodeMap.has(elementID))
+            {
+                var tmpNode = nodeMap.get(elementID);
+                model.beginCompoundOperation();
+                tmpNode.x = ele.nextPosition.x;
+                tmpNode.y = ele.nextPosition.y;
+                model.endCompoundOperation();
+            }
+            else
+            {
+                throw new Error('Element does not exist in nodes !!! ');
+            }
+        });
+    };
+
     RealTimeManager.prototype.resizeElement = function(ele)
     {
+        console.log("Executed");
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
         var nodeMap =  root.get(this.NODEMAP_NAME);
