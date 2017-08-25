@@ -1111,7 +1111,6 @@ module.exports = (function()
 
     EditorActionsManager.prototype.resizeElements = function(ele)
     {
-        console.log("executed first");
         //Sync movement to real time api
         if(this.isCollaborative) {
             this.realTimeManager.resizeElement(ele);
@@ -1309,7 +1308,6 @@ module.exports = (function()
         else if(cyEle.isEdge())
         {
           var pubmedArray = ele.pubmedIDs.asArray();
-          console.log(pubmedArray);
           cyEle.data('pubmedIDs', pubmedArray);
         }
     };
