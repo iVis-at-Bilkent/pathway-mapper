@@ -8,10 +8,8 @@ var request = require('request');
 var qs = require("querystring");
 var SaveLoadUtilities = require('./public/src/js/Utils/SaveLoadUtility.js');
 
-
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
 
 // app.use(multer);
 app.use(express.static('public'));
