@@ -55,7 +55,7 @@ module.exports = (function($, $$)
                             dragContainer.append($nodeadd);
                             var $nodeDragHandle = $('<div class="ui-cytoscape-nodeadd-nodediv"> \
                                                 <span id="ui-cytoscape-nodeadd-icon" class="draggable" nodeType="'+ component.nodeType +'">\
-                                                  <img style="width:110px;" src="./assets/'+component.nodeType+'.png" alt="" />\
+                                                  <img style="width:110px;" src="./assets/nodes/'+component.nodeType+'.svg" alt="" />\
                                                 </span>\
                                               </div>');
                             $nodeadd.append($nodeDragHandle);

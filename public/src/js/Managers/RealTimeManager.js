@@ -519,7 +519,6 @@ module.exports = (function()
 
         coll.forEach(function(ele){
             var elementID = ele.node.id();
-            // var newPos = ele.node.position();
             if (nodeMap.has(elementID))
             {
                 var tmpNode = nodeMap.get(elementID);
@@ -537,7 +536,6 @@ module.exports = (function()
 
     RealTimeManager.prototype.resizeElement = function(ele)
     {
-        console.log("Executed");
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
         var nodeMap =  root.get(this.NODEMAP_NAME);
@@ -545,8 +543,6 @@ module.exports = (function()
         var elementID = ele.id();
         var newWidth = ele.width();
         var newHeight = ele.height();
-        console.log(newWidth);
-        console.log(newHeight);
 
         if (nodeMap.has(elementID))
         {
