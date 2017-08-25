@@ -1111,9 +1111,11 @@ module.exports = (function()
 
     EditorActionsManager.prototype.resizeElements = function(ele)
     {
+        var previousWidth = ele.width();
+        var previousHeight = ele.height();
         //Sync movement to real time api
         if(this.isCollaborative) {
-            this.realTimeManager.resizeElement(ele);
+            this.realTimeManager.resizeElement(ele, previousWidth, previousHeight);
         }
     };
 
