@@ -59,6 +59,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
          //Initialize cytoscape based handlers here
          this.initCyHandlers();
          this.initKeyboardHandlers();
+         this.initUndoRedoFunctionality();
          var that = this;
          window.onresize = function () {
              that.placePanzoomAndOverlay();
@@ -488,10 +489,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
              $('a[role="redo"]').hide();
              $('a[role="undo"]').hide();
              $(document).keydown(function (e) {
-                 if (e.which === 90 && (e.ctrlKey || event.metaKey)) {
-                     window.undoRedoManager.undo();
-                 }
-                 else if (e.which === 8 || e.which === 46) {
+                 if (e.which === 8 || e.which === 46) {
                      var tn = document.activeElement.tagName;
                      if (tn != "TEXTAREA" && tn != "INPUT")
                      {
@@ -502,6 +500,14 @@ window.notificationManager = require('./../Utils/NotificationFactory');
              });
          }
 
+     };
+     AppManager.prototype.initUndoRedoFunctionality = function()
+     {
+         if (this.isCollaborative) {
+             $('[role="undo"]').hide();
+             $('[role="redo"]').hide();
+             document.getElementById("localOrCollaborativeToolbar").style.visibility = "hidden";
+         }
      };
 
     return AppManager;
