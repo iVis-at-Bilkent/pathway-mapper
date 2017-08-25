@@ -74,7 +74,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.9195959"
-     inkscape:cx="15.707688"
+     inkscape:cx="-25.329759"
      inkscape:cy="13.922934"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -96,7 +96,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -106,9 +106,17 @@
      id="layer1"
      transform="translate(-275.64247,-281.29649)">
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.02755976;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:6.08267942, 2.02755982;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#StopL)"
-       d="m 275.80653,290.75929 c 59.50233,-0.18754 59.50233,-0.18754 59.50233,-0.18754"
-       id="path815"
-       inkscape:connector-curvature="0" />
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.75;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:7.49999987, 7.49999987;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 275.64247,290.57175 h 59.7805"
+       id="path4949"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <rect
+       style="opacity:1;fill:#000000;fill-opacity:0.74509804;stroke:#000000;stroke-width:2.77593756;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:8.32781235, 2.77593745;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+       id="rect4981"
+       width="0.97416955"
+       height="15.889703"
+       x="332.34283"
+       y="282.62689" />
   </g>
 </svg>
