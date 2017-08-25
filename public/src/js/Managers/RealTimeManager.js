@@ -182,6 +182,18 @@ module.exports = (function()
         window.editorActionsManager.highlightInvalidGenesInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes);
 
         //TODO Workaround for legacy pathways
+        if (!groupedGenomicDataMap)
+        {
+            root.set(this.GENOMIC_DATA_GROUP_NAME, model.createMap());
+            groupedGenomicDataMap = root.get(this.GENOMIC_DATA_GROUP_NAME);
+        }
+
+        if (!groupedGenomicDataMap)
+        {
+            root.set(this.GENOMIC_DATA_GROUP_COUNT, model.createString("0"));
+            groupedGenomicDataCount = root.get(this.GENOMIC_DATA_GROUP_COUNT);
+        }
+
         // Workaround for backward compatibility of legacy pathways
         // Addition of pubmed id field on server if legacy collaborative
         // pathways does not have !
