@@ -51,7 +51,7 @@ var edgeHandleDefaults =
         target: targetNodes[0].id(),
         type: this.getGlobalEdgeType(),
         pubmedIDs: [],
-        name: "Undefined"
+        name: ""
       });
   },
   stop: function( sourceNode )

@@ -1177,7 +1177,7 @@ module.exports = (function()
         this.type = params.type || "undefined";
         this.source = params.source || "undefined";
         this.target = params.target || "undefined";
-        this.name = params.name || "undefined";
+        this.name = params.name || "";
 
         if (params.pubmedIDs)
         {
