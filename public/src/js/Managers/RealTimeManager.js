@@ -182,17 +182,6 @@ module.exports = (function()
         window.editorActionsManager.highlightInvalidGenesInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes);
 
         //TODO Workaround for legacy pathways
-        if (!groupedGenomicDataMap)
-        {
-            root.set(this.GENOMIC_DATA_GROUP_NAME, model.createMap());
-            groupedGenomicDataMap = root.get(this.GENOMIC_DATA_GROUP_NAME);
-        }
-
-        if (!groupedGenomicDataMap)
-        {
-            root.set(this.GENOMIC_DATA_GROUP_COUNT, model.createString("0"));
-            groupedGenomicDataCount = root.get(this.GENOMIC_DATA_GROUP_COUNT);
-        }
 
         // Workaround for backward compatibility of legacy pathways
         // Addition of pubmed id field on server if legacy collaborative
@@ -235,9 +224,28 @@ module.exports = (function()
         //Sync already available genomic data !
         var genomicDataMapKeys = genomicDataMap.keys();
         var visibilityMapKeys = visDataMap.keys();
-        var groupedGenomicDataKeys = groupedGenomicDataMap.keys();
 
-        //Sync already available data from cloud model
+        if (!groupedGenomicDataMap)
+        {
+            root.set(this.GENOMIC_DATA_GROUP_NAME, model.createMap());
+            groupedGenomicDataMap = root.get(this.GENOMIC_DATA_GROUP_NAME);
+            groupedGenomicDataMap.set('0', []);
+
+            for (var key in visibilityMapKeys)
+            {
+                var currentMap = _.clone(groupedGenomicDataMap.get('0'));
+                currentMap.push(visibilityMapKeys[key]);
+                groupedGenomicDataMap.set('0', currentMap);
+            }
+        }
+
+        if (!groupedGenomicDataCount)
+        {
+            root.set(this.GENOMIC_DATA_GROUP_COUNT, model.createString("0"));
+            groupedGenomicDataCount = root.get(this.GENOMIC_DATA_GROUP_COUNT);
+        }
+
+
         for (var key in genomicDataMapKeys) {
             window.editorActionsManager.genomicDataOverlayManager.genomicDataMap[genomicDataMapKeys[key]] =
                 genomicDataMap.get(genomicDataMapKeys[key]);
@@ -249,6 +257,7 @@ module.exports = (function()
                 visDataMap.get(visibilityMapKeys[key]);
         }
 
+        var groupedGenomicDataKeys = groupedGenomicDataMap.keys();
         for (var key in groupedGenomicDataKeys)
         {
             window.editorActionsManager.genomicDataOverlayManager.groupedGenomicDataMap[groupedGenomicDataKeys[key]] =

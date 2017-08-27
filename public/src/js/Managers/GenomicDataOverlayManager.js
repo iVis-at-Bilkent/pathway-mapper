@@ -11,6 +11,8 @@ module.exports = (function()
         this.groupedGenomicDataMap = {};
         this.groupedGenomicDataCount = 0;
         this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT = 3;
+        this.MAX_VISIBLE_GENOMIC_DATA_COUNT = 6;
+
 
         //Observer-observable pattern related stuff
         this.observers = [];
@@ -42,6 +44,7 @@ module.exports = (function()
                 geneMap[geneSymbol] = {};
                 geneMap[geneSymbol][cancerKey] = genomicData[cancerKey][geneSymbol];
             }
+
             visMap[cancerKey]  = true;
         }
 
@@ -293,7 +296,7 @@ module.exports = (function()
                 var isNegativePercent = (percent < 0);
                 var _percent = Math.abs(percent);
                 //Handle special cases here !
-                _percent = (_percent < 0.5) ? 2 : Math.round(_percent);
+                _percent = (_percent < 0.5) ? 2 : _percent;
                 _percent =  (_percent == 1) ? 2 : _percent;
                 //Here we are using non linear regression
                 //Fitting points of (0,0), (25,140), (50,220), (100, 255)
@@ -321,7 +324,7 @@ module.exports = (function()
                 overlayRect.setAttribute('style', "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:"+colorString+";");
 
                 //Text Part
-                var textPercent = (percent < 0.5 && percent > 0) ? '<0.5':Math.round(percent);
+                var textPercent = (percent < 0.5 && percent > 0) ? '<0.5': Number(percent).toFixed(1);
                 var text = textPercent+'%';
                 var fontSize = 14;
                 var textLength = text.length;
