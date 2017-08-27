@@ -229,11 +229,11 @@ module.exports = (function()
   {
     switch (ele._private.data['type'])
     {
-      case "GENE": return 0.5; break;
+      case "GENE": return 1; break;
       case "PROCESS": return 0; break;
-      case "FAMILY": return 1.0; break;
-      case "COMPARTMENT": return 2; break;
-      default: return 0.5; break;
+      case "FAMILY": return 2; break;
+      case "COMPARTMENT": return 4; break;
+      default: return 1; break;
     }
   };
 
@@ -241,12 +241,12 @@ module.exports = (function()
   {
     switch (ele._private.data['type'])
     {
-      case "GENE": return 0.5; break;
+      case "GENE": return 1; break;
       case "PROCESS": return 0; break;
-      case "FAMILY": return 1.0; break;
-      case "COMPLEX": return 0.5; break;
-      case "COMPARTMENT": return 2; break;
-      default: return 0.5; break;
+      case "FAMILY": return 2; break;
+      case "COMPLEX": return 1; break;
+      case "COMPARTMENT": return 4; break;
+      default: return 1; break;
     }
   };
 
@@ -279,8 +279,8 @@ module.exports = (function()
   {
     switch (ele._private.data['type'])
     {
-      case "GENE": return "#000000"; break;
-      case "FAMILY": return "#CCCCCC"; break;
+      case "GENE": return "#00000a"; break;
+      case "FAMILY": return "#a3a3a3"; break;
       case "COMPLEX": return "#000000"; break;
       case "COMPARTMENT": return "#000000"; break;
       default: return "#000000"; break;

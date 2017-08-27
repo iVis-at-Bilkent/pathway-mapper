@@ -556,7 +556,7 @@ module.exports = (function()
         });
     };
 
-    RealTimeManager.prototype.resizeElement = function(ele)
+    RealTimeManager.prototype.resizeElement = function(ele, previousWidth, previousHeight)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -565,11 +565,15 @@ module.exports = (function()
         var elementID = ele.id();
         var newWidth = ele.width();
         var newHeight = ele.height();
+        var currentX = ele.position('x');
+        var currentY = ele.position('y');
 
         if (nodeMap.has(elementID))
         {
             var tmpNode = nodeMap.get(elementID);
             model.beginCompoundOperation();
+            tmpNode.x = currentX + newWidth - previousWidth;
+            tmpNode.y = currentY + newHeight - previousHeight;
             tmpNode.w = newWidth;
             tmpNode.h = newHeight;
             model.endCompoundOperation();
