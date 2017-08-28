@@ -11,40 +11,15 @@ var SaveLoadUtils =
     var edges = pathwayDetails.graphJSON.elements.edges;
 
     //Prepare Meta Line
-     returnString += '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY--'+'\n';
+     returnString += '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY\tW\tH--'+'\n';
 
     if (nodes)
     {
       for (var i = 0; i < nodes.length; i++)
       {
-        //Node specific data fields
-        var nodeName = nodes[i].data.name;
-        var parentID = nodes[i].data.parent;
-        var nodeID = nodes[i].data.id;
-        var pos = nodes[i].position;
-        var nodeType = nodes[i].data.type;
-
-        //Check if node has a parent, if not set parent id -1
-        if (nodes[i].data.parent)
-        {
-          parentID = nodes[i].data.parent;
-        }
-        else
-        {
-          parentID = -1;
-        }
-
-        // Write a line for a node
-        returnString +=  nodeName + '\t' +
-                         nodeID + '\t' +
-                         nodeType + '\t' +
-                         parentID + '\t' +
-                         parseInt(pos.x) + '\t' +
-                         parseInt(pos.y) + '\n';
+        returnString += this.exportNode(nodes[i]);
       }
     }
-
-
 
     //Put a blank line between nodes and edges
     returnString += '\n';
@@ -94,41 +69,15 @@ var SaveLoadUtils =
 
     //Put a blank line between nodes and edges
     returnString += '\n';
-    returnString += 'PARTICIPANT\tPARTICIPANT_TYPE\tPARENT_ID\tPOSX\tPOSY'+'\n';
+    returnString += 'PARTICIPANT\tPARTICIPANT_TYPE\tPARENT_ID\tPOSX\tPOSY\tW\tH'+'\n';
 
     if (nodes)
     {
       for (var i = 0; i < nodes.length; i++)
       {
-        //Node specific data fields
-        var nodeName = nodes[i].data.name;
-        var nodeType = nodes[i].data.type;
-        var parentID = nodes[i].data.parent;
-        var pos = nodes[i].position;
-
-        nodeMap[nodes[i].data.id] = nodes[i];
-
-        //Check if node has a parent, if not set parent id -1
-        if (nodes[i].data.parent)
-        {
-          parentID = nodes[i].data.parent;
-        }
-        else
-        {
-          parentID = -1;
-        }
-
-        // Write a line for a node
-        returnString +=  nodeName + '\t' +
-                         nodeType + '\t' +
-                         parentID + '\t' +
-                         parseInt(pos.x) + '\t' +
-                         parseInt(pos.y) + '\t' +
-                         pathwayDetails.pathwayTitle + '\n';
+        returnString += this.exportNode(nodes[i]);
       }
     }
-
-
 
     //Put a blank line between nodes and edges
     returnString += '\n';
@@ -164,6 +113,37 @@ var SaveLoadUtils =
 
     //Finally return a string that includes whole graph lovely and peacefully :)
     return returnString;
+  },
+  exportNode: function(node)
+  {
+      //Node specific data fields
+      var nodeName = node.data.name;
+      var parentID = node.data.parent;
+      var nodeID = node.data.id;
+      var pos = node.position;
+      var nodeType = node.data.type;
+      var nodeW = node.data.w;
+      var nodeH = node.data.h;
+
+      //Check if node has a parent, if not set parent id -1
+      if (node.data.parent)
+      {
+          parentID = node.data.parent;
+      }
+      else
+      {
+          parentID = -1;
+      }
+
+      // Write a line for a node
+      return nodeName + '\t' +
+          nodeID + '\t' +
+          nodeType + '\t' +
+          parentID + '\t' +
+          parseInt(pos.x) + '\t' +
+          parseInt(pos.y) + '\t' +
+          nodeW + '\t' +
+          nodeH + '\n';
   },
   parseGraph: function(graphText)
   {
@@ -209,14 +189,19 @@ var SaveLoadUtils =
       var parentID = lineData[3];
       var posX = (lineData.length > 4) ? lineData[4] : "0";
       var posY = (lineData.length > 5) ? lineData[5] : "0";
+      var nodeW = (lineData.length > 7) ? lineData[6] : "150";
+      var nodeH = (lineData.length > 7) ? lineData[7] : "52";
 
-      var newNode = {
+
+        var newNode = {
         group: 'nodes',
         data:
         {
           id: nodeID,
           name: nodeName,
-          type:nodeType
+          type:nodeType,
+          w:  nodeW,
+          h: nodeH
         },
         position:
         {

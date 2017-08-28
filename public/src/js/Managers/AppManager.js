@@ -318,6 +318,18 @@ window.notificationManager = require('./../Utils/NotificationFactory');
                 return undefined;
             }, // no active grapples
 
+            // These optional function will be executed to set the width/height of a node in this extension
+            // Using node.css() is not a recommended way (http://js.cytoscape.org/#eles.style) to do this. Therefore, overriding these defaults
+            // so that a data field or something like that will be used to set node dimentions instead of directly calling node.css()
+            // is highly recommended (Of course this will require a proper setting in the stylesheet).
+            setWidth: function(node, width)
+            {
+                node.data.w = width;
+            },
+            setHeight: function(node, height)
+            {
+                node.data.h = height;
+            },
             cursors: { // See http://www.w3schools.com/cssref/tryit.asp?filename=trycss_cursor
                 // May take any "cursor" css property
                 default: "default", // to be set after resizing finished or mouseleave

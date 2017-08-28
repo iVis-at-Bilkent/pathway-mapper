@@ -8,8 +8,14 @@ module.exports = (function()
         'text-valign': 'center',
         'text-halign': 'center',
         'color': '#1e2829',
-        'width': 150,
-        'height': 52,
+        'width': function (ele)
+        {
+          return nodeWFunc(ele);
+        },
+        'height': function (ele)
+        {
+          return nodeHFunc(ele);
+        },
         // 'background-image-opacity': 1,
         // 'background-image': function (ele)
         // {
@@ -322,6 +328,26 @@ module.exports = (function()
       case "BINDS": return "solid"; break;
       default: return "solid"; break;
     }
+  };
+
+  var nodeWFunc = function( ele )
+  {
+    if (ele._private.data['w'])
+    {
+      return ele._private.data['w'];
+    }
+    else
+      return 0;
+  };
+
+  var nodeHFunc = function( ele )
+  {
+      if (ele._private.data['h'])
+      {
+          return ele._private.data['h'];
+      }
+      else
+          return 0;
   };
 
 

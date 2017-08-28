@@ -140,6 +140,9 @@ module.exports = (function($, $$)
                                         nodeData.parent = parent.id();
                                     }
                                 }
+                                //TODO one place access to these
+                                nodeData.w = "150";
+                                nodeData.h = "52";
 
                                 //Adjust position according to the zoom level and pan !
                                 //To set rendered position !!!

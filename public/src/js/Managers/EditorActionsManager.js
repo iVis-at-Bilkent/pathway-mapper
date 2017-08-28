@@ -742,7 +742,9 @@ module.exports = (function()
             id: nodeID,
             type: realtimeNode.type,
             name: realtimeNode.name,
-            parent: realtimeNode.parent
+            parent: realtimeNode.parent,
+            w: realtimeNode.w,
+            h: realtimeNode.h
         };
 
         if (realtimeNode.x != "undefined" && realtimeNode.y != "undefined")
@@ -853,7 +855,9 @@ module.exports = (function()
                     id: nodeID,
                     type: realTimeNode.type,
                     name: realTimeNode.name,
-                    parent: realTimeNode.parent
+                    parent: realTimeNode.parent,
+                    w: realTimeNode.w,
+                    h: realTimeNode.h
                 }
             };
 
@@ -1291,6 +1295,8 @@ module.exports = (function()
         if (cyEle.isNode())
         {
             cyEle.position({x: ele.x, y: ele.y});
+            cyEle.data.w = ele.w;
+            cyEle.data.h = ele.h;
             cyEle.style("width", ele.w + "px");
             cyEle.style("height", ele.h + "px");
             this.updateVisibility(cyEle, ele.isHidden);

@@ -455,7 +455,9 @@ module.exports = (function()
         var newNode = model.create(NodeR, {
             name: nodeData.name,
             type: nodeData.type,
-            parent: nodeData.parent
+            parent: nodeData.parent,
+            w: nodeData.w,
+            h: nodeData.h
         });
 
         if (posData)
