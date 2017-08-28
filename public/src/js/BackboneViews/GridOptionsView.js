@@ -39,32 +39,29 @@ var gridOptionsView = Backbone.View.extend(
         {
             var isGridEnabled = this.$el.find("#enableGrid").is(':checked');
             var isGuidelinesEnabled = this.$el.find("#enableGuides").is(':checked');
+            window.gridOptionsManager.currentProperties.gridSpacing = Number(this.$el.find("#gridSize").val());
 
-            console.log("gridEnabled: " + isGridEnabled + " guideLinesEnabled: " + isGuidelinesEnabled);
+            var showGridEle = $( "img[role='showGrid']" );
+            var snapToGridEle = $( "img[role='snapToGrid']" );
+            var showGridEleParent = showGridEle.parent();
+            var snapToGridEleParent = snapToGridEle.parent();
 
             if (!isGridEnabled && !isGuidelinesEnabled)
             {
-                var showGridEle = $( "img[role='showGrid']" );
-                var snapToGridEle = $( "img[role='snapToGrid']" );
-                var showGridEleParent = showGridEle.parent();
-                var snapToGridEleParent = snapToGridEle.parent();
-
                 if (showGridEleParent.hasClass('toolbar-button-focused'))
                 {
                     $("#gridGuideToolbarButtons").find("img[role='showGrid']").trigger("click");
                 }
-
-                if (snapToGridEleParent.hasClass('toolbar-button-focused'))
+                else if (snapToGridEleParent.hasClass('toolbar-button-focused'))
                 {
                     $("#gridGuideToolbarButtons").find("img[role='snapToGrid']").trigger("click");
                 }
-
             }
-            else if(isGridEnabled && !isGuidelinesEnabled)
+            else if(isGridEnabled && !window.gridOptionsManager.currentProperties.drawGrid)
             {
                 $("#gridGuideToolbarButtons").find("img[role='showGrid']").trigger("click");
             }
-            else if(isGuidelinesEnabled && !isGridEnabled)
+            else if(isGuidelinesEnabled && !window.gridOptionsManager.currentProperties.snapToAlignmentLocationDuringDrag)
             {
                 $("#gridGuideToolbarButtons").find("img[role='snapToGrid']").trigger("click");
             }
@@ -83,6 +80,7 @@ var gridOptionsView = Backbone.View.extend(
             // //TODO update grid options
             // window.gridOptionsManager.changeParameters(currentProperties);
 
+            window.gridOptionsManager.refreshGridOptionsExtension();
             this.$el.modal('toggle');
         },
         changeParameters: function()
