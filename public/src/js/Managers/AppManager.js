@@ -518,8 +518,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
          if (this.isCollaborative) {
              $('[role="undo"]').hide();
              $('[role="redo"]').hide();
-             document.getElementById("localOrCollaborativeToolbar").style.visibility = "hidden";
-             document.getElementById("localOrCollaborativeToolbar").style.marginLeft = "-11.9px";
+             document.getElementById("localOrCollaborativeToolbar").style.display = "none";
          }
      };
 

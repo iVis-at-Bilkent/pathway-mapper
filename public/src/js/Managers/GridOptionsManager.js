@@ -37,10 +37,10 @@ module.exports = (function ()
                 range: 500, // max range of distribution guidelines
                 minDistRange: 10, // min range for distribution guidelines
                 distGuidelineOffset: 10, // shift amount of distribution guidelines
-                horizontalDistColor: "#E74C3C", // color of horizontal distribution alignment
-                verticalDistColor: "#2ECC71", // color of vertical distribution alignment
-                initPosAlignmentColor: "#3498DB", // color of alignment to initial mouse location
-                lineDash: [0, 0], // line style of geometric guidelines
+                horizontalDistColor: "#659bcd", // color of horizontal distribution alignment
+                verticalDistColor: "#659bcd", // color of vertical distribution alignment
+                initPosAlignmentColor: "#659bcd", // color of alignment to initial mouse location
+                lineDash: [6, 8], // line style of geometric guidelines
                 horizontalDistLine: [0, 0], // line style of horizontal distribution guidelines
                 verticalDistLine: [0, 0], // line style of vertical distribution guidelines
                 initPosAlignmentLine: [0, 0], // line style of alignment to initial mouse position
