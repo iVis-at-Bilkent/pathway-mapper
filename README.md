@@ -14,7 +14,7 @@ Send any feedback and error reports to at ivis@cs.bilkent.edu.tr.
 
 PathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).
 
-It uses the following libraries: Cytoscape.js, node.js, backbone.js. 
+It uses the libraries [Cytoscape.js](http://js.cytoscape.org), node.js, and backbone.js, and [cBioPortal API](http://www.cbioportal.org/api-legacy/swagger-ui.html). 
 
 A sample deployment can be found [here](http://pathwaymapper.org).
 
