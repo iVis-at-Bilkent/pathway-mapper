@@ -13,18 +13,18 @@ module.exports = (function()
   CxtMenu.prototype.init = function() {
     var classRef = this;
 
-    var options =
-    {
-      // List of initial menu items
-      menuItems: [
+    var ctxMenus = this.cy.contextMenus();
+
+    ctxMenus.appendMenuItems(
+      [
         {
           id: 'remove', // ID of menu item
-          title: 'Delete', // Title of menu item
+          content: 'Delete', // content of menu item
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           selector: 'node, edge',
           onClickFunction: function (event) {
-            var ele = event.cyTarget;
+            var ele = event.target;
             // The function to be executed on click
             var selectedElements = cy.nodes(':selected').union(ele);
             classRef.editorActionsManager.removeElement(selectedElements);
@@ -35,13 +35,13 @@ module.exports = (function()
         },
         {
           id: 'addSelected', // ID of menu item
-          title: 'Add selected into this', // Title of menu item
+          content: 'Add selected into this', // content of menu item
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           selector: 'node',
           onClickFunction: function (event)
           {
-            var ele = event.cyTarget;
+            var ele = event.target;
             var selectedNodes = cy.nodes(':selected');
             var containerType = ele.data('type');
             var validNodes = cy.collection();
@@ -101,12 +101,12 @@ module.exports = (function()
         },
         {
           id: 'removeSelected', // ID of menu item
-          title: 'Remove selected from parent', // Title of menu item
+          content: 'Remove selected from parent', // content of menu item
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           selector: 'node',
           onClickFunction: function (event) {
-            var ele = event.cyTarget;
+            var ele = event.target;
             var selectedNodes = cy.nodes(':selected').union(ele);
 
             var notValid = false;
@@ -132,7 +132,7 @@ module.exports = (function()
         },
         {
           id: 'performLayout', // ID of menu item
-          title: 'Perform Layout', // Title of menu item
+          content: 'Perform Layout', // content of menu item
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           coreAsWell: true,
@@ -142,19 +142,8 @@ module.exports = (function()
           disabled: false, // Whether the item will be created as disabled
           hasTrailingDivider: true, // Whether the item will have a trailing divider
         }
-      ],
-      // css classes that menu items will have
-      menuItemClasses: [
-        // add class names to this list
-      ],
-      // css classes that context menu will have
-      contextMenuClasses: [
-        // add class names to this list
-      ]
-    };
-
-    this.cy.contextMenus(options);
-  }
+      ]);
+    }
 
 
     //TODO ??????

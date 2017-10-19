@@ -3,6 +3,10 @@ var Integer = require('./Integer');
 var LayoutConstants = require('./LayoutConstants');
 var LGraphManager = require('./LGraphManager');
 var LNode = require('./LNode');
+var LEdge = require('./LEdge');
+var HashSet = require('./HashSet');
+var RectangleD = require('./RectangleD');
+var Point = require('./Point');
 
 function LGraph(parent, obj2, vGraph) {
   LGraphObject.call(this, vGraph);
@@ -199,6 +203,7 @@ LGraph.prototype.updateLeftTop = function ()
   var left = Integer.MAX_VALUE;
   var nodeTop;
   var nodeLeft;
+  var margin;
 
   var nodes = this.getNodes();
   var s = nodes.length;
@@ -206,8 +211,8 @@ LGraph.prototype.updateLeftTop = function ()
   for (var i = 0; i < s; i++)
   {
     var lNode = nodes[i];
-    nodeTop = Math.floor(lNode.getTop());
-    nodeLeft = Math.floor(lNode.getLeft());
+    nodeTop = lNode.getTop();
+    nodeLeft = lNode.getLeft();
 
     if (top > nodeTop)
     {
@@ -225,9 +230,16 @@ LGraph.prototype.updateLeftTop = function ()
   {
     return null;
   }
+  
+  if(nodes[0].getParent().paddingLeft != undefined){
+    margin = nodes[0].getParent().paddingLeft;
+  }
+  else{
+    margin = this.margin;
+  }
 
-  this.left = left - this.margin;
-  this.top = top - this.margin;
+  this.left = left - margin;
+  this.top = top - margin;
 
   // Apply the margins and return the result
   return new Point(this.left, this.top);
@@ -244,6 +256,7 @@ LGraph.prototype.updateBounds = function (recursive)
   var nodeRight;
   var nodeTop;
   var nodeBottom;
+  var margin;
 
   var nodes = this.nodes;
   var s = nodes.length;
@@ -255,10 +268,10 @@ LGraph.prototype.updateBounds = function (recursive)
     {
       lNode.updateBounds();
     }
-    nodeLeft = Math.floor(lNode.getLeft());
-    nodeRight = Math.floor(lNode.getRight());
-    nodeTop = Math.floor(lNode.getTop());
-    nodeBottom = Math.floor(lNode.getBottom());
+    nodeLeft = lNode.getLeft();
+    nodeRight = lNode.getRight();
+    nodeTop = lNode.getTop();
+    nodeBottom = lNode.getBottom();
 
     if (left > nodeLeft)
     {
@@ -284,16 +297,23 @@ LGraph.prototype.updateBounds = function (recursive)
   var boundingRect = new RectangleD(left, top, right - left, bottom - top);
   if (left == Integer.MAX_VALUE)
   {
-    this.left = Math.floor(this.parent.getLeft());
-    this.right = Math.floor(this.parent.getRight());
-    this.top = Math.floor(this.parent.getTop());
-    this.bottom = Math.floor(this.parent.getBottom());
+    this.left = this.parent.getLeft();
+    this.right = this.parent.getRight();
+    this.top = this.parent.getTop();
+    this.bottom = this.parent.getBottom();
+  }
+  
+  if(nodes[0].getParent().paddingLeft != undefined){
+    margin = nodes[0].getParent().paddingLeft;
+  }
+  else{
+    margin = this.margin;
   }
 
-  this.left = boundingRect.x - this.margin;
-  this.right = boundingRect.x + boundingRect.width + this.margin;
-  this.top = boundingRect.y - this.margin;
-  this.bottom = boundingRect.y + boundingRect.height + this.margin;
+  this.left = boundingRect.x - margin;
+  this.right = boundingRect.x + boundingRect.width + margin;
+  this.top = boundingRect.y - margin;
+  this.bottom = boundingRect.y + boundingRect.height + margin;
 };
 
 LGraph.calculateBounds = function (nodes)
@@ -312,10 +332,10 @@ LGraph.calculateBounds = function (nodes)
   for (var i = 0; i < s; i++)
   {
     var lNode = nodes[i];
-    nodeLeft = Math.floor(lNode.getLeft());
-    nodeRight = Math.floor(lNode.getRight());
-    nodeTop = Math.floor(lNode.getTop());
-    nodeBottom = Math.floor(lNode.getBottom());
+    nodeLeft = lNode.getLeft();
+    nodeRight = lNode.getRight();
+    nodeTop = lNode.getTop();
+    nodeBottom = lNode.getBottom();
 
     if (left > nodeLeft)
     {
@@ -381,14 +401,15 @@ LGraph.prototype.calcEstimatedSize = function ()
   }
   else
   {
-    this.estimatedSize = Math.floor(size / Math.sqrt(this.nodes.length));
+    this.estimatedSize = size / Math.sqrt(this.nodes.length);
   }
 
-  return Math.floor(this.estimatedSize);
+  return this.estimatedSize;
 };
 
 LGraph.prototype.updateConnected = function ()
 {
+  var self = this;
   if (this.nodes.length == 0)
   {
     this.isConnected = true;
@@ -430,16 +451,15 @@ LGraph.prototype.updateConnected = function ()
   if (visited.size() >= this.nodes.length)
   {
     var noOfVisitedInThisGraph = 0;
-
+    
     var s = visited.size();
-    for (var visitedId in visited.set)
-    {
+     Object.keys(visited.set).forEach(function(visitedId) {
       var visitedNode = visited.set[visitedId];
-      if (visitedNode.owner == this)
+      if (visitedNode.owner == self)
       {
         noOfVisitedInThisGraph++;
       }
-    }
+    });
 
     if (noOfVisitedInThisGraph == this.nodes.length)
     {

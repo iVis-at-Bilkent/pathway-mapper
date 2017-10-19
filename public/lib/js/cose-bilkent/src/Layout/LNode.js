@@ -1,6 +1,10 @@
 var LGraphObject = require('./LGraphObject');
 var Integer = require('./Integer');
 var RectangleD = require('./RectangleD');
+var LayoutConstants = require('./LayoutConstants');
+var RandomSeed = require('./RandomSeed');
+var PointD = require('./PointD');
+var HashSet = require('./HashSet');
 
 function LNode(gm, loc, size, vNode) {
   //Alternative constructor 1 : LNode(LGraphManager gm, Point loc, Dimension size, Object vNode)
@@ -134,19 +138,18 @@ LNode.prototype.getEdgeListToNode = function (to)
 {
   var edgeList = [];
   var edge;
+  var self = this;
 
-  for (var obj in this.edges)
-  {
-    edge = obj;
-
+  self.edges.forEach(function(edge) {
+    
     if (edge.target == to)
     {
-      if (edge.source != this)
+      if (edge.source != self)
         throw "Incorrect edge source!";
 
       edgeList.push(edge);
     }
-  }
+  });
 
   return edgeList;
 };
@@ -155,19 +158,18 @@ LNode.prototype.getEdgesBetween = function (other)
 {
   var edgeList = [];
   var edge;
+  
+  var self = this;
+  self.edges.forEach(function(edge) {
 
-  for (var obj in this.edges)
-  {
-    edge = this.edges[obj];
-
-    if (!(edge.source == this || edge.target == this))
+    if (!(edge.source == self || edge.target == self))
       throw "Incorrect edge source and/or target";
 
     if ((edge.target == other) || (edge.source == other))
     {
       edgeList.push(edge);
     }
-  }
+  });
 
   return edgeList;
 };
@@ -176,22 +178,23 @@ LNode.prototype.getNeighborsList = function ()
 {
   var neighbors = new HashSet();
   var edge;
+  
+  var self = this;
+  self.edges.forEach(function(edge) {
 
-  for (var obj in this.edges)
-  {
-    edge = this.edges[obj];
-
-    if (edge.source == this)
+    if (edge.source == self)
     {
       neighbors.add(edge.target);
     }
     else
     {
-      if (!edge.target == this)
+      if (edge.target != self) {
         throw "Incorrect incidency!";
+      }
+    
       neighbors.add(edge.source);
     }
-  }
+  });
 
   return neighbors;
 };
@@ -217,6 +220,31 @@ LNode.prototype.withChildren = function ()
   return withNeighborsList;
 };
 
+LNode.prototype.getNoOfChildren = function ()
+{
+  var noOfChildren = 0;
+  var childNode;
+
+  if(this.child == null){
+    noOfChildren = 1;
+  }
+  else
+  {
+    var nodes = this.child.getNodes();
+    for (var i = 0; i < nodes.length; i++)
+    {
+      childNode = nodes[i];
+
+      noOfChildren += childNode.getNoOfChildren();
+    }
+  }
+  
+  if(noOfChildren == 0){
+    noOfChildren = 1;
+  }
+  return noOfChildren;
+};
+
 LNode.prototype.getEstimatedSize = function () {
   if (this.estimatedSize == Integer.MIN_VALUE) {
     throw "assert failed";
@@ -227,7 +255,7 @@ LNode.prototype.getEstimatedSize = function () {
 LNode.prototype.calcEstimatedSize = function () {
   if (this.child == null)
   {
-    return this.estimatedSize = Math.floor((this.rect.width + this.rect.height) / 2);
+    return this.estimatedSize = (this.rect.width + this.rect.height) / 2;
   }
   else
   {
@@ -270,11 +298,30 @@ LNode.prototype.updateBounds = function () {
     this.rect.x = childGraph.getLeft();
     this.rect.y = childGraph.getTop();
 
-    this.setWidth(childGraph.getRight() - childGraph.getLeft() +
-            2 * LayoutConstants.COMPOUND_NODE_MARGIN);
-    this.setHeight(childGraph.getBottom() - childGraph.getTop() +
-            2 * LayoutConstants.COMPOUND_NODE_MARGIN +
-            LayoutConstants.LABEL_HEIGHT);
+    this.setWidth(childGraph.getRight() - childGraph.getLeft());
+    this.setHeight(childGraph.getBottom() - childGraph.getTop());
+    
+    // Update compound bounds considering its label properties    
+    if(LayoutConstants.NODE_DIMENSIONS_INCLUDE_LABELS){
+        
+      var width = childGraph.getRight() - childGraph.getLeft();
+      var height = childGraph.getBottom() - childGraph.getTop();
+
+      if(this.labelWidth > width){
+        this.rect.x -= (this.labelWidth - width) / 2;
+        this.setWidth(this.labelWidth);
+      }
+
+      if(this.labelHeight > height){
+        if(this.labelPos == "center"){
+          this.rect.y -= (this.labelHeight - height) / 2;
+        }
+        else if(this.labelPos == "top"){
+          this.rect.y -= (this.labelHeight - height); 
+        }
+        this.setHeight(this.labelHeight);
+      }
+    }
   }
 };
 

@@ -11,6 +11,7 @@ var grid_guide = require('cytoscape-grid-guide');
 var undoRedo = require('cytoscape-undo-redo');
 var contextMenus = require('cytoscape-context-menus');
 var nodeResize = require('cytoscape-node-resize');
+var konva = require('konva');
 var viewUtilities = require('cytoscape-view-utilities');
 require('bootstrap-select');
 
@@ -61,9 +62,9 @@ window.notificationManager = require('./../Utils/NotificationFactory');
          this.initKeyboardHandlers();
          this.initUndoRedoFunctionality();
          var that = this;
-         window.onresize = function () {
-             that.placePanzoomAndOverlay();
-         }
+        //  window.onresize = function () {
+        //      that.placePanzoomAndOverlay();
+        //  }
 
          //Create portal accessor
          window.portalAccessor = new CBioPortalAccessor();
@@ -181,7 +182,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         grid_guide( cytoscape, $ ); // register extension
         undoRedo(cytoscape); // register extension
         contextMenus( cytoscape, $ ); // register extension
-        nodeResize( cytoscape, $ );
+        nodeResize( cytoscape, $, konva );
         viewUtilities( cytoscape, $ ); // register extension
 
 
@@ -388,7 +389,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         var tappedBefore;
         var tappedTimeout;
         cy.on('tap', function(event) {
-            var tappedNow = event.cyTarget;
+            var tappedNow = event.target;
             if (tappedTimeout && tappedBefore) {
                 clearTimeout(tappedTimeout);
             }
@@ -403,12 +404,12 @@ window.notificationManager = require('./../Utils/NotificationFactory');
 
         cy.on('doubleTap', 'node', function(e)
         {
-            var eventIsDirect = (e.cyTarget === this);
+            var eventIsDirect = (e.target === this);
 
             if( eventIsDirect ) {
                 //Remove qtips
                 $(".qtip").remove();
-                that.qtipManager.addQtipToElements(e.cyTarget);
+                that.qtipManager.addQtipToElements(e.target);
                 var api = this.qtip('api');
                 if (api) {
                     api.show();
@@ -416,41 +417,41 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             }
         });
 
-        // cy.on('doubleTap', 'edge', function(e)
-        // {
-        //     var eventIsDirect = (e.cyTarget === this);
-        //     $(".qtip").remove();
-        //
-        //     if( eventIsDirect ) {
-        //         that.qtipManager.addQtipToElements(e.cyTarget);
-        //     }
-        // });
+        cy.on('doubleTap', 'edge', function(e)
+        {
+            var eventIsDirect = (e.target === this);
+            $(".qtip").remove();
+
+            if( eventIsDirect ) {
+                that.qtipManager.addQtipToElements(e.target);
+            }
+        });
 
         cy.on('select', 'node', function( e )
         {
-            window.editorActionsManager.pushSelectedNodeStack(e.cyTarget);
+            window.editorActionsManager.pushSelectedNodeStack(e.target);
         });
 
         cy.on('select', 'edge', function( e )
         {
-          var eventIsDirect = (e.cyTarget === this);
+          var eventIsDirect = (e.target === this);
           $(".qtip").remove();
 
           if( eventIsDirect ) {
-              that.qtipManager.addQtipToElements(e.cyTarget);
+              that.qtipManager.addQtipToElements(e.target);
           }
         });
 
         cy.on('unselect', 'node', function( e )
         {
-            window.editorActionsManager.removeElementFromSelectedNodeStack(e.cyTarget);
+            window.editorActionsManager.removeElementFromSelectedNodeStack(e.target);
         });
 
         cy.on('free', 'node', function (e)
         {
             //Collect all nodes with descendants in case of compounds
             var selectedNodes = cy.nodes(':selected');
-            var nodes = e.cyTarget;
+            var nodes = e.target;
             nodes = nodes.union(nodes.descendants());
             nodes = nodes.union(selectedNodes);
             that.editorActionsManager.moveElements(nodes);
@@ -461,14 +462,14 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             that.editorActionsManager.postLayout();
         });
 
-        //TODO fix this when cytoscape is updated !!!
-        //Due to cytoscape.js bug, only workaround that worked :(
-        cy.on('add', 'node', function(event)
-        {
-            // event.cyTarget.select();
-            cy.style().update();
-            cy.forceRender();
-        });
+        // //TODO fix this when cytoscape is updated !!!
+        // //Due to cytoscape.js bug, only workaround that worked :(
+        // cy.on('add', 'node', function(event)
+        // {
+        //     // event.target.select();
+        //     cy.style().update();
+        //     cy.forceRender();
+        // });
 
         cy.on("noderesize.resizeend", function(e, type, node){
             console.log();

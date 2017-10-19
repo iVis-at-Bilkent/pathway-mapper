@@ -1,5 +1,9 @@
 var Layout = require('./Layout');
 var FDLayoutConstants = require('./FDLayoutConstants');
+var LayoutConstants = require('./LayoutConstants');
+var IGeometry = require('./IGeometry');
+var IMath = require('./IMath');
+var HashSet = require('./HashSet');
 
 function FDLayout() {
   Layout.call(this);
@@ -13,8 +17,8 @@ function FDLayout() {
   this.gravityRangeFactor = FDLayoutConstants.DEFAULT_GRAVITY_RANGE_FACTOR;
   this.compoundGravityRangeFactor = FDLayoutConstants.DEFAULT_COMPOUND_GRAVITY_RANGE_FACTOR;
   this.displacementThresholdPerNode = (3.0 * FDLayoutConstants.DEFAULT_EDGE_LENGTH) / 100;
-  this.coolingFactor = 1.0;
-  this.initialCoolingFactor = 1.0;
+  this.coolingFactor = FDLayoutConstants.DEFAULT_COOLING_FACTOR_INCREMENTAL;
+  this.initialCoolingFactor = FDLayoutConstants.DEFAULT_COOLING_FACTOR_INCREMENTAL;
   this.totalDisplacement = 0.0;
   this.oldTotalDisplacement = 0.0;
   this.maxIterations = FDLayoutConstants.MAX_ITERATIONS;
@@ -43,7 +47,7 @@ FDLayout.prototype.initParameters = function () {
   this.totalIterations = 0;
   this.notAnimatedIterations = 0;
 
-//    this.useFRGridVariant = layoutOptionsPack.smartRepulsionRangeCalc;
+  this.useFRGridVariant = FDLayoutConstants.DEFAULT_USE_SMART_REPULSION_RANGE_CALCULATION;
 };
 
 FDLayout.prototype.calcIdealEdgeLengths = function () {
@@ -89,8 +93,6 @@ FDLayout.prototype.initSpringEmbedder = function () {
 
   if (this.incremental)
   {
-    this.coolingFactor = 0.8;
-    this.initialCoolingFactor = 0.8;
     this.maxNodeDisplacement =
             FDLayoutConstants.MAX_NODE_DISPLACEMENT_INCREMENTAL;
   }
@@ -127,22 +129,52 @@ FDLayout.prototype.calcRepulsionForces = function () {
   var i, j;
   var nodeA, nodeB;
   var lNodes = this.getAllNodes();
+  var processedNodeSet;
 
-  for (i = 0; i < lNodes.length; i++)
-  {
-    nodeA = lNodes[i];
-
-    for (j = i + 1; j < lNodes.length; j++)
+  if (this.useFRGridVariant)
+  {       
+    if (this.totalIterations % FDLayoutConstants.GRID_CALCULATION_CHECK_PERIOD == 1)
     {
-      nodeB = lNodes[j];
-
-      // If both nodes are not members of the same graph, skip.
-      if (nodeA.getOwner() != nodeB.getOwner())
+      var grid = this.calcGrid(this.graphManager.getRoot());    
+      
+      // put all nodes to proper grid cells
+      for (i = 0; i < lNodes.length; i++)
       {
-        continue;
+        nodeA = lNodes[i];
+        this.addNodeToGrid(nodeA, grid, this.graphManager.getRoot().getLeft(), this.graphManager.getRoot().getTop());
       }
+    }
 
-      this.calcRepulsionForce(nodeA, nodeB);
+    processedNodeSet = new HashSet();
+    
+    // calculate repulsion forces between each nodes and its surrounding
+    for (i = 0; i < lNodes.length; i++)
+    {
+      nodeA = lNodes[i];
+      this.calculateRepulsionForceOfANode(grid, nodeA, processedNodeSet);
+      processedNodeSet.add(nodeA);
+    }
+
+  }
+  else
+  {
+  
+    for (i = 0; i < lNodes.length; i++)
+    {
+      nodeA = lNodes[i];
+
+      for (j = i + 1; j < lNodes.length; j++)
+      {
+        nodeB = lNodes[j];
+
+        // If both nodes are not members of the same graph, skip.
+        if (nodeA.getOwner() != nodeB.getOwner())
+        {
+          continue;
+        }
+
+        this.calcRepulsionForce(nodeA, nodeB);
+      }
     }
   }
 };
@@ -231,8 +263,16 @@ FDLayout.prototype.calcRepulsionForce = function (nodeA, nodeB) {
             overlapAmount,
             FDLayoutConstants.DEFAULT_EDGE_LENGTH / 2.0);
 
-    repulsionForceX = overlapAmount[0];
-    repulsionForceY = overlapAmount[1];
+    repulsionForceX = 2 * overlapAmount[0];
+    repulsionForceY = 2 * overlapAmount[1];
+    
+    var childrenConstant = nodeA.noOfChildren * nodeB.noOfChildren / (nodeA.noOfChildren + nodeB.noOfChildren);
+    
+    // Apply forces on the two nodes
+    nodeA.repulsionForceX -= childrenConstant * repulsionForceX;
+    nodeA.repulsionForceY -= childrenConstant * repulsionForceY;
+    nodeB.repulsionForceX += childrenConstant * repulsionForceX;
+    nodeB.repulsionForceY += childrenConstant * repulsionForceY;
   }
   else// no overlap
   {
@@ -268,18 +308,18 @@ FDLayout.prototype.calcRepulsionForce = function (nodeA, nodeB) {
     distanceSquared = distanceX * distanceX + distanceY * distanceY;
     distance = Math.sqrt(distanceSquared);
 
-    repulsionForce = this.repulsionConstant / distanceSquared;
+    repulsionForce = this.repulsionConstant * nodeA.noOfChildren * nodeB.noOfChildren / distanceSquared;
 
     // Project force onto x and y axes
     repulsionForceX = repulsionForce * distanceX / distance;
     repulsionForceY = repulsionForce * distanceY / distance;
+     
+    // Apply forces on the two nodes    
+    nodeA.repulsionForceX -= repulsionForceX;
+    nodeA.repulsionForceY -= repulsionForceY;
+    nodeB.repulsionForceX += repulsionForceX;
+    nodeB.repulsionForceY += repulsionForceY;
   }
-
-  // Apply forces on the two nodes
-  nodeA.repulsionForceX -= repulsionForceX;
-  nodeA.repulsionForceY -= repulsionForceY;
-  nodeB.repulsionForceX += repulsionForceX;
-  nodeB.repulsionForceY += repulsionForceY;
 };
 
 FDLayout.prototype.calcGravitationalForce = function (node) {
@@ -297,14 +337,12 @@ FDLayout.prototype.calcGravitationalForce = function (node) {
   ownerCenterY = (ownerGraph.getTop() + ownerGraph.getBottom()) / 2;
   distanceX = node.getCenterX() - ownerCenterX;
   distanceY = node.getCenterY() - ownerCenterY;
-  absDistanceX = Math.abs(distanceX);
-  absDistanceY = Math.abs(distanceY);
+  absDistanceX = Math.abs(distanceX) + node.getWidth() / 2;
+  absDistanceY = Math.abs(distanceY) + node.getHeight() / 2;
 
   if (node.getOwner() == this.graphManager.getRoot())// in the root graph
   {
-    Math.floor(80);
-    estimatedSize = Math.floor(ownerGraph.getEstimatedSize() *
-            this.gravityRangeFactor);
+    estimatedSize = ownerGraph.getEstimatedSize() * this.gravityRangeFactor;
 
     if (absDistanceX > estimatedSize || absDistanceY > estimatedSize)
     {
@@ -314,8 +352,7 @@ FDLayout.prototype.calcGravitationalForce = function (node) {
   }
   else// inside a compound
   {
-    estimatedSize = Math.floor((ownerGraph.getEstimatedSize() *
-            this.compoundGravityRangeFactor));
+    estimatedSize = ownerGraph.getEstimatedSize() * this.compoundGravityRangeFactor;
 
     if (absDistanceX > estimatedSize || absDistanceY > estimatedSize)
     {
@@ -357,6 +394,111 @@ FDLayout.prototype.animate = function () {
       this.notAnimatedIterations++;
     }
   }
+};
+
+// -----------------------------------------------------------------------------
+// Section: FR-Grid Variant Repulsion Force Calculation
+// -----------------------------------------------------------------------------
+
+FDLayout.prototype.calcGrid = function (graph){
+
+  var sizeX = 0; 
+  var sizeY = 0;
+  
+  sizeX = parseInt(Math.ceil((graph.getRight() - graph.getLeft()) / this.repulsionRange));
+  sizeY = parseInt(Math.ceil((graph.getBottom() - graph.getTop()) / this.repulsionRange));
+  
+  var grid = new Array(sizeX);
+  
+  for(var i = 0; i < sizeX; i++){
+    grid[i] = new Array(sizeY);    
+  }
+  
+  for(var i = 0; i < sizeX; i++){
+    for(var j = 0; j < sizeY; j++){
+      grid[i][j] = new Array();    
+    }
+  }
+  
+  return grid;
+};
+
+FDLayout.prototype.addNodeToGrid = function (v, grid, left, top){
+    
+  var startX = 0;
+  var finishX = 0;
+  var startY = 0;
+  var finishY = 0;
+  
+  startX = parseInt(Math.floor((v.getRect().x - left) / this.repulsionRange));
+  finishX = parseInt(Math.floor((v.getRect().width + v.getRect().x - left) / this.repulsionRange));
+  startY = parseInt(Math.floor((v.getRect().y - top) / this.repulsionRange));
+  finishY = parseInt(Math.floor((v.getRect().height + v.getRect().y - top) / this.repulsionRange));
+
+  for (var i = startX; i <= finishX; i++)
+  {
+    for (var j = startY; j <= finishY; j++)
+    {
+      grid[i][j].push(v);
+      v.setGridCoordinates(startX, finishX, startY, finishY); 
+    }
+  }  
+
+};
+
+FDLayout.prototype.calculateRepulsionForceOfANode = function (grid, nodeA, processedNodeSet){
+  
+  if (this.totalIterations % FDLayoutConstants.GRID_CALCULATION_CHECK_PERIOD == 1)
+  {
+    var surrounding = new HashSet();
+    nodeA.surrounding = new Array();
+    var nodeB;
+    
+    for (var i = (nodeA.startX - 1); i < (nodeA.finishX + 2); i++)
+    {
+      for (var j = (nodeA.startY - 1); j < (nodeA.finishY + 2); j++)
+      {
+        if (!((i < 0) || (j < 0) || (i >= grid.length) || (j >= grid[0].length)))
+        {  
+          for (var k = 0; k < grid[i][j].length; k++) {
+            nodeB = grid[i][j][k];
+
+            // If both nodes are not members of the same graph, 
+            // or both nodes are the same, skip.
+            if ((nodeA.getOwner() != nodeB.getOwner()) || (nodeA == nodeB))
+            {
+              continue;
+            }
+            
+            // check if the repulsion force between
+            // nodeA and nodeB has already been calculated
+            if (!processedNodeSet.contains(nodeB) && !surrounding.contains(nodeB))
+            {
+              var distanceX = Math.abs(nodeA.getCenterX()-nodeB.getCenterX()) - 
+                    ((nodeA.getWidth()/2) + (nodeB.getWidth()/2));
+              var distanceY = Math.abs(nodeA.getCenterY()-nodeB.getCenterY()) - 
+                    ((nodeA.getHeight()/2) + (nodeB.getHeight()/2));
+            
+              // if the distance between nodeA and nodeB 
+              // is less then calculation range
+              if ((distanceX <= this.repulsionRange) && (distanceY <= this.repulsionRange))
+              {
+                //then add nodeB to surrounding of nodeA
+                surrounding.add(nodeB);
+              }              
+            }    
+          }
+        }          
+      }
+    }
+
+    surrounding.addAllTo(nodeA.surrounding);
+	
+  }
+  for (i = 0; i < nodeA.surrounding.length; i++)
+  {
+    this.calcRepulsionForce(nodeA, nodeA.surrounding[i]);
+  }	
 };
 
 FDLayout.prototype.calcRepulsionRange = function () {

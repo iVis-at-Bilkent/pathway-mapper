@@ -1171,23 +1171,23 @@ module.exports = (function()
 
             //Check if there are nodes with same name in current graph
             var cySourceNode = cy.nodes('[name="'+sourceNode.data.name+'"]');
-            var cyTargetNode = cy.nodes('[name="'+targetNode.data.name+'"]');
+            var targetNode = cy.nodes('[name="'+targetNode.data.name+'"]');
 
             if (cySourceNode.length > 0)
             {
                 ele.data.source = cySourceNode.id();
             }
 
-            if (cyTargetNode.length > 0)
+            if (targetNode.length > 0)
             {
-                ele.data.target = cyTargetNode.id();
+                ele.data.target = targetNode.id();
             }
 
-            if (cyTargetNode.length < 0 && cySourceNode.length < 0 ) {
+            if (targetNode.length < 0 && cySourceNode.length < 0 ) {
                 continue;
             }
 
-            var edgesBtw = cy.filter('edge[source = "'+cySourceNode.id()+'"][target = "'+cyTargetNode.id()+'"]');
+            var edgesBtw = cy.filter('edge[source = "'+cySourceNode.id()+'"][target = "'+targetNode.id()+'"]');
 
             //We assume there could be one edge between source and target node with same type
             var isFound = false;

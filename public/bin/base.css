@@ -303,6 +303,12 @@
     color: #1abc9c; }
     .welcomePageContainer .creditInformation a {
       color: #1abc9c; }
+  .welcomePageContainer .contactInformation {
+    font-weight: 500;
+    margin-top: 25px;
+    color: #979797; }
+    .welcomePageContainer .contactInformation a {
+      color: #979797; }
 
 .modal .modal-header {
   background-color: #ececec;
@@ -2798,6 +2804,8 @@
   background-color: #eff0f2;
   border-radius: 6px; }
   .toolbar .toolbar-button {
+    margin-left: -1px;
+    margin-right: -1px;
     border: 3px solid #eff0f2;
     border-radius: 6px;
     display: inline-block;
@@ -2807,10 +2815,10 @@
   .toolbar .toolbar-button-focused {
     border-color: #1abc9c !important; }
   .toolbar .btn-group {
-    margin-right: 10px;
+    margin-right: 5px;
     margin-left: 5px;
     border: 2px solid #2f4154;
-    padding: 3px;
+    padding: 2px;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px; }
@@ -2873,7 +2881,7 @@ input[type="color"]:hover {
 .cy-panzoom {
   /* float: right; */
   right: 120px;
-  z-index: 100; }
+  z-index: 1039; }
 
 .cytoscape-navigatorView {
   background: #1abc9c; }
@@ -3048,7 +3056,7 @@ footer {
 
 .cyContainer {
   border: 3px solid #1abc9c;
-  height: 850px;
+  height: 780px;
   border-radius: 6px;
   padding-right: 0 !important;
   padding-left: 0 !important;

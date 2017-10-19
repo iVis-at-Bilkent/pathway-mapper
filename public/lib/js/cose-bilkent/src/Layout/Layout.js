@@ -1,8 +1,17 @@
 var LayoutConstants = require('./LayoutConstants');
 var HashMap = require('./HashMap');
 var LGraphManager = require('./LGraphManager');
+var LNode = require('./LNode');
+var LEdge = require('./LEdge');
+var LGraph = require('./LGraph');
+var PointD = require('./PointD');
+var Transform = require('./Transform');
+var Emitter = require('./Emitter');
+var HashSet = require('./HashSet');
 
 function Layout(isRemoteUse) {
+  Emitter.call( this );
+
   //Layout Quality: 0:proof, 1:default, 2:draft
   this.layoutQuality = LayoutConstants.DEFAULT_QUALITY;
   //Whether layout should create bendpoints as needed or not
@@ -42,6 +51,8 @@ function Layout(isRemoteUse) {
 
 Layout.RANDOM_SEED = 1;
 
+Layout.prototype = Object.create( Emitter.prototype );
+
 Layout.prototype.getGraphManager = function () {
   return this.graphManager;
 };
@@ -79,46 +90,48 @@ Layout.prototype.newEdge = function (vEdge)
   return new LEdge(null, null, vEdge);
 };
 
+Layout.prototype.checkLayoutSuccess = function() {
+  return (this.graphManager.getRoot() == null)
+          || this.graphManager.getRoot().getNodes().length == 0
+          || this.graphManager.includesInvalidEdge();
+};
+
 Layout.prototype.runLayout = function ()
 {
   this.isLayoutFinished = false;
+  
+  if (this.tilingPreLayout) {
+    this.tilingPreLayout();
+  }
 
   this.initParameters();
   var isLayoutSuccessfull;
 
-  if ((this.graphManager.getRoot() == null)
-          || this.graphManager.getRoot().getNodes().length == 0
-          || this.graphManager.includesInvalidEdge())
+  if (this.checkLayoutSuccess())
   {
     isLayoutSuccessfull = false;
   }
   else
   {
-    // calculate execution time
-    var startTime = 0;
-
-    if (!this.isSubLayout)
-    {
-      startTime = new Date().getTime()
-    }
-
     isLayoutSuccessfull = this.layout();
-
-    if (!this.isSubLayout)
-    {
-      var endTime = new Date().getTime();
-      var excTime = endTime - startTime;
-
-      console.log("Total execution time: " + excTime + " miliseconds.");
-    }
   }
-
+  
+  if (LayoutConstants.ANIMATE === 'during') {
+    // If this is a 'during' layout animation. Layout is not finished yet. 
+    // We need to perform these in index.js when layout is really finished.
+    return false;
+  }
+  
   if (isLayoutSuccessfull)
   {
     if (!this.isSubLayout)
     {
       this.doPostLayout();
     }
+  }
+
+  if (this.tilingPostLayout) {
+    this.tilingPostLayout();
   }
 
   this.isLayoutFinished = true;
@@ -133,7 +146,9 @@ Layout.prototype.doPostLayout = function ()
 {
   //assert !isSubLayout : "Should not be called on sub-layout!";
   // Propagate geometric changes to v-level objects
-  this.transform();
+  if(!this.incremental){
+    this.transform();
+  }
   this.update();
 };
 
@@ -620,8 +635,7 @@ Layout.findCenterOfTree = function (nodes)
 
       var neighbours = node.getNeighborsList();
 
-      for (var j in neighbours.set)
-      {
+      Object.keys(neighbours.set).forEach(function(j) {
         var neighbour = neighbours.set[j];
         if (removedNodes.indexOf(neighbour) < 0)
         {
@@ -635,7 +649,7 @@ Layout.findCenterOfTree = function (nodes)
 
           remainingDegrees.put(neighbour, newDegree);
         }
-      }
+      });
     }
 
     removedNodes = removedNodes.concat(tempList);

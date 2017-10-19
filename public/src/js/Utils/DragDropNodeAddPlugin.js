@@ -94,7 +94,7 @@ module.exports = (function($, $$)
 
                                 var nodeType = $(ui.helper).attr('nodeType').toUpperCase();
 
-                                var cy = $container.cytoscape("get");
+                                var cy = window.cy;
 
                                 //Hold a map for parents and candidate parent nodes for this addition
                                 var nodeMap = {};
