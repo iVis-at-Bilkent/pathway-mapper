@@ -151,10 +151,10 @@ module.exports = (function()
         var nodesToHide = sel;
         var b = true;
         //Hides the parents if they have no children
-        sel.parent().each( function(i, parent)
+        sel.parent().each( function(parent, i)
         {
             b=true;
-            parent.children().each(function(j,ch)
+            parent.children().each(function(ch,j)
                 {
                     if (!ch.selected())
                     {
@@ -322,7 +322,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.doHighlightInvalidGenes = function(args)
     {
-        args.each(function(i, n)
+        args.each(function(n, i)
         {
             if(n.hasClass('highlightedNode'))
             {
@@ -337,7 +337,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.undoHighlightInvalidGenes = function(args)
     {
-        args.each(function(i, n)
+        args.each(function(n, i)
         {
             if(n.hasClass('invalidGeneHighlight'))
             {
@@ -411,7 +411,7 @@ module.exports = (function()
      * **/
     EditorActionsManager.prototype.doHighlight = function(args)
     {
-        args.each(function(i, n)
+        args.each(function(n, i)
         {
             if (n.isEdge())
                 n.addClass("highlightedEdge");
@@ -431,7 +431,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.undoHighlight = function(args)
     {
-        args.each(function(i, n)
+        args.each(function(n, i)
         {
             if (n.isEdge())
                 n.removeClass("highlightedEdge");

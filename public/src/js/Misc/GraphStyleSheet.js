@@ -1,6 +1,7 @@
 module.exports = (function()
 {
-  var styleSheet = [{
+  var styleSheet = [
+    {
       selector: 'node',
       style:
       {
@@ -21,8 +22,7 @@ module.exports = (function()
         // {
         //   return backgroundImageHandler(ele);
         // },
-        'background-color': '#fff',
-        'background-opacity': 0.5,
+        'background-color': 'white',
         'shape': function(ele)
         {
           return parentNodeShapeFunc( ele );
@@ -105,16 +105,8 @@ module.exports = (function()
     //       'segment-weights': '0 1'
     //     }
     // },
-    // {
-    // {  selector: ':selected',
-    //   style:
-    //   {
-    //     'line-color' : '#f1c40f' ,
-    //     'border-color' : '#f1c40f' ,
-    //     // 'shadow-color' : '#f1c40f',
-    //     // 'shadow-opacity': 1.0
-    //   }
-    // },
+
+
 
     // some style for the Edge Handles !!!
     {
@@ -155,9 +147,9 @@ module.exports = (function()
             {
                 'width': 3,
                 'border-width':4,
-                // 'shadow-color' : '#1abc9c',
-                'background-color': '#1abc9c',
-                // 'shadow-opacity': 1.0
+                'line-color' : '#1abc9c' ,
+                'target-arrow-color': '#1abc9c',
+                'arrow-scale': 1.5
             }
     },
     {
@@ -191,9 +183,18 @@ module.exports = (function()
           // 'shadow-color' : '#e94332',
           // 'background-color': '#e94332',
           'border-color': '#e94332',
-          'color': '#000000',
+          'color': '#e94332',
           // 'shadow-opacity': 1.0,
       }
+    },
+    {
+        selector: ':selected',
+        style:
+            {
+                'line-color' : '#f1c40f' ,
+                'border-color' : '#f1c40f' ,
+                'target-arrow-color': '#f1c40f',
+            }
     },
   ];
 

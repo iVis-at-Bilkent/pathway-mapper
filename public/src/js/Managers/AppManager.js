@@ -300,8 +300,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             inactiveGrappleStroke: "inside 1px blue",
             boundingRectangle: true, // enable/disable bounding rectangle
             boundingRectangleLineDash: [4, 8], // line dash of bounding rectangle
-            boundingRectangleLineColor: "#d67614,",
-            /*#994d00*/
+            boundingRectangleLineColor: "ffc90e",
             boundingRectangleLineWidth: 1.5,
             zIndex: 999,
 
@@ -325,11 +324,11 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             // is highly recommended (Of course this will require a proper setting in the stylesheet).
             setWidth: function(node, width)
             {
-                node.data.w = width;
+                node.css('width', width);
             },
             setHeight: function(node, height)
             {
-                node.data.h = height;
+                node.css('height', height);
             },
             cursors: { // See http://www.w3schools.com/cssref/tryit.asp?filename=trycss_cursor
                 // May take any "cursor" css property
