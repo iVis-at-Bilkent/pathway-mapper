@@ -75,7 +75,9 @@ window.notificationManager = require('./../Utils/NotificationFactory');
          //TODO place navigator !!!
          var offset = 5;
          var topCy = $('.cyContainer').offset().top;
+         var bottomCy = $('.cyContainer').offset().bottom;
          var leftCy = $('.cyContainer').offset().left;
+         var rightCy = $('.cyContainer').offset().right;
          var heightCy = $('.cyContainer').outerHeight();
          var widthCy = $('.cyContainer').outerWidth();
          var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
@@ -85,8 +87,10 @@ window.notificationManager = require('./../Utils/NotificationFactory');
          $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
          $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
 
-         $('.cy-panzoom').css('top', topCy + 5);
-         $('.cy-panzoom').css('left', widthCy + leftCy - 55);
+         $('.cy-panzoom').css('position', 'relative');
+         $('.cy-panzoom').css('top', 2);
+         $('.cy-panzoom').css('left', widthCy - 57);
+
      }
 
      AppManager.prototype.createSampleMenu = function ()

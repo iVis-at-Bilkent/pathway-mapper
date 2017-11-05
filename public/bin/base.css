@@ -2879,9 +2879,7 @@ input[type="color"]:hover {
   color: #2f4154; }
 
 .cy-panzoom {
-  /* float: right; */
-  right: 120px;
-  z-index: 1039; }
+  position: absolute; }
 
 .cytoscape-navigatorView {
   background: #1abc9c; }

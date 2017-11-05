@@ -25,7 +25,7 @@ app.use('/node_modules/html5tooltipsjs', express.static(__dirname + '/node_modul
 
 var multerInstance = multer({dest:'./uploads/'});
 
-//var APP_PORT = 3000;
+// var APP_PORT = 3000;
 var APP_PORT = process.env.PORT || 80;
 
 //get handler for index.html

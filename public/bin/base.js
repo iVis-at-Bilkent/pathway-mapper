@@ -92161,7 +92161,9 @@ window.notificationManager = require('./../Utils/NotificationFactory');
          //TODO place navigator !!!
          var offset = 5;
          var topCy = $('.cyContainer').offset().top;
+         var bottomCy = $('.cyContainer').offset().bottom;
          var leftCy = $('.cyContainer').offset().left;
+         var rightCy = $('.cyContainer').offset().right;
          var heightCy = $('.cyContainer').outerHeight();
          var widthCy = $('.cyContainer').outerWidth();
          var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
@@ -92171,8 +92173,10 @@ window.notificationManager = require('./../Utils/NotificationFactory');
          $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
          $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
 
-         $('.cy-panzoom').css('top', topCy + 5);
-         $('.cy-panzoom').css('left', widthCy + leftCy - 55);
+         $('.cy-panzoom').css('position', 'relative');
+         $('.cy-panzoom').css('top', 2);
+         $('.cy-panzoom').css('left', widthCy - 57);
+
      }
 
      AppManager.prototype.createSampleMenu = function ()
@@ -94560,7 +94564,7 @@ module.exports = (function()
             })
             .style('background-image', function(ele)
             {
-                var dataURI = "data:image/svg+xml,";
+                var dataURI = "data:image/svg+xml;utf8,";
                 return dataURI;
             })
             .update();
@@ -94583,7 +94587,7 @@ module.exports = (function()
         var genomicDataBoxCount = this.countVisibleGenomicDataByType();
 
         //Experimental data overlay part !
-        var dataURI = "data:image/svg+xml,";
+        var dataURI = "data:image/svg+xml;utf8,";
         var svgNameSpace = 'http://www.w3.org/2000/svg';
         var nodeLabel = ele.data('name');
 
@@ -94764,8 +94768,8 @@ module.exports = (function()
             })
             .style('background-image', function(ele)
             {
-                var dataURI = "data:image/svg+xml,";
-                return dataURI + self.generateSVGForNode(ele).outerHTML;
+                var dataURI = "data:image/svg+xml;utf8,";
+                return dataURI + encodeURIComponent(self.generateSVGForNode(ele).outerHTML);
             })
             .update();
     }
@@ -98958,9 +98962,10 @@ module.exports = (function ($)
             var nodeData =
                 {
                     type: clickedNodeType.toUpperCase(),
-                    name:'New ' + clickedNodeType
+                    name:'New ' + clickedNodeType,
+                    w: "150",
+                    h: "52"
                 };
-
             var posData =
                 {
                     x: cy.width()/2,

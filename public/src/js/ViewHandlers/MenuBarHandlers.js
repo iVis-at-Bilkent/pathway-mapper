@@ -66,9 +66,10 @@ module.exports = (function ($)
             var nodeData =
                 {
                     type: clickedNodeType.toUpperCase(),
-                    name:'New ' + clickedNodeType
+                    name:'New ' + clickedNodeType,
+                    w: "150",
+                    h: "52"
                 };
-
             var posData =
                 {
                     x: cy.width()/2,

@@ -71,14 +71,9 @@ input[type="color"]:hover{
   color: #2f4154;
 }
 
-
 .cy-panzoom{
-  // position: absolute;
-  /* float: right; */
-  // top: 14px;
-  right: 120px;
-  //Important to order it behind modal backdrops !
-  z-index: 1039;
+  position: absolute;
+  // z-index: 1039;
 }
 
 .cytoscape-navigatorView{
