@@ -196,7 +196,7 @@ module.exports = (function()
             })
             .style('background-image', function(ele)
             {
-                var dataURI = "data:image/svg+xml,";
+                var dataURI = "data:image/svg+xml;utf8,";
                 return dataURI;
             })
             .update();
@@ -219,7 +219,7 @@ module.exports = (function()
         var genomicDataBoxCount = this.countVisibleGenomicDataByType();
 
         //Experimental data overlay part !
-        var dataURI = "data:image/svg+xml,";
+        var dataURI = "data:image/svg+xml;utf8,";
         var svgNameSpace = 'http://www.w3.org/2000/svg';
         var nodeLabel = ele.data('name');
 
@@ -400,8 +400,8 @@ module.exports = (function()
             })
             .style('background-image', function(ele)
             {
-                var dataURI = "data:image/svg+xml,";
-                return dataURI + self.generateSVGForNode(ele).outerHTML;
+                var dataURI = "data:image/svg+xml;utf8,";
+                return dataURI + encodeURIComponent(self.generateSVGForNode(ele).outerHTML);
             })
             .update();
     }
