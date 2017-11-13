@@ -96778,7 +96778,10 @@ module.exports = (function()
       style:
       {
         'label': 'data(name)',
+        'arrow-scale': 1.5,
         'curve-style': 'bezier',
+        'text-background-color': '#EEEEEE',
+        'text-background-opacity': 0.7,
         'target-arrow-shape': function( ele )
         {
           return edgeTargetArrowTypeHandler(ele);
@@ -96797,7 +96800,7 @@ module.exports = (function()
           return edgeLineTypeHandler(ele);
         },
         'opacity': 1,
-        'arrow-scale': 1.3
+
       }
     },
     // {
@@ -96853,7 +96856,7 @@ module.exports = (function()
                 'border-width':4,
                 'line-color' : '#1abc9c' ,
                 'target-arrow-color': '#1abc9c',
-                'arrow-scale': 1.5
+                'arrow-scale': 1.7
             }
     },
     {

@@ -2817,8 +2817,8 @@
   .toolbar .btn-group {
     margin-right: 5px;
     margin-left: 5px;
-    border: 2px solid #2f4154;
-    padding: 2px;
+    border: 12px solid #2f4154;
+    padding: 12px;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px; }
