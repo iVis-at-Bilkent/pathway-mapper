@@ -1117,6 +1117,9 @@ module.exports = (function()
     {
         var previousWidth = ele.width();
         var previousHeight = ele.height();
+        ele.data('w',previousWidth);
+        ele.data('h',previousHeight);
+
         //Sync movement to real time api
         if(this.isCollaborative) {
             this.realTimeManager.resizeElement(ele, previousWidth, previousHeight);

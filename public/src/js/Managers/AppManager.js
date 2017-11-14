@@ -87,9 +87,10 @@ window.notificationManager = require('./../Utils/NotificationFactory');
          $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
          $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
 
-         $('.cy-panzoom').css('position', 'relative');
+         $('.cy-panzoom').css('position', 'absolute');
          $('.cy-panzoom').css('top', 2);
          $('.cy-panzoom').css('left', widthCy - 57);
+         $('.cy-panzoom').css('z-index', 1039);
 
      }
 
@@ -475,7 +476,6 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         // });
 
         cy.on("noderesize.resizeend", function(e, type, node){
-            console.log();
             that.editorActionsManager.resizeElements(node);
         })
 
