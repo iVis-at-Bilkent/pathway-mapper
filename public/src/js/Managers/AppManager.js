@@ -11,6 +11,7 @@ var grid_guide = require('cytoscape-grid-guide');
 var undoRedo = require('cytoscape-undo-redo');
 var contextMenus = require('cytoscape-context-menus');
 var nodeResize = require('cytoscape-node-resize');
+var edgeBendEditing = require('cytoscape-edge-bend-editing');
 var konva = require('konva');
 var viewUtilities = require('cytoscape-view-utilities');
 require('bootstrap-select');
@@ -151,7 +152,6 @@ window.notificationManager = require('./../Utils/NotificationFactory');
                      });
                  }
              };
-
              //Send request for selected pathway
              var pathwayName = event.target.attributes[0].value;
              request.open("GET", "/pathway?filename=" + pathwayName);
@@ -187,7 +187,8 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         grid_guide( cytoscape, $ ); // register extension
         undoRedo(cytoscape); // register extension
         contextMenus( cytoscape, $ ); // register extension
-        nodeResize( cytoscape, $, konva );
+        nodeResize( cytoscape, $, konva ); //register extension
+        edgeBendEditing( cytoscape, $ ); // register extension
         viewUtilities( cytoscape, $ ); // register extension
 
 
@@ -349,6 +350,26 @@ window.notificationManager = require('./../Utils/NotificationFactory');
                 w: "w-resize"
             }
         });
+
+        var edgeBendEditingOptions = {
+            // this function specifies the positions of bend points
+            bendPositionsFunction: function(ele) {
+                return ele.data('bendPointPositions');
+            },
+            // whether to initilize bend points on creation of this extension automatically
+            initBendPointsAutomatically: true,
+            // whether the bend editing operations are undoable (requires cytoscape-undo-redo.js)
+            undoable: true,
+            // the size of bend shape is obtained by multipling width of edge with this parameter
+            bendShapeSizeFactor: 6,
+            // whether to start the plugin in the enabled state
+            enabled: true,
+            // title of add bend point menu item (User may need to adjust width of menu items according to length of this option)
+            addBendMenuItemTitle: "Add Bend Point",
+            // title of remove bend point menu item (User may need to adjust width of menu items according to length of this option)
+            removeBendMenuItemTitle: "Remove Bend Point"
+        };
+        window.edgeBendEditing = cy.edgeBendEditing(edgeBendEditingOptions);
 
         var viewUtilitiesOpts = {
             node: {

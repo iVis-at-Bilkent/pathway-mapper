@@ -1243,6 +1243,7 @@ module.exports = (function()
             //Local usage file load
             this.loadFileCy(nodes,edges);
         }
+        cy.edgeBendEditing('get').initBendPoints(cy.edges());
         this.fitGraph();
     };
 

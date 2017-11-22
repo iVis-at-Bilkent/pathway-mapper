@@ -36,6 +36,7 @@
     "cytoscape-grid-guide": "^2.0.2",
     "cytoscape-navigator": "^1.1.2",
     "cytoscape-node-resize": "^3.0.0",
+    "cytoscape.js-edge-bend-editing": "^1.5.4",
     "cytoscape-panzoom": "~2.5.2",
     "cytoscape-qtip": "~2.7.1",
     "cytoscape-undo-redo": "1.2.14",

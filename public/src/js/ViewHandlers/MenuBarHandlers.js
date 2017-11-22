@@ -302,7 +302,6 @@ module.exports = (function ($)
             {
                 var graphData = SaveLoadUtilities.parseGraph(request.responseText);
                 window.editorActionsManager.loadFile(graphData.nodes, graphData.edges);
-
                 window.fileOperationsManager.changePathwayDetails(
                     {
                         fileName: file.name,
@@ -336,6 +335,7 @@ module.exports = (function ($)
                 window.fileOperationsManager.resetUndoStack();
             }
         };
+
         request.open("POST", "/loadGraph");
         request.send(formData);
         $('#mergeInput').val(null);
@@ -347,7 +347,7 @@ module.exports = (function ($)
         $('#pathwayDetailsDiv').modal('show');
     });
 
-    $('#fileinput').on('change', function()
+    /*$('#fileinput').on('change', function()
     {
         var file = this.files[0];
         // Create a new FormData object.
@@ -370,7 +370,7 @@ module.exports = (function ($)
         request.open("POST", "/loadGraph");
         request.send(formData);
         $('#fileinput').val(null);
-    });
+    });*/
 
     //////// GENOMIC DATA PART //////////////////
     //Genomic data file part

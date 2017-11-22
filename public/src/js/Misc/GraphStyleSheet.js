@@ -201,6 +201,7 @@ module.exports = (function()
         selector: 'edge:selected',
         style:
             {
+                'width' : 2,
                 'line-color' : '#f1ab00',
                 'target-arrow-color': '#f1ab00'
             }
@@ -359,7 +360,6 @@ module.exports = (function()
       else
           return 0;
   };
-
 
   return styleSheet;
 })();

@@ -8,7 +8,8 @@ var SaveLoadUtils =
 
     //Get nodes and edges
     var nodes = pathwayDetails.graphJSON.elements.nodes;
-    var edges = pathwayDetails.graphJSON.elements.edges;
+    // var edges = pathwayDetails.graphJSON.elements.edges;
+    var edges = cy.edges();
 
     //Prepare Meta Line
      returnString += '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY\tW\tH--'+'\n';
@@ -23,19 +24,29 @@ var SaveLoadUtils =
 
     //Put a blank line between nodes and edges
     returnString += '\n';
-    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\tINTERACTION_PUBMED_ID\tEDGE_NAME\n';
+    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\tINTERACTION_PUBMED_ID\tEDGE_NAME\tEDGE_BENDS\n';
 
     if (edges) {
       //Write edges
       for (var i = 0; i < edges.length; i++)
       {
-        var edgeID = edges[i].data.id;
-        var edgeType = edges[i].data.type;
-        var source = edges[i].data.source;
-        var target = edges[i].data.target;
-        var pubmedIDs = edges[i].data.pubmedIDs;
+        var edgeID = edges[i].data('id');
+        var edgeType = edges[i].data('type');
+        var source = edges[i].data('source');
+        var target = edges[i].data('target');
+        var pubmedIDs = edges[i].data('pubmedIDs');
         var pubmedString = "";
-        var edgeName = (edges[i].data.name) ? edges[i].data.name : "";
+        var edgeName = (edges[i].data('name')) ? edges[i].data('name') : "";
+
+        var numberOfBendPoints = 0;
+        if (edgeBendEditing.getSegmentPoints(edges[i]) !== undefined)
+            numberOfBendPoints = edgeBendEditing.getSegmentPoints(edges[i]).length/2;
+        var bendPointPositions = "";
+        for (var j = 0; j < numberOfBendPoints; j++)
+        {
+            bendPointPositions += "(" + edgeBendEditing.getSegmentPoints(edges[i])[2*j] + ";" +
+                edgeBendEditing.getSegmentPoints(edges[i])[2*j+1] + ")";
+        }
 
         if (pubmedIDs != undefined) {
             for (var j = 0; j < pubmedIDs.length; j++)
@@ -51,7 +62,8 @@ var SaveLoadUtils =
                         target + '\t' +
                         edgeType + '\t' +
                         pubmedString + '\t' +
-                        edgeName + '\n';
+                        edgeName + '\t' +
+                        bendPointPositions + '\n';
       }
     }
 
@@ -233,9 +245,22 @@ var SaveLoadUtils =
       var edgeType = lineData[3];
       var pubmedIDs = (lineData.length > 4) ? lineData[4].split(';') : [];
       var label = (lineData.length > 5) ? lineData[5] : '';
+      var bendPoints = (lineData.length > 6) ? lineData[6] : '';
 
+      var bendPointPositions = [];
+      if (bendPoints)
+      {
+          var bendPair = bendPoints.split(')'); //The last element of bendPair array is ""
+          for (var j=0; j<bendPair.length - 1; j++)
+          {
+              var separatorIndex = bendPair[j].indexOf(";");
+              var x = bendPair[j].substring(1, separatorIndex);
+              var y = bendPair[j].substring(separatorIndex + 1, bendPair[j].length );
+              bendPointPositions.push({x: parseFloat(x), y: parseFloat(y)});
+          }
+      }
 
-        newEdge = {
+      newEdge = {
         group: 'edges', data:
         {
           id: edgeID,
@@ -243,11 +268,13 @@ var SaveLoadUtils =
           source: edgeSource,
           target: edgeTarget,
           pubmedIDs: pubmedIDs,
-          name: label
+          name: label,
+          bendPointPositions: bendPointPositions/*[{x:100,y:100}]*/
         }
       };
       edges.push(newEdge);
     }
+    // edgeBendEditing.initBendPoints(cy.edges());
 
     return {title: title, description: description, nodes: nodes, edges: edges};
   }

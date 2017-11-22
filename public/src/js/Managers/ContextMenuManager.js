@@ -19,20 +19,8 @@ module.exports = (function()
       [
         //Context menu items when clicking on blank space
         {
-            id: 'performLayout', // ID of menu item
-            content: 'Perform Layout', // content of menu item
-            // Filters the elements to have this menu item on cxttap
-            // If the selector is not truthy no elements will have this menu item on cxttap
-            coreAsWell: true,
-            onClickFunction: function (event) {
-                classRef.editorActionsManager.performLayout();
-            },
-            disabled: false, // Whether the item will be created as disabled
-            hasTrailingDivider: true, // Whether the item will have a trailing divider
-        },
-        {
             id: 'deleteSelected', // ID of menu item
-            content: 'Delete selected', // content of menu item
+            content: 'Delete Selected', // content of menu item
             // Filters the elements to have this menu item on cxttap
             // If the selector is not truthy no elements will have this menu item on cxttap
             coreAsWell: true,
@@ -81,12 +69,24 @@ module.exports = (function()
         },
         {
             id: 'loadFromCBioPortal', // ID of menu item
-            content: 'Load from cBioPortal', // content of menu item
+            content: 'Load From cBioPortal...', // content of menu item
             // Filters the elements to have this menu item on cxttap
             // If the selector is not truthy no elements will have this menu item on cxttap
             coreAsWell: true,
             onClickFunction: function (event) {
               window.appManager.portalAccessView.render();
+            },
+            disabled: false, // Whether the item will be created as disabled
+            hasTrailingDivider: true, // Whether the item will have a trailing divider
+        },
+        {
+            id: 'performLayout', // ID of menu item
+            content: 'Perform Layout', // content of menu item
+            // Filters the elements to have this menu item on cxttap
+            // If the selector is not truthy no elements will have this menu item on cxttap
+            coreAsWell: true,
+            onClickFunction: function (event) {
+              classRef.editorActionsManager.performLayout();
             },
             disabled: false, // Whether the item will be created as disabled
             hasTrailingDivider: true, // Whether the item will have a trailing divider
@@ -110,7 +110,7 @@ module.exports = (function()
         },
         {
           id: 'addSelected', // ID of menu item
-          content: 'Add selected into this', // content of menu item
+          content: 'Add Selected Into This', // content of menu item
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           selector: 'node',
@@ -176,7 +176,7 @@ module.exports = (function()
         },
         {
           id: 'removeSelected', // ID of menu item
-          content: 'Remove selected from parent', // content of menu item
+          content: 'Remove Selected From Parent', // content of menu item
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           selector: 'node',
