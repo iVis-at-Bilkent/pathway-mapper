@@ -74,7 +74,7 @@ module.exports = (function()
       style:
       {
         'label': 'data(name)',
-        'arrow-scale': 1.5,
+        'arrow-scale': 1.7,
         'curve-style': 'bezier',
         'text-background-color': '#EEEEEE',
         'text-background-opacity': 0.7,
@@ -148,11 +148,11 @@ module.exports = (function()
         selector: '.highlightedEdge',
         style:
             {
-                'width': 3,
+                'width': 3.5,
                 'border-width':4,
                 'line-color' : '#1abc9c' ,
                 'target-arrow-color': '#1abc9c',
-                'arrow-scale': 1.7
+                'arrow-scale': 2
             }
     },
     {
@@ -194,16 +194,16 @@ module.exports = (function()
         selector: 'node:selected',
         style:
             {
-                'border-color' : '#f1c40f'
+                'border-color' : '#ffc90e', /*#f1c40f'*/
             }
     },
     {
         selector: 'edge:selected',
         style:
             {
-                'width' : 2,
-                'line-color' : '#f1ab00',
-                'target-arrow-color': '#f1ab00'
+                'width' : 3,
+                'line-color' : '#ffc90e',
+                'target-arrow-color': '#ffc90e'
             }
     },
   ];

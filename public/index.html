@@ -41,7 +41,7 @@
       <div class="modal-body">
         <h3>PathwayMapper 1.2</h3>
         <div class="aboutImageContent">
-          <img src="./assets/i-vis.png" alt="" />
+          <img src="./assets/i-vis.png" alt="" height="45%" width="45%"/>
         </div>
         <div class="aboutImageContent">
           <label>MSKCC</label>
@@ -239,7 +239,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Network <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a role="new" href="#">New</a></li>
-                  <li><a role="details" href="#">Details...</a></li>
+                  <li><a role="details" href="#">Properties...</a></li>
                   <li><a role="load" href="#">Import...</a></li>
                   <li class="dropdown-submenu" id="SamplesMenu">
                     <a tabindex="-1" href="#">TCGA</a>
@@ -427,7 +427,7 @@
             <div class="pnl-body pathwayPanel">
               <div class="buttonContainer">
                 <button id="pathwayDetailsBtn" type="button" class="btn btn-default">
-                  <i class="fui-upload"></i> Details...
+                  <i class="fui-upload"></i> Properties...
                 </button>
               </div>
               <div class="buttonContainer">
@@ -668,7 +668,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title">Pathway Details</h3>
+        <h3 class="modal-title">Pathway Properties</h3>
       </div>
       <div class="modal-body">
         <form role="form" id="pathwayDetailsForm">
@@ -688,6 +688,12 @@
             <label class="control-label col-sm-4" for="pDesc">Pathway Description:</label>
             <div class="col-sm-8">
               <textarea class="form-control" rows="3" id="pDesc"><%= pathwayDescription %></textarea>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="autoSizeNodesToContent">Auto-Size Nodes To Content</label>
+            <div class="col-sm-8">
+              <input type="checkbox" name="autoSizeNodes" value="enabledAutoSize" checked>
             </div>
           </div>
         </form>
