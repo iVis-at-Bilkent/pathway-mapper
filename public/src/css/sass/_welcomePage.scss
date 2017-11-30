@@ -2,7 +2,7 @@
 
 /* The max width is dependant on the container (more info below) */
 .popover{
-  max-width: 410px; /* Max Width of the popover (depending on the container!) */
+  max-width: 400px; /* Max Width of the popover (depending on the container!) */
   span{
     background-color: #e74c3c;
   }
@@ -35,8 +35,26 @@
     vertical-align: middle;
     padding-top: 70px;
     padding-bottom: 70px;
-  }
 
+    .creditInformation {
+      font-weight: 500;
+      margin-top: 25px;
+      color: $menuHoverColor;
+      a {
+        color: $menuHoverColor;
+      }
+    }
+    .contactInformation {
+      font-weight: 500;
+      margin-top: 25px;
+      color: #979797;
+      a {
+        color: #979797;
+      }
+    }
+
+  }
+  
   .welcomePageLoading{
     display: none;
     margin-top: 20px;
@@ -108,18 +126,6 @@
     margin-left: $sepAmount;
     margin-right: $sepAmount;
     font-weight: 600;
-  }
-
-
-  .creditInformation {
-    font-weight: 500;
-
-    margin-top: 25px;
-    color: $menuHoverColor;
-
-    a {
-      color: $menuHoverColor;
-    }
   }
 
 }

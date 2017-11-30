@@ -6,7 +6,7 @@ var fs = require('fs');
 var path = require('path');
 var request = require('request');
 var qs = require("querystring");
-var SaveLoadUtilities = require('./public/src/js/Utils/SaveLoadUtility.js');
+var SaveLoadUtilities = require('./public/src/js/SaveLoadUtility.js');
 
 
 var app = express();
@@ -19,14 +19,13 @@ app.use('/node_modules/cytoscape-navigator', express.static(__dirname + '/node_m
 app.use('/node_modules/qtip2', express.static(__dirname + '/node_modules/qtip2/'));
 app.use('/node_modules/filesaverjs', express.static(__dirname + '/node_modules/filesaverjs/'));
 app.use('/node_modules/bootstrap-select', express.static(__dirname + '/node_modules/bootstrap-select/'));
-app.use('/node_modules/html5tooltipsjs', express.static(__dirname + '/node_modules/html5tooltipsjs/'));
 
 
 
 var multerInstance = multer({dest:'./uploads/'});
 
 //var APP_PORT = 3000;
-var APP_PORT = process.env.PORT || 80;
+var APP_PORT = 80;
 
 //get handler for index.html
 function indexGetHandler(req,res){
@@ -221,5 +220,5 @@ app.post('/getBioGeneData', multerInstance.array(), biogeneDataHandler);
 
 app.listen(APP_PORT, function ()
 {
-  console.log('--- PathwayMapper is up and running on port ' + APP_PORT + ' ---');
+  console.log('TCGA Pathway Curation Tool up and running on port ' + APP_PORT);
 });

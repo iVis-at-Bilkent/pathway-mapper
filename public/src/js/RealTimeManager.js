@@ -144,6 +144,31 @@ module.exports = (function()
         }
         edgeMapEntries = edgeMap.values();
 
+        // // Addition of isInvalidGene field if legacy pathways does not have
+        // for (var i = 0; i < nodeMapEntries.length; i++)
+        // {
+        //     var tmpNode = nodeMapEntries[i];
+        //
+        //     if (tmpNode.isInvalidGene == undefined)
+        //     {
+        //         var newNode = model.create(NodeR,
+        //             {
+        //                 name: tmpNode.name,
+        //                 type: tmpNode.type,
+        //                 parent: tmpNode.parent,
+        //                 x: tmpNode.x,
+        //                 y: tmpNode.y,
+        //                 isInvalidGene: false
+        //             });
+        //         var tmpNodeId = this.getCustomObjId(tmpNode);
+        //         var newID = this.getCustomObjId(newNode);
+        //         nodeMap.delete(tmpNodeId);
+        //         nodeMap.set(newID, newNode);
+        //     }
+        // }
+        // nodeMapEntries = nodeMapEntries.values();
+        // End of workaround
+
 
         //Add real time nodes to local graph
         window.editorActionsManager.addNewElementsLocally(nodeMapEntries, edgeMapEntries);
@@ -157,8 +182,7 @@ module.exports = (function()
         var visibilityMapKeys = visDataMap.keys();
 
         //Sync already available data from cloud model
-        for (var key in genomicDataMapKeys)
-        {
+        for (var key in genomicDataMapKeys) {
             window.editorActionsManager.genomicDataOverlayManager.genomicDataMap[genomicDataMapKeys[key]] = genomicDataMap.get(genomicDataMapKeys[key]);
         }
 
@@ -172,28 +196,17 @@ module.exports = (function()
         cy.fit(50);
 
         var invalidGenes = [];
-        var highlightedGenes = [];
-        var invalidHighlightedGenes = [];
         for (var i = 0; i < nodeMapEntries.length; i++)
         {
             var tmpNode = nodeMapEntries[i];
-            if (tmpNode.isInvalidGene && tmpNode.isHighlighted)
-            {
-                var tmpNodeId = this.getCustomObjId(tmpNode);
-                invalidHighlightedGenes.push(tmpNodeId);
-            }
-            else if (tmpNode.isInvalidGene)
+
+            if (tmpNode.isInvalidGene)
             {
                 var tmpNodeId = this.getCustomObjId(tmpNode);
                 invalidGenes.push(tmpNodeId);
             }
-            else if (tmpNode.isHighlighted)
-            {
-                var tmpNodeId = this.getCustomObjId(tmpNode);
-                highlightedGenes.push(tmpNodeId);
-            }
         }
-        window.editorActionsManager.highlightInvalidGenesInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes);
+        window.editorActionsManager.highlightInvalidGenesInitially(invalidGenes);
 
         //Keep a reference to the file !
         this.realTimeDoc = doc;
@@ -303,22 +316,6 @@ module.exports = (function()
         model.endCompoundOperation();
     }
 
-    RealTimeManager.prototype.changeHighlight = function(nodesToHighlight, isHighlighted)
-    {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var nodeMap =  root.get(this.NODEMAP_NAME);
-
-        nodesToHighlight.forEach(function(ele, index){
-            var nodeID = ele.id();
-            if (nodeMap.has(nodeID))
-            {
-                var realTimeNode = nodeMap.get(nodeID);
-                realTimeNode.isHighlighted = isHighlighted;
-            }
-        });
-    };
-
     RealTimeManager.prototype.addNewNode = function(nodeData, posData)
     {
         var model = this.realTimeDoc.getModel();
@@ -404,7 +401,7 @@ module.exports = (function()
 
     };
 
-    RealTimeManager.prototype.changeHighlightInvalidGenes = function(nodeIDs, isInvalid)
+    RealTimeManager.prototype.changeHighlight = function(nodeIDs, isHiglighted)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
@@ -417,7 +414,7 @@ module.exports = (function()
             if(nodeMap.has(nodeID))
             {
                 var collaborativeNode = nodeMap.get(nodeID);
-                collaborativeNode.isInvalidGene = isInvalid;
+                collaborativeNode.isInvalidGene = isHiglighted;
             }
         }
         model.endCompoundOperation();
@@ -898,7 +895,6 @@ module.exports = (function()
         NodeR.prototype.y = gapi.drive.realtime.custom.collaborativeField('y');
         NodeR.prototype.parent = gapi.drive.realtime.custom.collaborativeField('parent');
         NodeR.prototype.isInvalidGene = gapi.drive.realtime.custom.collaborativeField('isInvalidGene');
-        NodeR.prototype.isHighlighted = gapi.drive.realtime.custom.collaborativeField('isHighlighted');
 
         // EdgeR;
         EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
@@ -986,7 +982,6 @@ module.exports = (function()
         this.x = params.x || "undefined";
         this.y = params.y || "undefined";
         this.isInvalidGene = params.isInvalidGene || false;
-        this.isHighlighted = params.isHighlighted || false;
         model.endCompoundOperation();
     };
 

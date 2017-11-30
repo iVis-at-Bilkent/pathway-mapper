@@ -137,30 +137,13 @@ module.exports = (function()
         'source-arrow-color': '#1abc9c'
       }
     },
-
-    {
-      selector: '.highlightedNode',
-      style:
-      {
-          'border-width': 4
-      }
-    },
-    {
-      selector: '.invalidGene',
-      style:
-      {
-          'border-width': 2,
-          'border-color': '#e94332',
-          'color': '#e94332'
-      }
-    },
     {
       selector: '.invalidGeneHighlight',
       style:
       {
-          'border-width': 4,
-          'font-weight' : 'bold',
-          // 'font-size' : 18,
+          /*'shadow-color' : '#ff3c3d',
+          'shadow-opacity': 1.0*/
+          'border-width': 2,
           'border-color': '#e94332',
           'color': '#e94332'
       }

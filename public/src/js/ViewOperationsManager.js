@@ -2,17 +2,14 @@ module.exports = (function($)
 {
     'use strict'
 
-    function ViewOperationsManager()
-    {
-        this.movedNodes = [];
-    }
+    var movedNodes = [];
 
-    ViewOperationsManager.prototype.handleNodeAlignment = function(param)
+    function handleNodeAlignment(param)
     {
         var tmpNodes = window.editorActionsManager.selecteNodeStack;
         var nodes = cy.collection();
         var nodeMap = {};
-        this.movedNodes = [];
+        movedNodes = [];
 
         for (var key in tmpNodes)
         {
@@ -32,7 +29,7 @@ module.exports = (function($)
         {
             var firstSelected = nodes[0];
             var firstBbox = firstSelected.boundingBox();
-            var self = this;
+
             nodes.forEach(function(node,index)
             {
                 if (index == 0)
@@ -43,12 +40,12 @@ module.exports = (function($)
                 //If parent of selected node is in selection do nothing !
                 if (nodeMap[node.parent().id()] == null)
                 {
-                    var newPosition = self.calculateNewPosition(param, node, firstBbox)
+                    var newPosition = calculateNewPosition(param, node, firstBbox)
                     //Recursively traverse leaf nodes
-                    self.changePosition(node,0,0,newPosition);
+                    changePosition(node,0,0,newPosition);
                 }
             });
-            window.editorActionsManager.handleChangePositionByAlignment(self.movedNodes);
+            window.editorActionsManager.handleChangePositionByAlignment(movedNodes);
         }
     }
 
@@ -57,7 +54,7 @@ module.exports = (function($)
      node that node.position works on center positions thats why all calculations
      are performed accordingly
      */
-    ViewOperationsManager.prototype.calculateNewPosition = function(param, node, referenceBbox)
+    function calculateNewPosition(param, node, referenceBbox)
     {
         var currentPos = node.position();
         var currentBbox = node.boundingBox();
@@ -93,16 +90,16 @@ module.exports = (function($)
         }
 
         return newPosition;
+
     }
 
     //Recursively move leaf nodes
-    ViewOperationsManager.prototype.changePosition = function(node, dx, dy, newPos)
+    function changePosition(node, dx, dy, newPos)
     {
         if (node.isParent())
         {
             var childNodes = node.children();
             var parentBbox = node.boundingBox();
-            var self = this;
             childNodes.forEach(function(childNode, index)
             {
                 var childBbox = childNode.boundingBox();
@@ -112,11 +109,11 @@ module.exports = (function($)
                 //If further compound node is found, set position accordingly
                 if (childNode.isParent())
                 {
-                    self.changePosition(childNode, 0, 0, {x: newPos.x+_dx, y:newPos.y+_dy});
+                    changePosition(childNode, 0, 0, {x: newPos.x+_dx, y:newPos.y+_dy});
                 }
                 else
                 {
-                    self.changePosition(childNode, _dx, _dy, newPos);
+                    changePosition(childNode, _dx, _dy, newPos);
                 }
 
             });
@@ -131,10 +128,39 @@ module.exports = (function($)
                 y: newPos.y+dy
             };
 
-            this.movedNodes.push({node: node, nextPosition: position, oldPosition: null});
+            movedNodes.push({node: node, nextPosition: position, oldPosition: null});
         }
     }
 
-    return ViewOperationsManager;
-})()
+    $(".viewDropdown li a").click(function(event)
+    {
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
 
+        if(dropdownLinkRole == "grid")
+        {
+            $("#gridOptionsDiv").modal('show');
+        }
+        else
+        {
+            handleNodeAlignment(dropdownLinkRole);
+        }
+        
+    });
+
+    $(".highlightDropDown li a").click(function (event)
+    {
+        event.preventDefault();
+        var dropdownLinkRole = $(event.target).attr('role');
+
+        if(dropdownLinkRole == "highlightInvalidGenes")
+        {
+            window.editorActionsManager.validateGenes();
+        }
+        else
+        {
+            window.editorActionsManager.removeInvalidGeneHighlights();
+        }
+    })
+
+})(window.$)

@@ -1,0 +1,14 @@
+﻿NRF2
+
+Involves the regulation of the transcription factor NFE2L2 by KEAP1. NFE2L2 regulates genes with the antioxidant response elements (ARE) that aid in cellular response against oxidative stress thought to aid in cancer chemoresistance.
+
+--NODE_NAME	NODE_ID	NODE_TYPE	PARENT_ID	POSX	POSY--
+KEAP1	OkLgTv_3eszi	GENE	-1	294	147
+CUL3	pxCvh_ojeszm	GENE	-1	469	147
+Oxidative Stress Response	E9bpVpoWeszr	PROCESS	-1	598	240
+NFE2L2	sKw8nuDgeszp	GENE	-1	385	240
+
+--EDGE_ID	SOURCE	TARGET	EDGE_TYPEINTERACTION_PUBMED_ID
+wIxLZx13eszt	OkLgTv_3eszi	sKw8nuDgeszp	INHIBITS	
+aWKwI8rJesz1	sKw8nuDgeszp	E9bpVpoWeszr	ACTIVATES	
+Ng79Bysjeszx	pxCvh_ojeszm	sKw8nuDgeszp	INHIBITS	

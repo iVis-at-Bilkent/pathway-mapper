@@ -4,7 +4,7 @@ var panzoom = require('cytoscape-panzoom');
 //var cxtmenu = require('cytoscape-cxtmenu');
 var navigator = require('cytoscape-navigator');
 var cyqtip = require('cytoscape-qtip');
-var regCose = require("../../../lib/js/cose-bilkent/src/index.js");
+var regCose = require("../../lib/js/cose-bilkent/src/index.js");
 // var regCose = require('cytoscape-cose-bilkent');
 var grid_guide = require('cytoscape-grid-guide');
 var undoRedo = require('cytoscape-undo-redo');
@@ -14,32 +14,31 @@ require('bootstrap-select');
 
 
 //Panzoom options
-var panzoomOpts = require('./../Misc/PanzoomOptions.js');
-var styleSheet = require('./../Misc/GraphStyleSheet.js');
-var edgeHandleOpts = require('./../Misc/EdgeHandlesOptions.js');
-var LayoutProperties = require('./../BackboneViews/LayoutPropertiesView.js');
-var GenomicDataExplorerView = require('./../BackboneViews/GenomicDataExplorerView.js');
-var PathwayDetailsView = require('./../BackboneViews/PathwayDetailsView.js');
-var GridOptionsView = require('./../BackboneViews/GridOptionsView.js');
-var CBioPortalAccessView = require('./../BackboneViews/CbioPortalAccessView.js');
+var panzoomOpts = require('./PanzoomOptions.js');
+var styleSheet = require('./GraphStyleSheet.js');
+var edgeHandleOpts = require('./EdgeHandlesOptions.js');
+var LayoutProperties = require('./BackboneViews/LayoutPropertiesView.js');
+var GenomicDataExplorerView = require('./BackboneViews/GenomicDataExplorerView.js');
+var PathwayDetailsView = require('./BackboneViews/PathwayDetailsView.js');
+var GridOptionsView = require('./BackboneViews/GridOptionsView.js');
+var CBioPortalAccessView = require('./BackboneViews/CbioPortalAccessView.js');
 
 //Other requires
-require('./../ViewHandlers/MenuBarHandlers.js');
-require('./../ViewHandlers/ToolbarHandlers');
-require('./../Utils/GraphUtilities.js');
+require('./FileOperationsManager.js');
+require('./OtherMenuOperations.js');
+require('./GenomicMenuOperations.js');
+require('./ViewOperationsManager.js');
+require('./GraphUtilities.js');
 
 var QtipManager = require('./QtipManager.js');
 var ContextMenuManager = require('./ContextMenuManager.js');
-var DragDropNodeAddPlugin = require('./../Utils/DragDropNodeAddPlugin.js');
+var DragDropNodeAddPlugin = require('./DragDropNodeAddPlugin.js');
 var EditorActionsManager = require('./EditorActionsManager.js');
-var GridOptionsManager = require('./GridOptionsManager.js');
-var ViewOperationsManager = require('./ViewOperationsManager.js');
-var FileOperationsManager = require('./FileOperationsManager.js');
-var SaveLoadUtilities = require('./../Utils/SaveLoadUtility.js');
-var CBioPortalAccessor = require('./../Utils/cBioPortalAccessor.js');
+var SaveLoadUtilities = require('./SaveLoadUtility.js');
+var CBioPortalAccessor = require('./cBioPortalAccessor.js');
 
 var notify = require('bootstrap-notify');
-window.notificationManager = require('./../Utils/NotificationFactory');
+window.notificationManager = require('./NotificationFactory');
 
  module.exports = (function()
  {
@@ -56,10 +55,26 @@ window.notificationManager = require('./../Utils/NotificationFactory');
          this.initCyJS();
          //Initialize cytoscape based handlers here
          this.initCyHandlers();
-         this.initKeyboardHandlers();
+
          var that = this;
          window.onresize = function () {
              that.placePanzoomAndOverlay();
+         }
+
+         //TODO undo redo is not working properly in collaborative mode
+         if (!this.isCollaborative) {
+             $(document).keydown(function (e) {
+                 if (e.which === 89 && (e.ctrlKey || event.metaKey)) {
+                     window.undoRedoManager.redo();
+                 }
+                 else if (e.which === 90 && (e.ctrlKey || event.metaKey)) {
+                     window.undoRedoManager.undo();
+                 }
+             });
+         }
+         else {
+             $('a[role="redo"]').hide();
+             $('a[role="undo"]').hide();
          }
 
          //Create portal accessor
@@ -197,16 +212,13 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             layout: {name: 'preset'}
         });
 
+        //TODO remove window.editorActionsManager from real time module ASAP !
         //Create Manager Classes
         window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative,
             this.realTimeManager,
             window.cy);
-        window.gridOptionsManager = new GridOptionsManager();
-        window.viewOperationsManager = new ViewOperationsManager();
-        window.fileOperationsManager = new FileOperationsManager();
 
-
-        this.qtipManager = new QtipManager(window.cy);
+        this.qtipManager = new QtipManager(window.cy), this.editorActionsManager;
         this.cxtMenuManager = new ContextMenuManager(window.cy, this.editorActionsManager);
         this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editorActionsManager);
 
@@ -409,47 +421,6 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         });
 
     };
-     AppManager.prototype.initKeyboardHandlers = function()
-     {
-         console.log("called during initialization");
-         //TODO undo redo is not working properly in collaborative mode
-         if (!this.isCollaborative) {
-             $(document).keydown(function (e) {
-                 if (e.which === 89 && (e.ctrlKey || event.metaKey)) {
-                     window.undoRedoManager.redo();
-                 }
-                 else if (e.which === 90 && (e.ctrlKey || event.metaKey)) {
-                     window.undoRedoManager.undo();
-                 }
-                 else if (e.which === 8 || e.which === 46) {
-                     var tn = document.activeElement.tagName;
-                     if (tn != "TEXTAREA" && tn != "INPUT")
-                     {
-                         var selectedElements = cy.$(':selected');
-                         editorActionsManager.removeElement(selectedElements);
-                     }
-                 }
-             });
-         }
-         else {
-             $('a[role="redo"]').hide();
-             $('a[role="undo"]').hide();
-             $(document).keydown(function (e) {
-                 if (e.which === 90 && (e.ctrlKey || event.metaKey)) {
-                     window.undoRedoManager.undo();
-                 }
-                 else if (e.which === 8 || e.which === 46) {
-                     var tn = document.activeElement.tagName;
-                     if (tn != "TEXTAREA" && tn != "INPUT")
-                     {
-                         var selectedElements = cy.$(':selected');
-                         editorActionsManager.removeElement(selectedElements);
-                     }
-                 }
-             });
-         }
-
-     };
 
     return AppManager;
 })();

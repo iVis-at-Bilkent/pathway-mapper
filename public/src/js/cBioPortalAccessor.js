@@ -7,7 +7,7 @@ module.exports = (function()
         this.GET_PROFILE_DATA_URL = "http://www.cbioportal.org/webservice.do?cmd=getProfileData";
         this.MRNA_EXP_STUDY_NAME = "_mrna_median_Zscores";
         this.CNA_EXP_STUDY_NAME = "_gistic";
-        this.VALIDATE_GENES_URL  = 'http://www.cbioportal.org/api/genes/fetch?geneIdType=HUGO_GENE_SYMBOL&projection=ID'
+        this.VALIDATE_GENES_URL  = 'http://www.cbioportal.org/beta/api/genes/fetch?geneIdType=HUGO_GENE_SYMBOL&projection=ID'
         this.MUTATION_EXP_STUDY_NAME = "_mutations";
 
 
