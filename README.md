@@ -9,7 +9,7 @@ PathwayMapper is a web based pathway curation tool for interactive creation, edi
 [Bahceci et al. (2017) "PathwayMapper: a collaborative visual web editor for cancer pathways and genomic data", Bioinformatics](https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btx149).
 
 #### Feedback
-Send any feedback and error reports to at ivis@cs.bilkent.edu.tr.
+Send any feedback and error reports to at pathwaymapper@gmail.com.
 ## Software
 
 PathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).
@@ -105,28 +105,49 @@ Below is a screenshot showing a sample pathway constructed with PathwayMapper:
   <img src="public/assets/sample-pathway.png" width="320"/>
 </p>
 
+#### Validating Gene Symbols
+
+Gene symbols may be checked for validity using [cBioPortal's web service](http://www.cbioportal.org/beta/api/swagger-ui.html#!/Genes/getAllGenesUsingGET). Below is a screenshot showing genes with invalid labels in red borders:
+<p align="center">
+  <img src="public/assets/sample-invalid-genes.png" width="500"/>
+</p>
+
+#### Inspecting Gene Properties
+
+Assuming a gene symbol is valid, you may inspect its properties from [EntrezGene]() by simply double-clicking on that gene to pop-up an inspector window and pressing the button "Entrez Gene":
+<p align="center">
+  <img src="public/assets/sample-EntrezGene-properties.png" width="320"/>
+</p>
+
+#### Associating PubMed IDs with Interactions
+
+One can associate any number of PubMed IDs with an interaction by simply double-clicking on that interaction and entering the PubMed IDs. These IDs have hyperlinks to the associated PubMed web page:
+<p align="center">
+  <img src="public/assets/sample-PubMed-IDs.png" width="340"/>
+</p>
+
+### Sample TCGA Pathways
+
+A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) studies and those resulting from TCGA PanCanAtlas Project are available under Network > TCGA menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
+<p align="center">
+  <img src="public/assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="440"/>
+</p>
+
+The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
+
 ### Aligning Nodes
 
 Alignment guidelines help us align nodes manually in a vertical or horizontal manner. Alternatively, one may select two or more nodes and align using View > Align Selected menu item. Alignment is performed with respect to the firstly selected node.
 
 Before vertical center alignment of four nodes with respect to the firstly selected gene KRAS:
 <p align="center">
-  <img src="public/assets/align-before.png" width="320"/>
+  <img src="public/assets/align-before.png" width="300"/>
 </p>
 
 After alignment:
 <p align="center">
-  <img src="public/assets/align-after.png" width="320"/>
+  <img src="public/assets/align-after.png" width="300"/>
 </p>
-
-### Sample TCGA Pathways
-
-A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) studies are available under Network > TCGA menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
-<p align="center">
-  <img src="public/assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="440"/>
-</p>
-
-The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
 
 ### Performing Automatic Layout
 
@@ -134,12 +155,12 @@ At any point, the user may want to rearrange the layout of the pathway. By defau
 
 A pathway randomly laid out:
 <p align="center">
-  <img src="public/assets/layout-before.png" width="400"/>
+  <img src="public/assets/layout-before.png" width="360"/>
 </p>
 
 The same pathway after automatic layout:
 <p align="center">
-  <img src="public/assets/layout-after.png" width="400"/>
+  <img src="public/assets/layout-after.png" width="360"/>
 </p>
 
 ### Exporting To / Importing From A Text File
@@ -200,8 +221,8 @@ The user may also fetch alteration frequencies available on cBioPortal database 
 Should you choose "Collaborative" on the welcome page, you will be first prompted for Google account authentication since the shared data model will be stored in a shared document at Google Drive folder of the user. Then your editing session will be given a unique ID and you will have the option of sharing the URL containing this ID with desired person(s) and construct / edit a pathways in real time with support for concurrent modifications and built-in conflict resolution.
 
 Any changes made by any person working on the pathway with the same URL will be shared / reflected to other people currently viweing / editing the same pathway. Below is a short video illustrating collaborative usage: 
-<a href="https://www.youtube.com/watch?v=pKITXqbDyOc&feature=youtu.be" target="_blank"><p align="center"><img src="public/assets/collaboration-with-PM.png" width="460"/></p></a>
+<a href="https://www.youtube.com/watch?v=pKITXqbDyOc&feature=youtu.be" target="_blank"><p align="center"><img src="public/assets/collaboration-with-PM.png" width="460" title="Click to watch video"/></p></a>
 
 ## Team
 
-  * [Istemi Bahceci](https://github.com/istemi-bahceci), [Leonard Dervishi](https://github.com/leonarddrv), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and Konnor C. La, [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
+  * [Istemi Bahceci](https://github.com/istemi-bahceci), [Leonard Dervishi](https://github.com/leonarddrv), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and Konnor C. La, [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [The Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
