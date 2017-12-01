@@ -105,9 +105,18 @@ Below is a screenshot showing a sample pathway constructed with PathwayMapper:
   <img src="public/assets/sample-pathway.png" width="320"/>
 </p>
 
+#### Validating Gene Symbols
+
 Gene symbols may be checked for validity using [cBioPortal's web service](http://www.cbioportal.org/beta/api/swagger-ui.html#!/Genes/getAllGenesUsingGET). Below is a screenshot showing genes with invalid labels in red borders:
 <p align="center">
-  <img src="public/assets/sample-invalid-genes.png" width="480"/>
+  <img src="public/assets/sample-invalid-genes.png" width="500"/>
+</p>
+
+#### Inspecting Gene Properties
+
+Assuming a gene symbol is valid, you may inspect its properties from [EntrezGene]() by simply double-clicking on that gene to pop-up an inspector window and pressing the button "Entrez Gene":
+<p align="center">
+  <img src="public/assets/sample-EntrezGene-properties.png" width="320"/>
 </p>
 
 #### Associating PubMed IDs with Interactions
@@ -123,12 +132,12 @@ Alignment guidelines help us align nodes manually in a vertical or horizontal ma
 
 Before vertical center alignment of four nodes with respect to the firstly selected gene KRAS:
 <p align="center">
-  <img src="public/assets/align-before.png" width="320"/>
+  <img src="public/assets/align-before.png" width="300"/>
 </p>
 
 After alignment:
 <p align="center">
-  <img src="public/assets/align-after.png" width="320"/>
+  <img src="public/assets/align-after.png" width="300"/>
 </p>
 
 ### Sample TCGA Pathways
@@ -146,12 +155,12 @@ At any point, the user may want to rearrange the layout of the pathway. By defau
 
 A pathway randomly laid out:
 <p align="center">
-  <img src="public/assets/layout-before.png" width="400"/>
+  <img src="public/assets/layout-before.png" width="360"/>
 </p>
 
 The same pathway after automatic layout:
 <p align="center">
-  <img src="public/assets/layout-after.png" width="400"/>
+  <img src="public/assets/layout-after.png" width="360"/>
 </p>
 
 ### Exporting To / Importing From A Text File
