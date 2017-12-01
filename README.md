@@ -1,3 +1,6 @@
+<!---
+ TODO: search, highlight, node resize, edge bends
+--->
 # PathwayMapper
 
 PathwayMapper is a web based pathway curation tool for interactive creation, editing, and sharing of cancer pathways. The tool supports remote users to collaborate and concurrently modify pathways using Google Real Time API with built-in conflict resolution. 
