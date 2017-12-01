@@ -112,7 +112,7 @@ Gene symbols may be checked for validity using [cBioPortal's web service](http:/
 
 #### Associating PubMed IDs with Interactions
 
-One can associate any number of PubMed IDs with an interaction by simple clicking on that interaction and entering the PubMed IDs. These IDs have hyperlinks to the associated PubMed web page:
+One can associate any number of PubMed IDs with an interaction by simply double-clicking on that interaction and entering the PubMed IDs. These IDs have hyperlinks to the associated PubMed web page:
 <p align="center">
   <img src="public/assets/sample-PubMed-IDs.png" width="340"/>
 </p>
