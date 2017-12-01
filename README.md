@@ -126,6 +126,15 @@ One can associate any number of PubMed IDs with an interaction by simply double-
   <img src="public/assets/sample-PubMed-IDs.png" width="340"/>
 </p>
 
+### Sample TCGA Pathways
+
+A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) studies and those resulting from TCGA PanCanAtlas Project are available under Network > TCGA menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
+<p align="center">
+  <img src="public/assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="440"/>
+</p>
+
+The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
+
 ### Aligning Nodes
 
 Alignment guidelines help us align nodes manually in a vertical or horizontal manner. Alternatively, one may select two or more nodes and align using View > Align Selected menu item. Alignment is performed with respect to the firstly selected node.
@@ -139,15 +148,6 @@ After alignment:
 <p align="center">
   <img src="public/assets/align-after.png" width="300"/>
 </p>
-
-### Sample TCGA Pathways
-
-A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) studies and those resulting from TCGA PanCanAtlas Project are available under Network > TCGA menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
-<p align="center">
-  <img src="public/assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="440"/>
-</p>
-
-The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
 
 ### Performing Automatic Layout
 
