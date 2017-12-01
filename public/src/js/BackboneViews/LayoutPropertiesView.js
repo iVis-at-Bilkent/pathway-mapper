@@ -41,6 +41,9 @@ var layoutProps = Backbone.View.extend(
     this.currentLayoutProperties.gravityRangeCompound = Number(this.$el.find("#comp-gravRange").val());
     this.currentLayoutProperties.gravityCompound = Number(this.$el.find("#comp-grav").val());
     this.currentLayoutProperties.gravityRange = Number(this.$el.find("#grav-range").val());
+    this.currentLayoutProperties.tilingPaddingVertical = Number(this.$el.find("#tile-verticalPadding").val());
+    this.currentLayoutProperties.tilingPaddingHorizontal = Number(this.$el.find("#tile-horizontalPadding").val());
+    this.currentLayoutProperties.initialEnergyOnIncremental = Number(this.$el.find("#incr-coolingFactor").val());
 
     this.currentLayoutProperties.tile = this.$el.find("#tile").is(':checked');
     this.currentLayoutProperties.animate = this.$el.find("#animate").is(':checked');
@@ -62,6 +65,9 @@ var layoutProps = Backbone.View.extend(
     this.$el.find("#comp-gravRange").val(this.currentLayoutProperties.gravityRangeCompound);
     this.$el.find("#comp-grav").val(this.currentLayoutProperties.gravityCompound);
     this.$el.find("#grav-range").val(this.currentLayoutProperties.gravityRange);
+    this.$el.find("#tile-verticalPadding").val(this.currentLayoutProperties.tilingPaddingVertical);
+    this.$el.find("#tile-horizontalPadding").val(this.currentLayoutProperties.tilingPaddingHorizontal);
+    this.$el.find("#incr-coolingFactor").val(this.currentLayoutProperties.initialEnergyOnIncremental);
 
     this.$el.find("#num-iter").val(this.currentLayoutProperties.numIter);
     this.$el.find("#tile")[0].checked = this.currentLayoutProperties.tile;

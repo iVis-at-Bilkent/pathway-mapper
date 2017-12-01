@@ -1125,6 +1125,9 @@ module.exports = (function()
         LayoutPropertiesR.prototype.gravityRangeCompound = gapi.drive.realtime.custom.collaborativeField('gravityRangeCompound');
         LayoutPropertiesR.prototype.gravityCompound = gapi.drive.realtime.custom.collaborativeField('gravityCompound');
         LayoutPropertiesR.prototype.gravityRange = gapi.drive.realtime.custom.collaborativeField('gravityRange');
+        LayoutPropertiesR.prototype.tilingPaddingVertical = gapi.drive.realtime.custom.collaborativeField('tilingPaddingVertical');
+        LayoutPropertiesR.prototype.tilingPaddingHorizontal = gapi.drive.realtime.custom.collaborativeField('tilingPaddingHorizontal');
+        LayoutPropertiesR.prototype.initialEnergyOnIncremental = gapi.drive.realtime.custom.collaborativeField('initialEnergyOnIncremental');
 
         //GlobalOptionsR
         GlobalOptionsR.prototype.zoomLevel = gapi.drive.realtime.custom.collaborativeField('zoomLevel');
@@ -1239,6 +1242,9 @@ module.exports = (function()
         this.gravityRangeCompound = params.gravityRangeCompound || 'undefined';
         this.gravityCompound = params.gravityCompound || 'undefined';
         this.gravityRange = params.gravityRange || 'undefined';
+        this.tilingPaddingVertical = params.tilingPaddingVertical || 'undefined';
+        this.tilingPaddingHorizontal = params.tilingPaddingHorizontal || 'undefined';
+        this.initialEnergyOnIncremental = params.initialEnergyOnIncremental || 'undefined';
     };
 
     var GlobalOptionsRInitializer = function(params)

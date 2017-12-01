@@ -5,8 +5,7 @@ var panzoom = require('cytoscape-panzoom');
 //var cxtmenu = require('cytoscape-cxtmenu');
 var navigator = require('cytoscape-navigator');
 var cyqtip = require('cytoscape-qtip');
-var regCose = require("../../../lib/js/cose-bilkent/src/index.js");
-// var regCose = require('cytoscape-cose-bilkent');
+var regCose = require('cytoscape-cose-bilkent');
 var grid_guide = require('cytoscape-grid-guide');
 var undoRedo = require('cytoscape-undo-redo');
 var contextMenus = require('cytoscape-context-menus');
@@ -88,11 +87,10 @@ window.notificationManager = require('./../Utils/NotificationFactory');
          $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
          $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
 
-         $('.cy-panzoom').css('position', 'absolute');
+         $('.cy-panzoom').css('position', 'relative');
          $('.cy-panzoom').css('top', 2);
          $('.cy-panzoom').css('left', widthCy - 57);
          $('.cy-panzoom').css('z-index', 1039);
-
      }
 
      AppManager.prototype.createSampleMenu = function ()

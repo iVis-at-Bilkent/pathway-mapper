@@ -12,7 +12,7 @@ var SaveLoadUtils =
     var edges = cy.edges();
 
     //Prepare Meta Line
-     returnString += '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY\tW\tH--'+'\n';
+     returnString += '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY\tWIDTH\tHEIGHT--'+'\n';
 
     if (nodes)
     {
@@ -81,7 +81,7 @@ var SaveLoadUtils =
 
     //Put a blank line between nodes and edges
     returnString += '\n';
-    returnString += 'PARTICIPANT\tPARTICIPANT_TYPE\tPARENT_ID\tPOSX\tPOSY\tW\tH'+'\n';
+    returnString += 'PARTICIPANT\tPARTICIPANT_TYPE\tPARENT_ID\tPOSX\tPOSY\tWIDTH\tHEIGHT'+'\n';
 
     if (nodes)
     {

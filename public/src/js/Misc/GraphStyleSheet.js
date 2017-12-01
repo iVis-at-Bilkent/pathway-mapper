@@ -194,7 +194,15 @@ module.exports = (function()
         selector: 'node:selected',
         style:
             {
+                'border-width': 2,
                 'border-color' : '#ffc90e', /*#f1c40f'*/
+            }
+    },
+    {
+        selector: '.highlightedNode:selected, .invalidGeneHighlight:selected',
+        style:
+            {
+                'border-width': 4,
             }
     },
     {

@@ -21,7 +21,7 @@ module.exports = (function()
             idealEdgeLength: 50,
             edgeElasticity: 0.45,
             nestingFactor: 0.1,
-            gravity: 0.15,
+            gravity: 0.25,
             numIter: 2500,
             tile: true,
             animate: "end",
@@ -30,7 +30,22 @@ module.exports = (function()
             // Gravity force (constant) for compounds
             gravityCompound: 1.0,
             // Gravity range (constant)
-            gravityRange: 1.5
+            gravityRange: 3.8,
+
+            // Amount of vertical space to put between degree zero nodes during tiling (can also be a function)
+            tilingPaddingVertical: 10,
+            // Amount of horizontal space to put between degree zero nodes during tiling (can also be a function)
+            tilingPaddingHorizontal: 10,
+            // Initial cooling factor for incremental layout
+            initialEnergyOnIncremental: 0.5,
+            animationDuration: 2000,
+            animationEasing: 'cubic-bezier(0.17,0.72,0.41,0.98)',
+            // Called on `layoutready`
+            ready: function () {
+            },
+            // Called on `layoutstop`
+            stop: function () {
+            }
         };
         this.FIT_CONSTANT = 50;
 

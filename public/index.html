@@ -193,6 +193,24 @@
             </div>
           </div>
           <div class="input-group">
+            <label class="control-label col-sm-4" for="tile-verticalPadding">Tiling Vertical Padding:</label>
+            <div class="col-sm-8">
+              <input id="tile-verticalPadding" type="text" class="form-control" value= <%= tilingPaddingVertical %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="tile-horizontalPadding">Tiling Horizontal Padding:</label>
+            <div class="col-sm-8">
+              <input id="tile-horizontalPadding" type="text" class="form-control" value= <%= tilingPaddingHorizontal %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="incr-coolingFactor">Incremental Cooling Factor:</label>
+            <div class="col-sm-8">
+              <input id="incr-coolingFactor" type="text" class="form-control" value= <%= initialEnergyOnIncremental %> >
+            </div>
+          </div>
+          <div class="input-group">
             <label class="control-label col-sm-4" for="tile">Tile Disconnected:</label>
             <div class="col-sm-8 leftText">
               <input id="tile" type="checkbox" class="input-small layout-text" <% if (tile){ %> checked<%}%>>
