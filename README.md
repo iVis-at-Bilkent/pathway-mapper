@@ -5,11 +5,16 @@ PathwayMapper is a web based pathway curation tool for interactive creation, edi
   <img src="public/assets/sample-screenshot.png" width="440"/>
 </p>
 
+#### How to Cite Usage
+[Bahceci et al. (2017) "PathwayMapper: a collaborative visual web editor for cancer pathways and genomic data", Bioinformatics](https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btx149).
+
+#### Feedback
+Send any feedback and error reports to at pathwaymapper@gmail.com.
 ## Software
 
 PathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).
 
-It uses the following libraries: Cytoscape.js, node.js, backbone.js. 
+It uses the libraries [Cytoscape.js](http://js.cytoscape.org), node.js, and backbone.js, and [cBioPortal API](http://www.cbioportal.org/api-legacy/swagger-ui.html). 
 
 A sample deployment can be found [here](http://pathwaymapper.org).
 
@@ -100,6 +105,18 @@ Below is a screenshot showing a sample pathway constructed with PathwayMapper:
   <img src="public/assets/sample-pathway.png" width="320"/>
 </p>
 
+Gene symbols may be checked for validity using [cBioPortal's web service](http://www.cbioportal.org/beta/api/swagger-ui.html#!/Genes/getAllGenesUsingGET). Below is a screenshot showing genes with invalid labels in red borders:
+<p align="center">
+  <img src="public/assets/sample-invalid-genes.png" width="420"/>
+</p>
+
+#### Associating PubMed IDs with Interactions
+
+One can associate any number of PubMed IDs with an interaction by simple clicking on that interaction and entering the PubMed IDs. These IDs have hyperlinks to the associated PubMed web page:
+<p align="center">
+  <img src="public/assets/sample-PubMed-IDs.png" width="320"/>
+</p>
+
 ### Aligning Nodes
 
 Alignment guidelines help us align nodes manually in a vertical or horizontal manner. Alternatively, one may select two or more nodes and align using View > Align Selected menu item. Alignment is performed with respect to the firstly selected node.
@@ -116,7 +133,7 @@ After alignment:
 
 ### Sample TCGA Pathways
 
-A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) studies are available under Network > TCGA menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
+A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) studies and those resulting from TCGA PanCanAtlas Project are available under Network > TCGA menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
 <p align="center">
   <img src="public/assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="440"/>
 </p>
@@ -195,8 +212,8 @@ The user may also fetch alteration frequencies available on cBioPortal database 
 Should you choose "Collaborative" on the welcome page, you will be first prompted for Google account authentication since the shared data model will be stored in a shared document at Google Drive folder of the user. Then your editing session will be given a unique ID and you will have the option of sharing the URL containing this ID with desired person(s) and construct / edit a pathways in real time with support for concurrent modifications and built-in conflict resolution.
 
 Any changes made by any person working on the pathway with the same URL will be shared / reflected to other people currently viweing / editing the same pathway. Below is a short video illustrating collaborative usage: 
-<a href="https://www.youtube.com/watch?v=pKITXqbDyOc&feature=youtu.be" target="_blank"><p align="center"><img src="public/assets/collaboration-with-PM.png" width="460"/></p></a>
+<a href="https://www.youtube.com/watch?v=pKITXqbDyOc&feature=youtu.be" target="_blank"><p align="center"><img src="public/assets/collaboration-with-PM.png" width="460" title="Click to watch video"/></p></a>
 
 ## Team
 
-  * [Istemi Bahceci](https://github.com/istemi-bahceci), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and Konnor C. La, [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
+  * [Istemi Bahceci](https://github.com/istemi-bahceci), [Leonard Dervishi](https://github.com/leonarddrv), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and Konnor C. La, [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [The Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
