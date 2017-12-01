@@ -107,14 +107,14 @@ Below is a screenshot showing a sample pathway constructed with PathwayMapper:
 
 Gene symbols may be checked for validity using [cBioPortal's web service](http://www.cbioportal.org/beta/api/swagger-ui.html#!/Genes/getAllGenesUsingGET). Below is a screenshot showing genes with invalid labels in red borders:
 <p align="center">
-  <img src="public/assets/sample-invalid-genes.png" width="420"/>
+  <img src="public/assets/sample-invalid-genes.png" width="480"/>
 </p>
 
 #### Associating PubMed IDs with Interactions
 
 One can associate any number of PubMed IDs with an interaction by simple clicking on that interaction and entering the PubMed IDs. These IDs have hyperlinks to the associated PubMed web page:
 <p align="center">
-  <img src="public/assets/sample-PubMed-IDs.png" width="320"/>
+  <img src="public/assets/sample-PubMed-IDs.png" width="340"/>
 </p>
 
 ### Aligning Nodes
