@@ -1,0 +1,29 @@
+﻿TP53
+
+Pathway centered around the regulation of the tumor suppressor TP53, a gene that regulates apoptosis, cell cycle arrest, senescence, and DNA repair.
+
+--NODE_NAME	NODE_ID	NODE_TYPE	PARENT_ID	POSX	POSY--
+Cell survival, proliferation	xDGjGXGMfyG3	PROCESS	-1	133	449
+CDKN2A	gx_YWb90fyGp	GENE	-1	-23	235
+MDM4	sT2W03HDfyGe	GENE	lK7pvMYZfyGU	319	127
+DNA replication stress	YvaYsZcufyHH	PROCESS	-1	597	51
+RPS6KA3	Iu0kJKKGfyGM	GENE	-1	597	328
+MDM2	qv-3H9tXfyGZ	GENE	lK7pvMYZfyGU	149	127
+Senescence, apoptosis	Ikv91AlOfyG-	PROCESS	-1	325	448
+undefined	lK7pvMYZfyGU	FAMILY	-1	234	127
+TP53	ES5FXiJLfyGu	GENE	-1	233	328
+Oncogenic stress	HZxSxJBmfyHE	PROCESS	-1	333	222
+ATM	c4Ad6ZYBfyGx	GENE	-1	597	130
+CHEK2	Jvx4WzdtfyGk	GENE	-1	597	225
+
+--EDGE_ID	SOURCE	TARGET	EDGE_TYPEINTERACTION_PUBMED_ID
+8KZq5XsifyHL	ES5FXiJLfyGu	xDGjGXGMfyG3	INHIBITS	
+5e5CkdqDfyHg	gx_YWb90fyGp	ES5FXiJLfyGu	INHIBITS	
+WAvkWWubfyHO	Jvx4WzdtfyGk	Iu0kJKKGfyGM	ACTIVATES	
+wMOYIFFAfyHS	gx_YWb90fyGp	lK7pvMYZfyGU	INHIBITS	
+Zd519CgjfyHd	HZxSxJBmfyHE	ES5FXiJLfyGu	ACTIVATES	
+lFKJrXsmfyHb	ES5FXiJLfyGu	Ikv91AlOfyG-	ACTIVATES	
+geyskuwAfyHV	lK7pvMYZfyGU	ES5FXiJLfyGu	INHIBITS	
+t-G0U6EJfyHR	Iu0kJKKGfyGM	ES5FXiJLfyGu	ACTIVATES	
+vNvONKmFfyHj	YvaYsZcufyHH	c4Ad6ZYBfyGx	ACTIVATES	
+25K5WaLwfyHX	c4Ad6ZYBfyGx	Jvx4WzdtfyGk	ACTIVATES	
