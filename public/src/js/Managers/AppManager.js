@@ -295,6 +295,26 @@ window.notificationManager = require('./../Utils/NotificationFactory');
 
         var nav = cy.navigator( navDefaults ); // get navigator instance, nav
 
+        var edgeBendEditingOptions = {
+            // this function specifies the positions of bend points
+            bendPositionsFunction: function(ele) {
+                return ele.data('bendPointPositions');
+            },
+            // whether to initilize bend points on creation of this extension automatically
+            initBendPointsAutomatically: true,
+            // whether the bend editing operations are undoable (requires cytoscape-undo-redo.js)
+            undoable: true,
+            // the size of bend shape is obtained by multipling width of edge with this parameter
+            bendShapeSizeFactor: 6,
+            // whether to start the plugin in the enabled state
+            enabled: true,
+            // title of add bend point menu item (User may need to adjust width of menu items according to length of this option)
+            addBendMenuItemTitle: "Add Bend Point",
+            // title of remove bend point menu item (User may need to adjust width of menu items according to length of this option)
+            removeBendMenuItemTitle: "Remove Bend Point"
+        };
+        window.edgeBendEditing = cy.edgeBendEditing(edgeBendEditingOptions);
+
         cy.nodeResize({
             padding: 5, // spacing between node and grapples/rectangle
             undoable: true, // and if cy.undoRedo exists
@@ -348,26 +368,6 @@ window.notificationManager = require('./../Utils/NotificationFactory');
                 w: "w-resize"
             }
         });
-
-        var edgeBendEditingOptions = {
-            // this function specifies the positions of bend points
-            bendPositionsFunction: function(ele) {
-                return ele.data('bendPointPositions');
-            },
-            // whether to initilize bend points on creation of this extension automatically
-            initBendPointsAutomatically: true,
-            // whether the bend editing operations are undoable (requires cytoscape-undo-redo.js)
-            undoable: true,
-            // the size of bend shape is obtained by multipling width of edge with this parameter
-            bendShapeSizeFactor: 6,
-            // whether to start the plugin in the enabled state
-            enabled: true,
-            // title of add bend point menu item (User may need to adjust width of menu items according to length of this option)
-            addBendMenuItemTitle: "Add Bend Point",
-            // title of remove bend point menu item (User may need to adjust width of menu items according to length of this option)
-            removeBendMenuItemTitle: "Remove Bend Point"
-        };
-        window.edgeBendEditing = cy.edgeBendEditing(edgeBendEditingOptions);
 
         var viewUtilitiesOpts = {
             node: {
