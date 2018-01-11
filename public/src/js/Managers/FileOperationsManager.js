@@ -60,27 +60,13 @@ module.exports = (function($)
 
     FileOperationsManager.prototype.saveGraph = function(isSIFNX)
     {
-
-        var pathwayData = this.getPathwayData();
+        var pathwayData = window.appManager.pathwayDetailsView.getPathwayData();
         pathwayData.graphJSON = cy.json();
 
         var returnString = (isSIFNX) ? SaveLoadUtilities.exportAsSIFNX(pathwayData):
                                        SaveLoadUtilities.exportGraph(pathwayData);
         var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
         saveAs(blob, pathwayData.fileName);
-    }
-
-    FileOperationsManager.prototype.getPathwayData = function()
-    {
-        //TODO ??
-        var pathwayData =
-        {
-            fileName: $("#pName").val(),
-            pathwayTitle: $("#pTitle").val(),
-            pathwayDescription: $("#pDesc").val()
-        };
-
-        return pathwayData;
     }
 
     FileOperationsManager.prototype.changePathwayDetails = function(pathwayData)

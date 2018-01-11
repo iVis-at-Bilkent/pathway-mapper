@@ -87,10 +87,13 @@ window.notificationManager = require('./../Utils/NotificationFactory');
          $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
          $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
 
+         //Relative is used so that its position depends on the below properties
          $('.cy-panzoom').css('position', 'relative');
          $('.cy-panzoom').css('top', 2);
          $('.cy-panzoom').css('left', widthCy - 57);
          $('.cy-panzoom').css('z-index', 1039);
+         //Makes the width of panzoom container to 0
+         $('.cy-panzoom').css('width', 0);
      }
 
      AppManager.prototype.createSampleMenu = function ()
@@ -443,27 +446,33 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         cy.on('doubleTap', 'edge', function(e)
         {
             var eventIsDirect = (e.target === this);
-            $(".qtip").remove();
 
             if( eventIsDirect ) {
+                $(".qtip").remove();
                 that.qtipManager.addQtipToElements(e.target);
+                // var api = this.qtip('api');
+                // if (api) {
+                //     api.show();
+                // }
             }
         });
 
         cy.on('select', 'node', function( e )
         {
             window.editorActionsManager.pushSelectedNodeStack(e.target);
+            if (window.appManager.pathwayDetailsView.getPathwayData().autoSizeNodes)
+                cy.nodeResize('get').removeGrapples();
         });
 
-        cy.on('select', 'edge', function( e )
-        {
-          var eventIsDirect = (e.target === this);
-          $(".qtip").remove();
-
-          if( eventIsDirect ) {
-              that.qtipManager.addQtipToElements(e.target);
-          }
-        });
+        // cy.on('select', 'edge', function( e )
+        // {
+        //   var eventIsDirect = (e.target === this);
+        //   $(".qtip").remove();
+        //
+        //   if( eventIsDirect ) {
+        //       that.qtipManager.addQtipToElements(e.target);
+        //   }
+        // });
 
         cy.on('unselect', 'node', function( e )
         {

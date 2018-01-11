@@ -1132,8 +1132,8 @@ module.exports = (function()
     {
         var previousWidth = ele.width();
         var previousHeight = ele.height();
-        ele.data('w',previousWidth);
-        ele.data('h',previousHeight);
+        ele.style('width',""+previousWidth);
+        ele.style('height',""+previousHeight);
 
         //Sync movement to real time api
         if(this.isCollaborative) {
@@ -1452,6 +1452,44 @@ module.exports = (function()
         this.genomicDataOverlayManager.showGenomicData();
         this.genomicDataOverlayManager.notifyObservers();
     }
+
+    EditorActionsManager.prototype.updateAutoSizeNodesToContent = function()
+    {
+        //Checks whether auto size option is true
+        if (window.appManager.pathwayDetailsView.getPathwayData().autoSizeNodes)
+        {
+            var visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
+            var labelWithData = 144 + (visibleNumberOfData-3) * 36 + "";
+            cy.nodes().forEach(function( ele ){
+                if (ele.data('name') != "")
+                {
+                    var labelLength = ele.style('label').length*10 +"";
+                    ele.style('width',labelLength);
+                    ele.style('height', '20');
+                }
+                if (visibleNumberOfData > 0)
+                {
+                    if (visibleNumberOfData < 4)
+                        ele.style('width','148');
+                    else
+                        ele.style('width', labelWithData);
+                    ele.style('height', '48');
+                }
+            });
+        }
+        else
+        {
+            //If the label is empty just set the default sizes
+            cy.nodes().forEach(function( ele ){
+                if (ele.data('name') != "")
+                {
+                    ele.style('width', '150');
+                    ele.style('height', '52');
+                }
+            });
+        }
+        // cy.nodeResize('get').refreshGrapples();
+    };
 
     //Utility Functions
     //TODO move functions thar are inside class functions here

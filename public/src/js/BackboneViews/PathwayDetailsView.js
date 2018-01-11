@@ -11,7 +11,8 @@ var pathwayDetails = Backbone.View.extend(
         {
             pathwayName: "pathway.txt",
             pathwayTitle: "New Pathway",
-            pathwayDescription: ""
+            pathwayDescription: "",
+            autoSizeNodes: false
         };
     },
     saveHandler: function(event)
@@ -19,8 +20,9 @@ var pathwayDetails = Backbone.View.extend(
         this.properties.pathwayName = this.$el.find("#pName").val();
         this.properties.pathwayTitle = this.$el.find("#pTitle").val();
         this.properties.pathwayDescription = this.$el.find("#pDesc").val();
+        this.properties.autoSizeNodes = this.$el.find("#autoSizeNodes")[0].checked;
         this.$el.modal('toggle');
-
+        window.editorActionsManager.updateAutoSizeNodesToContent();
     },
     updatePathwayProperties: function(data)
     {
@@ -47,6 +49,18 @@ var pathwayDetails = Backbone.View.extend(
             }
         });
         return this;
+    },
+    getPathwayData : function()
+    {
+        var pathwayData =
+            {
+                fileName: $("#pName").val(),
+                pathwayTitle: $("#pTitle").val(),
+                pathwayDescription: $("#pDesc").val(),
+                autoSizeNodes: this.$el.find("#autoSizeNodes")[0].checked
+            };
+
+        return pathwayData;
     }
 });
 
