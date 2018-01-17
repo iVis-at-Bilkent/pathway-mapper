@@ -138,12 +138,12 @@
               <input id="node-repulsion" type="text" class="form-control" value=<%= nodeRepulsion %> >
             </div>
           </div>
-          <div class="input-group">
-            <label class="control-label col-sm-4" for="node-overlap">Node Overlap:</label>
-            <div class="col-sm-8">
-              <input id="node-overlap" type="text" class="form-control" value= <%= nodeOverlap %> >
-            </div>
-          </div>
+          <!--<div class="input-group">-->
+            <!--<label class="control-label col-sm-4" for="node-overlap">Node Overlap:</label>-->
+            <!--<div class="col-sm-8">-->
+              <!--<input id="node-overlap" type="text" class="form-control" value= <%= nodeOverlap %> >-->
+            <!--</div>-->
+          <!--</div>-->
           <div class="input-group">
             <label class="control-label col-sm-4" for="ideal-edge-length">Ideal Edge Length:</label>
             <div class="col-sm-8">
@@ -160,12 +160,6 @@
             <label class="control-label col-sm-4" for="nesting-factor">Nesting Factor:</label>
             <div class="col-sm-8">
               <input id="nesting-factor" type="text" class="form-control" value= <%= nestingFactor %> >
-            </div>
-          </div>
-          <div class="input-group">
-            <label class="control-label col-sm-4" for="num-iter">Number of Iterations:</label>
-            <div class="col-sm-8">
-              <input id="num-iter" type="text" class="form-control" value= <%= numIter %> >
             </div>
           </div>
           <div class="input-group">
@@ -193,6 +187,12 @@
             </div>
           </div>
           <div class="input-group">
+            <label class="control-label col-sm-4" for="num-iter">Number of Iterations:</label>
+            <div class="col-sm-8">
+              <input id="num-iter" type="text" class="form-control" value= <%= numIter %> >
+            </div>
+          </div>
+          <div class="input-group">
             <label class="control-label col-sm-4" for="tile-verticalPadding">Tiling Vertical Padding:</label>
             <div class="col-sm-8">
               <input id="tile-verticalPadding" type="text" class="form-control" value= <%= tilingPaddingVertical %> >
@@ -202,12 +202,6 @@
             <label class="control-label col-sm-4" for="tile-horizontalPadding">Tiling Horizontal Padding:</label>
             <div class="col-sm-8">
               <input id="tile-horizontalPadding" type="text" class="form-control" value= <%= tilingPaddingHorizontal %> >
-            </div>
-          </div>
-          <div class="input-group">
-            <label class="control-label col-sm-4" for="incr-coolingFactor">Incremental Cooling Factor:</label>
-            <div class="col-sm-8">
-              <input id="incr-coolingFactor" type="text" class="form-control" value= <%= initialEnergyOnIncremental %> >
             </div>
           </div>
           <div class="input-group">
@@ -226,6 +220,12 @@
             <label class="control-label col-sm-4" factiveor="randomize">Incremental:</label>
             <div class="col-sm-8 leftText">
               <input id="randomize" type="checkbox" class="input-small layout-text" <% if (!randomize){ %> checked<%}%>>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="incr-coolingFactor">Incremental Cooling Factor:</label>
+            <div class="col-sm-8">
+              <input id="incr-coolingFactor" type="text" class="form-control" value= <%= initialEnergyOnIncremental %> >
             </div>
           </div>
         </form>

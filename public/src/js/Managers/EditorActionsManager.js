@@ -48,6 +48,10 @@ module.exports = (function()
             }
         };
         this.FIT_CONSTANT = 50;
+        this.graphOptions =
+        {
+            autoSizeNodesToContent: 'true'
+        };
 
         this.layoutProperties = _.clone(this.defaultLayoutProperties);
         this.observers = [];
@@ -132,6 +136,8 @@ module.exports = (function()
         var currentName = ele.data('name');
         var args = {ele: ele, oldName: currentName, newName: newName};
         window.undoRedoManager.do('changeName', args);
+        if (ele.isNode())
+            window.editorActionsManager.updateAutoSizeNodesToContent(ele);
     };
 
     /*
@@ -517,7 +523,8 @@ module.exports = (function()
           return !isNaN(id);
         });
         pubmedArray.push.apply(pubmedArray,validPubmedIDs);
-        pubmedArray = edge.data('pubmedIDs');
+        //TODOASK
+        // pubmedArray = edge.data('pubmedIDs');
         edge.data('pubmedIDs', _.uniq(pubmedArray));
       }
     }
@@ -533,6 +540,55 @@ module.exports = (function()
         var pubmedArray = edge.data('pubmedIDs');
         edge.data('pubmedIDs', _.difference(pubmedArray, pubmedIDs));
       }
+    }
+
+    EditorActionsManager.prototype.updateEdgeBendPoints = function(edge)
+    {
+        if (this.isCollaborative)
+        {
+            var numberOfBendPoints = 0;
+            if (edgeBendEditing.getSegmentPoints(edge) !== undefined)
+                numberOfBendPoints = edgeBendEditing.getSegmentPoints(edge).length/2;
+            var bendPointsArray = [];
+            for (var j = 0; j < numberOfBendPoints; j++)
+            {
+                bendPointsArray.push(
+                    {
+                        x: edgeBendEditing.getSegmentPoints(edge)[2*j],
+                        y: edgeBendEditing.getSegmentPoints(edge)[2*j+1]
+                    }
+                );
+            }
+            // edge.data("bendPointPositions", bendPointsArray);
+            // edgeBendEditing.initBendPoints(edge);
+
+            this.realTimeManager.updateEdgeBendPoints(edge.id(), bendPointsArray);
+        }
+    }
+
+    EditorActionsManager.prototype.removeEdgeBendPoints = function(edge)
+    {
+        if (this.isCollaborative)
+        {
+            var numberOfBendPoints = 0;
+            if (edgeBendEditing.getSegmentPoints(edge) !== undefined)
+                numberOfBendPoints = edgeBendEditing.getSegmentPoints(edge).length/2;
+            var bendPointsArray = [];
+            for (var j = 0; j < numberOfBendPoints; j++)
+            {
+                bendPointsArray.push(
+                    {
+                        x: edgeBendEditing.getSegmentPoints(edge)[2*j],
+                        y: edgeBendEditing.getSegmentPoints(edge)[2*j+1]
+                    }
+                );
+            }
+            // edge.data("bendPointPositions", bendPointsArray);
+            // edgeBendEditing.initBendPoints(edge);
+
+            this.realTimeManager.updateEdgeBendPoints(edge.id(), bendPointsArray);
+            // edgeBendEditing.initBendPoints(edge);
+        }
     }
 
     //Related to order the nodes according to the selection of user
@@ -616,6 +672,29 @@ module.exports = (function()
         if(this.isCollaborative)
             this.realTimeManager.updateGlobalOptions(newOptions);
     }
+
+    //Graph properties related options: autoSizeNodes
+    EditorActionsManager.prototype.saveGraphOptions = function(newLayoutProps)
+    {
+        if(this.isCollaborative)
+        {
+            // Call a real time function that updated real time object and
+            // its callback (updateLayoutPropertiesCallback) will handle sync of this object
+            // across collaborators
+            this.realTimeManager.updateGraphOptions(newLayoutProps);
+        }
+        else
+        {
+            this.graphOptions = _.clone(newLayoutProps);
+        }
+    };
+
+    EditorActionsManager.prototype.updateGraphOptionsCallback = function(newLayoutProps)
+    {
+        this.layoutProperties = _.clone(newLayoutProps);
+        //Notify observers to reflect changes on colalborative object to the views
+        this.notifyObservers();
+    };
 
     //Layout properties related functions
     EditorActionsManager.prototype.saveLayoutProperties = function(newLayoutProps)
@@ -726,6 +805,7 @@ module.exports = (function()
         //this.cy.add(newNode);
         this.cy.nodes().updateCompoundBounds();
         window.undoRedoManager.do("add", newNode);
+        // window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
     };
 
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
@@ -914,7 +994,8 @@ module.exports = (function()
                     source: edge.source,
                     target: edge.target,
                     pubmedIDs: edge.pubmedIDs.asArray(),
-                    name: edge.name
+                    name: edge.name,
+                    bendPointPositions: edge.bendPoint.asArray()
                 }
             };
 
@@ -923,7 +1004,7 @@ module.exports = (function()
 
         this.cy.add(nodeList);
         this.cy.add(edgeList);
-
+        edgeBendEditing.initBendPoints(cy.edges());
         this.cy.nodes().updateCompoundBounds();
     }
 
@@ -937,9 +1018,11 @@ module.exports = (function()
             source: edge.source,
             target: edge.target,
             pubmedIDs: edge.pubmedIDs.asArray(),
-            name: edge.name
+            name: edge.name,
+            bendPointPositions: edge.bendPoint.asArray()
         };
         this.addNewEdgetoCy(edgeData);
+        edgeBendEditing.initBendPoints(cy.getElementById( edgeID ));
     };
 
     //Removal functions
@@ -1336,6 +1419,11 @@ module.exports = (function()
         {
           var pubmedArray = ele.pubmedIDs.asArray();
           cyEle.data('pubmedIDs', pubmedArray);
+          var bendPoint = ele.bendPoint.asArray();
+          cyEle.data('bendPointPositions', bendPoint);
+          if (bendPoint.length == 0)
+              edgeBendEditing.deleteSelectedBendPoint(cyEle,0);
+          edgeBendEditing.initBendPoints(cyEle);
         }
     };
 
@@ -1453,14 +1541,14 @@ module.exports = (function()
         this.genomicDataOverlayManager.notifyObservers();
     }
 
-    EditorActionsManager.prototype.updateAutoSizeNodesToContent = function()
+    EditorActionsManager.prototype.updateAutoSizeNodesToContent = function(nodes)
     {
         //Checks whether auto size option is true
         if (window.appManager.pathwayDetailsView.getPathwayData().autoSizeNodes)
         {
             var visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
             var labelWithData = 144 + (visibleNumberOfData-3) * 36 + "";
-            cy.nodes().forEach(function( ele ){
+            nodes.forEach(function( ele ){
                 if (ele.data('name') != "")
                 {
                     var labelLength = ele.style('label').length*10 +"";
@@ -1480,7 +1568,7 @@ module.exports = (function()
         else
         {
             //If the label is empty just set the default sizes
-            cy.nodes().forEach(function( ele ){
+            nodes.forEach(function( ele ){
                 if (ele.data('name') != "")
                 {
                     ele.style('width', '150');

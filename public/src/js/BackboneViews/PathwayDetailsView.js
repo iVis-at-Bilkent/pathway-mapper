@@ -22,7 +22,7 @@ var pathwayDetails = Backbone.View.extend(
         this.properties.pathwayDescription = this.$el.find("#pDesc").val();
         this.properties.autoSizeNodes = this.$el.find("#autoSizeNodes")[0].checked;
         this.$el.modal('toggle');
-        window.editorActionsManager.updateAutoSizeNodesToContent();
+        window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
     },
     updatePathwayProperties: function(data)
     {

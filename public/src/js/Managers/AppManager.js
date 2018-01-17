@@ -505,7 +505,22 @@ window.notificationManager = require('./../Utils/NotificationFactory');
 
         cy.on("noderesize.resizeend", function(e, type, node){
             that.editorActionsManager.resizeElements(node);
-        })
+        });
+
+        // cy.on('addBendPoint',function(){
+        //     editorActionsManager.updateEdgeBendPoints(cy.elements(":selected").first());
+        //     console.log("New bend point added");
+        // });
+
+        cy.on('bendPointMovement',function(){
+            editorActionsManager.updateEdgeBendPoints(cy.elements(":selected").first());
+            console.log("Bend point position is changed");
+        });
+
+        // cy.on('removeBendPoint',function(){
+        //     editorActionsManager.updateEdgeBendPoints(cy.elements(":selected").first());
+        //     console.log("Bend point is removed");
+        // });
 
     };
      AppManager.prototype.initKeyboardHandlers = function()
@@ -527,6 +542,10 @@ window.notificationManager = require('./../Utils/NotificationFactory');
                          editorActionsManager.removeElement(selectedElements);
                      }
                  }
+                 // else if (e.which === 76) {
+                 //     console.log("l pressed");
+                 //     editorActionsManager.updateEdgeBendPoints(cy.elements(":selected").first());
+                 // }
              });
          }
          else {
@@ -541,6 +560,10 @@ window.notificationManager = require('./../Utils/NotificationFactory');
                          editorActionsManager.removeElement(selectedElements);
                      }
                  }
+                 // else if (e.which === 76) {
+                 //     console.log("l pressed");
+                 //     editorActionsManager.updateEdgeBendPoints(cy.elements(":selected").first());
+                 // }
              });
          }
 
