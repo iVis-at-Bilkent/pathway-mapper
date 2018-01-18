@@ -12,17 +12,23 @@ var pathwayDetails = Backbone.View.extend(
             pathwayName: "pathway.txt",
             pathwayTitle: "New Pathway",
             pathwayDescription: "",
-            autoSizeNodes: false
+            autoSizeNodesToContent: true
         };
+        window.editorActionsManager.registerObserver(this);
+
     },
     saveHandler: function(event)
     {
         this.properties.pathwayName = this.$el.find("#pName").val();
         this.properties.pathwayTitle = this.$el.find("#pTitle").val();
         this.properties.pathwayDescription = this.$el.find("#pDesc").val();
-        this.properties.autoSizeNodes = this.$el.find("#autoSizeNodes")[0].checked;
+        this.properties.autoSizeNodesToContent = this.$el.find("#autoSizeNodesToContent")[0].checked;
         this.$el.modal('toggle');
-        window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
+        window.editorActionsManager.saveGraphOptions({autoSizeNodesToContent: this.properties.autoSizeNodesToContent});
+    },
+    changeOptions: function(event)
+    {
+        this.$el.find("#autoSizeNodesToContent")[0].checked = this.properties.autoSizeNodesToContent;
     },
     updatePathwayProperties: function(data)
     {
@@ -57,10 +63,17 @@ var pathwayDetails = Backbone.View.extend(
                 fileName: $("#pName").val(),
                 pathwayTitle: $("#pTitle").val(),
                 pathwayDescription: $("#pDesc").val(),
-                autoSizeNodes: this.$el.find("#autoSizeNodes")[0].checked
+                autoSizeNodesToContent: this.$el.find("#autoSizeNodesToContent")[0].checked
             };
 
         return pathwayData;
+    },
+    notify: function()
+    {
+        //Editor actions manager notified us here, that means layout properties on editor actions manager
+        //is changed. reflect it to view
+        this.properties.autoSizeNodesToContent = window.editorActionsManager.graphOptions.autoSizeNodesToContent;
+        this.changeOptions();
     }
 });
 

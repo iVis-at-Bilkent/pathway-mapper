@@ -17,7 +17,6 @@ module.exports = (function()
         {
             name: 'cose-bilkent',
             nodeRepulsion: 4500,
-            nodeOverlap: 10,
             idealEdgeLength: 50,
             edgeElasticity: 0.45,
             nestingFactor: 0.1,
@@ -50,7 +49,7 @@ module.exports = (function()
         this.FIT_CONSTANT = 50;
         this.graphOptions =
         {
-            autoSizeNodesToContent: 'true'
+            autoSizeNodesToContent: true
         };
 
         this.layoutProperties = _.clone(this.defaultLayoutProperties);
@@ -673,27 +672,29 @@ module.exports = (function()
             this.realTimeManager.updateGlobalOptions(newOptions);
     }
 
-    //Graph properties related options: autoSizeNodes
-    EditorActionsManager.prototype.saveGraphOptions = function(newLayoutProps)
+    //Graph properties related options: autoSizeNodesToContent
+    EditorActionsManager.prototype.saveGraphOptions = function(newGraphOptions)
     {
         if(this.isCollaborative)
         {
             // Call a real time function that updated real time object and
             // its callback (updateLayoutPropertiesCallback) will handle sync of this object
             // across collaborators
-            this.realTimeManager.updateGraphOptions(newLayoutProps);
+            this.realTimeManager.updateGraphOptions(newGraphOptions);
         }
         else
         {
-            this.graphOptions = _.clone(newLayoutProps);
+            this.graphOptions = _.clone(newGraphOptions);
+            window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
         }
     };
 
-    EditorActionsManager.prototype.updateGraphOptionsCallback = function(newLayoutProps)
+    EditorActionsManager.prototype.updateGraphOptionsCallback = function(newGraphOptions)
     {
-        this.layoutProperties = _.clone(newLayoutProps);
+        this.graphOptions = _.clone(newGraphOptions);
         //Notify observers to reflect changes on colalborative object to the views
         this.notifyObservers();
+        window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
     };
 
     //Layout properties related functions
@@ -805,7 +806,8 @@ module.exports = (function()
         //this.cy.add(newNode);
         this.cy.nodes().updateCompoundBounds();
         window.undoRedoManager.do("add", newNode);
-        // window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
+
+        window.editorActionsManager.updateAutoSizeNodesToContent(cy.getElementById( newNode.data.id ));
     };
 
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
@@ -850,6 +852,9 @@ module.exports = (function()
         {
             this.addNodetoCy(nodeData);
         }
+
+        window.editorActionsManager.updateAutoSizeNodesToContent(cy.getElementById( nodeID ));
+
         this.cy.nodes().updateCompoundBounds();
     };
 
@@ -1004,7 +1009,12 @@ module.exports = (function()
 
         this.cy.add(nodeList);
         this.cy.add(edgeList);
+
+        window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
+
         edgeBendEditing.initBendPoints(cy.edges());
+
+
         this.cy.nodes().updateCompoundBounds();
     }
 
@@ -1351,6 +1361,8 @@ module.exports = (function()
         this.removeElementCy(cy.elements());
         this.addNodesCy(nodes);
         this.addEdgesCy(edges);
+        window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
+
     };
 
     EditorActionsManager.prototype.loadfileRealTime = function(nodes, edges)
@@ -1414,6 +1426,8 @@ module.exports = (function()
                 window.editorActionsManager.undoHighlightInvalidGenes(cyEle);
               // window.undoRedoManager.do('removeHighlightInvalidGenes', cyEle);
             }
+
+            window.editorActionsManager.updateAutoSizeNodesToContent(cyEle);
         }
         else if(cyEle.isEdge())
         {
@@ -1544,7 +1558,7 @@ module.exports = (function()
     EditorActionsManager.prototype.updateAutoSizeNodesToContent = function(nodes)
     {
         //Checks whether auto size option is true
-        if (window.appManager.pathwayDetailsView.getPathwayData().autoSizeNodes)
+        if (this.graphOptions.autoSizeNodesToContent == true)
         {
             var visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
             var labelWithData = 144 + (visibleNumberOfData-3) * 36 + "";
@@ -1567,7 +1581,7 @@ module.exports = (function()
         }
         else
         {
-            //If the label is empty just set the default sizes
+            //If the label is emptyempty just set the default sizes
             nodes.forEach(function( ele ){
                 if (ele.data('name') != "")
                 {

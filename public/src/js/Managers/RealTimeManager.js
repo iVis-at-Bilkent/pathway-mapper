@@ -157,6 +157,9 @@ module.exports = (function()
         var groupedGenomicDataMap = root.get(this.GENOMIC_DATA_GROUP_NAME);
         var groupedGenomicDataCount = root.get(this.GENOMIC_DATA_GROUP_COUNT);
 
+        window.editorActionsManager.updateGraphOptionsCallback(graphOptions);
+
+
         var nodeMapEntries = nodeMap.values();
         var edgeMapEntries = edgeMap.values();
 
@@ -226,7 +229,6 @@ module.exports = (function()
         //Update layout properties & global options!!
         window.editorActionsManager.updateLayoutPropertiesCallback(realTimeLayoutProperties);
         window.editorActionsManager.changeGlobalOptions(globalOptions);
-        window.editorActionsManager.updateGraphOptionsCallback(graphOptions);
 
         //Sync already available genomic data !
         var genomicDataMapKeys = genomicDataMap.keys();
@@ -1160,7 +1162,6 @@ module.exports = (function()
         //LayoutPropertiesR
         LayoutPropertiesR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
         LayoutPropertiesR.prototype.nodeRepulsion = gapi.drive.realtime.custom.collaborativeField('nodeRepulsion');
-        LayoutPropertiesR.prototype.nodeOverlap = gapi.drive.realtime.custom.collaborativeField('nodeOverlap');
         LayoutPropertiesR.prototype.idealEdgeLength = gapi.drive.realtime.custom.collaborativeField('idealEdgeLength');
         LayoutPropertiesR.prototype.edgeElasticity = gapi.drive.realtime.custom.collaborativeField('edgeElasticity');
         LayoutPropertiesR.prototype.nestingFactor = gapi.drive.realtime.custom.collaborativeField('nestingFactor');
@@ -1307,7 +1308,7 @@ module.exports = (function()
         var model = gapi.drive.realtime.custom.getModel(this);
         this.name = params.name || 'undefined';
         this.nodeRepulsion = params.nodeRepulsion || 'undefined';
-        this.nodeOverlap = params.nodeOverlap || 'undefined';
+        // this.nodeOverlap = params.nodeOverlap || 'undefined';
         this.idealEdgeLength = params.idealEdgeLength || 'undefined';
         this.edgeElasticity = params.edgeElasticity || 'undefined';
         this.nestingFactor = params.nestingFactor || 'undefined';
@@ -1337,7 +1338,7 @@ module.exports = (function()
     {
         var model = gapi.drive.realtime.custom.getModel(this);
         model.beginCompoundOperation();
-        this.autoSizeNodesToContent = params.autoSizeNodesToContent || 'true';
+        this.autoSizeNodesToContent = params.autoSizeNodesToContent || true;
         model.endCompoundOperation();
     };
 

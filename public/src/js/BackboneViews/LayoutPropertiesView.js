@@ -32,7 +32,6 @@ var layoutProps = Backbone.View.extend(
   saveLayoutHandler: function(event)
   {
     this.currentLayoutProperties.nodeRepulsion = Number(this.$el.find("#node-repulsion").val());
-    this.currentLayoutProperties.nodeOverlap = Number(this.$el.find("#node-overlap").val());
     this.currentLayoutProperties.idealEdgeLength = Number(this.$el.find("#ideal-edge-length").val());
     this.currentLayoutProperties.edgeElasticity = Number(this.$el.find("#edge-elasticity").val());
     this.currentLayoutProperties.nestingFactor = Number(this.$el.find("#nesting-factor").val());
@@ -57,7 +56,7 @@ var layoutProps = Backbone.View.extend(
   changeParameters: function()
   {
     this.$el.find("#node-repulsion").val(this.currentLayoutProperties.nodeRepulsion);
-    this.$el.find("#node-overlap").val(this.currentLayoutProperties.nodeOverlap);
+    // this.$el.find("#node-overlap").val(this.currentLayoutProperties.nodeOverlap);
     this.$el.find("#ideal-edge-length").val(this.currentLayoutProperties.idealEdgeLength);
     this.$el.find("#edge-elasticity").val(this.currentLayoutProperties.edgeElasticity);
     this.$el.find("#nesting-factor").val(this.currentLayoutProperties.nestingFactor);
