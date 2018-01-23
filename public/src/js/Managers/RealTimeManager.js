@@ -766,13 +766,17 @@ module.exports = (function()
                 var refNodeId = refNode.id();
                 var nodeData = refNode.data();
                 var posData = refNode.position();
+                var currentWidth = refNode.data('w');
+                var currentHeight = refNode.data('h');
 
                 var newNodeData =
                 {
                     name: nodeData.name,
                     type: nodeData.type,
                     x: posData.x,
-                    y: posData.y
+                    y: posData.y,
+                    w: currentWidth,
+                    h: currentHeight
                 };
 
                 if(parId)

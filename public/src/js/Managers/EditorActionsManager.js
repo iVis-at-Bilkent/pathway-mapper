@@ -1081,7 +1081,10 @@ module.exports = (function()
         else
         {
             var parentData = newParentId ? newParentId : null;
-            //this.changeParentCy(eles, newParentId);
+
+            // Old manual way to change parents in local mode
+            // this.changeParentCy(eles, newParentId);
+
             var param = {
                 firstTime: true,
                 parentData: parentData, // It keeps the newParentId (Just an id for each nodes for the first time)
@@ -1091,57 +1094,6 @@ module.exports = (function()
             };
             window.undoRedoManager.do('changeParent', param);
         }
-    };
-
-    EditorActionsManager.prototype.changeParentCy = function(eles, newParentId)
-    {
-        var lockedNodes = {};
-        var self = this;
-
-        function removeNodes(nodes)
-        {
-            //Get removed edges first
-            var removedEles = nodes.connectedEdges().remove();
-            var children = nodes.children();
-
-            if (children != null && children.length > 0)
-            {
-                children.forEach(function(childNode, i)
-                {
-                    lockedNodes[childNode.id()] = true;
-                });
-
-                removedEles = removedEles.union(removeNodes(children));
-            }
-
-            removedEles = removedEles.union(nodes.remove());
-            self.cy.nodes().updateCompoundBounds();
-            return removedEles;
-        }
-
-
-        var removedEles = removeNodes(eles);
-        window.undoRedoManager.do("remove", removedEles);
-
-        for (var i = 0; i < removedEles.length; i++)
-        {
-            var removedNode = removedEles[i];
-
-            //Just alter the parent id of corresponding nodes !
-            if (removedNode.isEdge() || lockedNodes[removedNode.id()])
-            {
-                continue;
-            }
-
-            removedNode._private.data.parent = newParentId;
-            if(removedNode._private.parent){
-                delete removedNode._private.parent;
-            }
-        }
-
-        self.cy.add(removedEles);
-        window.undoRedoManager.do("add", removedEles);
-        self.cy.nodes().updateCompoundBounds();
     };
 
     EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId)
@@ -1206,6 +1158,57 @@ module.exports = (function()
 
         traverseNodes(topMostNodes, rootNodeR);
         this.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
+    };
+
+    EditorActionsManager.prototype.changeParentCy = function(eles, newParentId)
+    {
+        var lockedNodes = {};
+        var self = this;
+
+        function removeNodes(nodes)
+        {
+            //Get removed edges first
+            var removedEles = nodes.connectedEdges().remove();
+            var children = nodes.children();
+
+            if (children != null && children.length > 0)
+            {
+                children.forEach(function(childNode, i)
+                {
+                    lockedNodes[childNode.id()] = true;
+                });
+
+                removedEles = removedEles.union(removeNodes(children));
+            }
+
+            removedEles = removedEles.union(nodes.remove());
+            self.cy.nodes().updateCompoundBounds();
+            return removedEles;
+        }
+
+
+        var removedEles = removeNodes(eles);
+        window.undoRedoManager.do("remove", removedEles);
+
+        for (var i = 0; i < removedEles.length; i++)
+        {
+            var removedNode = removedEles[i];
+
+            //Just alter the parent id of corresponding nodes !
+            if (removedNode.isEdge() || lockedNodes[removedNode.id()])
+            {
+                continue;
+            }
+
+            removedNode._private.data.parent = newParentId;
+            if(removedNode._private.parent){
+                delete removedNode._private.parent;
+            }
+        }
+
+        self.cy.add(removedEles);
+        window.undoRedoManager.do("add", removedEles);
+        self.cy.nodes().updateCompoundBounds();
     };
 
     EditorActionsManager.prototype.moveElements = function(ele, position)

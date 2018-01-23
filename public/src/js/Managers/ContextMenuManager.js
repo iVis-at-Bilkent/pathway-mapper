@@ -169,6 +169,13 @@ module.exports = (function()
 
             var compId = ele.id();
             classRef.editorActionsManager.changeParents(validNodes, compId);
+
+            //Update size of nodes according to autosize checkbox
+            //Unselect and select to fix the grapple positions
+            classRef.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
+            var selected = cy.elements(':selected');
+            selected.unselect();
+            selected.select();
           },
           disabled: false, // Whether the item will be created as disabled
           hasTrailingDivider: true, // Whether the item will have a trailing divider
