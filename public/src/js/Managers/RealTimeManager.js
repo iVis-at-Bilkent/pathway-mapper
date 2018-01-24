@@ -185,7 +185,17 @@ module.exports = (function()
                 highlightedGenes.push(tmpNodeId);
             }
         }
-        window.editorActionsManager.highlightInvalidGenesInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes);
+        var highlightedEdges = [];
+        for (var i = 0; i < edgeMapEntries.length; i++)
+        {
+            var tmpEdge = edgeMapEntries[i];
+            if (tmpEdge.isHighlighted)
+            {
+                var tmpEdgeId = this.getCustomObjId(tmpEdge);
+                highlightedEdges.push(tmpEdgeId);
+            }
+        }
+        window.editorActionsManager.highlightElementsInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes, highlightedEdges);
 
         //TODO Workaround for legacy pathways
 
@@ -440,18 +450,24 @@ module.exports = (function()
       });
     };
 
-    RealTimeManager.prototype.changeHighlight = function(nodesToHighlight, isHighlighted)
+    RealTimeManager.prototype.changeHighlight = function(elementsToHighlight, isHighlighted)
     {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
         var nodeMap =  root.get(this.NODEMAP_NAME);
+        var edgeMap =  root.get(this.EDGEMAP_NAME);
 
-        nodesToHighlight.forEach(function(ele, index){
-            var nodeID = ele.id();
-            if (nodeMap.has(nodeID))
+        elementsToHighlight.forEach(function(ele, index){
+            var elementID = ele.id();
+            if (nodeMap.has(elementID))
             {
-                var realTimeNode = nodeMap.get(nodeID);
+                var realTimeNode = nodeMap.get(elementID);
                 realTimeNode.isHighlighted = isHighlighted;
+            }
+            if (edgeMap.has(elementID))
+            {
+                var realTimeEdge = edgeMap.get(elementID);
+                realTimeEdge.isHighlighted = isHighlighted;
             }
         });
     };
@@ -1159,6 +1175,7 @@ module.exports = (function()
         EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
         EdgeR.prototype.target = gapi.drive.realtime.custom.collaborativeField('target');
         EdgeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
+        EdgeR.prototype.isHighlighted = gapi.drive.realtime.custom.collaborativeField('isHighlighted');
         EdgeR.prototype.pubmedIDs = gapi.drive.realtime.custom.collaborativeField('pubmedIDs');
         EdgeR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
         EdgeR.prototype.bendPoint = gapi.drive.realtime.custom.collaborativeField('bendPoint');
@@ -1276,6 +1293,7 @@ module.exports = (function()
         this.source = params.source || "undefined";
         this.target = params.target || "undefined";
         this.name = params.name || "";
+        this.isHighlighted = params.isHighlighted || false;
 
         //TODOASK
         if (params.pubmedIDs)

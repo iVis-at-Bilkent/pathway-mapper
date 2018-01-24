@@ -230,7 +230,7 @@ module.exports = (function()
         return args;
     };
 
-    EditorActionsManager.prototype.highlightInvalidGenesInitially = function(invalidHighlightedGenesIDs, invalidGenesIDs, highlightedGenesIDs)
+    EditorActionsManager.prototype.highlightElementsInitially = function(invalidHighlightedGenesIDs, invalidGenesIDs, highlightedGenesIDs, highlightedEdgesIDs)
     {
         for (var i in invalidHighlightedGenesIDs)
         {
@@ -243,6 +243,10 @@ module.exports = (function()
         for (var i in highlightedGenesIDs)
         {
             cy.$('#'+highlightedGenesIDs[i]).addClass('highlightedNode');
+        }
+        for (var i in highlightedEdgesIDs)
+        {
+            cy.$('#'+highlightedEdgesIDs[i]).addClass('highlightedEdge');
         }
     };
 
@@ -562,31 +566,6 @@ module.exports = (function()
             // edgeBendEditing.initBendPoints(edge);
 
             this.realTimeManager.updateEdgeBendPoints(edge.id(), bendPointsArray);
-        }
-    }
-
-    EditorActionsManager.prototype.removeEdgeBendPoints = function(edge)
-    {
-        if (this.isCollaborative)
-        {
-            var numberOfBendPoints = 0;
-            if (edgeBendEditing.getSegmentPoints(edge) !== undefined)
-                numberOfBendPoints = edgeBendEditing.getSegmentPoints(edge).length/2;
-            var bendPointsArray = [];
-            for (var j = 0; j < numberOfBendPoints; j++)
-            {
-                bendPointsArray.push(
-                    {
-                        x: edgeBendEditing.getSegmentPoints(edge)[2*j],
-                        y: edgeBendEditing.getSegmentPoints(edge)[2*j+1]
-                    }
-                );
-            }
-            // edge.data("bendPointPositions", bendPointsArray);
-            // edgeBendEditing.initBendPoints(edge);
-
-            this.realTimeManager.updateEdgeBendPoints(edge.id(), bendPointsArray);
-            // edgeBendEditing.initBendPoints(edge);
         }
     }
 
@@ -1434,13 +1413,17 @@ module.exports = (function()
         }
         else if(cyEle.isEdge())
         {
-          var pubmedArray = ele.pubmedIDs.asArray();
-          cyEle.data('pubmedIDs', pubmedArray);
-          var bendPoint = ele.bendPoint.asArray();
-          cyEle.data('bendPointPositions', bendPoint);
-          if (bendPoint.length == 0)
-              edgeBendEditing.deleteSelectedBendPoint(cyEle,0);
-          edgeBendEditing.initBendPoints(cyEle);
+              var pubmedArray = ele.pubmedIDs.asArray();
+              cyEle.data('pubmedIDs', pubmedArray);
+              this.updateHighlight(cyEle, ele.isHighlighted);
+
+              var bendPoint = ele.bendPoint.asArray();
+              var numberOfBendPositions = cyEle.data('bendPointPositions').length; // Holds the number of bend positions in data before being updated
+              cyEle.data('bendPointPositions', bendPoint);
+              if (bendPoint.length == 0 && numberOfBendPositions > 0) //Checks if the number of bendpoints changed from before
+                  edgeBendEditing.deleteSelectedBendPoint(cyEle,0);
+              edgeBendEditing.initBendPoints(cyEle);
+
         }
     };
 

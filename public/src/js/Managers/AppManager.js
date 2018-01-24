@@ -514,7 +514,6 @@ window.notificationManager = require('./../Utils/NotificationFactory');
 
         cy.on('bendPointMovement',function(){
             editorActionsManager.updateEdgeBendPoints(cy.elements(":selected").first());
-            console.log("Bend point position is changed");
         });
 
         // cy.on('removeBendPoint',function(){
