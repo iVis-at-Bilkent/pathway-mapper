@@ -20,6 +20,7 @@ require('bootstrap-select');
 var panzoomOpts = require('./../Misc/PanzoomOptions.js');
 var styleSheet = require('./../Misc/GraphStyleSheet.js');
 var edgeHandleOpts = require('./../Misc/EdgeHandlesOptions.js');
+var PromptConfirmationView = require('./../BackboneViews/PromptConfirmationView.js');
 var LayoutProperties = require('./../BackboneViews/LayoutPropertiesView.js');
 var GenomicDataExplorerView = require('./../BackboneViews/GenomicDataExplorerView.js');
 var PathwayDetailsView = require('./../BackboneViews/PathwayDetailsView.js');
@@ -225,6 +226,10 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         this.layoutPropertiesView = new LayoutProperties({
             el: $('#layoutPropertiesDiv'),
             editorActionsManager: this.editorActionsManager
+        }).render();
+
+        this.promptConfirmationView = new PromptConfirmationView({
+            el: $('#promptConfirmationDiv')
         }).render();
 
         this.gridOptionsView = new GridOptionsView({

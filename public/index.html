@@ -614,6 +614,31 @@
   </div>
 </script>
 
+<div id='promptConfirmationDiv' class="modal fade" tabindex="-1" role="dialog">
+</div><!-- /.modal -->
+
+<script id="promptConfirmationTemplate" type="text/template" class="template">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Confirmation</h3>
+      </div>
+      <div class="modal-body">
+        <div class="wrapper">
+          <span>All unsaved changes will be lost. Do you want to continue?</span>
+        </div>
+      </div>
+      <div class="modal-footer" style="text-align: center">
+        <div>
+          <button id="promptConfirmationAccept" class="btn btn-default">Yes</button>
+          <button id="promptConfirmationCancel" class="btn btn-default">No</button>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div>
+</script>
+
 <div id='genomicDataExplorerDiv' class="modal fade" tabindex="-1" role="dialog">
 </div><!-- /.modal -->
 

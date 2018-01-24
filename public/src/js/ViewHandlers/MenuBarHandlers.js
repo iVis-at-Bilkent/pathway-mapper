@@ -11,7 +11,10 @@ module.exports = (function ($)
 
         if (dropdownLinkRole == 'new')
         {
-            window.fileOperationsManager.createNewPathway();
+            if(cy.elements().length != 0)
+                window.appManager.promptConfirmationView.render(function(){window.fileOperationsManager.createNewPathway()});
+            else
+                window.fileOperationsManager.createNewPathway();
         }
         else if (dropdownLinkRole == 'details')
         {
@@ -19,7 +22,10 @@ module.exports = (function ($)
         }
         else if (dropdownLinkRole == 'load')
         {
-            $('#fileinput').trigger('click');
+            if(cy.elements().length != 0)
+                window.appManager.promptConfirmationView.render(function(){$('#fileinput').trigger('click')});
+            else
+                $('#fileinput').trigger('click');
         }
         else if (dropdownLinkRole == 'sample')
         {
@@ -285,8 +291,10 @@ module.exports = (function ($)
 
     $('#loadGraphBtn').on('click', function(evt)
     {
-        $('#fileinput').attr('value', "");
-        $('#fileinput').trigger('click');
+        if(cy.elements().length != 0)
+            window.appManager.promptConfirmationView.render(function(){$('#fileinput').trigger('click')});
+        else
+            $('#fileinput').trigger('click');
     });
 
     $('#fileinput').on('change', function()

@@ -6,7 +6,10 @@ module.exports = (function ($)
         var clickedImageRole = $(event.target).attr('role');
         if (clickedImageRole === 'new')
         {
-            window.fileOperationsManager.createNewPathway();
+            if(cy.elements().length != 0)
+                window.appManager.promptConfirmationView.render(function(){window.fileOperationsManager.createNewPathway()});
+            else
+                window.fileOperationsManager.createNewPathway();
         }
         else if (clickedImageRole === 'save')
         {
@@ -14,7 +17,10 @@ module.exports = (function ($)
         }
         else if (clickedImageRole === 'load')
         {
-            $('#fileinput').trigger('click');
+            if(cy.elements().length != 0)
+                window.appManager.promptConfirmationView.render(function(){$('#fileinput').trigger('click')});
+            else
+                $('#fileinput').trigger('click');
         }
     });
 
