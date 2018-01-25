@@ -25,6 +25,10 @@ var pathwayDetails = Backbone.View.extend(
         this.properties.autoSizeNodesToContent = this.$el.find("#autoSizeNodesToContent")[0].checked;
         this.$el.modal('toggle');
         window.editorActionsManager.saveGraphOptions({autoSizeNodesToContent: this.properties.autoSizeNodesToContent});
+        // Makes grapples disappear
+        var sel = cy.elements(":selected");
+        sel.unselect();
+        sel.select();
     },
     changeOptions: function(event)
     {

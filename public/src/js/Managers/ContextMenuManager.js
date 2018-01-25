@@ -183,7 +183,7 @@ module.exports = (function()
         },
         {
           id: 'removeSelected', // ID of menu item
-          content: 'Remove Selected From Parent', // content of menu item
+          content: 'Remove This From Parent', // content of menu item
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           selector: 'node',
@@ -207,6 +207,12 @@ module.exports = (function()
             }
 
             classRef.editorActionsManager.changeParents(selectedNodes, null);
+            //Update size of nodes according to autosize checkbox
+            //Unselect and select to fix the grapple positions
+            classRef.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
+            var selected = cy.elements(':selected');
+            selected.unselect();
+            selected.select();
           },
           disabled: false, // Whether the item will be created as disabled
           hasTrailingDivider: true, // Whether the item will have a trailing divider
