@@ -459,11 +459,16 @@
               Node Palette
             </div>
             <div class="pnl-body">
-              <div id="simpleNodeDiv" class="dragButtonContainer"></div>
-              <div id="familyNodeDiv" class="dragButtonContainer"></div>
-              <div id="complexNodeDiv" class="dragButtonContainer"></div>
-              <div id="compartmentNodeDiv" class="dragButtonContainer"></div>
-              <div id="processNodeDiv" class="dragButtonContainer"></div>
+              <div id="simpleNodeDiv" class="dragButtonContainer" data-tooltip="Click on this and drag to the location &lt;br /&gt;
+              on drawing canvas and release!"></div>
+              <div id="familyNodeDiv" class="dragButtonContainer" data-tooltip="Click on this and drag to the location &lt;br /&gt;
+              on drawing canvas and release!"></div>
+              <div id="complexNodeDiv" class="dragButtonContainer" data-tooltip="Click on this and drag to the location &lt;br /&gt;
+              on drawing canvas and release!"></div>
+              <div id="compartmentNodeDiv" class="dragButtonContainer" data-tooltip="Click on this and drag to the location &lt;br /&gt;
+              on drawing canvas and release!"></div>
+              <div id="processNodeDiv" class="dragButtonContainer" data-tooltip="Click on this and drag to the location &lt;br /&gt;
+              on drawing canvas and release!"></div>
             </div>
           </div>
           <div class="pnl edgePanel">
@@ -474,12 +479,22 @@
               <div class="edgePaletteWrapper">
                 <div class="edge-palette list-group">
                   <!-- <li class="list-group-item"><a dropDownIndex='0' href="#">None</a></li> -->
-                  <a edgeTypeIndex='1' href="#"  class="list-group-item"><img src="./assets/edges/activates.svg" class="pull-left"  />Activates</a>
-                  <a edgeTypeIndex='2' href="#"  class="list-group-item"><img src="./assets/edges/inhibits.svg" class="pull-left"  />Inhibits</a>
-                  <a edgeTypeIndex='3' href="#"  class="list-group-item"><img src="./assets/edges/induces.svg" class="pull-left"  />Induces</a>
-                  <a edgeTypeIndex='4' href="#"  class="list-group-item"><img src="./assets/edges/represses.svg" class="pull-left"  />Represses</a>
-                  <a edgeTypeIndex='5' href="#"  class="list-group-item"><img src="./assets/edges/binds.svg" class="pull-left"  />Binds</a>
-                </div>
+                  <div data-tooltip="Click to activate; then, start the &lt;br /&gt; interaction from the little circle &lt;br /&gt; on the source node!">
+                    <a edgeTypeIndex='1' href="#"  class="list-group-item"><img src="./assets/edges/activates.svg" class="pull-left"   />Activates</a>
+                  </div>
+                  <div data-tooltip="Click to activate; then, start the &lt;br /&gt; interaction from the little circle &lt;br /&gt; on the source node!">
+                    <a edgeTypeIndex='2' href="#"  class="list-group-item"><img src="./assets/edges/inhibits.svg" class="pull-left"  />Inhibits</a>
+                  </div>
+                  <div data-tooltip="Click to activate; then, start the &lt;br /&gt; interaction from the little circle &lt;br /&gt; on the source node!">
+                    <a edgeTypeIndex='3' href="#"  class="list-group-item"><img src="./assets/edges/induces.svg" class="pull-left"  />Induces</a>
+                  </div>
+                  <div data-tooltip="Click to activate; then, start the &lt;br /&gt; interaction from the little circle &lt;br /&gt; on the source node!">
+                    <a edgeTypeIndex='4' href="#"  class="list-group-item"><img src="./assets/edges/represses.svg" class="pull-left"  />Represses</a>
+                  </div>
+                  <div data-tooltip="Click to activate; then, start the &lt;br /&gt; interaction from the little circle &lt;br /&gt; on the source node!">
+                    <a edgeTypeIndex='5' href="#"  class="list-group-item"><img src="./assets/edges/binds.svg" class="pull-left"  />Binds</a>
+                  </div>
+              </div>
               </div>
             </div>
           </div>
