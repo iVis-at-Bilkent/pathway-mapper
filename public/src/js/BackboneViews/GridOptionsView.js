@@ -40,6 +40,9 @@ var gridOptionsView = Backbone.View.extend(
             var isGridEnabled = this.$el.find("#enableGrid").is(':checked');
             var isGuidelinesEnabled = this.$el.find("#enableGuides").is(':checked');
             window.gridOptionsManager.currentProperties.gridSpacing = Number(this.$el.find("#gridSize").val());
+            window.gridOptionsManager.currentProperties.guidelinesStyle.strokeStyle = (this.$el.find("#guidelineColor").val());
+            window.gridOptionsManager.currentProperties.guidelinesStyle.horizontalDistColor = (this.$el.find("#guidelineColor").val());
+            window.gridOptionsManager.currentProperties.guidelinesStyle.verticalDistColor = (this.$el.find("#guidelineColor").val());
 
             var showGridEle = $( "img[role='showGrid']" );
             var snapToGridEle = $( "img[role='snapToGrid']" );
@@ -87,6 +90,7 @@ var gridOptionsView = Backbone.View.extend(
         {
             var currentProperties = _.clone(window.gridOptionsManager.currentProperties);
             this.$el.find("#gridSize").val(currentProperties.gridSpacing);
+            this.$el.find("#guidelineColor").val(currentProperties.guidelinesStyle.strokeStyle); //Strokestyle color is same with horizontalDistColor
             this.$el.find("#enableGrid")[0].checked = currentProperties.drawGrid;
             this.$el.find("#enableGuides")[0].checked = currentProperties.geometricGuideline;
         }
