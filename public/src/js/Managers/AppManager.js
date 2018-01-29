@@ -546,6 +546,13 @@ window.notificationManager = require('./../Utils/NotificationFactory');
                          editorActionsManager.removeElement(selectedElements);
                      }
                  }
+                 else if (e.which === 13) {
+                     var tn = document.activeElement.tagName;
+                     if (tn == "TEXTAREA")
+                     {
+                         e.preventDefault();
+                     }
+                 }
                  // else if (e.which === 76) {
                  //     console.log("l pressed");
                  //     editorActionsManager.updateEdgeBendPoints(cy.elements(":selected").first());
@@ -570,7 +577,6 @@ window.notificationManager = require('./../Utils/NotificationFactory');
                  // }
              });
          }
-
      };
      AppManager.prototype.initUndoRedoFunctionality = function()
      {
