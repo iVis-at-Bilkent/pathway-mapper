@@ -35,18 +35,22 @@ Firstly, clone PathwayMapper to your local machine, and navigate to the local re
 ```
 git clone https://github.com/iVis-at-Bilkent/pathway-mapper.git
 cd patway-mapper
-sudo npm install 
+npm install
 ```
 
 - Running the tool
 ```
-sudo npm start
+npm start
 ```
 
 Please note that the app runs on the port 3000 by default. To change the port that tool runs on, change the associated variable in app.js file:
 ```
 var APP_PORT = 3000;
+npm start
 ```
+
+#### Running an instance on Heroku (free)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 #### Running Tool in Developement Mode
 In order to run a local instance of the tool in developement mode, please follow the steps below:

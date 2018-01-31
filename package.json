@@ -21,6 +21,10 @@
     "automatic-release-build": "npm run watch-js-min & npm run watch-css-min & npm run watch-server & npm run watch-cose ",
     "start": "node app.js"
   },
+  "engines": {
+    "npm": "5.6.0",
+    "node": "8.9.4"
+  },
   "author": "Istemi Bahceci",
   "license": "BSD-2-Clause",
   "dependencies": {
