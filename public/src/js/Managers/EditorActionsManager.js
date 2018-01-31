@@ -657,7 +657,7 @@ module.exports = (function()
         if(this.isCollaborative)
         {
             // Call a real time function that updated real time object and
-            // its callback (updateLayoutPropertiesCallback) will handle sync of this object
+            // its callback (updateGraphOptionsCallback) will handle sync of this object
             // across collaborators
             this.realTimeManager.updateGraphOptions(newGraphOptions);
         }

@@ -158,8 +158,6 @@ module.exports = (function()
         var groupedGenomicDataCount = root.get(this.GENOMIC_DATA_GROUP_COUNT);
 
         window.editorActionsManager.updateGraphOptionsCallback(graphOptions);
-        window.editorActionsManager.updateGraphOptionsCallback(graphOptions);
-
 
         var nodeMapEntries = nodeMap.values();
         var edgeMapEntries = edgeMap.values();
