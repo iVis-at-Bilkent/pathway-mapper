@@ -1,12 +1,12 @@
 {
-    "name": "cbioportal-frontend",
-    "description": "React Frontend of cBioPortal",
-    "repository": "https://github.com/cbioportal/cbioportal-frontend",
-    "logo": "http://www.cbioportal.org/images/cbioportal_logo.png",
-    "keywords": ["react", "redux", "cancer", "genomics"],
+    "name": "pathwaymapper",
+    "description": "An interactive and collaborative graphical curation tool for cancer pathways",
+    "repository": "https://github.com/iVis-at-Bilkent/pathway-mapper",
+    "logo": "http://www.cs.bilkent.edu.tr/~ivis/images/ivis-logo-long.png",
+    "keywords": ["pathway", "editor", "cancer", "genomics"],
     "buildpacks": [
         {
-          "url": "https://github.com/heroku/heroku-buildpack-nodejs#v91"
+            "url": "https://github.com/heroku/heroku-buildpack-nodejs#v91"
         }
     ]
 }

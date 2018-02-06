@@ -43,10 +43,15 @@ npm install
 npm start
 ```
 
-Please note that the app runs on the port 3000 by default. To change the port that tool runs on, set the port environment variable before running npm start:
+
+Please note that the app runs on port 3000 by default. To change the port, set the port environment variable before running npm start:
 ```
 export PORT=3000
 npm start
+```
+Windows users need to change the associated variable in app.js file:
+```
+var DEFAULT_PORT=3000
 ```
 
 #### Running an instance on Heroku (free)
