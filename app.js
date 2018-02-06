@@ -24,6 +24,7 @@ app.use('/node_modules/bootstrap-select', express.static(__dirname + '/node_modu
 
 var multerInstance = multer({dest:'./uploads/'});
 
+
 var DEFAULT_PORT=3000;
 const APP_PORT = process.env.PORT || DEFAULT_PORT;
 
