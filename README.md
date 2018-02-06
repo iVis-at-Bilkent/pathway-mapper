@@ -35,7 +35,7 @@ Firstly, clone PathwayMapper to your local machine, and navigate to the local re
 ```
 git clone https://github.com/iVis-at-Bilkent/pathway-mapper.git
 cd patway-mapper
-npm install 
+npm install
 ```
 
 - Running the tool
@@ -53,6 +53,9 @@ Windows users need to change the associated variable in app.js file:
 ```
 var DEFAULT_PORT=3000
 ```
+
+#### Running an instance on Heroku (free)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 #### Running an instance on Heroku (free)
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
