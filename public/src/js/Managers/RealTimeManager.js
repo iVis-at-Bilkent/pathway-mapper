@@ -157,6 +157,12 @@ module.exports = (function()
         var groupedGenomicDataMap = root.get(this.GENOMIC_DATA_GROUP_NAME);
         var groupedGenomicDataCount = root.get(this.GENOMIC_DATA_GROUP_COUNT);
 
+        //Checks if graphOptions are initialized from the previous version
+        if (graphOptions == null) {
+            graphOptions = model.create(GraphOptionsR, window.editorActionsManager.graphOptions);
+            root.set(this.GRAPH_OPTS_NAME, graphOptions);
+            graphOptions = root.get(this.GRAPH_OPTS_NAME);
+        }
         window.editorActionsManager.updateGraphOptionsCallback(graphOptions);
 
         var nodeMapEntries = nodeMap.values();
