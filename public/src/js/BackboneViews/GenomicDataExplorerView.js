@@ -53,7 +53,7 @@ var genomicDataExplorer = Backbone.View.extend(
                 {
                     //TODO check for 6
                     var checkboxContent = $('<label class="checkbox"><input type="checkbox" value="">'+sortedKeys[sortedIndex]+'</label>');
-                    checkboxContent.find('input').attr('checked', sortedKeys[sortedIndex]);
+                    checkboxContent.find('input').attr('checked', cancerTypes[sortedKeys[sortedIndex]]);
                     checkboxDiv.append(checkboxContent);
                 }
                 this.$el.find('.genomicDataContentDiv').append(checkboxDiv);
