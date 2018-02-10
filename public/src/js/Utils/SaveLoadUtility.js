@@ -169,10 +169,21 @@ var SaveLoadUtils =
     var seperator = /\r?\n|\r/;
     var lines = graphText.split(seperator);
     var edgesStartIndex = -1;
-    var graphDataIndex = 5;
 
     var title = lines[0];
     var description = lines[2];
+
+    //In old version description used to expand in multiple lines
+    // graphDataIndex holds the line index where the first --NODE_NAME occurs and is used later to load nodes
+    var graphDataIndex = 3;
+    while(true)
+    {
+        if (lines[graphDataIndex].includes("--NODE_NAME"))
+            break;
+        description += "\n" + lines[graphDataIndex];
+        graphDataIndex++;
+    }
+    graphDataIndex++;
 
     //TODO Legacy pathways workaround
     if (lines[0].includes("--NODE_NAME"))
