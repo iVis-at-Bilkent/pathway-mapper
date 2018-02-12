@@ -15,7 +15,6 @@ module.exports = (function()
         this.EDGEMAP_NAME = 'edges';
         this.LAYOUT_PROPS_NAME = 'layoutProperties';
         this.GLOBAL_OPTS_NAME = 'globalOptions';
-        this.GRAPH_OPTS_NAME = 'graphOptions';
         //For storing genomic data information per gene
         this.GENOMIC_DATA_MAP_NAME = 'genomicDataMap';
         //For storing visibility information of genomic data according to the cancer type
@@ -88,7 +87,6 @@ module.exports = (function()
         //Set initial layout properties here when real time document is created initially
         var layoutProperties = model.create(LayoutPropertiesR, window.editorActionsManager.layoutProperties);
         var globalOptions = model.create(GlobalOptionsR, window.editorActionsManager.getGlobalOptions());
-        var graphOptions = model.create(GraphOptionsR, window.editorActionsManager.graphOptions);
         //Genomic data related maps
         var genomicDataMap = model.createMap();
         var genomicDataVisibilityMap = model.createMap();
@@ -100,7 +98,6 @@ module.exports = (function()
         root.set(this.EDGEMAP_NAME, edgeMap);
         root.set(this.LAYOUT_PROPS_NAME, layoutProperties);
         root.set(this.GLOBAL_OPTS_NAME, globalOptions);
-        root.set(this.GRAPH_OPTS_NAME, graphOptions);
         root.set(this.GENOMIC_DATA_MAP_NAME, genomicDataMap);
         root.set(this.VISIBLE_GENOMIC_DATA_MAP_NAME, genomicDataVisibilityMap);
         root.set(this.GENOMIC_DATA_GROUP_NAME, genomicDataGroupMap);
@@ -151,19 +148,10 @@ module.exports = (function()
         var edgeMap = root.get(this.EDGEMAP_NAME);
         var realTimeLayoutProperties = root.get(this.LAYOUT_PROPS_NAME);
         var globalOptions = root.get(this.GLOBAL_OPTS_NAME);
-        var graphOptions = root.get(this.GRAPH_OPTS_NAME);
         var genomicDataMap = root.get(this.GENOMIC_DATA_MAP_NAME);
         var visDataMap = root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME);
         var groupedGenomicDataMap = root.get(this.GENOMIC_DATA_GROUP_NAME);
         var groupedGenomicDataCount = root.get(this.GENOMIC_DATA_GROUP_COUNT);
-
-        //Checks if graphOptions are initialized from the previous version
-        if (graphOptions == null) {
-            graphOptions = model.create(GraphOptionsR, window.editorActionsManager.graphOptions);
-            root.set(this.GRAPH_OPTS_NAME, graphOptions);
-            graphOptions = root.get(this.GRAPH_OPTS_NAME);
-        }
-        window.editorActionsManager.updateGraphOptionsCallback(graphOptions);
 
         var nodeMapEntries = nodeMap.values();
         var edgeMapEntries = edgeMap.values();
@@ -607,6 +595,28 @@ module.exports = (function()
             model.beginCompoundOperation();
             tmpNode.x = currentX + newWidth - previousWidth;
             tmpNode.y = currentY + newHeight - previousHeight;
+            tmpNode.w = newWidth;
+            tmpNode.h = newHeight;
+            model.endCompoundOperation();
+        }
+        else
+        {
+            throw new Error('Element does not exist in nodes !!! ');
+        }
+    };
+
+    RealTimeManager.prototype.setSizeOfElement = function(ele, newWidth, newHeight)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap =  root.get(this.NODEMAP_NAME);
+
+        var elementID = ele.id();
+
+        if (nodeMap.has(elementID))
+        {
+            var tmpNode = nodeMap.get(elementID);
+            model.beginCompoundOperation();
             tmpNode.w = newWidth;
             tmpNode.h = newHeight;
             model.endCompoundOperation();
@@ -1075,23 +1085,6 @@ module.exports = (function()
         model.endCompoundOperation();
     };
 
-    RealTimeManager.prototype.updateGraphOptions = function(newOptions)
-    {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var graphOptions =  root.get(this.GRAPH_OPTS_NAME);
-
-        model.beginCompoundOperation();
-        for (var property in graphOptions)
-        {
-            if (newOptions.hasOwnProperty(property))
-            {
-                graphOptions[property] = newOptions[property];
-            }
-        }
-        model.endCompoundOperation();
-    };
-
     //Google Real Time's custom object ids are retrieved in this way
     RealTimeManager.prototype.getCustomObjId = function(object)
     {
@@ -1156,13 +1149,11 @@ module.exports = (function()
         gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
         gapi.drive.realtime.custom.registerType(LayoutPropertiesR, 'LayoutPropertiesR');
         gapi.drive.realtime.custom.registerType(GlobalOptionsR, 'GlobalOptionsR');
-        gapi.drive.realtime.custom.registerType(GraphOptionsR, 'GraphOptionsR');
 
         gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
         gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
         gapi.drive.realtime.custom.setInitializer(LayoutPropertiesR, LayoutPropertiesRInitializer);
         gapi.drive.realtime.custom.setInitializer(GlobalOptionsR, GlobalOptionsRInitializer);
-        gapi.drive.realtime.custom.setInitializer(GraphOptionsR, GraphOptionsRInitializer);
 
         // NodeR;
         NodeR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
@@ -1207,9 +1198,6 @@ module.exports = (function()
         GlobalOptionsR.prototype.zoomLevel = gapi.drive.realtime.custom.collaborativeField('zoomLevel');
         GlobalOptionsR.prototype.panLevel = gapi.drive.realtime.custom.collaborativeField('panLevel');
 
-        //GraphOptionsR
-        GraphOptionsR.prototype.autoSizeNodesToContent = gapi.drive.realtime.custom.collaborativeField('autoSizeNodesToContent');
-
         //Attribute changed handlers !!!
         var self = this;
 
@@ -1246,23 +1234,11 @@ module.exports = (function()
             this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateGlobalOptionsRHandler);
         }
 
-        function registerAttributeChangeHandlersGraphOptionsR()
-        {
-            function updateGraphOptionsRHandler(event)
-            {
-                var graphOptions = event.currentTarget;
-                window.editorActionsManager.updateGraphOptionsCallback(graphOptions);
-            }
-
-            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateGraphOptionsRHandler);
-        }
-
         //Register attribute changed handlers
         gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersElements);
         gapi.drive.realtime.custom.setOnLoaded(EdgeR, registerAttributeChangeHandlersElements);
         gapi.drive.realtime.custom.setOnLoaded(LayoutPropertiesR, registerAttributeChangeHandlersLayoutPropertiesR);
         gapi.drive.realtime.custom.setOnLoaded(GlobalOptionsR, registerAttributeChangeHandlersGlobalOptionsR);
-        gapi.drive.realtime.custom.setOnLoaded(GraphOptionsR, registerAttributeChangeHandlersGraphOptionsR);
 
     };
 
@@ -1272,7 +1248,6 @@ module.exports = (function()
     var LayoutPropertiesR = function() {};
     //For storing global options like zoom, pan level etc in colalborative mode
     var GlobalOptionsR = function(){};
-    var GraphOptionsR = function(){};
 
     var NodeRInitializer = function(params) {
         var model = gapi.drive.realtime.custom.getModel(this);
@@ -1358,14 +1333,6 @@ module.exports = (function()
         model.beginCompoundOperation();
         this.zoomLevel = params.zoomLevel || 'undefined';
         this.panLevel = params.panLevel || 'undefined';
-        model.endCompoundOperation();
-    };
-
-    var GraphOptionsRInitializer = function(params)
-    {
-        var model = gapi.drive.realtime.custom.getModel(this);
-        model.beginCompoundOperation();
-        this.autoSizeNodesToContent = params.autoSizeNodesToContent || true;
         model.endCompoundOperation();
     };
 

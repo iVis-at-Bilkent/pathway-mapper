@@ -47,10 +47,6 @@ module.exports = (function()
             }
         };
         this.FIT_CONSTANT = 50;
-        this.graphOptions =
-        {
-            autoSizeNodesToContent: true
-        };
 
         this.layoutProperties = _.clone(this.defaultLayoutProperties);
         this.observers = [];
@@ -60,6 +56,7 @@ module.exports = (function()
         this.selecteNodeStack = {};
         window.undoRedoManager = cy.undoRedo();
         window.undoRedoManager.action("changePositions", this.doChangePosition, this.undoChangePosition);
+        window.undoRedoManager.action("changeNodeSize", this.doChangeNodeSize, this.undoChangeNodeSize);
         window.undoRedoManager.action("changeName", this.doChangename, this.undoChangeName);
         window.undoRedoManager.action("hideNode", this.doHide, this.undoHide);
         window.undoRedoManager.action("showAllNodes", this.doShow, this.undoShow);
@@ -118,6 +115,35 @@ module.exports = (function()
         return newMovedNodes;
     };
 
+    /*
+     * Undo redo for changing size of nodes
+     * **/
+    EditorActionsManager.prototype.doChangeNodeSize = function(args)
+    {
+        // var currentWidth = args.ele.width();
+        // var currentHeight = args.ele.height();
+        // var newArgs = {ele: args.ele, oldWidth: currentWidth, newWidth: args.newWidth, oldHeight: currentHeight, newHeight: args.newHeight};
+        args.ele.style('width', args.newWidth);
+        args.ele.style('height', args.newHeight);
+        args.ele.css('width', args.newWidth);
+        args.ele.css('height', args.newHeight);
+
+        return args;
+    };
+
+    EditorActionsManager.prototype.undoChangeNodeSize = function(args)
+    {
+        // var currentWidth = args.ele.width();
+        // var currentHeight = args.ele.height();
+        // var newArgs = {ele: args.ele, oldWidth: currentWidth, newWidth: args.newWidth, oldHeight: currentHeight, newHeight: args.newHeight};
+        args.ele.style('width', args.oldWidth);
+        args.ele.style('height', args.oldHeight);
+        args.ele.css('width', args.oldWidth);
+        args.ele.css('height', args.oldHeight);
+
+        return args;
+    };
+
     EditorActionsManager.prototype.changeName = function(ele, newName)
     {
         if (this.isCollaborative)
@@ -135,8 +161,8 @@ module.exports = (function()
         var currentName = ele.data('name');
         var args = {ele: ele, oldName: currentName, newName: newName};
         window.undoRedoManager.do('changeName', args);
-        if (ele.isNode())
-            window.editorActionsManager.updateAutoSizeNodesToContent(ele);
+        // if (ele.isNode())
+        //     window.editorActionsManager.updateAutoSizeNodesToContent(ele);
     };
 
     /*
@@ -157,7 +183,7 @@ module.exports = (function()
     {
 
         var currentName = args.ele.data('name');
-        var newArgs = {ele: args.ele, newName: args.oldName, oldName: currentName};
+        var newArgs = {ele: args.ele, newName: args.newName, oldName: currentName};
         args.ele.data('name', args.oldName);
         args.ele.css('content', args.oldName);
 
@@ -651,31 +677,6 @@ module.exports = (function()
             this.realTimeManager.updateGlobalOptions(newOptions);
     }
 
-    //Graph properties related options: autoSizeNodesToContent
-    EditorActionsManager.prototype.saveGraphOptions = function(newGraphOptions)
-    {
-        if(this.isCollaborative)
-        {
-            // Call a real time function that updated real time object and
-            // its callback (updateGraphOptionsCallback) will handle sync of this object
-            // across collaborators
-            this.realTimeManager.updateGraphOptions(newGraphOptions);
-        }
-        else
-        {
-            this.graphOptions = _.clone(newGraphOptions);
-            window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
-        }
-    };
-
-    EditorActionsManager.prototype.updateGraphOptionsCallback = function(newGraphOptions)
-    {
-        this.graphOptions = _.clone(newGraphOptions);
-        //Notify observers to reflect changes on colalborative object to the views
-        this.notifyObservers();
-        window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
-    };
-
     //Layout properties related functions
     EditorActionsManager.prototype.saveLayoutProperties = function(newLayoutProps)
     {
@@ -786,7 +787,7 @@ module.exports = (function()
         this.cy.nodes().updateCompoundBounds();
         window.undoRedoManager.do("add", newNode);
 
-        window.editorActionsManager.updateAutoSizeNodesToContent(cy.getElementById( newNode.data.id ));
+        // window.editorActionsManager.updateAutoSizeNodesToContent(cy.getElementById( newNode.data.id ));
     };
 
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
@@ -831,8 +832,6 @@ module.exports = (function()
         {
             this.addNodetoCy(nodeData);
         }
-
-        window.editorActionsManager.updateAutoSizeNodesToContent(cy.getElementById( nodeID ));
 
         this.cy.nodes().updateCompoundBounds();
     };
@@ -989,7 +988,7 @@ module.exports = (function()
         this.cy.add(nodeList);
         this.cy.add(edgeList);
 
-        window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
+        // window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
 
         edgeBendEditing.initBendPoints(cy.edges());
 
@@ -1207,8 +1206,8 @@ module.exports = (function()
     {
         var previousWidth = ele.width();
         var previousHeight = ele.height();
-        ele.style('width',""+previousWidth);
-        ele.style('height',""+previousHeight);
+        ele.style('width',previousWidth);
+        ele.style('height',previousHeight);
 
         //Sync movement to real time api
         if(this.isCollaborative) {
@@ -1343,8 +1342,6 @@ module.exports = (function()
         this.removeElementCy(cy.elements());
         this.addNodesCy(nodes);
         this.addEdgesCy(edges);
-        window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
-
     };
 
     EditorActionsManager.prototype.loadfileRealTime = function(nodes, edges)
@@ -1409,7 +1406,7 @@ module.exports = (function()
               // window.undoRedoManager.do('removeHighlightInvalidGenes', cyEle);
             }
 
-            window.editorActionsManager.updateAutoSizeNodesToContent(cyEle);
+            // window.editorActionsManager.updateAutoSizeNodesToContent(cyEle);
         }
         else if(cyEle.isEdge())
         {
@@ -1541,42 +1538,101 @@ module.exports = (function()
         this.genomicDataOverlayManager.notifyObservers();
     }
 
-    EditorActionsManager.prototype.updateAutoSizeNodesToContent = function(nodes)
+    EditorActionsManager.prototype.resizeNodesToContent = function(nodes)
     {
-        //Checks whether auto size option is true
-        if (this.graphOptions.autoSizeNodesToContent == true)
+        if(this.isCollaborative)
         {
             var visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
-            var labelWithData = 144 + (visibleNumberOfData-3) * 36 + "";
+            var labelWithData = 148 + (visibleNumberOfData-3) * 36;
+            var rt = this.realTimeManager;
             nodes.forEach(function( ele ){
+                var newWidth = 150;
+                var newHeight = 52;
                 if (ele.data('name') != "")
                 {
-                    var labelLength = ele.style('label').length*10 +"";
-                    ele.style('width',labelLength);
-                    ele.style('height', '20');
+                    var labelLength = ele.style('label').length*10 + 6;
+                    newWidth = labelLength;
+                    newHeight = 24;
                 }
                 if (visibleNumberOfData > 0)
                 {
+                    newHeight = 52;
                     if (visibleNumberOfData < 4)
-                        ele.style('width','148');
+                    {
+                        if (150 > newWidth)
+                            newWidth = 150;
+                    }
                     else
-                        ele.style('width', labelWithData);
-                    ele.style('height', '48');
+                    {
+                        if (labelWithData > newWidth)
+                            newWidth = labelWithData;
+                    }
+                }
+                rt.setSizeOfElement(ele, newWidth, newHeight);
+            });
+        }
+        else
+        {
+            var ur = cy.undoRedo();
+            var actions = [];
+
+            var visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
+            var labelWithData = 150 + (visibleNumberOfData-3) * 36;
+            nodes.forEach(function( ele ){
+                var newWidth = 150;
+                var newHeight = 52;
+                if (ele.data('name') != "")
+                {
+                    var labelLength = ele.style('label').length*10 + 6;
+                    newWidth = labelLength;
+                    newHeight = 24;
+                }
+                if (visibleNumberOfData > 0)
+                {
+                    newHeight = 52;
+                    if (visibleNumberOfData < 4)
+                    {
+                        if (150 > newWidth)
+                            newWidth = 150;
+                    }
+                    else
+                    {
+                        if (labelWithData > newWidth)
+                            newWidth = labelWithData;
+                    }
+                }
+                var args = {ele: ele, oldWidth: ele.width(), newWidth: newWidth, oldHeight: ele.height(), newHeight: newHeight};
+                actions.push({name: "changeNodeSize", param: args});
+            });
+
+            ur.do("batch", actions);
+        }
+        cy.nodeResize('get').refreshGrapples();
+    };
+
+    //Used to resize nodes when genomic data is loaded (or removed)
+    EditorActionsManager.prototype.resizeNodesToGenomicData = function(nodes)
+    {
+        if(this.isCollaborative)
+        {
+            var visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
+            var labelWithData = 148 + (visibleNumberOfData-3) * 36;
+            var rt = this.realTimeManager;
+            nodes.forEach(function( ele ){
+                if (visibleNumberOfData > 0)
+                {
+                    if (visibleNumberOfData < 4)
+                        rt.setSizeOfElement(ele, '150', ele.height());
+                    else
+                        rt.setSizeOfElement(ele, labelWithData, ele.height());
                 }
             });
         }
         else
         {
-            //If the label is emptyempty just set the default sizes
-            nodes.forEach(function( ele ){
-                if (ele.data('name') != "")
-                {
-                    ele.style('width', '150');
-                    ele.style('height', '52');
-                }
-            });
+            //Check if the current size is bigger than the upcoming one
+
         }
-        // cy.nodeResize('get').refreshGrapples();
     };
 
     //Utility Functions

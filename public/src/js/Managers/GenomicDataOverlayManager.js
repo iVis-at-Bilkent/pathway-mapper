@@ -103,7 +103,6 @@ module.exports = (function()
             }
         }
 
-        window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
         this.showGenomicData();
         this.notifyObservers();
     }

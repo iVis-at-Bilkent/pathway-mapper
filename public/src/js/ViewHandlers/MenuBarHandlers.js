@@ -93,10 +93,13 @@ module.exports = (function ($)
             cy.edgehandles('enable');
         }
         else if(dropdownLinkRole == 'deleteSelected')
-        //delete
         {
             var selectedEles = cy.elements(':selected');
             window.editorActionsManager.removeElement(selectedEles);
+        }
+        else if(dropdownLinkRole == 'resizeNodesToContent')
+        {
+            window.editorActionsManager.resizeNodesToContent(cy.nodes());
         }
         else if(dropdownLinkRole == 'undo')
         //undo

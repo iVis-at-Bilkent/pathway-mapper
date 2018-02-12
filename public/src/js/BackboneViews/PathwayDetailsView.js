@@ -11,28 +11,15 @@ var pathwayDetails = Backbone.View.extend(
         {
             pathwayName: "pathway.txt",
             pathwayTitle: "New Pathway",
-            pathwayDescription: "",
-            autoSizeNodesToContent: true
+            pathwayDescription: ""
         };
-        window.editorActionsManager.registerObserver(this);
-
     },
     saveHandler: function(event)
     {
         this.properties.pathwayName = this.$el.find("#pName").val();
         this.properties.pathwayTitle = this.$el.find("#pTitle").val();
         this.properties.pathwayDescription = this.$el.find("#pDesc").val();
-        this.properties.autoSizeNodesToContent = this.$el.find("#autoSizeNodesToContent")[0].checked;
         this.$el.modal('toggle');
-        window.editorActionsManager.saveGraphOptions({autoSizeNodesToContent: this.properties.autoSizeNodesToContent});
-        // Makes grapples disappear
-        var sel = cy.elements(":selected");
-        sel.unselect();
-        sel.select();
-    },
-    changeOptions: function(event)
-    {
-        this.$el.find("#autoSizeNodesToContent")[0].checked = this.properties.autoSizeNodesToContent;
     },
     updatePathwayProperties: function(data)
     {
@@ -67,18 +54,10 @@ var pathwayDetails = Backbone.View.extend(
                 fileName: $("#pName").val(),
                 pathwayTitle: $("#pTitle").val(),
                 pathwayDescription: $("#pDesc").val(),
-                autoSizeNodesToContent: this.$el.find("#autoSizeNodesToContent")[0].checked
             };
 
         return pathwayData;
     },
-    notify: function()
-    {
-        //Editor actions manager notified us here, that means layout properties on editor actions manager
-        //is changed. reflect it to view
-        this.properties.autoSizeNodesToContent = window.editorActionsManager.graphOptions.autoSizeNodesToContent;
-        this.changeOptions();
-    }
 });
 
 module.exports = pathwayDetails;

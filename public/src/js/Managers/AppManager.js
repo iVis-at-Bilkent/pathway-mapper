@@ -465,8 +465,6 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         cy.on('select', 'node', function( e )
         {
             window.editorActionsManager.pushSelectedNodeStack(e.target);
-            if (window.editorActionsManager.graphOptions.autoSizeNodesToContent == true)
-                cy.nodeResize('get').removeGrapples();
         });
 
         // cy.on('select', 'edge', function( e )
