@@ -510,19 +510,14 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             that.editorActionsManager.resizeElements(node);
         });
 
-        // cy.on('addBendPoint',function(){
-        //     editorActionsManager.updateEdgeBendPoints(cy.elements(":selected").first());
-        //     console.log("New bend point added");
-        // });
-
         cy.on('bendPointMovement',function(){
             editorActionsManager.updateEdgeBendPoints(cy.elements(":selected").first());
         });
 
-        // cy.on('removeBendPoint',function(){
-        //     editorActionsManager.updateEdgeBendPoints(cy.elements(":selected").first());
-        //     console.log("Bend point is removed");
-        // });
+        cy.on('noderesize.moveend',function(){
+            editorActionsManager.changeNodePositionsByArrows(cy.nodes(":selected"));
+            console.log("move the selected nodes in collaborative");
+        });
 
     };
      AppManager.prototype.initKeyboardHandlers = function()

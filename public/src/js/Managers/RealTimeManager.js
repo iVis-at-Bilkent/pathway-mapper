@@ -199,7 +199,6 @@ module.exports = (function()
         {
             var tmpEdge = edgeMapEntries[i];
 
-            //TODOASK
             if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined || tmpEdge.bendPoint == undefined)
             {
                 var pubmedIDs = (tmpEdge.pubmedIDs == undefined) ? model.createList() : tmpEdge.pubmedID;
@@ -627,6 +626,29 @@ module.exports = (function()
         }
     };
 
+    RealTimeManager.prototype.changeNodePositionsRealTime = function(nodes)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap =  root.get(this.NODEMAP_NAME);
+
+        nodes.forEach(function(ele){
+            var nodeID = ele.id();
+            if (nodeMap.has(nodeID))
+            {
+                var realTimeNode = nodeMap.get(nodeID);
+                model.beginCompoundOperation();
+                realTimeNode.x = ele.position('x');
+                realTimeNode.y = ele.position('y');
+                model.endCompoundOperation();
+            }
+            else
+            {
+                throw new Error('Element does not exist in nodes !!! ');
+            }
+        });
+    };
+
     RealTimeManager.prototype.changeHighlightInvalidGenes = function(nodeIDs, isInvalid)
     {
         var model = this.realTimeDoc.getModel();
@@ -664,7 +686,6 @@ module.exports = (function()
               nonDuplicateArray.push(pubmedIDs[i]);
             }
           }
-          //TODOASK
           model.beginCompoundOperation();
           tmpEdge.pubmedIDs.pushAll(nonDuplicateArray);
           model.endCompoundOperation();
@@ -1275,7 +1296,6 @@ module.exports = (function()
         this.name = params.name || "";
         this.isHighlighted = params.isHighlighted || false;
 
-        //TODOASK
         if (params.pubmedIDs)
         {
           if(this.pubmedIDs == undefined)

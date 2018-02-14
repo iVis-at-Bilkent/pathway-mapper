@@ -115,6 +115,13 @@ module.exports = (function()
         return newMovedNodes;
     };
 
+    EditorActionsManager.prototype.changeNodePositionsByArrows = function(selectedNodes)
+    {
+        if (this.isCollaborative)
+            this.realTimeManager.changeNodePositionsRealTime(selectedNodes);
+        //resize-node extension already deals for the movement in local mode
+    };
+
     /*
      * Undo redo for changing size of nodes
      * **/
@@ -552,8 +559,6 @@ module.exports = (function()
           return !isNaN(id);
         });
         pubmedArray.push.apply(pubmedArray,validPubmedIDs);
-        //TODOASK
-        // pubmedArray = edge.data('pubmedIDs');
         edge.data('pubmedIDs', _.uniq(pubmedArray));
       }
     }
