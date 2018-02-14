@@ -986,6 +986,14 @@ module.exports = (function()
         }
 
         this.cy.add(nodeList);
+
+        //Workaround for updating width value of nodes when they are loaded initially (default value was shown)
+        cy.nodes().forEach(function (ele)
+        {
+            ele.style("width", ele.data('w') + "px");
+            ele.style("height", ele.data('h') + "px");
+        });
+        
         this.cy.add(edgeList);
 
         // window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
@@ -1608,31 +1616,6 @@ module.exports = (function()
             ur.do("batch", actions);
         }
         cy.nodeResize('get').refreshGrapples();
-    };
-
-    //Used to resize nodes when genomic data is loaded (or removed)
-    EditorActionsManager.prototype.resizeNodesToGenomicData = function(nodes)
-    {
-        if(this.isCollaborative)
-        {
-            var visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
-            var labelWithData = 148 + (visibleNumberOfData-3) * 36;
-            var rt = this.realTimeManager;
-            nodes.forEach(function( ele ){
-                if (visibleNumberOfData > 0)
-                {
-                    if (visibleNumberOfData < 4)
-                        rt.setSizeOfElement(ele, '150', ele.height());
-                    else
-                        rt.setSizeOfElement(ele, labelWithData, ele.height());
-                }
-            });
-        }
-        else
-        {
-            //Check if the current size is bigger than the upcoming one
-
-        }
     };
 
     //Utility Functions
