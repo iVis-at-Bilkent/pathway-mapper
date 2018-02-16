@@ -39,7 +39,7 @@
     "cytoscape-edgehandles": "~2.13.1",
     "cytoscape-grid-guide": "^2.0.2",
     "cytoscape-navigator": "^1.1.2",
-    "cytoscape-node-resize": "^3.0.0",
+    "cytoscape-node-resize": "github:iVis-at-Bilkent/cytoscape.js-node-resize#unstable",
     "cytoscape-panzoom": "~2.5.2",
     "cytoscape-qtip": "~2.7.1",
     "cytoscape-undo-redo": "1.2.14",
