@@ -384,10 +384,11 @@ module.exports = (function()
 
         cy.style()
             .selector('node[type="GENE"]')
-            .style('width', function (ele)
-            {
-                return getRequiredWidthForGenomicData(genomicDataBoxCount);
-            })
+                //It used to change the width of nodes only locally
+            // .style('width', function (ele)
+            // {
+            //     return getRequiredWidthForGenomicData(genomicDataBoxCount);
+            // })
             .style('text-margin-y', function (ele)
             {
                 var nodeLabel = ele.data('name');

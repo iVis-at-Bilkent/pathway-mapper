@@ -127,9 +127,6 @@ module.exports = (function()
      * **/
     EditorActionsManager.prototype.doChangeNodeSize = function(args)
     {
-        // var currentWidth = args.ele.width();
-        // var currentHeight = args.ele.height();
-        // var newArgs = {ele: args.ele, oldWidth: currentWidth, newWidth: args.newWidth, oldHeight: currentHeight, newHeight: args.newHeight};
         args.ele.style('width', args.newWidth);
         args.ele.style('height', args.newHeight);
         args.ele.css('width', args.newWidth);
@@ -140,9 +137,6 @@ module.exports = (function()
 
     EditorActionsManager.prototype.undoChangeNodeSize = function(args)
     {
-        // var currentWidth = args.ele.width();
-        // var currentHeight = args.ele.height();
-        // var newArgs = {ele: args.ele, oldWidth: currentWidth, newWidth: args.newWidth, oldHeight: currentHeight, newHeight: args.newHeight};
         args.ele.style('width', args.oldWidth);
         args.ele.style('height', args.oldHeight);
         args.ele.css('width', args.oldWidth);
@@ -168,8 +162,6 @@ module.exports = (function()
         var currentName = ele.data('name');
         var args = {ele: ele, oldName: currentName, newName: newName};
         window.undoRedoManager.do('changeName', args);
-        // if (ele.isNode())
-        //     window.editorActionsManager.updateAutoSizeNodesToContent(ele);
     };
 
     /*
@@ -791,8 +783,6 @@ module.exports = (function()
         //this.cy.add(newNode);
         this.cy.nodes().updateCompoundBounds();
         window.undoRedoManager.do("add", newNode);
-
-        // window.editorActionsManager.updateAutoSizeNodesToContent(cy.getElementById( newNode.data.id ));
     };
 
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
@@ -1001,10 +991,7 @@ module.exports = (function()
         
         this.cy.add(edgeList);
 
-        // window.editorActionsManager.updateAutoSizeNodesToContent(cy.nodes());
-
         edgeBendEditing.initBendPoints(cy.edges());
-
 
         this.cy.nodes().updateCompoundBounds();
     }
@@ -1416,10 +1403,7 @@ module.exports = (function()
             else
             {
                 window.editorActionsManager.undoHighlightInvalidGenes(cyEle);
-              // window.undoRedoManager.do('removeHighlightInvalidGenes', cyEle);
             }
-
-            // window.editorActionsManager.updateAutoSizeNodesToContent(cyEle);
         }
         else if(cyEle.isEdge())
         {
