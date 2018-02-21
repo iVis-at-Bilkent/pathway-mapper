@@ -65,11 +65,19 @@ var cbioPortalAccessView = Backbone.View.extend(
                     self.$el.find("#dataTypeSelection").append("<h4>Data Types</h4>");
                     for (var obj in dataTypes)
                     {
-                        var newCheckbox = $('<div class="checkbox">' +
-                            '<label>' +
-                            '<input type="checkbox" cancerKey="' + dataTypes[obj][0] + '" value="">'+ obj +'</label>' +
-                            '</div>');
-
+                        var genomicDataTypeDescription = "";
+                        if (obj == "Copy Number Alteration")
+                            genomicDataTypeDescription = 'Amplifications and deep deletions are used in the percentage calculation';
+                        else if (obj == "Gene Expression")
+                            genomicDataTypeDescription = "mRNA up and downregulation (z-score data used and samples" +
+                                " with +/- 2) are used in the percentage calculation";
+                        else if (obj == "Mutation")
+                            genomicDataTypeDescription = "Mutations (any mutations: deletions/insertions, missense with" +
+                                " and without known significance) and fusions are used in the percentage calculation";
+                        var newCheckbox = $('<div class="checkbox" data-tooltip="'+genomicDataTypeDescription+'">' + '<label>' +
+                            '<input type="checkbox" cancerKey="' + dataTypes[obj][0] + '" value="">'+ obj  + '</label>' +
+                                ' ' + '<span id="figure" title ="'+genomicDataTypeDescription+'"><img src="./assets/help_genomic_checkbox.svg" ' +
+                            'alt="description" width="15" height="15"></span>' + '</div>');
                         newCheckbox.find('input[type="checkbox"]').on("click", function(evt)
                         {
                             var checkedNum = self.$el.find('input[type="checkbox"]:checked').length;
