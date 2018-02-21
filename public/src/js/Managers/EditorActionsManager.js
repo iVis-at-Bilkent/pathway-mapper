@@ -1380,6 +1380,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.updateElementCallback = function(ele, id)
     {
+
         var eleID = id;
         var cyEle = this.cy.$("#" + eleID);
         //Common functionalities
@@ -1387,6 +1388,7 @@ module.exports = (function()
 
         if (cyEle.isNode())
         {
+            console.log("called callback " + ele.name + " " +ele.x + " " + ele.y);
             cyEle.position({x: ele.x, y: ele.y});
             cyEle.data.w = ele.w;
             cyEle.data.h = ele.h;

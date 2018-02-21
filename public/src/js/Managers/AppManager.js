@@ -555,7 +555,11 @@ window.notificationManager = require('./../Utils/NotificationFactory');
                  }
                  // else if (e.which === 76) {
                  //     console.log("l pressed");
-                 //     editorActionsManager.updateEdgeBendPoints(cy.elements(":selected").first());
+                 //     cy.nodes().forEach(function( ele ){
+                 //         console.log(ele.position());
+                 //         var id = cy.getElementById(ele);
+                 //         editorActionsManager.updateElementCallback(ele, id);
+                 //     });
                  // }
              });
          }
