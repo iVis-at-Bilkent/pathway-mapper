@@ -74,7 +74,7 @@ var cbioPortalAccessView = Backbone.View.extend(
                         else if (obj == "Mutation")
                             genomicDataTypeDescription = "Mutations (any mutations: deletions/insertions, missense with" +
                                 " and without known significance) and fusions are used in the percentage calculation";
-                        var newCheckbox = $('<div class="checkbox" data-tooltip="'+genomicDataTypeDescription+'">' + '<label>' +
+                        var newCheckbox = $('<div class="checkbox">' + '<label>' +
                             '<input type="checkbox" cancerKey="' + dataTypes[obj][0] + '" value="">'+ obj  + '</label>' +
                                 ' ' + '<span id="figure" title ="'+genomicDataTypeDescription+'"><img src="./assets/help_genomic_checkbox.svg" ' +
                             'alt="description" width="15" height="15"></span>' + '</div>');
