@@ -145,24 +145,27 @@ module.exports = (function()
     },
 
     {
-        selector: '.highlightedEdge',
-        style:
-            {
-                'width': 3.5,
-                'border-width':4,
-                'line-color' : '#1abc9c' ,
-                'target-arrow-color': '#1abc9c',
-                'arrow-scale': 2
-            }
+      selector: '.highlightedEdge',
+      style:
+          {
+              'width': 3.5,
+              'border-width':4,
+              'line-color' : '#1abc9c' ,
+              'target-arrow-color': '#1abc9c',
+              'arrow-scale': 2
+          }
     },
     {
       selector: '.highlightedNode',
       style:
       {
-          'border-width': 4,
+          'border-width': function(ele)
+          {
+              return highlightedBorderWidthFunction( ele );
+          },
           'border-color': '#1abc9c',
-          // 'shadow-color' : '#1abc9c',
           'background-color': '#fff',
+          // 'shadow-color' : '#1abc9c',
           // 'background-opacity': 0.5,
           // 'shadow-opacity': 1.0
       }
@@ -181,7 +184,7 @@ module.exports = (function()
       selector: '.invalidGeneHighlight',
       style:
       {
-          'border-width': 4,
+          'border-width': 3,
           'font-weight' : 'bold',
           // 'shadow-color' : '#e94332',
           // 'background-color': '#e94332',
@@ -194,7 +197,10 @@ module.exports = (function()
         selector: 'node:selected',
         style:
             {
-                'border-width': 2,
+                'border-width': function(ele)
+                {
+                    return selectedBorderWidthFunction( ele );
+                },
                 'border-color' : '#ffc90e', /*#f1c40f'*/
             }
     },
@@ -202,7 +208,10 @@ module.exports = (function()
         selector: '.highlightedNode:selected, .invalidGeneHighlight:selected',
         style:
             {
-                'border-width': 4,
+                'border-width': function(ele)
+                {
+                    return selectedHighlightedBorderWidthFunction( ele );
+                },
             }
     },
     {
@@ -274,6 +283,42 @@ module.exports = (function()
       default: return 1; break;
     }
   };
+
+  var highlightedBorderWidthFunction = function( ele )
+  {
+      switch (ele._private.data['type'])
+      {
+          case "GENE": return 3; break;
+          case "PROCESS": return 0; break;
+          case "FAMILY": return 4; break;
+          case "COMPARTMENT": return 6; break;
+          default: return 3; break;
+      }
+  };
+
+    var selectedBorderWidthFunction = function( ele )
+    {
+        switch (ele._private.data['type'])
+        {
+            case "GENE": return 2; break;
+            case "PROCESS": return 0; break;
+            case "FAMILY": return 3; break;
+            case "COMPARTMENT": return 5; break;
+            default: return 2; break;
+        }
+    };
+    var selectedHighlightedBorderWidthFunction = function( ele )
+    {
+        switch (ele._private.data['type'])
+        {
+            case "GENE": return 3; break;
+            case "PROCESS": return 0; break;
+            case "FAMILY": return 4; break;
+            case "COMPARTMENT": return 6; break;
+            default: return 3; break;
+        }
+    };
+
 
   var parentNodeShapeFunc = function( ele )
   {
