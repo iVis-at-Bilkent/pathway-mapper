@@ -7,6 +7,7 @@ module.exports = (function($)
         this.movedNodes = [];
     }
 
+    //TODO use align function from cytoscape.js-grid-guide extension
     ViewOperationsManager.prototype.handleNodeAlignment = function(param)
     {
         var tmpNodes = window.editorActionsManager.selecteNodeStack;
@@ -32,6 +33,8 @@ module.exports = (function($)
         {
             var firstSelected = nodes[0];
             var firstBbox = firstSelected.boundingBox();
+            //OuterHeight variable added due to miscalculation of boundingBox function in pathwaymapper
+            var firstBboxOuterHeight = firstSelected.outerHeight();
             var self = this;
             nodes.forEach(function(node,index)
             {
@@ -43,7 +46,7 @@ module.exports = (function($)
                 //If parent of selected node is in selection do nothing !
                 if (nodeMap[node.parent().id()] == null)
                 {
-                    var newPosition = self.calculateNewPosition(param, node, firstBbox)
+                    var newPosition = self.calculateNewPosition(param, node, firstBbox, firstBboxOuterHeight)
                     //Recursively traverse leaf nodes
                     self.changePosition(node,0,0,newPosition);
                 }
@@ -57,7 +60,7 @@ module.exports = (function($)
      node that node.position works on center positions thats why all calculations
      are performed accordingly
      */
-    ViewOperationsManager.prototype.calculateNewPosition = function(param, node, referenceBbox)
+    ViewOperationsManager.prototype.calculateNewPosition = function(param, node, referenceBbox, referenceBboxOuterHeight)
     {
         var currentPos = node.position();
         var currentBbox = node.boundingBox();
@@ -81,11 +84,11 @@ module.exports = (function($)
         }
         else if (param === 'hMid')
         {
-            newPosition = {x: currentPos.x, y: referenceBbox.y1 + referenceBbox.h/2};
+            newPosition = {x: currentPos.x, y: referenceBbox.y1 + referenceBboxOuterHeight/2};
         }
         else if (param === 'hBot')
         {
-            newPosition = {x: currentPos.x, y: referenceBbox.y2 - currentBbox.h/2};
+            newPosition = {x: currentPos.x, y: referenceBbox.y1 + referenceBboxOuterHeight - currentBbox.h/2};
         }
         else {
             console.log('Error: wrong alignment name ' + param);

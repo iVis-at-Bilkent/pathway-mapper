@@ -1370,9 +1370,9 @@ module.exports = (function()
     };
 
 
-    EditorActionsManager.prototype.updateVisibility = function(ele, isHighlighted)
+    EditorActionsManager.prototype.updateVisibility = function(ele, isHidden)
     {
-        if (isHighlighted)
+        if (isHidden)
             ele.hide();
         else
             ele.show();
