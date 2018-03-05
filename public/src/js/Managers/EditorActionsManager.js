@@ -255,7 +255,7 @@ module.exports = (function()
         return args;
     };
 
-    EditorActionsManager.prototype.highlightElementsInitially = function(invalidHighlightedGenesIDs, invalidGenesIDs, highlightedGenesIDs, highlightedEdgesIDs)
+    EditorActionsManager.prototype.highlightElementsInitially = function(invalidHighlightedGenesIDs, invalidGenesIDs, highlightedGenesIDs, highlightedEdgesIDs, hiddenGenesIDs)
     {
         for (var i in invalidHighlightedGenesIDs)
         {
@@ -272,6 +272,10 @@ module.exports = (function()
         for (var i in highlightedEdgesIDs)
         {
             cy.$('#'+highlightedEdgesIDs[i]).addClass('highlightedEdge');
+        }
+        for (var i in hiddenGenesIDs)
+        {
+            cy.$('#'+hiddenGenesIDs[i]).hide();
         }
     };
 

@@ -159,6 +159,7 @@ module.exports = (function()
         var invalidGenes = [];
         var highlightedGenes = [];
         var invalidHighlightedGenes = [];
+        var hiddenGenes = [];
         for (var i = 0; i < nodeMapEntries.length; i++)
         {
             var tmpNode = nodeMapEntries[i];
@@ -177,6 +178,11 @@ module.exports = (function()
                 var tmpNodeId = this.getCustomObjId(tmpNode);
                 highlightedGenes.push(tmpNodeId);
             }
+            if (tmpNode.isHidden)
+            {
+                var tmpNodeId = this.getCustomObjId(tmpNode);
+                hiddenGenes.push(tmpNodeId);
+            }
         }
         var highlightedEdges = [];
         for (var i = 0; i < edgeMapEntries.length; i++)
@@ -188,7 +194,6 @@ module.exports = (function()
                 highlightedEdges.push(tmpEdgeId);
             }
         }
-        window.editorActionsManager.highlightElementsInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes, highlightedEdges);
 
         //TODO Workaround for legacy pathways
 
@@ -227,6 +232,8 @@ module.exports = (function()
 
         //Add real time nodes to local graph
         window.editorActionsManager.addNewElementsLocally(nodeMapEntries, edgeMapEntries);
+        //Adds different type of highlight to nodes and hides if their property is hidden
+        window.editorActionsManager.highlightElementsInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes, highlightedEdges, hiddenGenes);
 
         //Update layout properties & global options!!
         window.editorActionsManager.updateLayoutPropertiesCallback(realTimeLayoutProperties);
