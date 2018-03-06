@@ -10,7 +10,7 @@ module.exports = (function($)
     //TODO use align function from cytoscape.js-grid-guide extension
     ViewOperationsManager.prototype.handleNodeAlignment = function(param)
     {
-        var tmpNodes = window.editorActionsManager.selecteNodeStack;
+        var tmpNodes = window.editorActionsManager.selectedNodeStack;
         var nodes = cy.collection();
         var nodeMap = {};
         this.movedNodes = [];

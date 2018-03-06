@@ -53,7 +53,7 @@ module.exports = (function()
         this.genomicDataOverlayManager = new GenomicDataOverlayManager();
         this.svgExporter = new SVGExporter();
 
-        this.selecteNodeStack = {};
+        this.selectedNodeStack = {};
         window.undoRedoManager = cy.undoRedo();
         window.undoRedoManager.action("changePositions", this.doChangePosition, this.undoChangePosition);
         window.undoRedoManager.action("changeNodeSize", this.doChangeNodeSize, this.undoChangeNodeSize);
@@ -599,19 +599,19 @@ module.exports = (function()
     //Related to order the nodes according to the selection of user
     EditorActionsManager.prototype.pushSelectedNodeStack = function(ele)
     {
-        this.selecteNodeStack[ele.id()] = ele;
+        this.selectedNodeStack[ele.id()] = ele;
     }
 
     EditorActionsManager.prototype.removeElementFromSelectedNodeStack = function(ele)
     {
         var nodeID = ele.id();
-        if (nodeID in this.selecteNodeStack)
-            delete this.selecteNodeStack[ele.id()];
+        if (nodeID in this.selectedNodeStack)
+            delete this.selectedNodeStack[ele.id()];
     }
 
     EditorActionsManager.prototype.clearSelectedNodeStack = function()
     {
-        this.selecteNodeStack = {};
+        this.selectedNodeStack = {};
     }
 
     EditorActionsManager.prototype.exportSVG = function()

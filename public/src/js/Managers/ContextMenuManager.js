@@ -169,6 +169,8 @@ module.exports = (function()
 
             var compId = ele.id();
             classRef.editorActionsManager.changeParents(validNodes, compId);
+            //Unselecting nodes to remove them from selectedNodeStack
+            selectedNodes.unselect();
 
           },
           disabled: false, // Whether the item will be created as disabled
@@ -201,6 +203,8 @@ module.exports = (function()
             }
 
             classRef.editorActionsManager.changeParents(selectedNodes, null);
+            //Unselecting nodes to remove them from selectedNodeStack
+            selectedNodes.unselect();
           },
           disabled: false, // Whether the item will be created as disabled
           hasTrailingDivider: true, // Whether the item will have a trailing divider
