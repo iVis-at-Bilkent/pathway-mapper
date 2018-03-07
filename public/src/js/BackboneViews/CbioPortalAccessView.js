@@ -69,7 +69,7 @@ var cbioPortalAccessView = Backbone.View.extend(
                         if (obj == "Copy Number Alteration")
                             genomicDataTypeDescription = 'Amplifications and deep deletions are&#10;used in the percentage calculation';
                         else if (obj == "Gene Expression")
-                            genomicDataTypeDescription = "mRNA up and downregulation (z-score data used and samples" +
+                            genomicDataTypeDescription = "mRNA up and downregulation (z-score data used and&#10;samples" +
                                 " with +/- 2) are used in the percentage calculation";
                         else if (obj == "Mutation")
                             genomicDataTypeDescription = "Mutations (any mutations: deletions/insertions,&#10;missense with" +
