@@ -76,7 +76,7 @@ module.exports = (function(){
             'https://www.googleapis.com/auth/drive.readonly'
         ],
 
-        TCGA_APP_FOLDER_NAME: 'TCGA_Pathway_Curation_Tool_Files',
+        TCGA_APP_FOLDER_NAME: 'PathwayMapper_Files',
 
         /**
          * Initializes RealtimeUtils
