@@ -37,7 +37,7 @@
     "cytoscape-cose-bilkent": "^4.0.0",
     "cytoscape-edge-bend-editing": "github:iVis-at-Bilkent/cytoscape.js-edge-bend-editing#unstable",
     "cytoscape-edgehandles": "~2.13.1",
-    "cytoscape-grid-guide": "^2.0.2",
+    "cytoscape-grid-guide": "github:iVis-at-Bilkent/cytoscape.js-grid-guide#unstable",
     "cytoscape-navigator": "^1.1.2",
     "cytoscape-node-resize": "github:iVis-at-Bilkent/cytoscape.js-node-resize#unstable",
     "cytoscape-panzoom": "~2.5.2",
