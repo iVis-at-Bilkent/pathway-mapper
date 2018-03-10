@@ -67,16 +67,16 @@ var cbioPortalAccessView = Backbone.View.extend(
                     {
                         var genomicDataTypeDescription = "";
                         if (obj == "Copy Number Alteration")
-                            genomicDataTypeDescription = 'Amplifications and deep deletions are&#10;used in the percentage calculation';
+                            genomicDataTypeDescription = 'Amplifications and deep deletions are used in the percentage calculation';
                         else if (obj == "Gene Expression")
-                            genomicDataTypeDescription = "mRNA up and downregulation (z-score data used and&#10;samples" +
+                            genomicDataTypeDescription = "mRNA up and downregulation (z-score data used and&lt;br /&gt;samples" +
                                 " with +/- 2) are used in the percentage calculation";
                         else if (obj == "Mutation")
-                            genomicDataTypeDescription = "Mutations (any mutations: deletions/insertions,&#10;missense with" +
-                                " and without known significance) and&#10;fusions are used in the percentage calculation";
+                            genomicDataTypeDescription = "Mutations (any mutations: deletions/insertions, missense with" +
+                                " and without&lt;br /&gt;known significance) and fusions are used in the percentage calculation";
                         var newCheckbox = $('<div class="checkbox">' + '<label>' +
                             '<input type="checkbox" cancerKey="' + dataTypes[obj][0] + '" value="" style="top:-3px">'+ obj  + '</label>' +
-                                ' ' + '<span id="genomicDataTooltip" title ="'+genomicDataTypeDescription+'"><img src="./assets/help_genomic_checkbox.svg" ' +
+                                ' ' + '<span id="genomicDataTooltip" data-tooltip ="'+genomicDataTypeDescription+'"><img src="./assets/help_genomic_checkbox.svg" ' +
                             'alt="description" width="14" height="14"></span>' + '</div>');
                         newCheckbox.find('input[type="checkbox"]').on("click", function(evt)
                         {
@@ -90,6 +90,7 @@ var cbioPortalAccessView = Backbone.View.extend(
                         });
 
                         self.$el.find("#dataTypeSelection").append(newCheckbox);
+                        window.html5tooltips.refresh();
                     }
                 }
 

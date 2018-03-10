@@ -16,6 +16,7 @@ var SaveLoadUtilities = require('./Utils/SaveLoadUtility.js');
 //Wait all components to load
 $(window).load(function()
 {
+    window.html5tooltips = html5tooltips;
     function getLocalPathway(pathwayName)
     {
         var request = new XMLHttpRequest();
