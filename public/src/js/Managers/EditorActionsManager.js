@@ -514,7 +514,16 @@ module.exports = (function()
     {
         if (this.isCollaborative)
         {
-            this.moveElements(cy.nodes());
+            //Previously cy.nodes() was sent as an argument in moveElements function but it caused a problem when
+            // the compound node was moved before the child nodes
+            var movedNodes = cy.collection();
+            cy.nodes().forEach(function(node,i)
+            {
+                if (!node.isParent())
+                    movedNodes = movedNodes.add(node);
+            });
+            this.moveElements(movedNodes);
+
             var newState = {
                 zoomLevel: cy.zoom(),
                 panLevel: cy.pan()
