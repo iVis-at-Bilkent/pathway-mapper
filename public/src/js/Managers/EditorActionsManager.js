@@ -517,12 +517,16 @@ module.exports = (function()
             //Previously cy.nodes() was sent as an argument in moveElements function but it caused a problem when
             // the compound node was moved before the child nodes
             var movedNodes = cy.collection();
+            var parentNodes = cy.collection();
             cy.nodes().forEach(function(node,i)
             {
                 if (!node.isParent())
                     movedNodes = movedNodes.add(node);
+                else
+                    parentNodes = parentNodes.add(node);
             });
             this.moveElements(movedNodes);
+            this.moveElements(parentNodes);
 
             var newState = {
                 zoomLevel: cy.zoom(),
