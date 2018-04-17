@@ -134,8 +134,26 @@ module.exports = (function ()
             targetRectangle.height += this.COMPOUND_MARGIN;
         }
 
-        //Calculate cipping points by Cohen Sutherland algorithm
-        var clipPoints = this.findClippingPoints(sourceRectangle, targetRectangle);
+        var numberOfBendPoints = 0;
+        if (edgeBendEditing.getSegmentPoints(edge) !== undefined)
+            numberOfBendPoints = edgeBendEditing.getSegmentPoints(edge).length/2;
+
+        var clipPoints;
+        if (numberOfBendPoints > 0)
+        {
+            var lastBendPoint = {
+                x: edgeBendEditing.getSegmentPoints(edge)[2*numberOfBendPoints-2],
+                y: edgeBendEditing.getSegmentPoints(edge)[2*numberOfBendPoints-1],
+                height: 0,
+                width: 0
+            };
+            //Calculate clipping point of target node with the segment from last bend point by Cohen Sutherland algorithm
+            clipPoints = this.findClippingPoints(lastBendPoint, targetRectangle);
+        }
+        else {
+            //Calculate clipping points of both source and target nodes by Cohen Sutherland algorithm
+            clipPoints = this.findClippingPoints(sourceRectangle, targetRectangle);
+        }
 
         //Calculate unit vector pointing from source clipping coordinates to target clipping coordinates
         var unitV = unitVector(
@@ -205,22 +223,67 @@ module.exports = (function ()
             this.svg.appendChild(lineSVG);
         }
 
-        //Draw edge line here !
-        var lineSVG = document.createElementNS(this.SVGNameSpace, 'line');
-        lineSVG.setAttribute('x1', clipPoints.sourceClipPoints.x);
-        lineSVG.setAttribute('y1', clipPoints.sourceClipPoints.y);
-        lineSVG.setAttribute('x2', targetX);
-        lineSVG.setAttribute('y2', targetY);
-        lineSVG.setAttribute('stroke-width', this.EDGE_WIDTH);
-        lineSVG.setAttribute('stroke', 'black');
-
-        //Draw dashed if induces or represses interaction
-        if(edgeType == "INDUCES" || edgeType == "REPRESSES")
+        //Draw edge lines here !
+        if (numberOfBendPoints > 0)
         {
-            lineSVG.setAttribute('stroke-dasharray', this.DASH_PARAMETERS);
-        }
+            //Calculate initial clipping point of source node with the segment from first bend point
+            var firstBendPoint = {
+                x: edgeBendEditing.getSegmentPoints(edge)[0],
+                y: edgeBendEditing.getSegmentPoints(edge)[1],
+                height: 0,
+                width: 0
+            };
+            var initialClipPoint = this.findClippingPoints(sourceRectangle, firstBendPoint);
 
-        this.svg.appendChild(lineSVG);
+            //Create a copy array of edgeBendEditing.getSegmentPoints(edge) which contain all the bending points
+            // including source and target clipping point. The first elements of the array are source's x and y positions
+            // and the last ones are target's x and y positions
+            var points = [initialClipPoint.sourceClipPoints.x, initialClipPoint.sourceClipPoints.y];
+            for (var i = 0; i < numberOfBendPoints*2; i++)
+            {
+                points.push(edgeBendEditing.getSegmentPoints(edge)[i]);
+            }
+            points.push(clipPoints.targetClipPoints.x);
+            points.push(clipPoints.targetClipPoints.y);
+
+            for (var i = 0; i < points.length-2; i+=2)
+            {
+                var lineSVG = document.createElementNS(this.SVGNameSpace, 'line');
+                lineSVG.setAttribute('x1', points[i]);
+                lineSVG.setAttribute('y1', points[i+1]);
+                lineSVG.setAttribute('x2', points[i+2]);
+                lineSVG.setAttribute('y2', points[i+3]);
+                lineSVG.setAttribute('stroke-width', this.EDGE_WIDTH);
+                lineSVG.setAttribute('stroke', 'black');
+
+                //Draw dashed if induces or represses interaction
+                if(edgeType == "INDUCES" || edgeType == "REPRESSES")
+                {
+                    lineSVG.setAttribute('stroke-dasharray', this.DASH_PARAMETERS);
+                }
+
+                this.svg.appendChild(lineSVG);
+            }
+
+        }
+        else
+        {
+            var lineSVG = document.createElementNS(this.SVGNameSpace, 'line');
+            lineSVG.setAttribute('x1', clipPoints.sourceClipPoints.x);
+            lineSVG.setAttribute('y1', clipPoints.sourceClipPoints.y);
+            lineSVG.setAttribute('x2', targetX);
+            lineSVG.setAttribute('y2', targetY);
+            lineSVG.setAttribute('stroke-width', this.EDGE_WIDTH);
+            lineSVG.setAttribute('stroke', 'black');
+
+            //Draw dashed if induces or represses interaction
+            if(edgeType == "INDUCES" || edgeType == "REPRESSES")
+            {
+                lineSVG.setAttribute('stroke-dasharray', this.DASH_PARAMETERS);
+            }
+
+            this.svg.appendChild(lineSVG);
+        }
     };
 
     /**
