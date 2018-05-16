@@ -941,6 +941,12 @@ module.exports = (function()
             //Added for backward compatibility when width was not defined
             var nodeWidth = (realTimeNode.w == undefined) ? 150 : realTimeNode.w ;
             var nodeHeight = (realTimeNode.h == undefined) ? 52 : realTimeNode.h ;
+            var compoundMinWidth = (realTimeNode.minWidth == undefined) ? 0 : realTimeNode.minWidth ;
+            var compoundMinWidthBiasLeft = (realTimeNode.minWidthBiasLeft == undefined) ? 0 : realTimeNode.minWidthBiasLeft ;
+            var compoundMinWidthBiasRight = (realTimeNode.minWidthBiasRight == undefined) ? 0 : realTimeNode.minWidthBiasRight ;
+            var compoundMinHeight = (realTimeNode.minHeight == undefined) ? 0 : realTimeNode.minHeight ;
+            var compoundMinHeightBiasTop = (realTimeNode.minHeightBiasTop == undefined) ? 0 : realTimeNode.minHeightBiasTop ;
+            var compoundMinHeightBiasBottom = (realTimeNode.minHeightBiasBottom == undefined) ? 0 : realTimeNode.minHeightBiasBottom;
 
             var nodeData =
             {
@@ -956,8 +962,14 @@ module.exports = (function()
                 },
                 style:
                 {
-                    width: nodeWidth,
-                    height: nodeHeight
+                    'width': nodeWidth,
+                    'height': nodeHeight,
+                    'min-width': compoundMinWidth,
+                    'min-width-bias-left': compoundMinWidthBiasLeft,
+                    'min-width-bias-right': compoundMinWidthBiasRight,
+                    'min-height': compoundMinHeight,
+                    'min-height-bias-top': compoundMinHeightBiasTop,
+                    'min-height-bias-bottom': compoundMinHeightBiasBottom
                 }
             };
 
@@ -1448,7 +1460,7 @@ module.exports = (function()
                 window.editorActionsManager.undoHighlightInvalidGenes(cyEle);
             }
             //Refresh grapples when the node being changed from another collaborator is selected in current window
-            cy.nodeResize('get').refreshGrapples();
+            // cy.nodeResize('get').refreshGrapples();
         }
         else if(cyEle.isEdge())
         {

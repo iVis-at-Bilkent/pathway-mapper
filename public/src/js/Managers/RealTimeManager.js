@@ -653,14 +653,14 @@ module.exports = (function()
         {
             var tmpNode = nodeMap.get(elementID);
             model.beginCompoundOperation();
+            tmpNode.x = currentX;
+            tmpNode.y = currentY;
             tmpNode.minWidth = minWidth;
             tmpNode.minWidthBiasLeft = minWidthBiasLeft;
             tmpNode.minWidthBiasRight = minWidthBiasRight;
             tmpNode.minHeight = minHeight;
             tmpNode.minHeightBiasTop = minHeightBiasTop;
             tmpNode.minHeightBiasBottom = minHeightBiasBottom;
-            tmpNode.x = currentX;
-            tmpNode.y = currentY;
             model.endCompoundOperation();
         }
         else
