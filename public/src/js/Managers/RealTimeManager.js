@@ -481,7 +481,13 @@ module.exports = (function()
             type: nodeData.type,
             parent: nodeData.parent,
             w: nodeData.w,
-            h: nodeData.h
+            h: nodeData.h,
+            minWidth: nodeData.minWidth,
+            minWidthBiasLeft: nodeData.minWidthBiasLeft,
+            minWidthBiasRight: nodeData.minWidthBiasRight,
+            minHeight: nodeData.minHeight,
+            minHeightBiasTop: nodeData.minHeightBiasTop,
+            minHeightBiasBottom: nodeData.minHeightBiasBottom
         });
 
         if (posData)
@@ -625,6 +631,36 @@ module.exports = (function()
             model.beginCompoundOperation();
             tmpNode.w = newWidth;
             tmpNode.h = newHeight;
+            model.endCompoundOperation();
+        }
+        else
+        {
+            throw new Error('Element does not exist in nodes !!! ');
+        }
+    };
+
+    RealTimeManager.prototype.resizeCompound = function(ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom)
+    {
+        var model = this.realTimeDoc.getModel();
+        var root = model.getRoot();
+        var nodeMap =  root.get(this.NODEMAP_NAME);
+
+        var elementID = ele.id();
+        var currentX = ele.position('x');
+        var currentY = ele.position('y');
+
+        if (nodeMap.has(elementID))
+        {
+            var tmpNode = nodeMap.get(elementID);
+            model.beginCompoundOperation();
+            tmpNode.minWidth = minWidth;
+            tmpNode.minWidthBiasLeft = minWidthBiasLeft;
+            tmpNode.minWidthBiasRight = minWidthBiasRight;
+            tmpNode.minHeight = minHeight;
+            tmpNode.minHeightBiasTop = minHeightBiasTop;
+            tmpNode.minHeightBiasBottom = minHeightBiasBottom;
+            tmpNode.x = currentX;
+            tmpNode.y = currentY;
             model.endCompoundOperation();
         }
         else
@@ -1190,6 +1226,12 @@ module.exports = (function()
         NodeR.prototype.y = gapi.drive.realtime.custom.collaborativeField('y');
         NodeR.prototype.w = gapi.drive.realtime.custom.collaborativeField('w');
         NodeR.prototype.h = gapi.drive.realtime.custom.collaborativeField('h');
+        NodeR.prototype.minWidth = gapi.drive.realtime.custom.collaborativeField('minWidth');
+        NodeR.prototype.minWidthBiasLeft = gapi.drive.realtime.custom.collaborativeField('minWidthBiasLeft');
+        NodeR.prototype.minWidthBiasRight = gapi.drive.realtime.custom.collaborativeField('minWidthBiasRight');
+        NodeR.prototype.minHeight = gapi.drive.realtime.custom.collaborativeField('minHeight');
+        NodeR.prototype.minHeightBiasTop = gapi.drive.realtime.custom.collaborativeField('minHeightBiasTop');
+        NodeR.prototype.minHeightBiasBottom = gapi.drive.realtime.custom.collaborativeField('minHeightBiasBottom');
         NodeR.prototype.parent = gapi.drive.realtime.custom.collaborativeField('parent');
         NodeR.prototype.isHidden = gapi.drive.realtime.custom.collaborativeField('isHidden');
         NodeR.prototype.isInvalidGene = gapi.drive.realtime.custom.collaborativeField('isInvalidGene');
@@ -1287,6 +1329,12 @@ module.exports = (function()
         this.y = params.y || "undefined";
         this.w = params.w || "undefined";
         this.h = params.h || "undefined";
+        this.minWidth = params.minWidth || 0;
+        this.minWidthBiasLeft = params.minWidth || 0;
+        this.minWidthBiasRight = params.minWidth || 0;
+        this.minHeight = params.minWidth || 0;
+        this.minHeightBiasTop = params.minWidth || 0;
+        this.minHeightBiasBottom = params.minWidth || 0;
         this.isHidden = params.isHidden || false;
         this.isInvalidGene = params.isInvalidGene || false;
         this.isHighlighted = params.isHighlighted || false;

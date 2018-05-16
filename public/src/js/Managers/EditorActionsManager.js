@@ -1208,13 +1208,13 @@ module.exports = (function()
         self.cy.nodes().updateCompoundBounds();
     };
 
-    EditorActionsManager.prototype.moveElements = function(ele, position)
+    EditorActionsManager.prototype.moveElements = function(eles)
     {
         var classRef = this;
         //Sync movement to real time api
         if(this.isCollaborative)
         {
-            ele.forEach(function (ele,index)
+            eles.forEach(function (ele,index)
             {
                 classRef.realTimeManager.moveElement(ele);
             });
@@ -1223,14 +1223,24 @@ module.exports = (function()
 
     EditorActionsManager.prototype.resizeElements = function(ele)
     {
-        var previousWidth = ele.width();
-        var previousHeight = ele.height();
-        ele.style('width',previousWidth);
-        ele.style('height',previousHeight);
-
-        //Sync movement to real time api
         if(this.isCollaborative) {
-            this.realTimeManager.resizeElement(ele, previousWidth, previousHeight);
+            if (!ele.isParent()) {
+                var previousWidth = ele.width();
+                var previousHeight = ele.height();
+                //Sync movement to real time api
+                this.realTimeManager.resizeElement(ele, previousWidth, previousHeight);
+            }
+            else {
+                var minWidth = ele.style('min-width');
+                var minWidthBiasLeft = ele.style('min-width-bias-left');
+                var minWidthBiasRight = ele.style('min-width-bias-right');
+                var minHeight = ele.style('min-height');
+                var minHeightBiasTop = ele.style('min-height-bias-top');
+                var minHeightBiasBottom = ele.style('min-height-bias-bottom');
+
+                //Sync movement to real time api
+                this.realTimeManager.resizeCompound(ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom);
+            }
         }
     };
 
@@ -1399,34 +1409,46 @@ module.exports = (function()
 
     EditorActionsManager.prototype.updateElementCallback = function(ele, id)
     {
-
         var eleID = id;
         var cyEle = this.cy.$("#" + eleID);
-        //Common functionalities
         this.changeNameCy(cyEle, ele.name);
 
         if (cyEle.isNode())
         {
-            console.log("called callback " + ele.name + " " +ele.x + " " + ele.y);
-            cyEle.position({x: ele.x, y: ele.y});
-            cyEle.data.w = ele.w;
-            cyEle.data.h = ele.h;
-            // cyEle.style("width", ele.w);
-            // cyEle.style("height", ele.h);
-            cyEle.css('width', ele.w);
-            cyEle.css('height', ele.h);
+            //Width and height of simple nodes and compounds is changed differently
+            if (cyEle.isParent())
+            {
+                cyEle.style("min-width", ele.minWidth);
+                cyEle.style("min-width-bias-left", ele.minWidthBiasLeft);
+                cyEle.style("min-width-bias-right", ele.minWidthBiasRight);
+                cyEle.style("min-height", ele.minHeight);
+                cyEle.style("min-height-bias-top", ele.minHeightBiasTop);
+                cyEle.style("min-height-bias-bottom", ele.minHeightBiasBottom);
+            }
+            else
+            {
+                cyEle.data.w = ele.w;
+                cyEle.data.h = ele.h;
+                cyEle.style("width", ele.w);
+                cyEle.style("height", ele.h);
+                //Position is changed only for simple nodes because the
+                //position of compounds is defined by simple nodes' position
+                cyEle.position({x: ele.x, y: ele.y});
+            }
+
             this.updateVisibility(cyEle, ele.isHidden);
             this.updateHighlight(cyEle, ele.isHighlighted);
 
             if(ele.isInvalidGene)
             {
                 window.editorActionsManager.doHighlightInvalidGenes(cyEle);
-              // window.undoRedoManager.do('highlightInvalidGenes', cyEle);
             }
             else
             {
                 window.editorActionsManager.undoHighlightInvalidGenes(cyEle);
             }
+            //Refresh grapples when the node being changed from another collaborator is selected in current window
+            cy.nodeResize('get').refreshGrapples();
         }
         else if(cyEle.isEdge())
         {
@@ -1440,7 +1462,6 @@ module.exports = (function()
               if (bendPoint.length == 0 && numberOfBendPositions > 0) //Checks if the number of bendpoints changed from before
                   edgeBendEditing.deleteSelectedBendPoint(cyEle,0);
               edgeBendEditing.initBendPoints(cyEle);
-
         }
     };
 

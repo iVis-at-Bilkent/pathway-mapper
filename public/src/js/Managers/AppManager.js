@@ -336,6 +336,10 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             boundingRectangleLineWidth: 1.5,
             zIndex: 999,
 
+            moveSelectedNodesOnKeyEvents: function () {
+                return true;
+            },
+
             minWidth: function (node) {
                 var data = node.data("resizeMinWidth");
                 return data ? data : 15;
@@ -344,6 +348,28 @@ window.notificationManager = require('./../Utils/NotificationFactory');
                 var data = node.data("resizeMinHeight");
                 return data ? data : 15;
             }, // a function returns min height of node
+
+            // Getters for some style properties the defaults returns ele.css('property-name')
+            // you are encouraged to override these getters
+            getCompoundMinWidth: function(node) {
+                return node.style('min-width');
+            },
+            getCompoundMinHeight: function(node) {
+                return node.style('min-height');
+            },
+            getCompoundMinWidthBiasRight: function(node) {
+                return node.style('min-width-bias-right');
+            },
+            getCompoundMinWidthBiasLeft: function(node) {
+                return node.style('min-width-bias-left');
+            },
+            getCompoundMinHeightBiasTop: function(node) {
+                return node.style('min-height-bias-top');
+            },
+            getCompoundMinHeightBiasBottom: function(node) {
+                return node.style('min-height-bias-bottom');
+            },
+
 
             isFixedAspectRatioResizeMode: function (node) { return node.is(".fixedAspectRatioResizeMode") },// with only 4 active grapples (at corners)
             isNoResizeMode: function (node) {
@@ -356,12 +382,31 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             // is highly recommended (Of course this will require a proper setting in the stylesheet).
             setWidth: function(node, width)
             {
-                node.css('width', width);
+                node.style('width', width);
             },
             setHeight: function(node, height)
             {
-                node.css('height', height);
+                node.style('height', height);
             },
+            setCompoundMinWidth: function(node, minWidth) {
+                node.style('min-width', minWidth);
+            },
+            setCompoundMinHeight: function(node, minHeight) {
+                node.style('min-height', minHeight);
+            },
+            setCompoundMinWidthBiasLeft: function(node, minWidthBiasLeft) {
+                node.style('min-width-bias-left', minWidthBiasLeft);
+            },
+            setCompoundMinWidthBiasRight: function(node, minHeightBiasRight) {
+                node.style('min-width-bias-right', minHeightBiasRight);
+            },
+            setCompoundMinHeightBiasTop: function(node, minHeightBiasTop) {
+                node.style('min-height-bias-top', minHeightBiasTop);
+            },
+            setCompoundMinHeightBiasBottom: function(node, minHeightBiasBottom) {
+                node.style('min-height-bias-bottom', minHeightBiasBottom);
+            },
+
             cursors: { // See http://www.w3schools.com/cssref/tryit.asp?filename=trycss_cursor
                 // May take any "cursor" css property
                 default: "default", // to be set after resizing finished or mouseleave
@@ -516,7 +561,6 @@ window.notificationManager = require('./../Utils/NotificationFactory');
 
         cy.on('noderesize.moveend',function(){
             editorActionsManager.changeNodePositionsByArrows(cy.nodes(":selected"));
-            console.log("move the selected nodes in collaborative");
         });
 
     };
@@ -553,14 +597,6 @@ window.notificationManager = require('./../Utils/NotificationFactory');
                          editorActionsManager.removeElement(selectedElements);
                      }
                  }
-                 // else if (e.which === 76) {
-                 //     console.log("l pressed");
-                 //     cy.nodes().forEach(function( ele ){
-                 //         console.log(ele.position());
-                 //         var id = cy.getElementById(ele);
-                 //         editorActionsManager.updateElementCallback(ele, id);
-                 //     });
-                 // }
              });
          }
      };
