@@ -57,6 +57,7 @@ module.exports = (function()
         window.undoRedoManager = cy.undoRedo();
         window.undoRedoManager.action("changePositions", this.doChangePosition, this.undoChangePosition);
         window.undoRedoManager.action("changeNodeSize", this.doChangeNodeSize, this.undoChangeNodeSize);
+        window.undoRedoManager.action("changeCompoundSize", this.doChangeCompoundSize, this.undoChangeCompoundSize);
         window.undoRedoManager.action("changeName", this.doChangename, this.undoChangeName);
         window.undoRedoManager.action("hideNode", this.doHide, this.undoHide);
         window.undoRedoManager.action("showAllNodes", this.doShow, this.undoShow);
@@ -141,6 +142,50 @@ module.exports = (function()
         args.ele.style('height', args.oldHeight);
         args.ele.css('width', args.oldWidth);
         args.ele.css('height', args.oldHeight);
+
+        return args;
+    };
+
+    /*
+     * Undo redo for changing size of compounds
+     * **/
+    EditorActionsManager.prototype.doChangeCompoundSize = function(args)
+    {
+        args.ele.style('min-width', args.newMinWidth);
+        args.ele.style('min-width-bias-left', args.newMinWidthBiasLeft);
+        args.ele.style('min-width-bias-right', args.newMinWidthBiasRight);
+        args.ele.style('min-height', args.newMinHeight);
+        args.ele.style('min-height-bias-top', args.newMinHeightBiasTop);
+        args.ele.style('min-height-bias-bottom', args.newMinHeightBiasBottom);
+
+        return args;
+    };
+
+    EditorActionsManager.prototype.undoChangeCompoundSize = function(args)
+    {
+        if (args.oldMinWidth == undefined)
+        {
+            args.ele.style('min-width', 0);
+            args.ele.style('min-width-bias-left', 0);
+            args.ele.style('min-width-bias-right', 0);
+
+        }
+        else {
+            args.ele.style('min-width', args.oldMinWidth);
+            args.ele.style('min-width-bias-left', args.oldMinWidthBiasLeft);
+            args.ele.style('min-width-bias-right', args.oldMinWidthBiasRight);
+        }
+        if (args.oldMinHeight == undefined)
+        {
+            args.ele.style('min-height', 0);
+            args.ele.style('min-height-bias-top', 0);
+            args.ele.style('min-height-bias-bottom', 0);
+        }
+        else {
+            args.ele.style('min-height', args.oldMinHeight);
+            args.ele.style('min-height-bias-top', args.oldMinHeightBiasTop);
+            args.ele.style('min-height-bias-bottom', args.oldMinHeightBiasBottom);
+        }
 
         return args;
     };
@@ -1599,29 +1644,37 @@ module.exports = (function()
             var labelWithData = 148 + (visibleNumberOfData-3) * 36;
             var rt = this.realTimeManager;
             nodes.forEach(function( ele ){
-                var newWidth = 150;
-                var newHeight = 52;
-                if (ele.data('name') != "")
+                if (!ele.isParent())
                 {
-                    var labelLength = ele.style('label').length*10 + 6;
-                    newWidth = labelLength;
-                    newHeight = 24;
+                    var newWidth = 150;
+                    var newHeight = 52;
+                    if (ele.data('name') != "")
+                    {
+                        var labelLength = ele.style('label').length*10 + 6;
+                        newWidth = labelLength;
+                        newHeight = 24;
+                    }
+                    if (visibleNumberOfData > 0)
+                    {
+                        newHeight = 52;
+                        if (visibleNumberOfData < 4)
+                        {
+                            if (150 > newWidth)
+                                newWidth = 150;
+                        }
+                        else
+                        {
+                            if (labelWithData > newWidth)
+                                newWidth = labelWithData;
+                        }
+                    }
+                    rt.setSizeOfElement(ele, newWidth, newHeight);
                 }
-                if (visibleNumberOfData > 0)
+                else
                 {
-                    newHeight = 52;
-                    if (visibleNumberOfData < 4)
-                    {
-                        if (150 > newWidth)
-                            newWidth = 150;
-                    }
-                    else
-                    {
-                        if (labelWithData > newWidth)
-                            newWidth = labelWithData;
-                    }
+                    //Set the minWidth, minHeight and other properties of compound to 0
+                    rt.resizeCompound(ele, 0, 0, 0, 0, 0, 0);
                 }
-                rt.setSizeOfElement(ele, newWidth, newHeight);
             });
         }
         else
@@ -1632,30 +1685,54 @@ module.exports = (function()
             var visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
             var labelWithData = 150 + (visibleNumberOfData-3) * 36;
             nodes.forEach(function( ele ){
-                var newWidth = 150;
-                var newHeight = 52;
-                if (ele.data('name') != "")
+                if (!ele.isParent())
                 {
-                    var labelLength = ele.style('label').length*10 + 6;
-                    newWidth = labelLength;
-                    newHeight = 24;
+                    var newWidth = 150;
+                    var newHeight = 52;
+                    if (ele.data('name') != "") {
+                        var labelLength = ele.style('label').length * 10 + 6;
+                        newWidth = labelLength;
+                        newHeight = 24;
+                    }
+                    if (visibleNumberOfData > 0) {
+                        newHeight = 52;
+                        if (visibleNumberOfData < 4) {
+                            if (150 > newWidth)
+                                newWidth = 150;
+                        }
+                        else {
+                            if (labelWithData > newWidth)
+                                newWidth = labelWithData;
+                        }
+                    }
+                    var args = {
+                        ele: ele,
+                        oldWidth: ele.width(),
+                        newWidth: newWidth,
+                        oldHeight: ele.height(),
+                        newHeight: newHeight
+                    };
+                    actions.push({name: "changeNodeSize", param: args});
                 }
-                if (visibleNumberOfData > 0)
+                else
                 {
-                    newHeight = 52;
-                    if (visibleNumberOfData < 4)
-                    {
-                        if (150 > newWidth)
-                            newWidth = 150;
-                    }
-                    else
-                    {
-                        if (labelWithData > newWidth)
-                            newWidth = labelWithData;
-                    }
+                    var args = {
+                        ele: ele,
+                        oldMinWidth: ele.style("min-width"),
+                        newMinWidth: 0,
+                        oldMinWidthBiasLeft: ele.style("min-width-bias-left"),
+                        newMinWidthBiasLeft: 0,
+                        oldMinWidthBiasRight: ele.style("min-width-bias-right"),
+                        newMinWidthBiasRight: 0,
+                        oldMinHeight: ele.style("min-height"),
+                        newMinHeight: 0,
+                        oldMinHeightBiasTop: ele.style("min-height-bias-top"),
+                        newMinHeightBiasTop: 0,
+                        oldMinHeightBiasBottom: ele.style("min-height-bias-bottom"),
+                        newMinHeightBiasBottom: 0
+                    };
+                    actions.push({name: "changeCompoundSize", param: args});
                 }
-                var args = {ele: ele, oldWidth: ele.width(), newWidth: newWidth, oldHeight: ele.height(), newHeight: newHeight};
-                actions.push({name: "changeNodeSize", param: args});
             });
 
             ur.do("batch", actions);
