@@ -104,14 +104,21 @@ module.exports = (function($)
     FileOperationsManager.prototype.resetUndoStack = function()
     {
         window.undoRedoManager.reset();
-    }
+    };
 
     FileOperationsManager.prototype.createNewPathway = function()
     {
         window.editorActionsManager.removeAllElements();
+        window.fileOperationsManager.changePathwayDetails(
+        {
+            fileName: "pathway.txt",
+            pathwayTitle: "New Pathway",
+            pathwayDescription: ""
+        });
         window.fileOperationsManager.resetUndoStack();
-    }
+
+    };
 
     return FileOperationsManager;
 
-})(window.$)
+})(window.$);
