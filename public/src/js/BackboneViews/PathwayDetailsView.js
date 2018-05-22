@@ -50,11 +50,11 @@ var pathwayDetails = Backbone.View.extend(
     getPathwayData : function()
     {
         var pathwayData =
-            {
-                fileName: $("#pName").val(),
-                pathwayTitle: $("#pTitle").val(),
-                pathwayDescription: $("#pDesc").val(),
-            };
+        {
+            fileName: this.properties.pathwayName,
+            pathwayTitle: this.properties.pathwayTitle,
+            pathwayDescription: this.properties.pathwayDescription
+        };
 
         return pathwayData;
     },
