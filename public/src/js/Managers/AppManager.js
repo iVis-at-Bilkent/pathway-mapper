@@ -116,7 +116,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
                              var newPath = templateData[key][i];
                              var pName = newPath.replace(/-/gi, " ").substring(0, newPath.length - 4);
                              var sampleLink = $('<li><a  path="' + newPath + '" href="#">' + pName + '</a></li>');
-                             sampleLink.on('click', sampleMenuClickHandler);
+                             sampleLink.on('click', checkMenuClickHandler);
 
                              //Add it to pan cancer menu
                              if (key.includes('PanCancer')) {
@@ -139,6 +139,13 @@ window.notificationManager = require('./../Utils/NotificationFactory');
              }
          };
 
+         //Checks whether there is a visible pathway and displays a warning
+         function checkMenuClickHandler(event) {
+             if(cy.elements().length != 0)
+                     window.appManager.promptConfirmationView.render(function(){sampleMenuClickHandler(event)});
+                 else
+                     sampleMenuClickHandler(event);
+         }
 
          function sampleMenuClickHandler(event) {
              var request = new XMLHttpRequest();

@@ -27,10 +27,6 @@ module.exports = (function ($)
             else
                 $('#fileinput').trigger('click');
         }
-        else if (dropdownLinkRole == 'sample')
-        {
-            window.fileOperationsManager.sampleFileRequestHandler();
-        }
         else if (dropdownLinkRole == 'merge')
         {
             $('#mergeInput').trigger('click');

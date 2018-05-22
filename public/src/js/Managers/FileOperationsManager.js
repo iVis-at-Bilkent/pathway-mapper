@@ -45,7 +45,7 @@ module.exports = (function($)
         var imageData = this.b64toBlob(b64data, "image/jpeg");
         var blob = new Blob([imageData]);
         saveAs(blob, "pathway.jpg");
-    }
+    };
 
     FileOperationsManager.prototype.saveAsPNG = function()
     {
@@ -56,7 +56,7 @@ module.exports = (function($)
         var imageData = this.b64toBlob(b64data, "image/png");
         var blob = new Blob([imageData]);
         saveAs(blob, "pathway.png");
-    }
+    };
 
     FileOperationsManager.prototype.saveGraph = function(isSIFNX)
     {
@@ -67,39 +67,12 @@ module.exports = (function($)
                                        SaveLoadUtilities.exportGraph(pathwayData);
         var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
         saveAs(blob, pathwayData.fileName);
-    }
+    };
 
     FileOperationsManager.prototype.changePathwayDetails = function(pathwayData)
     {
         window.appManager.pathwayDetailsView.updatePathwayProperties(pathwayData);
-    }
-
-    FileOperationsManager.prototype.sampleFileRequestHandler = function()
-    {
-      var self = this;
-      var request = new XMLHttpRequest();
-      request.onreadystatechange = function ()
-      {
-          if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
-          {
-              var graphData = SaveLoadUtilities.parseGraph(request.responseText);
-              window.editorActionsManager.loadFile(graphData.nodes, graphData.edges);
-
-              self.changePathwayDetails(
-                  {
-                      fileName: graphData.name,
-                      pathwayTitle: graphData.title,
-                      pathwayDescription: graphData.description
-                  });
-
-              self.resetUndoStack();
-          }
-      };
-      request.open("GET", "/sampleGraph");
-      request.send();
-    }
-
-
+    };
 
     FileOperationsManager.prototype.resetUndoStack = function()
     {
