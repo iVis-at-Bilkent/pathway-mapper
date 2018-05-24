@@ -254,7 +254,7 @@ module.exports = (function()
             );
             if (b==true) nodesToHide = nodesToHide.add(parent);
         });
-        nodesToHide.unselect();
+        cy.elements(":selected").unselect();
         if (this.isCollaborative)
             this.realTimeManager.changeVisibility(nodesToHide, true);
         else
