@@ -55,7 +55,6 @@ window.notificationManager = require('./NotificationFactory');
          this.initCyJS();
          //Initialize cytoscape based handlers here
          this.initCyHandlers();
-         console.log("updated");
 
          var that = this;
          window.onresize = function () {
