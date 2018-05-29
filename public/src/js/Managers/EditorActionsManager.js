@@ -128,20 +128,20 @@ module.exports = (function()
      * **/
     EditorActionsManager.prototype.doChangeNodeSize = function(args)
     {
+        args.ele.data('w', args.newWidth);
+        args.ele.data('h', args.newHeight);
         args.ele.style('width', args.newWidth);
         args.ele.style('height', args.newHeight);
-        args.ele.css('width', args.newWidth);
-        args.ele.css('height', args.newHeight);
 
         return args;
     };
 
     EditorActionsManager.prototype.undoChangeNodeSize = function(args)
     {
+        args.ele.data('w', args.oldWidth);
+        args.ele.data('h', args.oldHeight);
         args.ele.style('width', args.oldWidth);
         args.ele.style('height', args.oldHeight);
-        args.ele.css('width', args.oldWidth);
-        args.ele.css('height', args.oldHeight);
 
         return args;
     };
@@ -845,6 +845,9 @@ module.exports = (function()
         //this.cy.add(newNode);
         this.cy.nodes().updateCompoundBounds();
         window.undoRedoManager.do("add", newNode);
+        //Width was not properly updated only by changing data property
+        var thatEle = cy.getElementById(nodeData.id);
+        thatEle.style('width', thatEle.data('w'));
     };
 
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
@@ -1139,6 +1142,21 @@ module.exports = (function()
             // Old manual way to change parents in local mode
             // this.changeParentCy(eles, newParentId);
 
+            //Save element's previous width & height in dim array
+            var dim = [];
+            var id = [];
+            eles.forEach(function (ele, i)
+            {
+                var parameters =
+                {
+                    id: ele.id(),
+                    width: ele.style("width"),
+                    height: ele.style("height")
+                };
+                dim.push(parameters);
+                id.push(ele.id());
+            });
+
             var param = {
                 firstTime: true,
                 parentData: parentData, // It keeps the newParentId (Just an id for each nodes for the first time)
@@ -1147,6 +1165,22 @@ module.exports = (function()
                 posDiffY: 0
             };
             window.undoRedoManager.do('changeParent', param);
+
+            //The elements after change parent operation are different so we find them by using the saved ids
+            // and add them to the collection
+            var collection = cy.collection();
+            for (var i in id)
+            {
+                var elementById = cy.getElementById(id[i]);
+                collection = collection.add(elementById);
+            }
+            //Set their previous size to the new elements in the collection
+            collection.forEach(function (ele, i)
+            {
+                if (ele.id() == dim[i].id)
+                ele.style("width", dim[i].width);
+                ele.style("height", dim[i].height);
+            });
         }
     };
 

@@ -559,6 +559,10 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         // });
 
         cy.on("noderesize.resizeend", function(e, type, node){
+            //Updates 'data' properties from 'style'
+            node.data('w',node.width());
+            node.data('h',node.height());
+            //Used for collaborative mode
             that.editorActionsManager.resizeElements(node);
         });
 
