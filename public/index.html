@@ -132,70 +132,83 @@
       </div>
       <div class="modal-body">
         <form role="form" id="layoutPropsForm">
+          <!-- We match float values with regex oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+               and input values with oninput="this.value = this.value.replace(/[^0-9]/g, '');" -->
           <div class="input-group">
             <label class="control-label col-sm-4" for="node-repulsion">Node Repulsion:</label>
             <div class="col-sm-8">
-              <input id="node-repulsion" type="text" class="form-control" value=<%= nodeRepulsion %> >
+              <input id="node-repulsion" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                     class="form-control" value=<%= nodeRepulsion %> >
             </div>
           </div>
           <div class="input-group">
             <label class="control-label col-sm-4" for="ideal-edge-length">Ideal Edge Length:</label>
             <div class="col-sm-8">
-              <input id="ideal-edge-length" type="text" class="form-control" value= <%= idealEdgeLength %> >
+              <input id="ideal-edge-length" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                     class="form-control" value= <%= idealEdgeLength %> >
             </div>
           </div>
           <div class="input-group">
             <label class="control-label col-sm-4" for="edge-elasticity">Edge Elasticity:</label>
             <div class="col-sm-8">
-              <input id="edge-elasticity" type="text" class="form-control" value= <%= edgeElasticity %> >
+              <input id="edge-elasticity" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= edgeElasticity %> >
             </div>
           </div>
           <div class="input-group">
             <label class="control-label col-sm-4" for="nesting-factor">Nesting Factor:</label>
             <div class="col-sm-8">
-              <input id="nesting-factor" type="text" class="form-control" value= <%= nestingFactor %> >
+              <input id="nesting-factor" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= nestingFactor %> >
             </div>
           </div>
           <div class="input-group">
             <label class="control-label col-sm-4" for="gravity">Gravity:</label>
             <div class="col-sm-8">
-              <input id="gravity" type="text" class="form-control" value= <%= gravity %> >
+              <input id="gravity" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= gravity %> >
             </div>
           </div>
           <div class="input-group">
             <label class="control-label col-sm-4" for="grav-range">Gravity Range:</label>
             <div class="col-sm-8">
-              <input id="grav-range" type="text" class="form-control" value= <%= gravityRange %> >
+              <input id="grav-range" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= gravityRange %> >
             </div>
           </div>
           <div class="input-group">
             <label class="control-label col-sm-4" for="comp-grav">Compound Gravity:</label>
             <div class="col-sm-8">
-              <input id="comp-grav" type="text" class="form-control" value= <%= gravityCompound %> >
+              <input id="comp-grav" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= gravityCompound %> >
             </div>
           </div>
           <div class="input-group">
             <label class="control-label col-sm-4" for="comp-gravRange">Compound Gravity Range:</label>
             <div class="col-sm-8">
-              <input id="comp-gravRange" type="text" class="form-control" value= <%= gravityRangeCompound %> >
+              <input id="comp-gravRange" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= gravityRangeCompound %> >
             </div>
           </div>
           <div class="input-group">
             <label class="control-label col-sm-4" for="num-iter">Number of Iterations:</label>
             <div class="col-sm-8">
-              <input id="num-iter" type="text" class="form-control" value= <%= numIter %> >
+              <input id="num-iter" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                     class="form-control" value= <%= numIter %> >
             </div>
           </div>
           <div class="input-group">
             <label class="control-label col-sm-4" for="tile-verticalPadding">Tiling Vertical Padding:</label>
             <div class="col-sm-8">
-              <input id="tile-verticalPadding" type="text" class="form-control" value= <%= tilingPaddingVertical %> >
+              <input id="tile-verticalPadding" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                     class="form-control" value= <%= tilingPaddingVertical %> >
             </div>
           </div>
           <div class="input-group">
             <label class="control-label col-sm-4" for="tile-horizontalPadding">Tiling Horizontal Padding:</label>
             <div class="col-sm-8">
-              <input id="tile-horizontalPadding" type="text" class="form-control" value= <%= tilingPaddingHorizontal %> >
+              <input id="tile-horizontalPadding" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                     class="form-control" value= <%= tilingPaddingHorizontal %> >
             </div>
           </div>
           <div class="input-group">
@@ -219,7 +232,8 @@
           <div class="input-group">
             <label class="control-label col-sm-4" for="incr-coolingFactor">Incremental Cooling Factor:</label>
             <div class="col-sm-8">
-              <input id="incr-coolingFactor" type="text" class="form-control" value= <%= initialEnergyOnIncremental %> >
+              <input id="incr-coolingFactor" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= initialEnergyOnIncremental %> >
             </div>
           </div>
         </form>
