@@ -1,3 +1,5 @@
+var sharedb = require('sharedb/lib/client');
+
 module.exports = (function()
 {
     "use strict";
@@ -45,27 +47,23 @@ module.exports = (function()
         // is not an id in the URL.
         var id = this.realtimeUtils.getParam('id');
 
-        // Register Types before load event !
-        this.registerTypes();
         var self = this;
 
-        var initFileCallback = function(model)
-        {
+        var initFileCallback = function(model) {
             self.onFileInitialize(model);
         };
 
-        var loadFileCallback = function(doc)
-        {
+        var loadFileCallback = function(doc) {
             self.onFileLoaded(doc);
         };
 
-        if (id)
-        {
+        if (id) {
             // Load the document id from the URL
-            this.realtimeUtils.load(id.replace('/', ''), loadFileCallback, initFileCallback);
+            // this.realtimeUtils.load(id.replace('/', ''), loadFileCallback, initFileCallback);
+            // TODO: load from MongoDB
+
         }
-        else
-        {
+        else {
             // Create a new document, add it to the URL
             this.realtimeUtils.createAppFile('New Graph', function(createResponse)
             {

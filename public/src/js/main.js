@@ -55,39 +55,14 @@ $(window).load(function()
     }
 
     //TODO urgent comment needed with a rested mind !
-    var collaborativeUsageCallback = function(postSuccess)
-    {
+    var collaborativeUsageCallback = function(postSuccess) {
+
         var realTimeManager = new RealTimeModule(postSuccess);
 
-        var realTimeAuthCallback = function(response)
-        {
-            //Authentication fails initially, pop up authentication window
-            if(response.error)
-            {
-                function popUpAuthHandler(response)
-                {
-                    //Authentication fails
-                    if(response.error)
-                        console.log(response.error);
+        var appInstance = new AppManager(true, realTimeManager);
 
-                    //Authentication succesfull
-                    var appInstance = new AppManager(true,realTimeManager);
-                    realTimeManager.initRealTimeAPI();
-                }
-
-                //Trigger authentication
-                realTimeManager.authorize(popUpAuthHandler, true);
-            }
-            else
-            {
-                //Authentication succesfull
-                var appInstance = new AppManager(true,realTimeManager);
-                realTimeManager.initRealTimeAPI();
-            }
-        }
-
-        realTimeManager.authorize(realTimeAuthCallback, false);
-    }
+        realTimeManager.initRealTimeAPI();
+    };
 
     var welPage = new WelcomePageView({
         el: $('.welcomePageContainer'),
