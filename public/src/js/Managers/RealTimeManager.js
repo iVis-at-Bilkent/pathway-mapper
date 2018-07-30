@@ -1,4 +1,6 @@
 var sharedb = require('sharedb/lib/client');
+var socket = new WebSocket('ws://' + window.location.host);
+var connection = new sharedb.Connection(socket);
 
 module.exports = (function()
 {
@@ -49,14 +51,21 @@ module.exports = (function()
 
         var self = this;
 
-        var initFileCallback = function(model) {
-            self.onFileInitialize(model);
+        var initFileCallback = function(connection) {
+            self.onFileInitialize(connection);
         };
 
         var loadFileCallback = function(doc) {
             self.onFileLoaded(doc);
         };
 
+        //TODO First make the clients sync to each other
+        //TODO Add backward MongoDB later
+
+        initFileCallback(connection);
+        let doc = connection.get('cy','1');
+        loadFileCallback(doc);
+        /*
         if (id) {
             // Load the document id from the URL
             // this.realtimeUtils.load(id.replace('/', ''), loadFileCallback, initFileCallback);
@@ -72,13 +81,19 @@ module.exports = (function()
                 self.realtimeUtils.load(result.id, loadFileCallback, initFileCallback);
             });
         }
+        */
     };
 
     // The first time a file is opened, it must be initialized with the
     // document structure.
-    RealTimeManager.prototype.onFileInitialize = function(model)
+    RealTimeManager.prototype.onFileInitialize = function(connection)
     {
-        var root = model.getRoot();
+        //TODO change the document id to proper id
+        var doc = connection.get('cy','1');
+
+        doc.submitOp([{ p:  ['layoutProperties'], oi: window.editorActionsManager.layoutProperties}]);
+        doc.submitOp([{ p:  ['globalOptions'], oi: window.editorActionsManager.getGlobalOptions()}]);
+        /*var root = model.getRoot();
 
         var nodeMap = model.createMap();
         var edgeMap = model.createMap();
@@ -99,7 +114,7 @@ module.exports = (function()
         root.set(this.GENOMIC_DATA_MAP_NAME, genomicDataMap);
         root.set(this.VISIBLE_GENOMIC_DATA_MAP_NAME, genomicDataVisibilityMap);
         root.set(this.GENOMIC_DATA_GROUP_NAME, genomicDataGroupMap);
-        root.set(this.GENOMIC_DATA_GROUP_COUNT, genomicDataGroupCount);
+        root.set(this.GENOMIC_DATA_GROUP_COUNT, genomicDataGroupCount);*/
 
     };
 
@@ -111,10 +126,9 @@ module.exports = (function()
     {
         //Keep a reference to the file !
         this.realTimeDoc = doc;
-        var root = this.realTimeDoc.getModel().getRoot();
 
-        this.syncInitialCloudData(root);
-        this.initCloudEventHandlers(root);
+        this.syncInitialCloudData(realTimeDoc);
+        this.initCloudEventHandlers(realTimeDoc);
 
         this.postFileLoad();
         var self = this;
@@ -139,20 +153,19 @@ module.exports = (function()
         model.redo();
     };
 
-    RealTimeManager.prototype.syncInitialCloudData = function(root)
+    RealTimeManager.prototype.syncInitialCloudData = function(doc)
     {
-        var model = this.realTimeDoc.getModel();
-        var nodeMap = root.get(this.NODEMAP_NAME);
-        var edgeMap = root.get(this.EDGEMAP_NAME);
-        var realTimeLayoutProperties = root.get(this.LAYOUT_PROPS_NAME);
-        var globalOptions = root.get(this.GLOBAL_OPTS_NAME);
-        var genomicDataMap = root.get(this.GENOMIC_DATA_MAP_NAME);
-        var visDataMap = root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME);
-        var groupedGenomicDataMap = root.get(this.GENOMIC_DATA_GROUP_NAME);
-        var groupedGenomicDataCount = root.get(this.GENOMIC_DATA_GROUP_COUNT);
+        var nodeMap = doc.data[this.NODEMAP_NAME];
+        var edgeMap = doc.data[this.EDGEMAP_NAME];
+        var realTimeLayoutProperties = doc.data[this.LAYOUT_PROPS_NAME];
+        var globalOptions = doc.data[this.GLOBAL_OPTS_NAME];
+        var genomicDataMap = doc.data[this.GENOMIC_DATA_MAP_NAME];
+        var visDataMap = doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
+        var groupedGenomicDataMap = doc.data[this.GENOMIC_DATA_GROUP_NAME];
+        var groupedGenomicDataCount = doc.data[this.GENOMIC_DATA_GROUP_COUNT];
 
-        var nodeMapEntries = nodeMap.values();
-        var edgeMapEntries = edgeMap.values();
+        var nodeMapEntries = nodeMap;
+        var edgeMapEntries = edgeMap;
 
         var invalidGenes = [];
         var highlightedGenes = [];
@@ -204,11 +217,11 @@ module.exports = (function()
 
             if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined || tmpEdge.bendPoint == undefined)
             {
-                var pubmedIDs = (tmpEdge.pubmedIDs == undefined) ? model.createList() : tmpEdge.pubmedID;
+                var pubmedIDs = (tmpEdge.pubmedIDs == undefined) ? [] : tmpEdge.pubmedID;
                 var edgeLabel = (tmpEdge.name == undefined) ? "" : tmpEdge.name;
-                var bendPoint = (tmpEdge.bendPoint == undefined) ? model.createList() : tmpEdge.bendPoint;
+                var bendPoint = (tmpEdge.bendPoint == undefined) ? [] : tmpEdge.bendPoint;
 
-                var newEdge = model.create(EdgeR,
+                var newEdge =
                     {
                         type: tmpEdge.type,
                         source: tmpEdge.source,
@@ -216,16 +229,20 @@ module.exports = (function()
                         pubmedID: pubmedIDs,
                         name: edgeLabel,
                         bendPoint: bendPoint
-                    });
+                    };
 
 
                 var tmpEdgeID = this.getCustomObjId(tmpEdge);
                 var newID = this.getCustomObjId(newEdge);
-                edgeMap.delete(tmpEdgeID);
-                edgeMap.set(newID, newEdge);
+                doc.submitOp([{p: [this.EDGEMAP_NAME, tmpEdgeID], od: edgeMap[tmpEdgeID]}]);
+                doc.submitOp([{p: [this.EDGEMAP_NAME, newID], oi: newEdge}]);
+
             }
 
         }
+
+        //TODO replace this part with sharedb counterpart
+        /*
         edgeMapEntries = edgeMap.values();
 
         //Add real time nodes to local graph
@@ -285,47 +302,66 @@ module.exports = (function()
         window.editorActionsManager.genomicDataOverlayManager.showGenomicData();
         window.editorActionsManager.genomicDataOverlayManager.notifyObservers();
         cy.fit(50);
+
+        */
     };
 
-    RealTimeManager.prototype.initCloudEventHandlers = function(root)
+    RealTimeManager.prototype.initCloudEventHandlers = function(doc)
     {
         //Setup event handlers for maps
-        var nodeAddRemoveHandler = function(event)
+        var nodeAddRemoveHandler = function(op)
         {
-            window.editorActionsManager.realTimeNodeAddRemoveEventCallBack(event);
+            window.editorActionsManager.realTimeNodeAddRemoveEventCallBack(op);
         };
 
-        var edgeAddRemoveHandler = function(event)
+        var edgeAddRemoveHandler = function(op)
         {
-            window.editorActionsManager.realTimeEdgeAddRemoveEventCallBack(event);
+            window.editorActionsManager.realTimeEdgeAddRemoveEventCallBack(op);
         };
 
-        var genomicDataAddRemoveHandler = function(event)
+        var genomicDataAddRemoveHandler = function(op)
         {
-            window.editorActionsManager.realTimeGenomicDataHandler(event);
+            window.editorActionsManager.realTimeGenomicDataHandler(op);
         };
 
-        var genomicDataVisibilityChangeHandler = function(event)
+        var genomicDataVisibilityChangeHandler = function(op)
         {
-            window.editorActionsManager.realTimeGenomicDataVsibilityHandler(event);
+            window.editorActionsManager.realTimeGenomicDataVsibilityHandler(op);
         };
 
-        var genomicDataGroupChangeHandler = function(event)
+        var genomicDataGroupChangeHandler = function(op)
         {
-            window.editorActionsManager.realTimeGenomicDataGroupChangeHandler(event);
+            window.editorActionsManager.realTimeGenomicDataGroupChangeHandler(op);
         };
 
         //Event listeners for edge and node map
-        root.get(this.NODEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
-            nodeAddRemoveHandler);
-        root.get(this.EDGEMAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
-            edgeAddRemoveHandler);
-        root.get(this.GENOMIC_DATA_MAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
-            genomicDataAddRemoveHandler);
-        root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
-            genomicDataVisibilityChangeHandler);
-        root.get(this.GENOMIC_DATA_GROUP_NAME).addEventListener( gapi.drive.realtime.EventType.VALUE_CHANGED,
-            genomicDataGroupChangeHandler);
+        doc.on('op', function(op, source) {
+            if (source)
+                return;
+            else {
+                //TODO Shame
+                var path = op[0].p[0];
+                switch (path) {
+                    case this.NODEMAP_NAME:
+                        nodeAddRemoveHandler(op);
+                        break;
+                    case this.EDGEMAP_NAME:
+                        edgeAddRemoveHandler(op);
+                        break;
+                    case this.GENOMIC_DATA_MAP_NAME:
+                        genomicDataAddRemoveHandler(op);
+                        break;
+                    case this.VISIBLE_GENOMIC_DATA_MAP_NAME:
+                        genomicDataVisibilityChangeHandler(op);
+                        break;
+                    case this.GENOMIC_DATA_GROUP_NAME:
+                        genomicDataGroupChangeHandler(op);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
     };
 
     /*

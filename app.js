@@ -24,7 +24,7 @@ createDoc(startServer);
 // Create initial document then start server
 function createDoc(callback) {
     var connection = backend.connect();
-    var doc = connection.get('examples', 'counter');
+    var doc = connection.get('cy', '1');
     doc.fetch(function(err) {
         if (err) throw err;
         if (doc.type === null) {
@@ -34,7 +34,9 @@ function createDoc(callback) {
                 layoutProperties: {},
                 globalOptions: {},
                 genomicDataMap: {},
-                visibleGenomicDataMapByType: {}
+                visibleGenomicDataMapByType: {},
+                genomicDataGroupList: {},
+                genomicDataGroupCount: 0
             };
 
             doc.create(data, callback);

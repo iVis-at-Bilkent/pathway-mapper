@@ -850,15 +850,17 @@ module.exports = (function()
         thatEle.style('width', thatEle.data('w'));
     };
 
-    EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(event)
+    EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(op)
     {
         //Get real time node object and sync it to node addition or removal
-        var node = event.newValue;
-        var nodeID = event.property;
+        var event = op[0];
+        var isRemove = Object.keys(event)[1] === 'od';
+        var node = event[1];
 
         //Removal Operation
-        if (node === null)
+        if (isRemove)
         {
+            var nodeID = event.p[1];
             //Remove element from existing graph
             var cyEle = this.cy.$("#" + nodeID);
             this.removeElementCy(cyEle);
@@ -955,15 +957,18 @@ module.exports = (function()
         window.undoRedoManager.do("add", newEdge);
     };
 
-    EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(event)
+    EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(op)
     {
-        //Get real time edge object and sync it to node addition or removal
-        var edge = event.newValue;
-        var edgeID = event.property;
+
+        //Get real time node object and sync it to node addition or removal
+        var event = op[0];
+        var isRemove = Object.keys(event)[1] === 'od';
+        var edge = event[1];
 
         //Removal Operation
-        if (edge === null)
+        if (isRemove)
         {
+            var edgeID = event.p[1];
             //Remove element from existing graph
             var cyEle = this.cy.$("#" + edgeID);
             this.removeElementCy(cyEle);
@@ -1613,12 +1618,14 @@ module.exports = (function()
         }
     }
 
-    EditorActionsManager.prototype.realTimeGenomicDataHandler = function(event)
+    EditorActionsManager.prototype.realTimeGenomicDataHandler = function(op)
     {
-        var newData = event.newValue;
-        var geneSymbol = event.property;
+        var event = op[0];
+        var isRemove = Object.keys(event)[1] === 'od';
+        var newData = event[1];
+        var geneSymbol = event.p[1];
 
-        if(newData)
+        if(!isRemove)
         {
             this.genomicDataOverlayManager.addGenomicData(geneSymbol, newData);
         }
@@ -1632,11 +1639,14 @@ module.exports = (function()
 
     EditorActionsManager.prototype.realTimeGenomicDataGroupChangeHandler = function(event)
     {
-        var data = event.newValue;
-        var key = event.property;
+
+        var event = op[0];
+        var isRemove = Object.keys(event)[1] === 'od';
+        var data = event[1];
+        var key = event.p[1];
 
         //Addition
-        if(data != undefined)
+        if(!isRemove)
         {
             this.genomicDataOverlayManager.addGenomicGroupData(key, data);
         }
@@ -1651,12 +1661,12 @@ module.exports = (function()
 
     EditorActionsManager.prototype.realTimeGenomicDataVsibilityHandler = function(event)
     {
-
-        var data = event.newValue;
-        var key = event.property;
-
+        var event = op[0];
+        var data = event[1];
+        var key = event.p[1];
+        var isRemove = Object.keys(event)[1] === 'od';
         //Addition
-        if(data != undefined)
+        if(!isRemove)
         {
             this.genomicDataOverlayManager.addGenomicVisData(key, data);
         }
