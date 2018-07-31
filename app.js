@@ -14,7 +14,7 @@ var WebSocketJSONStream = require('websocket-json-stream');
 
 var multerInstance = multer({dest:'./uploads/'});
 
-var DEFAULT_PORT=3000;
+var DEFAULT_PORT=8080;
 const APP_PORT = process.env.PORT || DEFAULT_PORT;
 
 var backend = new ShareDB();
@@ -36,7 +36,7 @@ function createDoc(callback) {
                 genomicDataMap: {},
                 visibleGenomicDataMapByType: {},
                 genomicDataGroupList: {},
-                genomicDataGroupCount: 0
+                genomicDataGroupCount: 4
             };
 
             doc.create(data, callback);

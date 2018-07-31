@@ -2,6 +2,9 @@ var sharedb = require('sharedb/lib/client');
 var socket = new WebSocket('ws://' + window.location.host);
 var connection = new sharedb.Connection(socket);
 
+var doc = connection.get('cy', '1');
+doc.subscribe();
+
 module.exports = (function()
 {
     "use strict";
@@ -51,20 +54,19 @@ module.exports = (function()
 
         var self = this;
 
-        var initFileCallback = function(connection) {
-            self.onFileInitialize(connection);
+        var initFileCallback = function() {
+            self.onFileInitialize();
         };
 
-        var loadFileCallback = function(doc) {
-            self.onFileLoaded(doc);
+        var loadFileCallback = function() {
+            self.onFileLoaded();
         };
 
         //TODO First make the clients sync to each other
         //TODO Add backward MongoDB later
 
-        initFileCallback(connection);
-        let doc = connection.get('cy','1');
-        loadFileCallback(doc);
+        initFileCallback();
+        loadFileCallback();
         /*
         if (id) {
             // Load the document id from the URL
@@ -86,13 +88,21 @@ module.exports = (function()
 
     // The first time a file is opened, it must be initialized with the
     // document structure.
-    RealTimeManager.prototype.onFileInitialize = function(connection)
+    RealTimeManager.prototype.onFileInitialize = function()
     {
         //TODO change the document id to proper id
-        var doc = connection.get('cy','1');
-
-        doc.submitOp([{ p:  ['layoutProperties'], oi: window.editorActionsManager.layoutProperties}]);
-        doc.submitOp([{ p:  ['globalOptions'], oi: window.editorActionsManager.getGlobalOptions()}]);
+        doc.submitOp([{ p:  ['layoutProperties'], oi: window.editorActionsManager.layoutProperties}], function(err) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+        });
+        doc.submitOp([{ p:  ['globalOptions'], oi: window.editorActionsManager.getGlobalOptions()}], function(err) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+        });
         /*var root = model.getRoot();
 
         var nodeMap = model.createMap();
@@ -122,13 +132,11 @@ module.exports = (function()
         After a file has been initialized and loaded, we can access the
         document. We will wire up the data model to the UI.
     */
-    RealTimeManager.prototype.onFileLoaded =  function(doc)
+    RealTimeManager.prototype.onFileLoaded =  function()
     {
-        //Keep a reference to the file !
-        this.realTimeDoc = doc;
 
-        this.syncInitialCloudData(realTimeDoc);
-        this.initCloudEventHandlers(realTimeDoc);
+        this.syncInitialCloudData(doc);
+        this.initCloudEventHandlers(doc);
 
         this.postFileLoad();
         var self = this;
@@ -153,7 +161,7 @@ module.exports = (function()
         model.redo();
     };
 
-    RealTimeManager.prototype.syncInitialCloudData = function(doc)
+    RealTimeManager.prototype.syncInitialCloudData = function()
     {
         var nodeMap = doc.data[this.NODEMAP_NAME];
         var edgeMap = doc.data[this.EDGEMAP_NAME];
@@ -234,8 +242,18 @@ module.exports = (function()
 
                 var tmpEdgeID = this.getCustomObjId(tmpEdge);
                 var newID = this.getCustomObjId(newEdge);
-                doc.submitOp([{p: [this.EDGEMAP_NAME, tmpEdgeID], od: edgeMap[tmpEdgeID]}]);
-                doc.submitOp([{p: [this.EDGEMAP_NAME, newID], oi: newEdge}]);
+                doc.submitOp([{p: [this.EDGEMAP_NAME, tmpEdgeID], od: edgeMap[tmpEdgeID]}], function(err) {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+                });
+                doc.submitOp([{p: [this.EDGEMAP_NAME, newID], oi: newEdge}], function(err) {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+                });
 
             }
 
@@ -306,36 +324,30 @@ module.exports = (function()
         */
     };
 
-    RealTimeManager.prototype.initCloudEventHandlers = function(doc)
-    {
+    RealTimeManager.prototype.initCloudEventHandlers = function() {
         //Setup event handlers for maps
-        var nodeAddRemoveHandler = function(op)
-        {
+        var nodeAddRemoveHandler = function (op) {
             window.editorActionsManager.realTimeNodeAddRemoveEventCallBack(op);
         };
 
-        var edgeAddRemoveHandler = function(op)
-        {
+        var edgeAddRemoveHandler = function (op) {
             window.editorActionsManager.realTimeEdgeAddRemoveEventCallBack(op);
         };
 
-        var genomicDataAddRemoveHandler = function(op)
-        {
+        var genomicDataAddRemoveHandler = function (op) {
             window.editorActionsManager.realTimeGenomicDataHandler(op);
         };
 
-        var genomicDataVisibilityChangeHandler = function(op)
-        {
+        var genomicDataVisibilityChangeHandler = function (op) {
             window.editorActionsManager.realTimeGenomicDataVsibilityHandler(op);
         };
 
-        var genomicDataGroupChangeHandler = function(op)
-        {
+        var genomicDataGroupChangeHandler = function (op) {
             window.editorActionsManager.realTimeGenomicDataGroupChangeHandler(op);
         };
 
         //Event listeners for edge and node map
-        doc.on('op', function(op, source) {
+        doc.on('op', function (op, source) {
             if (source)
                 return;
             else {
@@ -362,6 +374,7 @@ module.exports = (function()
                 }
             }
 
+        });
     };
 
     /*

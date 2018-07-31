@@ -35,8 +35,7 @@
     "cytoscape": "^3.0.0",
     "cytoscape-context-menus": "^3.0.3",
     "cytoscape-cose-bilkent": "^4.0.0",
-    "cytoscape-edge-bend-editing": "github:iVis-at-Bilkent/cytoscape.js-edge-bend-editing#unstable",
-    "cytoscape-edgehandles": "~2.13.1",
+    "cytoscape-edge-bend-editing": "^1.6.1",
     "cytoscape-grid-guide": "github:iVis-at-Bilkent/cytoscape.js-grid-guide#unstable",
     "cytoscape-navigator": "^1.1.2",
     "cytoscape-node-resize": "github:iVis-at-Bilkent/cytoscape.js-node-resize#unstable",
@@ -66,6 +65,10 @@
     "spectrum-colorpicker": "^1.8.0",
     "uglify-js2": "^2.1.11",
     "uglifyjs": "^2.4.10",
-    "underscore": "~1.8.3"
+    "underscore": "~1.8.3",
+    "express": "^4.14.0",
+    "sharedb": "^1.0.0-beta",
+    "websocket-json-stream": "^0.0.1",
+    "ws": "^1.1.0"
   }
 }
