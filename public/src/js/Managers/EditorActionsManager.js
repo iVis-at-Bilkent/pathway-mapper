@@ -852,7 +852,6 @@ module.exports = (function()
 
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(op)
     {
-        console.log(op);
         //Get real time node object and sync it to node addition or removal
         var event = op[0];
         var isRemove = Object.keys(event)[1] === 'od';
@@ -963,7 +962,7 @@ module.exports = (function()
         //Get real time node object and sync it to node addition or removal
         var event = op[0];
         var isRemove = Object.keys(event)[1] === 'od';
-        var edge = event[1];
+        var edge = event.oi || event.od;
 
         //Removal Operation
         if (isRemove)
@@ -1082,19 +1081,19 @@ module.exports = (function()
 
     EditorActionsManager.prototype.addNewEdgeLocally = function(edge)
     {
-        var edgeID = this.realTimeManager.getCustomObjId(edge);
+        console.log(edge);
         var edgeData =
         {
-            id: edgeID,
+            id: edge.id,
             type: edge.type,
             source: edge.source,
             target: edge.target,
-            pubmedIDs: edge.pubmedIDs.asArray(),
+            pubmedIDs: edge.pubmedIDs,
             name: edge.name,
-            bendPointPositions: edge.bendPoint.asArray()
+            bendPointPositions: edge.bendPoint
         };
         this.addNewEdgetoCy(edgeData);
-        edgeBendEditing.initBendPoints(cy.getElementById( edgeID ));
+        edgeBendEditing.initBendPoints(cy.getElementById( edge.id ));
     };
 
     //Removal functions

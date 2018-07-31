@@ -537,43 +537,38 @@ module.exports = (function()
             newNode.y = posData.y;
         }
 
-        doc.submitOp([{p:[this.NODEMAP_NAME, realTimeGeneratedID], oi:newNode}]);
+        doc.submitOp([{p:[this.NODEMAP_NAME, realTimeGeneratedID], oi:newNode}], this.realTimeError);
     };
 
     RealTimeManager.prototype.addNewEdge = function(edgeData)
     {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var edgeMap =  root.get(this.EDGEMAP_NAME);
+        var realTimeGeneratedID = this.getCustomObjId();
+        var newEdge = {
+            type: edgeData.type,
+            id: realTimeGeneratedID,
+            source: edgeData.source,
+            target: edgeData.target,
+            pubmedIDs: edgeData.pubmedIDs,
+            name: edgeData.name,
+            bendPoint: edgeData.bendPoint
+        };
 
-        var newEdge = model.create(EdgeR,
-            {
-                type: edgeData.type,
-                source: edgeData.source,
-                target: edgeData.target,
-                pubmedID: edgeData.pubmedID,
-                name: edgeData.name,
-                bendPoint: edgeData.bendPoint
-            });
 
-        var realTimeGeneratedID = this.getCustomObjId(newEdge);
-        edgeMap.set(realTimeGeneratedID, newEdge);
+        doc.submitOp([{p:[this.EDGEMAP_NAME, realTimeGeneratedID], oi: newEdge}], this.realTimeError);
     };
 
     RealTimeManager.prototype.removeElement = function(elementID)
     {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var edgeMap =  root.get(this.EDGEMAP_NAME);
-        var nodeMap =  root.get(this.NODEMAP_NAME);
+        var edgeMap =  doc.data[this.EDGEMAP_NAME];
+        var nodeMap =  doc.data[this.NODEMAP_NAME];
 
-        if (nodeMap.has(elementID))
+        if (nodeMap.hasOwnProperty(elementID))
         {
-            nodeMap.delete(elementID);
+            doc.submitOp([{p:[this.NODEMAP_NAME, elementID], od: nodeMap[elementID]}], this.realTimeError);
         }
-        else if (edgeMap.has(elementID))
+        else if (edgeMap.hasOwnProperty(elementID))
         {
-            edgeMap.delete(elementID);
+            doc.submitOp([{p:[this.EDGEMAP_NAME, elementID], od: edgeMap[elementID]}], this.realTimeError);
         }
         else
         {
