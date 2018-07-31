@@ -677,19 +677,17 @@ module.exports = (function()
     //This function is used for movements of all selected elements wrt alignment selected
     RealTimeManager.prototype.changeElementsPositionByAlignment = function(coll)
     {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var nodeMap =  root.get(this.NODEMAP_NAME);
+
+        var nodeMap =  doc.data[this.NODEMAP_NAME];
 
         coll.forEach(function(ele){
             var elementID = ele.node.id();
-            if (nodeMap.has(elementID))
+            if (nodeMap.hasOwnProperty(elementID))
             {
-                var tmpNode = nodeMap.get(elementID);
-                model.beginCompoundOperation();
+                var tmpNode = nodeMap[elementID];
                 tmpNode.x = ele.nextPosition.x;
                 tmpNode.y = ele.nextPosition.y;
-                model.endCompoundOperation();
+                doc.submitOp([{p:[this.NODEMAP_NAME, elementID], od: doc.data[this.NODEMAP_NAME][elementID], oi: tmpNode}]);
             }
             else
             {
@@ -700,9 +698,7 @@ module.exports = (function()
 
     RealTimeManager.prototype.resizeElement = function(ele, previousWidth, previousHeight)
     {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var nodeMap =  root.get(this.NODEMAP_NAME);
+        var nodeMap =  doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
         var newWidth = ele.width();
@@ -710,15 +706,14 @@ module.exports = (function()
         var currentX = ele.position('x');
         var currentY = ele.position('y');
 
-        if (nodeMap.has(elementID))
+        if (nodeMap.hasOwnProperty(elementID))
         {
-            var tmpNode = nodeMap.get(elementID);
-            model.beginCompoundOperation();
+            var tmpNode = nodeMap[elementID];
             tmpNode.x = currentX + newWidth - previousWidth;
             tmpNode.y = currentY + newHeight - previousHeight;
             tmpNode.w = newWidth;
             tmpNode.h = newHeight;
-            model.endCompoundOperation();
+            doc.submitOp([{p:[this.NODEMAP_NAME, elementID], od: doc.data[this.NODEMAP_NAME][elementID], oi: tmpNode}]);
         }
         else
         {
@@ -882,15 +877,22 @@ module.exports = (function()
 
     RealTimeManager.prototype.updateEdgeBendPoints = function(edgeID, bendPointsArray)
     {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var edgeMap =  root.get(this.EDGEMAP_NAME);
 
-        if (edgeMap.has(edgeID))
+        var edgeMap = doc.data[this.EDGEMAP_NAME];
+
+        if (edgeMap.hasOwnProperty(edgeID))
         {
-            var tmpEdge = edgeMap.get(edgeID);
-            tmpEdge.bendPoint.clear();
+            var tmpEdge = edgeMap[edgeID];
+            console.log(tmpEdge);
+            if (tmpEdge.bendPoint === undefined){
+                tmpEdge.bendPoint = [];
+            }
+            else {
+                tmpEdge.bendPoint.clear();
+            }
+
             tmpEdge.bendPoint.pushAll(bendPointsArray);
+            doc.submitOp([{p:[this.EDGEMAP_NAME, edgeID], od: doc.data[this.EDGEMAP_NAME][edgeID], oi: tmpEdge}]);
         }
         else
         {
@@ -900,22 +902,18 @@ module.exports = (function()
 
     RealTimeManager.prototype.changeName = function(ele, newName)
     {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var nodeMap =  root.get(this.NODEMAP_NAME);
-        var edgeMap =  root.get(this.EDGEMAP_NAME);
-
+        var nodeMap =  doc.data[this.NODEMAP_NAME];
+        var edgeMap =  doc.data[this.EDGEMAP_NAME];
 
         var elementID = ele.id();
 
         if (ele.isNode())
         {
-            if (nodeMap.has(elementID))
+            if (nodeMap.hasOwnProperty(elementID))
             {
-                var tmpNode = nodeMap.get(elementID);
-                model.beginCompoundOperation();
+                var tmpNode = nodeMap[elementID];
                 tmpNode.name = newName;
-                model.endCompoundOperation();
+                doc.submitOp([{p:[this.NODEMAP_NAME, elementID], od: doc.data[this.NODEMAP_NAME][elementID], oi: tmpNode}]);
             }
             else
             {
@@ -924,12 +922,11 @@ module.exports = (function()
         }
         else
         {
-            if (edgeMap.has(elementID))
+            if (edgeMap.hasOwnProperty(elementID))
             {
-                var tmpEdge = edgeMap.get(elementID);
-                model.beginCompoundOperation();
+                var tmpEdge = edgeMap[elementID];
                 tmpEdge.name = newName;
-                model.endCompoundOperation();
+                doc.submitOp([{p:[this.EDGEMAP_NAME, elementID], od: doc.data[this.EDGEMAP_NAME][elementID], oi: tmpEdge}]);
             }
             else
             {
@@ -1033,25 +1030,22 @@ module.exports = (function()
 
     RealTimeManager.prototype.removeAllElements = function()
     {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var nodeMap = root.get(this.NODEMAP_NAME);
-        var edgeMap = root.get(this.EDGEMAP_NAME);
-        var nodeMapKeys = nodeMap.keys();
-        var edgeMapKeys = edgeMap.keys();
+        var nodeMap = doc.data[this.NODEMAP_NAME];
+        var edgeMap = doc.data[this.EDGEMAP_NAME];
 
         //TODO Compound operations
         //Remove all real time nodes
-        for (var index in nodeMapKeys)
+        for (var index in nodeMap)
         {
-            this.removeElement(nodeMapKeys[index]);
+            this.removeElement(nodeMap[index]);
         }
 
         //Remove all real time edges
-        for (var index in edgeMapKeys)
+        for (var index in edgeMap)
         {
-            this.removeElement(edgeMapKeys[index]);
+            this.removeElement(edgeMap[index]);
         }
+
     };
 
     RealTimeManager.prototype.loadGraph = function(nodes, edges)
