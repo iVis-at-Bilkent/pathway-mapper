@@ -91,8 +91,8 @@ module.exports = (function()
     RealTimeManager.prototype.onFileInitialize = function()
     {
         //TODO change the document id to proper id
-        doc.submitOp([{ p:  ['layoutProperties'], oi: window.editorActionsManager.layoutProperties}], this.realTimeError(err));
-        doc.submitOp([{ p:  ['globalOptions'], oi: window.editorActionsManager.getGlobalOptions()}], this.realTimeError(err));
+        doc.submitOp([{ p:  ['layoutProperties'], oi: window.editorActionsManager.layoutProperties}], this.realTimeError);
+        doc.submitOp([{ p:  ['globalOptions'], oi: window.editorActionsManager.getGlobalOptions()}], this.realTimeError);
         /*var root = model.getRoot();
 
         var nodeMap = model.createMap();
