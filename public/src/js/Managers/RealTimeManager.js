@@ -91,18 +91,8 @@ module.exports = (function()
     RealTimeManager.prototype.onFileInitialize = function()
     {
         //TODO change the document id to proper id
-        doc.submitOp([{ p:  ['layoutProperties'], oi: window.editorActionsManager.layoutProperties}], function(err) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-        });
-        doc.submitOp([{ p:  ['globalOptions'], oi: window.editorActionsManager.getGlobalOptions()}], function(err) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-        });
+        doc.submitOp([{ p:  ['layoutProperties'], oi: window.editorActionsManager.layoutProperties}], this.realTimeError(err));
+        doc.submitOp([{ p:  ['globalOptions'], oi: window.editorActionsManager.getGlobalOptions()}], this.realTimeError(err));
         /*var root = model.getRoot();
 
         var nodeMap = model.createMap();
@@ -132,6 +122,14 @@ module.exports = (function()
         After a file has been initialized and loaded, we can access the
         document. We will wire up the data model to the UI.
     */
+
+    RealTimeManager.prototype.realTimeError = function(err){
+        if (err) {
+            console.error(err);
+            return;
+        }
+    };
+
     RealTimeManager.prototype.onFileLoaded =  function()
     {
 
@@ -325,6 +323,9 @@ module.exports = (function()
     };
 
     RealTimeManager.prototype.initCloudEventHandlers = function() {
+
+        var self = this;
+
         //Setup event handlers for maps
         var nodeAddRemoveHandler = function (op) {
             window.editorActionsManager.realTimeNodeAddRemoveEventCallBack(op);
@@ -348,30 +349,24 @@ module.exports = (function()
 
         //Event listeners for edge and node map
         doc.on('op', function (op, source) {
-            if (source)
-                return;
-            else {
-                //TODO Shame
-                var path = op[0].p[0];
-                switch (path) {
-                    case this.NODEMAP_NAME:
-                        nodeAddRemoveHandler(op);
-                        break;
-                    case this.EDGEMAP_NAME:
-                        edgeAddRemoveHandler(op);
-                        break;
-                    case this.GENOMIC_DATA_MAP_NAME:
-                        genomicDataAddRemoveHandler(op);
-                        break;
-                    case this.VISIBLE_GENOMIC_DATA_MAP_NAME:
-                        genomicDataVisibilityChangeHandler(op);
-                        break;
-                    case this.GENOMIC_DATA_GROUP_NAME:
-                        genomicDataGroupChangeHandler(op);
-                        break;
-                    default:
-                        break;
-                }
+            console.log(op);
+            //TODO Shame
+            var path = op[0].p[0];
+            console.log(path, self.NODEMAP_NAME);
+            if(path === self.NODEMAP_NAME){
+                nodeAddRemoveHandler(op);
+            }
+            else if(path === self.EDGEMAP_NAME){
+                edgeAddRemoveHandler(op);
+            }
+            else if(path === self.GENOMIC_DATA_MAP_NAME){
+                genomicDataAddRemoveHandler(op);
+            }
+            else if(path === self.VISIBLE_GENOMIC_DATA_MAP_NAME) {
+                genomicDataVisibilityChangeHandler(op);
+            }
+            else if(path === self.GENOMIC_DATA_GROUP_NAME) {
+                genomicDataGroupChangeHandler(op);
             }
 
         });
@@ -520,12 +515,11 @@ module.exports = (function()
 
     RealTimeManager.prototype.addNewNode = function(nodeData, posData)
     {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var nodeMap =  root.get(this.NODEMAP_NAME);
-        var newNode = model.create(NodeR, {
+        var realTimeGeneratedID = this.getCustomObjId();
+        var newNode = {
             name: nodeData.name,
             type: nodeData.type,
+            id: realTimeGeneratedID,
             parent: nodeData.parent,
             w: nodeData.w,
             h: nodeData.h,
@@ -535,7 +529,7 @@ module.exports = (function()
             minHeight: nodeData.minHeight,
             minHeightBiasTop: nodeData.minHeightBiasTop,
             minHeightBiasBottom: nodeData.minHeightBiasBottom
-        });
+        };
 
         if (posData)
         {
@@ -543,8 +537,7 @@ module.exports = (function()
             newNode.y = posData.y;
         }
 
-        var realTimeGeneratedID = this.getCustomObjId(newNode);
-        nodeMap.set(realTimeGeneratedID, newNode);
+        doc.submitOp([{p:[this.NODEMAP_NAME, realTimeGeneratedID], oi:newNode}]);
     };
 
     RealTimeManager.prototype.addNewEdge = function(edgeData)

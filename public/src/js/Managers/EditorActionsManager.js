@@ -852,10 +852,11 @@ module.exports = (function()
 
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(op)
     {
+        console.log(op);
         //Get real time node object and sync it to node addition or removal
         var event = op[0];
         var isRemove = Object.keys(event)[1] === 'od';
-        var node = event[1];
+        var node = event.oi || event.od;
 
         //Removal Operation
         if (isRemove)
@@ -875,10 +876,9 @@ module.exports = (function()
 
     EditorActionsManager.prototype.addNewNodeLocally = function(realtimeNode)
     {
-        var nodeID = this.realTimeManager.getCustomObjId(realtimeNode);
         var nodeData =
         {
-            id: nodeID,
+            id: realtimeNode.id,
             type: realtimeNode.type,
             name: realtimeNode.name,
             parent: realtimeNode.parent,
