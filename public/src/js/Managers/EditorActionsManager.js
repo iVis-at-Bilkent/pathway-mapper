@@ -1502,9 +1502,11 @@ module.exports = (function()
             ele.show();
     };
 
-    EditorActionsManager.prototype.updateElementCallback = function(ele, id)
+    EditorActionsManager.prototype.updateElementCallback = function(op)
     {
-        var eleID = id;
+        var event = op[0];
+        var ele = event.oi;
+        var eleID = ele.id;
         var cyEle = this.cy.$("#" + eleID);
         this.changeNameCy(cyEle, ele.name);
 
@@ -1547,11 +1549,11 @@ module.exports = (function()
         }
         else if(cyEle.isEdge())
         {
-              var pubmedArray = ele.pubmedIDs.asArray();
+              var pubmedArray = ele.pubmedIDs;
               cyEle.data('pubmedIDs', pubmedArray);
               this.updateHighlight(cyEle, ele.isHighlighted);
 
-              var bendPoint = ele.bendPoint.asArray();
+              var bendPoint = ele.bendPoint;
               var numberOfBendPositions = cyEle.data('bendPointPositions').length; // Holds the number of bend positions in data before being updated
               cyEle.data('bendPointPositions', bendPoint);
               if (bendPoint.length == 0 && numberOfBendPositions > 0) //Checks if the number of bendpoints changed from before

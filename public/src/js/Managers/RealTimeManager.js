@@ -91,8 +91,13 @@ module.exports = (function()
     RealTimeManager.prototype.onFileInitialize = function()
     {
         //TODO change the document id to proper id
-        doc.submitOp([{ p:  ['layoutProperties'], oi: window.editorActionsManager.layoutProperties}], this.realTimeError);
-        doc.submitOp([{ p:  ['globalOptions'], oi: window.editorActionsManager.getGlobalOptions()}], this.realTimeError);
+        if (doc.data.layoutProperties === {}){
+            doc.submitOp([{ p:  ['layoutProperties'], oi: window.editorActionsManager.layoutProperties}], this.realTimeError);
+        }
+        if (doc.data.globalOptions === {}){
+            doc.submitOp([{ p:  ['globalOptions'], oi: window.editorActionsManager.getGlobalOptions()}], this.realTimeError);
+        }
+
         /*var root = model.getRoot();
 
         var nodeMap = model.createMap();
@@ -133,8 +138,8 @@ module.exports = (function()
     RealTimeManager.prototype.onFileLoaded =  function()
     {
 
-        this.syncInitialCloudData(doc);
-        this.initCloudEventHandlers(doc);
+        this.syncInitialCloudData();
+        this.initCloudEventHandlers();
 
         this.postFileLoad();
         var self = this;
@@ -322,6 +327,11 @@ module.exports = (function()
         */
     };
 
+    //TODO Add comments
+    RealTimeManager.prototype.isRealTimeReplaceEvent = function(op) {
+      return  op.hasOwnProperty("oi") && op.hasOwnProperty("od");
+    };
+
     RealTimeManager.prototype.initCloudEventHandlers = function() {
 
         var self = this;
@@ -347,29 +357,96 @@ module.exports = (function()
             window.editorActionsManager.realTimeGenomicDataGroupChangeHandler(op);
         };
 
+        var updateElementHandler = function(op)
+        {
+            window.editorActionsManager.updateElementCallback(op);
+        }
+
         //Event listeners for edge and node map
         doc.on('op', function (op, source) {
             console.log(op);
             //TODO Shame
             var path = op[0].p[0];
-            console.log(path, self.NODEMAP_NAME);
-            if(path === self.NODEMAP_NAME){
-                nodeAddRemoveHandler(op);
+            var isReplaceEvent = self.isRealTimeReplaceEvent(op[0]);
+
+            if(!isReplaceEvent) {
+                if(path === self.NODEMAP_NAME){
+                    nodeAddRemoveHandler(op);
+                }
+                else if(path === self.EDGEMAP_NAME){
+                    edgeAddRemoveHandler(op);
+                }
+                else if(path === self.GENOMIC_DATA_MAP_NAME){
+                    genomicDataAddRemoveHandler(op);
+                }
+                else if(path === self.VISIBLE_GENOMIC_DATA_MAP_NAME) {
+                    genomicDataVisibilityChangeHandler(op);
+                }
+                else if(path === self.GENOMIC_DATA_GROUP_NAME) {
+                    genomicDataGroupChangeHandler(op);
+                }
             }
-            else if(path === self.EDGEMAP_NAME){
-                edgeAddRemoveHandler(op);
-            }
-            else if(path === self.GENOMIC_DATA_MAP_NAME){
-                genomicDataAddRemoveHandler(op);
-            }
-            else if(path === self.VISIBLE_GENOMIC_DATA_MAP_NAME) {
-                genomicDataVisibilityChangeHandler(op);
-            }
-            else if(path === self.GENOMIC_DATA_GROUP_NAME) {
-                genomicDataGroupChangeHandler(op);
+            else {
+                if(path === self.NODEMAP_NAME){
+                    updateElementHandler(op);
+                }
+                else if(path === self.EDGEMAP_NAME){
+                    updateElementHandler(op);
+                }
+                else if(path === self.GENOMIC_DATA_MAP_NAME){
+
+                }
+                else if(path === self.VISIBLE_GENOMIC_DATA_MAP_NAME) {
+
+                }
+                else if(path === self.GENOMIC_DATA_GROUP_NAME) {
+
+                }
             }
 
         });
+    };
+
+    RealTimeManager.prototype.initElementUpdateHandlers = function() {
+
+        function registerAttributeChangeHandlersElements()
+        {
+            function updateElementHandler(event)
+            {
+                var ele = event.currentTarget;
+                window.editorActionsManager.updateElementCallback(ele, self.getCustomObjId(ele));
+            }
+
+            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateElementHandler);
+        }
+
+        function registerAttributeChangeHandlersLayoutPropertiesR()
+        {
+            function updateLayoutPropsHandler(event)
+            {
+                var layoutProps = event.currentTarget;
+                window.editorActionsManager.updateLayoutPropertiesCallback(layoutProps);
+            }
+
+            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateLayoutPropsHandler);
+        }
+
+        function registerAttributeChangeHandlersGlobalOptionsR()
+        {
+            function updateGlobalOptionsRHandler(event)
+            {
+                var globalOptions = event.currentTarget;
+                window.editorActionsManager.changeGlobalOptions(globalOptions);
+            }
+
+            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateGlobalOptionsRHandler);
+        }
+
+        //Register attribute changed handlers
+        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersElements);
+        gapi.drive.realtime.custom.setOnLoaded(EdgeR, registerAttributeChangeHandlersElements);
+        gapi.drive.realtime.custom.setOnLoaded(LayoutPropertiesR, registerAttributeChangeHandlersLayoutPropertiesR);
+        gapi.drive.realtime.custom.setOnLoaded(GlobalOptionsR, registerAttributeChangeHandlersGlobalOptionsR);
     };
 
     /*
@@ -579,20 +656,17 @@ module.exports = (function()
 
     RealTimeManager.prototype.moveElement = function(ele)
     {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var nodeMap =  root.get(this.NODEMAP_NAME);
+        var nodeMap =  doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
         var newPos = ele.position();
 
-        if (nodeMap.has(elementID))
+        if (nodeMap.hasOwnProperty(elementID))
         {
-            var tmpNode = nodeMap.get(elementID);
-            model.beginCompoundOperation();
+            var tmpNode = nodeMap[elementID];
             tmpNode.x = newPos.x;
             tmpNode.y = newPos.y;
-            model.endCompoundOperation();
+            doc.submitOp([{p:[this.NODEMAP_NAME, elementID], od: doc.data[this.NODEMAP_NAME][elementID], oi: tmpNode}]);
         }
         else
         {
