@@ -548,7 +548,7 @@ module.exports = (function () {
 
     RealTimeManager.prototype.addNewNode = function (nodeData, posData) {
         var realTimeGeneratedID = this.getCustomObjId();
-        var newNode = {
+        var params = {
             name: nodeData.name,
             type: nodeData.type,
             id: realTimeGeneratedID,
@@ -563,6 +563,7 @@ module.exports = (function () {
             minHeightBiasBottom: nodeData.minHeightBiasBottom
         };
 
+        var newNode = this.nodeInitializer(params);
         if (posData) {
             newNode.x = posData.x;
             newNode.y = posData.y;
@@ -572,7 +573,7 @@ module.exports = (function () {
 
     RealTimeManager.prototype.addNewEdge = function (edgeData) {
         var realTimeGeneratedID = this.getCustomObjId();
-        var newEdge = {
+        var params = {
             type: edgeData.type,
             id: realTimeGeneratedID,
             source: edgeData.source,
@@ -581,7 +582,7 @@ module.exports = (function () {
             name: edgeData.name,
             bendPoint: edgeData.bendPoint
         };
-
+        var newEdge = this.edgeInitializer(params);
         this.insertShareDBObject(this.EDGEMAP_NAME, realTimeGeneratedID, newEdge);
     };
 
@@ -734,6 +735,7 @@ module.exports = (function () {
     RealTimeManager.prototype.addPubmedIDs = function (edgeID, pubmedIDs) {
         var edgeMap = doc.data[this.EDGEMAP_NAME];
 
+
         if (edgeMap.hasOwnProperty(edgeID)) {
             var tmpEdge = edgeMap[edgeID];
             var nonDuplicateArray = [];
@@ -780,11 +782,7 @@ module.exports = (function () {
 
         if (edgeMap.hasOwnProperty(edgeID)) {
             var tmpEdge = edgeMap[edgeID];
-            console.log(tmpEdge);
-
-            tmpEdge.bendPoint.clear();
-            tmpEdge.bendPoint.pushAll(bendPointsArray);
-
+            tmpEdge.bendPoint = bendPointsArray;
             this.updateShareDocObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
         }
         else {
@@ -1154,6 +1152,59 @@ module.exports = (function () {
         return tree;
     };
 
+    RealTimeManager.prototype.edgeInitializer = function (params) {
+        var edge = {};
+        edge.id = params.id || this.getCustomObjId();
+        edge.type = params.type || "undefined";
+        edge.source = params.source || "undefined";
+        edge.target = params.target || "undefined";
+        edge.name = params.name || "";
+        edge.isHighlighted = params.isHighlighted || false;
+
+        if (params.pubmedIDs) {
+            if (edge.pubmedIDs == undefined) {
+                edge.pubmedIDs = [];
+            }
+            edge.pubmedIDs.push(params.pubmedIDs);
+        }
+        else {
+            edge.pubmedIDs = [];
+        }
+
+        if (params.bendPoint) {
+            if (edge.bendPoint == undefined) {
+                edge.bendPoint = [];
+            }
+            edge.bendPoint.push(params.bendPoint);
+        }
+        else {
+            edge.bendPoint = [];
+        }
+        return edge;
+    };
+
+    RealTimeManager.prototype.nodeInitializer = function (params) {
+        var node = {};
+        node.id = params.id || this.getCustomObjId();
+        node.name = params.name || "undefined";
+        node.type = params.type || "undefined";
+        node.parent = params.parent || "undefined";
+        node.x = params.x || "undefined";
+        node.y = params.y || "undefined";
+        node.w = params.w || "undefined";
+        node.h = params.h || "undefined";
+        node.minWidth = params.minWidth || 0;
+        node.minWidthBiasLeft = params.minWidth || 0;
+        node.minWidthBiasRight = params.minWidth || 0;
+        node.minHeight = params.minWidth || 0;
+        node.minHeightBiasTop = params.minWidth || 0;
+        node.minHeightBiasBottom = params.minWidth || 0;
+        node.isHidden = params.isHidden || false;
+        node.isInvalidGene = params.isInvalidGene || false;
+        node.isHighlighted = params.isHighlighted || false;
+        return node;
+    };
+
     RealTimeManager.prototype.createRealTimeObjectDefinitions = function () {
         //Register our custom objects Google Real Time API
         gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
@@ -1260,63 +1311,10 @@ module.exports = (function () {
     };
     var LayoutPropertiesR = function () {
     };
-    //For storing global options like zoom, pan level etc in colalborative mode
+    /*For storing global options like zoom, pan level etc in collaborative mode*/
     var GlobalOptionsR = function () {
     };
 
-    var NodeRInitializer = function (params) {
-        var model = gapi.drive.realtime.custom.getModel(this);
-        model.beginCompoundOperation();
-        this.name = params.name || "undefined";
-        this.type = params.type || "undefined";
-        this.parent = params.parent || "undefined";
-        this.x = params.x || "undefined";
-        this.y = params.y || "undefined";
-        this.w = params.w || "undefined";
-        this.h = params.h || "undefined";
-        this.minWidth = params.minWidth || 0;
-        this.minWidthBiasLeft = params.minWidth || 0;
-        this.minWidthBiasRight = params.minWidth || 0;
-        this.minHeight = params.minWidth || 0;
-        this.minHeightBiasTop = params.minWidth || 0;
-        this.minHeightBiasBottom = params.minWidth || 0;
-        this.isHidden = params.isHidden || false;
-        this.isInvalidGene = params.isInvalidGene || false;
-        this.isHighlighted = params.isHighlighted || false;
-        model.endCompoundOperation();
-    };
-
-    var EdgeRInitializer = function (params) {
-        var model = gapi.drive.realtime.custom.getModel(this);
-        model.beginCompoundOperation();
-        this.type = params.type || "undefined";
-        this.source = params.source || "undefined";
-        this.target = params.target || "undefined";
-        this.name = params.name || "";
-        this.isHighlighted = params.isHighlighted || false;
-
-        if (params.pubmedIDs) {
-            if (this.pubmedIDs == undefined) {
-                this.pubmedIDs = model.createList();
-            }
-            this.pubmedIDs.pushAll(params.pubmedIDs);
-        }
-        else {
-            this.pubmedIDs = model.createList();
-        }
-
-        if (params.bendPoint) {
-            if (this.bendPoint == undefined) {
-                this.bendPoint = model.createList();
-            }
-            this.bendPoint.pushAll(params.bendPoint);
-        }
-        else {
-            this.bendPoint = model.createList();
-        }
-
-        model.endCompoundOperation();
-    };
 
     var LayoutPropertiesRInitializer = function (params) {
         var model = gapi.drive.realtime.custom.getModel(this);
