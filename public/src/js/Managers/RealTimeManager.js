@@ -47,7 +47,7 @@ module.exports = (function()
     };
 
     RealTimeManager.prototype.updateShareDocObject = function(mapName, objectKey, object){
-        doc.submitOp([{p:[mapName, objectKey], od: doc[mapName][objectKey], oi: object}], this.realTimeError);
+        doc.submitOp([{p:[mapName, objectKey], od: doc.data[mapName][objectKey], oi: object}], this.realTimeError);
     };
 
     RealTimeManager.prototype.insertShareDBObject = function(mapName, objectKey, object){
@@ -55,7 +55,7 @@ module.exports = (function()
     };
 
     RealTimeManager.prototype.deleteShareDBObject = function(mapName, objectKey){
-        doc.submitOp([{p:[mapName, objectKey], od: doc[mapName][objectKey]}], this.realTimeError);
+        doc.submitOp([{p:[mapName, objectKey], od: doc.data[mapName][objectKey]}], this.realTimeError);
     };
 
     RealTimeManager.prototype.realTimeError = function(err){
