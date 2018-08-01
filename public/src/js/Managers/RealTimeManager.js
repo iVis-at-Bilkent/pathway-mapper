@@ -52,8 +52,8 @@ module.exports = (function () {
         var visMap = doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
         var genomicDataGroupMap = doc.data[this.GENOMIC_DATA_GROUP_NAME];
         var genomicDataGroupCount = doc.data[this.GENOMIC_DATA_GROUP_COUNT];
-        for (var i = 0; i < genomicMap.length; i++){
-            ops.push({p: [this.GENOMIC_DATA_GROUP_NAME, i], ld: genomicMap[i] });
+        for (var i = 0; i < genomicMap.length; i++) {
+            ops.push({p: [this.GENOMIC_DATA_GROUP_NAME, i], ld: genomicMap[i]});
         }
         for (var i = 0; i < visMap.length; i++) {
             ops.push({p: [this.VISIBLE_GENOMIC_DATA_MAP_NAME, i], ld: visMap[i]});
@@ -61,12 +61,16 @@ module.exports = (function () {
         for (var i = 0; genomicDataGroupMap.length; i++) {
             ops.push({p: [this.GENOMIC_DATA_GROUP_NAME, i], ld: visMap[i]});
         }
-        ops.push({p:[this.GENOMIC_DATA_GROUP_COUNT], na: -genomicDataGroupCount});
+        ops.push({p: [this.GENOMIC_DATA_GROUP_COUNT], na: -genomicDataGroupCount});
         this.doc.submitOp(ops, this.realTimeError);
     };
 
     RealTimeManager.prototype.updateShareDocObject = function (mapName, objectKey, object) {
-        this.doc.submitOp([{p: [mapName, objectKey], od: this.doc.data[mapName][objectKey], oi: object}], this.realTimeError);
+        this.doc.submitOp([{
+            p: [mapName, objectKey],
+            od: this.doc.data[mapName][objectKey],
+            oi: object
+        }], this.realTimeError);
     };
 
     RealTimeManager.prototype.insertShareDBObject = function (mapName, objectKey, object) {
@@ -100,7 +104,7 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.updateShareDBGlobalOptions = function (object) {
-         this.doc.submitOp([{
+        this.doc.submitOp([{
             p: [this.GLOBAL_OPTS_NAME, 0],
             ld: this.doc.data[this.GLOBAL_OPTS_NAME][0],
             li: object
@@ -153,7 +157,7 @@ module.exports = (function () {
 
         if (id) {
             // Check any document exists with given id
-            this.doc.fetch(function(err) {
+            this.doc.fetch(function (err) {
                 if (err)
                     throw err;
 
@@ -233,35 +237,28 @@ module.exports = (function () {
         var highlightedGenes = [];
         var invalidHighlightedGenes = [];
         var hiddenGenes = [];
-        for (var key in nodeMap)
-        {
+        for (var key in nodeMap) {
             var tmpNode = nodeMap[key];
             var tmpNodeId = tmpNode.id;
 
-            if (tmpNode.isInvalidGene && tmpNode.isHighlighted)
-            {
+            if (tmpNode.isInvalidGene && tmpNode.isHighlighted) {
                 invalidHighlightedGenes.push(tmpNodeId);
             }
-            else if (tmpNode.isInvalidGene)
-            {
+            else if (tmpNode.isInvalidGene) {
                 invalidGenes.push(tmpNodeId);
             }
-            else if (tmpNode.isHighlighted)
-            {
+            else if (tmpNode.isHighlighted) {
                 highlightedGenes.push(tmpNodeId);
             }
-            if (tmpNode.isHidden)
-            {
+            if (tmpNode.isHidden) {
                 hiddenGenes.push(tmpNodeId);
             }
         }
         var highlightedEdges = [];
-        for (var key in edgeMap)
-        {
+        for (var key in edgeMap) {
             var tmpEdge = edgeMap[key];
             var tmpEdgeId = tmpEdge.id;
-            if (tmpEdge.isHighlighted)
-            {
+            if (tmpEdge.isHighlighted) {
                 highlightedEdges.push(tmpEdgeId);
             }
         }
@@ -271,12 +268,10 @@ module.exports = (function () {
         // Workaround for backward compatibility of legacy pathways
         // Addition of pubmed id field on server if legacy collaborative
         // pathways does not have !
-        for (var key in edgeMap)
-        {
+        for (var key in edgeMap) {
             var tmpEdge = edgeMapEntries[key];
 
-            if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined || tmpEdge.bendPoint == undefined)
-            {
+            if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined || tmpEdge.bendPoint == undefined) {
                 var pubmedIDs = (tmpEdge.pubmedIDs == undefined) ? [] : tmpEdge.pubmedID;
                 var edgeLabel = (tmpEdge.name == undefined) ? "" : tmpEdge.name;
                 var bendPoint = (tmpEdge.bendPoint == undefined) ? [] : tmpEdge.bendPoint;
@@ -312,25 +307,22 @@ module.exports = (function () {
 
         //Update layout properties & global options!!
         //TODO Shame
-        window.editorActionsManager.updateLayoutPropertiesCallback({li:realTimeLayoutProperties});
-        window.editorActionsManager.changeGlobalOptions({li:globalOptions});
+        window.editorActionsManager.updateLayoutPropertiesCallback({li: realTimeLayoutProperties});
+        window.editorActionsManager.changeGlobalOptions({li: globalOptions});
 
         //Sync already available genomic data !
 
-        if (!groupedGenomicDataMap)
-        {
+        if (!groupedGenomicDataMap) {
 
             self.insertShareDBObject(self.GENOMIC_DATA_MAP_NAME, '0', []);
-            for (var key in visDataMap)
-            {
+            for (var key in visDataMap) {
                 var currentMap = _.clone(groupedGenomicDataMap['0']);
                 currentMap.push(visibilityMapKeys[key]);
                 self.updateShareDocObject(self.GENOMIC_DATA_MAP_NAME, '0', currentMap);
             }
         }
 
-        if (!groupedGenomicDataCount)
-        {
+        if (!groupedGenomicDataCount) {
             var count = self.doc.data[self.GENOMIC_DATA_GROUP_COUNT];
             var op = [{
                 p: [self.GENOMIC_DATA_GROUP_COUNT],
@@ -346,14 +338,12 @@ module.exports = (function () {
                 genomicDataMap[key];
         }
 
-        for (var key in visDataMap)
-        {
+        for (var key in visDataMap) {
             window.editorActionsManager.genomicDataOverlayManager.visibleGenomicDataMapByType[key] =
                 visDataMap[key];
         }
 
-        for (var key in groupedGenomicDataMap)
-        {
+        for (var key in groupedGenomicDataMap) {
             window.editorActionsManager.genomicDataOverlayManager.groupedGenomicDataMap[key] =
                 groupedGenomicDataMap[key];
         }
@@ -1082,8 +1072,8 @@ module.exports = (function () {
             var newEdgeID = this.getCustomObjId();
             newEdge.id = newEdgeID;
             ops.push({
-               p: [self.EDGEMAP_NAME, newEdgeID],
-               oi: newEdge
+                p: [self.EDGEMAP_NAME, newEdgeID],
+                oi: newEdge
             });
         }
         self.applyShareDBOperation(ops);
