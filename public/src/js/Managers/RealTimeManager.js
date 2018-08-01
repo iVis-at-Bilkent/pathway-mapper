@@ -1107,12 +1107,6 @@ module.exports = (function () {
         });
     };
 
-    // You must register the custom object before loading or creating any file that
-    // uses this custom object.
-    RealTimeManager.prototype.registerTypes = function () {
-        //TODO does not need 2 functions remove one
-        this.createRealTimeObjectDefinitions();
-    };
 
     /*
      * Creates graph hierarchy from given flat list of nodes list, nodes list is assumed to have parent-child
@@ -1205,144 +1199,33 @@ module.exports = (function () {
         return node;
     };
 
-    RealTimeManager.prototype.createRealTimeObjectDefinitions = function () {
-        //Register our custom objects Google Real Time API
-        gapi.drive.realtime.custom.registerType(EdgeR, 'EdgeR');
-        gapi.drive.realtime.custom.registerType(NodeR, 'NodeR');
-        gapi.drive.realtime.custom.registerType(LayoutPropertiesR, 'LayoutPropertiesR');
-        gapi.drive.realtime.custom.registerType(GlobalOptionsR, 'GlobalOptionsR');
-
-        gapi.drive.realtime.custom.setInitializer(NodeR, NodeRInitializer);
-        gapi.drive.realtime.custom.setInitializer(EdgeR, EdgeRInitializer);
-        gapi.drive.realtime.custom.setInitializer(LayoutPropertiesR, LayoutPropertiesRInitializer);
-        gapi.drive.realtime.custom.setInitializer(GlobalOptionsR, GlobalOptionsRInitializer);
-
-        // NodeR;
-        NodeR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
-        NodeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
-        NodeR.prototype.x = gapi.drive.realtime.custom.collaborativeField('x');
-        NodeR.prototype.y = gapi.drive.realtime.custom.collaborativeField('y');
-        NodeR.prototype.w = gapi.drive.realtime.custom.collaborativeField('w');
-        NodeR.prototype.h = gapi.drive.realtime.custom.collaborativeField('h');
-        NodeR.prototype.minWidth = gapi.drive.realtime.custom.collaborativeField('minWidth');
-        NodeR.prototype.minWidthBiasLeft = gapi.drive.realtime.custom.collaborativeField('minWidthBiasLeft');
-        NodeR.prototype.minWidthBiasRight = gapi.drive.realtime.custom.collaborativeField('minWidthBiasRight');
-        NodeR.prototype.minHeight = gapi.drive.realtime.custom.collaborativeField('minHeight');
-        NodeR.prototype.minHeightBiasTop = gapi.drive.realtime.custom.collaborativeField('minHeightBiasTop');
-        NodeR.prototype.minHeightBiasBottom = gapi.drive.realtime.custom.collaborativeField('minHeightBiasBottom');
-        NodeR.prototype.parent = gapi.drive.realtime.custom.collaborativeField('parent');
-        NodeR.prototype.isHidden = gapi.drive.realtime.custom.collaborativeField('isHidden');
-        NodeR.prototype.isInvalidGene = gapi.drive.realtime.custom.collaborativeField('isInvalidGene');
-        NodeR.prototype.isHighlighted = gapi.drive.realtime.custom.collaborativeField('isHighlighted');
-
-        // EdgeR;
-        EdgeR.prototype.source = gapi.drive.realtime.custom.collaborativeField('source');
-        EdgeR.prototype.target = gapi.drive.realtime.custom.collaborativeField('target');
-        EdgeR.prototype.type = gapi.drive.realtime.custom.collaborativeField('type');
-        EdgeR.prototype.isHighlighted = gapi.drive.realtime.custom.collaborativeField('isHighlighted');
-        EdgeR.prototype.pubmedIDs = gapi.drive.realtime.custom.collaborativeField('pubmedIDs');
-        EdgeR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
-        EdgeR.prototype.bendPoint = gapi.drive.realtime.custom.collaborativeField('bendPoint');
-
-        //LayoutPropertiesR
-        LayoutPropertiesR.prototype.name = gapi.drive.realtime.custom.collaborativeField('name');
-        LayoutPropertiesR.prototype.nodeRepulsion = gapi.drive.realtime.custom.collaborativeField('nodeRepulsion');
-        LayoutPropertiesR.prototype.idealEdgeLength = gapi.drive.realtime.custom.collaborativeField('idealEdgeLength');
-        LayoutPropertiesR.prototype.edgeElasticity = gapi.drive.realtime.custom.collaborativeField('edgeElasticity');
-        LayoutPropertiesR.prototype.nestingFactor = gapi.drive.realtime.custom.collaborativeField('nestingFactor');
-        LayoutPropertiesR.prototype.gravity = gapi.drive.realtime.custom.collaborativeField('gravity');
-        LayoutPropertiesR.prototype.numIter = gapi.drive.realtime.custom.collaborativeField('numIter');
-        LayoutPropertiesR.prototype.tile = gapi.drive.realtime.custom.collaborativeField('tile');
-        LayoutPropertiesR.prototype.animate = gapi.drive.realtime.custom.collaborativeField('animate');
-        LayoutPropertiesR.prototype.randomize = gapi.drive.realtime.custom.collaborativeField('randomize');
-        LayoutPropertiesR.prototype.gravityRangeCompound = gapi.drive.realtime.custom.collaborativeField('gravityRangeCompound');
-        LayoutPropertiesR.prototype.gravityCompound = gapi.drive.realtime.custom.collaborativeField('gravityCompound');
-        LayoutPropertiesR.prototype.gravityRange = gapi.drive.realtime.custom.collaborativeField('gravityRange');
-        LayoutPropertiesR.prototype.tilingPaddingVertical = gapi.drive.realtime.custom.collaborativeField('tilingPaddingVertical');
-        LayoutPropertiesR.prototype.tilingPaddingHorizontal = gapi.drive.realtime.custom.collaborativeField('tilingPaddingHorizontal');
-        LayoutPropertiesR.prototype.initialEnergyOnIncremental = gapi.drive.realtime.custom.collaborativeField('initialEnergyOnIncremental');
-
-        //GlobalOptionsR
-        GlobalOptionsR.prototype.zoomLevel = gapi.drive.realtime.custom.collaborativeField('zoomLevel');
-        GlobalOptionsR.prototype.panLevel = gapi.drive.realtime.custom.collaborativeField('panLevel');
-
-        //Attribute changed handlers !!!
-        var self = this;
-
-        function registerAttributeChangeHandlersElements() {
-            function updateElementHandler(event) {
-                var ele = event.currentTarget;
-                window.editorActionsManager.updateElementCallback(ele, self.getCustomObjId(ele));
-            }
-
-            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateElementHandler);
-        }
-
-        function registerAttributeChangeHandlersLayoutPropertiesR() {
-            function updateLayoutPropsHandler(event) {
-                var layoutProps = event.currentTarget;
-                window.editorActionsManager.updateLayoutPropertiesCallback(layoutProps);
-            }
-
-            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateLayoutPropsHandler);
-        }
-
-        function registerAttributeChangeHandlersGlobalOptionsR() {
-            function updateGlobalOptionsRHandler(event) {
-                var globalOptions = event.currentTarget;
-                window.editorActionsManager.changeGlobalOptions(globalOptions);
-            }
-
-            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateGlobalOptionsRHandler);
-        }
-
-        //Register attribute changed handlers
-        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersElements);
-        gapi.drive.realtime.custom.setOnLoaded(EdgeR, registerAttributeChangeHandlersElements);
-        gapi.drive.realtime.custom.setOnLoaded(LayoutPropertiesR, registerAttributeChangeHandlersLayoutPropertiesR);
-        gapi.drive.realtime.custom.setOnLoaded(GlobalOptionsR, registerAttributeChangeHandlersGlobalOptionsR);
-
-    };
-
-    //Custom object Definitions and Registration Part
-    var NodeR = function () {
-    };
-    var EdgeR = function () {
-    };
-    var LayoutPropertiesR = function () {
-    };
-    /*For storing global options like zoom, pan level etc in collaborative mode*/
-    var GlobalOptionsR = function () {
-    };
-
-
-    var LayoutPropertiesRInitializer = function (params) {
-        var model = gapi.drive.realtime.custom.getModel(this);
-        this.name = params.name || 'undefined';
-        this.nodeRepulsion = params.nodeRepulsion || 'undefined';
+    RealTimeManager.prototype.layoutPropertiesInitializer = function (params) {
+        var layoutProperties = {};
+        layoutProperties.name = params.name || 'undefined';
+        layoutProperties.nodeRepulsion = params.nodeRepulsion || 'undefined';
         // this.nodeOverlap = params.nodeOverlap || 'undefined';
-        this.idealEdgeLength = params.idealEdgeLength || 'undefined';
-        this.edgeElasticity = params.edgeElasticity || 'undefined';
-        this.nestingFactor = params.nestingFactor || 'undefined';
-        this.gravity = params.gravity || 'undefined';
-        this.numIter = params.numIter || 'undefined';
-        this.tile = params.tile || 'undefined';
-        this.animate = params.animate || 'undefined';
-        this.randomize = params.randomize || false;
-        this.gravityRangeCompound = params.gravityRangeCompound || 'undefined';
-        this.gravityCompound = params.gravityCompound || 'undefined';
-        this.gravityRange = params.gravityRange || 'undefined';
-        this.tilingPaddingVertical = params.tilingPaddingVertical || 'undefined';
-        this.tilingPaddingHorizontal = params.tilingPaddingHorizontal || 'undefined';
-        this.initialEnergyOnIncremental = params.initialEnergyOnIncremental || 'undefined';
+        layoutProperties.idealEdgeLength = params.idealEdgeLength || 'undefined';
+        layoutProperties.edgeElasticity = params.edgeElasticity || 'undefined';
+        layoutProperties.nestingFactor = params.nestingFactor || 'undefined';
+        layoutProperties.gravity = params.gravity || 'undefined';
+        layoutProperties.numIter = params.numIter || 'undefined';
+        layoutProperties.tile = params.tile || 'undefined';
+        layoutProperties.animate = params.animate || 'undefined';
+        layoutProperties.randomize = params.randomize || false;
+        layoutProperties.gravityRangeCompound = params.gravityRangeCompound || 'undefined';
+        layoutProperties.gravityCompound = params.gravityCompound || 'undefined';
+        layoutProperties.gravityRange = params.gravityRange || 'undefined';
+        layoutProperties.tilingPaddingVertical = params.tilingPaddingVertical || 'undefined';
+        layoutProperties.tilingPaddingHorizontal = params.tilingPaddingHorizontal || 'undefined';
+        layoutProperties.initialEnergyOnIncremental = params.initialEnergyOnIncremental || 'undefined';
+        return layoutProperties;
     };
 
-    var GlobalOptionsRInitializer = function (params) {
-        var model = gapi.drive.realtime.custom.getModel(this);
-        model.beginCompoundOperation();
-        this.zoomLevel = params.zoomLevel || 'undefined';
-        this.panLevel = params.panLevel || 'undefined';
-        model.endCompoundOperation();
+    RealTimeManager.prototype.globalOptionsInitializer = function (params) {
+        var globalOptions = {};
+        globalOptions.zoomLevel = params.zoomLevel || 'undefined';
+        globalOptions.panLevel = params.panLevel || 'undefined';
+        return globalOptions;
     };
 
     return RealTimeManager;
