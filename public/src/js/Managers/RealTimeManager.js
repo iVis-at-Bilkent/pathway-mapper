@@ -46,6 +46,25 @@ module.exports = (function()
         }, isModal);
     };
 
+    RealTimeManager.prototype.updateShareDocObject = function(mapName, objectKey, object){
+        doc.submitOp([{p:[mapName, objectKey], od: doc[mapName][objectKey], oi: object}], this.realTimeError);
+    };
+
+    RealTimeManager.prototype.insertShareDBObject = function(mapName, objectKey, object){
+        doc.submitOp([{p:[mapName, objectKey], oi: object}], this.realTimeError);
+    };
+
+    RealTimeManager.prototype.deleteShareDBObject = function(mapName, objectKey){
+        doc.submitOp([{p:[mapName, objectKey], od: doc[mapName][objectKey]}], this.realTimeError);
+    };
+
+    RealTimeManager.prototype.realTimeError = function(err){
+        if (err) {
+            console.error(err);
+            return;
+        }
+    };
+
     RealTimeManager.prototype.initRealTimeAPI = function()
     {
         // With auth taken care of, load a file, or create one if there
@@ -128,12 +147,7 @@ module.exports = (function()
         document. We will wire up the data model to the UI.
     */
 
-    RealTimeManager.prototype.realTimeError = function(err){
-        if (err) {
-            console.error(err);
-            return;
-        }
-    };
+
 
     RealTimeManager.prototype.onFileLoaded =  function()
     {
@@ -245,18 +259,9 @@ module.exports = (function()
 
                 var tmpEdgeID = this.getCustomObjId(tmpEdge);
                 var newID = this.getCustomObjId(newEdge);
-                doc.submitOp([{p: [this.EDGEMAP_NAME, tmpEdgeID], od: edgeMap[tmpEdgeID]}], function(err) {
-                    if (err) {
-                        console.error(err);
-                        return;
-                    }
-                });
-                doc.submitOp([{p: [this.EDGEMAP_NAME, newID], oi: newEdge}], function(err) {
-                    if (err) {
-                        console.error(err);
-                        return;
-                    }
-                });
+
+                this.insertShareDBObject(this.EDGEMAP_NAME, tmpEdgeID, edgeMap[tmpEdgeID]);
+                this.insertShareDBObject(this.EDGEMAP_NAME, newID, newEdge);
 
             }
 
@@ -455,39 +460,42 @@ module.exports = (function()
      * **/
     RealTimeManager.prototype.getEmptyGroupID = function()
     {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var count = root.get(this.GENOMIC_DATA_GROUP_COUNT);
-        var returnCount = parseInt(count.getText());
-        count.setText(""+(returnCount + 1));
+        var count = doc.data[this.GENOMIC_DATA_GROUP_COUNT];
+        var returnCount = count;
+        doc.submitOp([{p: [this.GENOMIC_DATA_GROUP_COUNT], na: 1}]);
         return returnCount;
     };
-
 
     /*
      * Gets the first empty index from the list in cloud model
      * **/
     RealTimeManager.prototype.groupGenomicData = function(cancerNames, inGroupId)
     {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var genomicGroupMap =  root.get(this.GENOMIC_DATA_GROUP_NAME);
-        var genomicVisMap =  root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME);
+        var genomicGroupMap =  doc.data[this.GENOMIC_DATA_GROUP_NAME];
+        var genomicVisMap =  doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
 
         var groupID = ""+inGroupId;
 
 
         var currentGroup = [];
 
-        if(genomicGroupMap.has(groupID))
-            currentGroup = _.clone(genomicGroupMap.get(groupID));
+        if(genomicGroupMap.hasOwnProperty(groupID))
+            currentGroup = _.clone(genomicGroupMap[groupID]);
 
         for (var i in cancerNames)
         {
-            if (!genomicVisMap.has(cancerNames[i]))
+            if (!genomicVisMap.hasOwnProperty(cancerNames[i]))
                 currentGroup.push(cancerNames[i]);
         }
 
+        // If group id already exists change existing object
+        if (genomicGroupMap.hasOwnProperty(groupID)){
+            this.updateShareDocObject(this.GENOMIC_DATA_GROUP_NAME, groupID, currentGroup);
+        }
+        else {
+            //Insert new group
+            this.insertShareDBObject(this.GENOMIC_DATA_GROUP_NAME, groupID, currentGroup);
+        }
         genomicGroupMap.set(groupID, currentGroup);
 
     };
@@ -613,8 +621,7 @@ module.exports = (function()
             newNode.x = posData.x;
             newNode.y = posData.y;
         }
-
-        doc.submitOp([{p:[this.NODEMAP_NAME, realTimeGeneratedID], oi:newNode}], this.realTimeError);
+        this.insertShareDBObject(this.NODEMAP_NAME, realTimeGeneratedID, newNode);
     };
 
     RealTimeManager.prototype.addNewEdge = function(edgeData)
@@ -630,8 +637,7 @@ module.exports = (function()
             bendPoint: edgeData.bendPoint
         };
 
-
-        doc.submitOp([{p:[this.EDGEMAP_NAME, realTimeGeneratedID], oi: newEdge}], this.realTimeError);
+        this.insertShareDBObject(this.EDGEMAP_NAME, realTimeGeneratedID, newEdge);
     };
 
     RealTimeManager.prototype.removeElement = function(elementID)
@@ -641,11 +647,11 @@ module.exports = (function()
 
         if (nodeMap.hasOwnProperty(elementID))
         {
-            doc.submitOp([{p:[this.NODEMAP_NAME, elementID], od: nodeMap[elementID]}], this.realTimeError);
+            this.deleteShareDBObject(this.NODEMAP_NAME, elementID);
         }
         else if (edgeMap.hasOwnProperty(elementID))
         {
-            doc.submitOp([{p:[this.EDGEMAP_NAME, elementID], od: edgeMap[elementID]}], this.realTimeError);
+            this.deleteShareDBObject(this.EDGEMAP_NAME, elementID);
         }
         else
         {
@@ -666,7 +672,7 @@ module.exports = (function()
             var tmpNode = nodeMap[elementID];
             tmpNode.x = newPos.x;
             tmpNode.y = newPos.y;
-            doc.submitOp([{p:[this.NODEMAP_NAME, elementID], od: doc.data[this.NODEMAP_NAME][elementID], oi: tmpNode}]);
+            this.updateShareDocObject(this.NODEMAP_NAME, elementID, tmpNode);
         }
         else
         {
@@ -687,7 +693,7 @@ module.exports = (function()
                 var tmpNode = nodeMap[elementID];
                 tmpNode.x = ele.nextPosition.x;
                 tmpNode.y = ele.nextPosition.y;
-                doc.submitOp([{p:[this.NODEMAP_NAME, elementID], od: doc.data[this.NODEMAP_NAME][elementID], oi: tmpNode}]);
+                this.updateShareDocObject(this.NODEMAP_NAME, elementID, tmpNode);
             }
             else
             {
@@ -713,7 +719,7 @@ module.exports = (function()
             tmpNode.y = currentY + newHeight - previousHeight;
             tmpNode.w = newWidth;
             tmpNode.h = newHeight;
-            doc.submitOp([{p:[this.NODEMAP_NAME, elementID], od: doc.data[this.NODEMAP_NAME][elementID], oi: tmpNode}]);
+            this.updateShareDocObject(this.NODEMAP_NAME, elementID, tmpNode);
         }
         else
         {
@@ -892,7 +898,7 @@ module.exports = (function()
             }
 
             tmpEdge.bendPoint.pushAll(bendPointsArray);
-            doc.submitOp([{p:[this.EDGEMAP_NAME, edgeID], od: doc.data[this.EDGEMAP_NAME][edgeID], oi: tmpEdge}]);
+            this.updateShareDocObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
         }
         else
         {
@@ -913,7 +919,7 @@ module.exports = (function()
             {
                 var tmpNode = nodeMap[elementID];
                 tmpNode.name = newName;
-                doc.submitOp([{p:[this.NODEMAP_NAME, elementID], od: doc.data[this.NODEMAP_NAME][elementID], oi: tmpNode}]);
+                this.updateShareDocObject(this.NODEMAP_NAME, elementID, tmpNode);
             }
             else
             {
@@ -926,7 +932,7 @@ module.exports = (function()
             {
                 var tmpEdge = edgeMap[elementID];
                 tmpEdge.name = newName;
-                doc.submitOp([{p:[this.EDGEMAP_NAME, elementID], od: doc.data[this.EDGEMAP_NAME][elementID], oi: tmpEdge}]);
+                this.updateShareDocObject(this.EDGEMAP_NAME, elementID, tmpEdge);
             }
             else
             {
