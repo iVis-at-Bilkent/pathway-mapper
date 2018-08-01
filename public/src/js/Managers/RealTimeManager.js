@@ -755,7 +755,7 @@ module.exports = (function () {
                     nonDuplicateArray.push(pubmedIDs[i]);
                 }
             }
-            tmpEdge.pubmedIDs.pushAll(nonDuplicateArray);
+            tmpEdge.pubmedIDs.concat(nonDuplicateArray);
             this.updateShareDocObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
         }
         else {
@@ -915,30 +915,32 @@ module.exports = (function () {
     RealTimeManager.prototype.removeAllElements = function () {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
-
+        var ops = [];
         //TODO Compound operations
         //Remove all real time nodes
         for (var index in nodeMap) {
-            this.removeElement(nodeMap[index]);
+            ops.push({
+                p: [this.NODEMAP_NAME, index],
+                od: nodeMap[index]
+            });
         }
 
         //Remove all real time edges
         for (var index in edgeMap) {
-            this.removeElement(edgeMap[index]);
+            ops.push({
+                p: [this.EDGEMAP_NAME, index],
+                od: nodeMap[index]
+            });
         }
 
+        this.applyShareDBOperation(ops);
     };
 
     RealTimeManager.prototype.loadGraph = function (nodes, edges) {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var nodeMap = root.get(this.NODEMAP_NAME);
-        var edgeMap = root.get(this.EDGEMAP_NAME);
-
+        var self = this;
         this.removeAllElements();
 
         //Function that traverses graph tree recursively.
-        var that = this;
         var oldIdNewIdMap = {};
 
         function traverseTree(node, newParentId) {
@@ -954,10 +956,12 @@ module.exports = (function () {
             }
 
             //Create new real time node
-            var newNode = model.create(NodeR, node.data);
-            var newNodeId = that.getCustomObjId(newNode);
+            var newNodeId = self.getCustomObjId();
+            var params = node.data;
+            params.id = newNodeId;
+            var newNode = self.nodeInitializer(params);
             oldIdNewIdMap[node.data.id] = newNodeId;
-            nodeMap.set(newNodeId, newNode);
+            self.insertShareDBObject(self.NODEMAP_NAME, newNodeId, newNode);
 
             //If node has children recursively traverse sub graphs and update parent field of child nodes
             if (node.children.length > 0) {
@@ -984,9 +988,11 @@ module.exports = (function () {
             var edge = edges[i];
             edge.data.source = oldIdNewIdMap[edge.data.source];
             edge.data.target = oldIdNewIdMap[edge.data.target];
-            var newEdge = model.create(EdgeR, edge.data);
-            var newEdgeID = this.getCustomObjId(newEdge);
-            edgeMap.set(newEdgeID, newEdge);
+            var params = edge.data;
+            var newEdgeID = self.getCustomObjId();
+            params.id = newEdgeID;
+            var newEdge = self.edgeInitializer(params);
+            self.insertShareDBObject(self.EDGEMAP_NAME, newEdgeID, newEdge);
         }
     };
 
