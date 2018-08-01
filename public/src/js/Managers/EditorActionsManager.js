@@ -986,9 +986,9 @@ module.exports = (function()
 
         for (var i in realTimeNodeArray)
         {
-            var realTimeNode= realTimeNodeArray[i];
+            var realTimeNode = realTimeNodeArray[i];
 
-            var nodeID = this.realTimeManager.getCustomObjId(realTimeNode);
+            var nodeID = realTimeNode.id;
 
             //Added for backward compatibility when width was not defined
             var nodeWidth = (realTimeNode.w == undefined) ? 150 : realTimeNode.w ;
@@ -1046,8 +1046,8 @@ module.exports = (function()
         var edgeList = [];
         for (var i in realTimeEdgeArray)
         {
-            var edge= realTimeEdgeArray[i];
-            var edgeID = this.realTimeManager.getCustomObjId(edge);
+            var edge = realTimeEdgeArray[i];
+            var edgeID = edge.id;
 
             //If source and and target is somehow lost in remote model do not create this edge
             if(!(edge.source in nodeMap && edge.target in nodeMap))

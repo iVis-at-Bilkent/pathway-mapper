@@ -218,46 +218,50 @@ module.exports = (function () {
 
     //TODO Replace
     RealTimeManager.prototype.syncInitialCloudData = function () {
-        var nodeMap = this.doc.data[this.NODEMAP_NAME];
-        var edgeMap = this.doc.data[this.EDGEMAP_NAME];
-        var realTimeLayoutProperties = this.doc.data[this.LAYOUT_PROPS_NAME];
-        var globalOptions = this.doc.data[this.GLOBAL_OPTS_NAME];
-        var genomicDataMap = this.doc.data[this.GENOMIC_DATA_MAP_NAME];
-        var visDataMap = this.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
-        var groupedGenomicDataMap = this.doc.data[this.GENOMIC_DATA_GROUP_NAME];
-        var groupedGenomicDataCount = this.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
+        var self = this;
+        var nodeMap = self.doc.data[this.NODEMAP_NAME];
+        var edgeMap = self.doc.data[this.EDGEMAP_NAME];
+        var realTimeLayoutProperties = self.doc.data[this.LAYOUT_PROPS_NAME][0];
+        var globalOptions = self.doc.data[this.GLOBAL_OPTS_NAME][0];
+        var genomicDataMap = self.doc.data[this.GENOMIC_DATA_MAP_NAME];
+        var visDataMap = self.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
+        var groupedGenomicDataMap = self.doc.data[this.GENOMIC_DATA_GROUP_NAME];
+        var groupedGenomicDataCount = self.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
 
-        var nodeMapEntries = nodeMap;
-        var edgeMapEntries = edgeMap;
 
         var invalidGenes = [];
         var highlightedGenes = [];
         var invalidHighlightedGenes = [];
         var hiddenGenes = [];
-        for (var i = 0; i < nodeMapEntries.length; i++) {
-            var tmpNode = nodeMapEntries[i];
-            if (tmpNode.isInvalidGene && tmpNode.isHighlighted) {
-                var tmpNodeId = this.getCustomObjId(tmpNode);
+        for (var key in nodeMap)
+        {
+            var tmpNode = nodeMap[key];
+            var tmpNodeId = tmpNode.id;
+
+            if (tmpNode.isInvalidGene && tmpNode.isHighlighted)
+            {
                 invalidHighlightedGenes.push(tmpNodeId);
             }
-            else if (tmpNode.isInvalidGene) {
-                var tmpNodeId = this.getCustomObjId(tmpNode);
+            else if (tmpNode.isInvalidGene)
+            {
                 invalidGenes.push(tmpNodeId);
             }
-            else if (tmpNode.isHighlighted) {
-                var tmpNodeId = this.getCustomObjId(tmpNode);
+            else if (tmpNode.isHighlighted)
+            {
                 highlightedGenes.push(tmpNodeId);
             }
-            if (tmpNode.isHidden) {
-                var tmpNodeId = this.getCustomObjId(tmpNode);
+            if (tmpNode.isHidden)
+            {
                 hiddenGenes.push(tmpNodeId);
             }
         }
         var highlightedEdges = [];
-        for (var i = 0; i < edgeMapEntries.length; i++) {
-            var tmpEdge = edgeMapEntries[i];
-            if (tmpEdge.isHighlighted) {
-                var tmpEdgeId = this.getCustomObjId(tmpEdge);
+        for (var key in edgeMap)
+        {
+            var tmpEdge = edgeMap[key];
+            var tmpEdgeId = tmpEdge.id;
+            if (tmpEdge.isHighlighted)
+            {
                 highlightedEdges.push(tmpEdgeId);
             }
         }
@@ -267,89 +271,91 @@ module.exports = (function () {
         // Workaround for backward compatibility of legacy pathways
         // Addition of pubmed id field on server if legacy collaborative
         // pathways does not have !
-        for (var i = 0; i < edgeMapEntries.length; i++) {
-            var tmpEdge = edgeMapEntries[i];
+        for (var key in edgeMap)
+        {
+            var tmpEdge = edgeMapEntries[key];
 
-            if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined || tmpEdge.bendPoint == undefined) {
+            if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined || tmpEdge.bendPoint == undefined)
+            {
                 var pubmedIDs = (tmpEdge.pubmedIDs == undefined) ? [] : tmpEdge.pubmedID;
                 var edgeLabel = (tmpEdge.name == undefined) ? "" : tmpEdge.name;
                 var bendPoint = (tmpEdge.bendPoint == undefined) ? [] : tmpEdge.bendPoint;
 
-                var newEdge =
+                var newEdge = model.create(EdgeR,
                     {
                         type: tmpEdge.type,
                         source: tmpEdge.source,
+                        id: self.getCustomObjId(),
                         target: tmpEdge.target,
                         pubmedID: pubmedIDs,
                         name: edgeLabel,
                         bendPoint: bendPoint
-                    };
+                    });
 
 
-                var tmpEdgeID = this.getCustomObjId(tmpEdge);
-                var newID = this.getCustomObjId(newEdge);
+                var tmpEdgeID = tmpEdge.id;
+                var newEdgeID = newEdge.id;
 
-                this.insertShareDBObject(this.EDGEMAP_NAME, tmpEdgeID, edgeMap[tmpEdgeID]);
-                this.insertShareDBObject(this.EDGEMAP_NAME, newID, newEdge);
-
+                var ops = [
+                    {p: [self.EDGEMAP_NAME, tmpEdgeID], od: tmpEdge},
+                    {p: [self.EDGEMAP_NAME, newEdgeID], oi: newEdge}
+                ]
+                self.applyShareDBOperation(ops);
             }
 
         }
 
-        //TODO replace this part with sharedb counterpart
-        /*
-        edgeMapEntries = edgeMap.values();
-
         //Add real time nodes to local graph
-        window.editorActionsManager.addNewElementsLocally(nodeMapEntries, edgeMapEntries);
+        window.editorActionsManager.addNewElementsLocally(nodeMap, edgeMap);
         //Adds different type of highlight to nodes and hides if their property is hidden
         window.editorActionsManager.highlightElementsInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes, highlightedEdges, hiddenGenes);
 
         //Update layout properties & global options!!
-        window.editorActionsManager.updateLayoutPropertiesCallback(realTimeLayoutProperties);
-        window.editorActionsManager.changeGlobalOptions(globalOptions);
+        //TODO Shame
+        window.editorActionsManager.updateLayoutPropertiesCallback({li:realTimeLayoutProperties});
+        window.editorActionsManager.changeGlobalOptions({li:globalOptions});
 
         //Sync already available genomic data !
-        var genomicDataMapKeys = genomicDataMap.keys();
-        var visibilityMapKeys = visDataMap.keys();
 
         if (!groupedGenomicDataMap)
         {
-            root.set(this.GENOMIC_DATA_GROUP_NAME, model.createMap());
-            groupedGenomicDataMap = root.get(this.GENOMIC_DATA_GROUP_NAME);
-            groupedGenomicDataMap.set('0', []);
 
-            for (var key in visibilityMapKeys)
+            self.insertShareDBObject(self.GENOMIC_DATA_MAP_NAME, '0', []);
+            for (var key in visDataMap)
             {
-                var currentMap = _.clone(groupedGenomicDataMap.get('0'));
+                var currentMap = _.clone(groupedGenomicDataMap['0']);
                 currentMap.push(visibilityMapKeys[key]);
-                groupedGenomicDataMap.set('0', currentMap);
+                self.updateShareDocObject(self.GENOMIC_DATA_MAP_NAME, '0', currentMap);
             }
         }
 
         if (!groupedGenomicDataCount)
         {
-            root.set(this.GENOMIC_DATA_GROUP_COUNT, model.createString("0"));
-            groupedGenomicDataCount = root.get(this.GENOMIC_DATA_GROUP_COUNT);
+            var count = self.doc.data[self.GENOMIC_DATA_GROUP_COUNT];
+            var op = [{
+                p: [self.GENOMIC_DATA_GROUP_COUNT],
+                na: -count
+            }];
+            self.applyShareDBOperation(op);
+            groupedGenomicDataCount = self.doc.data[self.GENOMIC_DATA_GROUP_COUNT];
         }
 
 
-        for (var key in genomicDataMapKeys) {
-            window.editorActionsManager.genomicDataOverlayManager.genomicDataMap[genomicDataMapKeys[key]] =
-                genomicDataMap.get(genomicDataMapKeys[key]);
+        for (var key in genomicDataMap) {
+            window.editorActionsManager.genomicDataOverlayManager.genomicDataMap[key] =
+                genomicDataMap[key];
         }
 
-        for (var key in visibilityMapKeys)
+        for (var key in visDataMap)
         {
-            window.editorActionsManager.genomicDataOverlayManager.visibleGenomicDataMapByType[visibilityMapKeys[key]] =
-                visDataMap.get(visibilityMapKeys[key]);
+            window.editorActionsManager.genomicDataOverlayManager.visibleGenomicDataMapByType[key] =
+                visDataMap[key];
         }
 
-        var groupedGenomicDataKeys = groupedGenomicDataMap.keys();
-        for (var key in groupedGenomicDataKeys)
+        for (var key in groupedGenomicDataMap)
         {
-            window.editorActionsManager.genomicDataOverlayManager.groupedGenomicDataMap[groupedGenomicDataKeys[key]] =
-                groupedGenomicDataMap.get(groupedGenomicDataKeys[key]);
+            window.editorActionsManager.genomicDataOverlayManager.groupedGenomicDataMap[key] =
+                groupedGenomicDataMap[key];
         }
         //Does not seem necessary for not but just for sake of completeness
         window.editorActionsManager.genomicDataOverlayManager.groupedGenomicDataCount = groupedGenomicDataCount;
@@ -357,8 +363,6 @@ module.exports = (function () {
         window.editorActionsManager.genomicDataOverlayManager.showGenomicData();
         window.editorActionsManager.genomicDataOverlayManager.notifyObservers();
         cy.fit(50);
-
-        */
     };
 
     RealTimeManager.prototype.initCloudEventHandlers = function () {
