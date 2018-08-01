@@ -992,25 +992,22 @@ module.exports = (function () {
         }
     };
 
-    //TODO Replace
     RealTimeManager.prototype.mergeGraph = function (nodes, edges) {
         var self = this;
         var nodeMap = self.doc.data[this.NODEMAP_NAME];
-        var edgeMap = self.doc.data[this.EDGEMAP_NAME];
 
-        var realTimeNodeMap = nodeMap.items();
+        var realTimeNodeMap = nodeMap;
         var realTimeNodeLookupTable = {};
         var realTimeNodeNameLookupTable = {};
         var oldIdNewIdMap = {};
-        var that = this;
 
         //Create lookup table for real time nodes
         //items are stored in an array in the resulting array of nodeMap.items()
         // [0] - id, [1] - object
         for (var i in realTimeNodeMap) {
             var nodeMapItem = realTimeNodeMap[i];
-            realTimeNodeLookupTable[nodeMapItem[0]] = nodeMapItem[1];
-            realTimeNodeNameLookupTable[nodeMapItem[1].name] = nodeMapItem[1];
+            realTimeNodeLookupTable[nodeMapItem.id] = nodeMapItem;
+            realTimeNodeNameLookupTable[nodeMapItem.name] = nodeMapItem;
         }
 
         //Recursive traverse definition
@@ -1030,10 +1027,11 @@ module.exports = (function () {
                 }
 
                 //Create new real time node
-                var newNode = model.create(NodeR, node.data);
-                var newNodeId = that.getCustomObjId(newNode);
+                var newNodeId = self.getCustomObjId();
                 oldIdNewIdMap[node.data.id] = newNodeId;
-                nodeMap.set(newNodeId, newNode);
+                var newNode = self.nodeInitializer(node.data);
+                newNode.id = newNodeId;
+                self.insertShareDBObject(self.NODEMAP_NAME, newNodeId, newNode);
 
                 //If node has children recursively traverse sub graphs and update parent field of child nodes
                 if (node.children.length > 0) {
@@ -1046,8 +1044,9 @@ module.exports = (function () {
             // At this point there exists another node in the graph with the same name as 'node'
             // we need to update parent field of children of this node if any
             else {
+                //TODO Check here again
                 var sameNameNode = realTimeNodeNameLookupTable[node.data.name];
-                var sameNodeId = that.getCustomObjId(sameNameNode);
+                var sameNodeId = sameNameNode.id;
                 oldIdNewIdMap[node.data.id] = sameNodeId;
 
                 //If node has children recursively traverse sub graphs and update parent field of child nodes
@@ -1071,14 +1070,20 @@ module.exports = (function () {
          Create real time edges, update the source and target fields, since new ids will be generated for the nodes in
          real time
          */
+        var ops = [];
         for (var i in edges) {
             var edge = edges[i];
             edge.data.source = oldIdNewIdMap[edge.data.source];
             edge.data.target = oldIdNewIdMap[edge.data.target];
-            var newEdge = model.create(EdgeR, edge.data);
-            var newEdgeID = this.getCustomObjId(newEdge);
-            edgeMap.set(newEdgeID, newEdge);
+            var newEdge = self.edgeInitializer(edge.data);
+            var newEdgeID = this.getCustomObjId();
+            newEdge.id = newEdgeID;
+            ops.push({
+               p: [self.EDGEMAP_NAME, newEdgeID],
+               oi: newEdge
+            });
         }
+        self.applyShareDBOperation(ops);
     };
 
     RealTimeManager.prototype.updateLayoutProperties = function (newLayoutProperties) {
