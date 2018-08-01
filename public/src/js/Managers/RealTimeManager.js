@@ -54,16 +54,28 @@ module.exports = (function () {
         doc.submitOp([{p: [mapName, objectKey], od: doc.data[mapName][objectKey]}], this.realTimeError);
     };
 
+    RealTimeManager.prototype.initializeShareDBLayoutProperties = function () {
+        doc.submitOp([{p: [this.LAYOUT_PROPS_NAME, 0], li: window.editorActionsManager.layoutProperties}], this.realTimeError);
+    };
+
+    RealTimeManager.prototype.initializeShareDBGlobalOptions = function () {
+        doc.submitOp([{p: [this.GLOBAL_OPTS_NAME, 0], li: window.editorActionsManager.getGlobalOptions()}], this.realTimeError);
+    };
+
     RealTimeManager.prototype.updateShareDBLayoutProperties = function (object) {
-        doc.submitOp([{p: [this.LAYOUT_PROPS_NAME, 0], ld: doc.data[this.LAYOUT_PROPS_NAME][0], li: object}]);
+        doc.submitOp([{p: [this.LAYOUT_PROPS_NAME, 0], ld: doc.data[this.LAYOUT_PROPS_NAME][0], li: object}], this.realTimeError);
     };
 
     RealTimeManager.prototype.updateShareDBGlobalOptions = function (object) {
-        doc.submitOp([{p: [this.GLOBAL_OPTS_NAME, 0], ld: doc.data[this.GLOBAL_OPTS_NAME][0], li: object}]);
+        doc.submitOp([{p: [this.GLOBAL_OPTS_NAME, 0], ld: doc.data[this.GLOBAL_OPTS_NAME][0], li: object}], this.realTimeError);
     };
 
     RealTimeManager.prototype.incrementShareDBGroupCount = function () {
-        doc.submitOp([{p: [this.GENOMIC_DATA_GROUP_COUNT], na: 1}]);
+        doc.submitOp([{p: [this.GENOMIC_DATA_GROUP_COUNT], na: 1}], this.realTimeError);
+    };
+
+    RealTimeManager.prototype.isRealTimeReplaceEvent = function (op) {
+        return op.hasOwnProperty("oi") && op.hasOwnProperty("od");
     };
 
     RealTimeManager.prototype.realTimeError = function (err) {
@@ -116,41 +128,15 @@ module.exports = (function () {
     // document structure.
     RealTimeManager.prototype.onFileInitialize = function () {
         //TODO change the document id to proper id
-        if (doc.data.layoutProperties === {}) {
-            doc.submitOp([{
-                p: ['layoutProperties'],
-                oi: window.editorActionsManager.layoutProperties
-            }], this.realTimeError);
-        }
-        if (doc.data.globalOptions === {}) {
-            doc.submitOp([{
-                p: ['globalOptions'],
-                oi: window.editorActionsManager.getGlobalOptions()
-            }], this.realTimeError);
+        if (doc.data.layoutProperties.length === 0) {
+            this.initializeShareDBLayoutProperties();
         }
 
-        /*var root = model.getRoot();
+        if (doc.data.layoutProperties.length === 0) {
+            this.initializeShareDBGlobalOptions();
+        }
 
-        var nodeMap = model.createMap();
-        var edgeMap = model.createMap();
-        //Set initial layout properties here when real time document is created initially
-        var layoutProperties = model.create(LayoutPropertiesR, window.editorActionsManager.layoutProperties);
-        var globalOptions = model.create(GlobalOptionsR, window.editorActionsManager.getGlobalOptions());
-        //Genomic data related maps
-        var genomicDataMap = model.createMap();
-        var genomicDataVisibilityMap = model.createMap();
-        var genomicDataGroupMap = model.createMap();
-        var genomicDataGroupCount = model.createString("0");
-
-
-        root.set(this.NODEMAP_NAME, nodeMap);
-        root.set(this.EDGEMAP_NAME, edgeMap);
-        root.set(this.LAYOUT_PROPS_NAME, layoutProperties);
-        root.set(this.GLOBAL_OPTS_NAME, globalOptions);
-        root.set(this.GENOMIC_DATA_MAP_NAME, genomicDataMap);
-        root.set(this.VISIBLE_GENOMIC_DATA_MAP_NAME, genomicDataVisibilityMap);
-        root.set(this.GENOMIC_DATA_GROUP_NAME, genomicDataGroupMap);
-        root.set(this.GENOMIC_DATA_GROUP_COUNT, genomicDataGroupCount);*/
+        //TODO add file creation here
 
     };
 
@@ -330,11 +316,6 @@ module.exports = (function () {
         */
     };
 
-    //TODO Add comments
-    RealTimeManager.prototype.isRealTimeReplaceEvent = function (op) {
-        return op.hasOwnProperty("oi") && op.hasOwnProperty("od");
-    };
-
     RealTimeManager.prototype.initCloudEventHandlers = function () {
 
         var self = this;
@@ -376,42 +357,43 @@ module.exports = (function () {
         //Event listeners for edge and node map
         doc.on('op', function (op, source) {
             console.log(op);
-            //TODO Shame
-            var path = op[0].p[0];
-            var isReplaceEvent = self.isRealTimeReplaceEvent(op[0]);
+            for ( var i = 0; i  < op.length; i++){
+                var handleOp = op[i];
+                var path = handleOp.p[0];
+                var isReplaceEvent = self.isRealTimeReplaceEvent(handleOp);
 
-            if (!isReplaceEvent) {
-                if (path === self.NODEMAP_NAME) {
-                    nodeAddRemoveHandler(op);
+                if (!isReplaceEvent) {
+                    if (path === self.NODEMAP_NAME) {
+                        nodeAddRemoveHandler(handleOp);
+                    }
+                    else if (path === self.EDGEMAP_NAME) {
+                        edgeAddRemoveHandler(handleOp);
+                    }
+                    else if (path === self.GENOMIC_DATA_MAP_NAME) {
+                        genomicDataAddRemoveHandler(handleOp);
+                    }
+                    else if (path === self.VISIBLE_GENOMIC_DATA_MAP_NAME) {
+                        genomicDataVisibilityChangeHandler(handleOp);
+                    }
+                    else if (path === self.GENOMIC_DATA_GROUP_NAME) {
+                        genomicDataGroupChangeHandler(handleOp);
+                    }
                 }
-                else if (path === self.EDGEMAP_NAME) {
-                    edgeAddRemoveHandler(op);
-                }
-                else if (path === self.GENOMIC_DATA_MAP_NAME) {
-                    genomicDataAddRemoveHandler(op);
-                }
-                else if (path === self.VISIBLE_GENOMIC_DATA_MAP_NAME) {
-                    genomicDataVisibilityChangeHandler(op);
-                }
-                else if (path === self.GENOMIC_DATA_GROUP_NAME) {
-                    genomicDataGroupChangeHandler(op);
+                else { //Then it is update event
+                    if (path === self.NODEMAP_NAME) {
+                        updateElementHandler(handleOp);
+                    }
+                    else if (path === self.EDGEMAP_NAME) {
+                        updateElementHandler(handleOp);
+                    }
+                    else if (path === self.LAYOUT_PROPS_NAME) {
+                        updateLayoutPropsHandler(handleOp);
+                    }
+                    else if (path === self.GLOBAL_OPTS_NAME) {
+                        updateGlobalOptionsHandler(handleOp);
+                    }
                 }
             }
-            else { //Then it is update event
-                if (path === self.NODEMAP_NAME) {
-                    updateElementHandler(op);
-                }
-                else if (path === self.EDGEMAP_NAME) {
-                    updateElementHandler(op);
-                }
-                else if (path === self.LAYOUT_PROPS_NAME) {
-                    updateLayoutPropsHandler(op);
-                }
-                else if (path === self.GLOBAL_OPTS_NAME) {
-                    updateGlobalOptionsHandler(op);
-                }
-            }
-
         });
     };
 
@@ -460,12 +442,10 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.clearGenomicData = function () {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var genomicMap = root.get(this.GENOMIC_DATA_MAP_NAME);
-        var visMap = root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME);
-        var genomicDataGroupMap = root.get(this.GENOMIC_DATA_GROUP_NAME);
-        var genomicDataGroupCount = root.get(this.GENOMIC_DATA_GROUP_COUNT);
+        var genomicMap = doc.data[this.GENOMIC_DATA_MAP_NAME];
+        var visMap = doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
+        var genomicDataGroupMap = doc.data[this.GENOMIC_DATA_GROUP_NAME];
+        var genomicDataGroupCount = doc.data[this.GENOMIC_DATA_GROUP_COUNT];
 
         model.beginCompoundOperation();
         genomicMap.clear();
