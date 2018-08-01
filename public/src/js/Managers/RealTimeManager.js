@@ -46,6 +46,25 @@ module.exports = (function () {
         this.doc.submitOp(op, this.realTimeError);
     };
 
+    RealTimeManager.prototype.clearShareDBGenomicData = function () {
+        var ops = [];
+        var genomicMap = doc.data[this.GENOMIC_DATA_MAP_NAME];
+        var visMap = doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
+        var genomicDataGroupMap = doc.data[this.GENOMIC_DATA_GROUP_NAME];
+        var genomicDataGroupCount = doc.data[this.GENOMIC_DATA_GROUP_COUNT];
+        for (var i = 0; i < genomicMap.length; i++){
+            ops.push({p: [this.GENOMIC_DATA_GROUP_NAME, i], ld: genomicMap[i] });
+        }
+        for (var i = 0; i < visMap.length; i++) {
+            ops.push({p: [this.VISIBLE_GENOMIC_DATA_MAP_NAME, i], ld: visMap[i]});
+        }
+        for (var i = 0; genomicDataGroupMap.length; i++) {
+            ops.push({p: [this.GENOMIC_DATA_GROUP_NAME, i], ld: visMap[i]});
+        }
+        ops.push({p:[this.GENOMIC_DATA_GROUP_COUNT], na: -genomicDataGroupCount});
+        this.doc.submitOp(ops, this.realTimeError);
+    };
+
     RealTimeManager.prototype.updateShareDocObject = function (mapName, objectKey, object) {
         this.doc.submitOp([{p: [mapName, objectKey], od: this.doc.data[mapName][objectKey], oi: object}], this.realTimeError);
     };
