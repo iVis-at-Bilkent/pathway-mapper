@@ -405,7 +405,6 @@ module.exports = (function () {
 
         //Event listeners for edge and node map
         this.doc.on('op', function (op, source) {
-            console.log(op);
             for (var i = 0; i < op.length; i++) {
                 var handleOp = op[i];
                 var path = handleOp.p[0];
