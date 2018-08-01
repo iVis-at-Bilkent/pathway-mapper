@@ -890,12 +890,9 @@ module.exports = (function()
         {
             var tmpEdge = edgeMap[edgeID];
             console.log(tmpEdge);
-            if (tmpEdge.bendPoint === undefined){
-                tmpEdge.bendPoint = [];
-            }
-            else {
-                tmpEdge.bendPoint.clear();
-            }
+
+            tmpEdge.bendPoint.clear();
+
 
             tmpEdge.bendPoint.pushAll(bendPointsArray);
             this.updateShareDocObject(this.EDGEMAP_NAME, edgeID, tmpEdge);

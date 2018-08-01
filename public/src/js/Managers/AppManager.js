@@ -1,6 +1,6 @@
 //Cytoscape related requires !
 window.oCanvas = global.oCanvas = require("ocanvas");
-var cytoscape =  window.cytoscape = require('cytoscape');
+var cytoscape = window.cytoscape = require('cytoscape');
 var panzoom = require('cytoscape-panzoom');
 //var cxtmenu = require('cytoscape-cxtmenu');
 var navigator = require('cytoscape-navigator');
@@ -45,160 +45,157 @@ var CBioPortalAccessor = require('./../Utils/cBioPortalAccessor.js');
 var notify = require('bootstrap-notify');
 window.notificationManager = require('./../Utils/NotificationFactory');
 
- module.exports = (function()
- {
-     function AppManager(isCollaborative, realTimeManager) {
-         this.isCollaborative = isCollaborative;
-         this.realTimeManager = realTimeManager;
-         this.init();
-         this.createSampleMenu();
-         this.createCBioPortalAccessModal();
-     }
+module.exports = (function () {
+    function AppManager(isCollaborative, realTimeManager) {
+        this.isCollaborative = isCollaborative;
+        this.realTimeManager = realTimeManager;
+        this.init();
+        this.createSampleMenu();
+        this.createCBioPortalAccessModal();
+    }
 
-     AppManager.prototype.init = function () {
-         //Initializes cytoscape
-         this.initCyJS();
-         //Initialize cytoscape based handlers here
-         this.initCyHandlers();
-         this.initKeyboardHandlers();
-         this.initUndoRedoFunctionality();
-         var that = this;
+    AppManager.prototype.init = function () {
+        //Initializes cytoscape
+        this.initCyJS();
+        //Initialize cytoscape based handlers here
+        this.initCyHandlers();
+        this.initKeyboardHandlers();
+        this.initUndoRedoFunctionality();
+        var that = this;
         //  window.onresize = function () {
         //      that.placePanzoomAndOverlay();
         //  }
 
-         //Create portal accessor
-         window.portalAccessor = new CBioPortalAccessor();
-         window.appManager = this;
-     };
+        //Create portal accessor
+        window.portalAccessor = new CBioPortalAccessor();
+        window.appManager = this;
+    };
 
-     AppManager.prototype.placePanzoomAndOverlay = function () {
-         //TODO place navigator !!!
-         var offset = 5;
-         var topCy = $('.cyContainer').offset().top;
-         var bottomCy = $('.cyContainer').offset().bottom;
-         var leftCy = $('.cyContainer').offset().left;
-         var rightCy = $('.cyContainer').offset().right;
-         var heightCy = $('.cyContainer').outerHeight();
-         var widthCy = $('.cyContainer').outerWidth();
-         var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
-         var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
-         var heightPanzoom = $('.cy-panzoom').outerHeight();
-         var widthPanzoom = $('.cy-panzoom').outerWidth();
-         $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
-         $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
+    AppManager.prototype.placePanzoomAndOverlay = function () {
+        //TODO place navigator !!!
+        var offset = 5;
+        var topCy = $('.cyContainer').offset().top;
+        var bottomCy = $('.cyContainer').offset().bottom;
+        var leftCy = $('.cyContainer').offset().left;
+        var rightCy = $('.cyContainer').offset().right;
+        var heightCy = $('.cyContainer').outerHeight();
+        var widthCy = $('.cyContainer').outerWidth();
+        var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
+        var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
+        var heightPanzoom = $('.cy-panzoom').outerHeight();
+        var widthPanzoom = $('.cy-panzoom').outerWidth();
+        $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
+        $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
 
-         //Relative is used so that its position depends on the below properties
-         $('.cy-panzoom').css('position', 'relative');
-         $('.cy-panzoom').css('top', 2);
-         $('.cy-panzoom').css('left', widthCy - 57);
-         $('.cy-panzoom').css('z-index', 1039);
-         //Makes the width of panzoom container to 0
-         $('.cy-panzoom').css('width', 0);
-     }
+        //Relative is used so that its position depends on the below properties
+        $('.cy-panzoom').css('position', 'relative');
+        $('.cy-panzoom').css('top', 2);
+        $('.cy-panzoom').css('left', widthCy - 57);
+        $('.cy-panzoom').css('z-index', 1039);
+        //Makes the width of panzoom container to 0
+        $('.cy-panzoom').css('width', 0);
+    }
 
-     AppManager.prototype.createSampleMenu = function ()
-     {
-         //Get template file data first
-         var request = new XMLHttpRequest();
-         request.onreadystatechange = function () {
-             if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-                 var templateData = JSON.parse(request.responseText);
+    AppManager.prototype.createSampleMenu = function () {
+        //Get template file data first
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+                var templateData = JSON.parse(request.responseText);
 
-                 for (var key in templateData) {
-                     if (templateData.hasOwnProperty(key)) {
-                         var newTCGAMenu = $('<li class="dropdown-submenu" id="' + key + '">' +
-                             '<a href="#">' + key + '</a>' +
-                             '</li>');
-                         var newTCGAPathway = $('<ul class="dropdown-menu"></ul>');
+                for (var key in templateData) {
+                    if (templateData.hasOwnProperty(key)) {
+                        var newTCGAMenu = $('<li class="dropdown-submenu" id="' + key + '">' +
+                            '<a href="#">' + key + '</a>' +
+                            '</li>');
+                        var newTCGAPathway = $('<ul class="dropdown-menu"></ul>');
 
-                         for (var i in templateData[key]) {
-                             var newPath = templateData[key][i];
-                             var pName = newPath.replace(/-/gi, " ").substring(0, newPath.length - 4);
-                             var sampleLink = $('<li><a  path="' + newPath + '" href="#">' + pName + '</a></li>');
-                             sampleLink.on('click', checkMenuClickHandler);
+                        for (var i in templateData[key]) {
+                            var newPath = templateData[key][i];
+                            var pName = newPath.replace(/-/gi, " ").substring(0, newPath.length - 4);
+                            var sampleLink = $('<li><a  path="' + newPath + '" href="#">' + pName + '</a></li>');
+                            sampleLink.on('click', checkMenuClickHandler);
 
-                             //Add it to pan cancer menu
-                             if (key.includes('PanCancer')) {
-                                 //panCancerSubMenu
-                                 $('#panCancerSubMenu').append(sampleLink);
-                             }
-                             else {
-                                 newTCGAPathway.append(sampleLink);
-                                 newTCGAMenu.append(newTCGAPathway);
-                             }
-                         }
+                            //Add it to pan cancer menu
+                            if (key.includes('PanCancer')) {
+                                //panCancerSubMenu
+                                $('#panCancerSubMenu').append(sampleLink);
+                            }
+                            else {
+                                newTCGAPathway.append(sampleLink);
+                                newTCGAMenu.append(newTCGAPathway);
+                            }
+                        }
 
-                         //Add sub menus if they do not include pancaner and creighton
-                         if (!key.includes('PanCancer') && !key.includes('Creighton')) {
-                             $('#sampleSubMenu').append(newTCGAMenu);
-                         }
+                        //Add sub menus if they do not include pancaner and creighton
+                        if (!key.includes('PanCancer') && !key.includes('Creighton')) {
+                            $('#sampleSubMenu').append(newTCGAMenu);
+                        }
 
-                     }
-                 }
-             }
-         };
+                    }
+                }
+            }
+        };
 
-         //Checks whether there is a visible pathway and displays a warning
-         function checkMenuClickHandler(event) {
-             if(cy.elements().length != 0)
-                     window.appManager.promptConfirmationView.render(function(){sampleMenuClickHandler(event)});
-                 else
-                     sampleMenuClickHandler(event);
-         }
+        //Checks whether there is a visible pathway and displays a warning
+        function checkMenuClickHandler(event) {
+            if (cy.elements().length != 0)
+                window.appManager.promptConfirmationView.render(function () {
+                    sampleMenuClickHandler(event)
+                });
+            else
+                sampleMenuClickHandler(event);
+        }
 
-         function sampleMenuClickHandler(event) {
-             var request = new XMLHttpRequest();
-             request.onreadystatechange = function () {
-                 if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-                     var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-                     window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
-                     window.undoRedoManager.reset();
-                     window.appManager.pathwayDetailsView.updatePathwayProperties({
-                         fileName: allEles.title + ".txt",
-                         pathwayTitle: allEles.title,
-                         pathwayDescription: allEles.description
-                     });
-                 }
-             };
-             //Send request for selected pathway
-             var pathwayName = event.target.attributes[0].value;
-             request.open("GET", "/pathway?filename=" + pathwayName);
-             request.send();
-         }
+        function sampleMenuClickHandler(event) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+                    var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+                    window.editorActionsManager.loadFile(allEles.nodes, allEles.edges);
+                    window.undoRedoManager.reset();
+                    window.appManager.pathwayDetailsView.updatePathwayProperties({
+                        fileName: allEles.title + ".txt",
+                        pathwayTitle: allEles.title,
+                        pathwayDescription: allEles.description
+                    });
+                }
+            };
+            //Send request for selected pathway
+            var pathwayName = event.target.attributes[0].value;
+            request.open("GET", "/pathway?filename=" + pathwayName);
+            request.send();
+        }
 
 
-         request.open("GET", "/getTemplateFileData");
-         request.send();
-     };
+        request.open("GET", "/getTemplateFileData");
+        request.send();
+    };
 
-     AppManager.prototype.createCBioPortalAccessModal = function ()
-     {
-         var self = this;
+    AppManager.prototype.createCBioPortalAccessModal = function () {
+        var self = this;
 
-         this.portalAccessView = new CBioPortalAccessView({
-             el: $("#cbioPortalAccessDiv")
-         });
+        this.portalAccessView = new CBioPortalAccessView({
+            el: $("#cbioPortalAccessDiv")
+        });
 
-         window.portalAccessor.fetchCancerStudies(function (cancerStudies)
-         {
-             self.portalAccessView.updateCancerStudies(cancerStudies);
-         });
-     };
+        window.portalAccessor.fetchCancerStudies(function (cancerStudies) {
+            self.portalAccessView.updateCancerStudies(cancerStudies);
+        });
+    };
 
-    AppManager.prototype.initCyJS = function()
-    {
-        panzoom( cytoscape, $ );  // register extension
+    AppManager.prototype.initCyJS = function () {
+        panzoom(cytoscape, $);  // register extension
         //cxtmenu( cytoscape, $ ); // register extension
-        cyqtip( cytoscape, $ ); // register extension
-        regCose( cytoscape ); // register extension
-        navigator( cytoscape ); // register extension
-        grid_guide( cytoscape, $ ); // register extension
+        cyqtip(cytoscape, $); // register extension
+        regCose(cytoscape); // register extension
+        navigator(cytoscape); // register extension
+        grid_guide(cytoscape, $); // register extension
         undoRedo(cytoscape); // register extension
-        contextMenus( cytoscape, $ ); // register extension
-        nodeResize( cytoscape, $, konva ); //register extension
-        edgeBendEditing( cytoscape, $ ); // register extension
-        viewUtilities( cytoscape, $ ); // register extension
+        contextMenus(cytoscape, $); // register extension
+        nodeResize(cytoscape, $, konva); //register extension
+        edgeBendEditing(cytoscape, $); // register extension
+        viewUtilities(cytoscape, $); // register extension
 
 
         window.edgeAddingMode = 0;
@@ -210,7 +207,8 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             wheelSensitivity: 0.1,
             style: styleSheet,
             // elements: allEles,
-            ready: function(){},
+            ready: function () {
+            },
             textureOnViewport: false,
             motionBlur: true,
             layout: {name: 'preset'}
@@ -257,7 +255,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         }).render();
 
         //Initialize panzoom
-        cy.panzoom( panzoomOpts );
+        cy.panzoom(panzoomOpts);
 
         //Node Add initialization
         cy.nodeadd(
@@ -295,7 +293,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             });
 
         //Edge Handles initialization
-        cy.edgehandles( edgeHandleOpts );
+        cy.edgehandles(edgeHandleOpts);
 
         //Navigator for cytoscape js
         var navDefaults = {
@@ -308,11 +306,11 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             , rerenderDelay: 100 // ms to throttle rerender updates to the panzoom for performance
         };
 
-        var nav = cy.navigator( navDefaults ); // get navigator instance, nav
+        var nav = cy.navigator(navDefaults); // get navigator instance, nav
 
         var edgeBendEditingOptions = {
             // this function specifies the positions of bend points
-            bendPositionsFunction: function(ele) {
+            bendPositionsFunction: function (ele) {
                 return ele.data('bendPointPositions');
             },
             // whether to initilize bend points on creation of this extension automatically
@@ -358,27 +356,29 @@ window.notificationManager = require('./../Utils/NotificationFactory');
 
             // Getters for some style properties the defaults returns ele.css('property-name')
             // you are encouraged to override these getters
-            getCompoundMinWidth: function(node) {
+            getCompoundMinWidth: function (node) {
                 return node.style('min-width');
             },
-            getCompoundMinHeight: function(node) {
+            getCompoundMinHeight: function (node) {
                 return node.style('min-height');
             },
-            getCompoundMinWidthBiasRight: function(node) {
+            getCompoundMinWidthBiasRight: function (node) {
                 return node.style('min-width-bias-right');
             },
-            getCompoundMinWidthBiasLeft: function(node) {
+            getCompoundMinWidthBiasLeft: function (node) {
                 return node.style('min-width-bias-left');
             },
-            getCompoundMinHeightBiasTop: function(node) {
+            getCompoundMinHeightBiasTop: function (node) {
                 return node.style('min-height-bias-top');
             },
-            getCompoundMinHeightBiasBottom: function(node) {
+            getCompoundMinHeightBiasBottom: function (node) {
                 return node.style('min-height-bias-bottom');
             },
 
 
-            isFixedAspectRatioResizeMode: function (node) { return node.is(".fixedAspectRatioResizeMode") },// with only 4 active grapples (at corners)
+            isFixedAspectRatioResizeMode: function (node) {
+                return node.is(".fixedAspectRatioResizeMode")
+            },// with only 4 active grapples (at corners)
             isNoResizeMode: function (node) {
                 return undefined;
             }, // no active grapples
@@ -387,30 +387,28 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             // Using node.css() is not a recommended way (http://js.cytoscape.org/#eles.style) to do this. Therefore, overriding these defaults
             // so that a data field or something like that will be used to set node dimentions instead of directly calling node.css()
             // is highly recommended (Of course this will require a proper setting in the stylesheet).
-            setWidth: function(node, width)
-            {
+            setWidth: function (node, width) {
                 node.style('width', width);
             },
-            setHeight: function(node, height)
-            {
+            setHeight: function (node, height) {
                 node.style('height', height);
             },
-            setCompoundMinWidth: function(node, minWidth) {
+            setCompoundMinWidth: function (node, minWidth) {
                 node.style('min-width', minWidth);
             },
-            setCompoundMinHeight: function(node, minHeight) {
+            setCompoundMinHeight: function (node, minHeight) {
                 node.style('min-height', minHeight);
             },
-            setCompoundMinWidthBiasLeft: function(node, minWidthBiasLeft) {
+            setCompoundMinWidthBiasLeft: function (node, minWidthBiasLeft) {
                 node.style('min-width-bias-left', minWidthBiasLeft);
             },
-            setCompoundMinWidthBiasRight: function(node, minHeightBiasRight) {
+            setCompoundMinWidthBiasRight: function (node, minHeightBiasRight) {
                 node.style('min-width-bias-right', minHeightBiasRight);
             },
-            setCompoundMinHeightBiasTop: function(node, minHeightBiasTop) {
+            setCompoundMinHeightBiasTop: function (node, minHeightBiasTop) {
                 node.style('min-height-bias-top', minHeightBiasTop);
             },
-            setCompoundMinHeightBiasBottom: function(node, minHeightBiasBottom) {
+            setCompoundMinHeightBiasBottom: function (node, minHeightBiasBottom) {
                 node.style('min-height-bias-bottom', minHeightBiasBottom);
             },
 
@@ -426,7 +424,9 @@ window.notificationManager = require('./../Utils/NotificationFactory');
                 s: "s-resize",
                 sw: "sw-resize",
                 w: "w-resize"
-            }
+            },
+
+            resizeToContentCueImage: '/assets/nodes/ResizeCue.svg'
         });
 
         var viewUtilitiesOpts = {
@@ -453,7 +453,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             },
             setVisibilityOnHide: false, // whether to set visibility on hide/show
             setDisplayOnHide: true, // whether to set display on hide/show
-            neighbor: function(node){ // return desired neighbors of tapheld node
+            neighbor: function (node) { // return desired neighbors of tapheld node
                 return false;
             },
             neighborSelectTime: 500 //ms, time to taphold to select desired neighbors
@@ -464,32 +464,31 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         this.placePanzoomAndOverlay();
     };
 
-
-    AppManager.prototype.initCyHandlers = function()
-    {
+    AppManager.prototype.initCyHandlers = function () {
         var that = this;
 
         var tappedBefore;
         var tappedTimeout;
-        cy.on('tap', function(event) {
+        cy.on('tap', function (event) {
             var tappedNow = event.target;
             if (tappedTimeout && tappedBefore) {
                 clearTimeout(tappedTimeout);
             }
-            if(tappedBefore === tappedNow) {
+            if (tappedBefore === tappedNow) {
                 tappedNow.trigger('doubleTap');
                 tappedBefore = null;
             } else {
-                tappedTimeout = setTimeout(function(){ tappedBefore = null; }, 300);
+                tappedTimeout = setTimeout(function () {
+                    tappedBefore = null;
+                }, 300);
                 tappedBefore = tappedNow;
             }
         });
 
-        cy.on('doubleTap', 'node', function(e)
-        {
+        cy.on('doubleTap', 'node', function (e) {
             var eventIsDirect = (e.target === this);
 
-            if( eventIsDirect ) {
+            if (eventIsDirect) {
                 //Remove qtips
                 $(".qtip").remove();
                 that.qtipManager.addQtipToElements(e.target);
@@ -500,11 +499,10 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             }
         });
 
-        cy.on('doubleTap', 'edge', function(e)
-        {
+        cy.on('doubleTap', 'edge', function (e) {
             var eventIsDirect = (e.target === this);
 
-            if( eventIsDirect ) {
+            if (eventIsDirect) {
                 $(".qtip").remove();
                 that.qtipManager.addQtipToElements(e.target);
                 // var api = this.qtip('api');
@@ -514,8 +512,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             }
         });
 
-        cy.on('select', 'node', function( e )
-        {
+        cy.on('select', 'node', function (e) {
             window.editorActionsManager.pushSelectedNodeStack(e.target);
         });
 
@@ -529,13 +526,11 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         //   }
         // });
 
-        cy.on('unselect', 'node', function( e )
-        {
+        cy.on('unselect', 'node', function (e) {
             window.editorActionsManager.removeElementFromSelectedNodeStack(e.target);
         });
 
-        cy.on('free', 'node', function (e)
-        {
+        cy.on('free', 'node', function (e) {
             //Collect all nodes with descendants in case of compounds
             var selectedNodes = cy.nodes(':selected');
             var nodes = e.target;
@@ -544,8 +539,7 @@ window.notificationManager = require('./../Utils/NotificationFactory');
             that.editorActionsManager.moveElements(nodes);
         });
 
-        cy.on('layoutstop', function(event)
-        {
+        cy.on('layoutstop', function (event) {
             that.editorActionsManager.postLayout();
         });
 
@@ -558,66 +552,64 @@ window.notificationManager = require('./../Utils/NotificationFactory');
         //     cy.forceRender();
         // });
 
-        cy.on("noderesize.resizeend", function(e, type, node){
+        cy.on("noderesize.resizeend", function (e, type, node) {
             //Updates 'data' properties from 'style'
-            node.data('w',node.width());
-            node.data('h',node.height());
+            node.data('w', node.width());
+            node.data('h', node.height());
             //Used for collaborative mode
             that.editorActionsManager.resizeElements(node);
         });
 
-        cy.on('bendPointMovement',function(){
+        cy.on('bendPointMovement', function () {
             editorActionsManager.updateEdgeBendPoints(cy.elements(":selected").first());
         });
 
-        cy.on('noderesize.moveend',function(){
+        cy.on('noderesize.moveend', function () {
             editorActionsManager.changeNodePositionsByArrows(cy.nodes(":selected"));
         });
 
     };
-     AppManager.prototype.initKeyboardHandlers = function()
-     {
-         if (!this.isCollaborative) {
-             $(document).keydown(function (e) {
-                 if (e.which === 89 && (e.ctrlKey || event.metaKey)) {
-                     window.undoRedoManager.redo();
-                 }
-                 else if (e.which === 90 && (e.ctrlKey || event.metaKey)) {
-                     window.undoRedoManager.undo();
-                 }
-             });
-         }
-         else {
-             $('a[role="redo"]').hide();
-             $('a[role="undo"]').hide();
-         }
-         $(document).keydown(function (e) {
-             if (e.which === 65 && (e.ctrlKey || event.metaKey)) {
-                 var tn = document.activeElement.tagName;
-                 if (tn != "TEXTAREA" && tn != "INPUT")
-                 {
-                     e.preventDefault();
-                     cy.elements().select();
-                 }
-             }
-             else if (e.which === 8 || e.which === 46) {
-                 var tn = document.activeElement.tagName;
-                 if (tn != "TEXTAREA" && tn != "INPUT")
-                 {
-                     var selectedElements = cy.$(':selected');
-                     editorActionsManager.removeElement(selectedElements);
-                 }
-             }
-         });
-     };
-     AppManager.prototype.initUndoRedoFunctionality = function()
-     {
-         if (this.isCollaborative) {
-             $('[role="undo"]').hide();
-             $('[role="redo"]').hide();
-             document.getElementById("localOrCollaborativeToolbar").style.display = "none";
-         }
-     };
+
+    AppManager.prototype.initKeyboardHandlers = function () {
+        if (!this.isCollaborative) {
+            $(document).keydown(function (e) {
+                if (e.which === 89 && (e.ctrlKey || event.metaKey)) {
+                    window.undoRedoManager.redo();
+                }
+                else if (e.which === 90 && (e.ctrlKey || event.metaKey)) {
+                    window.undoRedoManager.undo();
+                }
+            });
+        }
+        else {
+            $('a[role="redo"]').hide();
+            $('a[role="undo"]').hide();
+        }
+        $(document).keydown(function (e) {
+            if (e.which === 65 && (e.ctrlKey || event.metaKey)) {
+                var tn = document.activeElement.tagName;
+                if (tn != "TEXTAREA" && tn != "INPUT") {
+                    e.preventDefault();
+                    cy.elements().select();
+                }
+            }
+            else if (e.which === 8 || e.which === 46) {
+                var tn = document.activeElement.tagName;
+                if (tn != "TEXTAREA" && tn != "INPUT") {
+                    var selectedElements = cy.$(':selected');
+                    editorActionsManager.removeElement(selectedElements);
+                }
+            }
+        });
+    };
+
+    AppManager.prototype.initUndoRedoFunctionality = function () {
+        if (this.isCollaborative) {
+            $('[role="undo"]').hide();
+            $('[role="redo"]').hide();
+            document.getElementById("localOrCollaborativeToolbar").style.display = "none";
+        }
+    };
 
     return AppManager;
 })();
