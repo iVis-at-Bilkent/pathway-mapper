@@ -724,8 +724,10 @@ module.exports = (function()
         };
     }
 
-    EditorActionsManager.prototype.changeGlobalOptions = function(globalOptions)
+    EditorActionsManager.prototype.changeGlobalOptions = function(op)
     {
+        var event = op[0];
+        var globalOptions = event.li;
         cy.zoom(globalOptions.zoomLevel);
         cy.pan(globalOptions.panLevel);
     }
@@ -752,8 +754,10 @@ module.exports = (function()
         }
     };
 
-    EditorActionsManager.prototype.updateLayoutPropertiesCallback = function(newLayoutProps)
+    EditorActionsManager.prototype.updateLayoutPropertiesCallback = function(op)
     {
+        var event = op[0];
+        var newLayoutProps = event.li;
         this.layoutProperties = _.clone(newLayoutProps);
         //Notify observers to reflect changes on colalborative object to the views
         this.notifyObservers();

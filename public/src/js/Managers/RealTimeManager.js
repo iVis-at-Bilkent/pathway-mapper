@@ -54,12 +54,16 @@ module.exports = (function () {
         doc.submitOp([{p: [mapName, objectKey], od: doc.data[mapName][objectKey]}], this.realTimeError);
     };
 
-    RealTimeManager.prototype.updateShareDBLayoutProperties = function(object) {
-        doc.submitOp([{p:[this.LAYOUT_PROPS_NAME, 0], ld: doc.data[this.LAYOUT_PROPS_NAME][0], li: object}]);
+    RealTimeManager.prototype.updateShareDBLayoutProperties = function (object) {
+        doc.submitOp([{p: [this.LAYOUT_PROPS_NAME, 0], ld: doc.data[this.LAYOUT_PROPS_NAME][0], li: object}]);
     };
 
-    RealTimeManager.prototype.updateShareDBGlobalOptions = function(object) {
-        doc.submitOp([{p:[this.GLOBAL_OPTS_NAME, 0], ld: doc.data[this.GLOBAL_OPTS_NAME][0], li: object}]);
+    RealTimeManager.prototype.updateShareDBGlobalOptions = function (object) {
+        doc.submitOp([{p: [this.GLOBAL_OPTS_NAME, 0], ld: doc.data[this.GLOBAL_OPTS_NAME][0], li: object}]);
+    };
+
+    RealTimeManager.prototype.incrementShareDBGroupCount = function () {
+        doc.submitOp([{p: [this.GENOMIC_DATA_GROUP_COUNT], na: 1}]);
     };
 
     RealTimeManager.prototype.realTimeError = function (err) {
@@ -360,6 +364,15 @@ module.exports = (function () {
             window.editorActionsManager.updateElementCallback(op);
         }
 
+        var updateLayoutPropsHandler = function (op) {
+            window.editorActionsManager.updateLayoutPropertiesCallback(op);
+        }
+
+        var updateGlobalOptionsHandler = function (op) {
+            window.editorActionsManager.changeGlobalOptions(op);
+        }
+
+
         //Event listeners for edge and node map
         doc.on('op', function (op, source) {
             console.log(op);
@@ -384,62 +397,24 @@ module.exports = (function () {
                     genomicDataGroupChangeHandler(op);
                 }
             }
-            else {
+            else { //Then it is update event
                 if (path === self.NODEMAP_NAME) {
                     updateElementHandler(op);
                 }
                 else if (path === self.EDGEMAP_NAME) {
                     updateElementHandler(op);
                 }
-                else if (path === self.GENOMIC_DATA_MAP_NAME) {
-
+                else if (path === self.LAYOUT_PROPS_NAME) {
+                    updateLayoutPropsHandler(op);
                 }
-                else if (path === self.VISIBLE_GENOMIC_DATA_MAP_NAME) {
-
-                }
-                else if (path === self.GENOMIC_DATA_GROUP_NAME) {
-
+                else if (path === self.GLOBAL_OPTS_NAME) {
+                    updateGlobalOptionsHandler(op);
                 }
             }
 
         });
     };
 
-    RealTimeManager.prototype.initElementUpdateHandlers = function () {
-
-        function registerAttributeChangeHandlersElements() {
-            function updateElementHandler(event) {
-                var ele = event.currentTarget;
-                window.editorActionsManager.updateElementCallback(ele, self.getCustomObjId(ele));
-            }
-
-            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateElementHandler);
-        }
-
-        function registerAttributeChangeHandlersLayoutPropertiesR() {
-            function updateLayoutPropsHandler(event) {
-                var layoutProps = event.currentTarget;
-                window.editorActionsManager.updateLayoutPropertiesCallback(layoutProps);
-            }
-
-            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateLayoutPropsHandler);
-        }
-
-        function registerAttributeChangeHandlersGlobalOptionsR() {
-            function updateGlobalOptionsRHandler(event) {
-                var globalOptions = event.currentTarget;
-                window.editorActionsManager.changeGlobalOptions(globalOptions);
-            }
-
-            this.addEventListener(gapi.drive.realtime.EventType.OBJECT_CHANGED, updateGlobalOptionsRHandler);
-        }
-
-        //Register attribute changed handlers
-        gapi.drive.realtime.custom.setOnLoaded(NodeR, registerAttributeChangeHandlersElements);
-        gapi.drive.realtime.custom.setOnLoaded(EdgeR, registerAttributeChangeHandlersElements);
-        gapi.drive.realtime.custom.setOnLoaded(LayoutPropertiesR, registerAttributeChangeHandlersLayoutPropertiesR);
-        gapi.drive.realtime.custom.setOnLoaded(GlobalOptionsR, registerAttributeChangeHandlersGlobalOptionsR);
-    };
 
     /*
      * Gets the first empty index from the list in cloud model
@@ -448,7 +423,7 @@ module.exports = (function () {
     RealTimeManager.prototype.getEmptyGroupID = function () {
         var count = doc.data[this.GENOMIC_DATA_GROUP_COUNT];
         var returnCount = count;
-        doc.submitOp([{p: [this.GENOMIC_DATA_GROUP_COUNT], na: 1}]);
+        this.incrementShareDBGroupCount();
         return returnCount;
     };
 
