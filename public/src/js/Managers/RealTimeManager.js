@@ -884,12 +884,9 @@ module.exports = (function()
         {
             var tmpEdge = edgeMap[edgeID];
             console.log(tmpEdge);
-            if (tmpEdge.bendPoint === undefined){
-                tmpEdge.bendPoint = [];
-            }
-            else {
-                tmpEdge.bendPoint.clear();
-            }
+
+            tmpEdge.bendPoint.clear();
+
 
             tmpEdge.bendPoint.pushAll(bendPointsArray);
             doc.submitOp([{p:[this.EDGEMAP_NAME, edgeID], od: doc.data[this.EDGEMAP_NAME][edgeID], oi: tmpEdge}]);
