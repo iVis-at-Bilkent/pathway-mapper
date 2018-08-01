@@ -42,6 +42,10 @@ module.exports = (function () {
         }, isModal);
     };
 
+    RealTimeManager.prototype.applyShareDBOperation = function (op) {
+        doc.submitOp(op, this.realTimeError);
+    };
+
     RealTimeManager.prototype.updateShareDocObject = function (mapName, objectKey, object) {
         doc.submitOp([{p: [mapName, objectKey], od: doc.data[mapName][objectKey], oi: object}], this.realTimeError);
     };
@@ -55,19 +59,33 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.initializeShareDBLayoutProperties = function () {
-        doc.submitOp([{p: [this.LAYOUT_PROPS_NAME, 0], li: window.editorActionsManager.layoutProperties}], this.realTimeError);
+        doc.submitOp([{
+            p: [this.LAYOUT_PROPS_NAME, 0],
+            li: window.editorActionsManager.layoutProperties
+        }], this.realTimeError);
     };
 
     RealTimeManager.prototype.initializeShareDBGlobalOptions = function () {
-        doc.submitOp([{p: [this.GLOBAL_OPTS_NAME, 0], li: window.editorActionsManager.getGlobalOptions()}], this.realTimeError);
+        doc.submitOp([{
+            p: [this.GLOBAL_OPTS_NAME, 0],
+            li: window.editorActionsManager.getGlobalOptions()
+        }], this.realTimeError);
     };
 
     RealTimeManager.prototype.updateShareDBLayoutProperties = function (object) {
-        doc.submitOp([{p: [this.LAYOUT_PROPS_NAME, 0], ld: doc.data[this.LAYOUT_PROPS_NAME][0], li: object}], this.realTimeError);
+        doc.submitOp([{
+            p: [this.LAYOUT_PROPS_NAME, 0],
+            ld: doc.data[this.LAYOUT_PROPS_NAME][0],
+            li: object
+        }], this.realTimeError);
     };
 
     RealTimeManager.prototype.updateShareDBGlobalOptions = function (object) {
-        doc.submitOp([{p: [this.GLOBAL_OPTS_NAME, 0], ld: doc.data[this.GLOBAL_OPTS_NAME][0], li: object}], this.realTimeError);
+        doc.submitOp([{
+            p: [this.GLOBAL_OPTS_NAME, 0],
+            ld: doc.data[this.GLOBAL_OPTS_NAME][0],
+            li: object
+        }], this.realTimeError);
     };
 
     RealTimeManager.prototype.incrementShareDBGroupCount = function () {
@@ -76,6 +94,30 @@ module.exports = (function () {
 
     RealTimeManager.prototype.isRealTimeReplaceEvent = function (op) {
         return op.hasOwnProperty("oi") && op.hasOwnProperty("od");
+    };
+
+    RealTimeManager.prototype.clearShareDBGenomicData = function () {
+        var ops = [];
+        var genomicMap = doc.data[this.GENOMIC_DATA_MAP_NAME];
+        var visMap = doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
+        var genomicDataGroupMap = doc.data[this.GENOMIC_DATA_GROUP_NAME];
+        var genomicDataGroupCount = doc.data[this.GENOMIC_DATA_GROUP_COUNT];
+
+        for (var i = 0; i < genomicMap.length; i++){
+            ops.push({p: [this.GENOMIC_DATA_GROUP_NAME, i], ld: genomicMap[i] });
+        }
+
+        for (var i = 0; i < visMap.length; i++) {
+            ops.push({p: [this.VISIBLE_GENOMIC_DATA_MAP_NAME, i], ld: visMap[i]});
+        }
+
+        for (var i = 0; genomicDataGroupMap.length; i++) {
+            ops.push({p: [this.GENOMIC_DATA_GROUP_NAME, i], ld: visMap[i]});
+        }
+
+        ops.push({p:[this.GENOMIC_DATA_GROUP_COUNT], na: -genomicDataGroupCount});
+
+        doc.submitOp(ops, this.realTimeError);
     };
 
     RealTimeManager.prototype.realTimeError = function (err) {
@@ -357,7 +399,7 @@ module.exports = (function () {
         //Event listeners for edge and node map
         doc.on('op', function (op, source) {
             console.log(op);
-            for ( var i = 0; i  < op.length; i++){
+            for (var i = 0; i < op.length; i++) {
                 var handleOp = op[i];
                 var path = handleOp.p[0];
                 var isReplaceEvent = self.isRealTimeReplaceEvent(handleOp);
@@ -437,91 +479,75 @@ module.exports = (function () {
             //Insert new group
             this.insertShareDBObject(this.GENOMIC_DATA_GROUP_NAME, groupID, currentGroup);
         }
-        genomicGroupMap.set(groupID, currentGroup);
 
     };
 
     RealTimeManager.prototype.clearGenomicData = function () {
-        var genomicMap = doc.data[this.GENOMIC_DATA_MAP_NAME];
-        var visMap = doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
-        var genomicDataGroupMap = doc.data[this.GENOMIC_DATA_GROUP_NAME];
-        var genomicDataGroupCount = doc.data[this.GENOMIC_DATA_GROUP_COUNT];
-
-        model.beginCompoundOperation();
-        genomicMap.clear();
-        visMap.clear();
-        genomicDataGroupMap.clear();
-        genomicDataGroupCount.setText("0");
-        model.endCompoundOperation();
-    }
+        this.clearShareDBGenomicData();
+    };
 
 
     RealTimeManager.prototype.addGenomicData = function (geneData) {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var genomicMap = root.get(this.GENOMIC_DATA_MAP_NAME);
+        var genomicMap = doc.data[this.GENOMIC_DATA_MAP_NAME];
 
         //Iterate over all genmoic data which is mapped by geneSymbol to list of alteration values
         //that are also mapped by cancer name and associated value
-        model.beginCompoundOperation();
         for (var geneSymbol in geneData) {
             var genomicMapEntry = {};
-            if (genomicMap.has(geneSymbol))
-                genomicMapEntry = _.clone(genomicMap.get(geneSymbol));
+            if (genomicMap.hasOwnProperty(geneSymbol))
+                genomicMapEntry = _.clone(genomicMap[geneSymbol]);
 
             for (var cancerType in geneData[geneSymbol]) {
                 if (!(cancerType in genomicMapEntry))
                     genomicMapEntry[cancerType] = parseInt(geneData[geneSymbol][cancerType]).toFixed(2);
             }
-
-            genomicMap.set(geneSymbol, genomicMapEntry);
+            this.insertShareDBObject(this.GENOMIC_DATA_MAP_NAME, geneSymbol, genomicMapEntry);
         }
-        model.endCompoundOperation();
 
-    }
+    };
 
 
     RealTimeManager.prototype.addGenomicVisibilityData = function (visMap) {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var map = root.get(this.VISIBLE_GENOMIC_DATA_MAP_NAME);
-
-        model.beginCompoundOperation();
+        var ops = [];
         for (var cancerStudy in visMap) {
-            map.set(cancerStudy, visMap[cancerStudy]);
+            ops.push({
+                p: [this.VISIBLE_GENOMIC_DATA_MAP_NAME, cancerStudy],
+                oi: visMap[cancerStudy]
+            });
         }
-        model.endCompoundOperation();
-    }
+        this.applyShareDBOperation(ops);
+    };
 
     RealTimeManager.prototype.changeVisibility = function (nodesToHide, isHidden) {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var nodeMap = root.get(this.NODEMAP_NAME);
+        var self = this;
+        var nodeMap = doc.data[this.NODEMAP_NAME];
 
         nodesToHide.forEach(function (ele, index) {
             var nodeID = ele.id();
-            if (nodeMap.has(nodeID)) {
-                var realTimeNode = nodeMap.get(nodeID);
+            if (nodeMap.hasOwnProperty(nodeID)) {
+                var realTimeNode = nodeMap[nodeID];
                 realTimeNode.isHidden = isHidden;
+                self.updateShareDocObject(self.NODEMAP_NAME, nodeID, realTimeNode);
             }
         });
     };
 
     RealTimeManager.prototype.changeHighlight = function (elementsToHighlight, isHighlighted) {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var nodeMap = root.get(this.NODEMAP_NAME);
-        var edgeMap = root.get(this.EDGEMAP_NAME);
+        var self = this;
+        var nodeMap = doc.data[this.NODEMAP_NAME];
+        var edgeMap = doc.data[this.EDGEMAP_NAME];
 
         elementsToHighlight.forEach(function (ele, index) {
             var elementID = ele.id();
-            if (nodeMap.has(elementID)) {
-                var realTimeNode = nodeMap.get(elementID);
+            if (nodeMap.hasOwnProperty(elementID)) {
+                var realTimeNode = nodeMap[elementID];
                 realTimeNode.isHighlighted = isHighlighted;
+                self.updateShareDocObject(self.NODEMAP_NAME, elementID, realTimeNode);
             }
-            if (edgeMap.has(elementID)) {
-                var realTimeEdge = edgeMap.get(elementID);
+            if (edgeMap.hasOwnProperty(elementID)) {
+                var realTimeEdge = edgeMap[elementID];
                 realTimeEdge.isHighlighted = isHighlighted;
+                self.updateShareDocObject(self.EDGEMAP_NAME, elementID, realTimeEdge);
             }
         });
     };
@@ -578,7 +604,6 @@ module.exports = (function () {
         }
         else {
             throw new Error('Element does not exist in Real Time');
-
         }
     };
 
@@ -601,7 +626,7 @@ module.exports = (function () {
 
     //This function is used for movements of all selected elements wrt alignment selected
     RealTimeManager.prototype.changeElementsPositionByAlignment = function (coll) {
-
+        var self = this;
         var nodeMap = doc.data[this.NODEMAP_NAME];
 
         coll.forEach(function (ele) {
@@ -610,7 +635,7 @@ module.exports = (function () {
                 var tmpNode = nodeMap[elementID];
                 tmpNode.x = ele.nextPosition.x;
                 tmpNode.y = ele.nextPosition.y;
-                this.updateShareDocObject(this.NODEMAP_NAME, elementID, tmpNode);
+                self.updateShareDocObject(self.NODEMAP_NAME, elementID, tmpNode);
             }
             else {
                 throw new Error('Element does not exist in nodes !!! ');
@@ -681,6 +706,7 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.changeNodePositionsRealTime = function (nodes) {
+        var self = this;
         var nodeMap = doc.data[this.NODEMAP_NAME];
 
         nodes.forEach(function (ele) {
@@ -689,7 +715,8 @@ module.exports = (function () {
                 var realTimeNode = nodeMap[nodeID];
                 realTimeNode.x = ele.position('x');
                 realTimeNode.y = ele.position('y');
-                this.updateShareDocObject(this.NODEMAP_NAME, nodeID, realTimeNode);
+                self.updateShareDocObject(self
+                    .NODEMAP_NAME, nodeID, realTimeNode);
             }
             else {
                 throw new Error('Element does not exist in nodes !!! ');

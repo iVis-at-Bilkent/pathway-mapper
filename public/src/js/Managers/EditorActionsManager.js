@@ -726,8 +726,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.changeGlobalOptions = function(op)
     {
-        var event = op[0];
-        var globalOptions = event.li;
+        var globalOptions = op.li;
         cy.zoom(globalOptions.zoomLevel);
         cy.pan(globalOptions.panLevel);
     }
@@ -756,8 +755,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.updateLayoutPropertiesCallback = function(op)
     {
-        var event = op[0];
-        var newLayoutProps = event.li;
+        var newLayoutProps = op.li;
         this.layoutProperties = _.clone(newLayoutProps);
         //Notify observers to reflect changes on colalborative object to the views
         this.notifyObservers();
@@ -857,14 +855,13 @@ module.exports = (function()
     EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(op)
     {
         //Get real time node object and sync it to node addition or removal
-        var event = op[0];
-        var isRemove = Object.keys(event)[1] === 'od';
-        var node = event.oi || event.od;
+        var isRemove = Object.keys(op)[1] === 'od';
+        var node = op.oi || op.od;
 
         //Removal Operation
         if (isRemove)
         {
-            var nodeID = event.p[1];
+            var nodeID = op.p[1];
             //Remove element from existing graph
             var cyEle = this.cy.$("#" + nodeID);
             this.removeElementCy(cyEle);
@@ -964,14 +961,13 @@ module.exports = (function()
     {
 
         //Get real time node object and sync it to node addition or removal
-        var event = op[0];
-        var isRemove = Object.keys(event)[1] === 'od';
-        var edge = event.oi || event.od;
+        var isRemove = Object.keys(op)[1] === 'od';
+        var edge = op.oi || op.od;
 
         //Removal Operation
         if (isRemove)
         {
-            var edgeID = event.p[1];
+            var edgeID = op.p[1];
             //Remove element from existing graph
             var cyEle = this.cy.$("#" + edgeID);
             this.removeElementCy(cyEle);
@@ -1508,8 +1504,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.updateElementCallback = function(op)
     {
-        var event = op[0];
-        var ele = event.oi;
+        var ele = op.oi;
         var eleID = ele.id;
         var cyEle = this.cy.$("#" + eleID);
         this.changeNameCy(cyEle, ele.name);
@@ -1625,10 +1620,9 @@ module.exports = (function()
 
     EditorActionsManager.prototype.realTimeGenomicDataHandler = function(op)
     {
-        var event = op[0];
-        var isRemove = Object.keys(event)[1] === 'od';
-        var newData = event[1];
-        var geneSymbol = event.p[1];
+        var isRemove = Object.keys(op)[1] === 'od';
+        var newData = op[1];
+        var geneSymbol = op.p[1];
 
         if(!isRemove)
         {
@@ -1642,13 +1636,12 @@ module.exports = (function()
     }
 
 
-    EditorActionsManager.prototype.realTimeGenomicDataGroupChangeHandler = function(event)
+    EditorActionsManager.prototype.realTimeGenomicDataGroupChangeHandler = function(op)
     {
 
-        var event = op[0];
-        var isRemove = Object.keys(event)[1] === 'od';
-        var data = event[1];
-        var key = event.p[1];
+        var isRemove = Object.keys(op)[1] === 'od';
+        var data = op[1];
+        var key = op.p[1];
 
         //Addition
         if(!isRemove)
@@ -1664,12 +1657,11 @@ module.exports = (function()
         this.genomicDataOverlayManager.notifyObservers();
     }
 
-    EditorActionsManager.prototype.realTimeGenomicDataVsibilityHandler = function(event)
+    EditorActionsManager.prototype.realTimeGenomicDataVsibilityHandler = function(op)
     {
-        var event = op[0];
-        var data = event[1];
-        var key = event.p[1];
-        var isRemove = Object.keys(event)[1] === 'od';
+        var data = op[1];
+        var key = op.p[1];
+        var isRemove = Object.keys(op)[1] === 'od';
         //Addition
         if(!isRemove)
         {
