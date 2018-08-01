@@ -608,7 +608,6 @@ module.exports = (function () {
         }
         else {
             throw new Error('Element does not exist in Real Time');
-
         }
     };
 
@@ -831,13 +830,8 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.changeParent = function (rootNode, newParentId, connectedEdges) {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var nodeMap = root.get(this.NODEMAP_NAME);
-
-        var nodeLookupTable = {};
-
         var self = this;
+        var nodeLookupTable = {};
 
         function traverseFromRoot(rootNode, parId) {
             /*
@@ -876,9 +870,9 @@ module.exports = (function () {
 
                 //TODO compound operations ?
                 self.removeElement(refNodeId);
-                var newNode = model.create(NodeR, newNodeData);
-                var newNodeId = self.getCustomObjId(newNode);
-                nodeMap.set(newNodeId, newNode);
+                var newNode = self.nodeInitializer(newNodeData);
+                var newNodeId = newNode.id;
+                self.insertShareDBObject(self.NODEMAP_NAME, newNodeId, newNode);
                 newParentId = newNodeId;
                 nodeLookupTable[refNodeId] = newNodeId;
             }
@@ -1088,14 +1082,7 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.updateLayoutProperties = function (newLayoutProperties) {
-        var layoutPropertiesR = this.doc.data[this.LAYOUT_PROPS_NAME];
-
-        for (var property in newLayoutProperties) {
-            if (newLayoutProperties.hasOwnProperty(property)) {
-                layoutPropertiesR[property] = newLayoutProperties[property];
-            }
-        }
-        this.updateShareDBLayoutProperties(layoutPropertiesR);
+        this.updateShareDBLayoutProperties(newLayoutProperties);
     };
 
     RealTimeManager.prototype.updateGlobalOptions = function (newOptions) {
