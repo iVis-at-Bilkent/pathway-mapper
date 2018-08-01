@@ -2,9 +2,6 @@ var sharedb = require('sharedb/lib/client');
 var socket = new WebSocket('ws://' + window.location.host);
 var connection = new sharedb.Connection(socket);
 
-var doc = connection.get('cy', '1');
-doc.subscribe();
-
 module.exports = (function () {
     "use strict";
 
@@ -32,6 +29,9 @@ module.exports = (function () {
             clientId: this.clientId
         });
         this.postFileLoad = postFileLoadCallback;
+
+        var id = this.realtimeUtils.getParam('id');
+        this.doc = connection.get('cy', id);
     };
 
     RealTimeManager.prototype.authorize = function (callbackFunction, isModal) {
@@ -43,37 +43,37 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.applyShareDBOperation = function (op) {
-        doc.submitOp(op, this.realTimeError);
+        this.doc.submitOp(op, this.realTimeError);
     };
 
     RealTimeManager.prototype.updateShareDocObject = function (mapName, objectKey, object) {
-        doc.submitOp([{p: [mapName, objectKey], od: doc.data[mapName][objectKey], oi: object}], this.realTimeError);
+        this.doc.submitOp([{p: [mapName, objectKey], od: this.doc.data[mapName][objectKey], oi: object}], this.realTimeError);
     };
 
     RealTimeManager.prototype.insertShareDBObject = function (mapName, objectKey, object) {
-        doc.submitOp([{p: [mapName, objectKey], oi: object}], this.realTimeError);
+        this.doc.submitOp([{p: [mapName, objectKey], oi: object}], this.realTimeError);
     };
 
     RealTimeManager.prototype.deleteShareDBObject = function (mapName, objectKey) {
-        doc.submitOp([{p: [mapName, objectKey], od: doc.data[mapName][objectKey]}], this.realTimeError);
+        this.doc.submitOp([{p: [mapName, objectKey], od: this.doc.data[mapName][objectKey]}], this.realTimeError);
     };
 
     RealTimeManager.prototype.initializeShareDBLayoutProperties = function () {
-        doc.submitOp([{
+        this.doc.submitOp([{
             p: [this.LAYOUT_PROPS_NAME, 0],
             li: window.editorActionsManager.layoutProperties
         }], this.realTimeError);
     };
 
     RealTimeManager.prototype.initializeShareDBGlobalOptions = function () {
-        doc.submitOp([{
+        this.doc.submitOp([{
             p: [this.GLOBAL_OPTS_NAME, 0],
             li: window.editorActionsManager.getGlobalOptions()
         }], this.realTimeError);
     };
 
     RealTimeManager.prototype.updateShareDBLayoutProperties = function (object) {
-        doc.submitOp([{
+        this.doc.submitOp([{
             p: [this.LAYOUT_PROPS_NAME, 0],
             ld: doc.data[this.LAYOUT_PROPS_NAME][0],
             li: object
@@ -81,7 +81,7 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.updateShareDBGlobalOptions = function (object) {
-        doc.submitOp([{
+        this.doc.submitOp([{
             p: [this.GLOBAL_OPTS_NAME, 0],
             ld: doc.data[this.GLOBAL_OPTS_NAME][0],
             li: object
@@ -89,35 +89,11 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.incrementShareDBGroupCount = function () {
-        doc.submitOp([{p: [this.GENOMIC_DATA_GROUP_COUNT], na: 1}], this.realTimeError);
+        this.doc.submitOp([{p: [this.GENOMIC_DATA_GROUP_COUNT], na: 1}], this.realTimeError);
     };
 
     RealTimeManager.prototype.isRealTimeReplaceEvent = function (op) {
         return op.hasOwnProperty("oi") && op.hasOwnProperty("od");
-    };
-
-    RealTimeManager.prototype.clearShareDBGenomicData = function () {
-        var ops = [];
-        var genomicMap = doc.data[this.GENOMIC_DATA_MAP_NAME];
-        var visMap = doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
-        var genomicDataGroupMap = doc.data[this.GENOMIC_DATA_GROUP_NAME];
-        var genomicDataGroupCount = doc.data[this.GENOMIC_DATA_GROUP_COUNT];
-
-        for (var i = 0; i < genomicMap.length; i++){
-            ops.push({p: [this.GENOMIC_DATA_GROUP_NAME, i], ld: genomicMap[i] });
-        }
-
-        for (var i = 0; i < visMap.length; i++) {
-            ops.push({p: [this.VISIBLE_GENOMIC_DATA_MAP_NAME, i], ld: visMap[i]});
-        }
-
-        for (var i = 0; genomicDataGroupMap.length; i++) {
-            ops.push({p: [this.GENOMIC_DATA_GROUP_NAME, i], ld: visMap[i]});
-        }
-
-        ops.push({p:[this.GENOMIC_DATA_GROUP_COUNT], na: -genomicDataGroupCount});
-
-        doc.submitOp(ops, this.realTimeError);
     };
 
     RealTimeManager.prototype.realTimeError = function (err) {
@@ -128,58 +104,65 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.initRealTimeAPI = function () {
-        // With auth taken care of, load a file, or create one if there
-        // is not an id in the URL.
-        var id = this.realtimeUtils.getParam('id');
-
         var self = this;
+        var id = this.realtimeUtils.getParam('id');
 
         var initFileCallback = function () {
             self.onFileInitialize();
+            loadFileCallback();
         };
 
         var loadFileCallback = function () {
             self.onFileLoaded();
         };
 
-        //TODO First make the clients sync to each other
-        //TODO Add backward MongoDB later
+        var createNewDocument = function (id) {
+            var data = {
+                nodes: {},
+                edges: {},
+                layoutProperties: {},
+                globalOptions: {},
+                genomicDataMap: {},
+                visibleGenomicDataMapByType: {},
+                genomicDataGroupList: {},
+                genomicDataGroupCount: 0
+            };
 
-        initFileCallback();
-        loadFileCallback();
-        /*
+            window.history.pushState(null, null, '?id=' + id);
+            self.doc.create(data, self.doc.subscribe(initFileCallback));
+        };
+
+
         if (id) {
-            // Load the document id from the URL
-            // this.realtimeUtils.load(id.replace('/', ''), loadFileCallback, initFileCallback);
-            // TODO: load from MongoDB
+            // Check any document exists with given id
+            this.doc.fetch(function(err) {
+                if (err)
+                    throw err;
 
-        }
-        else {
-            // Create a new document, add it to the URL
-            this.realtimeUtils.createAppFile('New Graph', function(createResponse)
-            {
-                var result = createResponse.result;
-                window.history.pushState(null, null, '?id=' + result.id);
-                self.realtimeUtils.load(result.id, loadFileCallback, initFileCallback);
+                if (self.doc.type === null) {
+                    createNewDocument(id);
+                    return;
+                }
+                self.doc.subscribe(loadFileCallback);
             });
         }
-        */
+        else {
+            var new_id = this.getCustomObjId();
+            createNewDocument(new_id);
+        }
     };
 
     // The first time a file is opened, it must be initialized with the
     // document structure.
     RealTimeManager.prototype.onFileInitialize = function () {
         //TODO change the document id to proper id
-        if (doc.data.layoutProperties.length === 0) {
+        if (this.doc.data.layoutProperties.length === 0) {
             this.initializeShareDBLayoutProperties();
         }
 
-        if (doc.data.layoutProperties.length === 0) {
+        if (this.doc.data.layoutProperties.length === 0) {
             this.initializeShareDBGlobalOptions();
         }
-
-        //TODO add file creation here
-
     };
 
     /*
@@ -215,14 +198,14 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.syncInitialCloudData = function () {
-        var nodeMap = doc.data[this.NODEMAP_NAME];
-        var edgeMap = doc.data[this.EDGEMAP_NAME];
-        var realTimeLayoutProperties = doc.data[this.LAYOUT_PROPS_NAME];
-        var globalOptions = doc.data[this.GLOBAL_OPTS_NAME];
-        var genomicDataMap = doc.data[this.GENOMIC_DATA_MAP_NAME];
-        var visDataMap = doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
-        var groupedGenomicDataMap = doc.data[this.GENOMIC_DATA_GROUP_NAME];
-        var groupedGenomicDataCount = doc.data[this.GENOMIC_DATA_GROUP_COUNT];
+        var nodeMap = this.doc.data[this.NODEMAP_NAME];
+        var edgeMap = this.doc.data[this.EDGEMAP_NAME];
+        var realTimeLayoutProperties = this.doc.data[this.LAYOUT_PROPS_NAME];
+        var globalOptions = this.doc.data[this.GLOBAL_OPTS_NAME];
+        var genomicDataMap = this.doc.data[this.GENOMIC_DATA_MAP_NAME];
+        var visDataMap = this.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
+        var groupedGenomicDataMap = this.doc.data[this.GENOMIC_DATA_GROUP_NAME];
+        var groupedGenomicDataCount = this.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
 
         var nodeMapEntries = nodeMap;
         var edgeMapEntries = edgeMap;
@@ -385,7 +368,7 @@ module.exports = (function () {
 
         var updateElementHandler = function (op) {
             window.editorActionsManager.updateElementCallback(op);
-        }
+        };
 
         var updateLayoutPropsHandler = function (op) {
             window.editorActionsManager.updateLayoutPropertiesCallback(op);
@@ -397,7 +380,7 @@ module.exports = (function () {
 
 
         //Event listeners for edge and node map
-        doc.on('op', function (op, source) {
+        this.doc.on('op', function (op, source) {
             console.log(op);
             for (var i = 0; i < op.length; i++) {
                 var handleOp = op[i];
@@ -445,7 +428,7 @@ module.exports = (function () {
      * and increments counter by 1
      * **/
     RealTimeManager.prototype.getEmptyGroupID = function () {
-        var count = doc.data[this.GENOMIC_DATA_GROUP_COUNT];
+        var count = this.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
         var returnCount = count;
         this.incrementShareDBGroupCount();
         return returnCount;
@@ -455,8 +438,8 @@ module.exports = (function () {
      * Gets the first empty index from the list in cloud model
      * **/
     RealTimeManager.prototype.groupGenomicData = function (cancerNames, inGroupId) {
-        var genomicGroupMap = doc.data[this.GENOMIC_DATA_GROUP_NAME];
-        var genomicVisMap = doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
+        var genomicGroupMap = this.doc.data[this.GENOMIC_DATA_GROUP_NAME];
+        var genomicVisMap = this.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
 
         var groupID = "" + inGroupId;
 
@@ -479,6 +462,7 @@ module.exports = (function () {
             //Insert new group
             this.insertShareDBObject(this.GENOMIC_DATA_GROUP_NAME, groupID, currentGroup);
         }
+        genomicGroupMap.set(groupID, currentGroup);
 
     };
 
@@ -488,7 +472,7 @@ module.exports = (function () {
 
 
     RealTimeManager.prototype.addGenomicData = function (geneData) {
-        var genomicMap = doc.data[this.GENOMIC_DATA_MAP_NAME];
+        var genomicMap = this.doc.data[this.GENOMIC_DATA_MAP_NAME];
 
         //Iterate over all genmoic data which is mapped by geneSymbol to list of alteration values
         //that are also mapped by cancer name and associated value
@@ -520,7 +504,7 @@ module.exports = (function () {
 
     RealTimeManager.prototype.changeVisibility = function (nodesToHide, isHidden) {
         var self = this;
-        var nodeMap = doc.data[this.NODEMAP_NAME];
+        var nodeMap = self.doc.data[this.NODEMAP_NAME];
 
         nodesToHide.forEach(function (ele, index) {
             var nodeID = ele.id();
@@ -534,8 +518,8 @@ module.exports = (function () {
 
     RealTimeManager.prototype.changeHighlight = function (elementsToHighlight, isHighlighted) {
         var self = this;
-        var nodeMap = doc.data[this.NODEMAP_NAME];
-        var edgeMap = doc.data[this.EDGEMAP_NAME];
+        var nodeMap = self.doc.data[this.NODEMAP_NAME];
+        var edgeMap = self.doc.data[this.EDGEMAP_NAME];
 
         elementsToHighlight.forEach(function (ele, index) {
             var elementID = ele.id();
@@ -593,8 +577,8 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.removeElement = function (elementID) {
-        var edgeMap = doc.data[this.EDGEMAP_NAME];
-        var nodeMap = doc.data[this.NODEMAP_NAME];
+        var edgeMap = this.doc.data[this.EDGEMAP_NAME];
+        var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         if (nodeMap.hasOwnProperty(elementID)) {
             this.deleteShareDBObject(this.NODEMAP_NAME, elementID);
@@ -604,11 +588,12 @@ module.exports = (function () {
         }
         else {
             throw new Error('Element does not exist in Real Time');
+
         }
     };
 
     RealTimeManager.prototype.moveElement = function (ele) {
-        var nodeMap = doc.data[this.NODEMAP_NAME];
+        var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
         var newPos = ele.position();
@@ -627,7 +612,7 @@ module.exports = (function () {
     //This function is used for movements of all selected elements wrt alignment selected
     RealTimeManager.prototype.changeElementsPositionByAlignment = function (coll) {
         var self = this;
-        var nodeMap = doc.data[this.NODEMAP_NAME];
+        var nodeMap = self.doc.data[this.NODEMAP_NAME];
 
         coll.forEach(function (ele) {
             var elementID = ele.node.id();
@@ -644,7 +629,7 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.resizeElement = function (ele, previousWidth, previousHeight) {
-        var nodeMap = doc.data[this.NODEMAP_NAME];
+        var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
         var newWidth = ele.width();
@@ -666,7 +651,7 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.setSizeOfElement = function (ele, newWidth, newHeight) {
-        var nodeMap = doc.data[this.NODEMAP_NAME];
+        var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
 
@@ -682,7 +667,7 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.resizeCompound = function (ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom) {
-        var nodeMap = doc.data[this.NODEMAP_NAME];
+        var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
         var currentX = ele.position('x');
@@ -707,7 +692,7 @@ module.exports = (function () {
 
     RealTimeManager.prototype.changeNodePositionsRealTime = function (nodes) {
         var self = this;
-        var nodeMap = doc.data[this.NODEMAP_NAME];
+        var nodeMap = self.doc.data[this.NODEMAP_NAME];
 
         nodes.forEach(function (ele) {
             var nodeID = ele.id();
@@ -725,7 +710,7 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.changeHighlightInvalidGenes = function (nodeIDs, isInvalid) {
-        var nodeMap = doc.data[this.NODEMAP_NAME];
+        var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         //TODO check compound operation inside or outside of for ?
         for (var i in nodeIDs) {
@@ -740,7 +725,7 @@ module.exports = (function () {
     }
 
     RealTimeManager.prototype.addPubmedIDs = function (edgeID, pubmedIDs) {
-        var edgeMap = doc.data[this.EDGEMAP_NAME];
+        var edgeMap = this.doc.data[this.EDGEMAP_NAME];
 
 
         if (edgeMap.hasOwnProperty(edgeID)) {
@@ -760,7 +745,7 @@ module.exports = (function () {
     }
 
     RealTimeManager.prototype.removePubmedID = function (edgeID, pubmedIDs) {
-        var edgeMap = doc.data[this.EDGEMAP_NAME];
+        var edgeMap = this.doc.data[this.EDGEMAP_NAME];
 
         if (edgeMap.hasOwnProperty(edgeID)) {
             var tmpEdge = edgeMap[edgeID];
@@ -785,7 +770,7 @@ module.exports = (function () {
 
     RealTimeManager.prototype.updateEdgeBendPoints = function (edgeID, bendPointsArray) {
 
-        var edgeMap = doc.data[this.EDGEMAP_NAME];
+        var edgeMap = this.doc.data[this.EDGEMAP_NAME];
 
         if (edgeMap.hasOwnProperty(edgeID)) {
             var tmpEdge = edgeMap[edgeID];
@@ -798,8 +783,8 @@ module.exports = (function () {
     }
 
     RealTimeManager.prototype.changeName = function (ele, newName) {
-        var nodeMap = doc.data[this.NODEMAP_NAME];
-        var edgeMap = doc.data[this.EDGEMAP_NAME];
+        var nodeMap = this.doc.data[this.NODEMAP_NAME];
+        var edgeMap = this.doc.data[this.EDGEMAP_NAME];
 
         var elementID = ele.id();
 
@@ -909,8 +894,8 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.removeAllElements = function () {
-        var nodeMap = doc.data[this.NODEMAP_NAME];
-        var edgeMap = doc.data[this.EDGEMAP_NAME];
+        var nodeMap = this.doc.data[this.NODEMAP_NAME];
+        var edgeMap = this.doc.data[this.EDGEMAP_NAME];
 
         //TODO Compound operations
         //Remove all real time nodes
@@ -1076,7 +1061,7 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.updateLayoutProperties = function (newLayoutProperties) {
-        var layoutPropertiesR = doc.data[this.LAYOUT_PROPS_NAME];
+        var layoutPropertiesR = this.doc.data[this.LAYOUT_PROPS_NAME];
 
         for (var property in newLayoutProperties) {
             if (newLayoutProperties.hasOwnProperty(property)) {
@@ -1087,7 +1072,7 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.updateGlobalOptions = function (newOptions) {
-        var globalOptions = doc.data[this.GLOBAL_OPTS_NAME];
+        var globalOptions = this.doc.data[this.GLOBAL_OPTS_NAME];
 
         for (var property in globalOptions) {
             if (newOptions.hasOwnProperty(property)) {

@@ -14,37 +14,38 @@ var WebSocketJSONStream = require('websocket-json-stream');
 
 var multerInstance = multer({dest:'./uploads/'});
 
-var DEFAULT_PORT=8080;
+var DEFAULT_PORT = 3000;
 const APP_PORT = process.env.PORT || DEFAULT_PORT;
 
-var backend = new ShareDB();
-createDoc(startServer);
-
+var db = require('sharedb-mongo')('mongodb://localhost:27017/pathwaymapper');
+var backend = new ShareDB({db});
+// createDoc(startServer);
+startServer();
 
 // Create initial document then start server
-function createDoc(callback) {
-    var connection = backend.connect();
-    var doc = connection.get('cy', '1');
-    doc.fetch(function(err) {
-        if (err) throw err;
-        if (doc.type === null) {
-            var data = {
-                nodes: {},
-                edges: {},
-                layoutProperties: {},
-                globalOptions: {},
-                genomicDataMap: {},
-                visibleGenomicDataMapByType: {},
-                genomicDataGroupList: {},
-                genomicDataGroupCount: 4
-            };
-
-            doc.create(data, callback);
-            return;
-        }
-        callback();
-    });
-}
+// function createDoc(callback) {
+//     var connection = backend.connect();
+//     var doc = connection.get('cy', '1');
+//     doc.fetch(function(err) {
+//         if (err) throw err;
+//         if (doc.type === null) {
+//             var data = {
+//                 nodes: {},
+//                 edges: {},
+//                 layoutProperties: {},
+//                 globalOptions: {},
+//                 genomicDataMap: {},
+//                 visibleGenomicDataMapByType: {},
+//                 genomicDataGroupList: {},
+//                 genomicDataGroupCount: 4
+//             };
+//
+//             doc.create(data, callback);
+//             return;
+//         }
+//         callback();
+//     });
+// }
 
 function startServer() {
     // Create a web server to serve files and listen to WebSocket connections
