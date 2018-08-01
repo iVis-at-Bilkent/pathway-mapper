@@ -424,7 +424,9 @@ module.exports = (function () {
                 s: "s-resize",
                 sw: "sw-resize",
                 w: "w-resize"
-            }
+            },
+
+            resizeToContentCueImage: '/assets/nodes/ResizeCue.svg'
         });
 
         var viewUtilitiesOpts = {
