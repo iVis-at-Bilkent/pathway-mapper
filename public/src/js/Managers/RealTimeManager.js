@@ -94,15 +94,15 @@ module.exports = (function () {
     RealTimeManager.prototype.updateShareDBLayoutProperties = function (object) {
         this.doc.submitOp([{
             p: [this.LAYOUT_PROPS_NAME, 0],
-            ld: doc.data[this.LAYOUT_PROPS_NAME][0],
+            ld: this.doc.data[this.LAYOUT_PROPS_NAME][0],
             li: object
         }], this.realTimeError);
     };
 
     RealTimeManager.prototype.updateShareDBGlobalOptions = function (object) {
-        this.doc.submitOp([{
+         this.doc.submitOp([{
             p: [this.GLOBAL_OPTS_NAME, 0],
-            ld: doc.data[this.GLOBAL_OPTS_NAME][0],
+            ld: this.doc.data[this.GLOBAL_OPTS_NAME][0],
             li: object
         }], this.realTimeError);
     };
@@ -139,14 +139,13 @@ module.exports = (function () {
             var data = {
                 nodes: {},
                 edges: {},
-                layoutProperties: {},
-                globalOptions: {},
+                layoutProperties: [window.editorActionsManager.layoutProperties],
+                globalOptions: [window.editorActionsManager.getGlobalOptions()],
                 genomicDataMap: {},
                 visibleGenomicDataMapByType: {},
                 genomicDataGroupList: {},
                 genomicDataGroupCount: 0
             };
-
             window.history.pushState(null, null, '?id=' + id);
             self.doc.create(data, self.doc.subscribe(initFileCallback));
         };
@@ -920,18 +919,18 @@ module.exports = (function () {
         var ops = [];
         //TODO Compound operations
         //Remove all real time nodes
-        for (var index in nodeMap) {
+        for (var key in nodeMap) {
             ops.push({
-                p: [this.NODEMAP_NAME, index],
-                od: nodeMap[index]
+                p: [this.NODEMAP_NAME, key],
+                od: nodeMap[key]
             });
         }
 
         //Remove all real time edges
-        for (var index in edgeMap) {
+        for (var key in edgeMap) {
             ops.push({
-                p: [this.EDGEMAP_NAME, index],
-                od: nodeMap[index]
+                p: [this.EDGEMAP_NAME, key],
+                od: edgeMap[key]
             });
         }
 
@@ -960,9 +959,10 @@ module.exports = (function () {
             //Create new real time node
             var newNodeId = self.getCustomObjId();
             var params = node.data;
-            params.id = newNodeId;
+            oldIdNewIdMap[params.id] = newNodeId;
             var newNode = self.nodeInitializer(params);
-            oldIdNewIdMap[node.data.id] = newNodeId;
+            newNode.id = newNodeId;
+
             self.insertShareDBObject(self.NODEMAP_NAME, newNodeId, newNode);
 
             //If node has children recursively traverse sub graphs and update parent field of child nodes
@@ -1000,10 +1000,9 @@ module.exports = (function () {
 
     //TODO Replace
     RealTimeManager.prototype.mergeGraph = function (nodes, edges) {
-        var model = this.realTimeDoc.getModel();
-        var root = model.getRoot();
-        var nodeMap = root.get(this.NODEMAP_NAME);
-        var edgeMap = root.get(this.EDGEMAP_NAME);
+        var self = this;
+        var nodeMap = self.doc.data[this.NODEMAP_NAME];
+        var edgeMap = self.doc.data[this.EDGEMAP_NAME];
 
         var realTimeNodeMap = nodeMap.items();
         var realTimeNodeLookupTable = {};
@@ -1100,14 +1099,7 @@ module.exports = (function () {
     };
 
     RealTimeManager.prototype.updateGlobalOptions = function (newOptions) {
-        var globalOptions = this.doc.data[this.GLOBAL_OPTS_NAME];
-
-        for (var property in globalOptions) {
-            if (newOptions.hasOwnProperty(property)) {
-                globalOptions[property] = newOptions[property];
-            }
-        }
-        this.updateShareDBGlobalOptions(globalOptions);
+        this.updateShareDBGlobalOptions(newOptions);
     };
 
     //Create unique ID for elements
