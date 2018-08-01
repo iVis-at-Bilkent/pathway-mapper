@@ -190,6 +190,7 @@ module.exports = (function () {
     */
 
 
+    //TODO Replace ?
     RealTimeManager.prototype.onFileLoaded = function () {
 
         this.syncInitialCloudData();
@@ -216,6 +217,7 @@ module.exports = (function () {
         model.redo();
     };
 
+    //TODO Replace
     RealTimeManager.prototype.syncInitialCloudData = function () {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
@@ -996,6 +998,7 @@ module.exports = (function () {
         }
     };
 
+    //TODO Replace
     RealTimeManager.prototype.mergeGraph = function (nodes, edges) {
         var model = this.realTimeDoc.getModel();
         var root = model.getRoot();
