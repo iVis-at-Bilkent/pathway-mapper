@@ -185,17 +185,17 @@ module.exports = (function () {
     };
 
     AppManager.prototype.initCyJS = function () {
-        panzoom(cytoscape, $);  // register extension
+        // panzoom(cytoscape, $);  // register extension
         //cxtmenu( cytoscape, $ ); // register extension
-        cyqtip(cytoscape, $); // register extension
+        // cyqtip(cytoscape, $); // register extension
         regCose(cytoscape); // register extension
-        navigator(cytoscape); // register extension
-        grid_guide(cytoscape, $); // register extension
-        undoRedo(cytoscape); // register extension
-        contextMenus(cytoscape, $); // register extension
+        // navigator(cytoscape); // register extension
+        // grid_guide(cytoscape, $); // register extension
+        // undoRedo(cytoscape); // register extension
+        // contextMenus(cytoscape, $); // register extension
         nodeResize(cytoscape, $, konva); //register extension
-        edgeBendEditing(cytoscape, $); // register extension
-        viewUtilities(cytoscape, $); // register extension
+        // edgeBendEditing(cytoscape, $); // register extension
+        // viewUtilities(cytoscape, $); // register extension
 
 
         window.edgeAddingMode = 0;
