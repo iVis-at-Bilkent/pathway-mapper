@@ -134,7 +134,8 @@ module.exports = (function () {
 
     //Checks whether given operation is a replace or add/delete operation
     ShareDBManager.prototype.isShareDBReplaceEvent = function (op) {
-        return op.hasOwnProperty("oi") && op.hasOwnProperty("od");
+        return (op.hasOwnProperty("oi") && op.hasOwnProperty("od"))
+            || (op.hasOwnProperty("li") && op.hasOwnProperty("ld"));
     };
 
     /*
