@@ -55,7 +55,7 @@ module.exports = (function () {
      * @param object: new object
      *
      */
-    ShareDBManager.prototype.updateShareDocObject = function (mapName, objectKey, object) {
+    ShareDBManager.prototype.updateShareDBObject = function (mapName, objectKey, object) {
         this.doc.submitOp([{
             p: [mapName, objectKey],
             od: this.doc.data[mapName][objectKey],
@@ -133,7 +133,7 @@ module.exports = (function () {
     };
 
     //Checks whether given operation is a replace or add/delete operation
-    ShareDBManager.prototype.isRealTimeReplaceEvent = function (op) {
+    ShareDBManager.prototype.isShareDBReplaceEvent = function (op) {
         return op.hasOwnProperty("oi") && op.hasOwnProperty("od");
     };
 
@@ -141,7 +141,7 @@ module.exports = (function () {
      * Gets the initial value of the shared document
      * without this function shared document values cannot be reached
     */
-    ShareDBManager.prototype.initializeSharedDoc = function () {
+    ShareDBManager.prototype.initializeSharedDBDoc = function () {
         this.doc.subscribe();
     };
 
@@ -151,7 +151,7 @@ module.exports = (function () {
         }
     };
 
-    ShareDBManager.prototype.initRealTimeAPI = function () {
+    ShareDBManager.prototype.initShareDB = function () {
         var self = this;
         var id = this.getParam('id');
 
@@ -194,7 +194,6 @@ module.exports = (function () {
             });
         }
         else {
-            createNewDocument();
             //Create new shared document
             createNewDocument();
         }
@@ -206,7 +205,7 @@ module.exports = (function () {
      *
     */
     ShareDBManager.prototype.onFileLoaded = function () {
-        this.initializeSharedDoc();
+        this.initializeSharedDBDoc();
         this.syncInitialSharedDocData();
         this.initSharedDocEventHandlers();
 
@@ -221,7 +220,7 @@ module.exports = (function () {
         var self = this;
         var nodeMap = self.doc.data[this.NODEMAP_NAME];
         var edgeMap = self.doc.data[this.EDGEMAP_NAME];
-        var realTimeLayoutProperties = self.doc.data[this.LAYOUT_PROPS_NAME][0];
+        var shareDBLayoutProperties = self.doc.data[this.LAYOUT_PROPS_NAME][0];
         var globalOptions = self.doc.data[this.GLOBAL_OPTS_NAME][0];
         var genomicDataMap = self.doc.data[this.GENOMIC_DATA_MAP_NAME];
         var visDataMap = self.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
@@ -303,7 +302,7 @@ module.exports = (function () {
         window.editorActionsManager.highlightElementsInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes, highlightedEdges, hiddenGenes);
 
         //Update layout properties & global options!!
-        window.editorActionsManager.updateLayoutPropertiesCallback({li: realTimeLayoutProperties});
+        window.editorActionsManager.updateLayoutPropertiesCallback({li: shareDBLayoutProperties});
         window.editorActionsManager.changeGlobalOptions({li: globalOptions});
 
         //Sync already available genomic data !
@@ -314,7 +313,7 @@ module.exports = (function () {
             for (var key in visDataMap) {
                 var currentMap = _.clone(groupedGenomicDataMap['0']);
                 currentMap.push(visibilityMapKeys[key]);
-                self.updateShareDocObject(self.GENOMIC_DATA_MAP_NAME, '0', currentMap);
+                self.updateShareDBObject(self.GENOMIC_DATA_MAP_NAME, '0', currentMap);
             }
         }
 
@@ -361,23 +360,23 @@ module.exports = (function () {
 
         //Setup event handlers for maps
         var nodeAddRemoveHandler = function (op) {
-            window.editorActionsManager.realTimeNodeAddRemoveEventCallBack(op);
+            window.editorActionsManager.shareDBNodeAddRemoveEventCallBack(op);
         };
 
         var edgeAddRemoveHandler = function (op) {
-            window.editorActionsManager.realTimeEdgeAddRemoveEventCallBack(op);
+            window.editorActionsManager.shareDBEdgeAddRemoveEventCallBack(op);
         };
 
         var genomicDataAddRemoveHandler = function (op) {
-            window.editorActionsManager.realTimeGenomicDataHandler(op);
+            window.editorActionsManager.shareDBGenomicDataHandler(op);
         };
 
         var genomicDataVisibilityChangeHandler = function (op) {
-            window.editorActionsManager.realTimeGenomicDataVsibilityHandler(op);
+            window.editorActionsManager.shareDBGenomicDataVsibilityHandler(op);
         };
 
         var genomicDataGroupChangeHandler = function (op) {
-            window.editorActionsManager.realTimeGenomicDataGroupChangeHandler(op);
+            window.editorActionsManager.shareDBGenomicDataGroupChangeHandler(op);
         };
 
         var updateElementHandler = function (op) {
@@ -394,11 +393,11 @@ module.exports = (function () {
 
 
         //Event listeners for maps
-        this.doc.on('op', function (op) {
+        this.doc.on('op', function (op, source) {
             for (var i = 0; i < op.length; i++) {
                 var handleOp = op[i];
                 var path = handleOp.p[0];
-                var isReplaceEvent = self.isRealTimeReplaceEvent(handleOp);
+                var isReplaceEvent = self.isShareDBReplaceEvent(handleOp);
 
                 if (!isReplaceEvent) {
                     if (path === self.NODEMAP_NAME) {
@@ -469,7 +468,7 @@ module.exports = (function () {
 
         // If group id already exists change existing object
         if (genomicGroupMap.hasOwnProperty(groupID)) {
-            this.updateShareDocObject(this.GENOMIC_DATA_GROUP_NAME, groupID, currentGroup);
+            this.updateShareDBObject(this.GENOMIC_DATA_GROUP_NAME, groupID, currentGroup);
         }
         else {
             //Insert new group
@@ -526,7 +525,7 @@ module.exports = (function () {
             if (nodeMap.hasOwnProperty(nodeID)) {
                 var realTimeNode = nodeMap[nodeID];
                 realTimeNode.isHidden = isHidden;
-                self.updateShareDocObject(self.NODEMAP_NAME, nodeID, realTimeNode);
+                self.updateShareDBObject(self.NODEMAP_NAME, nodeID, realTimeNode);
             }
         });
     };
@@ -541,12 +540,12 @@ module.exports = (function () {
             if (nodeMap.hasOwnProperty(elementID)) {
                 var realTimeNode = nodeMap[elementID];
                 realTimeNode.isHighlighted = isHighlighted;
-                self.updateShareDocObject(self.NODEMAP_NAME, elementID, realTimeNode);
+                self.updateShareDBObject(self.NODEMAP_NAME, elementID, realTimeNode);
             }
             if (edgeMap.hasOwnProperty(elementID)) {
                 var realTimeEdge = edgeMap[elementID];
                 realTimeEdge.isHighlighted = isHighlighted;
-                self.updateShareDocObject(self.EDGEMAP_NAME, elementID, realTimeEdge);
+                self.updateShareDBObject(self.EDGEMAP_NAME, elementID, realTimeEdge);
             }
         });
     };
@@ -619,7 +618,7 @@ module.exports = (function () {
             var tmpNode = nodeMap[elementID];
             tmpNode.x = newPos.x;
             tmpNode.y = newPos.y;
-            this.updateShareDocObject(this.NODEMAP_NAME, elementID, tmpNode);
+            this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
         }
         else {
             throw new Error('Element does not exist in nodes !!! ');
@@ -637,7 +636,7 @@ module.exports = (function () {
                 var tmpNode = nodeMap[elementID];
                 tmpNode.x = ele.nextPosition.x;
                 tmpNode.y = ele.nextPosition.y;
-                self.updateShareDocObject(self.NODEMAP_NAME, elementID, tmpNode);
+                self.updateShareDBObject(self.NODEMAP_NAME, elementID, tmpNode);
             }
             else {
                 throw new Error('Element does not exist in nodes !!! ');
@@ -660,7 +659,7 @@ module.exports = (function () {
             tmpNode.y = currentY + newHeight - previousHeight;
             tmpNode.w = newWidth;
             tmpNode.h = newHeight;
-            this.updateShareDocObject(this.NODEMAP_NAME, elementID, tmpNode);
+            this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
         }
         else {
             throw new Error('Element does not exist in nodes !!! ');
@@ -676,7 +675,7 @@ module.exports = (function () {
             var tmpNode = nodeMap[elementID];
             tmpNode.w = newWidth;
             tmpNode.h = newHeight;
-            this.updateShareDocObject(this.NODEMAP_NAME, elementID, tmpNode);
+            this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
         }
         else {
             throw new Error('Element does not exist in nodes !!! ');
@@ -700,14 +699,14 @@ module.exports = (function () {
             tmpNode.minHeight = minHeight;
             tmpNode.minHeightBiasTop = minHeightBiasTop;
             tmpNode.minHeightBiasBottom = minHeightBiasBottom;
-            this.updateShareDocObject(this.NODEMAP_NAME, elementID, tmpNode);
+            this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
         }
         else {
             throw new Error('Element does not exist in nodes !!! ');
         }
     };
 
-    ShareDBManager.prototype.changeNodePositionsRealTime = function (nodes) {
+    ShareDBManager.prototype.changeNodePositionsShareDB = function (nodes) {
         var self = this;
         var nodeMap = self.doc.data[self.NODEMAP_NAME];
 
@@ -717,7 +716,7 @@ module.exports = (function () {
                 var realTimeNode = nodeMap[nodeID];
                 realTimeNode.x = ele.position('x');
                 realTimeNode.y = ele.position('y');
-                self.updateShareDocObject(self
+                self.updateShareDBObject(self
                     .NODEMAP_NAME, nodeID, realTimeNode);
             }
             else {
@@ -735,7 +734,7 @@ module.exports = (function () {
             if (nodeMap.hasOwnProperty(nodeID)) {
                 var collaborativeNode = nodeMap[nodeID];
                 collaborativeNode.isInvalidGene = isInvalid;
-                this.updateShareDocObject(this.NODEMAP_NAME, nodeID, collaborativeNode);
+                this.updateShareDBObject(this.NODEMAP_NAME, nodeID, collaborativeNode);
             }
         }
 
@@ -754,7 +753,7 @@ module.exports = (function () {
                 }
             }
             tmpEdge.pubmedIDs.concat(nonDuplicateArray);
-            this.updateShareDocObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
+            this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
         }
         else {
             throw new Error('Edge does not exist in real time !!! ');
@@ -777,7 +776,7 @@ module.exports = (function () {
             for (var i = 0; i < removedIndices.length; i++) {
                 tmpEdge.pubmedIDs.remove(removedIndices[i]);
             }
-            this.updateShareDocObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
+            this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
 
         }
         else {
@@ -792,7 +791,7 @@ module.exports = (function () {
         if (edgeMap.hasOwnProperty(edgeID)) {
             var tmpEdge = edgeMap[edgeID];
             tmpEdge.bendPoint = bendPointsArray;
-            this.updateShareDocObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
+            this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
         }
         else {
             throw new Error('Edge does not exist in real time !!! ');
@@ -809,7 +808,7 @@ module.exports = (function () {
             if (nodeMap.hasOwnProperty(elementID)) {
                 var tmpNode = nodeMap[elementID];
                 tmpNode.name = newName;
-                this.updateShareDocObject(this.NODEMAP_NAME, elementID, tmpNode);
+                this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
             }
             else {
                 throw new Error('Element does not exist in nodes !!! ');
@@ -819,7 +818,7 @@ module.exports = (function () {
             if (edgeMap.hasOwnProperty(elementID)) {
                 var tmpEdge = edgeMap[elementID];
                 tmpEdge.name = newName;
-                this.updateShareDocObject(this.EDGEMAP_NAME, elementID, tmpEdge);
+                this.updateShareDBObject(this.EDGEMAP_NAME, elementID, tmpEdge);
             }
             else {
                 throw new Error('Element does not exist in edges !!! ');
