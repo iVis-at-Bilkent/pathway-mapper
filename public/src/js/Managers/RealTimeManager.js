@@ -269,23 +269,24 @@ module.exports = (function () {
         // Addition of pubmed id field on server if legacy collaborative
         // pathways does not have !
         for (var key in edgeMap) {
-            var tmpEdge = edgeMapEntries[key];
+            var tmpEdge = edgeMap[key];
 
             if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined || tmpEdge.bendPoint == undefined) {
                 var pubmedIDs = (tmpEdge.pubmedIDs == undefined) ? [] : tmpEdge.pubmedID;
                 var edgeLabel = (tmpEdge.name == undefined) ? "" : tmpEdge.name;
                 var bendPoint = (tmpEdge.bendPoint == undefined) ? [] : tmpEdge.bendPoint;
 
-                var newEdge = model.create(EdgeR,
-                    {
-                        type: tmpEdge.type,
-                        source: tmpEdge.source,
-                        id: self.getCustomObjId(),
-                        target: tmpEdge.target,
-                        pubmedID: pubmedIDs,
-                        name: edgeLabel,
-                        bendPoint: bendPoint
-                    });
+                var param = {
+                    type: tmpEdge.type,
+                    source: tmpEdge.source,
+                    id: self.getCustomObjId(),
+                    target: tmpEdge.target,
+                    pubmedID: pubmedIDs,
+                    name: edgeLabel,
+                    bendPoint: bendPoint
+                };
+
+                var newEdge = self.edgeInitializer(param);
 
 
                 var tmpEdgeID = tmpEdge.id;

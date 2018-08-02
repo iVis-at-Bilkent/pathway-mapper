@@ -1062,9 +1062,9 @@ module.exports = (function()
                     type: edge.type,
                     source: edge.source,
                     target: edge.target,
-                    pubmedIDs: edge.pubmedIDs.asArray(),
+                    pubmedIDs: edge.pubmedIDs,
                     name: edge.name,
-                    bendPointPositions: edge.bendPoint.asArray()
+                    bendPointPositions: edge.bendPoint
                 }
             };
 
