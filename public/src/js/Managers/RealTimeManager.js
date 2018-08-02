@@ -162,7 +162,8 @@ module.exports = (function () {
                     throw err;
 
                 if (self.doc.type === null) {
-                    createNewDocument(id);
+                    var new_id = self.getCustomObjId();
+                    createNewDocument(new_id);
                     return;
                 }
                 self.doc.subscribe(loadFileCallback);
