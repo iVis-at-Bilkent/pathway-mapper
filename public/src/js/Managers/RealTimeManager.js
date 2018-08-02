@@ -30,8 +30,6 @@ module.exports = (function () {
         });
         this.postFileLoad = postFileLoadCallback;
 
-        var id = this.realtimeUtils.getParam('id');
-        this.doc = connection.get('cy', id);
     };
 
     RealTimeManager.prototype.authorize = function (callbackFunction, isModal) {
@@ -130,11 +128,6 @@ module.exports = (function () {
         var self = this;
         var id = this.realtimeUtils.getParam('id');
 
-        var initFileCallback = function () {
-            self.onFileInitialize();
-            loadFileCallback();
-        };
-
         var loadFileCallback = function () {
             self.onFileLoaded();
         };
@@ -151,12 +144,14 @@ module.exports = (function () {
                 genomicDataGroupCount: 0
             };
             window.history.pushState(null, null, '?id=' + id);
-            self.doc.create(data, self.doc.subscribe(initFileCallback));
+            self.doc = connection.get('cy', id);
+            self.doc.create(data, loadFileCallback);
         };
 
 
         if (id) {
             // Check any document exists with given id
+            this.doc = connection.get('cy', id);
             this.doc.fetch(function (err) {
                 if (err)
                     throw err;
@@ -175,53 +170,23 @@ module.exports = (function () {
         }
     };
 
-    // The first time a file is opened, it must be initialized with the
-    // document structure.
-    RealTimeManager.prototype.onFileInitialize = function () {
-        //TODO change the document id to proper id
-        if (this.doc.data.layoutProperties.length === 0) {
-            this.initializeShareDBLayoutProperties();
-        }
-
-        if (this.doc.data.layoutProperties.length === 0) {
-            this.initializeShareDBGlobalOptions();
-        }
-    };
 
     /*
         After a file has been initialized and loaded, we can access the
         document. We will wire up the data model to the UI.
     */
-
-
-    //TODO Replace ?
     RealTimeManager.prototype.onFileLoaded = function () {
-
+        this.initSharedDoc();
         this.syncInitialCloudData();
         this.initCloudEventHandlers();
 
         this.postFileLoad();
-        var self = this;
-
-        $('#undoCollab').on('click', function (e) {
-            self.undo();
-        });
-        $('#redoCollab').on('click', function (e) {
-            self.redo();
-        });
     };
 
-    RealTimeManager.prototype.undo = function () {
-        var model = this.realTimeDoc.getModel();
-        model.undo();
+    RealTimeManager.prototype.initSharedDoc = function () {
+        this.doc.subscribe();
     };
 
-    RealTimeManager.prototype.redo = function () {
-        var model = this.realTimeDoc.getModel();
-        model.redo();
-    };
-
-    //TODO Replace
     RealTimeManager.prototype.syncInitialCloudData = function () {
         var self = this;
         var nodeMap = self.doc.data[this.NODEMAP_NAME];
