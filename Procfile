@@ -1,1 +1,1 @@
-web: export PORT=${PORT} && npm start
+web: export PORT=${PORT} && npm run build-min-js && npm run build-min-css && npm start
