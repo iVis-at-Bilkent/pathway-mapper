@@ -3,121 +3,166 @@ var path = require('path');
 var helmet = require('helmet');
 var multer = require('multer');
 var fs = require('fs');
-var path = require('path');
 var request = require('request');
 var qs = require("querystring");
 var SaveLoadUtilities = require('./public/src/js/Utils/SaveLoadUtility.js');
 
-var app = express();
-var http = require('http').Server(app);
-
-// app.use(multer);
-app.use(express.static('public'));
-app.use('/node_modules/bootstrap', express.static(__dirname + '/node_modules/bootstrap/'));
-app.use('/node_modules/cytoscape-panzoom', express.static(__dirname + '/node_modules/cytoscape-panzoom/'));
-app.use('/node_modules/cytoscape-context-menus', express.static(__dirname + '/node_modules/cytoscape-context-menus/'));
-app.use('/node_modules/cytoscape-navigator', express.static(__dirname + '/node_modules/cytoscape-navigator/'));
-app.use('/node_modules/qtip2', express.static(__dirname + '/node_modules/qtip2/'));
-app.use('/node_modules/filesaverjs', express.static(__dirname + '/node_modules/filesaverjs/'));
-app.use('/node_modules/bootstrap-select', express.static(__dirname + '/node_modules/bootstrap-select/'));
-app.use('/node_modules/html5tooltipsjs', express.static(__dirname + '/node_modules/html5tooltipsjs/'));
-
+var http = require('http');
+var ShareDB = require('sharedb');
+var WebSocket = require('ws');
+var WebSocketJSONStream = require('websocket-json-stream');
 
 var multerInstance = multer({dest:'./uploads/'});
 
-var DEFAULT_PORT=3000;
+var DEFAULT_PORT = 3000;
 const APP_PORT = process.env.PORT || DEFAULT_PORT;
+
+var db = require('sharedb-mongo')('mongodb://pathwaymapper:1234abc@ds111072.mlab.com:11072/pathwaymapper');
+var backend = new ShareDB({db});
+
+startServer();
+
+
+function startServer() {
+    // Create a web server to serve files and listen to WebSocket connections
+    var app = express();
+    app.use(express.static('static'));
+    var server = http.createServer(app);
+
+    // Connect any incoming WebSocket connection to ShareDB
+    var wss = new WebSocket.Server({server: server});
+    wss.on('connection', function(ws, req) {
+        var stream = new WebSocketJSONStream(ws);
+        backend.listen(stream);
+    });
+
+    // app.use(multer);
+    app.use(express.static('public'));
+    app.use('/node_modules/bootstrap', express.static(__dirname + '/node_modules/bootstrap/'));
+    app.use('/node_modules/cytoscape-panzoom', express.static(__dirname + '/node_modules/cytoscape-panzoom/'));
+    app.use('/node_modules/cytoscape-context-menus', express.static(__dirname + '/node_modules/cytoscape-context-menus/'));
+    app.use('/node_modules/cytoscape-navigator', express.static(__dirname + '/node_modules/cytoscape-navigator/'));
+    app.use('/node_modules/qtip2', express.static(__dirname + '/node_modules/qtip2/'));
+    app.use('/node_modules/filesaverjs', express.static(__dirname + '/node_modules/filesaverjs/'));
+    app.use('/node_modules/bootstrap-select', express.static(__dirname + '/node_modules/bootstrap-select/'));
+    app.use('/node_modules/html5tooltipsjs', express.static(__dirname + '/node_modules/html5tooltipsjs/'));
+
+
+    /*******************************
+     GET Requests
+     ********************************/
+    app.get('/',indexGetHandler);
+    app.get('/sampleGraph', loadSampleFile);
+    app.get('/pathway', loadPathway);
+    app.get('/sampleGenomicData', loadSampleGenomicData);
+    app.get('/getTemplateFileData', getTemplateFileData);
+
+
+    /*******************************
+     POST Requests
+     ********************************/
+    app.post('/loadGraph', multerInstance.single('graphFile'), loadGraphHandler);
+    app.post('/getBioGeneData', multerInstance.array(), biogeneDataHandler);
+
+
+    /*******************************
+     Server
+     ********************************/
+    server.listen(APP_PORT, function (){
+        console.log('--- PathwayMapper is up and running on port ' + APP_PORT + ' ---');
+    });
+}
 
 //get handler for index.html
 function indexGetHandler(req,res){
-  res.sendFile(path.join(__dirname + '/public/index.html'));
+    res.sendFile(path.join(__dirname + '/public/index.html'));
 }
 
 /*******************************
-  POST Handlers
-********************************/
+ POST Handlers
+ ********************************/
 function loadGraphHandler(req, res)
 {
     if(req.file)
     {
-      fs.readFile(req.file.path, {encoding: 'utf-8'}, function(err,data)
-      {
-        if (!err)
+        fs.readFile(req.file.path, {encoding: 'utf-8'}, function(err,data)
         {
-          res.writeHead(200, {'Content-Type': 'multipart/form-data'});
-          res.write(data);
-          res.end();
-        }
-        else
-        {
-            console.log(err);
-        }
-        fs.unlinkSync(req.file.path);
-      });
+            if (!err)
+            {
+                res.writeHead(200, {'Content-Type': 'multipart/form-data'});
+                res.write(data);
+                res.end();
+            }
+            else
+            {
+                console.log(err);
+            }
+            fs.unlinkSync(req.file.path);
+        });
     }
 }
 
 function loadSampleFile(req, res)
 {
-  fs.readFile('./samples/sample1.txt', {encoding: 'utf-8'}, function(err,data)
-  {
-      if (!err)
-      {
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.write(data);
-        res.end();
-      }
-      else
-      {
-          console.log(err);
-      }
-      // fs.unlinkSync('./samples/sample1.txt');
-  });
+    fs.readFile('./samples/sample1.txt', {encoding: 'utf-8'}, function(err,data)
+    {
+        if (!err)
+        {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(data);
+            res.end();
+        }
+        else
+        {
+            console.log(err);
+        }
+        // fs.unlinkSync('./samples/sample1.txt');
+    });
 }
 
 function loadSampleGenomicData(req, res)
 {
-  fs.readFile('./samples/sampleGenomicData.txt', {encoding: 'utf-8'}, function(err,data)
-  {
-      if (!err)
-      {
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.write(data);
-        res.end();
-      }
-      else
-      {
-          console.log(err);
-      }
-      // fs.unlinkSync('./samples/sample1.txt');
-  });
+    fs.readFile('./samples/sampleGenomicData.txt', {encoding: 'utf-8'}, function(err,data)
+    {
+        if (!err)
+        {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(data);
+            res.end();
+        }
+        else
+        {
+            console.log(err);
+        }
+        // fs.unlinkSync('./samples/sample1.txt');
+    });
 }
 
 function biogeneDataHandler(req,res)
 {
-  var queryParams =
-  {
-    'query': req.body['query'],
-    'format': 'json',
-    'org': 'human'
-  };
+    var queryParams =
+        {
+            'query': req.body['query'],
+            'format': 'json',
+            'org': 'human'
+        };
 
-  var paramString = qs.stringify(queryParams);
-  var bioGeneURL = 'http://cbio.mskcc.org/biogene/retrieve.do?'
-  var queryURL = bioGeneURL + paramString;
+    var paramString = qs.stringify(queryParams);
+    var bioGeneURL = 'http://cbio.mskcc.org/biogene/retrieve.do?'
+    var queryURL = bioGeneURL + paramString;
 
-  request(queryURL, function (error, response, body)
-  {
-    if (!error && response.statusCode == 200)
+    request(queryURL, function (error, response, body)
     {
-      res.writeHead(200, {'Content-Type': 'text/html'});
-      res.write(response.body);
-      res.end();
-    }
-    else {
-      console.log(response.statusCode) // Print the error
-    }
-  })
+        if (!error && response.statusCode == 200)
+        {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(response.body);
+            res.end();
+        }
+        else {
+            console.log(response.statusCode) // Print the error
+        }
+    })
 
 }
 
@@ -129,31 +174,31 @@ function loadPathway(req, res)
     {
         if (!err)
         {
-          var outData = data;
-          if(format === "SIFNX")
-          {
-            var parsedGraph = SaveLoadUtilities.parseGraph(data);
-            var pathwayData = {
-              pathwayTitle: parsedGraph.title,
-              graphJSON: {
-                elements: {
-                  nodes: parsedGraph.nodes,
-                  edges: parsedGraph.edges
-                }
-            }}
-            outData = SaveLoadUtilities.exportAsSIFNX(pathwayData);
-          }
+            var outData = data;
+            if(format === "SIFNX")
+            {
+                var parsedGraph = SaveLoadUtilities.parseGraph(data);
+                var pathwayData = {
+                    pathwayTitle: parsedGraph.title,
+                    graphJSON: {
+                        elements: {
+                            nodes: parsedGraph.nodes,
+                            edges: parsedGraph.edges
+                        }
+                    }}
+                outData = SaveLoadUtilities.exportAsSIFNX(pathwayData);
+            }
 
-          res.writeHead(200, {'Content-Type': 'text/html'});
-          res.write(outData);
-          res.end();
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(outData);
+            res.end();
 
         }
         else
         {
-          res.writeHead(501, {'Content-Type': 'text/html'});
-          res.write("Error retrieving pathway");
-          res.end();
+            res.writeHead(501, {'Content-Type': 'text/html'});
+            res.write("Error retrieving pathway");
+            res.end();
         }
         // fs.unlinkSync('./samples/sample1.txt');
     });
@@ -202,28 +247,3 @@ function getTemplateFileData(req, res)
         // fs.unlinkSync('./samples/sample1.txt');
     });
 }
-
-/*******************************
-  GET Requests
-********************************/
-app.get('/',indexGetHandler);
-app.get('/sampleGraph', loadSampleFile);
-app.get('/pathway', loadPathway);
-app.get('/sampleGenomicData', loadSampleGenomicData);
-app.get('/getTemplateFileData', getTemplateFileData);
-
-
-/*******************************
-  POST Requests
-********************************/
-app.post('/loadGraph', multerInstance.single('graphFile'), loadGraphHandler);
-app.post('/getBioGeneData', multerInstance.array(), biogeneDataHandler);
-
-
-/*******************************
-  Server
- ********************************/
-http.listen(APP_PORT, function ()
-{
-  console.log('--- PathwayMapper is up and running on port ' + APP_PORT + ' ---');
-});

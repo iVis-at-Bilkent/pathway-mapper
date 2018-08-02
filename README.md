@@ -230,11 +230,11 @@ The user may also fetch alteration frequencies available on cBioPortal database 
 
 ### Collaborative Editing
 
-Should you choose "Collaborative" on the welcome page, you will be first prompted for Google account authentication since the shared data model will be stored in a shared document at Google Drive folder of the user. Then your editing session will be given a unique ID and you will have the option of sharing the URL containing this ID with desired person(s) and construct / edit a pathways in real time with support for concurrent modifications and built-in conflict resolution.
+Should you choose "Collaborative" on the welcome page, editing session will be given a unique ID which corresponds to a document in our remote server and you will have the option of sharing the URL containing this ID with desired person(s) and construct / edit a pathways in real time with support for concurrent modifications and built-in conflict resolution.
 
 Any changes made by any person working on the pathway with the same URL will be shared / reflected to other people currently viweing / editing the same pathway. Below is a short video illustrating collaborative usage: 
 <a href="https://www.youtube.com/watch?v=pKITXqbDyOc&feature=youtu.be" target="_blank"><p align="center"><img src="public/assets/collaboration-with-PM.png" width="460" title="Click to watch video"/></p></a>
 
 ## Team
 
-  * [Istemi Bahceci](https://github.com/istemi-bahceci), [Leonard Dervishi](https://github.com/leonarddrv), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and Konnor C. La, [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [The Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
+  * [Istemi Bahceci](https://github.com/istemi-bahceci), [Leonard Dervishi](https://github.com/leonarddrv), [Kaan Sancak](https://github.com/kaansancak), [Ahmet Candiroglu](https://github.com/ahmetcandiroglu), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and Konnor C. La, [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [The Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).

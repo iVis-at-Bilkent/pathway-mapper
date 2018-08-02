@@ -5,12 +5,10 @@ var Backbone = window.Backbone = require('backbone');
 Backbone.$ = $;
 require('bootstrap');
 var html5tooltips = require('html5tooltipsjs');
-//Google's real time utility lib which is customized also for PathwayMapper :)
-require('./Utils/RealTimeUtils');
 
 var WelcomePageView = require('./BackboneViews/WelcomePageView.js');
 var AppManager = require('./Managers/AppManager');
-var RealTimeModule = require('./Managers/RealTimeManager');
+var ShareDBModule = require('./Managers/ShareDBManager');
 var SaveLoadUtilities = require('./Utils/SaveLoadUtility.js');
 
 //Wait all components to load
@@ -55,39 +53,14 @@ $(window).load(function()
     }
 
     //TODO urgent comment needed with a rested mind !
-    var collaborativeUsageCallback = function(postSuccess)
-    {
-        var realTimeManager = new RealTimeModule(postSuccess);
+    var collaborativeUsageCallback = function(postSuccess) {
 
-        var realTimeAuthCallback = function(response)
-        {
-            //Authentication fails initially, pop up authentication window
-            if(response.error)
-            {
-                function popUpAuthHandler(response)
-                {
-                    //Authentication fails
-                    if(response.error)
-                        console.log(response.error);
+        var shareDBManager = new ShareDBModule(postSuccess);
 
-                    //Authentication succesfull
-                    var appInstance = new AppManager(true,realTimeManager);
-                    realTimeManager.initRealTimeAPI();
-                }
+        var appInstance = new AppManager(true, shareDBManager);
 
-                //Trigger authentication
-                realTimeManager.authorize(popUpAuthHandler, true);
-            }
-            else
-            {
-                //Authentication succesfull
-                var appInstance = new AppManager(true,realTimeManager);
-                realTimeManager.initRealTimeAPI();
-            }
-        }
-
-        realTimeManager.authorize(realTimeAuthCallback, false);
-    }
+        shareDBManager.initShareDB();
+    };
 
     var welPage = new WelcomePageView({
         el: $('.welcomePageContainer'),
