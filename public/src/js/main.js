@@ -5,8 +5,6 @@ var Backbone = window.Backbone = require('backbone');
 Backbone.$ = $;
 require('bootstrap');
 var html5tooltips = require('html5tooltipsjs');
-//Google's real time utility lib which is customized also for PathwayMapper :)
-require('./Utils/RealTimeUtils');
 
 var WelcomePageView = require('./BackboneViews/WelcomePageView.js');
 var AppManager = require('./Managers/AppManager');
