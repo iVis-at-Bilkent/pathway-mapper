@@ -194,6 +194,7 @@ module.exports = (function () {
             });
         }
         else {
+            createNewDocument();
             //Create new shared document
             createNewDocument();
         }
