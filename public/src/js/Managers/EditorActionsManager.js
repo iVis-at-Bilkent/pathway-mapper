@@ -1620,7 +1620,7 @@ module.exports = (function()
     EditorActionsManager.prototype.shareDBGenomicDataHandler = function(op)
     {
         var isRemove = Object.keys(op)[1] === 'od';
-        var newData = op[1];
+        var newData = op.oi;
         var geneSymbol = op.p[1];
 
         if(!isRemove)
@@ -1639,7 +1639,7 @@ module.exports = (function()
     {
 
         var isRemove = Object.keys(op)[1] === 'od';
-        var data = op[1];
+        var data = op.oi;
         var key = op.p[1];
 
         //Addition
@@ -1658,7 +1658,7 @@ module.exports = (function()
 
     EditorActionsManager.prototype.shareDBGenomicDataVsibilityHandler = function(op)
     {
-        var data = op[1];
+        var data = op.oi;
         var key = op.p[1];
         var isRemove = Object.keys(op)[1] === 'od';
         //Addition
