@@ -5,7 +5,7 @@ var connection = new sharedb.Connection(socket);
 module.exports = (function () {
     "use strict";
 
-    var RealTimeManager = function (postFileLoadCallback) {
+    var ShareDBManager = function (postFileLoadCallback) {
         //Doc data maps names and keys
         this.NODEMAP_NAME = 'nodes';
         this.EDGEMAP_NAME = 'edges';
@@ -22,12 +22,12 @@ module.exports = (function () {
     };
 
     //Applies any given sharDB opeation to shared document and notifies other clients
-    RealTimeManager.prototype.applyShareDBOperation = function (op) {
-        this.doc.submitOp(op, this.realTimeError);
+    ShareDBManager.prototype.applyShareDBOperation = function (op) {
+        this.doc.submitOp(op, this.shareDBError);
     };
 
     //Clears genomic data in shared document and notifies other clients
-    RealTimeManager.prototype.clearShareDBGenomicData = function () {
+    ShareDBManager.prototype.clearShareDBGenomicData = function () {
         var ops = [];
         var genomicMap = doc.data[this.GENOMIC_DATA_MAP_NAME];
         var visMap = doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
@@ -45,7 +45,7 @@ module.exports = (function () {
         }
         //Reset genomic data group count to 0
         ops.push({p: [this.GENOMIC_DATA_GROUP_COUNT], na: -genomicDataGroupCount});
-        this.doc.submitOp(ops, this.realTimeError);
+        this.doc.submitOp(ops, this.shareDBError);
     };
 
     /*
@@ -55,12 +55,12 @@ module.exports = (function () {
      * @param object: new object
      *
      */
-    RealTimeManager.prototype.updateShareDocObject = function (mapName, objectKey, object) {
+    ShareDBManager.prototype.updateShareDocObject = function (mapName, objectKey, object) {
         this.doc.submitOp([{
             p: [mapName, objectKey],
             od: this.doc.data[mapName][objectKey],
             oi: object
-        }], this.realTimeError);
+        }], this.shareDBError);
     };
 
     /*
@@ -70,8 +70,8 @@ module.exports = (function () {
      * @param object: new object
      *
     */
-    RealTimeManager.prototype.insertShareDBObject = function (mapName, objectKey, object) {
-        this.doc.submitOp([{p: [mapName, objectKey], oi: object}], this.realTimeError);
+    ShareDBManager.prototype.insertShareDBObject = function (mapName, objectKey, object) {
+        this.doc.submitOp([{p: [mapName, objectKey], oi: object}], this.shareDBError);
     };
 
     /*
@@ -80,24 +80,24 @@ module.exports = (function () {
      * @param objectKey: key of the object
      *
     */
-    RealTimeManager.prototype.deleteShareDBObject = function (mapName, objectKey) {
-        this.doc.submitOp([{p: [mapName, objectKey], od: this.doc.data[mapName][objectKey]}], this.realTimeError);
+    ShareDBManager.prototype.deleteShareDBObject = function (mapName, objectKey) {
+        this.doc.submitOp([{p: [mapName, objectKey], od: this.doc.data[mapName][objectKey]}], this.shareDBError);
     };
 
     //Initializes layout properties of the shared document
-    RealTimeManager.prototype.initializeShareDBLayoutProperties = function () {
+    ShareDBManager.prototype.initializeShareDBLayoutProperties = function () {
         this.doc.submitOp([{
             p: [this.LAYOUT_PROPS_NAME, 0],
             li: [window.editorActionsManager.layoutProperties]
-        }], this.realTimeError);
+        }], this.shareDBError);
     };
 
     //Initializes global options of the shared document
-    RealTimeManager.prototype.initializeShareDBGlobalOptions = function () {
+    ShareDBManager.prototype.initializeShareDBGlobalOptions = function () {
         this.doc.submitOp([{
             p: [this.GLOBAL_OPTS_NAME, 0],
             li: [window.editorActionsManager.getGlobalOptions()]
-        }], this.realTimeError);
+        }], this.shareDBError);
     };
 
     /*
@@ -105,12 +105,12 @@ module.exports = (function () {
      * @param object: new layout properties object
      *
     */
-    RealTimeManager.prototype.updateShareDBLayoutProperties = function (object) {
+    ShareDBManager.prototype.updateShareDBLayoutProperties = function (object) {
         this.doc.submitOp([{
             p: [this.LAYOUT_PROPS_NAME, 0],
             ld: this.doc.data[this.LAYOUT_PROPS_NAME][0],
             li: object
-        }], this.realTimeError);
+        }], this.shareDBError);
     };
 
     /*
@@ -118,22 +118,22 @@ module.exports = (function () {
      * @param object: new global options object
      *
     */
-    RealTimeManager.prototype.updateShareDBGlobalOptions = function (object) {
+    ShareDBManager.prototype.updateShareDBGlobalOptions = function (object) {
         this.doc.submitOp([{
             p: [this.GLOBAL_OPTS_NAME, 0],
             ld: this.doc.data[this.GLOBAL_OPTS_NAME][0],
             li: object
-        }], this.realTimeError);
+        }], this.shareDBError);
     };
 
     //Increments shared data group count
     //Use this function to increment and keep the group count synchronized
-    RealTimeManager.prototype.incrementShareDBGroupCount = function () {
-        this.doc.submitOp([{p: [this.GENOMIC_DATA_GROUP_COUNT], na: 1}], this.realTimeError);
+    ShareDBManager.prototype.incrementShareDBGroupCount = function () {
+        this.doc.submitOp([{p: [this.GENOMIC_DATA_GROUP_COUNT], na: 1}], this.shareDBError);
     };
 
     //Checks whether given operation is a replace or add/delete operation
-    RealTimeManager.prototype.isRealTimeReplaceEvent = function (op) {
+    ShareDBManager.prototype.isRealTimeReplaceEvent = function (op) {
         return op.hasOwnProperty("oi") && op.hasOwnProperty("od");
     };
 
@@ -141,17 +141,17 @@ module.exports = (function () {
      * Gets the initial value of the shared document
      * without this function shared document values cannot be reached
     */
-    RealTimeManager.prototype.initializeSharedDoc = function () {
+    ShareDBManager.prototype.initializeSharedDoc = function () {
         this.doc.subscribe();
     };
 
-    RealTimeManager.prototype.realTimeError = function (err) {
+    ShareDBManager.prototype.shareDBError = function (err) {
         if (err) {
             console.error(err);
         }
     };
 
-    RealTimeManager.prototype.initRealTimeAPI = function () {
+    ShareDBManager.prototype.initRealTimeAPI = function () {
         var self = this;
         var id = this.getParam('id');
 
@@ -205,7 +205,7 @@ module.exports = (function () {
      * document. We will wire up the data in shared document to the UI.
      *
     */
-    RealTimeManager.prototype.onFileLoaded = function () {
+    ShareDBManager.prototype.onFileLoaded = function () {
         this.initializeSharedDoc();
         this.syncInitialSharedDocData();
         this.initSharedDocEventHandlers();
@@ -217,7 +217,7 @@ module.exports = (function () {
      * Synchronizes initial data in the shared document to
      * client's application.
      */
-    RealTimeManager.prototype.syncInitialSharedDocData = function () {
+    ShareDBManager.prototype.syncInitialSharedDocData = function () {
         var self = this;
         var nodeMap = self.doc.data[this.NODEMAP_NAME];
         var edgeMap = self.doc.data[this.EDGEMAP_NAME];
@@ -355,7 +355,7 @@ module.exports = (function () {
      * Initialize event listeners for any operation coming from shareDB
      *
      */
-    RealTimeManager.prototype.initSharedDocEventHandlers = function () {
+    ShareDBManager.prototype.initSharedDocEventHandlers = function () {
 
         var self = this;
 
@@ -440,7 +440,7 @@ module.exports = (function () {
      * genomic data group count and increments counter by 1
      *
     */
-    RealTimeManager.prototype.getEmptyGroupID = function () {
+    ShareDBManager.prototype.getEmptyGroupID = function () {
         var returnCount = this.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
         this.incrementShareDBGroupCount();
         return returnCount;
@@ -452,7 +452,7 @@ module.exports = (function () {
      * by group id or group name
      *
     */
-    RealTimeManager.prototype.groupGenomicData = function (cancerNames, inGroupId) {
+    ShareDBManager.prototype.groupGenomicData = function (cancerNames, inGroupId) {
         var genomicGroupMap = this.doc.data[this.GENOMIC_DATA_GROUP_NAME];
         var genomicVisMap = this.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
 
@@ -479,11 +479,11 @@ module.exports = (function () {
     };
 
     //Clears genomic data on shared document
-    RealTimeManager.prototype.clearGenomicData = function () {
+    ShareDBManager.prototype.clearGenomicData = function () {
         this.clearShareDBGenomicData();
     };
 
-    RealTimeManager.prototype.addGenomicData = function (geneData) {
+    ShareDBManager.prototype.addGenomicData = function (geneData) {
         var genomicMap = this.doc.data[this.GENOMIC_DATA_MAP_NAME];
 
         //Iterate over all genmoic data which is mapped by geneSymbol to list of alteration values
@@ -506,7 +506,7 @@ module.exports = (function () {
         this.applyShareDBOperation(ops);
     };
 
-    RealTimeManager.prototype.addGenomicVisibilityData = function (visMap) {
+    ShareDBManager.prototype.addGenomicVisibilityData = function (visMap) {
         var ops = [];
         for (var cancerStudy in visMap) {
             ops.push({
@@ -517,7 +517,7 @@ module.exports = (function () {
         this.applyShareDBOperation(ops);
     };
 
-    RealTimeManager.prototype.changeVisibility = function (nodesToHide, isHidden) {
+    ShareDBManager.prototype.changeVisibility = function (nodesToHide, isHidden) {
         var self = this;
         var nodeMap = self.doc.data[this.NODEMAP_NAME];
 
@@ -531,7 +531,7 @@ module.exports = (function () {
         });
     };
 
-    RealTimeManager.prototype.changeHighlight = function (elementsToHighlight, isHighlighted) {
+    ShareDBManager.prototype.changeHighlight = function (elementsToHighlight, isHighlighted) {
         var self = this;
         var nodeMap = self.doc.data[this.NODEMAP_NAME];
         var edgeMap = self.doc.data[this.EDGEMAP_NAME];
@@ -551,7 +551,7 @@ module.exports = (function () {
         });
     };
 
-    RealTimeManager.prototype.addNewNode = function (nodeData, posData) {
+    ShareDBManager.prototype.addNewNode = function (nodeData, posData) {
         var realTimeGeneratedID = this.getCustomObjId();
         var params = {
             name: nodeData.name,
@@ -577,7 +577,7 @@ module.exports = (function () {
         this.insertShareDBObject(this.NODEMAP_NAME, realTimeGeneratedID, newNode);
     };
 
-    RealTimeManager.prototype.addNewEdge = function (edgeData) {
+    ShareDBManager.prototype.addNewEdge = function (edgeData) {
         var realTimeGeneratedID = this.getCustomObjId();
         var params = {
             type: edgeData.type,
@@ -594,7 +594,7 @@ module.exports = (function () {
         this.insertShareDBObject(this.EDGEMAP_NAME, realTimeGeneratedID, newEdge);
     };
 
-    RealTimeManager.prototype.removeElement = function (elementID) {
+    ShareDBManager.prototype.removeElement = function (elementID) {
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
@@ -609,7 +609,7 @@ module.exports = (function () {
         }
     };
 
-    RealTimeManager.prototype.moveElement = function (ele) {
+    ShareDBManager.prototype.moveElement = function (ele) {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
@@ -627,7 +627,7 @@ module.exports = (function () {
     };
 
     //This function is used for movements of all selected elements wrt alignment selected
-    RealTimeManager.prototype.changeElementsPositionByAlignment = function (coll) {
+    ShareDBManager.prototype.changeElementsPositionByAlignment = function (coll) {
         var self = this;
         var nodeMap = self.doc.data[this.NODEMAP_NAME];
 
@@ -645,7 +645,7 @@ module.exports = (function () {
         });
     };
 
-    RealTimeManager.prototype.resizeElement = function (ele, previousWidth, previousHeight) {
+    ShareDBManager.prototype.resizeElement = function (ele, previousWidth, previousHeight) {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
@@ -667,7 +667,7 @@ module.exports = (function () {
         }
     };
 
-    RealTimeManager.prototype.setSizeOfElement = function (ele, newWidth, newHeight) {
+    ShareDBManager.prototype.setSizeOfElement = function (ele, newWidth, newHeight) {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
@@ -683,7 +683,7 @@ module.exports = (function () {
         }
     };
 
-    RealTimeManager.prototype.resizeCompound = function (ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom) {
+    ShareDBManager.prototype.resizeCompound = function (ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom) {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
@@ -707,7 +707,7 @@ module.exports = (function () {
         }
     };
 
-    RealTimeManager.prototype.changeNodePositionsRealTime = function (nodes) {
+    ShareDBManager.prototype.changeNodePositionsRealTime = function (nodes) {
         var self = this;
         var nodeMap = self.doc.data[self.NODEMAP_NAME];
 
@@ -726,7 +726,7 @@ module.exports = (function () {
         });
     };
 
-    RealTimeManager.prototype.changeHighlightInvalidGenes = function (nodeIDs, isInvalid) {
+    ShareDBManager.prototype.changeHighlightInvalidGenes = function (nodeIDs, isInvalid) {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         //TODO check compound operation inside or outside of for ?
@@ -741,7 +741,7 @@ module.exports = (function () {
 
     };
 
-    RealTimeManager.prototype.addPubmedIDs = function (edgeID, pubmedIDs) {
+    ShareDBManager.prototype.addPubmedIDs = function (edgeID, pubmedIDs) {
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
 
 
@@ -761,7 +761,7 @@ module.exports = (function () {
         }
     };
 
-    RealTimeManager.prototype.removePubmedID = function (edgeID, pubmedIDs) {
+    ShareDBManager.prototype.removePubmedID = function (edgeID, pubmedIDs) {
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
 
         if (edgeMap.hasOwnProperty(edgeID)) {
@@ -785,7 +785,7 @@ module.exports = (function () {
         }
     };
 
-    RealTimeManager.prototype.updateEdgeBendPoints = function (edgeID, bendPointsArray) {
+    ShareDBManager.prototype.updateEdgeBendPoints = function (edgeID, bendPointsArray) {
 
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
 
@@ -799,7 +799,7 @@ module.exports = (function () {
         }
     };
 
-    RealTimeManager.prototype.changeName = function (ele, newName) {
+    ShareDBManager.prototype.changeName = function (ele, newName) {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
 
@@ -827,7 +827,7 @@ module.exports = (function () {
         }
     };
 
-    RealTimeManager.prototype.changeParent = function (rootNode, newParentId, connectedEdges) {
+    ShareDBManager.prototype.changeParent = function (rootNode, newParentId, connectedEdges) {
         var self = this;
         var nodeLookupTable = {};
 
@@ -904,7 +904,7 @@ module.exports = (function () {
         });
     };
 
-    RealTimeManager.prototype.removeAllElements = function () {
+    ShareDBManager.prototype.removeAllElements = function () {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
         var ops = [];
@@ -928,7 +928,7 @@ module.exports = (function () {
         this.applyShareDBOperation(ops);
     };
 
-    RealTimeManager.prototype.loadGraph = function (nodes, edges) {
+    ShareDBManager.prototype.loadGraph = function (nodes, edges) {
         var self = this;
         this.removeAllElements();
 
@@ -989,7 +989,7 @@ module.exports = (function () {
         }
     };
 
-    RealTimeManager.prototype.mergeGraph = function (nodes, edges) {
+    ShareDBManager.prototype.mergeGraph = function (nodes, edges) {
         var self = this;
         var nodeMap = self.doc.data[this.NODEMAP_NAME];
 
@@ -1082,11 +1082,11 @@ module.exports = (function () {
         self.applyShareDBOperation(ops);
     };
 
-    RealTimeManager.prototype.updateLayoutProperties = function (newLayoutProperties) {
+    ShareDBManager.prototype.updateLayoutProperties = function (newLayoutProperties) {
         this.updateShareDBLayoutProperties(newLayoutProperties);
     };
 
-    RealTimeManager.prototype.updateGlobalOptions = function (newOptions) {
+    ShareDBManager.prototype.updateGlobalOptions = function (newOptions) {
         this.updateShareDBGlobalOptions(newOptions);
     };
 
@@ -1101,7 +1101,7 @@ module.exports = (function () {
      * a node in corresponding level.
      *
      * */
-    RealTimeManager.prototype.createGraphHierarchy = function (nodes) {
+    ShareDBManager.prototype.createGraphHierarchy = function (nodes) {
         //Some arrays and maps for creating graph hierarchy
         var tree = [];
         var mappedArr = {};
@@ -1129,7 +1129,7 @@ module.exports = (function () {
     };
 
     //Makes sure that edge is compatible with edges in shared document
-    RealTimeManager.prototype.edgeInitializer = function (params) {
+    ShareDBManager.prototype.edgeInitializer = function (params) {
         var edge = {};
         edge.id = params.id || this.getCustomObjId();
         edge.type = params.type || "undefined";
@@ -1161,7 +1161,7 @@ module.exports = (function () {
     };
 
     //Makes sure that node is compatible with nodes in shared document
-    RealTimeManager.prototype.nodeInitializer = function (params) {
+    ShareDBManager.prototype.nodeInitializer = function (params) {
         var node = {};
         node.id = params.id || this.getCustomObjId();
         node.name = params.name || "undefined";
@@ -1184,7 +1184,7 @@ module.exports = (function () {
     };
 
     //Makes sure that layout properties is compatible with layout properties in shared document
-    RealTimeManager.prototype.layoutPropertiesInitializer = function (params) {
+    ShareDBManager.prototype.layoutPropertiesInitializer = function (params) {
         var layoutProperties = {};
         layoutProperties.name = params.name || 'undefined';
         layoutProperties.nodeRepulsion = params.nodeRepulsion || 'undefined';
@@ -1207,7 +1207,7 @@ module.exports = (function () {
     };
 
     //Makes sure that global options is compatible with global options in shared document
-    RealTimeManager.prototype.globalOptionsInitializer = function (params) {
+    ShareDBManager.prototype.globalOptionsInitializer = function (params) {
         var globalOptions = {};
         globalOptions.zoomLevel = params.zoomLevel || 'undefined';
         globalOptions.panLevel = params.panLevel || 'undefined';
@@ -1215,7 +1215,7 @@ module.exports = (function () {
     };
 
     //Create unique ID for elements
-    RealTimeManager.prototype.getCustomObjId = function () {
+    ShareDBManager.prototype.getCustomObjId = function () {
         // see http://stackoverflow.com/a/8809472
         // we need to take care of our own IDs because the ones automatically generated by cytoscape (also UUID)
         // don't comply with xsd:SID type that must not begin with a number
@@ -1231,7 +1231,7 @@ module.exports = (function () {
         });
     };
 
-    RealTimeManager.prototype.getParam = function (urlParam) {
+    ShareDBManager.prototype.getParam = function (urlParam) {
         var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
         var match = window.location.search.match(regExp);
         if (match && match.length) {
@@ -1243,6 +1243,6 @@ module.exports = (function () {
         return match;
     };
 
-    return RealTimeManager;
+    return ShareDBManager;
 
 })();

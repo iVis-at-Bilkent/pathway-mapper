@@ -8,7 +8,7 @@ var html5tooltips = require('html5tooltipsjs');
 
 var WelcomePageView = require('./BackboneViews/WelcomePageView.js');
 var AppManager = require('./Managers/AppManager');
-var RealTimeModule = require('./Managers/RealTimeManager');
+var ShareDBModule = require('./Managers/ShareDBManager');
 var SaveLoadUtilities = require('./Utils/SaveLoadUtility.js');
 
 //Wait all components to load
@@ -55,11 +55,11 @@ $(window).load(function()
     //TODO urgent comment needed with a rested mind !
     var collaborativeUsageCallback = function(postSuccess) {
 
-        var realTimeManager = new RealTimeModule(postSuccess);
+        var shareDBManager = new ShareDBModule(postSuccess);
 
-        var appInstance = new AppManager(true, realTimeManager);
+        var appInstance = new AppManager(true, shareDBManager);
 
-        realTimeManager.initRealTimeAPI();
+        shareDBManager.initShareDB();
     };
 
     var welPage = new WelcomePageView({

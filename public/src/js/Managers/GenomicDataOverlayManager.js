@@ -32,7 +32,7 @@ module.exports = (function()
         this.notifyObservers();
     };
 
-    GenomicDataOverlayManager.prototype.preparePortalGenomicDataRealTime = function(genomicData)
+    GenomicDataOverlayManager.prototype.preparePortalGenomicDataShareDB = function(genomicData)
     {
         var geneMap = {};
         var visMap = {};
@@ -125,7 +125,7 @@ module.exports = (function()
         this.visibleGenomicDataMapByType[key] = data;
     };
 
-    GenomicDataOverlayManager.prototype.prepareGenomicDataRealTime = function(genomicData)
+    GenomicDataOverlayManager.prototype.prepareGenomicDataShareDB = function(genomicData)
     {
         var genomicDataMap = {};
         var cancerTypes = [];

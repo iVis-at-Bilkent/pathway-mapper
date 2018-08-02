@@ -5,13 +5,13 @@ var SVGExporter = require('./../Utils/SVGExporter.js');
 module.exports = (function()
 {
     "use strict";
-    var EditorActionsManager = function(isCollaborative, realtimeManager, cyInst)
+    var EditorActionsManager = function(isCollaborative, shareDBManager, cyInst)
     {
         //Set cy instance and set real time manager reference if collaborative mode
         this.cy = cyInst;
         this.isCollaborative = isCollaborative;
-        if(this.isCollaborative && realtimeManager)
-            this.realTimeManager = realtimeManager;
+        if(this.isCollaborative && shareDBManager)
+            this.shareDBManager = shareDBManager;
 
         this.defaultLayoutProperties =
         {
@@ -72,7 +72,7 @@ module.exports = (function()
     EditorActionsManager.prototype.handleChangePositionByAlignment = function(movedNodeArr)
     {
         if (this.isCollaborative)
-            this.realTimeManager.changeElementsPositionByAlignment(movedNodeArr);
+            this.shareDBManager.changeElementsPositionByAlignment(movedNodeArr);
         else
             window.undoRedoManager.do("changePositions", movedNodeArr)
     };
@@ -119,7 +119,7 @@ module.exports = (function()
     EditorActionsManager.prototype.changeNodePositionsByArrows = function(selectedNodes)
     {
         if (this.isCollaborative)
-            this.realTimeManager.changeNodePositionsRealTime(selectedNodes);
+            this.shareDBManager.changeNodePositionsShareDB(selectedNodes);
         //resize-node extension already deals for the movement in local mode
     };
 
@@ -194,7 +194,7 @@ module.exports = (function()
     {
         if (this.isCollaborative)
         {
-            this.realTimeManager.changeName(ele, newName);
+            this.shareDBManager.changeName(ele, newName);
         }
         else
         {
@@ -256,7 +256,7 @@ module.exports = (function()
         });
         cy.elements(":selected").unselect();
         if (this.isCollaborative)
-            this.realTimeManager.changeVisibility(nodesToHide, true);
+            this.shareDBManager.changeVisibility(nodesToHide, true);
         else
             window.undoRedoManager.do('hideNode', nodesToHide);
     };
@@ -280,7 +280,7 @@ module.exports = (function()
     {
         var hid = cy.nodes(":hidden");
         if (this.isCollaborative)
-            this.realTimeManager.changeVisibility(hid, false);
+            this.shareDBManager.changeVisibility(hid, false);
         else
             window.undoRedoManager.do('showAllNodes', hid);
     };
@@ -357,7 +357,7 @@ module.exports = (function()
                         invalidGenes.push(gene.id());
                 }
             });
-            this.realTimeManager.changeHighlightInvalidGenes(invalidGenes, true);
+            this.shareDBManager.changeHighlightInvalidGenes(invalidGenes, true);
 
             if (invalidGenes.length > 0)
                 window.notificationManager.createNotification("Invalid genes are highlighted","fail");
@@ -404,7 +404,7 @@ module.exports = (function()
                         geneIDs.push(gene.id());
                 }
             });
-            this.realTimeManager.changeHighlightInvalidGenes(geneIDs, false);
+            this.shareDBManager.changeHighlightInvalidGenes(geneIDs, false);
         }
         else
         {
@@ -458,7 +458,7 @@ module.exports = (function()
                 elementsToHighlight = elementsToHighlight.union(ele);
         });
         if (this.isCollaborative)
-            this.realTimeManager.changeHighlight(elementsToHighlight, true);
+            this.shareDBManager.changeHighlight(elementsToHighlight, true);
         else
             window.undoRedoManager.do('highlightOthers', elementsToHighlight);
     };
@@ -475,7 +475,7 @@ module.exports = (function()
                 elementsToHighlight = elementsToHighlight.union(ele);
         });
         if (this.isCollaborative)
-            this.realTimeManager.changeHighlight(elementsToHighlight, true);
+            this.shareDBManager.changeHighlight(elementsToHighlight, true);
         else
             window.undoRedoManager.do('highlightOthers', elementsToHighlight);
     };
@@ -483,7 +483,7 @@ module.exports = (function()
     EditorActionsManager.prototype.highlightBySearch = function(args)
     {
         if (this.isCollaborative)
-            this.realTimeManager.changeHighlight(args, true);
+            this.shareDBManager.changeHighlight(args, true);
         else
             window.undoRedoManager.do('highlightOthers', args);
     };
@@ -498,7 +498,7 @@ module.exports = (function()
         });
 
         if (this.isCollaborative)
-            this.realTimeManager.changeHighlight(nodesToRemoveHighlight, false);
+            this.shareDBManager.changeHighlight(nodesToRemoveHighlight, false);
         else
             actions.push({name: "removeOtherHighlight", param: nodesToRemoveHighlight});
             // window.undoRedoManager.do('removeOtherHighlight', nodesToRemoveHighlight);
@@ -587,7 +587,7 @@ module.exports = (function()
     EditorActionsManager.prototype.getEmptyGroupID = function()
     {
         if(this.isCollaborative)
-            return this.realTimeManager.getEmptyGroupID();
+            return this.shareDBManager.getEmptyGroupID();
         else
             return this.genomicDataOverlayManager.getEmptyGroupID();
     };
@@ -597,14 +597,14 @@ module.exports = (function()
      * **/
     EditorActionsManager.prototype.groupGenomicData = function(cancerNames, groupID)
     {
-        return this.realTimeManager.groupGenomicData(cancerNames, groupID);
+        return this.shareDBManager.groupGenomicData(cancerNames, groupID);
     };
 
     EditorActionsManager.prototype.addPubmedIDs = function(edge, pubmedIDs)
     {
       if (this.isCollaborative)
       {
-        this.realTimeManager.addPubmedIDs(edge.id(), pubmedIDs);
+        this.shareDBManager.addPubmedIDs(edge.id(), pubmedIDs);
       }
       else
       {
@@ -621,7 +621,7 @@ module.exports = (function()
     {
       if (this.isCollaborative)
       {
-        this.realTimeManager.removePubmedID(edge.id(), pubmedIDs);
+        this.shareDBManager.removePubmedID(edge.id(), pubmedIDs);
       }
       else
       {
@@ -650,7 +650,7 @@ module.exports = (function()
             // edge.data("bendPointPositions", bendPointsArray);
             // edgeBendEditing.initBendPoints(edge);
 
-            this.realTimeManager.updateEdgeBendPoints(edge.id(), bendPointsArray);
+            this.shareDBManager.updateEdgeBendPoints(edge.id(), bendPointsArray);
         }
     }
 
@@ -702,8 +702,8 @@ module.exports = (function()
         if(this.isCollaborative)
         {
             //TODO compound OP
-            // this.realTimeManager.clearGenomicVisData();
-            this.realTimeManager.addGenomicVisibilityData(dataMap);
+            // this.shareDBManager.clearGenomicVisData();
+            this.shareDBManager.addGenomicVisibilityData(dataMap);
         }
         else
         {
@@ -734,7 +734,7 @@ module.exports = (function()
     EditorActionsManager.prototype.updateGlobalOptions = function(newOptions)
     {
         if(this.isCollaborative)
-            this.realTimeManager.updateGlobalOptions(newOptions);
+            this.shareDBManager.updateGlobalOptions(newOptions);
     }
 
     //Layout properties related functions
@@ -745,7 +745,7 @@ module.exports = (function()
             // Call a real time function that updated real time object and
             // its callback (updateLayoutPropertiesCallback) will handle sync of this object
             // across collaborators
-            this.realTimeManager.updateLayoutProperties(newLayoutProps);
+            this.shareDBManager.updateLayoutProperties(newLayoutProps);
         }
         else
         {
@@ -771,7 +771,7 @@ module.exports = (function()
     {
         if (this.isCollaborative)
         {
-            this.addNewNodeToRealTime(nodeData, posData);
+            this.addNewNodeToShareDB(nodeData, posData);
         }
         else
         {
@@ -852,7 +852,7 @@ module.exports = (function()
         thatEle.style('width', thatEle.data('w'));
     };
 
-    EditorActionsManager.prototype.realTimeNodeAddRemoveEventCallBack = function(op)
+    EditorActionsManager.prototype.shareDBNodeAddRemoveEventCallBack = function(op)
     {
         //Get real time node object and sync it to node addition or removal
         var isRemove = Object.keys(op)[1] === 'od';
@@ -898,9 +898,9 @@ module.exports = (function()
         this.cy.nodes().updateCompoundBounds();
     };
 
-    EditorActionsManager.prototype.addNewNodeToRealTime = function(nodeData, posData)
+    EditorActionsManager.prototype.addNewNodeToShareDB = function(nodeData, posData)
     {
-        this.realTimeManager.addNewNode(nodeData,posData);
+        this.shareDBManager.addNewNode(nodeData,posData);
     };
 
     //Edge related functions
@@ -908,7 +908,7 @@ module.exports = (function()
     {
         if (this.isCollaborative)
         {
-            this.addNewEdgeRealTime(edgeData);
+            this.addNewEdgeShareDB(edgeData);
         }
         else
         {
@@ -941,9 +941,9 @@ module.exports = (function()
         cy.add(newEdges);
     };
 
-    EditorActionsManager.prototype.addNewEdgeRealTime = function(edgeData)
+    EditorActionsManager.prototype.addNewEdgeShareDB = function(edgeData)
     {
-        this.realTimeManager.addNewEdge(edgeData);
+        this.shareDBManager.addNewEdge(edgeData);
     };
 
     EditorActionsManager.prototype.addNewEdgetoCy = function(edgeData)
@@ -957,7 +957,7 @@ module.exports = (function()
         window.undoRedoManager.do("add", newEdge);
     };
 
-    EditorActionsManager.prototype.realTimeEdgeAddRemoveEventCallBack = function(op)
+    EditorActionsManager.prototype.shareDBEdgeAddRemoveEventCallBack = function(op)
     {
 
         //Get real time node object and sync it to node addition or removal
@@ -1081,7 +1081,6 @@ module.exports = (function()
 
     EditorActionsManager.prototype.addNewEdgeLocally = function(edge)
     {
-        console.log(edge);
         var edgeData =
         {
             id: edge.id,
@@ -1101,7 +1100,7 @@ module.exports = (function()
     {
         if (this.isCollaborative)
         {
-            this.removeElementsFromRealTime(ele);
+            this.removeElementsFromShareDB(ele);
         }
         else
         {
@@ -1119,25 +1118,25 @@ module.exports = (function()
         window.undoRedoManager.do("remove", ele);
     };
 
-    EditorActionsManager.prototype.removeElementsFromRealTime = function(eles)
+    EditorActionsManager.prototype.removeElementsFromShareDB = function(eles)
     {
         var self = this;
         eles.forEach(function (ele, i)
         {
-            self.realTimeManager.removeElement(ele.id());
+            self.shareDBManager.removeElement(ele.id());
         });
     };
 
-    EditorActionsManager.prototype.removeElementFromRealTime = function(ele)
+    EditorActionsManager.prototype.removeElementFromShareDB = function(ele)
     {
-        this.realTimeManager.removeElement(ele.id());
+        this.shareDBManager.removeElement(ele.id());
     };
 
     EditorActionsManager.prototype.changeParents = function(eles, newParentId)
     {
         if(this.isCollaborative)
         {
-            this.changeParentRealTime(eles, newParentId);
+            this.changeParentShareDB(eles, newParentId);
         }
         else
         {
@@ -1188,7 +1187,7 @@ module.exports = (function()
         }
     };
 
-    EditorActionsManager.prototype.changeParentRealTime = function (eles, newParentId)
+    EditorActionsManager.prototype.changeParentShareDB = function (eles, newParentId)
     {
 
         var classRef = this;
@@ -1249,7 +1248,7 @@ module.exports = (function()
         var rootNodeR = new NodeObj(null);
 
         traverseNodes(topMostNodes, rootNodeR);
-        this.realTimeManager.changeParent(rootNodeR, newParentId, connectedEdges);
+        this.shareDBManager.changeParent(rootNodeR, newParentId, connectedEdges);
     };
 
     EditorActionsManager.prototype.changeParentCy = function(eles, newParentId)
@@ -1311,7 +1310,7 @@ module.exports = (function()
         {
             eles.forEach(function (ele,index)
             {
-                classRef.realTimeManager.moveElement(ele);
+                classRef.shareDBManager.moveElement(ele);
             });
         }
     };
@@ -1323,7 +1322,7 @@ module.exports = (function()
                 var previousWidth = ele.width();
                 var previousHeight = ele.height();
                 //Sync movement to real time api
-                this.realTimeManager.resizeElement(ele, previousWidth, previousHeight);
+                this.shareDBManager.resizeElement(ele, previousWidth, previousHeight);
             }
             else {
                 var minWidth = ele.style('min-width');
@@ -1334,7 +1333,7 @@ module.exports = (function()
                 var minHeightBiasBottom = ele.style('min-height-bias-bottom');
 
                 //Sync movement to real time api
-                this.realTimeManager.resizeCompound(ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom);
+                this.shareDBManager.resizeCompound(ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom);
             }
         }
     };
@@ -1344,7 +1343,7 @@ module.exports = (function()
         if (this.isCollaborative)
         {
             //Collaborative usage
-            this.realTimeManager.mergeGraph(nodes,edges);
+            this.shareDBManager.mergeGraph(nodes,edges);
         }
         else
         {
@@ -1449,7 +1448,7 @@ module.exports = (function()
         if (this.isCollaborative)
         {
             //Real time load graph
-            this.loadfileRealTime(nodes,edges);
+            this.loadfileShareDB(nodes,edges);
         }
         else
         {
@@ -1468,16 +1467,16 @@ module.exports = (function()
         this.addEdgesCy(edges);
     };
 
-    EditorActionsManager.prototype.loadfileRealTime = function(nodes, edges)
+    EditorActionsManager.prototype.loadfileShareDB = function(nodes, edges)
     {
-        this.realTimeManager.loadGraph(nodes,edges);
+        this.shareDBManager.loadGraph(nodes,edges);
     };
 
     EditorActionsManager.prototype.removeAllElements = function()
     {
         if (this.isCollaborative)
         {
-            this.realTimeManager.removeAllElements();
+            this.shareDBManager.removeAllElements();
         }
         else
         {
@@ -1570,7 +1569,7 @@ module.exports = (function()
     {
         if(this.isCollaborative)
         {
-            this.realTimeManager.clearGenomicData();
+            this.shareDBManager.clearGenomicData();
         }
         else
         {
@@ -1589,11 +1588,11 @@ module.exports = (function()
         if(this.isCollaborative)
         {
 
-            var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataRealTime(genomicData);
-            this.realTimeManager.addGenomicData(parsedGenomicData.genomicDataMap);
-            this.realTimeManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
+            var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataShareDB(genomicData);
+            this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
+            this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
                 groupID);
-            this.realTimeManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
+            this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
 
         }
         else
@@ -1606,11 +1605,11 @@ module.exports = (function()
     {
         if(this.isCollaborative)
         {
-            var parsedGenomicData = this.genomicDataOverlayManager.preparePortalGenomicDataRealTime(genomicData);
-            this.realTimeManager.addGenomicData(parsedGenomicData.genomicDataMap);
-            this.realTimeManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
+            var parsedGenomicData = this.genomicDataOverlayManager.preparePortalGenomicDataShareDB(genomicData);
+            this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
+            this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
                 groupID);
-            this.realTimeManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
+            this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
         }
         else
         {
@@ -1618,7 +1617,7 @@ module.exports = (function()
         }
     }
 
-    EditorActionsManager.prototype.realTimeGenomicDataHandler = function(op)
+    EditorActionsManager.prototype.shareDBGenomicDataHandler = function(op)
     {
         var isRemove = Object.keys(op)[1] === 'od';
         var newData = op[1];
@@ -1636,7 +1635,7 @@ module.exports = (function()
     }
 
 
-    EditorActionsManager.prototype.realTimeGenomicDataGroupChangeHandler = function(op)
+    EditorActionsManager.prototype.shareDBGenomicDataGroupChangeHandler = function(op)
     {
 
         var isRemove = Object.keys(op)[1] === 'od';
@@ -1657,7 +1656,7 @@ module.exports = (function()
         this.genomicDataOverlayManager.notifyObservers();
     }
 
-    EditorActionsManager.prototype.realTimeGenomicDataVsibilityHandler = function(op)
+    EditorActionsManager.prototype.shareDBGenomicDataVsibilityHandler = function(op)
     {
         var data = op[1];
         var key = op.p[1];
@@ -1683,7 +1682,7 @@ module.exports = (function()
         {
             var visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
             var labelWithData = 148 + (visibleNumberOfData-3) * 36;
-            var rt = this.realTimeManager;
+            var rt = this.shareDBManager;
             nodes.forEach(function( ele ){
                 if (!ele.isParent())
                 {
@@ -1781,8 +1780,6 @@ module.exports = (function()
         cy.nodeResize('get').refreshGrapples();
     };
 
-    //Utility Functions
-    //TODO move functions thar are inside class functions here
 
     return EditorActionsManager;
 

@@ -46,9 +46,9 @@ var notify = require('bootstrap-notify');
 window.notificationManager = require('./../Utils/NotificationFactory');
 
 module.exports = (function () {
-    function AppManager(isCollaborative, realTimeManager) {
+    function AppManager(isCollaborative, shareDBManager) {
         this.isCollaborative = isCollaborative;
-        this.realTimeManager = realTimeManager;
+        this.shareDBManager = shareDBManager;
         this.init();
         this.createSampleMenu();
         this.createCBioPortalAccessModal();
@@ -216,7 +216,7 @@ module.exports = (function () {
 
         //Create Manager Classes
         window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative,
-            this.realTimeManager,
+            this.shareDBManager,
             window.cy);
         window.gridOptionsManager = new GridOptionsManager();
         window.viewOperationsManager = new ViewOperationsManager();
