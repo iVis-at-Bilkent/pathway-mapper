@@ -37,7 +37,7 @@ Firstly, clone PathwayMapper to your local machine, and navigate to the local re
 - Installation
 ```
 git clone https://github.com/iVis-at-Bilkent/pathway-mapper.git
-cd patway-mapper
+cd pathway-mapper
 npm install
 ```
 - Build
