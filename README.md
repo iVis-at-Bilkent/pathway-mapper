@@ -40,6 +40,10 @@ git clone https://github.com/iVis-at-Bilkent/pathway-mapper.git
 cd patway-mapper
 npm install
 ```
+- Build
+```
+npm run build-min-js && npm run build-min-css
+```
 
 - Running the tool
 ```
@@ -75,14 +79,6 @@ Similarly do the same for base.js and base.min.js file:
 <!--For debugging-->
 <!--<script src="bin/base.js"></script>-->
 <script src="bin/base.min.js"></script>
-```
-
-Some additional npm dependencies are needed in developement mode:
-
-```
-sudo npm install nodemon -g
-sudo npm install browserify -g
-sudo npm install node-sass -g
 ```
 
 After that run the tool with the following command:
