@@ -115,7 +115,8 @@ module.exports = (function () {
             self.onFileLoaded();
         };
 
-        var createNewDocument = function (id) {
+        var createNewDocument = function () {
+            var new_id = self.getCustomObjId();
             var data = {
                 nodes: {},
                 edges: {},
@@ -126,8 +127,8 @@ module.exports = (function () {
                 genomicDataGroupList: {},
                 genomicDataGroupCount: 0
             };
-            window.history.pushState(null, null, '?id=' + id);
-            self.doc = connection.get('cy', id);
+            window.history.pushState(null, null, '?id=' + new_id);
+            self.doc = connection.get('cy', new_id);
             self.doc.create(data, loadFileCallback);
         };
 
@@ -140,16 +141,14 @@ module.exports = (function () {
                     throw err;
 
                 if (self.doc.type === null) {
-                    var new_id = self.getCustomObjId();
-                    createNewDocument(new_id);
+                    createNewDocument();
                     return;
                 }
                 self.doc.subscribe(loadFileCallback);
             });
         }
         else {
-            var new_id = this.getCustomObjId();
-            createNewDocument(new_id);
+            createNewDocument();
         }
     };
 
