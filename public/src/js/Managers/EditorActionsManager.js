@@ -1095,6 +1095,26 @@ module.exports = (function()
         edgeEditing.initBendPoints(cy.getElementById( edge.id ));
     };
 
+    EditorActionsManager.prototype.reconnectEdge = function(sourceID, targetID, edgeData) {
+
+        if(this.isCollaborative){
+            this.reconnectEdgeInShareDB(sourceID, targetID, edgeData);
+        }
+        else{
+            var location = {
+                source: sourceID,
+                target: targetID
+            };
+
+            var edge = cy.getElementById(edgeData.id);
+            edge.move(location);
+        }
+    };
+
+    EditorActionsManager.prototype.reconnectEdgeInShareDB = function(sourceID, targetID, edgeData) {
+        this.shareDBManager.reconnectEdge(sourceID, targetID, edgeData);
+    };
+
     //Removal functions
     EditorActionsManager.prototype.removeElement = function(ele)
     {
@@ -1550,6 +1570,12 @@ module.exports = (function()
               var pubmedArray = ele.pubmedIDs;
               cyEle.data('pubmedIDs', pubmedArray);
               this.updateHighlight(cyEle, ele.isHighlighted);
+
+              var location = {
+                  source: ele.source,
+                  target: ele.target
+              };
+              cyEle.move(location);
 
               var bendPoint = ele.bendPoint;
               var numberOfBendPositions = cyEle.data('bendPointPositions').length; // Holds the number of bend positions in data before being updated

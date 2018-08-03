@@ -594,6 +594,23 @@ module.exports = (function () {
         this.insertShareDBObject(this.EDGEMAP_NAME, realTimeGeneratedID, newEdge);
     };
 
+    ShareDBManager.prototype.reconnectEdge = function(sourceID, targetID, edgeData) {
+        var edgeMap = this.doc.data[this.EDGEMAP_NAME];
+        var edge = edgeMap[edgeData.id];
+        var edgeID = edge.id;
+
+        edge.source = sourceID;
+        edge.target = targetID;
+
+        if(edgeMap.hasOwnProperty(edgeID)) {
+            this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, edge);
+        }
+        else {
+            throw new Error('Element does not exist in Real Time');
+        }
+    };
+
+
     ShareDBManager.prototype.removeElement = function (elementID) {
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
         var nodeMap = this.doc.data[this.NODEMAP_NAME];

@@ -324,7 +324,9 @@ module.exports = (function () {
             // title of add bend point menu item (User may need to adjust width of menu items according to length of this option)
             addBendMenuItemTitle: "Add Bend Point",
             // title of remove bend point menu item (User may need to adjust width of menu items according to length of this option)
-            removeBendMenuItemTitle: "Remove Bend Point"
+            removeBendMenuItemTitle: "Remove Bend Point",
+
+            handleReconnectEdge: this.editorActionsManager.reconnectEdge.bind(this.editorActionsManager),
         };
         window.edgeEditing = cy.edgeEditing(edgeEditingOptions);
 
