@@ -635,20 +635,20 @@ module.exports = (function()
         if (this.isCollaborative)
         {
             var numberOfBendPoints = 0;
-            if (edgeBendEditing.getSegmentPoints(edge) !== undefined)
-                numberOfBendPoints = edgeBendEditing.getSegmentPoints(edge).length/2;
+            if (edgeEditing.getSegmentPoints(edge) !== undefined)
+                numberOfBendPoints = edgeEditing.getSegmentPoints(edge).length/2;
             var bendPointsArray = [];
             for (var j = 0; j < numberOfBendPoints; j++)
             {
                 bendPointsArray.push(
                     {
-                        x: edgeBendEditing.getSegmentPoints(edge)[2*j],
-                        y: edgeBendEditing.getSegmentPoints(edge)[2*j+1]
+                        x: edgeEditing.getSegmentPoints(edge)[2*j],
+                        y: edgeEditing.getSegmentPoints(edge)[2*j+1]
                     }
                 );
             }
             // edge.data("bendPointPositions", bendPointsArray);
-            // edgeBendEditing.initBendPoints(edge);
+            // edgeEditing.initBendPoints(edge);
 
             this.shareDBManager.updateEdgeBendPoints(edge.id(), bendPointsArray);
         }
@@ -1074,7 +1074,7 @@ module.exports = (function()
         this.cy.add(nodeList);
         this.cy.add(edgeList);
 
-        edgeBendEditing.initBendPoints(cy.edges());
+        edgeEditing.initBendPoints(cy.edges());
 
         this.cy.nodes().updateCompoundBounds();
     }
@@ -1092,7 +1092,7 @@ module.exports = (function()
             bendPointPositions: edge.bendPoint
         };
         this.addNewEdgetoCy(edgeData);
-        edgeBendEditing.initBendPoints(cy.getElementById( edge.id ));
+        edgeEditing.initBendPoints(cy.getElementById( edge.id ));
     };
 
     //Removal functions
@@ -1455,7 +1455,7 @@ module.exports = (function()
             //Local usage file load
             this.loadFileCy(nodes,edges);
         }
-        cy.edgeBendEditing('get').initBendPoints(cy.edges());
+        cy.edgeEditing('get').initBendPoints(cy.edges());
         this.fitGraph();
     };
 
@@ -1555,8 +1555,8 @@ module.exports = (function()
               var numberOfBendPositions = cyEle.data('bendPointPositions').length; // Holds the number of bend positions in data before being updated
               cyEle.data('bendPointPositions', bendPoint);
               if (bendPoint.length == 0 && numberOfBendPositions > 0) //Checks if the number of bendpoints changed from before
-                  edgeBendEditing.deleteSelectedBendPoint(cyEle,0);
-              edgeBendEditing.initBendPoints(cyEle);
+                  edgeEditing.deleteSelectedBendPoint(cyEle,0);
+              edgeEditing.initBendPoints(cyEle);
         }
     };
 

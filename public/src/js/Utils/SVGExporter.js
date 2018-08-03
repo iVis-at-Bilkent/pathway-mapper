@@ -135,15 +135,15 @@ module.exports = (function ()
         }
 
         var numberOfBendPoints = 0;
-        if (edgeBendEditing.getSegmentPoints(edge) !== undefined)
-            numberOfBendPoints = edgeBendEditing.getSegmentPoints(edge).length/2;
+        if (edgeEditing.getSegmentPoints(edge) !== undefined)
+            numberOfBendPoints = edgeEditing.getSegmentPoints(edge).length/2;
 
         var clipPoints;
         if (numberOfBendPoints > 0)
         {
             var lastBendPoint = {
-                x: edgeBendEditing.getSegmentPoints(edge)[2*numberOfBendPoints-2],
-                y: edgeBendEditing.getSegmentPoints(edge)[2*numberOfBendPoints-1],
+                x: edgeEditing.getSegmentPoints(edge)[2*numberOfBendPoints-2],
+                y: edgeEditing.getSegmentPoints(edge)[2*numberOfBendPoints-1],
                 height: 0,
                 width: 0
             };
@@ -228,20 +228,20 @@ module.exports = (function ()
         {
             //Calculate initial clipping point of source node with the segment from first bend point
             var firstBendPoint = {
-                x: edgeBendEditing.getSegmentPoints(edge)[0],
-                y: edgeBendEditing.getSegmentPoints(edge)[1],
+                x: edgeEditing.getSegmentPoints(edge)[0],
+                y: edgeEditing.getSegmentPoints(edge)[1],
                 height: 0,
                 width: 0
             };
             var initialClipPoint = this.findClippingPoints(sourceRectangle, firstBendPoint);
 
-            //Create a copy array of edgeBendEditing.getSegmentPoints(edge) which contain all the bending points
+            //Create a copy array of edgeEditing.getSegmentPoints(edge) which contain all the bending points
             // including source and target clipping point. The first elements of the array are source's x and y positions
             // and the last ones are target's x and y positions
             var points = [initialClipPoint.sourceClipPoints.x, initialClipPoint.sourceClipPoints.y];
             for (var i = 0; i < numberOfBendPoints*2; i++)
             {
-                points.push(edgeBendEditing.getSegmentPoints(edge)[i]);
+                points.push(edgeEditing.getSegmentPoints(edge)[i]);
             }
             points.push(clipPoints.targetClipPoints.x);
             points.push(clipPoints.targetClipPoints.y);

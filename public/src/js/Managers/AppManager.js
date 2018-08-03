@@ -10,7 +10,7 @@ var grid_guide = require('cytoscape-grid-guide');
 var undoRedo = require('cytoscape-undo-redo');
 var contextMenus = require('cytoscape-context-menus');
 var nodeResize = require('cytoscape-node-resize');
-var edgeBendEditing = require('cytoscape-edge-bend-editing');
+var edgeEditing = require('cytoscape-edge-editing');
 var konva = require('konva');
 var viewUtilities = require('cytoscape-view-utilities');
 require('bootstrap-select');
@@ -194,7 +194,7 @@ module.exports = (function () {
         // undoRedo(cytoscape); // register extension
         // contextMenus(cytoscape, $); // register extension
         nodeResize(cytoscape, $, konva); //register extension
-        // edgeBendEditing(cytoscape, $); // register extension
+        // edgeEditing(cytoscape, $); // register extension
         // viewUtilities(cytoscape, $); // register extension
 
 
@@ -308,7 +308,7 @@ module.exports = (function () {
 
         var nav = cy.navigator(navDefaults); // get navigator instance, nav
 
-        var edgeBendEditingOptions = {
+        var edgeEditingOptions = {
             // this function specifies the positions of bend points
             bendPositionsFunction: function (ele) {
                 return ele.data('bendPointPositions');
@@ -326,7 +326,7 @@ module.exports = (function () {
             // title of remove bend point menu item (User may need to adjust width of menu items according to length of this option)
             removeBendMenuItemTitle: "Remove Bend Point"
         };
-        window.edgeBendEditing = cy.edgeBendEditing(edgeBendEditingOptions);
+        window.edgeEditing = cy.edgeEditing(edgeEditingOptions);
 
         cy.nodeResize({
             padding: 5, // spacing between node and grapples/rectangle

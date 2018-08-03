@@ -39,13 +39,13 @@ var SaveLoadUtils =
         var edgeName = (edges[i].data('name')) ? edges[i].data('name') : "";
 
         var numberOfBendPoints = 0;
-        if (edgeBendEditing.getSegmentPoints(edges[i]) !== undefined)
-            numberOfBendPoints = edgeBendEditing.getSegmentPoints(edges[i]).length/2;
+        if (edgeEditing.getSegmentPoints(edges[i]) !== undefined)
+            numberOfBendPoints = edgeEditing.getSegmentPoints(edges[i]).length/2;
         var bendPointPositions = "";
         for (var j = 0; j < numberOfBendPoints; j++)
         {
-            bendPointPositions += "(" + edgeBendEditing.getSegmentPoints(edges[i])[2*j] + ";" +
-                edgeBendEditing.getSegmentPoints(edges[i])[2*j+1] + ")";
+            bendPointPositions += "(" + edgeEditing.getSegmentPoints(edges[i])[2*j] + ";" +
+                edgeEditing.getSegmentPoints(edges[i])[2*j+1] + ")";
         }
 
         if (pubmedIDs != undefined) {
@@ -287,7 +287,7 @@ var SaveLoadUtils =
       };
       edges.push(newEdge);
     }
-    // edgeBendEditing.initBendPoints(cy.edges());
+    // edgeEditing.initBendPoints(cy.edges());
 
     return {title: title, description: description, nodes: nodes, edges: edges};
   }
