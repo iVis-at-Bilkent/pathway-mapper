@@ -88,6 +88,8 @@ var SaveLoadUtils =
       for (var i = 0; i < nodes.length; i++)
       {
         returnString += this.exportNode(nodes[i]);
+
+        nodeMap[nodes[i].data.id] = nodes[i];
       }
     }
 
