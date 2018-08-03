@@ -29,10 +29,10 @@ module.exports = (function () {
     //Clears genomic data in shared document and notifies other clients
     ShareDBManager.prototype.clearShareDBGenomicData = function () {
         var ops = [];
-        var genomicMap = doc.data[this.GENOMIC_DATA_MAP_NAME];
-        var visMap = doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
-        var genomicDataGroupMap = doc.data[this.GENOMIC_DATA_GROUP_NAME];
-        var genomicDataGroupCount = doc.data[this.GENOMIC_DATA_GROUP_COUNT];
+        var genomicMap = this.doc.data[this.GENOMIC_DATA_MAP_NAME];
+        var visMap = this.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
+        var genomicDataGroupMap = this.doc.data[this.GENOMIC_DATA_GROUP_NAME];
+        var genomicDataGroupCount = this.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
         //Reset all genomic maps
         for (var key in genomicMap) {
             ops.push({p: [this.GENOMIC_DATA_GROUP_NAME, key], od: genomicMap[key]});
