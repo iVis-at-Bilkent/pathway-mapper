@@ -426,7 +426,10 @@ module.exports = (function () {
                 w: "w-resize"
             },
 
-            resizeToContentCueImage: '/assets/nodes/ResizeCue.svg'
+            resizeToContentCueImage: '/assets/nodes/ResizeCue.svg',
+
+            resizeToContentFunction: this.editorActionsManager.resizeNodesToContent.bind(this.editorActionsManager),
+
         });
 
         var viewUtilitiesOpts = {
