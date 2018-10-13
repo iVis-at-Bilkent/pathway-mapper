@@ -4,6 +4,7 @@ var layoutProps = Backbone.View.extend(
   events:{
     'click #save-layout': 'saveLayoutHandler',
     'click #default-layout': 'defaultLayoutHandler'
+    'click #close-layout': 'closeLayoutHandler'
   },
   initialize: function (options)
   {
@@ -18,6 +19,11 @@ var layoutProps = Backbone.View.extend(
   copyProperties: function (params)
   {
     this.currentLayoutProperties = _.clone(params);
+  },
+  closeLayoutHandler: function()
+  {
+    //Make sure that template modal shows correct values
+    this.changeParameters();
   },
   render: function ()
   {
