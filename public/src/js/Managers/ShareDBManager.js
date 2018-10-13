@@ -374,6 +374,7 @@ module.exports = (function () {
 
         var genomicDataVisibilityChangeHandler = function (op) {
             window.editorActionsManager.shareDBGenomicDataVsibilityHandler(op);
+            self.checkShareDBGenomicData();
         };
 
         var genomicDataGroupChangeHandler = function (op) {
@@ -436,10 +437,41 @@ module.exports = (function () {
     };
 
     /*
+     * Make sure that genomic cloud data is syncronized
+     */
+    ShareDBManager.prototype.checkShareDBGenomicData = function () {
+
+        var self = this;
+        var genomicDataMap = self.doc.data[this.GENOMIC_DATA_MAP_NAME];
+        var visDataMap = self.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
+        var groupedGenomicDataMap = self.doc.data[this.GENOMIC_DATA_GROUP_NAME];
+        var groupedGenomicDataCount = self.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
+
+        for (var key in genomicDataMap) {
+            window.editorActionsManager.genomicDataOverlayManager.genomicDataMap[key] =
+                genomicDataMap[key];
+        }
+
+        for (var key in visDataMap) {
+            window.editorActionsManager.genomicDataOverlayManager.visibleGenomicDataMapByType[key] =
+                visDataMap[key];
+        }
+
+        for (var key in groupedGenomicDataMap) {
+            window.editorActionsManager.genomicDataOverlayManager.groupedGenomicDataMap[key] =
+                groupedGenomicDataMap[key];
+        }
+        window.editorActionsManager.genomicDataOverlayManager.groupedGenomicDataCount = groupedGenomicDataCount;
+        window.editorActionsManager.genomicDataOverlayManager.showGenomicData();
+        window.editorActionsManager.genomicDataOverlayManager.notifyObservers();
+    };
+    
+    /*
      * Gets the first empty index from the shared document
      * genomic data group count and increments counter by 1
      *
     */
+
     ShareDBManager.prototype.getEmptyGroupID = function () {
         var returnCount = this.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
         this.incrementShareDBGroupCount();
