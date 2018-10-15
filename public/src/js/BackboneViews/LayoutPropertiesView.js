@@ -3,7 +3,7 @@ var layoutProps = Backbone.View.extend(
   currentLayoutProperties: null,
   events:{
     'click #save-layout': 'saveLayoutHandler',
-    'click #default-layout': 'defaultLayoutHandler'
+    'click #default-layout': 'defaultLayoutHandler',
     'click #close-layout': 'closeLayoutHandler'
   },
   initialize: function (options)
