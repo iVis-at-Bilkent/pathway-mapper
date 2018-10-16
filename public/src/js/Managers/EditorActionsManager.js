@@ -1109,6 +1109,8 @@ module.exports = (function()
             var edge = cy.getElementById(edgeData.id);
             edge.move(location);
         }
+
+        return cy.getElementById(edgeData.id);
     };
 
     EditorActionsManager.prototype.reconnectEdgeInShareDB = function(sourceID, targetID, edgeData) {
