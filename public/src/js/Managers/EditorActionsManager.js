@@ -1573,18 +1573,24 @@ module.exports = (function()
               cyEle.data('pubmedIDs', pubmedArray);
               this.updateHighlight(cyEle, ele.isHighlighted);
 
-              var location = {
-                  source: ele.source,
-                  target: ele.target
-              };
-              cyEle.move(location);
-
               var bendPoint = ele.bendPoint;
               var numberOfBendPositions = cyEle.data('bendPointPositions').length; // Holds the number of bend positions in data before being updated
+
               cyEle.data('bendPointPositions', bendPoint);
-              if (bendPoint.length == 0 && numberOfBendPositions > 0) //Checks if the number of bendpoints changed from before
-                  edgeEditing.deleteSelectedBendPoint(cyEle,0);
+              if (numberOfBendPositions !== undefined && numberOfBendPositions > 0)
+                edgeEditing.deleteSelectedBendPoint(cyEle,0);
               edgeEditing.initBendPoints(cyEle);
+
+              //If edge is reconnected
+              if ( ele.source !== cyEle.source().id() || ele.target !== cyEle.target().id()){
+                  var location = {
+                      source: ele.source,
+                      target: ele.target
+                  };
+                  cyEle.move(location);
+                  //make sure that bend points are same
+                  this.updateEdgeBendPoints(cyEle);
+              }
         }
     };
 
