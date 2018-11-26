@@ -83,11 +83,17 @@ $(window).load(function()
         cBioPortalUsageCallback: cBioPortalUsageCallback
     }).render();
 
-
+    //Trigger cBioPortal Usage
+    $('.landingContent h3').hide();
+    $('.welPageButtons').hide();
+    $('#cBioPortalUsage').click();
+    $('.continueButton').click().hide();
+    /*
     //TODO SHAME  !!!  ⍾ ⍾ ⍾ ⍾ ⍾
     var uri = window.location.search;
     if (uri.length > 0)
     {
+
         var uriTerm = uri.substring(1,uri.indexOf("="));
 
         if(uriTerm === "id")
@@ -106,5 +112,5 @@ $(window).load(function()
             $('#localUsage').click();
             $('.continueButton').click().hide();
         }
-    }
+    }*/
 });
