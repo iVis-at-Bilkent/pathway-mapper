@@ -259,7 +259,7 @@
           <a class="navbar-brand" class="active" href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-01">
-          <div class="">
+          <div id="pathway-navbar" class="">
             <ul class="nav navbar-nav">
               <li class="dropdown fileDropDown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Network <span class="caret"></span></a>
@@ -386,7 +386,7 @@
         </div><!-- /.navbar-collapse -->
       </nav><!-- /navbar -->
     </div>
-    <div class="toolbar">
+    <div id="pathway-toolbar" class="toolbar">
       <div class="btn-toolbar" role="toolbar" >
         <div id="fileToolbarButtons" class="btn-group mr-2" role="group" >
           <div class="toolbar-button" data-tooltip="New Pathway"><img src="assets/toolbar/new.svg" role="new" ></div>
@@ -440,7 +440,7 @@
       </div>
     </div>
     <div class="mainContentWrapper">
-      <div class="sideBarWrapper">
+      <div id="pathway-sidebar" class="sideBarWrapper">
         <div class="sideBar">
           <div class="pnl">
             <div class="pnl-header">
@@ -500,6 +500,28 @@
                     <a edgeTypeIndex='5' href="#"  class="list-group-item"><img src="./assets/edges/binds.svg" class="pull-left"  />Binds</a>
                   </div>
               </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="pathway-sidebar-cBioPortal" class="sideBarWrapper-cBioPortal" style="display: none">
+        <div class="toolbar">
+          <div class="btn-toolbar" role="toolbar" >
+            <div id="pathway-sidebar-cBioPortal-buttons" class="btn-group mr-2" role="group">
+              <div class="toolbar-button" id="savePathway-cBioPortal" data-tooltip="Save Pathway">
+                  <img src="assets/sidebar/save.svg" role="save" >
+              </div> <br>
+              <div class="toolbar-button" id="rearrangeLayout-cBioPortal" data-tooltip="Rearrange Layout">
+                  <img src="assets/sidebar/rearrange-layout.svg" role="rearrange-layout" >
+              </div><br>
+              <div class="toolbar-button" id="editInPathway-cBioPortal" data-tooltip="Rearrange Layout">
+                  <img src="assets/sidebar/edit.svg" role="edit-in-pathway" >
+              </div><br>
+              <div class="toolbar-button" id="information-cBioPortal" data-tooltip="Help">
+                  <img src="assets/sidebar/help.svg" role="help" >
               </div>
             </div>
           </div>
@@ -608,6 +630,10 @@
         <div id="collaborativeUsage" class="welcomePageCheckable" >
           <i class="fa fa-check"></i>
           Collaborative
+        </div>
+        <div id="cBioPortalUsage" class="welcomePageCheckable" >
+          <i class="fa fa-check"></i>
+          cBioPortal
         </div>
       </div>
       <div class="row continueRow">

@@ -1098,6 +1098,7 @@ module.exports = (function()
     EditorActionsManager.prototype.reconnectEdge = function(sourceID, targetID, edgeData) {
 
         if(this.isCollaborative){
+            var edge = cy.getElementById(edgeData.id);
             this.reconnectEdgeInShareDB(sourceID, targetID, edgeData);
         }
         else{
@@ -1576,10 +1577,7 @@ module.exports = (function()
               var bendPoint = ele.bendPoint;
               var numberOfBendPositions = cyEle.data('bendPointPositions').length; // Holds the number of bend positions in data before being updated
 
-              cyEle.data('bendPointPositions', bendPoint);
-              if (numberOfBendPositions !== undefined && numberOfBendPositions > 0)
-                edgeEditing.deleteSelectedBendPoint(cyEle,0);
-              edgeEditing.initBendPoints(cyEle);
+
 
               //If edge is reconnected
               if ( ele.source !== cyEle.source().id() || ele.target !== cyEle.target().id()){
@@ -1590,6 +1588,12 @@ module.exports = (function()
                   cyEle.move(location);
                   //make sure that bend points are same
                   this.updateEdgeBendPoints(cyEle);
+              }
+              else {
+                  cyEle.data('bendPointPositions', bendPoint);
+                  if (numberOfBendPositions !== undefined && numberOfBendPositions > 0)
+                      edgeEditing.deleteSelectedBendPoint(cyEle,0);
+                  edgeEditing.initBendPoints(cyEle);
               }
         }
     };

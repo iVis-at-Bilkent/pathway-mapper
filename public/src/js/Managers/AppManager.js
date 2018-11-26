@@ -46,9 +46,10 @@ var notify = require('bootstrap-notify');
 window.notificationManager = require('./../Utils/NotificationFactory');
 
 module.exports = (function () {
-    function AppManager(isCollaborative, shareDBManager) {
+    function AppManager(isCollaborative, shareDBManager, isCbioPortal) {
         this.isCollaborative = isCollaborative;
         this.shareDBManager = shareDBManager;
+        this.isCbioPortal = isCbioPortal;
         this.init();
         this.createSampleMenu();
         this.createCBioPortalAccessModal();
@@ -61,6 +62,7 @@ module.exports = (function () {
         this.initCyHandlers();
         this.initKeyboardHandlers();
         this.initUndoRedoFunctionality();
+        this.initCBioPortalFunctionalities();
         var that = this;
         //  window.onresize = function () {
         //      that.placePanzoomAndOverlay();
@@ -576,7 +578,7 @@ module.exports = (function () {
     };
 
     AppManager.prototype.initKeyboardHandlers = function () {
-        if (!this.isCollaborative) {
+        if (!this.isCollaborative && !this.isCbioPortal) {
             $(document).keydown(function (e) {
                 if (e.which === 89 && (e.ctrlKey || event.metaKey)) {
                     window.undoRedoManager.redo();
@@ -609,12 +611,28 @@ module.exports = (function () {
     };
 
     AppManager.prototype.initUndoRedoFunctionality = function () {
-        if (this.isCollaborative) {
+        if (this.isCollaborative || this.isCbioPortal) {
             $('[role="undo"]').hide();
             $('[role="redo"]').hide();
             document.getElementById("localOrCollaborativeToolbar").style.display = "none";
         }
     };
+
+
+    AppManager.prototype.initCBioPortalFunctionalities = function () {
+        if (this.isCbioPortal) {
+            contextMenu = cy.contextMenus('get');
+
+            //Destroy context menu
+            contextMenu.destroy();
+            //Hide toolbar, sidebar, navbar
+            document.getElementById("pathway-toolbar").style.display = "none";
+            document.getElementById("pathway-sidebar").style.display = "none";
+            document.getElementById("pathway-navbar").style.display = "none";
+            document.getElementById("pathway-sidebar-cBioPortal").style.display = "inline";
+        }
+    };
+
 
     return AppManager;
 })();

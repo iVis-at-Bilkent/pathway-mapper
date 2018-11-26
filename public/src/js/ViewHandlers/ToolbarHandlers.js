@@ -162,4 +162,22 @@ module.exports = (function ($)
         }
     });
 
+    //TODO Toolbar part, we will refactor it later
+    $("#pathway-sidebar-cBioPortal-buttons img").click(function (event)
+    {
+        var clickedImageRole = $(event.target).attr('role');
+        if (clickedImageRole === 'save')
+        {
+            window.fileOperationsManager.saveGraph(false);
+        }
+        else if (clickedImageRole === 'rearrange-layout')
+        {
+            window.editorActionsManager.performLayout();
+        }
+        else if (clickedImageRole === 'help')
+        {
+            $('#aboutModal').modal('show');
+        }
+    });
+
 }(window.$))
