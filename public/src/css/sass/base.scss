@@ -141,8 +141,8 @@ input[type="color"]:hover{
 }
 
 .sideBarWrapper-cBioPortal{
-  min-width: 40px;
-  max-width: 40px;
+  min-width: 22px;
+  max-width: 22px;
   font-size: 12px;
 }
 
@@ -330,11 +330,11 @@ footer{
 .cBioPortal-button
 {
   img {
-    height: 40px;
-    width: 40px;
+    height: 22px;
+    width: 22px;
   }
 
-  margin: 2px -1px;
+  margin: 8px -1px;
   border: 2px solid #eff0f2;
   border-radius:6px;
   display: inline-block;
