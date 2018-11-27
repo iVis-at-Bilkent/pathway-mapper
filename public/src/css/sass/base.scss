@@ -141,7 +141,13 @@ input[type="color"]:hover{
 }
 
 .sideBarWrapper-cBioPortal{
-  min-width: 130px;
+  min-width: 40px;
+  max-width: 40px;
+  font-size: 12px;
+}
+
+.sideBarWrapper-right-cBioPortal{
+  min-width: 120px;
   max-width: 100px;
   font-size: 12px;
 }
@@ -319,6 +325,20 @@ footer{
       z-index: 999999;
     }
   }
+}
+
+.cBioPortal-button
+{
+  img {
+    height: 40px;
+    width: 40px;
+  }
+
+  margin: 2px -1px;
+  border: 2px solid #eff0f2;
+  border-radius:6px;
+  display: inline-block;
+  cursor: pointer;
 }
 
 .customMargins{

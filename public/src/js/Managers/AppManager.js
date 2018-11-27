@@ -629,7 +629,8 @@ module.exports = (function () {
             document.getElementById("pathway-toolbar").style.display = "none";
             document.getElementById("pathway-sidebar").style.display = "none";
             document.getElementById("pathway-navbar").style.display = "none";
-            document.getElementById("pathway-sidebar-cBioPortal").style.display = "inline";
+            document.getElementById("pathway-sidebar-cBioPortal").style.display = "block";
+            document.getElementById("pathway-cBioPortal-comboBox").style.display = "block";
         }
     };
 
