@@ -192,7 +192,7 @@ module.exports = (function ($)
         else if (clickedImageRole === 'edit-in-pathway')
         {
             pathwayDetails = window.appManager.getPathwayData();
-            fileName = (pathwayDetails.fileName).replace(/ /g,"-");
+            fileName = (pathwayDetails.fileName).replace(/ |\//g,"-");
             href = 'http://pathwaymapper-unstable.herokuapp.com/?filename=' + fileName;
             window.open(href, "_blank");
         }
