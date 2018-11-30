@@ -189,9 +189,12 @@ module.exports = (function ($)
         {
             $('#aboutModal').modal('show');
         }
-        else if (clickedImageRole === 'edit')
+        else if (clickedImageRole === 'edit-in-pathway')
         {
-
+            pathwayDetails = window.appManager.getPathwayData();
+            fileName = (pathwayDetails.fileName).replace(/ /g,"-");
+            href = 'http://pathwaymapper-unstable.herokuapp.com/?filename=' + fileName;
+            window.open(href, "_blank");
         }
     });
 

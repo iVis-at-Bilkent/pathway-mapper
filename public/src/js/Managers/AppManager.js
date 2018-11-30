@@ -187,6 +187,10 @@ module.exports = (function () {
         request.send();
     };
 
+    AppManager.prototype.getPathwayData = function () {
+        return this.pathwayDetailsView.getPathwayData();
+    };
+
     AppManager.prototype.createCBioPortalAccessModal = function () {
         var self = this;
 
