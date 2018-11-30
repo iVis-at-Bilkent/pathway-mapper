@@ -251,7 +251,7 @@
 <div class="pageContentWrapper">
   <div class="customMargins">
     <div class="">
-      <nav class="navbar navbar-default navbar-embossed" role="navigation">
+      <nav class="navbar navbar-default navbar-embossed" id="pathway-navbar" role="navigation">
         <div class="navbar-header pull-right">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
             <span class="sr-only">Toggle navigation</span>
@@ -259,7 +259,7 @@
           <a class="navbar-brand" class="active" href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-01">
-          <div id="pathway-navbar" class="">
+          <div class="">
             <ul class="nav navbar-nav">
               <li class="dropdown fileDropDown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Network <span class="caret"></span></a>
@@ -507,42 +507,50 @@
 
       </div>
 
-      <div id="pathway-sidebar-cBioPortal" class="sideBarWrapper-cBioPortal" style="display: none">
-        <div id="pathway-sidebar-cBioPortal-buttons" class="btn-group">
-          <div class="pnl-body">
-            <div class="cBioPortal-button" id="savePathway-cBioPortal" data-tooltip="Save Pathway">
-                <img src="assets/sidebar/save.svg" role="save" >
-            </div> <br>
-            <div class="cBioPortal-button" id="rearrangeLayout-cBioPortal" data-tooltip="Rearrange Layout">
-                <img src="assets/sidebar/rearrange-layout.svg" role="rearrange-layout" >
-            </div><br>
-            <div class="cBioPortal-button" id="editInPathway-cBioPortal" data-tooltip="Edit in Pathway Mapper">
-                <img src="assets/sidebar/edit.svg" role="edit-in-pathway" >
-            </div><br>
-            <div class="cBioPortal-button" id="information-cBioPortal" data-tooltip="Quick Help">
-                <img src="assets/sidebar/help.svg" role="help" >
+      <div id="pathway-cBioPortal-comboBox" class="sideBar" style="display: none">
+        <div class="pnl">
+          <div class="pnl-body pathwayPanel">
+            <div class= "dropdown">
+              <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Select TCGA
+              </a>
+              <div class="dropdown-menu" id="templateSubMenu">
+              </div>
             </div>
           </div>
         </div>
+        <div class="TCGA-information">
+          <h6 id="TCGA-Header">Header Here</h6>
+
+          <textarea id="TCGA-textarea">Text here</textarea>
+        </div>
       </div>
+
       <div class="cyContainer">
         <div id="cy" class=""></div>
         <div class="cytoscape-navigator-wrapper">
         </div>
       </div>
-      <div id="pathway-cBioPortal-comboBox" class="sideBar" style="display: none">
-        <div class="pnl">
-          <div class="pnl-body pathwayPanel">
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-template" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Select Template
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-              </div>
+
+      <div id="pathway-sidebar-cBioPortal" class="sideBarWrapper-cBioPortal" style="display: none">
+        <div id="pathway-sidebar-cBioPortal-buttons" class="btn-group">
+          <div class="pnl-body">
+            <div class="cBioPortal-button" id="savePathway-cBioPortal" data-tooltip="Save Pathway">
+              <img src="assets/sidebar/save.svg" role="save" >
+            </div> <br>
+            <div class="cBioPortal-button" id="rearrangeLayout-cBioPortal" data-tooltip="Rearrange Layout">
+              <img src="assets/sidebar/rearrange-layout.svg" role="rearrange-layout" >
+            </div><br>
+            <div class="cBioPortal-button" id="editInPathway-cBioPortal" data-tooltip="Edit in Pathway Mapper">
+              <img src="assets/sidebar/edit.svg" role="edit-in-pathway" >
+            </div><br>
+            <div class="cBioPortal-button" id="information-cBioPortal" data-tooltip="Quick Help">
+              <img src="assets/sidebar/help.svg" role="help" >
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>

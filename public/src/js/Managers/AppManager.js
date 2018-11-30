@@ -132,6 +132,7 @@ module.exports = (function () {
                         //Add sub menus if they do not include pancaner and creighton
                         if (!key.includes('PanCancer') && !key.includes('Creighton')) {
                             $('#sampleSubMenu').append(newTCGAMenu);
+                            $('#templateSubMenu').append(newTCGAMenu);
                         }
 
                     }

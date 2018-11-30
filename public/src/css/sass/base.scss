@@ -334,11 +334,26 @@ footer{
     width: 22px;
   }
 
-  margin: 8px -1px;
-  border: 2px solid #eff0f2;
-  border-radius:6px;
+  margin: 8px 4px;
   display: inline-block;
   cursor: pointer;
+}
+
+.TCGA-information
+{
+
+  border: 3px solid;
+
+  h6 {
+    max-width: 114px;
+    text-align: center;
+  }
+  textarea {
+    max-width: 114px;
+    min-height: 200px;
+    margin-bottom: -5px;
+    margin-top: -5px;
+  }
 }
 
 .customMargins{
