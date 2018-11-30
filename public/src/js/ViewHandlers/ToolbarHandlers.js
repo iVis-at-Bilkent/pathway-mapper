@@ -166,9 +166,20 @@ module.exports = (function ($)
     $("#pathway-sidebar-cBioPortal-buttons img").click(function (event)
     {
         var clickedImageRole = $(event.target).attr('role');
-        if (clickedImageRole === 'save')
+        if (clickedImageRole === 'save-as-text')
         {
             window.fileOperationsManager.saveGraph(false);
+        }
+        else if(clickedImageRole === 'save-as-svg')
+        {
+            var returnString = window.editorActionsManager.exportSVG();
+            var fileName = 'pathway.svg';
+            var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, fileName);
+        }
+        else if(clickedImageRole === 'save-as-png')
+        {
+            window.fileOperationsManager.saveAsPNG();
         }
         else if (clickedImageRole === 'rearrange-layout')
         {
@@ -177,6 +188,10 @@ module.exports = (function ($)
         else if (clickedImageRole === 'help')
         {
             $('#aboutModal').modal('show');
+        }
+        else if (clickedImageRole === 'edit')
+        {
+
         }
     });
 
