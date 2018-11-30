@@ -342,17 +342,38 @@ footer{
 .TCGA-information
 {
 
+  margin-left: -10px;
+  max-width: 200px;
+  min-width: 200px;
   border: 3px solid;
+  display: none;
 
   h6 {
-    max-width: 114px;
+    font-weight: bold;
+    max-width: 200px;
     text-align: center;
   }
-  textarea {
-    max-width: 114px;
+  textarea[readonly] {
+    font-size: small;
+    min-width: 100%;
+    max-width: 100%;
     min-height: 200px;
+    line-height: 1.5;
     margin-bottom: -5px;
     margin-top: -5px;
+  }
+}
+
+.TCGA-dropdown {
+
+  margin-left: -10px;
+  max-width: 200px;
+  min-width: 200px;
+
+  a {
+    min-width: 100%;
+    max-width: 100%;
+    text-align: center;
   }
 }
 

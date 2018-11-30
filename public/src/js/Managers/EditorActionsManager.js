@@ -5,11 +5,12 @@ var SVGExporter = require('./../Utils/SVGExporter.js');
 module.exports = (function()
 {
     "use strict";
-    var EditorActionsManager = function(isCollaborative, shareDBManager, cyInst)
+    var EditorActionsManager = function(isCollaborative, shareDBManager, cyInst, isCBioPortal)
     {
         //Set cy instance and set real time manager reference if collaborative mode
         this.cy = cyInst;
         this.isCollaborative = isCollaborative;
+        this.isCbioPortal = isCBioPortal;
         if(this.isCollaborative && shareDBManager)
             this.shareDBManager = shareDBManager;
 

@@ -100,6 +100,7 @@ module.exports = (function () {
 
     AppManager.prototype.createSampleMenu = function () {
         //Get template file data first
+        var self = this;
         var request = new XMLHttpRequest();
         request.onreadystatechange = function () {
             if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
@@ -132,7 +133,9 @@ module.exports = (function () {
                         //Add sub menus if they do not include pancaner and creighton
                         if (!key.includes('PanCancer') && !key.includes('Creighton')) {
                             $('#sampleSubMenu').append(newTCGAMenu);
-                            $('#templateSubMenu').append(newTCGAMenu);
+                            if (self.isCbioPortal) {
+                                $('#templateSubMenu').append(newTCGAMenu);
+                            }
                         }
 
                     }
@@ -148,6 +151,12 @@ module.exports = (function () {
                 });
             else
                 sampleMenuClickHandler(event);
+        };
+
+        function updateTCGAInformation(title, desription) {
+            document.getElementById("TCGA-header").innerHTML = title;
+            document.getElementById("TCGA-textarea").innerText = desription;
+            document.getElementById("TCGA-information").style.display = "inline-block";
         }
 
         function sampleMenuClickHandler(event) {
@@ -162,6 +171,9 @@ module.exports = (function () {
                         pathwayTitle: allEles.title,
                         pathwayDescription: allEles.description
                     });
+                    if(self.isCbioPortal) {
+                        updateTCGAInformation(allEles.title, allEles.description);
+                    }
                 }
             };
             //Send request for selected pathway
@@ -220,7 +232,8 @@ module.exports = (function () {
         //Create Manager Classes
         window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative,
             this.shareDBManager,
-            window.cy);
+            window.cy,
+            this.isCbioPortal);
         window.gridOptionsManager = new GridOptionsManager();
         window.viewOperationsManager = new ViewOperationsManager();
         window.fileOperationsManager = new FileOperationsManager();
@@ -630,8 +643,8 @@ module.exports = (function () {
             document.getElementById("pathway-toolbar").style.display = "none";
             document.getElementById("pathway-sidebar").style.display = "none";
             document.getElementById("pathway-navbar").style.display = "none";
-            document.getElementById("pathway-sidebar-cBioPortal").style.display = "block";
-            document.getElementById("pathway-cBioPortal-comboBox").style.display = "block";
+            document.getElementById("pathway-sidebar-cBioPortal").style.display = "inline-block";
+            document.getElementById("pathway-cBioPortal-comboBox").style.display = "inline-block";
         }
     };
 
