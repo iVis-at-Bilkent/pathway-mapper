@@ -193,7 +193,7 @@ module.exports = (function ($)
         {
             pathwayDetails = window.appManager.getPathwayData();
             fileName = (pathwayDetails.fileName).replace(/ |\//g,"-");
-            href = 'http://pathwaymapper-unstable.herokuapp.com/?filename=' + fileName;
+            href = 'http://www.pathwaymapper.org/?filename=' + fileName;
             window.open(href, "_blank");
         }
     });
