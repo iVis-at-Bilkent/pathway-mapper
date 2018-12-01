@@ -649,6 +649,7 @@ module.exports = (function () {
             document.getElementById("pathway-navbar").style.display = "none";
             document.getElementById("pathway-sidebar-cBioPortal").style.display = "inline-block";
             document.getElementById("pathway-cBioPortal-comboBox").style.display = "inline-block";
+            document.getElementById("about-model-header").innerHTML = "PathwayMapper Viewer 2.0";
         }
     };
 
