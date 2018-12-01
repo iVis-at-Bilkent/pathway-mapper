@@ -141,9 +141,14 @@ input[type="color"]:hover{
 }
 
 .sideBarWrapper-cBioPortal{
+  margin-left: 10px;
   min-width: 22px;
   max-width: 22px;
   font-size: 12px;
+}
+
+.cBioPortal-sidebar{
+  margin-right: 10px;
 }
 
 .sideBarWrapper-right-cBioPortal{
@@ -342,7 +347,6 @@ footer{
 .TCGA-information
 {
 
-  margin-left: -10px;
   max-width: 200px;
   min-width: 200px;
   border: 3px solid;
