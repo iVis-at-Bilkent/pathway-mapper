@@ -84,10 +84,23 @@ module.exports = (function () {
         var widthCy = $('.cyContainer').outerWidth();
         var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
         var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
+        var heightPatwayNavbar = $('.pathway-navbar').outerHeight();
+        var heightPathwayToolbar = $('.pathway-toolbar').outerHeight();
+        var widthSideBar = $('.sideBarWrapper').outerWidth();
+        var widthcBioPortalSideBar = $('.cBioPortal-sidebar').outerWidth();
+
+
         var heightPanzoom = $('.cy-panzoom').outerHeight();
         var widthPanzoom = $('.cy-panzoom').outerWidth();
-        $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
-        $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
+
+        if(!this.isCbioPortal) {
+            $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
+            $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
+        }
+        else {
+            $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - heightPathwayToolbar - heightPatwayNavbar - 3 * offset);
+            $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator + widthcBioPortalSideBar + offset - widthSideBar);
+        }
 
         //Relative is used so that its position depends on the below properties
         $('.cy-panzoom').css('position', 'relative');
