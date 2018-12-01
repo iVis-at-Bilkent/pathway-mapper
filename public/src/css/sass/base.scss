@@ -348,8 +348,9 @@ footer{
 .TCGA-information
 {
 
-  max-width: 200px;
-  min-width: 200px;
+  align-items: center;
+  max-width: 100%;
+  min-width: 100%;
   border: 3px solid;
   display: none;
 
@@ -370,15 +371,16 @@ footer{
 }
 
 .TCGA-dropdown {
-
-  margin-left: -10px;
   max-width: 200px;
   min-width: 200px;
-
   a {
+    background-color: $menubgColor !important;
+    color: white;
     min-width: 100%;
     max-width: 100%;
     text-align: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
 }
 
