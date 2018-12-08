@@ -436,6 +436,50 @@
         </div>
       </div>
     </div>
+
+    <div id="cBioPortal-Wrapper" class="cBioPortal-Wrapper" style="display: none" style="display: none">
+      <div id="pathway-cBioPortal-comboBox" class="sideBar cBioPortal-sidebar">
+        <div>
+          <ul class="nav navbar-nav">
+            <div class= "dropdown  TCGA-dropdown">
+              <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Select Network
+              </a>
+              <div class="dropdown-menu" id="templateSubMenu">
+              </div>
+            </div>
+          </ul>
+          <div id="TCGA-information" class="TCGA-information pull-right">
+            <textarea id="TCGA-header" class="pull-left"  style="min-width: 100px; max-width: 100px" readonly></textarea>
+            <textarea id="TCGA-textarea" class="pull-left" style="min-width: 700px" readonly></textarea>
+            <div id="pathway-sidebar-cBioPortal-buttons" class="btn-group pull-right">
+              <div class="pnl-body">
+                <div class="cBioPortal-button" data-tooltip="Save as Text">
+                  <img src="assets/sidebar/save_text.svg" role="save-as-text" >
+                </div>
+                <div class="cBioPortal-button" data-tooltip="Save as SVG">
+                  <img src="assets/sidebar/save_svg.svg" role="save-as-svg" >
+                </div>
+                <div class="cBioPortal-button" data-tooltip="Save as PNG">
+                  <img src="assets/sidebar/save_png.svg" role="save-as-png" >
+                </div>
+                <div class="cBioPortal-button" data-tooltip="Rearrange Layout">
+                  <img src="assets/sidebar/rearrange-layout.svg" role="rearrange-layout" >
+                </div>
+                <div class="cBioPortal-button"  data-tooltip="Edit in Pathway Mapper">
+                  <img src="assets/sidebar/edit.svg" role="edit-in-pathway" >
+                </div>
+                <div class="cBioPortal-button"  data-tooltip="About">
+                  <img src="assets/sidebar/help.svg" role="help" >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+    </div>
+
+
     <div class="mainContentWrapper">
       <div id="pathway-sidebar" class="sideBarWrapper">
         <div class="sideBar">
@@ -502,55 +546,11 @@
           </div>
         </div>
       </div>
-      <div id="pathway-cBioPortal-comboBox" class="sideBar cBioPortal-sidebar" style="display: none">
-        <div class="pnl">
-          <div class="pnl-body pathwayPanel">
-            <ul class="nav navbar-nav">
-              <div class= "dropdown  TCGA-dropdown">
-                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Select Network
-                </a>
-                <div class="dropdown-menu" id="templateSubMenu">
-                </div>
-              </div>
-            </ul>
-            </div>
-        </div>
-        <div id="TCGA-information" class="TCGA-information">
-          <h6 id="TCGA-header"></h6>
-          <textarea id="TCGA-textarea" readonly></textarea>
-        </div>
-      </div>
       <div class="cyContainer">
         <div id="cy" class=""></div>
         <div class="cytoscape-navigator-wrapper">
         </div>
       </div>
-      <div id="pathway-sidebar-cBioPortal" class="sideBarWrapper-cBioPortal" style="display: none">
-        <div id="pathway-sidebar-cBioPortal-buttons" class="btn-group">
-          <div class="pnl-body">
-            <div class="cBioPortal-button" data-tooltip="Save as Text">
-              <img src="assets/sidebar/save_text.svg" role="save-as-text" >
-            </div> <br>
-            <div class="cBioPortal-button" data-tooltip="Save as SVG">
-              <img src="assets/sidebar/save_svg.svg" role="save-as-svg" >
-            </div> <br>
-            <div class="cBioPortal-button" data-tooltip="Save as PNG">
-              <img src="assets/sidebar/save_png.svg" role="save-as-png" >
-            </div> <br>
-            <div class="cBioPortal-button" data-tooltip="Rearrange Layout">
-              <img src="assets/sidebar/rearrange-layout.svg" role="rearrange-layout" >
-            </div><br>
-            <div class="cBioPortal-button"  data-tooltip="Edit in Pathway Mapper">
-              <img src="assets/sidebar/edit.svg" role="edit-in-pathway" >
-            </div><br>
-            <div class="cBioPortal-button"  data-tooltip="About">
-              <img src="assets/sidebar/help.svg" role="help" >
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 </div>

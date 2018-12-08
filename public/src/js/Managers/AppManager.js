@@ -169,7 +169,6 @@ module.exports = (function () {
         function updateTCGAInformation(title, desription) {
             document.getElementById("TCGA-header").innerHTML = title;
             document.getElementById("TCGA-textarea").innerText = desription;
-            document.getElementById("TCGA-information").style.display = "inline-block";
         }
 
         function sampleMenuClickHandler(event) {
@@ -660,8 +659,7 @@ module.exports = (function () {
             document.getElementById("pathway-toolbar").style.display = "none";
             document.getElementById("pathway-sidebar").style.display = "none";
             document.getElementById("pathway-navbar").style.display = "none";
-            document.getElementById("pathway-sidebar-cBioPortal").style.display = "inline-block";
-            document.getElementById("pathway-cBioPortal-comboBox").style.display = "inline-block";
+            document.getElementById("cBioPortal-Wrapper").style.display = "inline-block";
             document.getElementById("about-model-header").innerHTML = "PathwayMapper Viewer 2.0";
         }
     };
