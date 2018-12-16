@@ -83,12 +83,6 @@ $(window).load(function()
         cBioPortalUsageCallback: cBioPortalUsageCallback
     }).render();
 
-    //Trigger cBioPortal Usage
-    $('.landingContent h3').hide();
-    $('.welPageButtons').hide();
-    $('#cBioPortalUsage').click();
-    $('.continueButton').click().hide();
-    /*
     //TODO SHAME  !!!  ⍾ ⍾ ⍾ ⍾ ⍾
     var uri = window.location.search;
     if (uri.length > 0)
@@ -112,5 +106,13 @@ $(window).load(function()
             $('#localUsage').click();
             $('.continueButton').click().hide();
         }
-    }*/
+        else if(uriTerm === "cbp")
+        {
+            //Trigger cBioPortal Usage
+            $('.landingContent h3').hide();
+            $('.welPageButtons').hide();
+            $('#cBioPortalUsage').click();
+            $('.continueButton').click().hide();
+        }
+    }
 });
