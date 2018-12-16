@@ -46,9 +46,10 @@ var notify = require('bootstrap-notify');
 window.notificationManager = require('./../Utils/NotificationFactory');
 
 module.exports = (function () {
-    function AppManager(isCollaborative, shareDBManager) {
+    function AppManager(isCollaborative, shareDBManager, isCbioPortal) {
         this.isCollaborative = isCollaborative;
         this.shareDBManager = shareDBManager;
+        this.isCbioPortal = isCbioPortal;
         this.init();
         this.createSampleMenu();
         this.createCBioPortalAccessModal();
@@ -61,6 +62,7 @@ module.exports = (function () {
         this.initCyHandlers();
         this.initKeyboardHandlers();
         this.initUndoRedoFunctionality();
+        this.initCBioPortalFunctionalities();
         var that = this;
         //  window.onresize = function () {
         //      that.placePanzoomAndOverlay();
@@ -82,10 +84,23 @@ module.exports = (function () {
         var widthCy = $('.cyContainer').outerWidth();
         var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
         var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
+        var heightPatwayNavbar = $('.pathway-navbar').outerHeight();
+        var heightPathwayToolbar = $('.pathway-toolbar').outerHeight();
+        var widthSideBar = $('.sideBarWrapper').outerWidth();
+        var widthcBioPortalSideBar = $('.cBioPortal-sidebar').outerWidth();
+
+
         var heightPanzoom = $('.cy-panzoom').outerHeight();
         var widthPanzoom = $('.cy-panzoom').outerWidth();
-        $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
-        $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
+
+        if(!this.isCbioPortal) {
+            $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
+            $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
+        }
+        else {
+            $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - heightPathwayToolbar - heightPatwayNavbar - 3 * offset);
+            $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator + widthcBioPortalSideBar + offset - widthSideBar);
+        }
 
         //Relative is used so that its position depends on the below properties
         $('.cy-panzoom').css('position', 'relative');
@@ -98,6 +113,7 @@ module.exports = (function () {
 
     AppManager.prototype.createSampleMenu = function () {
         //Get template file data first
+        var self = this;
         var request = new XMLHttpRequest();
         request.onreadystatechange = function () {
             if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
@@ -130,6 +146,9 @@ module.exports = (function () {
                         //Add sub menus if they do not include pancaner and creighton
                         if (!key.includes('PanCancer') && !key.includes('Creighton')) {
                             $('#sampleSubMenu').append(newTCGAMenu);
+                            if (self.isCbioPortal) {
+                                $('#templateSubMenu').append(newTCGAMenu);
+                            }
                         }
 
                     }
@@ -145,6 +164,11 @@ module.exports = (function () {
                 });
             else
                 sampleMenuClickHandler(event);
+        };
+
+        function updateTCGAInformation(title, desription) {
+            document.getElementById("TCGA-header").innerHTML = title;
+            document.getElementById("TCGA-textarea").innerText = desription;
         }
 
         function sampleMenuClickHandler(event) {
@@ -159,6 +183,9 @@ module.exports = (function () {
                         pathwayTitle: allEles.title,
                         pathwayDescription: allEles.description
                     });
+                    if(self.isCbioPortal) {
+                        updateTCGAInformation(allEles.title, allEles.description);
+                    }
                 }
             };
             //Send request for selected pathway
@@ -170,6 +197,10 @@ module.exports = (function () {
 
         request.open("GET", "/getTemplateFileData");
         request.send();
+    };
+
+    AppManager.prototype.getPathwayData = function () {
+        return this.pathwayDetailsView.getPathwayData();
     };
 
     AppManager.prototype.createCBioPortalAccessModal = function () {
@@ -217,7 +248,8 @@ module.exports = (function () {
         //Create Manager Classes
         window.editorActionsManager = this.editorActionsManager = new EditorActionsManager(this.isCollaborative,
             this.shareDBManager,
-            window.cy);
+            window.cy,
+            this.isCbioPortal);
         window.gridOptionsManager = new GridOptionsManager();
         window.viewOperationsManager = new ViewOperationsManager();
         window.fileOperationsManager = new FileOperationsManager();
@@ -576,7 +608,7 @@ module.exports = (function () {
     };
 
     AppManager.prototype.initKeyboardHandlers = function () {
-        if (!this.isCollaborative) {
+        if (!this.isCollaborative && !this.isCbioPortal) {
             $(document).keydown(function (e) {
                 if (e.which === 89 && (e.ctrlKey || event.metaKey)) {
                     window.undoRedoManager.redo();
@@ -609,12 +641,29 @@ module.exports = (function () {
     };
 
     AppManager.prototype.initUndoRedoFunctionality = function () {
-        if (this.isCollaborative) {
+        if (this.isCollaborative || this.isCbioPortal) {
             $('[role="undo"]').hide();
             $('[role="redo"]').hide();
             document.getElementById("localOrCollaborativeToolbar").style.display = "none";
         }
     };
+
+
+    AppManager.prototype.initCBioPortalFunctionalities = function () {
+        if (this.isCbioPortal) {
+            contextMenu = cy.contextMenus('get');
+
+            //Destroy context menu
+            contextMenu.destroy();
+            //Hide toolbar, sidebar, navbar
+            document.getElementById("pathway-toolbar").style.display = "none";
+            document.getElementById("pathway-sidebar").style.display = "none";
+            document.getElementById("pathway-navbar").style.display = "none";
+            document.getElementById("cBioPortal-Wrapper").style.display = "inline-block";
+            document.getElementById("about-model-header").innerHTML = "PathwayMapper Viewer 2.0";
+        }
+    };
+
 
     return AppManager;
 })();

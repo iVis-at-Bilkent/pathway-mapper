@@ -137,6 +137,24 @@ input[type="color"]:hover{
   min-width: 130px;
   max-width: 130px;
   font-size: 12px;
+
+}
+
+.sideBarWrapper-cBioPortal{
+  min-width: 22px;
+  font-size: 12px;
+}
+
+.cBioPortal-sidebar{
+  margin-right: 10px;
+  max-height: 30px;
+  min-width: 1000px;
+}
+
+.sideBarWrapper-right-cBioPortal{
+  min-width: 120px;
+  max-width: 100px;
+  font-size: 12px;
 }
 
 .control-label
@@ -222,7 +240,7 @@ footer{
     background-color: $menubgColor !important;
 }
 
-.navbar-nav>li>.dropdown-menu, .navbar-nav>li>.dropdown-submenu  {
+.navbar-nav>li>.dropdown-menu,npm .navbar-nav>li>.dropdown-submenu  {
     // min-width: 100%;
     // margin-top: 9px !important;
     border-radius: 4px !important;
@@ -304,7 +322,80 @@ footer{
       margin-left: auto;
       margin-right: auto;
     }
+
+    textarea{
+      width: 110px;
+      height: 200px;
+      margin-bottom: 10px;
+      z-index: 999999;
+    }
   }
+}
+
+.cBioPortal-button
+{
+  img {
+    height: 35px;
+    width: 30px;
+  }
+  margin-bottom: 5px;
+  margin-left: 3px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.TCGA-information
+{
+  h6 {
+    max-width: 200px;
+    min-width: 100px;
+    min-height: 35px;
+    text-align: center;
+    margin-right: 4px;
+    margin-left: 5px;
+  }
+  textarea[readonly] {
+    font-size: small;
+    min-height: 44px;
+    margin-left: 20px;
+  }
+
+  .btn-group{
+    margin-left: 10px;
+    border: 2px solid $menubgColor;
+    padding: 1px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius:6px;
+  }
+}
+
+.cBioPortal-Wrapper{
+  max-width: 1500px;
+  max-height: 44px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.TCGA-dropdown {
+  max-width: 150px;
+  min-width: 150px;
+  max-height: 60px;
+  min-height: 60px;
+  margin-left: 15px;
+  a {
+    background-color: $menubgColor !important;
+    color: white;
+    min-width: 100%;
+    max-width: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .btn{
+    height: 100%;
+  }
+
 }
 
 .customMargins{

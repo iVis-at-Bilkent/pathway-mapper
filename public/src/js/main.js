@@ -41,7 +41,21 @@ $(window).load(function()
 
     var localUsageCallback = function(postSuccess)
     {
-        var appInstance = new AppManager(false);
+        var appInstance = new AppManager(false, undefined, false);
+        postSuccess();
+
+        var uri = window.location.search;
+        if (uri.length > 0)
+        {
+            var pathwayName = uri.substring(uri.indexOf("=") + 1 , uri.length);
+            getLocalPathway(pathwayName);
+        }
+    }
+
+
+    var cBioPortalUsageCallback = function(postSuccess)
+    {
+        var appInstance = new AppManager(false, undefined, true);
         postSuccess();
 
         var uri = window.location.search;
@@ -57,7 +71,7 @@ $(window).load(function()
 
         var shareDBManager = new ShareDBModule(postSuccess);
 
-        var appInstance = new AppManager(true, shareDBManager);
+        var appInstance = new AppManager(true, shareDBManager, false);
 
         shareDBManager.initShareDB();
     };
@@ -65,14 +79,15 @@ $(window).load(function()
     var welPage = new WelcomePageView({
         el: $('.welcomePageContainer'),
         localUsageCallback: localUsageCallback,
-        collaborativeUsageCallback: collaborativeUsageCallback
+        collaborativeUsageCallback: collaborativeUsageCallback,
+        cBioPortalUsageCallback: cBioPortalUsageCallback
     }).render();
-
 
     //TODO SHAME  !!!  ⍾ ⍾ ⍾ ⍾ ⍾
     var uri = window.location.search;
     if (uri.length > 0)
     {
+
         var uriTerm = uri.substring(1,uri.indexOf("="));
 
         if(uriTerm === "id")
@@ -89,6 +104,14 @@ $(window).load(function()
             $('.landingContent h3').hide();
             $('.welPageButtons').hide();
             $('#localUsage').click();
+            $('.continueButton').click().hide();
+        }
+        else if(uriTerm === "cbp")
+        {
+            //Trigger cBioPortal Usage
+            $('.landingContent h3').hide();
+            $('.welPageButtons').hide();
+            $('#cBioPortalUsage').click();
             $('.continueButton').click().hide();
         }
     }

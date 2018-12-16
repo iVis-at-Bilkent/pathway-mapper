@@ -162,4 +162,40 @@ module.exports = (function ($)
         }
     });
 
+    //TODO Toolbar part, we will refactor it later
+    $("#pathway-sidebar-cBioPortal-buttons img").click(function (event)
+    {
+        var clickedImageRole = $(event.target).attr('role');
+        if (clickedImageRole === 'save-as-text')
+        {
+            window.fileOperationsManager.saveGraph(false);
+        }
+        else if(clickedImageRole === 'save-as-svg')
+        {
+            var returnString = window.editorActionsManager.exportSVG();
+            var fileName = 'pathway.svg';
+            var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, fileName);
+        }
+        else if(clickedImageRole === 'save-as-png')
+        {
+            window.fileOperationsManager.saveAsPNG();
+        }
+        else if (clickedImageRole === 'rearrange-layout')
+        {
+            window.editorActionsManager.performLayout();
+        }
+        else if (clickedImageRole === 'help')
+        {
+            $('#aboutModal').modal('show');
+        }
+        else if (clickedImageRole === 'edit-in-pathway')
+        {
+            pathwayDetails = window.appManager.getPathwayData();
+            fileName = (pathwayDetails.fileName).replace(/ |\//g,"-");
+            href = 'http://www.pathwaymapper.org/?filename=' + fileName;
+            window.open(href, "_blank");
+        }
+    });
+
 }(window.$))
