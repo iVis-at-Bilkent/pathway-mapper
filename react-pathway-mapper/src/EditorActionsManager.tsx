@@ -10,18 +10,20 @@ export default class EditorActionsManager{
     private observers: any[];
     private svgExporter: SVGExporter;
     private genomicDataOverlayManager: GenomicDataOverlayManager;
-    private selectedNodeStack: {};
+    private selectedNodeStack: any;
     private undoRedoManager: any;
     private isCbioPortal: boolean;
     private isCollaborative: boolean;
     private shareDBManager: ShareDBManager;
+    private edgeEditing: any;
 
-    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean)
+    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, edgeEditing: any)
     {
         //Set cy instance and set real time manager reference if collaborative mode
         this.cy = cyInst;
         this.isCollaborative = isCollaborative;
         this.isCbioPortal = isCBioPortal;
+        this.edgeEditing = edgeEditing;
         if(this.isCollaborative && shareDBManager)
             this.shareDBManager = shareDBManager;
 
@@ -253,10 +255,10 @@ export default class EditorActionsManager{
         var nodesToHide = sel;
         var b = true;
         //Hides the parents if they have no children
-        sel.parent().each((parent: any, i: any) =>
+        sel.parent().each((parent: any) =>
         {
             b=true;
-            parent.children().each(function(ch: any,j: any)
+            parent.children().each(function(ch: any)
                 {
                     if (!ch.selected())
                     {
@@ -264,7 +266,7 @@ export default class EditorActionsManager{
                     }
                 }
             );
-            if (b==true) nodesToHide = nodesToHide.add(parent);
+            if (b) nodesToHide = nodesToHide.add(parent);
         });
         this.cy.elements(":selected").unselect();
         if (this.isCollaborative)
@@ -371,11 +373,12 @@ export default class EditorActionsManager{
                 }
             });
             this.shareDBManager.changeHighlightInvalidGenes(invalidGenes, true);
-
+            // TODO: Amendment by Ziya
+            /*
             if (invalidGenes.length > 0)
                 this.notificationManager.createNotification("Invalid genes are highlighted","fail");
             else
-                this.notificationManager.createNotification("All gene symbols are valid","success");
+                this.notificationManager.createNotification("All gene symbols are valid","success");*/
         }
         else
         {
@@ -389,14 +392,15 @@ export default class EditorActionsManager{
                         highlightedGenes = highlightedGenes.add(gene);
                 }
             });
-
-            if (highlightedGenes.size() > 0)
-                this.notificationManager.createNotification("Invalid genes are highlighted","fail");
-            else
-                this.notificationManager.createNotification("All gene symbols are valid","success");
+            // TODO: Amendment by Ziya
+            /*
+                        if (highlightedGenes.size() > 0)
+                            this.notificationManager.createNotification("Invalid genes are highlighted","fail");
+                        else
+                            this.notificationManager.createNotification("All gene symbols are valid","success");*/
 
             var nodesToAddInvalidHighlight = this.cy.collection();
-            highlightedGenes.forEach(function(ele: any, index: number){
+            highlightedGenes.forEach(function(ele: any){
                 if (!ele.hasClass('invalidGeneHighlight') &&  !ele.hasClass('invalidGene'))
                     nodesToAddInvalidHighlight = nodesToAddInvalidHighlight.union(ele);
             });
@@ -422,7 +426,7 @@ export default class EditorActionsManager{
         else
         {
             var nodesToRemoveInvalidHighlight = this.cy.collection();
-            this.cy.nodes().forEach(function(ele: any, index: number){
+            this.cy.nodes().forEach(function(ele: any){
                 if (ele.hasClass('invalidGeneHighlight') ||  ele.hasClass('invalidGene'))
                     nodesToRemoveInvalidHighlight = nodesToRemoveInvalidHighlight.union(ele);
             });
@@ -433,7 +437,7 @@ export default class EditorActionsManager{
 
     doHighlightInvalidGenes(args: any)
     {
-        args.each(function(n: any, i: number)
+        args.each(function(n: any)
         {
             if(n.hasClass('highlightedNode'))
             {
@@ -448,7 +452,7 @@ export default class EditorActionsManager{
 
     undoHighlightInvalidGenes(args: any)
     {
-        args.each(function(n: any, i: number)
+        args.each(function(n: any)
         {
             if(n.hasClass('invalidGeneHighlight'))
             {
@@ -466,7 +470,7 @@ export default class EditorActionsManager{
         var sel = this.cy.elements(":selected");
         sel.unselect();
         var elementsToHighlight = this.cy.collection();
-        sel.forEach(function(ele: any, index: number){
+        sel.forEach(function(ele: any){
             if (!ele.hasClass('invalidGeneHighlight') &&  !ele.hasClass('highlightedNode') && !ele.hasClass('highlightedEdge'))
                 elementsToHighlight = elementsToHighlight.union(ele);
         });
@@ -483,7 +487,7 @@ export default class EditorActionsManager{
         neighbors = neighbors.union(sel);
         neighbors.unselect();
         var elementsToHighlight = this.cy.collection();
-        neighbors.forEach(function(ele: any, index: number){
+        neighbors.forEach(function(ele: any){
             if (!ele.hasClass('invalidGeneHighlight') &&  !ele.hasClass('highlightedNode') && !ele.hasClass('highlightedEdge'))
                 elementsToHighlight = elementsToHighlight.union(ele);
         });
@@ -505,7 +509,7 @@ export default class EditorActionsManager{
     {
         var nodesToRemoveHighlight = this.cy.collection();
         //TODO cytoscape selectors may provide more handy functionality instead of iterating over !
-        this.cy.elements().forEach(function(ele: any, index: number){
+        this.cy.elements().forEach(function(ele: any){
             if (ele.hasClass('highlightedNode') || ele.hasClass('highlightedEdge') || ele.hasClass('invalidGeneHighlight'))
                 nodesToRemoveHighlight = nodesToRemoveHighlight.add(ele);
         });
@@ -522,7 +526,7 @@ export default class EditorActionsManager{
      * **/
     doHighlight(args: any)
     {
-        args.each(function(n: any, i: number)
+        args.each(function(n: any)
         {
             if (n.isEdge())
                 n.addClass("highlightedEdge");
@@ -542,7 +546,7 @@ export default class EditorActionsManager{
 
     undoHighlight(args: any)
     {
-        args.each(function(n: any, i: number)
+        args.each(function(n: any)
         {
             if (n.isEdge())
                 n.removeClass("highlightedEdge");
@@ -576,7 +580,7 @@ export default class EditorActionsManager{
             // the compound node was moved before the child nodes
             var movedNodes = this.cy.collection();
             var parentNodes = this.cy.collection();
-            this.cy.nodes().forEach(function(node: any,i: number)
+            this.cy.nodes().forEach(function(node: any)
             {
                 if (!node.isParent())
                     movedNodes = movedNodes.add(node);
@@ -630,7 +634,7 @@ export default class EditorActionsManager{
         }
     }
 
-    removePubmedID(edge, pubmedIDs)
+    removePubmedID(edge: any, pubmedIDs: number[])
     {
         if (this.isCollaborative)
         {
@@ -648,15 +652,15 @@ export default class EditorActionsManager{
         if (this.isCollaborative)
         {
             var numberOfBendPoints = 0;
-            if (edgeEditing.getSegmentPoints(edge) !== undefined)
-                numberOfBendPoints = edgeEditing.getSegmentPoints(edge).length/2;
+            if (this.edgeEditing.getSegmentPoints(edge) !== undefined)
+                numberOfBendPoints = this.edgeEditing.getSegmentPoints(edge).length/2;
             var bendPointsArray = [];
             for (var j = 0; j < numberOfBendPoints; j++)
             {
                 bendPointsArray.push(
                     {
-                        x: edgeEditing.getSegmentPoints(edge)[2*j],
-                        y: edgeEditing.getSegmentPoints(edge)[2*j+1]
+                        x: this.edgeEditing.getSegmentPoints(edge)[2*j],
+                        y: this.edgeEditing.getSegmentPoints(edge)[2*j+1]
                     }
                 );
             }
@@ -737,7 +741,7 @@ export default class EditorActionsManager{
         };
     }
 
-    changeGlobalOptions(op)
+    changeGlobalOptions(op: any)
     {
         var globalOptions = op.li;
         this.cy.zoom(globalOptions.zoomLevel);
@@ -907,7 +911,7 @@ export default class EditorActionsManager{
         }
         else
         {
-            //TODO: AMENDED by ZiyaA
+            // TODO: Amendment by Ziya
             this.addNodetoCy(nodeData, null);
         }
 
@@ -1019,7 +1023,7 @@ export default class EditorActionsManager{
             const nodeData =
                 {
                     group: 'nodes',
-                    //TODO: AMENDED BY ZIYA
+                    // TODO: Amendment by Ziya
                     position: {},
                     data:
                         {
@@ -1092,7 +1096,7 @@ export default class EditorActionsManager{
         this.cy.add(nodeList);
         this.cy.add(edgeList);
 
-        edgeEditing.initBendPoints(this.cy.edges());
+        this.edgeEditing.initBendPoints(this.cy.edges());
 
         this.cy.nodes().updateCompoundBounds();
     }
@@ -1110,7 +1114,7 @@ export default class EditorActionsManager{
                 bendPointPositions: edge.bendPoint
             };
         this.addNewEdgetoCy(edgeData);
-        edgeEditing.initBendPoints(this.cy.getElementById( edge.id ));
+        this.edgeEditing.initBendPoints(this.cy.getElementById( edge.id ));
     };
 
     reconnectEdge(sourceID: string, targetID: string, edgeData: any) {
@@ -1162,7 +1166,7 @@ export default class EditorActionsManager{
     removeElementsFromShareDB(eles: any[])
     {
         var self = this;
-        eles.forEach(function (ele, i)
+        eles.forEach(function (ele)
         {
             self.shareDBManager.removeElement(ele.id());
         });
@@ -1189,7 +1193,7 @@ export default class EditorActionsManager{
             //Save element's previous width & height in dim array
             const dim : any[]= [];
             const id : any[]= [];
-            eles.forEach(function (ele: any, i: number)
+            eles.forEach(function (ele: any)
             {
                 var parameters =
                     {
@@ -1238,14 +1242,14 @@ export default class EditorActionsManager{
             const parentMap : any = {};
 
             //Get all parents
-            eles.forEach(function (node: any, index: number)
+            eles.forEach(function (node)
             {
                 if(node.isParent())
                     parentMap[node.id()] = node;
             });
 
             //Get all parents
-            eles.forEach(function (node, index)
+            eles.forEach(function (node)
             {
                 var nodeParent = node.parent();
 
@@ -1256,17 +1260,21 @@ export default class EditorActionsManager{
             return tpMostNodes;
         }
 
-        var NodeObj = function(nodeObj: any){
-            this.nodeRef  = nodeObj;
-            this.children = [];
-        };
 
+        class NodeObj{
+          public nodeRef: any;
+          public children: any;
+          constructor(nodeObj: any){
+            this.nodeRef = nodeObj;
+            this.children = [];
+          }
+        }
         var connectedEdges = eles.connectedEdges();
         // Traverses given elements and constructs subgraph relations
         // creates a nested structure into rootnodeObj
-        function traverseNodes(eles: any[], rootNodeObj)
+        function traverseNodes(eles: any[], rootNodeObj: any)
         {
-            eles.forEach(function (ele, index)
+            eles.forEach(function (ele)
             {
                 connectedEdges = connectedEdges.union(ele.connectedEdges());
 
@@ -1305,7 +1313,7 @@ export default class EditorActionsManager{
 
             if (children != null && children.length > 0)
             {
-                children.forEach(function(childNode: any, i: number)
+                children.forEach(function(childNode: any)
                 {
                     lockedNodes[childNode.id()] = true;
                 });
@@ -1349,7 +1357,7 @@ export default class EditorActionsManager{
         //Sync movement to real time api
         if(this.isCollaborative)
         {
-            eles.forEach(function (ele: any, index: number)
+            eles.forEach(function (ele: any)
             {
                 classRef.shareDBManager.moveElement(ele);
             });
@@ -1447,13 +1455,15 @@ export default class EditorActionsManager{
 
             //We assume there could be one edge between source and target node with same type
             var isFound = false;
-            edgesBtw.forEach(function(edge: any,i: number)
+            edgesBtw.forEach(function(edge: any)
             {
                 if (edge.data().type == ele.data.type)
                 {
                     isFound = true;
                     return false;
                 }
+                //TODO: AMENDMENT by Ziya
+                return true;
             });
 
             if (!isFound)
@@ -1610,8 +1620,8 @@ export default class EditorActionsManager{
             else {
                 cyEle.data('bendPointPositions', bendPoint);
                 if (numberOfBendPositions !== undefined && numberOfBendPositions > 0)
-                    edgeEditing.deleteSelectedBendPoint(cyEle,0);
-                edgeEditing.initBendPoints(cyEle);
+                    this.edgeEditing.deleteSelectedBendPoint(cyEle,0);
+                this.edgeEditing.initBendPoints(cyEle);
             }
         }
     };

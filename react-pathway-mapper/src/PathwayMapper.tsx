@@ -11,7 +11,7 @@ export default class PathwayMapper extends React.Component{
     private cy:any;
     private cyDiv: HTMLDivElement | undefined;
     private editor: EditorActionsManager;
-    private edgeAddingMode: number;
+    private edgeAddingMode: any;
     private viewOperationsManager: ViewOperationsManager;
     private gridOptionsManager: GridOptionsManager;
     private fileOperationsManager: FileOperationsManager;
@@ -22,14 +22,12 @@ export default class PathwayMapper extends React.Component{
     private viewUtilities: any;
     constructor(props: any){
         super(props);
-        this.editor = new EditorActionsManager(this.cy, this.);
         this.edgeAddingMode = 0;
+        this.editor = new EditorActionsManager(false, null, this.cy, true, this.edgeEditing);
     }
 
     render(){
-        return (<div>
-                <div ref={this.cyDivHandler} id="cy"></div>
-        </div>);
+        return <div ref={this.cyDivHandler} id="cy"></div>;
     }
 
     componentDidMount(): void {
@@ -67,7 +65,7 @@ export default class PathwayMapper extends React.Component{
 
         this.genomicDataExplorerView = new GenomicDataExplorerView({
             el: $('#genomicDataExplorerDiv'),
-            editorActionsManager: this.editorActionsManager
+            editorActionsManager: this.editor
         }).render();
 
         this.pathwayDetailsView = new PathwayDetailsView({
