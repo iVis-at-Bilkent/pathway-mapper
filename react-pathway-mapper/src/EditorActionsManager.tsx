@@ -17,7 +17,7 @@ export default class EditorActionsManager{
     private shareDBManager: ShareDBManager;
     private edgeEditing: any;
 
-    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, edgeEditing: any)
+    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, edgeEditing: any, undoRedoManager: any)
     {
         //Set cy instance and set real time manager reference if collaborative mode
         this.cy = cyInst;
@@ -68,7 +68,7 @@ export default class EditorActionsManager{
         this.svgExporter = new SVGExporter();
 
         this.selectedNodeStack = {};
-        this.undoRedoManager = this.cy.undoRedo();
+        this.undoRedoManager = undoRedoManager;
         this.undoRedoManager.action("changePositions", this.doChangePosition, this.undoChangePosition);
         this.undoRedoManager.action("changeNodeSize", this.doChangeNodeSize, this.undoChangeNodeSize);
         this.undoRedoManager.action("changeCompoundSize", this.doChangeCompoundSize, this.undoChangeCompoundSize);

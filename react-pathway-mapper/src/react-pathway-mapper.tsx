@@ -18,7 +18,7 @@ export default class App extends Component {
             <Toolbar/>
             <Col>
               <Row>
-                <PathwayMapper/>
+                <PathwayMapper isCbioPortal={true} isCollaborative={false}/>
               </Row>
             </Col>
 

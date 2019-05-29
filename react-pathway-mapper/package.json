@@ -84,6 +84,8 @@
   "dependencies": {
     "@types/cytoscape": "^3.4.0",
     "@types/jest": "24.0.11",
+    "cytoscape-cose-bilkent": "^4.0.0",
+    "cytoscape-node-resize": "github:iVis-at-Bilkent/cytoscape.js-node-resize#unstable",
     "@types/node": "11.13.4",
     "@types/react": "16.8.13",
     "@types/react-dom": "16.8.4",
@@ -96,7 +98,8 @@
     "react-bootstrap": "^1.0.0-beta.6",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
-    "typescript": "3.4.3"
+    "typescript": "3.4.3",
+    "jquery": "latest"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",
