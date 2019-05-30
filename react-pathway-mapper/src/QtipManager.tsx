@@ -3,4 +3,8 @@ export default class QtipManager {
   constructor(cy: any){
     this.cy = cy;
   }
+
+  addQtipToElements(target: any) {
+    console.log(target);
+  }
 }

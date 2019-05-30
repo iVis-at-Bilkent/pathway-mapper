@@ -4,23 +4,28 @@ import autobind from "autobind-decorator";
 import {observer} from "mobx-react";
 import ViewOperationsManager from "./ViewOperationsManager"
 import EditorActionsManager from "./EditorActionsManager";
-import $ from "jquery"
+import "jquery"
 import DragDropNodeAddPlugin from "./DragDropNodeAddPlugin";
 import ContextMenuManager from "./ContextMenuManager";
 import GridOptionsManager from "./GridOptionsManager";
 import FileOperationsManager from "./FileOperationsManager";
 import QtipManager from "./QtipManager";
 import ShareDBManager from "./ShareDBManager";
+import CBioPortalAccessor from "./CBioPortalAccessor";
 
-var regCose = require('cytoscape-cose-bilkent');
-var nodeResize = require('cytoscape-node-resize');
-var styleSheet = require('GraphStyleSheet.js');
-var panzoomOpts = require('PanzoomOptions.js');
-var edgeHandleOpts = require('EdgeHandlesOptions.js');
+const regCose = require('cytoscape-cose-bilkent');
+const nodeResize = require('cytoscape-node-resize');
+const styleSheet = require('GraphStyleSheet.js');
+const panzoomOpts = require('PanzoomOptions.js');
+const edgeHandleOpts = require('EdgeHandlesOptions.js');
+const konva = require('konva');
 
-
+type PathwayMapperType = {
+  isCollaborative: boolean;
+  isCbioPortal: boolean;
+};
 @observer
-export default class PathwayMapper extends React.Component{
+export default class PathwayMapper extends React.Component<PathwayMapperType, {}>{
     private cy:any;
     private cyDiv: HTMLDivElement | undefined;
     private editor: EditorActionsManager;
@@ -39,9 +44,10 @@ export default class PathwayMapper extends React.Component{
     private cxtMenuManager: ContextMenuManager;
     private dragDropNodeAddManager: DragDropNodeAddPlugin;
     private undoRedoManager: any;
+    private portalAccessor: CBioPortalAccessor;
 
 
-    constructor (props: any) {
+    constructor (props: PathwayMapperType) {
       super(props);
       this.isCollaborative = props.isCollaborative;
       this.edgeAddingMode = 0;
@@ -52,7 +58,11 @@ export default class PathwayMapper extends React.Component{
       this.createCBioPortalAccessModal();
     }
     render(){
-        return <div ref={this.cyDivHandler} id="cy"></div>;
+        return <div>
+              <div ref={this.cyDivHandler} id="cy"/>
+              <div className = "cytoscape-navigator-wrapper" />
+          </div>
+      ;
     }
 
     componentDidMount(): void {
@@ -85,12 +95,16 @@ export default class PathwayMapper extends React.Component{
   placePanzoomAndOverlay(){
     //TODO place navigator !!!
     var offset = 5;
-    var topCy = $('.cyContainer').offset().top;
+    // @ts-ignore
+    var topCy = $(this.cyDiv).offset().top;
     //var bottomCy = $('.cyContainer').offset().bottom;
-    var leftCy = $('.cyContainer').offset().left;
+    // @ts-ignore
+    var leftCy = $(this.cyDiv).offset().left;
     //var rightCy = $('.cyContainer').offset().right;
-    var heightCy = $('.cyContainer').outerHeight();
-    var widthCy = $('.cyContainer').outerWidth();
+    // @ts-ignore
+    var heightCy = $(this.cyDiv).outerHeight();
+    // @ts-ignore
+    var widthCy = $(this.cyDiv).outerWidth();
     var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
     var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
     var heightPatwayNavbar = $('.pathway-navbar').outerHeight();
@@ -215,12 +229,16 @@ export default class PathwayMapper extends React.Component{
   createCBioPortalAccessModal() {
     var self = this;
 
+    /* TODO: AMENDMENT SUPPRESSED FUNCTIONALITY
     this.portalAccessView = new CBioPortalAccessView({
       el: $("#cbioPortalAccessDiv")
-    });
+    });*/
 
-    window.portalAccessor.fetchCancerStudies(function (cancerStudies) {
+    this.portalAccessor.fetchCancerStudies(function (cancerStudies: any) {
+      /*TODO: AMENDMENT SUPPRESSED FUNCTIONALITY
       self.portalAccessView.updateCancerStudies(cancerStudies);
+      */
+      console.log("Returned from CBio: ",  cancerStudies);
     });
   };
 
@@ -247,7 +265,6 @@ export default class PathwayMapper extends React.Component{
       wheelSensitivity: 0.1,
       style: styleSheet,
       // elements: allEles,
-      ready: () => {},
       textureOnViewport: false,
       motionBlur: true,
       layout: {name: 'preset'}
@@ -260,7 +277,8 @@ export default class PathwayMapper extends React.Component{
       this.cy,
       this.isCbioPortal,
       this.edgeEditing,
-      this.undoRedoManager);
+      this.undoRedoManager,
+      this.portalAccessor);
     this.gridOptionsManager = new GridOptionsManager();
     this.viewOperationsManager = new ViewOperationsManager();
     this.fileOperationsManager = new FileOperationsManager();
@@ -270,6 +288,9 @@ export default class PathwayMapper extends React.Component{
     this.cxtMenuManager = new ContextMenuManager(this.cy, this.editor);
     this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editor);
 
+    // this.nodeResizeOptionsView = new NodeResizeOptionsView({
+    //     el: $('#nodeResizeOptionsDiv')
+    // }).render();
     /* TODO AMENDMENT These will be moved to react
     //Render layout properties view after editor actions manager is created !
     this.layoutPropertiesView = new LayoutProperties({
@@ -284,10 +305,8 @@ export default class PathwayMapper extends React.Component{
     this.gridOptionsView = new GridOptionsView({
       el: $('#gridOptionsDiv')
     }).render();
-    */
-    // this.nodeResizeOptionsView = new NodeResizeOptionsView({
-    //     el: $('#nodeResizeOptionsDiv')
-    // }).render();
+
+
 
     this.genomicDataExplorerView = new GenomicDataExplorerView({
       el: $('#genomicDataExplorerDiv'),
@@ -296,7 +315,7 @@ export default class PathwayMapper extends React.Component{
 
     this.pathwayDetailsView = new PathwayDetailsView({
       el: $('#pathwayDetailsDiv')
-    }).render();
+    }).render();*/
 
     //Initialize panzoom
     this.cy.panzoom(panzoomOpts);
@@ -375,6 +394,10 @@ export default class PathwayMapper extends React.Component{
     };
     this.edgeEditing = this.cy.edgeEditing(edgeEditingOptions);
 
+    // @ts-ignore
+    // @ts-ignore
+    // @ts-ignore
+    // @ts-ignore
     this.cy.nodeResize({
       padding: 5, // spacing between node and grapples/rectangle
       undoable: true, // and if cy.undoRedo exists
@@ -426,8 +449,9 @@ export default class PathwayMapper extends React.Component{
       isFixedAspectRatioResizeMode: function (node: any) {
         return node.is(".fixedAspectRatioResizeMode")
       },// with only 4 active grapples (at corners)
-      isNoResizeMode: function (node: any) {
-        return undefined;
+      // @ts-ignore
+      isNoResizeMode: function(node: any) {
+        return null;
       }, // no active grapples
 
       // These optional function will be executed to set the width/height of a node in this extension
@@ -517,39 +541,44 @@ export default class PathwayMapper extends React.Component{
   initCyHandlers(){
     var that = this;
 
-    var tappedBefore;
-    var tappedTimeout;
-    this.cy.on('tap', function (event) {
+    var tappedBefore: number;
+    var tappedTimeout: number;
+    this.cy.on('tap', function (event: any) {
       var tappedNow = event.target;
-      if (tappedTimeout && tappedBefore) {
+      if (tappedTimeout != -1 && tappedBefore != -1) {
         clearTimeout(tappedTimeout);
       }
       if (tappedBefore === tappedNow) {
         tappedNow.trigger('doubleTap');
-        tappedBefore = null;
+        tappedBefore = -1;
       } else {
+        // @ts-ignore TODO AMENDMENT
         tappedTimeout = setTimeout(function () {
-          tappedBefore = null;
+          tappedBefore = -1;
         }, 300);
         tappedBefore = tappedNow;
       }
     });
 
-    this.cy.on('doubleTap', 'node', function (e) {
+    this.cy.on('doubleTap', 'node',  function (e: any) {
+      // TODO: this.cy
+      // @ts-ignore
       var eventIsDirect = (e.target === this);
 
       if (eventIsDirect) {
         //Remove qtips
         $(".qtip").remove();
         that.qtipManager.addQtipToElements(e.target);
-        var api = this.qtip('api');
+        // @ts-ignore
+        var api = this.cy.qtip('api');
         if (api) {
           api.show();
         }
       }
     });
 
-    this.cy.on('doubleTap', 'edge', function (e) {
+    this.cy.on('doubleTap', 'edge', function (e: any) {
+      // @ts-ignore
       var eventIsDirect = (e.target === this);
 
       if (eventIsDirect) {
@@ -602,7 +631,7 @@ export default class PathwayMapper extends React.Component{
     //     this.cy.forceRender();
     // });
 
-    this.cy.on("noderesize.resizeend", (e: any, type: any, node: any) => {
+    this.cy.on("noderesize.resizeend", (_e: any, _type: any, node: any) => {
       //Updates 'data' properties from 'style'
       node.data('w', node.width());
       node.data('h', node.height());
@@ -622,7 +651,7 @@ export default class PathwayMapper extends React.Component{
 
   initKeyboardHandlers() {
     if (!this.isCollaborative && !this.isCbioPortal) {
-      $(document).keydown((e: KeyboardEvent) => {
+      $(document).keydown((e: any) => {
         if (e.which === 89 && (e.ctrlKey || e.metaKey)) {
           this.undoRedoManager.redo();
         }
@@ -635,8 +664,9 @@ export default class PathwayMapper extends React.Component{
       $('a[role="redo"]').hide();
       $('a[role="undo"]').hide();
     }
-    $(document).keydown((e: KeyboardEvent) => {
+    $(document).keydown((e: any) => {
       if (e.which === 65 && (e.ctrlKey || e.metaKey)) {
+        // @ts-ignore
         var tn = document.activeElement.tagName;
         if (tn != "TEXTAREA" && tn != "INPUT") {
           e.preventDefault();
@@ -644,6 +674,7 @@ export default class PathwayMapper extends React.Component{
         }
       }
       else if (e.which === 8 || e.which === 46) {
+        // @ts-ignore
         var tn = document.activeElement.tagName;
         if (tn != "TEXTAREA" && tn != "INPUT") {
           var selectedElements = this.cy.$(':selected');
@@ -657,23 +688,26 @@ export default class PathwayMapper extends React.Component{
     if (this.isCollaborative || this.isCbioPortal) {
       $('[role="undo"]').hide();
       $('[role="redo"]').hide();
+      /* TODO: AMENDMENT
       document.getElementById("localOrCollaborativeToolbar").style.display = "none";
+      */
     }
   };
 
 
   initCBioPortalFunctionalities() {
     if (this.isCbioPortal) {
-      contextMenu = this.cy.contextMenus('get');
+      const contextMenu = this.cy.contextMenus('get');
 
       //Destroy context menu
       contextMenu.destroy();
       //Hide toolbar, sidebar, navbar
+      /* TODO: AMENDMENT
       document.getElementById("pathway-toolbar").style.display = "none";
       document.getElementById("pathway-sidebar").style.display = "none";
       document.getElementById("pathway-navbar").style.display = "none";
       document.getElementById("cBioPortal-Wrapper").style.display = "inline-block";
-      document.getElementById("about-model-header").innerHTML = "PathwayMapper Viewer 2.0";
+      document.getElementById("about-model-header").innerHTML = "PathwayMapper Viewer 2.0";*/
     }
   };
 

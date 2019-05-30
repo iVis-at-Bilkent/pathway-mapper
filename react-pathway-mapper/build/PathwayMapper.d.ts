@@ -1,0 +1,40 @@
+import React from 'react';
+declare type PathwayMapperType = {
+    isCollaborative: boolean;
+    isCbioPortal: boolean;
+};
+export default class PathwayMapper extends React.Component<PathwayMapperType, {}> {
+    private cy;
+    private cyDiv;
+    private editor;
+    private edgeAddingMode;
+    private viewOperationsManager;
+    private gridOptionsManager;
+    private fileOperationsManager;
+    private qtipManager;
+    private genomicDataExplorerView;
+    private pathwayDetailsView;
+    private edgeEditing;
+    private viewUtilities;
+    private isCollaborative;
+    private isCbioPortal;
+    private shareDBManager;
+    private cxtMenuManager;
+    private dragDropNodeAddManager;
+    private undoRedoManager;
+    private portalAccessor;
+    constructor(props: PathwayMapperType);
+    render(): JSX.Element;
+    componentDidMount(): void;
+    private cyDivHandler;
+    init(): void;
+    placePanzoomAndOverlay(): void;
+    getPathwayData(): any;
+    createCBioPortalAccessModal(): void;
+    initCyJS(): void;
+    initCyHandlers(): void;
+    initKeyboardHandlers(): void;
+    initUndoRedoFunctionality(): void;
+    initCBioPortalFunctionalities(): void;
+}
+export {};

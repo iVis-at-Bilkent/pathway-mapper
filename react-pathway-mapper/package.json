@@ -84,22 +84,24 @@
   "dependencies": {
     "@types/cytoscape": "^3.4.0",
     "@types/jest": "24.0.11",
-    "cytoscape-cose-bilkent": "^4.0.0",
-    "cytoscape-node-resize": "github:iVis-at-Bilkent/cytoscape.js-node-resize#unstable",
+    "@types/jquery": "^3.3.29",
     "@types/node": "11.13.4",
     "@types/react": "16.8.13",
     "@types/react-dom": "16.8.4",
     "autobind-decorator": "^2.4.0",
     "bootstrap": "^4.3.1",
     "cytoscape": "^3.5.2",
+    "cytoscape-cose-bilkent": "^4.0.0",
+    "cytoscape-node-resize": "github:iVis-at-Bilkent/cytoscape.js-node-resize#unstable",
+    "cytoscape-qtip": "~2.7.1",
+    "jquery": "latest",
     "mobx": "latest",
     "mobx-react": "^5.4.3",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.6",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
-    "typescript": "3.4.3",
-    "jquery": "latest"
+    "typescript": "3.4.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",

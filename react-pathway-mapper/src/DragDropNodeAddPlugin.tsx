@@ -1,5 +1,5 @@
 import EditorActionsManager from "./EditorActionsManager";
-import $ from "jquery"
+import "jquery"
 
 export default class DragDropNodeAddPlugin {
 
@@ -11,6 +11,7 @@ export default class DragDropNodeAddPlugin {
       this.initNodeAdd();
     }
 
+    //TODO JQUERY IS IGNORED
     initNodeAdd()
     {
       var nodeAddClass = this;
@@ -32,6 +33,7 @@ export default class DragDropNodeAddPlugin {
         }
       };
 
+      // @ts-ignore
       $.fn.cytoscapeNodeadd = function(params: any) {
         var options = $.extend(true, {}, defaults, params);
         var fn = params;
@@ -85,6 +87,7 @@ export default class DragDropNodeAddPlugin {
               // @ts-ignore TODO: AMENDMENT ATTENTION
               var $container = $(this);
               //Init Droppable
+              // @ts-ignore TODO: Droppable is ignored
               $container.droppable({
                 activeClass: "ui-state-highlight",
                 // accept: "#ui-cytoscape-nodeadd-icon",
@@ -128,7 +131,7 @@ export default class DragDropNodeAddPlugin {
 
                   //Check if any parent found, if so set parent field
                   var parent = nodeMap[Object.keys(nodeMap)[0]];
-                  var nodeData = {w: "0", h: "100", parent: null, type: nodeType, name:'New '+ $(ui.helper).attr('nodeType')};
+                  var nodeData = {w: "0", h: "100", parent: 0, type: nodeType, name:'New '+ $(ui.helper).attr('nodeType')};
                   if (parent)
                   {
                     if(parent.data().type == "FAMILY" || parent.data().type == "COMPLEX")
@@ -172,11 +175,13 @@ export default class DragDropNodeAddPlugin {
         return $(this);
       };
 
+      // @ts-ignore
       $.fn.cynodeadd = $.fn.cytoscapeNodeadd;
 
       /* Adding as an extension to the core functionality of cytoscape.js*/
       this.cy('core', 'nodeadd', (options: any) => {
 
+        // @ts-ignore
         $(this.cy.container()).cytoscapeNodeadd(options);
       });
     }
