@@ -1,5 +1,4 @@
-import { Component } from 'react';
-import './App.css';
-export default class App extends Component {
+import React from 'react';
+export default class App extends React.Component {
     render(): JSX.Element;
 }

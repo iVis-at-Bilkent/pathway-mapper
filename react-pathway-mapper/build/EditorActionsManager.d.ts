@@ -16,22 +16,8 @@ export default class EditorActionsManager {
     private portalAccessor;
     constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, edgeEditing: any, undoRedoManager: any, portalAccessor: CBioPortalAccessor);
     handleChangePositionByAlignment(movedNodeArr: any): void;
-    doChangePosition(movedNodes: any): {
-        node: any;
-        oldPosition: {
-            x: any;
-            y: any;
-        };
-        nextPosition: any;
-    }[];
-    undoChangePosition(movedNodes: any): {
-        node: any;
-        oldPosition: any;
-        nextPosition: {
-            x: any;
-            y: any;
-        };
-    }[];
+    doChangePosition(movedNodes: any): any[];
+    undoChangePosition(movedNodes: any): any[];
     changeNodePositionsByArrows(selectedNodes: any): void;
     doChangeNodeSize(args: any): any;
     undoChangeNodeSize(args: any): any;

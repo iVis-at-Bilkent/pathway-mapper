@@ -1,10 +1,12 @@
 import React from 'react'
 import cytoscape from 'cytoscape';
+import $ from "jquery"
+// @ts-ignore
+window.$ = $;
 import autobind from "autobind-decorator";
 import {observer} from "mobx-react";
 import ViewOperationsManager from "./ViewOperationsManager"
 import EditorActionsManager from "./EditorActionsManager";
-import $ from "jquery"
 import DragDropNodeAddPlugin from "./DragDropNodeAddPlugin";
 import ContextMenuManager from "./ContextMenuManager";
 import GridOptionsManager from "./GridOptionsManager";
@@ -12,8 +14,9 @@ import FileOperationsManager from "./FileOperationsManager";
 import QtipManager from "./QtipManager";
 import ShareDBManager from "./ShareDBManager";
 import CBioPortalAccessor from "./CBioPortalAccessor";
+import edgeHandleOpts from './EdgeHandlesOptions.jsx';
+import edgeEditing from "cytoscape-edge-editing";
 
-const edgeEditing = require('cytoscape-edge-editing');
 const edgeHandles = require('cytoscape-edgehandles');
 const regCose = require('cytoscape-cose-bilkent');
 const nodeResize = require('cytoscape-node-resize');
@@ -22,7 +25,7 @@ const panzoom = require('cytoscape-panzoom');
 const styleSheet = require('./GraphStyleSheet.tsx');
 const panzoomOpts = require('./PanzoomOptions.tsx');
 const navigator = require('cytoscape-navigator');
-import edgeHandleOpts from './EdgeHandlesOptions.jsx';
+
 const konva = require('konva');
 const viewUtilities = require('cytoscape-view-utilities');
 
@@ -68,7 +71,7 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
     }
 
     componentDidMount(): void {
-      console.log(this.cyDiv);
+      console.log(document.getElementById("cy"));
       this.init();
       this.createCBioPortalAccessModal();
     }
@@ -165,16 +168,17 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
     regCose(cytoscape); // register extension
     navigator(cytoscape); // register extension
     // grid_guide(cytoscape, $); // register extension
-     undoRedo(cytoscape); // register extension
+    undoRedo(cytoscape); // register extension
     // contextMenus(cytoscape, $); // register extension
     nodeResize(cytoscape, $, konva); //register extension
-     edgeEditing(cytoscape, $); // register extension
+    edgeEditing(cytoscape, $); // register extension
     viewUtilities(cytoscape, $); // register extension
     edgeHandles(cytoscape);
 
 
     this.edgeAddingMode = 0;
     // var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
+    console.log(this.cyDiv);
     this.cy = cytoscape({
       container: this.cyDiv,
       boxSelectionEnabled: true,
@@ -289,7 +293,7 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
     };
 
     //TODO: AMENDMENT declaration removed
-    this.cy.navigator(navDefaults); // get navigator instance, nav
+    //this.cy.navigator(navDefaults); // get navigator instance, nav
 
     const edgeEditingOptions = {
       // this function specifies the positions of bend points
@@ -616,12 +620,12 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
 
   initCBioPortalFunctionalities() {
     if (this.isCbioPortal) {
+      /* TODO: AMENDMENT
       const contextMenu = this.cy.contextMenus('get');
 
       //Destroy context menu
       contextMenu.destroy();
       //Hide toolbar, sidebar, navbar
-      /* TODO: AMENDMENT
       document.getElementById("pathway-toolbar").style.display = "none";
       document.getElementById("pathway-sidebar").style.display = "none";
       document.getElementById("pathway-navbar").style.display = "none";

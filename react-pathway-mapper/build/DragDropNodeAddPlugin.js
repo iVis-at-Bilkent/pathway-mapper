@@ -1,5 +1,6 @@
 import $ from "jquery";
-import 'jqueryui';
+import 'jquery-ui-dist/jquery-ui';
+import cytoscape from 'cytoscape';
 export default class DragDropNodeAddPlugin {
     constructor(editor) {
         this.editor = editor;
@@ -137,9 +138,9 @@ export default class DragDropNodeAddPlugin {
         // @ts-ignore
         $.fn.cynodeadd = $.fn.cytoscapeNodeadd;
         /* Adding as an extension to the core functionality of cytoscape.js*/
-        this.cy('core', 'nodeadd', (options) => {
+        cytoscape('core', 'nodeadd', function (options) {
             // @ts-ignore
-            $(this.cy.container()).cytoscapeNodeadd(options);
+            $(this.container()).cytoscapeNodeadd(options);
         });
     }
 }
