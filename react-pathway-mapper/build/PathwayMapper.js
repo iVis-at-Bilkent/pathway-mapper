@@ -20,9 +20,9 @@ import ShareDBManager from "./ShareDBManager";
 import CBioPortalAccessor from "./CBioPortalAccessor";
 const regCose = require('cytoscape-cose-bilkent');
 const nodeResize = require('cytoscape-node-resize');
-const styleSheet = require('GraphStyleSheet.js');
-const panzoomOpts = require('PanzoomOptions.js');
-const edgeHandleOpts = require('EdgeHandlesOptions.js');
+const styleSheet = require('GraphStyleSheet.tsx');
+const panzoomOpts = require('PanzoomOptions.tsx');
+const edgeHandleOpts = require('EdgeHandlesOptions.jsx');
 const konva = require('konva');
 let PathwayMapper = class PathwayMapper extends React.Component {
     constructor(props) {

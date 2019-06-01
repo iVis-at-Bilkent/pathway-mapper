@@ -4,7 +4,7 @@ import autobind from "autobind-decorator";
 import {observer} from "mobx-react";
 import ViewOperationsManager from "./ViewOperationsManager"
 import EditorActionsManager from "./EditorActionsManager";
-import "jquery"
+import $ from "jquery"
 import DragDropNodeAddPlugin from "./DragDropNodeAddPlugin";
 import ContextMenuManager from "./ContextMenuManager";
 import GridOptionsManager from "./GridOptionsManager";
@@ -13,12 +13,18 @@ import QtipManager from "./QtipManager";
 import ShareDBManager from "./ShareDBManager";
 import CBioPortalAccessor from "./CBioPortalAccessor";
 
+const edgeEditing = require('cytoscape-edge-editing');
+const edgeHandles = require('cytoscape-edgehandles');
 const regCose = require('cytoscape-cose-bilkent');
 const nodeResize = require('cytoscape-node-resize');
-const styleSheet = require('GraphStyleSheet.js');
-const panzoomOpts = require('PanzoomOptions.js');
-const edgeHandleOpts = require('EdgeHandlesOptions.js');
+const undoRedo = require('cytoscape-undo-redo');
+const panzoom = require('cytoscape-panzoom');
+const styleSheet = require('./GraphStyleSheet.tsx');
+const panzoomOpts = require('./PanzoomOptions.tsx');
+const navigator = require('cytoscape-navigator');
+import edgeHandleOpts from './EdgeHandlesOptions.jsx';
 const konva = require('konva');
+const viewUtilities = require('cytoscape-view-utilities');
 
 type PathwayMapperType = {
   isCollaborative: boolean;
@@ -53,20 +59,18 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
       this.edgeAddingMode = 0;
       this.shareDBManager = new ShareDBManager();
       this.isCbioPortal = props.isCbioPortal;
-      this.init();
+      //this.init();
       //this.createSampleMenu(); //TODO: AMENDMENT Menu must be react.
-      this.createCBioPortalAccessModal();
+      //this.createCBioPortalAccessModal();
     }
     render(){
-        return <div>
-              <div ref={this.cyDivHandler} id="cy"/>
-              <div className = "cytoscape-navigator-wrapper" />
-          </div>
-      ;
+        return <div ref={this.cyDivHandler} id="cy"/>;
     }
 
     componentDidMount(): void {
-        this.initCyJS();
+      console.log(this.cyDiv);
+      this.init();
+      this.createCBioPortalAccessModal();
     }
 
     @autobind
@@ -133,94 +137,6 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
     //Makes the width of panzoom container to 0
     $('.cy-panzoom').css('width', 0);
   }
-/*
-  createSampleMenu(){
-    //Get template file data first
-    const self = this;
-    const request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-      if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-        var templateData = JSON.parse(request.responseText);
-
-        for (var key in templateData) {
-          if (templateData.hasOwnProperty(key)) {
-            var newTCGAMenu = $('<li class="dropdown-submenu" id="' + key + '">' +
-              '<a href="#">' + key + '</a>' +
-              '</li>');
-            var newTCGAPathway = $('<ul class="dropdown-menu"></ul>');
-
-            for (var i in templateData[key]) {
-              var newPath = templateData[key][i];
-              var pName = newPath.replace(/-/gi, " ").substring(0, newPath.length - 4);
-              var sampleLink = $('<li><a  path="' + newPath + '" href="#">' + pName + '</a></li>');
-              sampleLink.on('click', checkMenuClickHandler);
-
-              //Add it to pan cancer menu
-              if (key.includes('PanCancer')) {
-                //panCancerSubMenu
-                $('#panCancerSubMenu').append(sampleLink);
-              }
-              else {
-                newTCGAPathway.append(sampleLink);
-                newTCGAMenu.append(newTCGAPathway);
-              }
-            }
-
-            //Add sub menus if they do not include pancaner and creighton
-            if (!key.includes('PanCancer') && !key.includes('Creighton')) {
-              $('#sampleSubMenu').append(newTCGAMenu);
-              if (self.isCbioPortal) {
-                $('#templateSubMenu').append(newTCGAMenu);
-              }
-            }
-
-          }
-        }
-      }
-    };
-
-    //Checks whether there is a visible pathway and displays a warning
-    function checkMenuClickHandler(event: MouseEvent) {
-      if (this.cy.elements().length != 0)
-        window.appManager.promptConfirmationView.render(function () {
-          sampleMenuClickHandler(event)
-        });
-      else
-        sampleMenuClickHandler(event);
-    };
-
-    function updateTCGAInformation(title, desription) {
-      document.getElementById("TCGA-header").innerHTML = title;
-      document.getElementById("TCGA-textarea").innerText = desription;
-    }
-
-    function sampleMenuClickHandler(event) {
-      var request = new XMLHttpRequest();
-      request.onreadystatechange = function () {
-        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-          var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-          self.editor.loadFile(allEles.nodes, allEles.edges);
-          window.undoRedoManager.reset();
-          window.appManager.pathwayDetailsView.updatePathwayProperties({
-            fileName: allEles.title + ".txt",
-            pathwayTitle: allEles.title,
-            pathwayDescription: allEles.description
-          });
-          if(self.isCbioPortal) {
-            updateTCGAInformation(allEles.title, allEles.description);
-          }
-        }
-      };
-      //Send request for selected pathway
-      var pathwayName = event.target.attributes[0].value;
-      request.open("GET", "/pathway?filename=" + pathwayName);
-      request.send();
-    }
-
-
-    request.open("GET", "/getTemplateFileData");
-    request.send();
-  };*/
 
   getPathwayData() {
     return this.pathwayDetailsView.getPathwayData();
@@ -243,17 +159,18 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
   };
 
   initCyJS() {
-    // panzoom(cytoscape, $);  // register extension
+    panzoom(cytoscape, $);  // register extension
     //cxtmenu( cytoscape, $ ); // register extension
     // cyqtip(cytoscape, $); // register extension
     regCose(cytoscape); // register extension
-    // navigator(cytoscape); // register extension
+    navigator(cytoscape); // register extension
     // grid_guide(cytoscape, $); // register extension
-    // undoRedo(cytoscape); // register extension
+     undoRedo(cytoscape); // register extension
     // contextMenus(cytoscape, $); // register extension
     nodeResize(cytoscape, $, konva); //register extension
-    // edgeEditing(cytoscape, $); // register extension
-    // viewUtilities(cytoscape, $); // register extension
+     edgeEditing(cytoscape, $); // register extension
+    viewUtilities(cytoscape, $); // register extension
+    edgeHandles(cytoscape);
 
 
     this.edgeAddingMode = 0;
@@ -269,8 +186,10 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
       motionBlur: true,
       layout: {name: 'preset'}
     });
+    console.log(this.cy);
 
-    this.undoRedoManager = this.cy.undoRedo;
+    this.undoRedoManager = this.cy.undoRedo();
+    console.log("undoRedoManager" + this.undoRedoManager);
     //Create Manager Classes
     this.editor = new EditorActionsManager(this.isCollaborative,
       this.shareDBManager,
@@ -710,6 +629,95 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
       document.getElementById("about-model-header").innerHTML = "PathwayMapper Viewer 2.0";*/
     }
   };
+
+  /*
+  createSampleMenu(){
+    //Get template file data first
+    const self = this;
+    const request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+      if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+        var templateData = JSON.parse(request.responseText);
+
+        for (var key in templateData) {
+          if (templateData.hasOwnProperty(key)) {
+            var newTCGAMenu = $('<li class="dropdown-submenu" id="' + key + '">' +
+              '<a href="#">' + key + '</a>' +
+              '</li>');
+            var newTCGAPathway = $('<ul class="dropdown-menu"></ul>');
+
+            for (var i in templateData[key]) {
+              var newPath = templateData[key][i];
+              var pName = newPath.replace(/-/gi, " ").substring(0, newPath.length - 4);
+              var sampleLink = $('<li><a  path="' + newPath + '" href="#">' + pName + '</a></li>');
+              sampleLink.on('click', checkMenuClickHandler);
+
+              //Add it to pan cancer menu
+              if (key.includes('PanCancer')) {
+                //panCancerSubMenu
+                $('#panCancerSubMenu').append(sampleLink);
+              }
+              else {
+                newTCGAPathway.append(sampleLink);
+                newTCGAMenu.append(newTCGAPathway);
+              }
+            }
+
+            //Add sub menus if they do not include pancaner and creighton
+            if (!key.includes('PanCancer') && !key.includes('Creighton')) {
+              $('#sampleSubMenu').append(newTCGAMenu);
+              if (self.isCbioPortal) {
+                $('#templateSubMenu').append(newTCGAMenu);
+              }
+            }
+
+          }
+        }
+      }
+    };
+
+    //Checks whether there is a visible pathway and displays a warning
+    function checkMenuClickHandler(event: MouseEvent) {
+      if (this.cy.elements().length != 0)
+        window.appManager.promptConfirmationView.render(function () {
+          sampleMenuClickHandler(event)
+        });
+      else
+        sampleMenuClickHandler(event);
+    };
+
+    function updateTCGAInformation(title, desription) {
+      document.getElementById("TCGA-header").innerHTML = title;
+      document.getElementById("TCGA-textarea").innerText = desription;
+    }
+
+    function sampleMenuClickHandler(event) {
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function () {
+        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+          var allEles = SaveLoadUtilities.parseGraph(request.responseText);
+          self.editor.loadFile(allEles.nodes, allEles.edges);
+          window.undoRedoManager.reset();
+          window.appManager.pathwayDetailsView.updatePathwayProperties({
+            fileName: allEles.title + ".txt",
+            pathwayTitle: allEles.title,
+            pathwayDescription: allEles.description
+          });
+          if(self.isCbioPortal) {
+            updateTCGAInformation(allEles.title, allEles.description);
+          }
+        }
+      };
+      //Send request for selected pathway
+      var pathwayName = event.target.attributes[0].value;
+      request.open("GET", "/pathway?filename=" + pathwayName);
+      request.send();
+    }
+
+
+    request.open("GET", "/getTemplateFileData");
+    request.send();
+  };*/
 
 
 
