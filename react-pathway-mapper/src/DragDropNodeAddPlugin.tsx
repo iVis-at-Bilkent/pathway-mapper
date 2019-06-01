@@ -7,9 +7,10 @@ export default class DragDropNodeAddPlugin {
 
     private cy: any;
     private editor: EditorActionsManager;
-    constructor(editor: EditorActionsManager)
+    constructor(editor: EditorActionsManager, cy: any)
     {
       this.editor = editor;
+      this.cy = cy;
       this.initNodeAdd();
     }
 
@@ -17,7 +18,6 @@ export default class DragDropNodeAddPlugin {
     initNodeAdd()
     {
       var nodeAddClass = this;
-
       var defaults = {
         height: 30,   //height of the icon container
         width: 30,    //width of the icon container
@@ -102,7 +102,7 @@ export default class DragDropNodeAddPlugin {
 
                   var nodeType = $(ui.helper).attr('nodeType').toUpperCase();
 
-                  var cy = this.cy;
+                  var cy = nodeAddClass.cy;
 
                   //Hold a map for parents and candidate parent nodes for this addition
                   var nodeMap = {};

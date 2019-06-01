@@ -209,7 +209,7 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
 
     this.qtipManager = new QtipManager(this.cy);
     this.cxtMenuManager = new ContextMenuManager(this.cy, this.editor);
-    this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editor);
+    this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editor, this.cy);
 
     // this.nodeResizeOptionsView = new NodeResizeOptionsView({
     //     el: $('#nodeResizeOptionsDiv')
@@ -454,7 +454,7 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
         return false;
       },
       neighborSelectTime: 500 //ms, time to taphold to select desired neighbors
-    }
+    };
 
     this.viewUtilities = this.cy.viewUtilities(viewUtilitiesOpts);
 
