@@ -14,18 +14,18 @@ export default class App extends React.Component {
     return (
         <Container>
           <Row>
-            <Toolbar/>
             <Col>
-              <Row>
+                <Toolbar/>
+            </Col>
+
+            <Col xs={6}>
                 <PathwayMapper isCbioPortal={true} isCollaborative={false}/>
-              </Row>
             </Col>
 
             <Col>
-              <Row>
                 <Ranking/>
-              </Row>
             </Col>
+
           </Row>
         </Container>
     );

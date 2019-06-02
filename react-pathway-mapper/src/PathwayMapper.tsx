@@ -16,6 +16,8 @@ import ShareDBManager from "./ShareDBManager";
 import CBioPortalAccessor from "./CBioPortalAccessor";
 import edgeHandleOpts from './EdgeHandlesOptions.jsx';
 import edgeEditing from "cytoscape-edge-editing";
+import SaveLoadUtility from "./SaveLoadUtility"
+import * as fs from "fs"
 
 const edgeHandles = require('cytoscape-edgehandles');
 const regCose = require('cytoscape-cose-bilkent');
@@ -66,14 +68,50 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
       //this.createSampleMenu(); //TODO: AMENDMENT Menu must be react.
       //this.createCBioPortalAccessModal();
     }
+
+    getPathway(){
+
+      const format = "SIFNX";
+      $.get('./samples/' + "ESAD-2017-RTK-RAS-PI(3)K-pathway.txt", (data) =>
+      {
+        var outData = data;
+        if(format === "SIFNX")
+        {
+          var parsedGraph = SaveLoadUtility.parseGraph(data);
+
+          var pathwayData = {
+            pathwayTitle: parsedGraph.title,
+            graphJSON: {
+              elements: {
+                nodes: parsedGraph.nodes,
+                edges: parsedGraph.edges
+              }
+            }};
+          outData = SaveLoadUtility.exportAsSIFNX(pathwayData);
+        }
+        var allEles = SaveLoadUtility.parseGraph(outData);
+        this.editor.loadFile(allEles.nodes, allEles.edges);
+      });
+      /*
+      window.appManager.pathwayDetailsView.updatePathwayProperties({
+        fileName: allEles.title + ".txt",
+        pathwayTitle: allEles.title,
+        pathwayDescription: allEles.description
+      });*/
+    }
+
+    sendPathway(){
+
+    }
     render(){
-        return <div ref={this.cyDivHandler} id="cy"/>;
+        return <div ref={this.cyDivHandler} id="cy" style={{"border": "1px solid orange"}}/>;
     }
 
     componentDidMount(): void {
       console.log(document.getElementById("cy"));
       this.init();
       this.createCBioPortalAccessModal();
+      this.getPathway();
     }
 
     @autobind
@@ -475,7 +513,7 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
         tappedNow.trigger('doubleTap');
         tappedBefore = -1;
       } else {
-        // @ts-ignore TODO AMENDMENT
+        // @ts-ignore TODO AMENDMENTsa
         tappedTimeout = setTimeout(function () {
           tappedBefore = -1;
         }, 300);

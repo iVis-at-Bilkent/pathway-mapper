@@ -10,6 +10,9 @@ module.exports = {
     path: path.join(__dirname, "/dist"),
     filename: "index_bundle.js"
   },
+  node: {
+    fs: 'empty'
+  },
   resolve: {
     'extensions': [
       '.js',

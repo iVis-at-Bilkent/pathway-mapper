@@ -813,6 +813,8 @@ export default class EditorActionsManager{
 
     addNodesCy(nodes: any[])
     {
+      console.log("From EAM/addNodesCy");
+      console.log(nodes);
         var nodeArr: any[] = [];
         for (var i in nodes)
         {
