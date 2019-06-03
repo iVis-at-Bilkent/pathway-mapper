@@ -18,7 +18,7 @@ export default class App extends React.Component {
                 <Toolbar/>
             </Col>
 
-            <Col xs={6}>
+            <Col xs={10}>
                 <PathwayMapper isCbioPortal={true} isCollaborative={false}/>
             </Col>
 

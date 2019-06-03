@@ -70,14 +70,13 @@ export default class SaveLoadUtility{
     //Finally return a string that includes whole graph lovely and peacefully :)
     return returnString;
   }
-  static exportAsSIFNX(pathwayDetails)
+  static exportAsSIFNX(pathwayDetails: any, nodeMap: any)
   {
     var returnString = "";
 
     //Get nodes and edges
     var nodes = pathwayDetails.graphJSON.elements.nodes;
     var edges = pathwayDetails.graphJSON.elements.edges;
-    var nodeMap = {};
 
     //Put a blank line between nodes and edges
     returnString += '\n';
@@ -271,13 +270,17 @@ export default class SaveLoadUtility{
         }
       }
 
+      console.log("From parseGraph");
+      console.log(lineData);
+      console.log(edgeType);
+
       const newEdge = {
         group: 'edges', data:
           {
-            id: edgeID,
-            type: edgeType,
-            source: edgeSource,
-            target: edgeTarget,
+            id: ((isFound) ? edgeID : i - edgesStartIndex),
+            type: ((isFound) ? edgeType : edgeTarget),
+            source: ((isFound) ? edgeSource : edgeID),
+            target: ((isFound) ? edgeTarget : edgeSource),
             pubmedIDs: pubmedIDs,
             name: label,
             bendPointPositions: bendPointPositions/*[{x:100,y:100}]*/

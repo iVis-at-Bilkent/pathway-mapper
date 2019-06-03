@@ -872,7 +872,7 @@ export default class EditorActionsManager{
                 }
         }
 
-        //this.cy.add(newNode);
+        //his.cy.add(newNode);
         this.cy.nodes().updateCompoundBounds();
         this.undoRedoManager.do("add", newNode);
         //Width was not properly updated only by changing data property
@@ -955,18 +955,20 @@ export default class EditorActionsManager{
 
     addEdgesCy(edges: any[])
     {
-        var newEdges = [];
+        const newEdges = [];
 
 
         for (var i in edges)
         {
-            var newEdge =
+            const newEdge =
                 {
                     group: "edges",
                     data: edges[i].data
                 };
             newEdges.push(newEdge);
         }
+        console.log("From addEdgesCy");
+        console.log(this.cy.filter('node[name="MYC"]'));
         this.cy.add(newEdges);
     };
 
@@ -982,7 +984,6 @@ export default class EditorActionsManager{
                 group: "edges",
                 data: edgeData
             };
-
         this.undoRedoManager.do("add", newEdge);
     };
 
@@ -1523,6 +1524,7 @@ export default class EditorActionsManager{
     {
         //Remove all elements
         this.removeElementCy(this.cy.elements());
+
         this.addNodesCy(nodes);
         this.addEdgesCy(edges);
     };

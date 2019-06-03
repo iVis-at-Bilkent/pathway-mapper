@@ -72,25 +72,35 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
     getPathway(){
 
       const format = "SIFNX";
-      $.get('./samples/' + "ESAD-2017-RTK-RAS-PI(3)K-pathway.txt", (data) =>
+      $.get('./samples/' + "LUSC-2012-RTK-RAS-PI(3)K-pathway.txt", (data) =>
       {
         var outData = data;
-        if(format === "SIFNX")
-        {
-          var parsedGraph = SaveLoadUtility.parseGraph(data);
+        var parsedGraph = SaveLoadUtility.parseGraph(data);
 
-          var pathwayData = {
-            pathwayTitle: parsedGraph.title,
-            graphJSON: {
-              elements: {
-                nodes: parsedGraph.nodes,
-                edges: parsedGraph.edges
-              }
-            }};
-          outData = SaveLoadUtility.exportAsSIFNX(pathwayData);
-        }
-        var allEles = SaveLoadUtility.parseGraph(outData);
+        var pathwayData = {
+          pathwayTitle: parsedGraph.title,
+          graphJSON: {
+            elements: {
+              nodes: parsedGraph.nodes,
+              edges: parsedGraph.edges
+            }
+          }};
+
+        var nodeMap = {};
+        outData = SaveLoadUtility.exportAsSIFNX(pathwayData, nodeMap);
+        const allEles = SaveLoadUtility.parseGraph(outData);
+        console.log(nodeMap);
+
+        // TODO ATTENTION ids are moved from ID TO Name
+        allEles.nodes.forEach((node) => {
+          console.log(node);
+          node.data.parent = (node.data.parent == -1) ? -1 : nodeMap[node.data.parent].data.name;
+          node.data.id = node.data.name;
+        });
+
         this.editor.loadFile(allEles.nodes, allEles.edges);
+        console.log("After LoadFile");
+        console.log(this.cy.edges());
       });
       /*
       window.appManager.pathwayDetailsView.updatePathwayProperties({
@@ -100,11 +110,10 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
       });*/
     }
 
-    sendPathway(){
-
-    }
     render(){
-        return <div ref={this.cyDivHandler} id="cy" style={{"border": "1px solid orange"}}/>;
+        return (<div>
+          <div ref={this.cyDivHandler} id="cy" style={{"border": "1px solid orange"}}/>
+        </div>);
     }
 
     componentDidMount(): void {
