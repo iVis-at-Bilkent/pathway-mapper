@@ -1,21 +1,21 @@
 <!---
  TODO: search, highlight, node resize, edge bends
 --->
-# PathwayMapper
+# ReactPathwayMapper
 
-PathwayMapper is a web based pathway curation tool for interactive creation, editing, and sharing of cancer pathways. The tool supports remote users to collaborate and concurrently modify pathways using Google Real Time API with built-in conflict resolution. 
+ReactPathwayMapper is a web based pathway curation tool for interactive creation, editing, and sharing of cancer pathways. The tool supports remote users to collaborate and concurrently modify pathways using Google Real Time API with built-in conflict resolution. 
 <p align="center">
   <img src="public/assets/sample-screenshot.png" width="440"/>
 </p>
 
 #### How to Cite Usage
-[Bahceci et al. (2017) "PathwayMapper: a collaborative visual web editor for cancer pathways and genomic data", Bioinformatics](https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btx149).
+[Bahceci et al. (2017) "ReactPathwayMapper: a collaborative visual web editor for cancer pathways and genomic data", Bioinformatics](https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btx149).
 
 #### Feedback
 Send any feedback and error reports to at pathwaymapper@gmail.com.
 ## Software
 
-PathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).
+ReactPathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).
 
 It uses the libraries [Cytoscape.js](http://js.cytoscape.org), node.js, and backbone.js, and [cBioPortal API](http://www.cbioportal.org/api-legacy/swagger-ui.html). 
 
@@ -32,7 +32,7 @@ This launches the application on port 80 if it is not in use.
 #### Running a Local Instance
 In order to deploy and run a local instance of the tool, please follow the steps below:
 
-Firstly, clone PathwayMapper to your local machine, and navigate to the local repository:
+Firstly, clone ReactPathwayMapper to your local machine, and navigate to the local repository:
 
 - Installation
 ```
@@ -67,7 +67,7 @@ var DEFAULT_PORT=3000
 #### Running Tool in Developement Mode
 In order to run a local instance of the tool in developement mode, please follow the steps below:
 
-Firstly navigate to PathwayMapper repository. In index.html file uncomment the line with base.css and comment the line with base.min.css:
+Firstly navigate to ReactPathwayMapper repository. In index.html file uncomment the line with base.css and comment the line with base.min.css:
 ```
   <!--For debugging-->
   <!--<link rel="stylesheet" href="bin/base.css" charset="utf-8">-->
@@ -92,7 +92,7 @@ Please note that the app runs on the port 3000 by default. To change the port fo
 
 ### Adding Genes and Interactions
 
-PathwayMapper allows creation of following node types:
+ReactPathwayMapper allows creation of following node types:
 - Gene
 - Family: subset of genes grouped together under a parent compound node for analysis purposes
 - Complex: molecular complex of member genes represented with a parent compound node
@@ -108,7 +108,7 @@ and following interaction types:
 
 To create a node, drag and drop it from the Node Palette. Similarly, to create an interaction, first select an interaction type from the Interaction Palette. Then, click on the green circle on top of the source node and drag it to the target node.
 
-Below is a screenshot showing a sample pathway constructed with PathwayMapper:
+Below is a screenshot showing a sample pathway constructed with ReactPathwayMapper:
 <p align="center">
   <img src="public/assets/sample-pathway.png" width="320"/>
 </p>
@@ -141,7 +141,7 @@ A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) stud
   <img src="public/assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="440"/>
 </p>
 
-The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
+The same pathway can be opened up in ReactPathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
 
 ### Aligning Nodes
 

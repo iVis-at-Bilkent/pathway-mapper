@@ -71,7 +71,7 @@ export default class EditorActionsManager{
 
         this.layoutProperties = _.clone(this.defaultLayoutProperties);
         this.observers = [];
-        this.genomicDataOverlayManager = new GenomicDataOverlayManager();
+        this.genomicDataOverlayManager = new GenomicDataOverlayManager(this.cy);
         this.svgExporter = new SVGExporter();
 
         this.selectedNodeStack = {};
@@ -1647,14 +1647,12 @@ export default class EditorActionsManager{
     {
         if(this.isCollaborative)
         {
-            console.log("ShareDB Was here");//this.shareDBManager.clearGenomicData();
+            console.log("ShareDB Was here");// this.shareDBManager.clearGenomicData();
         }
         else
         {
-          // @ts-ignore
-            //TODO wrap this in afunction in genomic data overlay manager
+            // TODO wrap this in afunction in genomic data overlay manager
             this.genomicDataOverlayManager.clearAllGenomicData();
-          // @ts-ignore
             this.genomicDataOverlayManager.hideGenomicData();
             this.genomicDataOverlayManager.notifyObservers();
         }
@@ -1663,21 +1661,19 @@ export default class EditorActionsManager{
 
     addGenomicData(genomicData: any)
     {
-        var groupID = this.getEmptyGroupID();
+        const groupID = this.getEmptyGroupID();
 
         if(this.isCollaborative)
         {
             /* TODO: A disaster happended here
             var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataShareDB(genomicData);
-            console.log("ShareDB Was here");//this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
-            console.log("ShareDB Was here");//this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
+            console.log("ShareDB Was here");//this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);//this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
                 groupID);
-            console.log("ShareDB Was here");//this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
+                //this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
             */
         }
         else
         {
-          // @ts-ignore
             this.genomicDataOverlayManager.addGenomicDataLocally(genomicData, groupID);
         }
     }
@@ -1696,7 +1692,6 @@ export default class EditorActionsManager{
         }
         else
         {
-          // @ts-ignore
             this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
         }
     }
@@ -1709,13 +1704,11 @@ export default class EditorActionsManager{
 
         if(!isRemove)
         {
-          // @ts-ignore
             this.genomicDataOverlayManager.addGenomicData(geneSymbol, newData);
         }
-        //Removal
+        // Removal
         else
         {
-          // @ts-ignore
             this.genomicDataOverlayManager.removeGenomicData(geneSymbol);
         }
     }
@@ -1728,10 +1721,9 @@ export default class EditorActionsManager{
         var data = op.oi;
         var key = op.p[1];
 
-        //Addition
+        // Addition
         if(!isRemove)
         {
-          // @ts-ignore
             this.genomicDataOverlayManager.addGenomicGroupData(key, data);
         }
         // //Removal
@@ -1748,17 +1740,15 @@ export default class EditorActionsManager{
         var data = op.oi;
         var key = op.p[1];
         var isRemove = Object.keys(op)[1] === 'od';
-        //Addition
+        // Addition
         if(!isRemove)
         {
-            // @ts-ignore
             this.genomicDataOverlayManager.addGenomicVisData(key, data);
         }
-        //Removal
+        // Removal
         else
         {
 
-            // @ts-ignore
             this.genomicDataOverlayManager.removeGenomicVisData(data);
         }
 
@@ -1812,7 +1802,7 @@ export default class EditorActionsManager{
             const ur = this.cy.undoRedo();
             const actions: any[] = [];
 
-            var visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
+            const visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
             var labelWithData = 150 + (visibleNumberOfData-3) * 36;
             nodes.forEach(function( ele: any){
                 if (!ele.isParent())

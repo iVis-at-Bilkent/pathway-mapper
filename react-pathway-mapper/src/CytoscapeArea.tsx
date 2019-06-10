@@ -34,6 +34,7 @@ const viewUtilities = require('cytoscape-view-utilities');
 type PathwayMapperType = {
   isCollaborative: boolean;
   isCbioPortal: boolean;
+  editorHandler: Function;
 };
 @observer
 export default class PathwayMapper extends React.Component<PathwayMapperType, {}>{
@@ -210,7 +211,7 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
 
   initCyJS() {
     panzoom(cytoscape, $);  // register extension
-    //cxtmenu( cytoscape, $ ); // register extension
+    // cxtmenu( cytoscape, $ ); // register extension
     // cyqtip(cytoscape, $); // register extension
     regCose(cytoscape); // register extension
     navigator(cytoscape); // register extension
@@ -241,7 +242,7 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
 
     this.undoRedoManager = this.cy.undoRedo();
     console.log("undoRedoManager" + this.undoRedoManager);
-    //Create Manager Classes
+    // Create Manager Classes
     this.editor = new EditorActionsManager(this.isCollaborative,
       this.shareDBManager,
       this.cy,
@@ -249,6 +250,7 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
       this.edgeEditing,
       this.undoRedoManager,
       this.portalAccessor);
+    this.props.editorHandler(this.editor);
     this.gridOptionsManager = new GridOptionsManager();
     this.viewOperationsManager = new ViewOperationsManager();
     this.fileOperationsManager = new FileOperationsManager();
@@ -677,7 +679,7 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
       document.getElementById("pathway-sidebar").style.display = "none";
       document.getElementById("pathway-navbar").style.display = "none";
       document.getElementById("cBioPortal-Wrapper").style.display = "inline-block";
-      document.getElementById("about-model-header").innerHTML = "PathwayMapper Viewer 2.0";*/
+      document.getElementById("about-model-header").innerHTML = "ReactPathwayMapper Viewer 2.0";*/
     }
   };
 
@@ -769,7 +771,5 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
     request.open("GET", "/getTemplateFileData");
     request.send();
   };*/
-
-
 
 }
