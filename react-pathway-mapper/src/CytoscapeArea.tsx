@@ -218,7 +218,7 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
     // grid_guide(cytoscape, $); // register extension
     undoRedo(cytoscape); // register extension
     // contextMenus(cytoscape, $); // register extension
-    nodeResize(cytoscape, $, konva); //register extension
+    nodeResize(cytoscape, $, konva); // register extension
     edgeEditing(cytoscape, $); // register extension
     viewUtilities(cytoscape, $); // register extension
     edgeHandles(cytoscape);
