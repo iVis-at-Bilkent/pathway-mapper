@@ -67,11 +67,34 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
       this.edgeAddingMode = 0;
       this.shareDBManager = new ShareDBManager();
       this.isCbioPortal = props.isCbioPortal;
+      this.extractAllGenes();
       // this.init();
       // this.createSampleMenu(); //TODO: AMENDMENT Menu must be react.
       // this.createCBioPortalAccessModal();
     }
 
+
+
+    extractAllGenes(){
+      const pathwayGeneMap = {};
+
+      for(const pathwayName in pathways){
+        const pathwayData = SaveLoadUtility.parseGraph(pathways[pathwayName], true);
+        const genes = pathwayData.nodes;
+
+        const geneHash = {};
+
+        for(const gene of genes){
+
+          geneHash[gene.data.name] = gene.data.type;
+
+        }
+
+        pathwayGeneMap[pathwayName] = geneHash;
+      }
+      console.log("Pathway & Gene Map");
+      console.log(pathwayGeneMap)
+    }
 
     getPathway(){
 
@@ -91,6 +114,9 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
             edges: parsedGraph.edges
           }
         }};
+
+      console.log("Pathway Data");
+      console.log(pathwayData);
 
       const nodeMap = {};
       const outData = SaveLoadUtility.exportAsSIFNX(pathwayData, nodeMap);
@@ -117,7 +143,7 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
 
     render(){
         return (<div>
-          <div ref={this.cyDivHandler} id="cy" style={{"border": "1px solid orange"}}/>
+          <div ref={this.cyDivHandler} id="cy" style={{"border": "1px solid orange", "height": "100%"}}/>
         </div>);
     }
 
@@ -141,17 +167,17 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
   init(){
     // Initializes cytoscape
     this.initCyJS();
-    //Initialize cytoscape based handlers here
+    // Initialize cytoscape based handlers here
     this.initCyHandlers();
     this.initKeyboardHandlers();
     this.initUndoRedoFunctionality();
     this.initCBioPortalFunctionalities();
-    var that = this;
+    const that = this;
     //  window.onresize = function () {
     //      that.placePanzoomAndOverlay();
     //  }
 
-    //Create portal accessor
+    // Create portal accessor
     this.portalAccessor = new CBioPortalAccessor();
     //this.appManager = this;
   };

@@ -28,13 +28,13 @@ export default class App extends React.Component {
 
   render() {
     return (
-        <Container>
+        <div>
           <Row>
-            <Col>
+            <Col xs={1}>
                 <Toolbar loadSampleData={this.loadSampleData} performLayout={this.performLayout}/>
             </Col>
 
-            <Col>
+            <Col xs={7}>
                 <CytoscapeArea isCbioPortal={true} isCollaborative={false} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Col>
 
@@ -43,7 +43,7 @@ export default class App extends React.Component {
             </Col>
 
           </Row>
-        </Container>
+        </div>
     );
   }
 
