@@ -1,4 +1,4 @@
-{".../samples/ACC-2016-TP53-RB-pathway.txt": [
+{"ACC-2016-TP53-RB-pathway": [
 "ACC-2016-TP53-RB-pathway",
 "",
 "",
@@ -18,7 +18,7 @@
 "0E_Xe1cUckq-\twyMGXBw8cUj6\tLrJe2ktmcVzK\tINHIBITS",
 "K9h1lRMzclc1\t-le5m2j6cWa2\tLrJe2ktmcVzK\tINHIBITS"
 ],
-"../samples/ACC-2016-WNT-signaling-pathway.txt": [
+"ACC-2016-WNT-signaling-pathway": [
 "CC-2016-WNT-signaling-pathway",
 "",
 "",
@@ -36,7 +36,7 @@
 "MRNaHfmqdLIB\tquRewaVqdAAg\taS-MtgKvdBTI\tINHIBITS",
 "V58DLRlddN04\tD1VT3C7Tc9uz\tg2oPjTN1c_MF\tINHIBITS"
 ],
-"../samples/BLCA-2014-Histone-modification-pathway.txt": [
+"BLCA-2014-Histone-modification-pathway": [
 "LCA-2014-Histone-modification-pathway",
 "",
 "",
@@ -76,7 +76,7 @@
 "g_eFQ6zG2Hu-\tWWAQi_-h1FbJ\tUdMq7kedz9FO\tACTIVATES",
 "T1GuzceK1uZK\tqU2DuUfoz_fU\tyE8mFlUU0AcJ\tBINDS"
 ],
-"../samples/BLCA-2014-RTK-RAS-PI(3)K-pathway.txt": [
+"BLCA-2014-RTK-RAS-PI(3)K-pathway": [
 "BLCA-2014-RTK/RAS/PI(3)K-pathway",
 "",
 "",
@@ -116,7 +116,7 @@
 "uN421vA1qaeA\tVyT8z_EcpexB\tt8b0oOIypis0\tACTIVATES",
 "ZTgU7FgfqZmN\tVyT8z_EcpexB\t1PYLl_CZpjUH\tACTIVATES"
 ],
-"../samples/BLCA-2014-TP53-RB-pathway.txt": [
+"BLCA-2014-TP53-RB-pathway": [
 "BLCA-2014-TP53/RB-pathway",
 "",
 "",
@@ -150,7 +150,7 @@
 "Vcmxazyaoz8N\t9A-DhP0-oFUi\t2XKi6b0joGD_\tINHIBITS",
 "sABkuA1_oywi\tJYRUofjRoSmI\t4-9gyc8LoX1s\tACTIVATES"
 ],
-"../samples/BRCA-2012-Cell-cycle-signaling-pathway.txt": [
+"BRCA-2012-Cell-cycle-signaling-pathway": [
 "BRCA-2012-Cell-cycle-signaling-pathway",
 "",
 "",
@@ -175,7 +175,7 @@
 "OyM7Rh_ueTR2\tTQqdq6ZHdybO\tglg_i-QQdz9z\tINHIBITS",
 "fcvz9ztueiRb\tTQqdq6ZHdybO\t9ZypvHQTebqG\tACTIVATES"
 ],
-"../samples/BRCA-2012-RTK-RAS-PI(3)K-pathway.txt": [
+"BRCA-2012-RTK-RAS-PI(3)K-pathway": [
 "BRCA-2012-RTK/RAS/PI(3)K-pathway",
 "",
 "",
@@ -217,7 +217,7 @@
 "fegnTqNPcJpy\tV2U7rAinbMri\thDh8Gi4cbOJg\tACTIVATES",
 "tj1nKgy9cExZ\tvmp2PR9WbESK\tQl_rV6PWbR4f\tINHIBITS"
 ],
-"../samples/BRCA-2012-TP53-pathway.txt": [
+"BRCA-2012-TP53-pathway": [
 "BRCA-2012-TP53-pathway",
 "",
 "",
@@ -239,7 +239,7 @@
 "hxwMi4kydOBT\tAtC08ZQJc2KU\toHj1iu9Nc3_k\tACTIVATES",
 "uh5qfjUjdKB7\tEZw1mFjYc0Pb\tAtC08ZQJc2KU\tACTIVATES"
 ],
-"../samples/Cell-Cycle.txt": [
+"Cell-Cycle": [
 "Cell Cycle",
 "",
 "Regulation of mitotic cell cycle progression involving a signaling cascade of cyclins and cyclin-dependent kinases as well as a number of regulatory checkpoints.",
@@ -273,7 +273,7 @@
 "jDEpTZhK3Y9X\tb7YoPaEx3Y88\tyazwmMvz3Y8y\tACTIVATES\t",
 "_gVnliZV3Y9a\txPwjUPwi3Y86\tmIL53nP63Y83\tINHIBITS\t"
 ],
-"../samples/Cherniack-NOTCH-pathway.txt": [
+"Cherniack-NOTCH-pathway": [
 "Cherniack-NOTCH-pathway",
 "",
 "",
@@ -400,7 +400,7 @@
 "XWAfBLUCPpbp\tiPHv0aibPe_M\tGeRm3hjzPpZ9\tINHIBITS",
 "OfwRWIzyNYUD\tyDORoi2lJU60\tpzu7qLKvJd0O\tACTIVATES"
 ],
-"../samples/COADREAD-2012-RTK-RAS-PI(3)K-pathway.txt": [
+"COADREAD-2012-RTK-RAS-PI(3)K-pathway": [
 "COADREAD-2012-RTK/RAS/PI(3)K Pathway",
 "",
 "",
@@ -440,7 +440,7 @@
 "Vqm7Wl0M4AE0\tWv-EmNFT15yN\tcYzz8jlS2HaK\tACTIVATES",
 "09Csuz540e3h\tMBUXnNN2z5Dt\tRmlBMHs64SgD\tACTIVATES"
 ],
-"../samples/COADREAD-2012-TGF-B-signaling-pathway.txt": [
+"COADREAD-2012-TGF-B-signaling-pathway": [
 "COADREAD-2012-TGF-B-signaling-pathway",
 "",
 "",
@@ -469,7 +469,7 @@
 "aVez8qmz0X7C\t7j1T7wlqzcoy\tBIYl4Hkdzdoj\tINHIBITS",
 "dMNeGuPcEupl\t4qJ5NXmkEupe\tRSw1VMOMEupS\tBINDS"
 ],
-"../samples/COADREAD-2012-TP53-pathway.txt": [
+"COADREAD-2012-TP53-pathway": [
 "COADREAD-2012-TP53-pathway",
 "",
 "",
@@ -489,7 +489,7 @@
 "gVpKeF6ZQW1o\teArivqeT78y7\tB4xPctkP764L\tACTIVATES",
 "KXWREHzWQaXR\tB4xPctkP764L\t2LzUgOci77hf\tACTIVATES"
 ],
-"../samples/COADREAD-2012-WNT-signaling-pathway.txt": [
+"COADREAD-2012-WNT-signaling-pathway": [
 "COADREAD-2012-WNT-signaling-pathway",
 "",
 "",
@@ -540,7 +540,7 @@
 "_xkBTQ9sHWYw\th0U_424iUWu5\t4hScAPjlUSym\tREPRESSES",
 "Af3sU0_EWJva\tcFdN3nQcTwwO\tT5QZmrnYWA-N\tACTIVATES"
 ],
-"../samples/Creighton-PI3K-pathway.txt": [
+"Creighton-PI3K-pathway": [
 "Creighton-PI3K-pathway",
 "",
 "",
@@ -606,7 +606,7 @@
 "7NRFUNaPiAxO\tVY_qCODiiArr\tcKlY2M1DiAvK\tACTIVATES",
 "jkiBgwSNiAxU\tmACuCp3XiAuh\t_Sxf6OEYiAvS\tINHIBITS"
 ],
-"../samples/ESAD-2017-Cell-cycle-pathway.txt": [
+"ESAD-2017-Cell-cycle-pathway": [
 "ESAD-2017-Cell-cycle-pathway",
 "",
 "",
@@ -623,7 +623,7 @@
 "2c47aaf9-8ddc-4097-bc51-716d7dce4cb9\tbfd14661-8f74-45d0-aec4-eff4de124c14\t362e59dd-fb26-4d70-8a5e-357b38ed5e4b\tINHIBITS",
 "67638113-dece-48c9-8982-3e420e681508\t0b0592b4-4330-47c9-9a88-7d8c7940a680\tbfd14661-8f74-45d0-aec4-eff4de124c14\tINHIBITS"
 ],
-"../samples/ESAD-2017-RTK-RAS-PI(3)K-pathway.txt": [
+"ESAD-2017-RTK-RAS-PI(3)K-pathway": [
 "ESAD-2017-RTK-RAS-PI(3)K",
 "",
 "",
@@ -652,7 +652,7 @@
 "73b63049-5e6c-4793-8536-86b4ec006b2d\td76b7fd4-b8f5-4e92-b2ce-b783fe58b9f2\t49a250be-042c-4910-9774-802dfb0e08f3\tACTIVATES",
 "49655771-0e8d-42ce-a71e-76d3bc8c742c\td76b7fd4-b8f5-4e92-b2ce-b783fe58b9f2\tbea46283-55f2-4650-acee-58d23d8c11fc\tACTIVATES"
 ],
-"../samples/ESAD-2017-WNT-CTNNB1-pathway.txt": [
+"ESAD-2017-WNT-CTNNB1-pathway": [
 "ESAD-2017-WNT-CTNNB1-pathway",
 "",
 "",
@@ -682,7 +682,7 @@
 "b8423ddf-8f5c-4718-81b4-132ae25ed3e5\t1cdc0d84-e27f-44ed-981e-12994fed8711\tdd894023-67b6-4bcc-baad-a441556f4168\tINHIBITS",
 "a7180fc6-8113-47eb-b090-39d1cc8c5825\t08936961-1fad-4b39-ada5-839a1864de96\tdd894023-67b6-4bcc-baad-a441556f4168\tINHIBITS"
 ],
-"../samples/GBM-2008-Cell-cycle-signaling-pathway.txt": [
+"GBM-2008-Cell-cycle-signaling-pathway": [
 "GBM-2008-Cell-cycle-signaling-pathway",
 "",
 "",
@@ -705,7 +705,7 @@
 "6NO_fL3nO3r4\tSBGkYw2NOhMr\t0cQitpJLOoEG\tINHIBITS",
 "1pimX-ZiO6F6\t0cQitpJLOoEG\t0kD7D3DGOtD1\tINHIBITS"
 ],
-"../samples/GBM-2008-RTK-RAS-PI(3)K-pathway.txt": [
+"GBM-2008-RTK-RAS-PI(3)K-pathway": [
 "GBM-2008-RTK/RAS/PI(3)K Pathway",
 "",
 "",
@@ -733,7 +733,7 @@
 "_g47pqc4MGwz\tLOErZTMUL6hc\tuWMSz1XlL2nL\tINHIBITS",
 "u1UwLh90MdLo\tuWMSz1XlL2nL\tsgb8KI1XMIrn\tACTIVATES"
 ],
-"../samples/GBM-2008-TP53-pathway.txt": [
+"GBM-2008-TP53-pathway": [
 "GBM-2008-TP53-pathway",
 "",
 "",
@@ -755,7 +755,7 @@
 "wTOjoJHdNq6N\tx-laQtq0NSZI\tIXX8d7kuNVHa\tACTIVATES",
 "5-9bxAL_N0gO\t6RLrPg8rNa4o\tLxZckK4_NmKp\tACTIVATES"
 ],
-"../samples/GBM-2013-Cell-cycle-signaling-pathway.txt": [
+"GBM-2013-Cell-cycle-signaling-pathway": [
 "GBM-2013-Cell-cycle-signaling-pathway",
 "",
 "",
@@ -785,7 +785,7 @@
 "JZERPNMdnWL9\tnFMLgWuEmv0Q\tszeVZ7Elmxvu\tINHIBITS",
 "n7Nithx-B2zB\tv1zGJhukB2ym\tWvJWw5HPm0Ab\tINHIBITS"
 ],
-"../samples/GBM-2013-RTK-RAS-PI(3)K-pathway.txt": [
+"GBM-2013-RTK-RAS-PI(3)K-pathway": [
 "GBM-2013-RTK/RAS/PI(3)K-pathway",
 "",
 "",
@@ -813,7 +813,7 @@
 "zingzci6lhXA\tpQ2sq0Chk7o8\tXfDonLT2k9rr\tINHIBITS",
 "LTVgdZNOld9G\tZvpmFM7llCzi\tE0625yTsk46l\tACTIVATES"
 ],
-"../samples/GBM-2013-TP53-pathway.txt": [
+"GBM-2013-TP53-pathway": [
 "GBM-2013-TP53-pathway",
 "",
 "",
@@ -829,7 +829,7 @@
 "jHRb2o3YmTqF\tO3CQIh-OmCOD\tux4NOBO4mBSe\tINHIBITS",
 "MnYnmX_dmV0E\tux4NOBO4mBSe\tTIZhBhfymDVV\tACTIVATES"
 ],
-"../samples/Giovanni-WNT-pathway.txt": [
+"Giovanni-WNT-pathway": [
 "Giovanni-WNT-pathway",
 "",
 "",
@@ -923,7 +923,7 @@
 "LgRM1gD7FpLs\tt44QD2JyBARb\t2Ss0WbjnA-5b\tACTIVATES",
 "zFmXrtPJGDuW\tQdafgxV-C6vY\tC3byUVMcC7fj\tINHIBITS"
 ],
-"../samples/HIPPO.txt": [
+"HIPPO": [
 "HIPPO",
 "",
 "Involved in the control of organ size. Central to this pathway is the regulation of the transcription co-activators YAP/TAZ that promote the transcription of genes involved in cell proliferation.",
@@ -963,7 +963,7 @@
 "1Jm9fDfkxLxV\tiq8nE1OMxLvj\tTiUbnalZxLw_\tACTIVATES\t",
 "J7C0UYeQxLxK\tCoRREfZLxLxE\tm8n8vtNexLwr\tINHIBITS\t"
 ],
-"../samples/HNSC-2015-Apoptosis-pathway.txt": [
+"HNSC-2015-Apoptosis-pathway": [
 "HNSC-2015-Apoptosis-pathway",
 "",
 "",
@@ -992,7 +992,7 @@
 "Acyl78aaEDXf\tIBsoHlQJDZF8\tVeOlULKnDabs\tINHIBITS",
 "O9oIu8SeEIN_\tVeOlULKnDabs\tyeoJnxV0DfTf\tACTIVATES"
 ],
-"../samples/HNSC-2015-Cell-cycle-signaling-pathway.txt": [
+"HNSC-2015-Cell-cycle-signaling-pathway": [
 "HNSC-2015-Cell-cycle-signaling-pathway",
 "",
 "",
@@ -1027,7 +1027,7 @@
 "lU11XAdWHRyG\tm6QJybSmGSEj\tUF0yWD0cGVp6\tINHIBITS",
 "hgYpZiWwHLEw\tKkBOpjMSGBEp\tBNAC4UcvF_fD\tINHIBITS"
 ],
-"../samples/HNSC-2015-Notch-signaling-pathway.txt": [
+"HNSC-2015-Notch-signaling-pathway": [
 "HNSC-2015-Notch-signaling-pathway",
 "",
 "",
@@ -1053,7 +1053,7 @@
 "qbufdsXRFBiJ\t0_tmgKZGEdGo\tcVmq2gc7EhfK\tACTIVATES",
 "XfMK86WqE21I\tM36IzzXCEbYd\t0_tmgKZGEdGo\tINHIBITS"
 ],
-"../samples/HNSC-2015-Oxidative-stress-response-pathway.txt": [
+"HNSC-2015-Oxidative-stress-response-pathway": [
 "HNSC-2015-Oxidative-stress-response-pathway",
 "",
 "",
@@ -1071,7 +1071,7 @@
 "cPEAdB0SFfMR\tgt4I0Om0FTv6\tfVzq-7uHFVEN\tACTIVATES",
 "H-KG07b7Fd8r\tZsX3OXk3FSsm\tgt4I0Om0FTv6\tINHIBITS"
 ],
-"../samples/HNSC-2015-RTK-RAS-PI(3)K-pathway.txt": [
+"HNSC-2015-RTK-RAS-PI(3)K-pathway": [
 "HNSC-2015-RTK/RAS/PI(3)K-pathway",
 "",
 "",
@@ -1101,7 +1101,7 @@
 "GnyxNL7aCqke\tYgFgrMTKCakc\tCh4RV-nlCR-8\tACTIVATES",
 "rrzkeHNUGQDo\tM33a4yWMGH-j\tNZQP-jwUGJDJ\tACTIVATES"
 ],
-"../samples/KIRC-2013-RTK-RAS-PI(3)K-pathway.txt": [
+"KIRC-2013-RTK-RAS-PI(3)K-pathway": [
 "KIRC-2013-RTK/RAS/PI(3)K-pathway",
 "",
 "",
@@ -1158,7 +1158,7 @@
 "kxVoCQxViupL\tGBWHCv3viEa6\t-Wom9AxOiG4E\tACTIVATES",
 "7jMvZJMZkN4v\t7HbV79PdjsOU\tkKqxit2Aj0o5\tINHIBITS"
 ],
-"../samples/Liang-Hippo_pathway_import.txt": [
+"Liang-Hippo_pathway_import": [
 "Liang-Hippo_pathway_import",
 "",
 "",
@@ -1229,7 +1229,7 @@
 "Gmtnj85NQM4C\t7QWVfynlQMzA\tTe3msvOSQMyh\tACTIVATES",
 "ew3UNuwOQM4_\tiR3PMUV2QM2a\tHoEAnDnGQM1X\tINHIBITS"
 ],
-"../samples/LUAD-2014-Cell-cycle-signaling-pathway.txt": [
+"LUAD-2014-Cell-cycle-signaling-pathway": [
 "LUAD-2014-Cell-cycle-signaling-pathway",
 "",
 "",
@@ -1248,7 +1248,7 @@
 "eB12pAOW8MCi\t-65hVCUu7wNj\tSBA7nphX7zI1\tACTIVATES",
 "u6mSj8wD8Jp9\tyiKTF0xl7qs-\tEaAZ2J517xuW\tINHIBITS"
 ],
-"../samples/LUAD-2014-Histone-modification-pathway.txt": [
+"LUAD-2014-Histone-modification-pathway": [
 "LUAD-2014-Histone-modification-pathway",
 "",
 "",
@@ -1269,7 +1269,7 @@
 "fc6_K-lT85Yv\tTEmP07vg8mqu\toQNlmw1I8ng2\tACTIVATES",
 "PkwUIXyU81xJ\t0ddAggf58hhA\tkv9VBnuH8l5E\tACTIVATES"
 ],
-"../samples/LUAD-2014-Oxidative-stress-response-pathway.txt": [
+"LUAD-2014-Oxidative-stress-response-pathway": [
 "LUAD-2014-Oxidative-stress-response-pathway",
 "",
 "",
@@ -1285,7 +1285,7 @@
 "ASasYVxW65_T\tax7M8UNp6gH0\t3OAnmFLj6kBV\tINHIBITS",
 "5XC9ZlAR67EJ\t3OAnmFLj6kBV\tqQRuLibB6k26\tINHIBITS"
 ],
-"../samples/LUAD-2014-RTK-RAS-PI(3)K-pathway.txt": [
+"LUAD-2014-RTK-RAS-PI(3)K-pathway": [
 "LUAD-2014-RTK/RAS/PI(3)K-pathway",
 "",
 "",
@@ -1340,7 +1340,7 @@
 "VFskMcwI5bY7\ts7zEz-oY4ag8\tFyui5tkl4cr5\tACTIVATES",
 "zPkLVdf35NoU\t8-YqWx2X4f5G\tcwgYdqrk4hBA\tACTIVATES"
 ],
-"../samples/LUAD-2014-TP53-pathway.txt": [
+"LUAD-2014-TP53-pathway": [
 "LUAD-2014-TP53-pathway",
 "",
 "",
@@ -1358,7 +1358,7 @@
 "yaRRpgbw7aKj\tCQjbRdgs7ItD\tfz0X8H7D7J7L\tINHIBITS",
 "6yEDoser7Y_S\tgjYBW9Ea7HZc\tCQjbRdgs7ItD\tACTIVATES"
 ],
-"../samples/LUSC-2012-Notch-signaling-pathway.txt": [
+"LUSC-2012-Notch-signaling-pathway": [
 "LUSC-2012-Notch-signaling-pathway",
 "",
 "",
@@ -1378,7 +1378,7 @@
 "lP_hmn57Wt5k\tz9OhKjOpSGPy\tOQXnexCbWaQC\tINHIBITS",
 "NJbf1vyhWr_5\tjwpnNGJWSGmo\tqDU9qUkVWgQy\tINHIBITS"
 ],
-"../samples/LUSC-2012-Oxidative-stress-response-pathway.txt": [
+"LUSC-2012-Oxidative-stress-response-pathway": [
 "LUSC-2012-Oxidative-stress-response-pathway",
 "",
 "",
@@ -1394,7 +1394,7 @@
 "CT9Gtmm5Rqtm\t74W2ldwARhHq\tb31Gx6nxRij2\tINHIBITS",
 "HHBAbZS1Rto5\tlReeCCfNRhiB\tb31Gx6nxRij2\tINHIBITS"
 ],
-"../samples/LUSC-2012-RTK-RAS-PI(3)K-pathway.txt": [
+"LUSC-2012-RTK-RAS-PI(3)K-pathway": [
 "LUSC-2012-RTK/RAS/PI(3)K-Pathway",
 "",
 "",
@@ -1451,7 +1451,7 @@
 "eDF8oz7ZaT8J\tT1CL0I79YgGR\tHR4vBeq2ZNsn\tACTIVATES",
 "vecmsBiI1T1S\tFq9ew-K6XKj-\toxyofYva1T05\tACTIVATES"
 ],
-"../samples/MYC.txt": [
+"MYC": [
 "MYC",
 "",
 "Involves a number of transcription regulation complexes: MYC-MAX, MAX-MXD, MAX-MGA, and the energy sensing, MondoA-Mlx complex in the regulation of apoptotic response and cell differentiation.",
@@ -1488,7 +1488,7 @@
 "Vfrm_1Ezeh5E\tTrTubnzSeh3h\trU4TiKfKeh43\tINHIBITS\t",
 "nrV2aZn8eh5L\tyGKkO3Ajeh3V\tTrTubnzSeh3h\tBINDS\t"
 ],
-"../samples/NOTCH.txt": [
+"NOTCH": [
 "NOTCH",
 "",
 "Pathway involved in cell-cell communication, cell fate. Cleavage of Notch receptors leads to the displacement of a transcription repressor complex on RBPJ (a transcription factor also known as CSL) accompanied by recruitment of an activation complex (including MAMLs) leads to transcription of Notch target genes.",
@@ -1541,7 +1541,7 @@
 "WZmI2ceJWg0e\tQj8O9GJNT_AD\tfLn2ytnZVU-1\tINHIBITS\t",
 "U1KCxbf0W2Wy\tCCp9TqYNVWpA\tNvu3J1djU_IC\tACTIVATES\t"
 ],
-"../samples/NRF2.txt": [
+"NRF2": [
 "NRF2",
 "",
 "Involves the regulation of the transcription factor NFE2L2 by KEAP1. NFE2L2 regulates genes with the antioxidant response elements (ARE) that aid in cellular response against oxidative stress thought to aid in cancer chemoresistance.",
@@ -1557,7 +1557,7 @@
 "aWKwI8rJesz1\tsKw8nuDgeszp\tE9bpVpoWeszr\tACTIVATES\t",
 "Ng79Bysjeszx\tpxCvh_ojeszm\tsKw8nuDgeszp\tINHIBITS\t"
 ],
-"../samples/OV-2011-Cell-cycle-signaling-pathway.txt": [
+"OV-2011-Cell-cycle-signaling-pathway": [
 "OV-2011-Cell-cycle-signaling-pathway",
 "",
 "",
@@ -1576,7 +1576,7 @@
 "__OC9xbiR-Fr\ttJj5RrqJRq1h\tnnswnmMyRv3y\tACTIVATES",
 "VqDZTZnER7cZ\toN50crvCRjmK\tFY8bF0WdRsru\tINHIBITS"
 ],
-"../samples/OV-2011-Notch-signaling-pathway.txt": [
+"OV-2011-Notch-signaling-pathway": [
 "OV-2011-Notch-signaling-pathway",
 "",
 "",
@@ -1595,7 +1595,7 @@
 "osh5OcaxTA2q\tHPXERf3USgjx\txiGB_3VdSfd3\tINHIBITS",
 "AivX6u8YTCYD\tZ64sAxBCSrsH\txiGB_3VdSfd3\tINHIBITS"
 ],
-"../samples/OV-2011-RTK-RAS-PI(3)K-pathway.txt": [
+"OV-2011-RTK-RAS-PI(3)K-pathway": [
 "OV-2011-RTK/RAS/PI(3)K Pathway",
 "",
 "",
@@ -1620,7 +1620,7 @@
 "oxMyRc9ImLT_\t9WGkKXm-QhuR\tJXx22AmtmHua\tACTIVATES",
 "_9kjQAkpdEP0\tqx1xPdYgQgUA\t9WGkKXm-QhuR\tINHIBITS"
 ],
-"../samples/PanCancer-Apoptosis-pathway.txt": [
+"PanCancer-Apoptosis-pathway": [
 "PanCancer-Apoptosis-pathway",
 "",
 "",
@@ -1706,7 +1706,7 @@
 "1aN50BaAAhk9\trdXLS7g2AhhU\tOtkmPT6RAhec\tACTIVATES",
 "lVByOM3rAhmp\tApwpGmb6Ahjr\tMMJwDJ-jAhgz\tINHIBITS"
 ],
-"../samples/PanCancer-Cell-cycle-signaling-pathway.txt": [
+"PanCancer-Cell-cycle-signaling-pathway": [
 "PanCancer-Cell-cycle-signaling-pathway",
 "",
 "",
@@ -1743,7 +1743,7 @@
 "n0BKcPMWApyp\tjhtl4xsFApvi\tgBc-jv8HApwY\tINHIBITS",
 "4GmSkoxQApys\tgY99SstIApxe\tgBc-jv8HApwY\tINHIBITS"
 ],
-"../samples/PanCancer-Histone-modification-pathway.txt": [
+"PanCancer-Histone-modification-pathway": [
 "PanCancer-Histone-modification-pathway",
 "",
 "",
@@ -1796,7 +1796,7 @@
 "fXh9O9ZlA03e\tDQY-YYQXA02V\tZ1WvwxSyA00B\tACTIVATES",
 "5SXenYuuA03a\tdcCwIuihA00m\txuwKWC2FA0z5\tACTIVATES"
 ],
-"../samples/PanCancer-Oxidative-stress-response-pathway.txt": [
+"PanCancer-Oxidative-stress-response-pathway": [
 "PanCancer-Oxidative-stress-response-pathway",
 "",
 "",
@@ -1810,7 +1810,7 @@
 "pvr-StUUBCYN\tQ-vToJlzBCYA\tf2nr8wFPBCXs\tINHIBITS",
 "tTCbCZUfBCYU\tP7GdkGfnBCYG\tf2nr8wFPBCXs\tINHIBITS"
 ],
-"../samples/PanCancer-RTK-RAS-pathway.txt": [
+"PanCancer-RTK-RAS-pathway": [
 "PanCancer-RTK-RAS-pathway",
 "",
 "",
@@ -1864,7 +1864,7 @@
 "ZRYkYKPVBZlj\tpv2-AfodBZbu\tvfegMmdiBZbc\tACTIVATES",
 "0uuBSP2rBZkr\tCPF3tTMaBZg9\tpv2-AfodBZbu\tACTIVATES"
 ],
-"../samples/PanCancer-TGF-B-signaling-pathway.txt": [
+"PanCancer-TGF-B-signaling-pathway": [
 "PanCancer-TGF-B-signaling-pathway",
 "",
 "",
@@ -1891,7 +1891,7 @@
 "IboA-BZWBjzA\t6_o6MGukBjwv\tnb92rsttBjyA\tACTIVATES",
 "R5nASGxHb-2p\tnb92rsttBjyA\tqR4VihGPBjxh\tACTIVATES"
 ],
-"../samples/PanCancer-TP53-pathway.txt": [
+"PanCancer-TP53-pathway": [
 "PanCancer-TP53-pathway",
 "",
 "",
@@ -1927,7 +1927,7 @@
 "P9bQuiTyBvDS\tzhQmJ3bBBvAr\tg1HLI5DdBvCw\tACTIVATES",
 "hFaIfCDVBvDp\tqCdsa2xzBvCM\tsVxler-mBvBr\tINHIBITS"
 ],
-"../samples/PI3K.txt": [
+"PI3K": [
 "PI3K",
 "",
 "A signaling cascade involving PI3K phosphorylation of AKT leading to the activation of the mTORC1 complex. The mTORC1 functions as a metabolic sensor and controls protein abundance by affecting processes involved in protein production and RNA translation leading to changes in cell growth and survival.",
@@ -1970,7 +1970,7 @@
 "pYhyONrDe0lP\tDg3B9H1Me0ks\tURGrIXe2e0kd\tACTIVATES\t",
 "h-JnEMgBe0lN\tHY1OO1uEe0jv\tyEOAK96Ye0j-\tINHIBITS\t"
 ],
-"../samples/RAS.txt": [
+"RAS": [
 "Sample Pathway",
 "",
 "Sample Pathway...",
@@ -2010,7 +2010,7 @@
 "ele520\tele11\tele5\tACTIVATES",
 "ele521\tele10\tele5\tACTIVATES"
 ],
-"../samples/RTK-RAS.txt": [
+"RTK-RAS": [
 "RTK-RAS",
 "",
 "A signaling cascade pathway initiated by activation of RTKs followed signal transduction through Ras then Raf and then MEK family members. This cascade leads to the activation of several transcription factors that regulate processes involving cell proliferation and survival.",
@@ -2074,7 +2074,7 @@
 "vQrHXLexfrNR\t8tMooF5vfrKJ\tbdPjTyaDfrJu\tACTIVATES\t",
 "gs6EgVUcfrNd\tb8V1sXZDfrL1\tsApg3-IVfrMe\tACTIVATES\t"
 ],
-"../samples/sample1.txt": [
+"sample1": [
 "ample Pathway",
 "",
 "Sample Pathway...",
@@ -2099,90 +2099,7 @@
 "3c111453-b795-4ce7-9e40-fa717a8e84ca\t8b01887d-5c63-4954-832c-8bbab0c360e7\tea78fad5-edda-429b-88a3-068506f8edf3\tACTIVATES",
 "d15bae07-1572-44a0-be3e-bbdacbba37fb\tc0a42d7b-5ef2-4298-ac86-efcf6a5808ef\t417384f8-b53a-4296-852b-4ff3899cb724\tACTIVATES"
 ],
-"../samples/sampleGenomicData.txt": [
-"ene\tlung\tovarian\tbreast",
-"PTEN\t-7\t-20\t10",
-"NF1\t-12\t-4\t30",
-"PIK3CA\t18\t40\t-50",
-"KRAS\t11\t-5\t0",
-"BRAF\t0\t-2\t0",
-"AKT1\t3\t30\t-10",
-"AKT2\t6\t-3\t20",
-""
-],
-"../samples/sampleMeta.txt": [
-"-PanCanAtlas",
-"Cell-Cycle.txt",
-"HIPPO.txt",
-"MYC.txt",
-"NOTCH.txt",
-"NRF2.txt",
-"PI3K.txt",
-"TGF-Beta.txt",
-"RTK-RAS.txt",
-"TP53.txt",
-"WNT.txt",
-"--ACC",
-"ACC-2016-TP53-RB-pathway.txt",
-"ACC-2016-WNT-signaling-pathway.txt",
-"--BLCA",
-"BLCA-2014-Histone-modification-pathway.txt",
-"BLCA-2014-RTK-RAS-PI(3)K-pathway.txt",
-"BLCA-2014-TP53-RB-pathway.txt",
-"--BRCA",
-"BRCA-2012-RTK-RAS-PI(3)K-pathway.txt",
-"BRCA-2012-TP53-pathway.txt",
-"BRCA-2012-Cell-cycle-signaling-pathway.txt",
-"--COADREAD",
-"COADREAD-2012-RTK-RAS-PI(3)K-pathway.txt",
-"COADREAD-2012-TGF-B-signaling-pathway.txt",
-"COADREAD-2012-TP53-pathway.txt",
-"COADREAD-2012-WNT-signaling-pathway.txt",
-"--GBM",
-"GBM-2008-Cell-cycle-signaling-pathway.txt",
-"GBM-2008-RTK-RAS-PI(3)K-pathway.txt",
-"GBM-2008-TP53-pathway.txt",
-"GBM-2013-Cell-cycle-signaling-pathway.txt",
-"GBM-2013-RTK-RAS-PI(3)K-pathway.txt",
-"GBM-2013-TP53-pathway.txt",
-"--HNSC",
-"HNSC-2015-Apoptosis-pathway.txt",
-"HNSC-2015-Cell-cycle-signaling-pathway.txt",
-"HNSC-2015-Notch-signaling-pathway.txt",
-"HNSC-2015-Oxidative-stress-response-pathway.txt",
-"HNSC-2015-RTK-RAS-PI(3)K-pathway.txt",
-"--KIRC",
-"KIRC-2013-RTK-RAS-PI(3)K-pathway.txt",
-"--LUAD",
-"LUAD-2014-Cell-cycle-signaling-pathway.txt",
-"LUAD-2014-Histone-modification-pathway.txt",
-"LUAD-2014-Oxidative-stress-response-pathway.txt",
-"LUAD-2014-RTK-RAS-PI(3)K-pathway.txt",
-"LUAD-2014-TP53-pathway.txt",
-"--LUSC",
-"LUSC-2012-Notch-signaling-pathway.txt",
-"LUSC-2012-Oxidative-stress-response-pathway.txt",
-"LUSC-2012-RTK-RAS-PI(3)K-pathway.txt",
-"--OV",
-"OV-2011-Cell-cycle-signaling-pathway.txt",
-"OV-2011-Notch-signaling-pathway.txt",
-"OV-2011-RTK-RAS-PI(3)K-pathway.txt",
-"--SKCM",
-"SKCM-2015-Cell-cycle-signaling-pathway.txt",
-"SKCM-2015-Histone-modification-pathway.txt",
-"SKCM-2015-RTK-RAS-PI(3)K-pathway.txt",
-"SKCM-2015-TP53-pathway.txt",
-"--STAD",
-"STAD-2014-RTK-RAS-PI(3)K-pathway.txt",
-"--THCA",
-"THCA-2014-RTK-RAS-PI(3)K-pathway.txt",
-"--UCEC",
-"UCEC-2013-RTK-RAS-PI(3)K-pathway.txt",
-"--ESAD",
-"ESAD-2017-Cell-cycle-pathway.txt",
-"ESAD-2017-RTK-RAS-PI(3)K-pathway.txt"
-],
-"../samples/Schaub-MYC-pathway..txt": [
+"Schaub-MYC-pathway.": [
 "Schaub-MYC-pathway.",
 "",
 "",
@@ -2229,7 +2146,7 @@
 "iuiJruUhRk_c\tet_Z4illRk83\t10857vkbRk9D\tBINDS",
 "mIKdPxtgRk-X\t8Q9oVXmFRk8P\tu8DYpA0iRk72\tBINDS"
 ],
-"../samples/SKCM-2015-Cell-cycle-signaling-pathway.txt": [
+"SKCM-2015-Cell-cycle-signaling-pathway": [
 "SKCM-2015-Cell-cycle-signaling-pathway",
 "",
 "",
@@ -2251,7 +2168,7 @@
 "Msdh3q6kJxC4\tuK5CVzIeJayA\tIba11JzIJVxh\tINHIBITS",
 "vjchZOt9JyOV\tIba11JzIJVxh\t4vxRSXTEJWO8\tINHIBITS"
 ],
-"../samples/SKCM-2015-Histone-modification-pathway.txt": [
+"SKCM-2015-Histone-modification-pathway": [
 "SKCM-2015-Histone-modification-pathway",
 "",
 "",
@@ -2275,7 +2192,7 @@
 "8YJTZK-INn2c\t4dCj0PbWLn10\t-c29Xam0NfMu\tACTIVATES",
 "MdvHv-NFNoui\t4dCj0PbWLn10\tX7mpJiW8Lodu\tACTIVATES"
 ],
-"../samples/SKCM-2015-RTK-RAS-PI(3)K-pathway.txt": [
+"SKCM-2015-RTK-RAS-PI(3)K-pathway": [
 "SKCM-2015-RTK/RAS/PI(3)K-pathway",
 "",
 "",
@@ -2308,7 +2225,7 @@
 "iCnUjDjmIvi5\teNN9GlQaIQwL\tOpbQ5N5BIR7T\tACTIVATES",
 "HEzFrHkCI0l-\tRtyOk-X-ITE3\t5m3zxs1KINf7\tINHIBITS"
 ],
-"../samples/SKCM-2015-TP53-pathway.txt": [
+"SKCM-2015-TP53-pathway": [
 "SKCM-2015-TP53-pathway",
 "",
 "",
@@ -2328,7 +2245,7 @@
 "N3sY9gBuLVHA\tGBRktWHeLBFQ\tTc8UdIhSLCIT\tACTIVATES",
 "2r21RRvbLR21\thml0YQ9_K8tc\t-VggHhz9K-1w\tINHIBITS"
 ],
-"../samples/STAD-2014-RTK-RAS-PI(3)K-pathway.txt": [
+"STAD-2014-RTK-RAS-PI(3)K-pathway": [
 "STAD-2014-RTK/RAS/PI(3)K-pathway",
 "",
 "",
@@ -2358,7 +2275,7 @@
 "OPPikJRZ-XUc\tY6PU3f3t93HB\t7oEmRnmC-RqY\tINHIBITS",
 "vbNOH609-aVf\tWBOfcnh9993x\t7oEmRnmC-RqY\tACTIVATES"
 ],
-"../samples/TGF-Beta.txt": [
+"TGF-Beta": [
 "TGF-Beta",
 "",
 "A signaling network involved in growth, proliferation, apoptosis, and differentiation involving the activation of TGFβ receptors by the cytokine TGFβ that leads to the activation of gene transcription by SMADs.",
@@ -2384,7 +2301,7 @@
 "hnOBi-Z1fmgI\tt_Q1Nr-BfmfR\tboabbY81fmfT\tACTIVATES\t",
 "Ax3S1Kd8fmgE\tgOOpkueqfmfM\tfXKkJObYfmfb\tACTIVATES\t"
 ],
-"../samples/THCA-2014-RTK-RAS-PI(3)K-pathway.txt": [
+"THCA-2014-RTK-RAS-PI(3)K-pathway": [
 "THCA-2014-RTK-RAS-PI(3)K-pathway",
 "",
 "",
@@ -2447,7 +2364,7 @@
 "3BgREqkhA22-\tKen9wGw8AKU3\t1TJ8hV1I_ZR5\tACTIVATES",
 "r31OK-oJBIby\tF4o-nfWI_urx\t-6lLHt7R_v9K\tACTIVATES"
 ],
-"../samples/TP53.txt": [
+"TP53": [
 "TP53",
 "",
 "Pathway centered around the regulation of the tumor suppressor TP53, a gene that regulates apoptosis, cell cycle arrest, senescence, and DNA repair.",
@@ -2478,7 +2395,7 @@
 "vNvONKmFfyHj\tYvaYsZcufyHH\tc4Ad6ZYBfyGx\tACTIVATES\t",
 "25K5WaLwfyHX\tc4Ad6ZYBfyGx\tJvx4WzdtfyGk\tACTIVATES\t"
 ],
-"../samples/UCEC-2013-RTK-RAS-PI(3)K-pathway.txt": [
+"UCEC-2013-RTK-RAS-PI(3)K-pathway": [
 "UCEC-2013-RTK/RAS/PI(3)K-pathway",
 "",
 "",
@@ -2513,7 +2430,7 @@
 "w8Id1r73g8Xz\tQha2pMPigm3R\tsJDwUf9sgpI_\tINHIBITS",
 "daN2ajyqghSz\t57SvZmLzgKXg\ti1tsajIagMAh\tINHIBITS"
 ],
-"../samples/WNT.txt": [
+"WNT": [
 "WNT",
 "",
 "Involved in both development and tissue homeostasis. The canonical Wnt pathway involves signal transduction initiated by Wnt ligand binding to Frizzled family receptors leading to the dysregulation of beta-catenin degradation and ultimately, the induction of transcription via TCF/LEF transcription factors by beta-catenin.",
@@ -2570,7 +2487,7 @@
 "rRLoK5NMf2XD\tKzWeNNlbf2UJ\t3GRyWPj8f2UM\tINHIBITS\t",
 "l7-kESH_f2XH\tz1BS71lif2T2\tabIO9oDkf2WA\tINHIBITS\t"
 ],
-"../samples/Xiao-HR-pathway.txt": [
+"Xiao-HR-pathway": [
 "Xiao-HR-pathway",
 "",
 "",
@@ -2631,7 +2548,7 @@
 "9xbUoCAFQumj\tv0SjMFK7Quen\tBg35Bm_1QuhP\tACTIVATES",
 "5nJPOj8fQumb\t3GcWNe1kQueJ\tv0SjMFK7Quen\tACTIVATES"
 ],
-"../samples/Xiao-MMR-pathway.txt": [
+"Xiao-MMR-pathway": [
 "Xiao-MMR-pathway",
 "",
 "",

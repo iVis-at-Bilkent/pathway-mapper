@@ -10,14 +10,20 @@ import Ranking from "./Ranking";
 import Container from "react-bootstrap/Container";
 import EditorActionsManager from "./EditorActionsManager";
 import autobind from "autobind-decorator";
+import {observable} from "mobx";
+import {observer} from "mobx-react";
 
+@observer
 export default class App extends React.Component {
 
   private editor: EditorActionsManager;
 
+  @observable
+  selectedPathway: string;
+
   constructor(props){
     super(props);
-
+    this.selectedPathway = "Creighton-PI3K-pathway";
   }
 
   render() {
@@ -28,12 +34,12 @@ export default class App extends React.Component {
                 <Toolbar loadSampleData={this.loadSampleData} performLayout={this.performLayout}/>
             </Col>
 
-            <Col xs={10}>
-                <CytoscapeArea isCbioPortal={true} isCollaborative={false} editorHandler={this.editorHandler}/>
+            <Col>
+                <CytoscapeArea isCbioPortal={true} isCollaborative={false} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Col>
 
             <Col>
-                <Ranking/>
+                <Ranking pathwayHandler={this.pathwayHandler}/>
             </Col>
 
           </Row>
@@ -42,11 +48,14 @@ export default class App extends React.Component {
   }
 
   @autobind
+  pathwayHandler(pathway: string){
+    this.selectedPathway = pathway;
+  }
+
+
+  @autobind
   editorHandler(editor){
     this.editor = editor;
-    console.log("Editor came: ");
-    console.log(editor);
-    console.log("Editor");
   }
 
 

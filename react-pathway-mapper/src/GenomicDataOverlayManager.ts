@@ -59,7 +59,7 @@ export default class GenomicDataOverlayManager {
     this.visibleGenomicDataMapByType = {}
   }
 
-  addGenomicData(geneSymbol, data) {
+  addGenomicDataWithGeneSymbol(geneSymbol, data) {
     this.genomicDataMap[geneSymbol] = data
   }
 
@@ -102,7 +102,7 @@ export default class GenomicDataOverlayManager {
     this.genomicDataMap = {}
   }
 
-  removeGenomicData(geneSymbol) {
+  removeGenomicDataWithGeneSymbol(geneSymbol) {
     this.genomicDataMap[geneSymbol] = {}
   }
 
@@ -193,7 +193,7 @@ export default class GenomicDataOverlayManager {
     return genomicDataBoxCount
   }
 
-  generateSVGForNode = function(ele) {
+  generateSVGForNode(ele) {
     const genomicDataBoxCount = this.countVisibleGenomicDataByType()
 
     // Experimental data overlay part !
@@ -210,9 +210,9 @@ export default class GenomicDataOverlayManager {
     const reqWidth = this.getRequiredWidthForGenomicData(genomicDataBoxCount)
     const overlayRecBoxW = reqWidth - 10
     const overlayRecBoxH = 25
-    const svg = document.createElementNS(svgNameSpace, 'svg')
+    const svg: any = document.createElementNS(svgNameSpace, 'svg')
     // It seems this should be set according to the node size !
-    svg.setAttribute('width', reqWidth)
+    svg.setAttribute('width', reqWidth + '')
     svg.setAttribute('height', eleBBox.h)
     // This is important you need to include this to succesfully render in cytoscape.js!
     svg.setAttribute('xmlns', svgNameSpace)

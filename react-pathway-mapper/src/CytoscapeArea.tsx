@@ -18,6 +18,7 @@ import edgeHandleOpts from './EdgeHandlesOptions.jsx';
 import edgeEditing from "cytoscape-edge-editing";
 import SaveLoadUtility from "./SaveLoadUtility"
 import pathways from "./pathways.json";
+import {action, computed} from "mobx";
 
 const edgeHandles = require('cytoscape-edgehandles');
 const regCose = require('cytoscape-cose-bilkent');
@@ -35,6 +36,7 @@ type PathwayMapperType = {
   isCollaborative: boolean;
   isCbioPortal: boolean;
   editorHandler: Function;
+  selectedPathway: string;
 };
 @observer
 export default class PathwayMapper extends React.Component<PathwayMapperType, {}>{
@@ -65,14 +67,15 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
       this.edgeAddingMode = 0;
       this.shareDBManager = new ShareDBManager();
       this.isCbioPortal = props.isCbioPortal;
-      //this.init();
-      //this.createSampleMenu(); //TODO: AMENDMENT Menu must be react.
-      //this.createCBioPortalAccessModal();
+      // this.init();
+      // this.createSampleMenu(); //TODO: AMENDMENT Menu must be react.
+      // this.createCBioPortalAccessModal();
     }
+
 
     getPathway(){
 
-      const data = pathways["../samples/BRCA-2012-Cell-cycle-signaling-pathway.txt"];
+      const data = pathways[this.props.selectedPathway];
       // TODO Problematic const data = pathways["../samples/BLCA-2014-RTK-RAS-PI(3)K-pathway.txt"];
 
       console.log("Pathway: ");
@@ -97,7 +100,7 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
       // TODO ATTENTION ids are moved from ID TO Name
       allEles.nodes.forEach((node) => {
         console.log(node);
-        node.data.parent = (node.data.parent == -1) ? -1 : nodeMap[node.data.parent].data.name;
+        node.data.parent = (node.data.parent === -1) ? -1 : nodeMap[node.data.parent].data.name;
         node.data.id = node.data.name;
       });
 
@@ -118,6 +121,11 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
         </div>);
     }
 
+
+    componentWillUpdate(nextProps: PathwayMapperType) {
+      console.log("Component will update", nextProps.selectedPathway);
+      this.getPathway();
+    }
     componentDidMount(): void {
       console.log(document.getElementById("cy"));
       this.init();
@@ -131,7 +139,7 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
     }
 
   init(){
-    //Initializes cytoscape
+    // Initializes cytoscape
     this.initCyJS();
     //Initialize cytoscape based handlers here
     this.initCyHandlers();
@@ -290,13 +298,13 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
       el: $('#pathwayDetailsDiv')
     }).render();*/
 
-    //Initialize panzoom
+    // Initialize panzoom
     this.cy.panzoom(panzoomOpts);
 
-    //Node Add initialization
+    // Node Add initialization
     this.cy.nodeadd(
       {
-        //Once the explanationText is cast to uppercase they will be node types
+        // Once the explanationText is cast to uppercase they will be node types
         components:
           [
             {

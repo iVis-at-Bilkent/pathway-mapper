@@ -1705,12 +1705,12 @@ export default class EditorActionsManager{
 
         if(!isRemove)
         {
-            this.genomicDataOverlayManager.addGenomicData(geneSymbol, newData);
+            this.genomicDataOverlayManager.addGenomicDataWithGeneSymbol(geneSymbol, newData);
         }
         // Removal
         else
         {
-            this.genomicDataOverlayManager.removeGenomicData(geneSymbol);
+            this.genomicDataOverlayManager.removeGenomicDataWithGeneSymbol(geneSymbol);
         }
     }
 
@@ -1750,7 +1750,7 @@ export default class EditorActionsManager{
         else
         {
 
-            this.genomicDataOverlayManager.removeGenomicVisData(data);
+            this.genomicDataOverlayManager.removeGenomicVisData();
         }
 
         this.genomicDataOverlayManager.showGenomicData();
