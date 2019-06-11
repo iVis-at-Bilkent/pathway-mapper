@@ -158,7 +158,7 @@ export default class SaveLoadUtility{
           nodeW + '\t' +
           nodeH + '\n';
   }
-  static parseGraph(graphText) {
+  static parseGraph(graph, isArray) {
 
     var allEles = [];
     var nodes = [];
@@ -167,7 +167,7 @@ export default class SaveLoadUtility{
     // By lines
     // Match all new line character representations
     var seperator = /\r?\n|\r/;
-    var lines = graphText.split(seperator);
+    var lines = (isArray) ? graph : graph.split(seperator);
     var edgesStartIndex = -1;
     console.log(lines);
     var title = lines[0];

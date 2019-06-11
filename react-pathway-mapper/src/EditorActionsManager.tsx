@@ -25,14 +25,15 @@ export default class EditorActionsManager{
     constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean,
                 edgeEditing: any, undoRedoManager: any, portalAccessor: CBioPortalAccessor)
     {
-        //Set cy instance and set real time manager reference if collaborative mode
+        // Set cy instance and set real time manager reference if collaborative mode
         this.cy = cyInst;
         this.isCollaborative = isCollaborative;
         this.isCbioPortal = isCBioPortal;
         this.edgeEditing = edgeEditing;
         this.portalAccessor = portalAccessor;
-        if(this.isCollaborative && shareDBManager)
-            this.shareDBManager = shareDBManager;
+        if(this.isCollaborative && shareDBManager) {
+          this.shareDBManager = shareDBManager;
+        }
 
         this.defaultLayoutProperties =
             {
@@ -93,7 +94,7 @@ export default class EditorActionsManager{
     handleChangePositionByAlignment(movedNodeArr: any)
     {
         if (this.isCollaborative)
-            console.log("ShareDB Was here");//this.shareDBManager.changeElementsPositionByAlignment(movedNodeArr);
+            console.log("ShareDB Was here");// this.shareDBManager.changeElementsPositionByAlignment(movedNodeArr);
         else
             this.undoRedoManager.do("changePositions", movedNodeArr)
     };
@@ -103,11 +104,11 @@ export default class EditorActionsManager{
      * **/
     doChangePosition(movedNodes: any)
     {
-        var newMovedNodes = [];
+        const newMovedNodes = [];
 
-        for(var i = 0; i < movedNodes.length; i++)
+        for(let i = 0; i < movedNodes.length; i++)
         {
-            var currentNodePosition =
+            const currentNodePosition =
                 {
                     x: movedNodes[i].node.position().x,
                     y: movedNodes[i].node.position().y

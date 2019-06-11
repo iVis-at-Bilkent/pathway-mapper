@@ -17,7 +17,7 @@ import CBioPortalAccessor from "./CBioPortalAccessor";
 import edgeHandleOpts from './EdgeHandlesOptions.jsx';
 import edgeEditing from "cytoscape-edge-editing";
 import SaveLoadUtility from "./SaveLoadUtility"
-import * as fs from "fs"
+import pathways from "./pathways.json";
 
 const edgeHandles = require('cytoscape-edgehandles');
 const regCose = require('cytoscape-cose-bilkent');
@@ -72,37 +72,38 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
 
     getPathway(){
 
-      const format = "SIFNX";
-      $.get('./samples/' + "LUSC-2012-RTK-RAS-PI(3)K-pathway.txt", (data) =>
-      {
-        var outData = data;
-        var parsedGraph = SaveLoadUtility.parseGraph(data);
+      const data = pathways["../samples/BRCA-2012-Cell-cycle-signaling-pathway.txt"];
+      // TODO Problematic const data = pathways["../samples/BLCA-2014-RTK-RAS-PI(3)K-pathway.txt"];
 
-        var pathwayData = {
-          pathwayTitle: parsedGraph.title,
-          graphJSON: {
-            elements: {
-              nodes: parsedGraph.nodes,
-              edges: parsedGraph.edges
-            }
-          }};
+      console.log("Pathway: ");
+      console.log(data);
 
-        var nodeMap = {};
-        outData = SaveLoadUtility.exportAsSIFNX(pathwayData, nodeMap);
-        const allEles = SaveLoadUtility.parseGraph(outData);
-        console.log(nodeMap);
+      const parsedGraph = SaveLoadUtility.parseGraph(data, true);
 
-        // TODO ATTENTION ids are moved from ID TO Name
-        allEles.nodes.forEach((node) => {
-          console.log(node);
-          node.data.parent = (node.data.parent == -1) ? -1 : nodeMap[node.data.parent].data.name;
-          node.data.id = node.data.name;
-        });
+      const pathwayData = {
+        pathwayTitle: parsedGraph.title,
+        graphJSON: {
+          elements: {
+            nodes: parsedGraph.nodes,
+            edges: parsedGraph.edges
+          }
+        }};
 
-        this.editor.loadFile(allEles.nodes, allEles.edges);
-        console.log("After LoadFile");
-        console.log(this.cy.edges());
+      const nodeMap = {};
+      const outData = SaveLoadUtility.exportAsSIFNX(pathwayData, nodeMap);
+      const allEles = SaveLoadUtility.parseGraph(outData, false);
+      console.log(nodeMap);
+
+      // TODO ATTENTION ids are moved from ID TO Name
+      allEles.nodes.forEach((node) => {
+        console.log(node);
+        node.data.parent = (node.data.parent == -1) ? -1 : nodeMap[node.data.parent].data.name;
+        node.data.id = node.data.name;
       });
+
+      this.editor.loadFile(allEles.nodes, allEles.edges);
+      console.log("After LoadFile");
+      console.log(this.cy.edges());
       /*
       window.appManager.pathwayDetailsView.updatePathwayProperties({
         fileName: allEles.title + ".txt",
