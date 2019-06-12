@@ -32,6 +32,7 @@ const navigator = require('cytoscape-navigator');
 const konva = require('konva');
 const viewUtilities = require('cytoscape-view-utilities');
 
+
 type PathwayMapperType = {
   isCollaborative: boolean;
   isCbioPortal: boolean;
@@ -96,6 +97,11 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
       console.log(pathwayGeneMap)
     }
 
+    componentWillUpdate(nextProps: PathwayMapperType) {
+      console.log("Component will update", nextProps.selectedPathway);
+      this.getPathway();
+    }
+
     getPathway(){
 
       const data = pathways[this.props.selectedPathway];
@@ -145,12 +151,6 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
         return (<div>
           <div ref={this.cyDivHandler} id="cy" style={{"border": "1px solid orange", "height": "100%"}}/>
         </div>);
-    }
-
-
-    componentWillUpdate(nextProps: PathwayMapperType) {
-      console.log("Component will update", nextProps.selectedPathway);
-      this.getPathway();
     }
     componentDidMount(): void {
       console.log(document.getElementById("cy"));
@@ -285,10 +285,10 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
       this.edgeEditing,
       this.undoRedoManager,
       this.portalAccessor);
-    this.props.editorHandler(this.editor);
     this.gridOptionsManager = new GridOptionsManager();
     this.viewOperationsManager = new ViewOperationsManager();
-    this.fileOperationsManager = new FileOperationsManager();
+    this.fileOperationsManager = new FileOperationsManager(this.cy);
+    this.props.editorHandler(this.editor, this.fileOperationsManager);
 
 
     this.qtipManager = new QtipManager(this.cy);

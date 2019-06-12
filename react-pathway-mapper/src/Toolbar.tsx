@@ -11,6 +11,7 @@ import {observable} from "mobx";
 interface IToolbarProps {
   loadSampleData: () => void;
   performLayout: () => void;
+  saveAsPng: () => void;
 
 }
 
@@ -26,7 +27,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
         return (
               <Col>
                   <Row>
-                  <Button variant="outline-primary">Save as PNG</Button>
+                  <Button variant="outline-primary" onClick={this.props.saveAsPng}>Save as PNG</Button>
                   </Row>
 
                   <br/>

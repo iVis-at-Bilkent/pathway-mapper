@@ -71,6 +71,7 @@
     "cytoscape-node-resize": "github:iVis-at-Bilkent/cytoscape.js-node-resize#unstable",
     "cytoscape-qtip": "~2.7.1",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "file-saver": "^2.0.2",
     "fs": "0.0.1-security",
     "fs-extra": "^8.0.1",
     "jquery": "latest",

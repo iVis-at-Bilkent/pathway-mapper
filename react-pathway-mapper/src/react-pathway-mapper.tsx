@@ -12,14 +12,16 @@ import EditorActionsManager from "./EditorActionsManager";
 import autobind from "autobind-decorator";
 import {observable} from "mobx";
 import {observer} from "mobx-react";
+import FileOperationsManager from './FileOperationsManager';
 
 @observer
 export default class App extends React.Component {
 
-  private editor: EditorActionsManager;
 
   @observable
   selectedPathway: string;
+  fileManager: FileOperationsManager;
+  editor: EditorActionsManager;
 
   constructor(props){
     super(props);
@@ -31,7 +33,7 @@ export default class App extends React.Component {
         <div>
           <Row>
             <Col xs={1}>
-                <Toolbar loadSampleData={this.loadSampleData} performLayout={this.performLayout}/>
+                <Toolbar loadSampleData={this.loadSampleData} performLayout={this.performLayout} saveAsPng={this.saveAsPng}/>
             </Col>
 
             <Col xs={7}>
@@ -52,10 +54,16 @@ export default class App extends React.Component {
     this.selectedPathway = pathway;
   }
 
+  @autobind
+  saveAsPng(){
+    this.fileManager.saveAsPNG();
+  }
+
 
   @autobind
-  editorHandler(editor){
+  editorHandler(editor, fileManager){
     this.editor = editor;
+    this.fileManager = fileManager;
   }
 
 
