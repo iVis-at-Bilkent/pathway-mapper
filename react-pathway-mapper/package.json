@@ -80,7 +80,7 @@
     "mobx": "^5.10.1",
     "mobx-react": "^5.4.3",
     "react": "^16.8.6",
-    "react-bootstrap": "^1.0.0-beta.6",
+    "react-bootstrap": "^0.31.5",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
     "react-scrollbar": "^0.5.6",

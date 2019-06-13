@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
-import autobind from "autobind-decorator";
+import * as Bootstrap from "react-bootstrap";import autobind from "autobind-decorator";
 import EditorActionsManager from "./EditorActionsManager";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
@@ -20,36 +16,47 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
     @observable
     private editor: EditorActionsManager;
-    constructor(props){
+    constructor(props: IToolbarProps){
       super(props);
     }
     render(){
-        return (
-              <Col>
-                  <Row>
-                  <Button variant="outline-primary" onClick={this.props.saveAsPng}>Save as PNG</Button>
-                  </Row>
+      return (
+      <Bootstrap.Col>
+          <Bootstrap.Row>
+              <Bootstrap.Col>
+              <Bootstrap.Button bsStyle="success" onClick={this.props.saveAsPng}>Save as PNG</Bootstrap.Button>
+              </Bootstrap.Col>
+          </Bootstrap.Row>
 
-                  <br/>
-                  <Row>
-                  <Button variant="outline-primary" onClick={this.props.performLayout}>Layout</Button>
-                  </Row>
+          <br/>
+          <Bootstrap.Row>
+              <Bootstrap.Col>
+              <Bootstrap.Button bsStyle="success" onClick={this.props.performLayout}>Layout</Bootstrap.Button>
+              </Bootstrap.Col>
+          </Bootstrap.Row>
 
-                  <br/>
-                  <Row>
-                  <Button variant="outline-primary">Info</Button>
-                  </Row>
+          <br/>
+          <Bootstrap.Row>
+              <Bootstrap.Col>
+              <Bootstrap.Button bsStyle="success">Info</Bootstrap.Button>
+              </Bootstrap.Col>
+          </Bootstrap.Row>
 
-                  <br/>
-                  <Row>
-                  <Button variant="outline-primary">Open Full-Blown</Button>
-                  </Row>
+          <br/>
+          <Bootstrap.Row>
+              <Bootstrap.Col>
+              <Bootstrap.Button bsStyle="success">Open Full-Blown</Bootstrap.Button>
+              </Bootstrap.Col>
+          </Bootstrap.Row>
 
-                  <br/>
-                  <Row>
-                  <Button variant="outline-primary" onClick={this.props.loadSampleData}>Load Sample</Button>
-                  </Row>
-              </Col>);
+          <br/>
+          <Bootstrap.Row>
+              <Bootstrap.Col>
+              <Bootstrap.Button bsStyle="success" onClick={this.props.loadSampleData}>Load Sample</Bootstrap.Button>
+              </Bootstrap.Col>
+          </Bootstrap.Row>
 
-    }
+    </Bootstrap.Col>);
+
+  }
 }

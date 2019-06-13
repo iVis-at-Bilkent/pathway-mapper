@@ -3,27 +3,27 @@
   // ...
 import React from 'react';
 import Toolbar from "./Toolbar";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
 import CytoscapeArea from "./CytoscapeArea";
 import Ranking from "./Ranking";
-import Container from "react-bootstrap/Container";
 import EditorActionsManager from "./EditorActionsManager";
 import autobind from "autobind-decorator";
 import {observable} from "mobx";
 import {observer} from "mobx-react";
 import FileOperationsManager from './FileOperationsManager';
+import * as Bootstrap from "react-bootstrap"; 
+interface IPathwayMapperProps{
+  isCBioPortal: boolean;
+}
 
 @observer
-export default class App extends React.Component {
-
+export default class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
 
   @observable
   selectedPathway: string;
   fileManager: FileOperationsManager;
   editor: EditorActionsManager;
 
-  constructor(props){
+  constructor(props: IPathwayMapperProps){
     super(props);
     this.selectedPathway = "Creighton-PI3K-pathway";
   }
@@ -31,20 +31,20 @@ export default class App extends React.Component {
   render() {
     return (
         <div>
-          <Row>
-            <Col xs={1}>
-                <Toolbar loadSampleData={this.loadSampleData} performLayout={this.performLayout} saveAsPng={this.saveAsPng}/>
-            </Col>
+            <Bootstrap.Row>
+              <Bootstrap.Col xs={2}>
+                  <Toolbar loadSampleData={this.loadSampleData} performLayout={this.performLayout} saveAsPng={this.saveAsPng}/>
+              </Bootstrap.Col>
 
-            <Col xs={7}>
-                <CytoscapeArea isCbioPortal={true} isCollaborative={false} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
-            </Col>
+              <Bootstrap.Col xs={6}>
+                  <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
+              </Bootstrap.Col>
 
-            <Col>
-                <Ranking pathwayHandler={this.pathwayHandler}/>
-            </Col>
+              <Bootstrap.Col xs={2}>
+                  <Ranking isCBioPortal={this.props.isCBioPortal} pathwayHandler={this.pathwayHandler}/>
+              </Bootstrap.Col>
 
-          </Row>
+            </Bootstrap.Row>
         </div>
     );
   }

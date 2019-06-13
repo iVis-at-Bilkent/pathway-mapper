@@ -1,15 +1,13 @@
 import React from 'react'
 import {observer} from "mobx-react";
 import {action, computed, observable} from "mobx";
-import Button from "react-bootstrap/Button";
 import autobind from "autobind-decorator";
 import {ListGroup} from "react-bootstrap";
 import pathways from "./pathways.json";
-import Col from "react-bootstrap/Col";
-import ScrollArea from "react-scrollbar";
-
+import * as Bootstrap from "react-bootstrap";
 interface IRankingProps{
   pathwayHandler: (pathway: string) => void;
+  isCBioPortal: boolean;
 }
 
 
@@ -36,7 +34,53 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
 
     render(){
+
+        const isCBioPortal = this.props.isCBioPortal;
+
         return (
+          <div>
+          {!isCBioPortal ? (
+            <Bootstrap.ListGroup>
+            {
+              Object.keys(pathways).map((pathwayName) => {
+                return (<Bootstrap.ListGroupItem active key={pathwayName} onClick={() => {this.onPathwayClick(pathwayName)}}>
+                  {pathwayName}
+                </Bootstrap.ListGroupItem>);
+              })
+            }
+          </Bootstrap.ListGroup> 
+          ) : (
+            <Bootstrap.Table striped bordered condensed hover>
+                <thead>
+                    <tr>
+                    <th>#</th>
+                    <th>Pathway Name</th>
+                    <th># of Genes Matching</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                {
+                  /*
+                    this.props.bestPathways.map((pathway, i) => {
+                        return (
+                            <tr onClick={() => {this.onPathwayClick(pathway.pathwayName)}}>
+                                <td>{i + 1}</td>
+                                <td>{pathway.pathwayName}</td>
+                                <td>{pathway.score}</td>
+                            </tr>
+                        );
+                    })*/
+                }
+                    
+                </tbody>
+            </Bootstrap.Table>)
+          }
+          </div>
+          /*
+          {
+
+          isCBioPortal ? 
           <ListGroup>
             {
               Object.keys(pathways).map((key) => {
@@ -45,8 +89,12 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                 </ListGroup.Item>);
               })
             }
-
-          </ListGroup>
+          </ListGroup> 
+          
+          : 
+          
+          <Button></Button>
+          }*/
         );
     }
 }

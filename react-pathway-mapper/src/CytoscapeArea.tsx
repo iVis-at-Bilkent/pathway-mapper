@@ -40,7 +40,7 @@ type PathwayMapperType = {
   selectedPathway: string;
 };
 @observer
-export default class PathwayMapper extends React.Component<PathwayMapperType, {}>{
+export default class CytoscapeArea extends React.Component<PathwayMapperType, {}>{
     private cy:any;
     private cyDiv: HTMLDivElement | undefined;
     private editor: EditorActionsManager;
@@ -99,12 +99,12 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
 
     componentWillUpdate(nextProps: PathwayMapperType) {
       console.log("Component will update", nextProps.selectedPathway);
-      this.getPathway();
+      this.getPathway(nextProps.selectedPathway);
     }
 
-    getPathway(){
+    getPathway(selectedPathway: string){
 
-      const data = pathways[this.props.selectedPathway];
+      const data = pathways[selectedPathway];
       // TODO Problematic const data = pathways["../samples/BLCA-2014-RTK-RAS-PI(3)K-pathway.txt"];
 
       console.log("Pathway: ");
@@ -149,14 +149,14 @@ export default class PathwayMapper extends React.Component<PathwayMapperType, {}
 
     render(){
         return (<div>
-          <div ref={this.cyDivHandler} id="cy" style={{"border": "1px solid orange", "height": "100%"}}/>
+          <div ref={this.cyDivHandler} id="cy" style={{"border": "1px solid orange", "height": "800px"}}/>
         </div>);
     }
     componentDidMount(): void {
       console.log(document.getElementById("cy"));
       this.init();
       this.createCBioPortalAccessModal();
-      this.getPathway();
+      this.getPathway(this.props.selectedPathway);
     }
 
     @autobind
