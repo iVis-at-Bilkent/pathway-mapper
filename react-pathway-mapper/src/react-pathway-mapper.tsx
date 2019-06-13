@@ -14,8 +14,9 @@ import * as Bootstrap from "react-bootstrap";
 import {Navbar, Nav, NavDropdown, MenuItem, NavItem} from 'react-bootstrap';
 import pathways from "./pathways.json";
 import Menubar from './Menubar';
-import {Modal, Button} from 'react-bootstrap'
+import {Modal, DropdownButton, Checkbox} from 'react-bootstrap'
 import PathwayActions from './PathwayActions';
+import CBioPortalAccessor from './CBioPortalAccessor';
 
 interface IPathwayMapperProps{
   isCBioPortal: boolean;
@@ -32,12 +33,19 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   @observable
   isModalShown: boolean;
+  portalAcessor: CBioPortalAccessor;
 
   constructor(props: IPathwayMapperProps){
     super(props);
     this.selectedPathway = "Creighton-PI3K-pathway";
     this.pathwayActions = new PathwayActions(this.pathwayHandler);
     this.isModalShown = false;
+  }
+
+  fetchStudy(){
+    this.portalAcessor.fetchCancerStudies((cancerStudies) => {
+        console.log(cancerStudies);
+    });
   }
 
   render() {
@@ -73,11 +81,18 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
               <Modal.Title>Modal heading</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <h4>Text in a modal</h4>
+              
+
+            <DropdownButton title="SElam">
+              <MenuItem eventKey="1">Action</MenuItem>
+            </DropdownButton>
+            
+            <Checkbox>
+              Checkbox
+            </Checkbox>
+
+
             </Modal.Body>
-            <Modal.Footer>
-              <Button onClick={this.handleClose}>Close</Button>
-            </Modal.Footer>
           </Modal>
       </div>
   );
@@ -98,6 +113,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.editor = editor;
     this.fileManager = fileManager;
     this.pathwayActions.editorHandler(editor, fileManager);
+    this.portalAcessor = new CBioPortalAccessor(this.editor);
+    this.fetchStudy();
   }
 
   @autobind
