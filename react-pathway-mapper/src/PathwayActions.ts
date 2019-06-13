@@ -21,6 +21,27 @@ export default class PathwayActions {
   }
 
   @autobind
+  newPathway() {
+    this.fileManager.createNewPathway()
+  }
+
+  @autobind
+  addNode(nodeType) {
+    const nodeData = {
+      type: nodeType.toUpperCase(),
+      name: 'New ' + nodeType,
+      w: '150',
+      h: '52'
+    }
+    const posData = {
+      x: this.editor.cy.height() / 2,
+      y: this.editor.cy.width() / 2
+    }
+
+    this.editor.addNode(nodeData, posData)
+  }
+
+  @autobind
   saveAsPng() {
     this.fileManager.saveAsPNG()
   }

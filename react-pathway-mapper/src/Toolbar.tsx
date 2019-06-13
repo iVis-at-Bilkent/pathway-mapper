@@ -3,11 +3,10 @@ import * as Bootstrap from "react-bootstrap";import autobind from "autobind-deco
 import EditorActionsManager from "./EditorActionsManager";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
+import PathwayActions from './PathwayActions';
 
 interface IToolbarProps {
-  loadSampleData: () => void;
-  performLayout: () => void;
-  saveAsPng: () => void;
+  pathwayActions: PathwayActions;
 
 }
 
@@ -24,14 +23,14 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
       <Bootstrap.Col>
           <Bootstrap.Row>
               <Bootstrap.Col>
-              <Bootstrap.Button bsStyle="success" onClick={this.props.saveAsPng}>Save as PNG</Bootstrap.Button>
+              <Bootstrap.Button bsStyle="success" onClick={this.props.pathwayActions.saveAsPng}>Save as PNG</Bootstrap.Button>
               </Bootstrap.Col>
           </Bootstrap.Row>
 
           <br/>
           <Bootstrap.Row>
               <Bootstrap.Col>
-              <Bootstrap.Button bsStyle="success" onClick={this.props.performLayout}>Layout</Bootstrap.Button>
+              <Bootstrap.Button bsStyle="success" onClick={this.props.pathwayActions.performLayout}>Layout</Bootstrap.Button>
               </Bootstrap.Col>
           </Bootstrap.Row>
 
@@ -52,7 +51,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
           <br/>
           <Bootstrap.Row>
               <Bootstrap.Col>
-              <Bootstrap.Button bsStyle="success" onClick={this.props.loadSampleData}>Load Sample</Bootstrap.Button>
+              <Bootstrap.Button bsStyle="success" onClick={this.props.pathwayActions.loadSampleData}>Load Sample</Bootstrap.Button>
               </Bootstrap.Col>
           </Bootstrap.Row>
 

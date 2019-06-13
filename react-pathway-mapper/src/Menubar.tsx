@@ -5,6 +5,7 @@ import PathwayActions from './PathwayActions.js';
 
 interface IMenubarProps{
     pathwayActions: PathwayActions;
+    openCBioModal: () => void;
 }
 
 export default class Menubar extends React.Component<IMenubarProps, {}>{
@@ -12,6 +13,8 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
         super(props);
     }
     render(){
+
+        const nodeTypes = ["Gene", "Family", "Complex", "Compartment", "Process"];
 
         return(
             <Navbar>
@@ -22,8 +25,8 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
               </Navbar.Header>
               <Nav>
                 <NavDropdown eventKey={1} title="Network" id="basic-nav-network">
-                  <MenuItem eventKey={1.1}>New</MenuItem>
-                  <NavDropdown eventKey={1} title="TCGA" id="basic-nav-network">
+                  <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.newPathway}>New</MenuItem>
+                  <NavDropdown eventKey={1} title="TCGA" id="basic-nav-TCGA">
                     {
                       Object.keys(pathways).map((pathwayName) => {
                           return (
@@ -34,10 +37,23 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                     }
                   </NavDropdown>
 
+                  <NavDropdown eventKey={1} title="Export as" id="basic-nav-export">
+                    <MenuItem eventKey={1.1}>JPEG</MenuItem>
+                    <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.saveAsPng}>PNG</MenuItem>
+                    <MenuItem eventKey={1.1}>SVG</MenuItem>
+                    <MenuItem eventKey={1.1}>SIFNG</MenuItem>
+                  </NavDropdown>
                 </NavDropdown>
 
                 <NavDropdown eventKey={2} title="Edit" id="basic-nav-edit">
-                  <MenuItem eventKey={2.1}>Action</MenuItem>
+                  <NavDropdown eventKey={2.1} title="Add Node">
+                      {
+                        nodeTypes.map((nodeType) => {
+                        return (<MenuItem onClick={() => {this.props.pathwayActions.addNode(nodeType)}}>
+                        {nodeType}
+                      </MenuItem>)} )
+                      }
+                  </NavDropdown>
                 </NavDropdown>
                 <NavDropdown eventKey={3} title="View" id="basic-nav-view">
                   <MenuItem eventKey={3.1}>Action</MenuItem>
@@ -47,6 +63,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                 </NavDropdown>
                 <NavDropdown eventKey={5} title="Alteration %" id="basic-nav-alteration">
                   <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.loadSampleData}>Load Sample Data</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={this.props.openCBioModal}>Load cBioPortal Data</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={6} title="Layout" id="basic-nav-layout">
                   <MenuItem eventKey={6.1} onClick={this.props.pathwayActions.performLayout}>Perform Layout</MenuItem>

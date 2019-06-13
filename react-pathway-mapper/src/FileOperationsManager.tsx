@@ -1,10 +1,15 @@
 import SaveLoadUtilities from './SaveLoadUtility.js';
 import {saveAs} from 'file-saver';
+import EditorActionsManager from './EditorActionsManager.js';
 
 export default class FileOperationsManager{
     private cy: any;
-    constructor(cy: any){
+    undoRedoManager: any;
+    editor: EditorActionsManager;
+    constructor(cy: any, undoRedoManager: any, editor: EditorActionsManager){
         this.cy = cy;
+        this.undoRedoManager = undoRedoManager;
+        this.editor = editor;
     }
     
     // see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
@@ -69,23 +74,24 @@ export default class FileOperationsManager{
     changePathwayDetails(pathwayData)
     {
         window.appManager.pathwayDetailsView.updatePathwayProperties(pathwayData);
-    };
+    };*/
 
     resetUndoStack()
     {
-        window.undoRedoManager.reset();
+        this.undoRedoManager.reset();
     };
-
+    
     createNewPathway()
     {
-        window.editorActionsManager.removeAllElements();
+        this.editor.removeAllElements();
+        /*
         this.changePathwayDetails(
         {
             fileName: "pathway.txt",
             pathwayTitle: "New Pathway",
             pathwayDescription: ""
-        });
+        });*/
         this.resetUndoStack();
 
-    };*/
+    };
 }

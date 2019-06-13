@@ -160,7 +160,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     }
 
     @autobind
-    private cyDivHandler(div:HTMLDivElement){
+    cyDivHandler(div:HTMLDivElement){
         this.cyDiv = div;
     }
 
@@ -173,12 +173,12 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.initUndoRedoFunctionality();
     this.initCBioPortalFunctionalities();
     const that = this;
-    //  window.onresize = function () {
-    //      that.placePanzoomAndOverlay();
-    //  }
+      window.onresize = function () {
+          that.placePanzoomAndOverlay();
+      }
 
     // Create portal accessor
-    this.portalAccessor = new CBioPortalAccessor();
+    this.portalAccessor = new CBioPortalAccessor(this.editor);
     //this.appManager = this;
   };
 
@@ -287,7 +287,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       this.portalAccessor);
     this.gridOptionsManager = new GridOptionsManager();
     this.viewOperationsManager = new ViewOperationsManager();
-    this.fileOperationsManager = new FileOperationsManager(this.cy);
+    this.fileOperationsManager = new FileOperationsManager(this.cy, this.undoRedoManager, this.editor);
     this.props.editorHandler(this.editor, this.fileOperationsManager);
 
 

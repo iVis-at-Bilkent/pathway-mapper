@@ -5,8 +5,9 @@ import autobind from "autobind-decorator";
 import {ListGroup} from "react-bootstrap";
 import pathways from "./pathways.json";
 import * as Bootstrap from "react-bootstrap";
+import PathwayActions from './PathwayActions.js';
 interface IRankingProps{
-  pathwayHandler: (pathway: string) => void;
+    pathwayActions: PathwayActions;
 }
 
 
@@ -28,7 +29,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
     onPathwayClick(pathway: string){
       console.log(pathway);
-      this.props.pathwayHandler(pathway);
+      this.props.pathwayActions.changePathway(pathway);
     }
 
 
