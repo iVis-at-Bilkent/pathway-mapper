@@ -7,7 +7,6 @@ import pathways from "./pathways.json";
 import * as Bootstrap from "react-bootstrap";
 interface IRankingProps{
   pathwayHandler: (pathway: string) => void;
-  isCBioPortal: boolean;
 }
 
 
@@ -35,21 +34,9 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
     render(){
 
-        const isCBioPortal = this.props.isCBioPortal;
 
         return (
           <div>
-          {!isCBioPortal ? (
-            <Bootstrap.ListGroup>
-            {
-              Object.keys(pathways).map((pathwayName) => {
-                return (<Bootstrap.ListGroupItem active key={pathwayName} onClick={() => {this.onPathwayClick(pathwayName)}}>
-                  {pathwayName}
-                </Bootstrap.ListGroupItem>);
-              })
-            }
-          </Bootstrap.ListGroup> 
-          ) : (
             <Bootstrap.Table striped bordered condensed hover>
                 <thead>
                     <tr>
@@ -74,27 +61,8 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                 }
                     
                 </tbody>
-            </Bootstrap.Table>)
-          }
+            </Bootstrap.Table>
           </div>
-          /*
-          {
-
-          isCBioPortal ? 
-          <ListGroup>
-            {
-              Object.keys(pathways).map((key) => {
-                return (<ListGroup.Item action onClick={() => {this.onPathwayClick(key)}}>
-                  {key}
-                </ListGroup.Item>);
-              })
-            }
-          </ListGroup> 
-          
-          : 
-          
-          <Button></Button>
-          }*/
         );
     }
 }
