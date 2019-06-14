@@ -5,7 +5,7 @@ import PathwayMapper from "./react-pathway-mapper";
 const rootEl = document.getElementById('app');
 
 
-render(<PathwayMapper isCBioPortal={false}/>, rootEl);
+render(<PathwayMapper isCBioPortal={true}/>, rootEl);
 
 if (module.hot) {
   module.hot.accept();
