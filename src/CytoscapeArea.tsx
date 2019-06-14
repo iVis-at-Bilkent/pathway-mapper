@@ -150,6 +150,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     render(){
         return (<div>
           <div ref={this.cyDivHandler} id="cy" style={{"border": "1px solid orange", "height": "800px"}}/>
+          <div className="cytoscape-navigator-wrapper"></div>
         </div>);
     }
     componentDidMount(): void {
@@ -172,10 +173,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.initKeyboardHandlers();
     this.initUndoRedoFunctionality();
     this.initCBioPortalFunctionalities();
-    const that = this;
-      window.onresize = function () {
-          that.placePanzoomAndOverlay();
-      }
+    this.placePanzoomAndOverlay();
 
     // Create portal accessor
     this.portalAccessor = new CBioPortalAccessor(this.editor);
@@ -221,7 +219,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     $('.cy-panzoom').css('left', widthCy - 57);
     $('.cy-panzoom').css('z-index', 1039);
     //Makes the width of panzoom container to 0
-    $('.cy-panzoom').css('width', 0);
+    $('.cy-panzoom').css('width', 200);
   }
 
   getPathwayData() {
