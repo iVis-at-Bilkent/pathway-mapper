@@ -41,7 +41,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
             <Bootstrap.Table striped bordered condensed hover>
                 <thead>
                     <tr>
-                    <th>#</th>
+                    <th>Rank</th>
                     <th>Pathway Name</th>
                     <th># of Genes Matching</th>
                     </tr>
