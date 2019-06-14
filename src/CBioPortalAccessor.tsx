@@ -137,9 +137,9 @@ export default class CBioPortalAccessor{
   {
       // By lines
       // Match all new line character representations
-      var seperator = /\r?\n|\r/;
-      var lines = paramLines.split(seperator);
-      var startIndex = 0;
+      const seperator = /\r?\n|\r/;
+      const lines = paramLines.split(seperator);
+      let startIndex = 0;
 
       //Find starting index of actual data skip commented lines
       for (const i in lines)

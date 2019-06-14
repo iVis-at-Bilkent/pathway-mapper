@@ -17,35 +17,115 @@ import Menubar from './Menubar';
 import {Modal, DropdownButton, Checkbox} from 'react-bootstrap'
 import PathwayActions from './PathwayActions';
 import CBioPortalAccessor from './CBioPortalAccessor';
+import SaveLoadUtility from './SaveLoadUtility';
+
+const maxHeapFn = require('@datastructures-js/max-heap');
+const maxHeap: any = maxHeapFn();
 
 interface IPathwayMapperProps{
   isCBioPortal: boolean;
+    // ts-ignore
+    genes: any[];
 }
 
 @observer
 export default class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
-
+  readonly NUMBER_OF_PATHWAYS_TO_SHOW = 10;
+  
   @observable
   selectedPathway: string;
+
+  @observable
+  selectedStudyData: any[];
   fileManager: FileOperationsManager;
   editor: EditorActionsManager;
   pathwayActions: PathwayActions;
 
   @observable
   isModalShown: boolean;
+
+  @observable
+  itemArray: any[];
   portalAcessor: CBioPortalAccessor;
+
+  pathwayGeneMap: any = {};
+  bestPathways: any[] = [];
 
   constructor(props: IPathwayMapperProps){
     super(props);
     this.selectedPathway = "Creighton-PI3K-pathway";
     this.pathwayActions = new PathwayActions(this.pathwayHandler);
     this.isModalShown = false;
+    this.selectedStudyData = [];
+    if(this.props.isCBioPortal){
+      this.extractAllGenes();
+      this.getBestPathway();
+    }
   }
 
-  fetchStudy(){
-    this.portalAcessor.fetchCancerStudies((cancerStudies) => {
-        console.log(cancerStudies);
+  getBestPathway() {
+    const scoreMap:any = {};
+    for(const pathwayName in this.pathwayGeneMap){
+        if(this.pathwayGeneMap.hasOwnProperty(pathwayName)){
+            let score = 0;
+            for(const gene of this.props.genes){
+                if(this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol)) score++;
+            }
+            scoreMap[pathwayName] = score;
+            maxHeap.insert(score, {pathwayName: pathwayName});
+        }
+    }
+    console.log("Best Pathways");
+    for(let i = 0; i < this.NUMBER_OF_PATHWAYS_TO_SHOW; i++){
+        const top = maxHeap.extractMax();
+        this.bestPathways.push({score: top.getKey(), pathwayName: top.getValue().pathwayName});
+    }
+    this.selectedPathway = this.bestPathways[0].pathwayName;
+    console.log("Genes");
+    console.log(this.props.genes);
+    console.log("Score Map");
+    console.log(scoreMap);
+  }
+
+  extractAllGenes(){
+
+      for(const pathwayName in pathways){
+          if(pathways.hasOwnProperty(pathwayName)){
+
+              const pathwayData = SaveLoadUtility.parseGraph(pathways[pathwayName], true);
+              const genes = pathwayData.nodes;
+
+              const geneHash: any = {};
+
+              for(const gene of genes){
+
+                  geneHash[gene.data.name] = gene.data.type;
+
+              }
+
+              this.pathwayGeneMap[pathwayName] = geneHash;
+          }
+      }
+      console.log("Pathway & Gene Map");
+      console.log(this.pathwayGeneMap);
+    }
+
+  fetchStudy(){ 
+    this.itemArray = [];
+
+    
+    this.portalAcessor.fetchCancerStudies((cancerStudies: any) => {
+      for(const study in cancerStudies){
+
+        if(!cancerStudies.hasOwnProperty(study)){
+          continue;
+        }
+        const item = <MenuItem eventKey="1" onClick={() => {this.selectedStudyData = cancerStudies[study]}}>{cancerStudies[study][0]}</MenuItem>;
+  
+        this.itemArray.push(item);
+      }
     });
+    console.log(this.itemArray);
   }
 
   render() {
@@ -71,7 +151,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
             { isCBioPortal &&
             <Bootstrap.Col xs={2}>
-                <Ranking pathwayActions={this.pathwayActions}/>
+                <Ranking pathwayActions={this.pathwayActions} bestPathways={this.bestPathways}/>
             </Bootstrap.Col>
             }
           </Bootstrap.Row>
@@ -83,8 +163,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <Modal.Body>
               
 
-            <DropdownButton title="SElam">
-              <MenuItem eventKey="1">Action</MenuItem>
+            <DropdownButton title={this.selectedStudyData[1] || ""}>
+              {this.itemArray}
             </DropdownButton>
             
             <Checkbox>

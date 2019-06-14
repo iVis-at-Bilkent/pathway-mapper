@@ -8,6 +8,7 @@ import * as Bootstrap from "react-bootstrap";
 import PathwayActions from './PathwayActions.js';
 interface IRankingProps{
     pathwayActions: PathwayActions;
+    bestPathways: string[];
 }
 
 
@@ -49,8 +50,8 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                 <tbody>
 
                 {
-                  /*
-                    this.props.bestPathways.map((pathway, i) => {
+                  
+                    this.props.bestPathways.map((pathway: any, i: number) => {
                         return (
                             <tr onClick={() => {this.onPathwayClick(pathway.pathwayName)}}>
                                 <td>{i + 1}</td>
@@ -58,7 +59,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                                 <td>{pathway.score}</td>
                             </tr>
                         );
-                    })*/
+                    })
                 }
                     
                 </tbody>

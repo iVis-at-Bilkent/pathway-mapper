@@ -4,8 +4,9 @@ import PathwayMapper from "./react-pathway-mapper";
 
 const rootEl = document.getElementById('app');
 
+const placeHolderGene = {hugoGeneSymbol: "MDM2"};
 
-render(<PathwayMapper isCBioPortal={true}/>, rootEl);
+render(<PathwayMapper isCBioPortal={true} genes={[placeHolderGene]}/>, rootEl);
 
 if (module.hot) {
   module.hot.accept();
