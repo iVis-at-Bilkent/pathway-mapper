@@ -24,8 +24,8 @@ const maxHeap: any = maxHeapFn();
 
 interface IPathwayMapperProps{
   isCBioPortal: boolean;
-    // ts-ignore
-    genes: any[];
+  genes: any[];
+  store: any;
 }
 
 @observer
@@ -61,6 +61,36 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.extractAllGenes();
       this.getBestPathway();
     }
+  }
+
+  overlayPortalData(){
+    const mutationData: any = {};
+    const mutations = this.props.store.mutations.result;
+    const profileCounts = this.props.store.molecularProfileIdToProfiledSampleCount.result;
+    if(mutations !== undefined){
+        mutations.forEach((mutation) => {
+            if(mutationData[mutation.molecularProfileId] === undefined){
+                mutationData[mutation.molecularProfileId] = {};
+            }
+            const mutationAmount = mutationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol];
+            if( mutationAmount === undefined){
+                mutationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol] = 0;
+            } 
+            mutationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol]++;
+        });
+    } else {
+        console.log("Mutation undefined");
+    }
+
+    for(const profileName in mutationData){
+        for(const gene in mutationData[profileName]){
+            mutationData[profileName][gene] /= profileCounts[profileName] / 100;
+        }
+    }
+
+    console.log(mutationData);
+
+    this.editor.addPortalGenomicData(mutationData, this.editor.getEmptyGroupID());
   }
 
   getBestPathway() {
@@ -194,7 +224,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.fileManager = fileManager;
     this.pathwayActions.editorHandler(editor, fileManager);
     this.portalAcessor = new CBioPortalAccessor(this.editor);
-    this.fetchStudy();
+    if(this.props.isCBioPortal){
+      this.overlayPortalData();
+    } else {
+      this.fetchStudy();
+    }
   }
 
   @autobind
