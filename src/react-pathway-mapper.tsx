@@ -227,7 +227,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(this.props.isCBioPortal){
       this.overlayPortalData();
     } else {
-      this.fetchStudy();
+      // this.fetchStudy();
     }
   }
 

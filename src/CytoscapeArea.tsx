@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 import cytoscape from 'cytoscape';
-import $ from "jquery"
+import $ from "jquery";
 // @ts-ignore
 window.$ = $;
 import autobind from "autobind-decorator";
@@ -16,7 +16,7 @@ import ShareDBManager from "./ShareDBManager";
 import CBioPortalAccessor from "./CBioPortalAccessor";
 import edgeHandleOpts from './EdgeHandlesOptions.jsx';
 import edgeEditing from "cytoscape-edge-editing";
-import SaveLoadUtility from "./SaveLoadUtility"
+import SaveLoadUtility from "./SaveLoadUtility";
 import pathways from "./pathways.json";
 import {action, computed} from "mobx";
 
@@ -28,6 +28,7 @@ const panzoom = require('cytoscape-panzoom');
 const styleSheet = require('./GraphStyleSheet.tsx');
 const panzoomOpts = require('./PanzoomOptions.tsx');
 const navigator = require('cytoscape-navigator');
+const contextMenus = require('cytoscape-context-menus');
 
 const konva = require('konva');
 const viewUtilities = require('cytoscape-view-utilities');
@@ -80,6 +81,10 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       const pathwayGeneMap = {};
 
       for(const pathwayName in pathways){
+
+        if(!pathways.hasOwnProperty(pathwayName)){
+          continue;
+        }
         const pathwayData = SaveLoadUtility.parseGraph(pathways[pathwayName], true);
         const genes = pathwayData.nodes;
 
@@ -250,7 +255,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     navigator(cytoscape); // register extension
     // grid_guide(cytoscape, $); // register extension
     undoRedo(cytoscape); // register extension
-    // contextMenus(cytoscape, $); // register extension
+    contextMenus(cytoscape, $); // register extension
     nodeResize(cytoscape, $, konva); // register extension
     edgeEditing(cytoscape, $); // register extension
     viewUtilities(cytoscape, $); // register extension
@@ -375,7 +380,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     };
 
     //TODO: AMENDMENT declaration removed
-    //this.cy.navigator(navDefaults); // get navigator instance, nav
+    this.cy.navigator(navDefaults); // get navigator instance, nav
 
     const edgeEditingOptions = {
       // this function specifies the positions of bend points

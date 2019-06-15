@@ -65,6 +65,7 @@
     "autobind-decorator": "^2.4.0",
     "bootstrap": "^4.3.1",
     "cytoscape": "^3.2.12",
+    "cytoscape-context-menus": "^3.0.3",
     "cytoscape-cose-bilkent": "^4.0.0",
     "cytoscape-edge-editing": "github:iVis-at-Bilkent/cytoscape.js-edge-editing#unstable",
     "cytoscape-edgehandles": "^3.5.1",
