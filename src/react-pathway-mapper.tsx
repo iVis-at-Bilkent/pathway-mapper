@@ -18,6 +18,7 @@ import {Modal, DropdownButton, Checkbox} from 'react-bootstrap'
 import PathwayActions from './PathwayActions';
 import CBioPortalAccessor from './CBioPortalAccessor';
 import SaveLoadUtility from './SaveLoadUtility';
+import "./base.css"
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 const maxHeap: any = maxHeapFn();

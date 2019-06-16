@@ -78,6 +78,6 @@ module.exports = {
       filename: "index.html",  //target html
       template: "./src/index.html" //source html
     }),
-    //new ExtractTextPlugin({ filename: 'css/style.css' })
+    new ExtractTextPlugin({ filename: './src/base.css' })
   ]
 };
