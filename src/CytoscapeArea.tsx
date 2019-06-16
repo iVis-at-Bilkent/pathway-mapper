@@ -404,10 +404,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     };
     this.edgeEditing = this.cy.edgeEditing(edgeEditingOptions);
 
-    // @ts-ignore
-    // @ts-ignore
-    // @ts-ignore
-    // @ts-ignore
+    /*
     this.cy.nodeResize({
       padding: 5, // spacing between node and grapples/rectangle
       undoable: true, // and if cy.undoRedo exists
@@ -511,7 +508,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
       resizeToContentFunction: this.editor.resizeNodesToContent.bind(this.editor),
 
-    });
+    });*/
 
     var viewUtilitiesOpts = {
       node: {
