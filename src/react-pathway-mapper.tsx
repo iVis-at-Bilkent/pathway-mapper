@@ -19,6 +19,8 @@ import PathwayActions from './PathwayActions';
 import CBioPortalAccessor from './CBioPortalAccessor';
 import SaveLoadUtility from './SaveLoadUtility';
 import "./base.css"
+import "cytoscape-panzoom/cytoscape.js-panzoom.css"
+import "cytoscape-navigator/cytoscape.js-navigator.css"
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 const maxHeap: any = maxHeapFn();
