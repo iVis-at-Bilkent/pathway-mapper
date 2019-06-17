@@ -36,6 +36,7 @@ var edgeHandleDefaults =
   },
   start: function( sourceNode )
   {
+    console.log("Inside start");
     // fired when edgehandles interaction starts (drag on handle)
     var type = this.getGlobalEdgeType();
     cy.edgehandles('option', 'ghostEdgeType', type);
@@ -59,7 +60,7 @@ var edgeHandleDefaults =
     // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
     //TODO refactor this, so terrible for now
     $('.edge-palette a').blur().removeClass('active');
-    window.edgeAddingMode == -1;
+    window.edgeAddingMode = -1;
     cy.edgehandles('disable');
 
   },

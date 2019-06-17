@@ -1,8 +1,8 @@
-import autobind from 'autobind-decorator'
-import { observable } from 'mobx'
-import EditorActionsManager from './EditorActionsManager'
-import FileOperationsManager from './FileOperationsManager'
-import { observer } from 'mobx-react'
+import autobind from 'autobind-decorator';
+import { observable } from 'mobx';
+import EditorActionsManager from './EditorActionsManager';
+import FileOperationsManager from './FileOperationsManager';
+import { observer } from 'mobx-react';
 
 export default class PathwayActions {
   @observable
@@ -17,12 +17,19 @@ export default class PathwayActions {
 
   @autobind
   changePathway(pathwayName: string) {
-    this.pathwayHandler(pathwayName)
+    this.pathwayHandler(pathwayName);
   }
 
   @autobind
   newPathway() {
     this.fileManager.createNewPathway()
+  }
+
+  @autobind
+  addEdge(edgeTypeIndex: number){
+    // @ts-ignore
+    window.edgeAddingMode = edgeTypeIndex;
+    this.editor.cy.edgehandles('enable');
   }
 
   @autobind

@@ -15,6 +15,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
     render(){
 
         const nodeTypes = ["Gene", "Family", "Complex", "Compartment", "Process"];
+        const edgeTypes = ["Activates", "Inhibits", "Induces", "Represses", "Binds"];
 
         return(
             <Navbar>
@@ -50,6 +51,18 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                       {
                         nodeTypes.map((nodeType) => {
                         return (<MenuItem onClick={() => {this.props.pathwayActions.addNode(nodeType)}}>
+                        {nodeType}
+                      </MenuItem>)} )
+                      }
+                  </NavDropdown>
+                  <NavDropdown eventKey={2.1} title="Add Edge">
+                      {
+                        edgeTypes.map((nodeType, i) => {
+                        return (<MenuItem 
+                          onClick={
+                          () => {
+                            this.props.pathwayActions.addEdge(i);
+                          }}>
                         {nodeType}
                       </MenuItem>)} )
                       }

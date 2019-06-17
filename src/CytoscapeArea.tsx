@@ -14,7 +14,6 @@ import FileOperationsManager from "./FileOperationsManager";
 import QtipManager from "./QtipManager";
 import ShareDBManager from "./ShareDBManager";
 import CBioPortalAccessor from "./CBioPortalAccessor";
-import edgeHandleOpts from './EdgeHandlesOptions.jsx';
 import edgeEditing from "cytoscape-edge-editing";
 import SaveLoadUtility from "./SaveLoadUtility";
 import pathways from "./pathways.json";
@@ -125,9 +124,9 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
             edges: parsedGraph.edges
           }
         }};
-
+/*
       console.log("Pathway Data");
-      console.log(pathwayData);
+      console.log(pathwayData);*/
 
       const nodeMap = {};
       const outData = SaveLoadUtility.exportAsSIFNX(pathwayData, nodeMap);
@@ -136,14 +135,14 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
       // TODO ATTENTION ids are moved from ID TO Name
       allEles.nodes.forEach((node) => {
-        console.log(node);
+        //console.log(node);
         node.data.parent = (node.data.parent === -1) ? -1 : nodeMap[node.data.parent].data.name;
         node.data.id = node.data.name;
       });
 
-      this.editor.loadFile(allEles.nodes, allEles.edges);
+      this.editor.loadFile(allEles.nodes, allEles.edges);/*
       console.log("After LoadFile");
-      console.log(this.cy.edges());
+      console.log(this.cy.edges());*/
       /*
       window.appManager.pathwayDetailsView.updatePathwayProperties({
         fileName: allEles.title + ".txt",
@@ -259,7 +258,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     nodeResize(cytoscape, $, konva); // register extension
     edgeEditing(cytoscape, $); // register extension
     viewUtilities(cytoscape, $); // register extension
-    edgeHandles(cytoscape);
+    edgeHandles(cytoscape, $);
 
 
     this.edgeAddingMode = 0;
@@ -282,12 +281,14 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     console.log("undoRedoManager" + this.undoRedoManager);
     // Create Manager Classes
     this.editor = new EditorActionsManager(this.isCollaborative,
-      this.shareDBManager,
-      this.cy,
-      this.isCbioPortal,
-      this.edgeEditing,
-      this.undoRedoManager,
-      this.portalAccessor);
+                                           this.shareDBManager,
+                                           this.cy,
+                                           this.isCbioPortal,
+                                           this.edgeEditing,
+                                           this.undoRedoManager,
+                                           this.portalAccessor);
+    //@ts-ignore
+    window.editorActionsManager = this.editor;
     this.gridOptionsManager = new GridOptionsManager();
     this.viewOperationsManager = new ViewOperationsManager();
     this.fileOperationsManager = new FileOperationsManager(this.cy, this.undoRedoManager, this.editor);
@@ -364,9 +365,100 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
           ]
 
       });
+    const self = this;
+    const edgeHandleDefaults ={
+        preview: true, // whether to show added edges preview before releasing selection
+        stackOrder: 4, // Controls stack order of edgehandles canvas element by setting it's z-index
+        handleSize: 10, // the size of the edge handle put on nodes
+        handleColor: '#1abc9c', // the colour of the handle and the line drawn from it
+        handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line
+        handleLineWidth: 1, // width of handle line in pixels
+        handleNodes: 'node', // selector/filter function for whether edges can be made from a given node
+        hoverDelay: 1, // time spend over a target node before it is considered a target selection
+        cxt: false, // whether cxt events trigger edgehandles (useful on touch)
+        enabled: false, // whether to start the extension in the enabled state
+        toggleOffOnLeave: true, // whether an edge is cancelled by leaving a node (true), or whether you need to go over again to cancel (false; allows multiple edges in one pass)
+        edgeType: function( sourceNode, targetNode ) {
+          // can return 'flat' for flat edges between nodes or 'node' for intermediate node between them
+          // returning null/undefined means an edge can't be added between the two nodes
+          return 'flat';
+        },
+        loopAllowed: function( node ) {
+          // for the specified node, return whether edges from itself to itself are allowed
+          return false;
+        },
+        nodeLoopOffset: -50, // offset for edgeType: 'node' loops
+        nodeParams: function( sourceNode, targetNode ) {
+          // for edges between the specified source and target
+          // return element object to be passed to cy.add() for intermediary node
+          return {};
+        },
+        edgeParams: function( sourceNode, targetNode, i ) {
+          // for edges between the specified source and target
+          // return element object to be passed to cy.add() for edge
+          // NB: i indicates edge index in case of edgeType: 'node'
+          return {};
+        },
+        start: function( sourceNode )
+        {
+          console.log("Inside start");
+          // fired when edgehandles interaction starts (drag on handle)
+          var type = this.getGlobalEdgeType();
+          self.cy.edgehandles('option', 'ghostEdgeType', type);
+        },
+        complete: function( sourceNode, targetNodes, addedEntities )
+        {
+            //  // Remove recently added edge !
+            //  // FBI takes this case from now on :O
+            //  // We will take care of addition in our manager :)
+            self.cy.remove(addedEntities);
+            self.editor.addEdge({
+              source: sourceNode.id(),
+              target: targetNodes[0].id(),
+              type: this.getGlobalEdgeType(),
+              pubmedIDs: [],
+              name: ""
+            });
+        },
+        stop: function( sourceNode )
+        {
+          // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
+          //TODO refactor this, so terrible for now
+          $('.edge-palette a').blur().removeClass('active');
+          self.edgeAddingMode = -1;
+          self.cy.edgehandles('disable');
+      
+        },
+        getGlobalEdgeType: function()
+        {
+          var type = "ACTIVATES";/*
+          if (window.edgeAddingMode == 1)
+          {
+            type = 'ACTIVATES';
+          }
+          else if (window.edgeAddingMode == 2)
+          {
+            type = 'INHIBITS';
+          }
+          else if (window.edgeAddingMode == 3)
+          {
+            type = 'INDUCES';
+          }
+          else if (window.edgeAddingMode == 4)
+          {
+            type = 'REPRESSES';
+          }
+          else if (window.edgeAddingMode == 5)
+          {
+            type = 'BINDS';
+          }*/
+          return type;
+        }
+      };
+    console.log(edgeHandleDefaults);
 
     //Edge Handles initialization
-    this.cy.edgehandles(edgeHandleOpts);
+    this.cy.edgehandles(edgeHandleDefaults);
 
     //Navigator for cytoscape js
     var navDefaults = {
@@ -562,7 +654,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
         // @ts-ignore TODO AMENDMENTsa
         tappedTimeout = setTimeout(function () {
           tappedBefore = -1;
-        }, 300);
+        },                         300);
         tappedBefore = tappedNow;
       }
     });

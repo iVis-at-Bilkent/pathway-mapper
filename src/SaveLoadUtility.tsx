@@ -169,7 +169,7 @@ export default class SaveLoadUtility{
     var seperator = /\r?\n|\r/;
     var lines = (isArray) ? graph : graph.split(seperator);
     var edgesStartIndex = -1;
-    console.log(lines);
+    //console.log(lines);
     var title = lines[0];
     var description = lines[2];
 
@@ -242,7 +242,7 @@ export default class SaveLoadUtility{
       nodes.push(newNode);
     }
 
-    console.log(edgesStartIndex);
+    //console.log(edgesStartIndex);
     //Read edges
     for (let i = edgesStartIndex; i < lines.length; i++) {
       //If we reach EOF we break loop
@@ -269,10 +269,10 @@ export default class SaveLoadUtility{
           bendPointPositions.push({x: parseFloat(x), y: parseFloat(y)});
         }
       }
-
+/*
       console.log("From parseGraph");
       console.log(lineData);
-      console.log(edgeType);
+      console.log(edgeType);*/
 
       const newEdge = {
         group: 'edges', data:
@@ -289,9 +289,10 @@ export default class SaveLoadUtility{
       edges.push(newEdge);
     }
     // edgeEditing.initBendPoints(cy.edges());
+    /*
     console.log("Edges and Nodes");
     console.log(edges)
-    console.log(nodes)
+    console.log(nodes)*/
     return {title: title, description: description, nodes: nodes, edges: edges};
   }
 }
