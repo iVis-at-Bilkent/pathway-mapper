@@ -4,28 +4,31 @@ import {action, computed, observable} from "mobx";
 import autobind from "autobind-decorator";
 import {ListGroup} from "react-bootstrap";
 import pathways from "./pathways.json";
-import * as Bootstrap from "react-bootstrap";
+import {Table, DropdownButton,MenuItem} from "react-bootstrap";
 import PathwayActions from './PathwayActions.js';
 interface IRankingProps{
     pathwayActions: PathwayActions;
-    bestPathways: string[];
+    bestPathwaysAlgos: any[][];
 }
 
 
 @observer
 export default class Ranking extends React.Component<IRankingProps, {}>{
-    @observable hello:number = 0;
+    @observable
+    bestPathways: any[];
+
+    rankingMethod;
+    
     constructor(props: IRankingProps){
         super(props);
-    }
-
-    @computed get getHello(){
-        return this.hello;
+        this.rankingMethod = 0;
+        this.setBestPathwayMethod(0);
     }
 
     @autobind
-    @action clickHandler(){
-        this.hello++;
+    setBestPathwayMethod(i){
+        this.bestPathways = this.props.bestPathwaysAlgos[i];
+        this.rankingMethod = i;
     }
 
     onPathwayClick(pathway: string){
@@ -39,31 +42,43 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
         return (
           <div>
-            <Bootstrap.Table striped bordered condensed hover>
+              <DropdownButton
+                title='Choose Ranking Method'
+                key="0"
+                >
+                <MenuItem onClick={ () => {this.setBestPathwayMethod(0)}}>Match Amount</MenuItem>
+                <MenuItem onClick={ () => {this.setBestPathwayMethod(1)}}>Match Percentage</MenuItem>
+            </DropdownButton>
+            <br/>
+            <br/>
+            <Table striped bordered condensed hover>
                 <thead>
                     <tr>
                     <th>Rank</th>
                     <th>Pathway Name</th>
-                    <th># of Genes Matching</th>
+                    <th>{this.rankingMethod === 0 ? "#" : "Perc."} of Genes Matching</th>
+                    <th>Genes Matched</th>
                     </tr>
                 </thead>
                 <tbody>
 
                 {
                   
-                    this.props.bestPathways.map((pathway: any, i: number) => {
+                    this.bestPathways.map((pathway: any, i: number) => {
+                        console.log(pathway);
                         return (
                             <tr onClick={() => {this.onPathwayClick(pathway.pathwayName)}}>
                                 <td>{i + 1}</td>
                                 <td>{pathway.pathwayName}</td>
-                                <td>{pathway.score}</td>
+                                <td>{pathway.score.toFixed(2) + ((this.rankingMethod === 1) ? "%" : "")}</td>
+                                <td>{pathway.genesMatched.map((gene) => gene + " ")}</td>
                             </tr>
                         );
                     })
                 }
                     
                 </tbody>
-            </Bootstrap.Table>
+            </Table>
           </div>
         );
     }

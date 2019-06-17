@@ -52,7 +52,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   portalAcessor: CBioPortalAccessor;
 
   pathwayGeneMap: any = {};
-  bestPathways: any[] = [];
+  bestPathwaysAlgos: any[][] = [];
 
   constructor(props: IPathwayMapperProps){
     super(props);
@@ -62,7 +62,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.selectedStudyData = [];
     if(this.props.isCBioPortal){
       this.extractAllGenes();
-      this.getBestPathway();
+      this.getBestPathway(false);
+      this.getBestPathway(true);
     }
   }
 
@@ -89,7 +90,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     }
 
     for(const profileName in mutationData){
+        if(mutationData.hasOwnProperty(profileName))
         for(const gene in mutationData[profileName]){
+          if(mutationData[profileName].hasOwnProperty(gene))
             mutationData[profileName][gene] /= profileCounts[profileName] / 100;
         }
     }
@@ -99,28 +102,46 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.editor.addPortalGenomicData(mutationData, this.editor.getEmptyGroupID());
   }
 
-  getBestPathway() {
-    const scoreMap:any = {};
+  getBestPathway(isPercentage) {
+    const matchedGenesMap: any = {};
+    const bestPathways: any[] = [];
     for(const pathwayName in this.pathwayGeneMap){
         if(this.pathwayGeneMap.hasOwnProperty(pathwayName)){
-            let score = 0;
+            const genesMatching = [];
             for(const gene of this.props.genes){
-                if(this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol)) score++;
+                if(this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) ) genesMatching.push(gene.hugoGeneSymbol);
             }
-            scoreMap[pathwayName] = score;
-            maxHeap.insert(score, {pathwayName: pathwayName});
+            matchedGenesMap[pathwayName] = genesMatching;
+
+            let geneCount = 0;
+            // Count number of genes *not processess* in a pathway
+            for(const geneType of Object.values(this.pathwayGeneMap[pathwayName])){
+              if(geneType === "GENE"){
+                geneCount++;
+              }
+              console.log(geneType);
+            }
+
+            if(!isPercentage){
+              maxHeap.insert(genesMatching.length, {pathwayName: pathwayName});
+            } else {
+              maxHeap.insert(genesMatching.length / geneCount * 100, {pathwayName: pathwayName});
+            }
         }
     }
     console.log("Best Pathways");
     for(let i = 0; i < this.NUMBER_OF_PATHWAYS_TO_SHOW; i++){
         const top = maxHeap.extractMax();
-        this.bestPathways.push({score: top.getKey(), pathwayName: top.getValue().pathwayName});
+        const pathwayName = top.getValue().pathwayName;
+        bestPathways.push({score: top.getKey(), genesMatched: matchedGenesMap[pathwayName], pathwayName: pathwayName});
     }
-    this.selectedPathway = this.bestPathways[0].pathwayName;
+    if(this.bestPathwaysAlgos.length == 0) // First pathway of the first method is shown as the default pathway.
+      this.selectedPathway = bestPathways[0].pathwayName;
+    this.bestPathwaysAlgos.push(bestPathways);
     console.log("Genes");
     console.log(this.props.genes);
     console.log("Score Map");
-    console.log(scoreMap);
+    console.log(matchedGenesMap);
   }
 
   extractAllGenes(){
@@ -169,6 +190,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   return (
       <div>
+          <br/>
           <Bootstrap.Row>
             { !isCBioPortal && (<Menubar pathwayActions={this.pathwayActions} openCBioModal={this.handleOpen}/>)}
           </Bootstrap.Row>
@@ -176,18 +198,18 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <Bootstrap.Row>
               {
               ( isCBioPortal &&
-              <Bootstrap.Col xs={2}>
+              <Bootstrap.Col xs={1}>
                   <Toolbar pathwayActions={this.pathwayActions}/>
               </Bootstrap.Col>)
               }
 
-            <Bootstrap.Col xs={isCBioPortal ? 6 : 12}>
+            <Bootstrap.Col xs={isCBioPortal ? 7 : 12}>
                 <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
 
             { isCBioPortal &&
-            <Bootstrap.Col xs={2}>
-                <Ranking pathwayActions={this.pathwayActions} bestPathways={this.bestPathways}/>
+            <Bootstrap.Col xs={3}>
+                <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos}/>
             </Bootstrap.Col>
             }
           </Bootstrap.Row>
