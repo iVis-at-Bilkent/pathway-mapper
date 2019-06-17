@@ -6,7 +6,7 @@ const rootEl = document.getElementById('app');
 
 const placeHolderGene = {hugoGeneSymbol: "MDM2"};
 
-render(<PathwayMapper isCBioPortal={false} genes={[placeHolderGene]} store={undefined}/>, rootEl);
+render(<PathwayMapper isCBioPortal={true} genes={[placeHolderGene]} store={undefined}/>, rootEl);
 
 if (module.hot) {
   module.hot.accept();

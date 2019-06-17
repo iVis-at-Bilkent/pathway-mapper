@@ -67,6 +67,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   }
 
   overlayPortalData(){
+    if(this.props.store === undefined){
+      return;
+    }
     const mutationData: any = {};
     const mutations = this.props.store.mutations.result;
     const profileCounts = this.props.store.molecularProfileIdToProfiledSampleCount.result;

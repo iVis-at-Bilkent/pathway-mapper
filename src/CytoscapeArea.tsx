@@ -294,8 +294,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.props.editorHandler(this.editor, this.fileOperationsManager);
 
 
-    this.qtipManager = new QtipManager(this.cy);
-    this.cxtMenuManager = new ContextMenuManager(this.cy, this.editor);
+    this.qtipManager = new QtipManager(this.cy, this.editor);
+    this.cxtMenuManager = new ContextMenuManager(this.cy, this.editor, this.isCbioPortal);
     this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editor, this.cy);
 
     // this.nodeResizeOptionsView = new NodeResizeOptionsView({
@@ -552,7 +552,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     var tappedTimeout: number;
     this.cy.on('tap', function (event: any) {
       var tappedNow = event.target;
-      if (tappedTimeout != -1 && tappedBefore != -1) {
+      if (tappedTimeout !== -1 && tappedBefore !== -1) {
         clearTimeout(tappedTimeout);
       }
       if (tappedBefore === tappedNow) {

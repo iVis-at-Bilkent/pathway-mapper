@@ -4,7 +4,14 @@ import EditorActionsManager from "./EditorActionsManager";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
 import PathwayActions from './PathwayActions';
-
+// @ts-ignore
+import layoutImage from "./icons/baseline_refresh_black_36dp.png";
+// @ts-ignore
+import saveImage from "./icons/baseline_save_black_36dp.png";
+// @ts-ignore
+import infoImage from "./icons/baseline_info_black_36dp.png";
+// @ts-ignore
+import openImage from "./icons/baseline_open_in_new_black_36dp.png";
 interface IToolbarProps {
   pathwayActions: PathwayActions;
 
@@ -23,35 +30,28 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
       <Bootstrap.Col>
           <Bootstrap.Row>
               <Bootstrap.Col>
-              <Bootstrap.Button bsStyle="success" onClick={this.props.pathwayActions.saveAsPng}>Save as PNG</Bootstrap.Button>
+              <Bootstrap.Image src={saveImage} onClick={this.props.pathwayActions.saveAsPng}/>
               </Bootstrap.Col>
           </Bootstrap.Row>
 
           <br/>
           <Bootstrap.Row>
               <Bootstrap.Col>
-              <Bootstrap.Button bsStyle="success" onClick={this.props.pathwayActions.performLayout}>Layout</Bootstrap.Button>
+              <Bootstrap.Image src={layoutImage} onClick={this.props.pathwayActions.performLayout} />              
               </Bootstrap.Col>
           </Bootstrap.Row>
 
           <br/>
           <Bootstrap.Row>
               <Bootstrap.Col>
-              <Bootstrap.Button bsStyle="success">Info</Bootstrap.Button>
+              <Bootstrap.Image src={infoImage}/>
               </Bootstrap.Col>
           </Bootstrap.Row>
 
           <br/>
           <Bootstrap.Row>
               <Bootstrap.Col>
-              <Bootstrap.Button bsStyle="success">Open Full-Blown</Bootstrap.Button>
-              </Bootstrap.Col>
-          </Bootstrap.Row>
-
-          <br/>
-          <Bootstrap.Row>
-              <Bootstrap.Col>
-              <Bootstrap.Button bsStyle="success" onClick={this.props.pathwayActions.loadSampleData}>Load Sample</Bootstrap.Button>
+              <Bootstrap.Image src={openImage}/>
               </Bootstrap.Col>
           </Bootstrap.Row>
 
