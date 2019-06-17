@@ -10,6 +10,7 @@ export default class PathwayActions {
   fileManager: FileOperationsManager
   editor: EditorActionsManager
   pathwayHandler: (pathwayName: string) => void
+  eh: any;
 
   constructor(pathwayHandler: (pathwayName: string) => void) {
     this.pathwayHandler = pathwayHandler
@@ -28,8 +29,9 @@ export default class PathwayActions {
   @autobind
   addEdge(edgeTypeIndex: number){
     // @ts-ignore
-    window.edgeAddingMode = edgeTypeIndex;
-    this.editor.cy.edgehandles('enable');
+    window.edgeAddingMode = edgeTypeIndex + 1;
+        // @ts-ignore
+    this.eh.enableDrawMode();
   }
 
   @autobind
@@ -54,9 +56,10 @@ export default class PathwayActions {
   }
 
   @autobind
-  editorHandler(editor, fileManager) {
+  editorHandler(editor, fileManager, eh) {
     this.editor = editor
     this.fileManager = fileManager
+    this.eh = eh;
   }
 
   @autobind

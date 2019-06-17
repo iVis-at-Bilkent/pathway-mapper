@@ -225,10 +225,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   }
 
   @autobind
-  editorHandler(editor, fileManager){
+  editorHandler(editor, fileManager, eh){
     this.editor = editor;
     this.fileManager = fileManager;
-    this.pathwayActions.editorHandler(editor, fileManager);
+    this.pathwayActions.editorHandler(editor, fileManager, eh);
     this.portalAcessor = new CBioPortalAccessor(this.editor);
     if(this.props.isCBioPortal){
       this.overlayPortalData();
