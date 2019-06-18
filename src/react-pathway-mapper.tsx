@@ -23,7 +23,7 @@ import "cytoscape-panzoom/cytoscape.js-panzoom.css"
 import "cytoscape-navigator/cytoscape.js-navigator.css"
 
 const maxHeapFn = require('@datastructures-js/max-heap');
-const maxHeap: any = maxHeapFn();
+let maxHeap: any;
 
 interface IPathwayMapperProps{
   isCBioPortal: boolean;
@@ -51,6 +51,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   itemArray: any[];
   portalAcessor: CBioPortalAccessor;
 
+  mutationData: any;
+
   pathwayGeneMap: any = {};
   bestPathwaysAlgos: any[][] = [];
 
@@ -61,55 +63,114 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.isModalShown = false;
     this.selectedStudyData = [];
     if(this.props.isCBioPortal){
+      this.overlayPortalData();
+      // this.mutationData = {"study1" : {"MDM2": 10, "TP53": 20}, "study2" : {"TP53": 10}};
       this.extractAllGenes();
-      this.getBestPathway(false);
-      this.getBestPathway(true);
+      this.getBestPathway(0);
+      this.getBestPathway(1);
+      this.getBestPathway(2);
+      this.getBestPathway(3);
     }
+  }
+
+
+
+  getGeneStudyMap(studyGeneMap: any){
+    const genomicDataMap: any = {};
+    for (const cancerStudy of Object.keys(studyGeneMap)) {
+
+      const cancerData = studyGeneMap[cancerStudy]
+
+      for (const geneSymbol of Object.keys(cancerData)) {
+        if (genomicDataMap[geneSymbol] === undefined) genomicDataMap[geneSymbol] = {}
+
+        genomicDataMap[geneSymbol][cancerStudy] = studyGeneMap[cancerStudy][geneSymbol].toFixed(2)
+      }
+    }
+    return genomicDataMap;
+  }
+
+  getAlterationAveragePerGene(genomicDataMap: any){
+
+    const geneAlterationMap: any = {};
+    for(const gene of Object.keys(genomicDataMap)){
+      let sum = 0, count = 0;
+
+      for(const alteration of Object.values(genomicDataMap[gene])){
+        sum += parseFloat(alteration as string);
+        count++;
+      }
+      console.log("Sum/COunt");
+      console.log(sum, count);
+      if(count === 0){
+        geneAlterationMap[gene] = 0;
+      } else {
+        geneAlterationMap[gene] = sum / count;
+      }
+    }
+
+    return geneAlterationMap;
   }
 
   overlayPortalData(){
     if(this.props.store === undefined){
       return;
     }
-    const mutationData: any = {};
     const mutations = this.props.store.mutations.result;
     const profileCounts = this.props.store.molecularProfileIdToProfiledSampleCount.result;
     if(mutations !== undefined){
         mutations.forEach((mutation) => {
-            if(mutationData[mutation.molecularProfileId] === undefined){
-                mutationData[mutation.molecularProfileId] = {};
+            if(this.mutationData[mutation.molecularProfileId] === undefined){
+                this.mutationData[mutation.molecularProfileId] = {};
             }
-            const mutationAmount = mutationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol];
+            const mutationAmount = this.mutationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol];
             if( mutationAmount === undefined){
-                mutationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol] = 0;
+                this.mutationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol] = 0;
             } 
-            mutationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol]++;
+            this.mutationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol]++;
         });
     } else {
         console.log("Mutation undefined");
     }
 
-    for(const profileName in mutationData){
-        if(mutationData.hasOwnProperty(profileName))
-        for(const gene in mutationData[profileName]){
-          if(mutationData[profileName].hasOwnProperty(gene))
-            mutationData[profileName][gene] /= profileCounts[profileName] / 100;
+    for(const profileName of Object.keys(this.mutationData)){
+        for(const gene of Object.keys(this.mutationData[profileName])){
+            this.mutationData[profileName][gene] /= profileCounts[profileName] / 100;
         }
     }
 
-    console.log(mutationData);
-
-    this.editor.addPortalGenomicData(mutationData, this.editor.getEmptyGroupID());
+    console.log(this.mutationData);
   }
 
-  getBestPathway(isPercentage) {
+  /**
+   * 
+   * @param rankingMode: number => 0 = Count, 1 = Percentage, 2 = Count with Alteration, 3 = Percentage with Alteration
+   * 
+   */
+  getBestPathway(rankingMode: number) {
+    
+    const genomicDataMap = this.getGeneStudyMap(this.mutationData);
+    const alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
+    maxHeap =  maxHeapFn();
+    console.log("GenomicDAtaMAp");
+    console.log(genomicDataMap);
+
+    console.log("Alteration per Gene");
+    console.log(alterationPerGene);
+
+    
     const matchedGenesMap: any = {};
     const bestPathways: any[] = [];
     for(const pathwayName in this.pathwayGeneMap){
         if(this.pathwayGeneMap.hasOwnProperty(pathwayName)){
             const genesMatching = [];
+            // Calculate sum of all alterations
+            let sumOfAlterations = 0;
             for(const gene of this.props.genes){
-                if(this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) ) genesMatching.push(gene.hugoGeneSymbol);
+                if(this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol)){
+                  genesMatching.push(gene.hugoGeneSymbol);
+                  sumOfAlterations += alterationPerGene[gene.hugoGeneSymbol];
+                }
             }
             matchedGenesMap[pathwayName] = genesMatching;
 
@@ -119,13 +180,19 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
               if(geneType === "GENE"){
                 geneCount++;
               }
-              console.log(geneType);
+              //console.log(geneType);
             }
 
-            if(!isPercentage){
+
+
+            if(rankingMode === 0){
               maxHeap.insert(genesMatching.length, {pathwayName: pathwayName});
-            } else {
-              maxHeap.insert(genesMatching.length / geneCount * 100, {pathwayName: pathwayName});
+            } else if(rankingMode === 1){
+              maxHeap.insert(genesMatching.length / geneCount * 100, {pathwayName: pathwayName}); 
+            } else if(rankingMode === 2){
+              maxHeap.insert(sumOfAlterations, {pathwayName: pathwayName}); 
+            } else if(rankingMode === 3){
+              maxHeap.insert(genesMatching.length * sumOfAlterations / geneCount, {pathwayName: pathwayName});
             }
         }
     }
@@ -133,9 +200,14 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     for(let i = 0; i < this.NUMBER_OF_PATHWAYS_TO_SHOW; i++){
         const top = maxHeap.extractMax();
         const pathwayName = top.getValue().pathwayName;
+
+        if(pathwayName === "HNSC-2015-Cell-cycle-signaling-pathway"){
+          console.log("Case 3");
+          
+        }
         bestPathways.push({score: top.getKey(), genesMatched: matchedGenesMap[pathwayName], pathwayName: pathwayName});
     }
-    if(this.bestPathwaysAlgos.length == 0) // First pathway of the first method is shown as the default pathway.
+    if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
       this.selectedPathway = bestPathways[0].pathwayName;
     this.bestPathwaysAlgos.push(bestPathways);
     console.log("Genes");
@@ -143,6 +215,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     console.log("Score Map");
     console.log(matchedGenesMap);
   }
+  
 
   extractAllGenes(){
 
@@ -253,7 +326,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.pathwayActions.editorHandler(editor, fileManager, eh);
     this.portalAcessor = new CBioPortalAccessor(this.editor);
     if(this.props.isCBioPortal){
-      this.overlayPortalData();
+      // this.overlayPortalData(); 
+      this.editor.addPortalGenomicData(this.mutationData, this.editor.getEmptyGroupID());
     } else {
       // this.fetchStudy();
     }

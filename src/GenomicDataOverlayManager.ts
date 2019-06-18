@@ -67,8 +67,8 @@ export default class GenomicDataOverlayManager {
     this.groupedGenomicDataMap[groupID] = data
   }
 
-  addPortalGenomicData = function(data, groupID) {
-    for (const cancerStudy in data) {
+  addPortalGenomicData(data, groupID) {
+    for (const cancerStudy of Object.keys(data)) {
       this.visibleGenomicDataMapByType[cancerStudy] = true
 
       // Group current cancer study according to the groupID
@@ -80,8 +80,8 @@ export default class GenomicDataOverlayManager {
 
       var cancerData = data[cancerStudy]
 
-      for (var geneSymbol in cancerData) {
-        if (this.genomicDataMap[geneSymbol] == undefined) this.genomicDataMap[geneSymbol] = {}
+      for (const geneSymbol of Object.keys(cancerData)) {
+        if (this.genomicDataMap[geneSymbol] === undefined) this.genomicDataMap[geneSymbol] = {}
 
         this.genomicDataMap[geneSymbol][cancerStudy] = data[cancerStudy][geneSymbol].toFixed(2)
       }

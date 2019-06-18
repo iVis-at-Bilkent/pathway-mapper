@@ -4,7 +4,7 @@ import {action, computed, observable} from "mobx";
 import autobind from "autobind-decorator";
 import {ListGroup} from "react-bootstrap";
 import pathways from "./pathways.json";
-import {Table, DropdownButton,MenuItem} from "react-bootstrap";
+import {Table, DropdownButton,MenuItem, Checkbox, Button} from "react-bootstrap";
 import PathwayActions from './PathwayActions.js';
 interface IRankingProps{
     pathwayActions: PathwayActions;
@@ -17,23 +17,37 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     @observable
     bestPathways: any[];
 
-    rankingMethod;
+    @observable
+    dropDownTitle: string;
+
+    isPercentageMatch: number;
+    isAlterationEnabled: number;
     
     constructor(props: IRankingProps){
         super(props);
-        this.rankingMethod = 0;
+        this.isPercentageMatch = 0;
+        this.isAlterationEnabled = 0;
+        this.dropDownTitle = "Match Amount";
         this.setBestPathwayMethod(0);
+        console.log("Pathway Algos");
+        console.log(this.props.bestPathwaysAlgos);
     }
 
     @autobind
-    setBestPathwayMethod(i){
+    setBestPathwayMethod(i: number){
         this.bestPathways = this.props.bestPathwaysAlgos[i];
-        this.rankingMethod = i;
+        this.props.pathwayActions.changePathway(this.bestPathways[0].pathwayName);
     }
 
+    @autobind
     onPathwayClick(pathway: string){
-      console.log(pathway);
-      this.props.pathwayActions.changePathway(pathway);
+        // console.log(pathway);
+        this.props.pathwayActions.changePathway(pathway);
+    }
+
+    @autobind
+    onApplyClick(){
+        this.setBestPathwayMethod(2 * this.isAlterationEnabled + this.isPercentageMatch);
     }
 
 
@@ -43,12 +57,18 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
         return (
           <div>
               <DropdownButton
-                title='Choose Ranking Method'
-                key="0"
+                title={this.dropDownTitle}
+                id="0"
                 >
-                <MenuItem onClick={ () => {this.setBestPathwayMethod(0)}}>Match Amount</MenuItem>
-                <MenuItem onClick={ () => {this.setBestPathwayMethod(1)}}>Match Percentage</MenuItem>
+                <MenuItem onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match Amount";} }>Match Amount</MenuItem>
+                <MenuItem onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match Percentage";}}>Match Percentage</MenuItem>
             </DropdownButton>
+
+            <Checkbox onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1;} }>
+            Consider alteration data
+            </Checkbox>
+
+            <Button onClick={this.onApplyClick}>Apply</Button>
             <br/>
             <br/>
             <Table striped bordered condensed hover>
@@ -56,7 +76,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                     <tr>
                     <th>Rank</th>
                     <th>Pathway Name</th>
-                    <th>{this.rankingMethod === 0 ? "#" : "Perc."} of Genes Matching</th>
+                    <th>Score</th>
                     <th>Genes Matched</th>
                     </tr>
                 </thead>
@@ -65,13 +85,12 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                 {
                   
                     this.bestPathways.map((pathway: any, i: number) => {
-                        console.log(pathway);
                         return (
                             <tr onClick={() => {this.onPathwayClick(pathway.pathwayName)}}>
                                 <td>{i + 1}</td>
                                 <td>{pathway.pathwayName}</td>
-                                <td>{pathway.score.toFixed(2) + ((this.rankingMethod === 1) ? "%" : "")}</td>
-                                <td>{pathway.genesMatched.map((gene) => gene + " ")}</td>
+                                <td>{pathway.score.toFixed(2)}</td>
+                                <td>{pathway.genesMatched.map((gene: string) => gene + " ")}</td>
                             </tr>
                         );
                     })
