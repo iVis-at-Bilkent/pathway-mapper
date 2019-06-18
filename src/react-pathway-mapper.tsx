@@ -51,7 +51,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   itemArray: any[];
   portalAcessor: CBioPortalAccessor;
 
-  mutationData: any;
+  mutationData: any = {};
 
   pathwayGeneMap: any = {};
   bestPathwaysAlgos: any[][] = [];
@@ -200,11 +200,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     for(let i = 0; i < this.NUMBER_OF_PATHWAYS_TO_SHOW; i++){
         const top = maxHeap.extractMax();
         const pathwayName = top.getValue().pathwayName;
-
-        if(pathwayName === "HNSC-2015-Cell-cycle-signaling-pathway"){
-          console.log("Case 3");
-          
-        }
         bestPathways.push({score: top.getKey(), genesMatched: matchedGenesMap[pathwayName], pathwayName: pathwayName});
     }
     if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
