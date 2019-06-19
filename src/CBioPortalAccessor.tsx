@@ -27,6 +27,10 @@ export default class CBioPortalAccessor{
       this.editor = editor;
   }
 
+  getDataTypes(){
+      return [this.MUTATION, this.GENE_EXPRESSION, this.CNA];
+  }
+
   /*
   * Retrieves all cancer studies from cBioPortal
   * **/
@@ -154,13 +158,13 @@ export default class CBioPortalAccessor{
       //Total number of tumor samples in the response
       const tumorSamples = lines[startIndex].split('\t');
       const numOfTumorSamples = tumorSamples.length - 2;
-      const outData = {};
+      const outData: {} = {};
       outData[geneticProfileId] = {};
 
       const geneticProfileType = this.getDataType(geneticProfileId);
 
       // skip meta line and iterate over tumor sample data
-      for(let i = startIndex+1; i < lines.length; i++)
+      for(let i = startIndex + 1; i < lines.length; i++)
       {
           if (lines[i].length <= 0)
               continue;
@@ -172,11 +176,11 @@ export default class CBioPortalAccessor{
           {
               if(lineData[j] !== 'NaN')
               {
-                  if( geneticProfileType == this.MUTATION )
+                  if( geneticProfileType === this.MUTATION )
                       profileDataAlteration++;
-                  else if ( (geneticProfileType == this.CNA) && ( lineData[j] == this.CNA_GAIN || lineData[j] == this.CNA_DELETION )  )
+                  else if ( (geneticProfileType === this.CNA) && ( lineData[j] == this.CNA_GAIN || lineData[j] == this.CNA_DELETION )  )
                       profileDataAlteration++;
-                  else if ( (geneticProfileType == this.GENE_EXPRESSION) && (parseInt(lineData[j]) >= this.Z_SCORE_UPPER_THRESHOLD || parseInt(lineData[j]) <= this.Z_SCORE_LOWER_THRESHOLD))
+                  else if ( (geneticProfileType === this.GENE_EXPRESSION) && (parseInt(lineData[j]) >= this.Z_SCORE_UPPER_THRESHOLD || parseInt(lineData[j]) <= this.Z_SCORE_LOWER_THRESHOLD))
                       profileDataAlteration++;
               }
           }
@@ -204,9 +208,9 @@ export default class CBioPortalAccessor{
       //params
       //caseSetId, geneticProfileId, genes
 
-      var outData = {};
-      var request = new XMLHttpRequest();
-      var self = this;
+      const outData = {};
+      const request = new XMLHttpRequest();
+      const self = this;
       request.onreadystatechange = function ()
       {
           if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
@@ -222,24 +226,30 @@ export default class CBioPortalAccessor{
       };
 
       //Create query URL
-      var queryURL = this.GET_PROFILE_DATA_URL;
+      let queryURL = this.GET_PROFILE_DATA_URL;
       //Fetch sequenced case list !!
       queryURL += "&case_set_id=" + params.caseSetId + "_sequenced";
       queryURL += "&genetic_profile_id=" + params.geneticProfileId;
       queryURL += "&gene_list=";
-
-      for(var i = 0; i < params.genes.length; i++)
+      let isFirst = true;
+      console.log(params.genes)
+      for(const gene of Object.keys(params.genes))
       {
-          queryURL += params.genes[i];
-          if(i != params.genes.length - 1)
-              queryURL += "+";
+          if(!isFirst){
+            queryURL += "+";
+          } else {
+              isFirst = false;
+          }
+          queryURL += gene;
+          
       }
+      console.log(queryURL);
 
       request.open("GET", queryURL);
       request.send();
   };
 
-  validateGenes = function(nodeSymbols)
+  validateGenes(nodeSymbols)
   {
       const request = new XMLHttpRequest();
       const self = this;
@@ -248,8 +258,8 @@ export default class CBioPortalAccessor{
       {
           if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
           {
-              var validGeneSymbols = JSON.parse(request.responseText);
-              var validGeneArray = _.map(validGeneSymbols, function(object)
+              const validGeneSymbols = JSON.parse(request.responseText);
+              const validGeneArray = _.map(validGeneSymbols, function(object)
               {
                   return object.hugoGeneSymbol;
               });

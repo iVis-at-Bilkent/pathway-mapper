@@ -68,38 +68,11 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       this.edgeAddingMode = 0;
       this.shareDBManager = new ShareDBManager();
       this.isCbioPortal = props.isCbioPortal;
-      this.extractAllGenes();
       // this.init();
       // this.createSampleMenu(); //TODO: AMENDMENT Menu must be react.
       // this.createCBioPortalAccessModal();
     }
 
-
-
-    extractAllGenes(){
-      const pathwayGeneMap = {};
-
-      for(const pathwayName in pathways){
-
-        if(!pathways.hasOwnProperty(pathwayName)){
-          continue;
-        }
-        const pathwayData = SaveLoadUtility.parseGraph(pathways[pathwayName], true);
-        const genes = pathwayData.nodes;
-
-        const geneHash = {};
-
-        for(const gene of genes){
-
-          geneHash[gene.data.name] = gene.data.type;
-
-        }
-
-        pathwayGeneMap[pathwayName] = geneHash;
-      }
-      console.log("Pathway & Gene Map");
-      console.log(pathwayGeneMap)
-    }
 
     componentWillUpdate(nextProps: PathwayMapperType) {
       console.log("Component will update", nextProps.selectedPathway);

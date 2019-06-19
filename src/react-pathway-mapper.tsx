@@ -11,7 +11,7 @@ import {observable} from "mobx";
 import {observer} from "mobx-react";
 import FileOperationsManager from './FileOperationsManager';
 import * as Bootstrap from "react-bootstrap"; 
-import {Navbar, Nav, NavDropdown, MenuItem, NavItem} from 'react-bootstrap';
+import {Navbar, Nav, NavDropdown, MenuItem, NavItem, Button} from 'react-bootstrap';
 import pathways from "./pathways.json";
 import Menubar from './Menubar';
 import {Modal, DropdownButton, Checkbox} from 'react-bootstrap'
@@ -48,7 +48,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   isModalShown: boolean;
 
   @observable
+  dataTypes: any = {};
+  @observable
   itemArray: any[];
+  cancerStudies: any[];
   portalAcessor: CBioPortalAccessor;
 
   mutationData: any = {};
@@ -62,10 +65,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.pathwayActions = new PathwayActions(this.pathwayHandler);
     this.isModalShown = false;
     this.selectedStudyData = [];
+    this.extractAllGenes();
     if(this.props.isCBioPortal){
       this.overlayPortalData();
       // this.mutationData = {"study1" : {"MDM2": 10, "TP53": 20}, "study2" : {"TP53": 10}};
-      this.extractAllGenes();
       this.getBestPathway(0);
       this.getBestPathway(1);
       this.getBestPathway(2);
@@ -100,7 +103,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         sum += parseFloat(alteration as string);
         count++;
       }
-      console.log("Sum/COunt");
+      console.log("Sum, Count");
       console.log(sum, count);
       if(count === 0){
         geneAlterationMap[gene] = 0;
@@ -182,9 +185,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
               }
               //console.log(geneType);
             }
-
-
-
             if(rankingMode === 0){
               maxHeap.insert(genesMatching.length, {pathwayName: pathwayName});
             } else if(rankingMode === 1){
@@ -238,19 +238,73 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   fetchStudy(){ 
     this.itemArray = [];
 
-    
+
+    this.portalAcessor.getDataTypes().forEach((dataType) => {
+      this.dataTypes[dataType] = {enabled: false, checked: false, profile: undefined};
+    });
+  
     this.portalAcessor.fetchCancerStudies((cancerStudies: any) => {
+      this.cancerStudies = cancerStudies
       for(const study in cancerStudies){
 
         if(!cancerStudies.hasOwnProperty(study)){
           continue;
         }
-        const item = <MenuItem eventKey="1" onClick={() => {this.selectedStudyData = cancerStudies[study]}}>{cancerStudies[study][0]}</MenuItem>;
+        const item = <MenuItem key={study} onClick={() => {this.selectedStudyData = cancerStudies[study]; this.preparePortalAccess(cancerStudies[study][0])}}>
+        {cancerStudies[study][0]}
+        </MenuItem>;
   
         this.itemArray.push(item);
       }
     });
     console.log(this.itemArray);
+  }
+
+  disableAllDataTypes(){
+    for(const dataType of Object.keys(this.dataTypes)){
+      this.dataTypes[dataType].enabled = false;
+      this.dataTypes[dataType].checked = false;
+      this.dataTypes[dataType].profile = undefined;
+    }
+  }
+
+  preparePortalAccess(studyId: string){
+    this.portalAcessor.getSupportedGeneticProfiles(studyId, (data) => {
+      this.disableAllDataTypes();
+      // Iterate through profiles
+      for(const profile of Object.keys(data)){
+        const type = this.portalAcessor.getDataType(profile);
+        if(type !== ""){
+          this.dataTypes[type].enabled = true;
+          this.dataTypes[type].profile = profile;
+        }
+      }
+    });
+  }
+
+  @autobind
+  handleCheckboxClick(dataType){
+    this.dataTypes[dataType].checked = !this.dataTypes[dataType].checked;
+    console.log(this.dataTypes[dataType].checked);
+  }
+
+  
+
+  @autobind
+  loadFromCBio(){
+    for (const dataType of Object.keys(this.dataTypes))
+    {
+        console.log("Inside load cBio:", this.dataTypes[dataType].checked);
+        console.log(this.selectedStudyData);
+        
+        if(!this.dataTypes[dataType].checked) continue;
+        this.portalAcessor.getProfileData({
+            caseSetId: this.selectedStudyData[0],
+            geneticProfileId: this.dataTypes[dataType].profile,
+            genes: this.pathwayGeneMap[this.selectedPathway]
+        },
+        (data: any) =>{ console.log(data); this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID()); });
+    }
   }
 
   render() {
@@ -284,19 +338,24 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
           <Modal show={this.isModalShown} onHide={this.handleClose}>
             <Modal.Header closeButton>
-              <Modal.Title>Modal heading</Modal.Title>
+              <Modal.Title>Load from cBioPortal</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               
 
-            <DropdownButton title={this.selectedStudyData[1] || ""}>
+            <DropdownButton id="dropdown-study" title={this.selectedStudyData[1] || "Choose study"}>
               {this.itemArray}
             </DropdownButton>
             
-            <Checkbox>
-              Checkbox
-            </Checkbox>
+            { Object.keys(this.dataTypes).map((dataType: string) => {
+                return <Checkbox key={dataType} disabled={!this.dataTypes[dataType].enabled} 
+                          onClick={() => {this.handleCheckboxClick(dataType)}} checked={this.dataTypes[dataType].checked}> 
+                          {dataType}
+                        </Checkbox>
+              })
+            }
 
+            <Button bsClass="success" onClick={this.loadFromCBio}>Load</Button>
 
             </Modal.Body>
           </Modal>
@@ -319,12 +378,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.editor = editor;
     this.fileManager = fileManager;
     this.pathwayActions.editorHandler(editor, fileManager, eh);
-    this.portalAcessor = new CBioPortalAccessor(this.editor);
     if(this.props.isCBioPortal){
       // this.overlayPortalData(); 
       this.editor.addPortalGenomicData(this.mutationData, this.editor.getEmptyGroupID());
     } else {
-      // this.fetchStudy();
+      this.portalAcessor = new CBioPortalAccessor(this.editor);
+      this.fetchStudy();
     }
   }
 

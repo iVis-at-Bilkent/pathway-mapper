@@ -212,7 +212,7 @@ export default class GenomicDataOverlayManager {
     const overlayRecBoxH = 25
     const svg: any = document.createElementNS(svgNameSpace, 'svg')
     // It seems this should be set according to the node size !
-    svg.setAttribute('width', reqWidth + '')
+    svg.setAttribute('width', reqWidth)
     svg.setAttribute('height', eleBBox.h)
     // This is important you need to include this to succesfully render in cytoscape.js!
     svg.setAttribute('xmlns', svgNameSpace)
