@@ -60,10 +60,13 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   pathwayGeneMap: any = {};
   bestPathwaysAlgos: any[][] = [];
 
+  @observable
+  studyQuery: string = "";
+
   constructor(props: IPathwayMapperProps){
     super(props);
     this.selectedPathway = this.props.pathwayName || "Creighton-PI3K-pathway";
-    this.pathwayActions = new PathwayActions(this.pathwayHandler, this.returnPathway);
+    this.pathwayActions = new PathwayActions(this.pathwayHandler);
     this.isModalShown = false;
     this.selectedStudyData = [];
     this.extractAllGenes();
@@ -295,10 +298,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   loadFromCBio(){
     for (const dataType of Object.keys(this.dataTypes))
     {
+        if(!this.dataTypes[dataType].checked) continue;
+
         console.log("Inside load cBio:", this.dataTypes[dataType].checked);
         console.log(this.selectedStudyData);
-        
-        if(!this.dataTypes[dataType].checked) continue;
+
         this.portalAcessor.getProfileData({
             caseSetId: this.selectedStudyData[0],
             geneticProfileId: this.dataTypes[dataType].profile,
@@ -322,7 +326,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
               {
               ( isCBioPortal &&
               <Bootstrap.Col xs={1}>
-                  <Toolbar pathwayActions={this.pathwayActions}/>
+                  <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} studyQuery={this.studyQuery}/>
               </Bootstrap.Col>)
               }
 
@@ -391,11 +395,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   @autobind
   pathwayHandler(pathway: string){
       this.selectedPathway = pathway;
-  }
-
-  @autobind
-  returnPathway(){
-    return this.selectedPathway;
   }
 
   

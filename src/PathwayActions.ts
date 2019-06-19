@@ -11,21 +11,14 @@ export default class PathwayActions {
   editor: EditorActionsManager;
   pathwayHandler: (pathwayName: string) => void;
   eh: any;
-  getSelectedPathway: () => string;
 
-  constructor(pathwayHandler: (pathwayName: string) => void, getSelectedPathway: () => string) {
+  constructor(pathwayHandler: (pathwayName: string) => void) {
     this.pathwayHandler = pathwayHandler;
-    this.getSelectedPathway = getSelectedPathway;
   }
 
   @autobind
   changePathway(pathwayName: string) {
     this.pathwayHandler(pathwayName);
-  }
-
-  @autobind
-  getPathway(){
-    return this.getSelectedPathway();
   }
 
   @autobind

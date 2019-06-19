@@ -14,7 +14,8 @@ import infoImage from "./icons/baseline_info_black_36dp.png";
 import openImage from "./icons/baseline_open_in_new_black_36dp.png";
 interface IToolbarProps {
   pathwayActions: PathwayActions;
-
+  selectedPathway: string;
+  studyQuery: string;
 }
 
 @observer
@@ -53,7 +54,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
           <br/>
           <Bootstrap.Row>
               <Bootstrap.Col>
-              <Bootstrap.Image src={openImage} onClick={() => {window.open("http://localhost:8080/?pathwayName=" + this.props.pathwayActions.getSelectedPathway() )}}/>
+              <Bootstrap.Image src={openImage} onClick={() => {window.open("http://localhost:8080/?pathwayName=" + this.props.selectedPathway +"&studies="+this.props.studyQuery )}}/>
               </Bootstrap.Col>
           </Bootstrap.Row>
 
