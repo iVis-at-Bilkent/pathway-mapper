@@ -190,8 +190,6 @@ export default class GenomicDataOverlayManager {
         genomicDataBoxCount++;
       }
     }
-    console.log("genomicDataBoxCount");
-    console.log(genomicDataBoxCount);
     return genomicDataBoxCount;
   }
 

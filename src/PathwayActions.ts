@@ -6,14 +6,16 @@ import { observer } from 'mobx-react';
 
 export default class PathwayActions {
   @observable
-  selectedPathway: string
-  fileManager: FileOperationsManager
-  editor: EditorActionsManager
-  pathwayHandler: (pathwayName: string) => void
+  selectedPathway: string;
+  fileManager: FileOperationsManager;
+  editor: EditorActionsManager;
+  pathwayHandler: (pathwayName: string) => void;
   eh: any;
+  getSelectedPathway: () => string;
 
-  constructor(pathwayHandler: (pathwayName: string) => void) {
-    this.pathwayHandler = pathwayHandler
+  constructor(pathwayHandler: (pathwayName: string) => void, getSelectedPathway: () => string) {
+    this.pathwayHandler = pathwayHandler;
+    this.getSelectedPathway = getSelectedPathway;
   }
 
   @autobind
@@ -22,8 +24,13 @@ export default class PathwayActions {
   }
 
   @autobind
+  getPathway(){
+    return this.getSelectedPathway();
+  }
+
+  @autobind
   newPathway() {
-    this.fileManager.createNewPathway()
+    this.fileManager.createNewPathway();
   }
 
   @autobind
@@ -41,24 +48,24 @@ export default class PathwayActions {
       name: 'New ' + nodeType,
       w: '150',
       h: '52'
-    }
+    };
     const posData = {
       x: this.editor.cy.height() / 2,
       y: this.editor.cy.width() / 2
-    }
+    };
 
-    this.editor.addNode(nodeData, posData)
+    this.editor.addNode(nodeData, posData);
   }
 
   @autobind
   saveAsPng() {
-    this.fileManager.saveAsPNG()
+    this.fileManager.saveAsPNG();
   }
 
   @autobind
   editorHandler(editor, fileManager, eh) {
-    this.editor = editor
-    this.fileManager = fileManager
+    this.editor = editor;
+    this.fileManager = fileManager;
     this.eh = eh;
   }
 
@@ -74,12 +81,12 @@ export default class PathwayActions {
       'AKT1\t3\t30\t-10\t20\n' +
       'AKT2\t6\t-3\t20\t20\n' +
       'AKT3\t6\t-3\t20\t20\n' +
-      '\n'
-    this.editor.addGenomicData(data)
+      '\n';
+    this.editor.addGenomicData(data);
   }
 
   @autobind
   performLayout() {
-    this.editor.performLayout()
+    this.editor.performLayout();
   }
 }

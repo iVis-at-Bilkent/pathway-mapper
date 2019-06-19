@@ -29,6 +29,7 @@ interface IPathwayMapperProps{
   isCBioPortal: boolean;
   genes: any[];
   store: any;
+  pathwayName? : string;
 }
 
 @observer
@@ -61,8 +62,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   constructor(props: IPathwayMapperProps){
     super(props);
-    this.selectedPathway = "Creighton-PI3K-pathway";
-    this.pathwayActions = new PathwayActions(this.pathwayHandler);
+    this.selectedPathway = this.props.pathwayName || "Creighton-PI3K-pathway";
+    this.pathwayActions = new PathwayActions(this.pathwayHandler, this.returnPathway);
     this.isModalShown = false;
     this.selectedStudyData = [];
     this.extractAllGenes();
@@ -391,4 +392,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   pathwayHandler(pathway: string){
       this.selectedPathway = pathway;
   }
+
+  @autobind
+  returnPathway(){
+    return this.selectedPathway;
+  }
+
+  
 }

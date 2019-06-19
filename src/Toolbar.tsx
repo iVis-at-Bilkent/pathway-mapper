@@ -25,6 +25,8 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
     constructor(props: IToolbarProps){
       super(props);
     }
+
+    
     render(){
       return (
       <Bootstrap.Col>
@@ -51,7 +53,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
           <br/>
           <Bootstrap.Row>
               <Bootstrap.Col>
-              <Bootstrap.Image src={openImage}/>
+              <Bootstrap.Image src={openImage} onClick={() => {window.open("http://localhost:8080/?pathwayName=" + this.props.pathwayActions.getSelectedPathway() )}}/>
               </Bootstrap.Col>
           </Bootstrap.Row>
 
