@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import * as Bootstrap from "react-bootstrap";import autobind from "autobind-decorator";
+import {Row, Col, Image} from "react-bootstrap";
+import autobind from "autobind-decorator";
 import EditorActionsManager from "./EditorActionsManager";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
@@ -12,10 +13,11 @@ import saveImage from "./icons/baseline_save_black_36dp.png";
 import infoImage from "./icons/baseline_info_black_36dp.png";
 // @ts-ignore
 import openImage from "./icons/baseline_open_in_new_black_36dp.png";
+import { IProfileMetaData } from './react-pathway-mapper';
 interface IToolbarProps {
   pathwayActions: PathwayActions;
   selectedPathway: string;
-  studyQuery: string;
+  profiles: IProfileMetaData[];
 }
 
 @observer
@@ -29,36 +31,44 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
     
     render(){
+
+
+      let studyQuery = "q=";
+
+      this.props.profiles.forEach((profile: IProfileMetaData, i: number) => {
+        studyQuery += profile.studyId + "," + profile.profileId;
+        studyQuery += ((i !== (this.props.profiles.length - 1)) ? "&q=" : ""); 
+      });
       return (
-      <Bootstrap.Col>
-          <Bootstrap.Row>
-              <Bootstrap.Col>
-              <Bootstrap.Image src={saveImage} onClick={this.props.pathwayActions.saveAsPng}/>
-              </Bootstrap.Col>
-          </Bootstrap.Row>
+      <Col>
+          <Row>
+              <Col>
+                <Image src={saveImage} onClick={this.props.pathwayActions.saveAsPng}/>
+              </Col>
+          </Row>
 
           <br/>
-          <Bootstrap.Row>
-              <Bootstrap.Col>
-              <Bootstrap.Image src={layoutImage} onClick={this.props.pathwayActions.performLayout} />              
-              </Bootstrap.Col>
-          </Bootstrap.Row>
+          <Row>
+              <Col>
+              <Image src={layoutImage} onClick={this.props.pathwayActions.performLayout} />              
+              </Col>
+          </Row>
 
           <br/>
-          <Bootstrap.Row>
-              <Bootstrap.Col>
-              <Bootstrap.Image src={infoImage}/>
-              </Bootstrap.Col>
-          </Bootstrap.Row>
+          <Row>
+              <Col>
+              <Image src={infoImage}/>
+              </Col>
+          </Row>
 
           <br/>
-          <Bootstrap.Row>
-              <Bootstrap.Col>
-              <Bootstrap.Image src={openImage} onClick={() => {window.open("http://localhost:8080/?pathwayName=" + this.props.selectedPathway +"&studies="+this.props.studyQuery )}}/>
-              </Bootstrap.Col>
-          </Bootstrap.Row>
+          <Row>
+              <Col>
+              <Image src={openImage} onClick={() => {window.open("http://localhost:8080/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}/>
+              </Col>
+          </Row>
 
-    </Bootstrap.Col>);
+    </Col>);
 
   }
 }
