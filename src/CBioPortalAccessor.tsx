@@ -1,24 +1,23 @@
 import EditorActionsManager from "./EditorActionsManager";
 import _ from "underscore";
 export default class CBioPortalAccessor{
+  static readonly CNA_GAIN = 2;
 
-  readonly GET_ALL_CANCER_STUDIES_URL  = "http://www.cbioportal.org/webservice.do?cmd=getCancerStudies";
-  readonly GET_GENETIC_PROFILES_URL = "http://www.cbioportal.org/webservice.do?cmd=getGeneticProfiles&cancer_study_id=";
-  readonly GET_PROFILE_DATA_URL = "http://www.cbioportal.org/webservice.do?cmd=getProfileData";
-  readonly MRNA_EXP_STUDY_NAME = "_mrna_median_Zscores";
-  readonly CNA_EXP_STUDY_NAME = "_gistic";
-  readonly VALIDATE_GENES_URL  = 'http://www.cbioportal.org/api/genes/fetch?geneIdType=HUGO_GENE_SYMBOL&projection=ID'
-  readonly MUTATION_EXP_STUDY_NAME = "_mutations";
+  static readonly GET_ALL_CANCER_STUDIES_URL  = "http://www.cbioportal.org/webservice.do?cmd=getCancerStudies";
+  static readonly GET_GENETIC_PROFILES_URL = "http://www.cbioportal.org/webservice.do?cmd=getGeneticProfiles&cancer_study_id=";
+  static readonly GET_PROFILE_DATA_URL = "http://www.cbioportal.org/webservice.do?cmd=getProfileData";
+  static readonly MRNA_EXP_STUDY_NAME = "_mrna_median_Zscores";
+  static readonly CNA_EXP_STUDY_NAME = "_gistic";
+  static readonly VALIDATE_GENES_URL  = 'http://www.cbioportal.org/api/genes/fetch?geneIdType=HUGO_GENE_SYMBOL&projection=ID'
+  static readonly MUTATION_EXP_STUDY_NAME = "_mutations";
 
-
-  readonly CNA_DELETION = -2;
-  readonly CNA_GAIN = 2;
-  readonly Z_SCORE_UPPER_THRESHOLD = 2;
-  readonly Z_SCORE_LOWER_THRESHOLD = -2;
+  static readonly CNA_DELETION = -2;
+  static readonly Z_SCORE_UPPER_THRESHOLD = 2;
+  static readonly Z_SCORE_LOWER_THRESHOLD = -2;
   
-  readonly MUTATION = "Mutation";
-  readonly GENE_EXPRESSION = "Gene Expression";
-  readonly CNA = "Copy Number Alteration";
+  static readonly MUTATION = "Mutation";
+  static readonly GENE_EXPRESSION = "Gene Expression";
+  static readonly CNA = "Copy Number Alteration";
 
   editor: EditorActionsManager;
 
@@ -28,7 +27,7 @@ export default class CBioPortalAccessor{
   }
 
   getDataTypes(){
-      return [this.MUTATION, this.GENE_EXPRESSION, this.CNA];
+      return [CBioPortalAccessor.MUTATION, CBioPortalAccessor.GENE_EXPRESSION, CBioPortalAccessor.CNA];
   }
 
   /*
@@ -64,7 +63,7 @@ export default class CBioPortalAccessor{
             // window.notificationManager.createNotification("Error retrieving cancer studies", "fail")
         }
     };
-    request.open("GET", this.GET_ALL_CANCER_STUDIES_URL);
+    request.open("GET", CBioPortalAccessor.GET_ALL_CANCER_STUDIES_URL);
     request.send();
   };
 
@@ -107,18 +106,18 @@ export default class CBioPortalAccessor{
               // window.notificationManager.createNotification("Error retrieving genetic profiles", "fail")
           }
       };
-      request.open("GET", this.GET_GENETIC_PROFILES_URL + cancerStudy);
+      request.open("GET", CBioPortalAccessor.GET_GENETIC_PROFILES_URL + cancerStudy);
       request.send();
   };
 
   isSupportedCancerProfile(cancerProfileName: string)
   {
-      return (cancerProfileName.endsWith(this.MRNA_EXP_STUDY_NAME) ||
-              cancerProfileName.endsWith(this.CNA_EXP_STUDY_NAME) ||
-              cancerProfileName.endsWith(this.MUTATION_EXP_STUDY_NAME));
+      return (cancerProfileName.endsWith(CBioPortalAccessor.MRNA_EXP_STUDY_NAME) ||
+              cancerProfileName.endsWith(CBioPortalAccessor.CNA_EXP_STUDY_NAME) ||
+              cancerProfileName.endsWith(CBioPortalAccessor.MUTATION_EXP_STUDY_NAME));
   };
 
-  getDataType(cancerProfileName: string)
+  static getDataType(cancerProfileName: string)
   {
       if ( cancerProfileName.endsWith(this.MRNA_EXP_STUDY_NAME))
       {
@@ -161,7 +160,7 @@ export default class CBioPortalAccessor{
       const outData: {} = {};
       outData[geneticProfileId] = {};
 
-      const geneticProfileType = this.getDataType(geneticProfileId);
+      const geneticProfileType = CBioPortalAccessor.getDataType(geneticProfileId);
 
       // skip meta line and iterate over tumor sample data
       for(let i = startIndex + 1; i < lines.length; i++)
@@ -176,11 +175,14 @@ export default class CBioPortalAccessor{
           {
               if(lineData[j] !== 'NaN')
               {
-                  if( geneticProfileType === this.MUTATION )
+                  if( geneticProfileType === CBioPortalAccessor.MUTATION )
                       profileDataAlteration++;
-                  else if ( (geneticProfileType === this.CNA) && ( lineData[j] == this.CNA_GAIN || lineData[j] == this.CNA_DELETION )  )
+                  else if ( (geneticProfileType === CBioPortalAccessor.CNA) 
+                  && ( lineData[j] === CBioPortalAccessor.CNA_GAIN || lineData[j] === CBioPortalAccessor.CNA_DELETION )  )
                       profileDataAlteration++;
-                  else if ( (geneticProfileType === this.GENE_EXPRESSION) && (parseInt(lineData[j]) >= this.Z_SCORE_UPPER_THRESHOLD || parseInt(lineData[j]) <= this.Z_SCORE_LOWER_THRESHOLD))
+                  else if ( (geneticProfileType === CBioPortalAccessor.GENE_EXPRESSION) 
+                  && (parseInt(lineData[j]) >= CBioPortalAccessor.Z_SCORE_UPPER_THRESHOLD 
+                  || parseInt(lineData[j]) <= CBioPortalAccessor.Z_SCORE_LOWER_THRESHOLD))
                       profileDataAlteration++;
               }
           }
@@ -226,7 +228,7 @@ export default class CBioPortalAccessor{
       };
 
       //Create query URL
-      let queryURL = this.GET_PROFILE_DATA_URL;
+      let queryURL = CBioPortalAccessor.GET_PROFILE_DATA_URL;
       //Fetch sequenced case list !!
       queryURL += "&case_set_id=" + params.caseSetId + "_sequenced";
       queryURL += "&genetic_profile_id=" + params.geneticProfileId;
@@ -266,7 +268,7 @@ export default class CBioPortalAccessor{
               self.editor.highlightInvalidGenes(validGeneArray);
           }
       };
-      const queryURL = this.VALIDATE_GENES_URL;
+      const queryURL = CBioPortalAccessor.VALIDATE_GENES_URL;
       request.open("POST", queryURL);
       request.setRequestHeader("Content-type", "application/json");
       request.send(JSON.stringify(nodeSymbols));

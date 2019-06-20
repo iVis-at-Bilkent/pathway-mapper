@@ -55,13 +55,17 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   cancerStudies: any[];
   portalAcessor: CBioPortalAccessor;
 
-  mutationData: any = {};
+  alterationData: {[key: string]: {[key: string]: number}} = {};//{"study1_gistic" : {"MDM2": 99, "TP53": 98}, "study2_mutations": {"MDM2": 1, "TP53": 2}};
 
   pathwayGeneMap: any = {};
   bestPathwaysAlgos: any[][] = [];
 
   @observable
-  studyQuery: string = "";
+  studyQuery = "";
+
+  @observable
+  profiles: string[];
+
 
   constructor(props: IPathwayMapperProps){
     super(props);
@@ -78,6 +82,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.getBestPathway(2);
       this.getBestPathway(3);
     }
+
+
+    console.log("Profiles");
+    console.log(this.profiles);
   }
 
 
@@ -119,35 +127,84 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     return geneAlterationMap;
   }
 
-  overlayPortalData(){
-    if(this.props.store === undefined){
-      return;
-    }
+  handleMutations(){
+
     const mutations = this.props.store.mutations.result;
     const profileCounts = this.props.store.molecularProfileIdToProfiledSampleCount.result;
     if(mutations !== undefined){
         mutations.forEach((mutation) => {
-            if(this.mutationData[mutation.molecularProfileId] === undefined){
-                this.mutationData[mutation.molecularProfileId] = {};
+            if(this.alterationData[mutation.molecularProfileId] === undefined){
+                this.alterationData[mutation.molecularProfileId] = {};
+                this.profiles.push(mutation.molecularProfileId);
             }
-            const mutationAmount = this.mutationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol];
+            const mutationAmount = this.alterationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol];
             if( mutationAmount === undefined){
-                this.mutationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol] = 0;
+                this.alterationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol] = 0;
             } 
-            this.mutationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol]++;
+            this.alterationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol]++;
         });
     } else {
         console.log("Mutation undefined");
     }
 
-    for(const profileName of Object.keys(this.mutationData)){
-        for(const gene of Object.keys(this.mutationData[profileName])){
-            this.mutationData[profileName][gene] /= profileCounts[profileName] / 100;
-        }
-    }
-
-    console.log(this.mutationData);
+    console.log(this.alterationData);
   }
+  overlayPortalData(){
+    if(this.props.store === undefined || this.props.store.molecularData.result === undefined){
+      return;
+    }
+    this.handleMutations();
+
+    console.log("Alteration data0");
+    console.log(this.alterationData);
+    const profileCounts = this.props.store.molecularProfileIdToProfiledSampleCount.result;
+
+    for(const genomicData of this.props.store.molecularData.result){
+      const dataType = CBioPortalAccessor.getDataType(genomicData.molecularProfileId)
+      if(dataType === "") continue;
+
+      if(this.alterationData[genomicData.molecularProfileId] === undefined){
+          this.alterationData[genomicData.molecularProfileId] = {};
+      }
+      const mutationAmount = this.alterationData[genomicData.molecularProfileId][genomicData.gene.hugoGeneSymbol];
+      if( mutationAmount === undefined){
+          this.alterationData[genomicData.molecularProfileId][genomicData.gene.hugoGeneSymbol] = 0;
+          this.profiles.push(genomicData.molecularProfileId);
+          console.log("Inside mutationAmount");
+      } 
+
+      // ATTENTION: May cause unexpected behaviour
+      if(genomicData.value === 0) continue;
+
+
+      // Mutation already handled
+      if ( (dataType === CBioPortalAccessor.CNA) 
+        && ( genomicData.value === CBioPortalAccessor.CNA_GAIN 
+        || genomicData.value === CBioPortalAccessor.CNA_DELETION )  )
+          this.alterationData[genomicData.molecularProfileId][genomicData.gene.hugoGeneSymbol]++;
+      else if ((dataType === CBioPortalAccessor.GENE_EXPRESSION) 
+        && genomicData.value >= CBioPortalAccessor.Z_SCORE_UPPER_THRESHOLD 
+        || genomicData.value <= CBioPortalAccessor.Z_SCORE_LOWER_THRESHOLD)
+          this.alterationData[genomicData.molecularProfileId][genomicData.gene.hugoGeneSymbol]++;
+      
+    }
+    console.log("Alteration data1");
+    console.log(this.alterationData);
+    for(const profileName of Object.keys(this.alterationData)){
+      for(const gene of Object.keys(this.alterationData[profileName])){
+          if(profileCounts !== undefined){
+            
+            this.alterationData[profileName][gene] /= profileCounts[profileName] / 100;
+          }
+      }
+    } 
+    console.log("Alteration data2");
+    console.log(this.alterationData);
+
+    console.log("Profiles");
+    console.log(this.profiles);
+  }
+
 
   /**
    * 
@@ -156,7 +213,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
    */
   getBestPathway(rankingMode: number) {
     
-    const genomicDataMap = this.getGeneStudyMap(this.mutationData);
+    const genomicDataMap = this.getGeneStudyMap(this.alterationData);
     const alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
     maxHeap =  maxHeapFn();
     console.log("GenomicDAtaMAp");
@@ -277,7 +334,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.disableAllDataTypes();
       // Iterate through profiles
       for(const profile of Object.keys(data)){
-        const type = this.portalAcessor.getDataType(profile);
+        const type = CBioPortalAccessor.getDataType(profile);
         if(type !== ""){
           this.dataTypes[type].enabled = true;
           this.dataTypes[type].profile = profile;
@@ -384,8 +441,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.fileManager = fileManager;
     this.pathwayActions.editorHandler(editor, fileManager, eh);
     if(this.props.isCBioPortal){
-      // this.overlayPortalData(); 
-      this.editor.addPortalGenomicData(this.mutationData, this.editor.getEmptyGroupID());
+      this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
     } else {
       this.portalAcessor = new CBioPortalAccessor(this.editor);
       this.fetchStudy();
