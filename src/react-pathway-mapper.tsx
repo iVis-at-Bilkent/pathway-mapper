@@ -64,7 +64,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   studyQuery = "";
 
   @observable
-  profiles: string[];
+  profiles: string[] = [];
 
 
   constructor(props: IPathwayMapperProps){
