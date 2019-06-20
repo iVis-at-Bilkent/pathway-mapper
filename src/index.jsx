@@ -11,11 +11,18 @@ const pathwayName = findGetParameter("pathwayName");
 console.log(pathwayName);
 const profiles = findGetParameter("q");
 console.log(profiles);
+const genes = findGetParameter("g");
+console.log(genes);
+
+for(let i = 0; i < genes.length; i++){
+  genes[i] = {hugoGeneSymbol: genes[i]};
+}
+console.log(genes);
 
 if(pathwayName.length === 0){
   render(<PathwayMapper isCBioPortal={true} genes={placeHolderGenes} store={undefined}/>, rootEl);
 } else {
-  render(<PathwayMapper isCBioPortal={false} genes={placeHolderGenes} store={undefined} pathwayName={pathwayName} profiles={parseProfiles(profiles)}/>, rootEl);
+  render(<PathwayMapper isCBioPortal={false} genes={genes} store={undefined} pathwayName={pathwayName} profiles={parseProfiles(profiles)}/>, rootEl);
 }
 
 if (module.hot) {

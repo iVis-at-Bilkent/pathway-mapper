@@ -21,6 +21,7 @@ import SaveLoadUtility from './SaveLoadUtility';
 import "./base.css";
 import "cytoscape-panzoom/cytoscape.js-panzoom.css";
 import "cytoscape-navigator/cytoscape.js-navigator.css";
+import Loader from 'react-loader-spinner';
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap: any;
@@ -42,7 +43,6 @@ export interface IDataTypeMetaData{
   checked: boolean;
   profile: string;
 }
-
 @observer
 export default class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   readonly NUMBER_OF_PATHWAYS_TO_SHOW = 10;
@@ -344,17 +344,18 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(!profiles){ // If undefined that means it is not redirected.
       return;
     }
+
     profiles.forEach((profile) => {
       this.portalAcessor.getProfileData({
         caseSetId: profile.studyId,
         geneticProfileId: profile.profileId,
-        genes: this.pathwayGeneMap[this.selectedPathway]
+        genes: Object.values(this.props.genes).map((gene) => gene.hugoGeneSymbol)
       },
                                         (data: any) =>{ 
         
         console.log("From loadRedirectedPortalData"); 
-        console.log(profile)
-        console.log(this.pathwayGeneMap[this.selectedPathway])
+        console.log(profile);
+        console.log(this.props.genes);
         console.log(data); 
         this.profiles.push(profile);
         this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID()); 
@@ -393,10 +394,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         console.log("Inside load cBio:", this.dataTypes[dataType].checked);
         console.log(this.selectedStudyData);
 
+        this.profiles.push({studyId: this.selectedStudyData[0], profileId: this.dataTypes[dataType].profile});
+
         this.portalAcessor.getProfileData({
             caseSetId: this.selectedStudyData[0],
             geneticProfileId: this.dataTypes[dataType].profile,
-            genes: this.pathwayGeneMap[this.selectedPathway]
+            genes: Object.keys(this.pathwayGeneMap[this.selectedPathway])
         },
         (data: any) =>{ console.log(data); this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID()); });
     }
@@ -404,9 +407,15 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   render() {
   const isCBioPortal = this.props.isCBioPortal; 
-
+  
   return (
       <div>
+          <Loader 
+            type="Puff"
+            color="#00BFFF"
+            height="100"	
+            width="100"
+          />  
           <br/>
           <Bootstrap.Row>
             { !isCBioPortal && (<Menubar pathwayActions={this.pathwayActions} openCBioModal={this.handleOpen}/>)}
@@ -416,7 +425,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
               {
               ( isCBioPortal &&
               <Bootstrap.Col xs={1}>
-                  <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} profiles={this.profiles}/>
+                  <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} profiles={this.profiles} genes={this.props.genes}/>
               </Bootstrap.Col>)
               }
 
@@ -430,10 +439,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
               {this.profiles.map((profile: IProfileMetaData) => [<Label bsStyle="primary">{profile.profileId}</Label>, " "])}
             </Bootstrap.Row>)
             }
-            
+
             { isCBioPortal &&
             <Bootstrap.Col xs={4}>
-              
+                <Bootstrap.Row>
+                {this.profiles.map((profile: IProfileMetaData) => [<Label bsStyle="primary">{profile.profileId}</Label>, " "])}
+                </Bootstrap.Row>
                 <br/>
                 <Bootstrap.Row>
                   <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos}/>

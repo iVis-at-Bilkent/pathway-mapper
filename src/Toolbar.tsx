@@ -18,6 +18,7 @@ interface IToolbarProps {
   pathwayActions: PathwayActions;
   selectedPathway: string;
   profiles: IProfileMetaData[];
+  genes: any[];
 }
 
 @observer
@@ -39,6 +40,17 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
         studyQuery += profile.studyId + "," + profile.profileId;
         studyQuery += ((i !== (this.props.profiles.length - 1)) ? "&q=" : ""); 
       });
+      
+      studyQuery += "&g=";
+
+      this.props.genes.forEach((gene: any, i: number) => {
+        console.log("Genes inside Toolbar render");
+        console.log(gene);
+        studyQuery += gene.hugoGeneSymbol;
+        studyQuery += ((i !== (this.props.genes.length - 1)) ? "&g=" : ""); 
+      });
+
+
       return (
       <Col>
           <Row>

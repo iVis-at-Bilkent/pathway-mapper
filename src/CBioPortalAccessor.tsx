@@ -235,7 +235,7 @@ export default class CBioPortalAccessor{
       queryURL += "&gene_list=";
       let isFirst = true;
       console.log(params.genes)
-      for(const gene of Object.keys(params.genes))
+      for(const gene of params.genes)
       {
           if(!isFirst){
             queryURL += "+";
