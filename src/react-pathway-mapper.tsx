@@ -11,7 +11,7 @@ import {observable} from "mobx";
 import {observer} from "mobx-react";
 import FileOperationsManager from './FileOperationsManager';
 import * as Bootstrap from "react-bootstrap"; 
-import {Navbar, Nav, NavDropdown, MenuItem, NavItem, Button} from 'react-bootstrap';
+import {Navbar, Nav, NavDropdown, MenuItem, NavItem, Button, Label} from 'react-bootstrap';
 import pathways from "./pathways.json";
 import Menubar from './Menubar';
 import {Modal, DropdownButton, Checkbox} from 'react-bootstrap'
@@ -55,7 +55,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   cancerStudies: any[];
   portalAcessor: CBioPortalAccessor;
 
-  alterationData: {[key: string]: {[key: string]: number}} = {};//{"study1_gistic" : {"MDM2": 99, "TP53": 98}, "study2_mutations": {"MDM2": 1, "TP53": 2}};
+  alterationData: {[key: string]: {[key: string]: number}} = {"study1_gistic" : {"MDM2": 99, "TP53": 98}, "study2_mutations": {"MDM2": 1, "TP53": 2}};
 
   pathwayGeneMap: any = {};
   bestPathwaysAlgos: any[][] = [];
@@ -64,7 +64,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   studyQuery = "";
 
   @observable
-  profiles: string[] = [];
+  profiles: string[] = ["study1_gistic", "study2_mutations"];
 
 
   constructor(props: IPathwayMapperProps){
@@ -115,8 +115,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         sum += parseFloat(alteration as string);
         count++;
       }
-      console.log("Sum, Count");
-      console.log(sum, count);
       if(count === 0){
         geneAlterationMap[gene] = 0;
       } else {
@@ -130,7 +128,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   handleMutations(){
 
     const mutations = this.props.store.mutations.result;
-    const profileCounts = this.props.store.molecularProfileIdToProfiledSampleCount.result;
     if(mutations !== undefined){
         mutations.forEach((mutation) => {
             if(this.alterationData[mutation.molecularProfileId] === undefined){
@@ -165,17 +162,16 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
       if(this.alterationData[genomicData.molecularProfileId] === undefined){
           this.alterationData[genomicData.molecularProfileId] = {};
+          this.profiles.push(genomicData.molecularProfileId);
       }
       const mutationAmount = this.alterationData[genomicData.molecularProfileId][genomicData.gene.hugoGeneSymbol];
       if( mutationAmount === undefined){
           this.alterationData[genomicData.molecularProfileId][genomicData.gene.hugoGeneSymbol] = 0;
-          this.profiles.push(genomicData.molecularProfileId);
           console.log("Inside mutationAmount");
       } 
 
       // ATTENTION: May cause unexpected behaviour
       if(genomicData.value === 0) continue;
-
 
       // Mutation already handled
       if ( (dataType === CBioPortalAccessor.CNA) 
@@ -391,9 +387,17 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
                 <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
 
+
             { isCBioPortal &&
-            <Bootstrap.Col xs={3}>
-                <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos}/>
+            <Bootstrap.Col xs={4}>
+              
+                <Bootstrap.Row>
+                  {this.profiles.map((profileId: string) => [<Label bsStyle="primary">{profileId}</Label>, " "])}
+                </Bootstrap.Row>
+                <br/>
+                <Bootstrap.Row>
+                  <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos}/>
+                </Bootstrap.Row>
             </Bootstrap.Col>
             }
           </Bootstrap.Row>

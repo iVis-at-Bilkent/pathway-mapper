@@ -220,7 +220,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   };
 
   initCyJS() {
-    panzoom(cytoscape, $);  // register extension
+    panzoom(cytoscape);  // register extension
     // cxtmenu( cytoscape, $ ); // register extension
     // cyqtip(cytoscape, $); // register extension
     regCose(cytoscape); // register extension
