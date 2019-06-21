@@ -60,6 +60,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     private dragDropNodeAddManager: DragDropNodeAddPlugin;
     private undoRedoManager: any;
     private portalAccessor: CBioPortalAccessor;
+    private isMountedFirst = true;
 
 
     constructor (props: PathwayMapperType) {
@@ -131,9 +132,10 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
         </div>);
     }
     componentDidMount(): void {
-      console.log(document.getElementById("cy"));
-      this.init();
-      this.createCBioPortalAccessModal();
+      if(this.isMountedFirst){
+        this.init();
+        this.isMountedFirst = false;
+      }
       this.getPathway(this.props.selectedPathway);
     }
 
@@ -201,23 +203,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
   getPathwayData() {
     return this.pathwayDetailsView.getPathwayData();
-  };
-
-  createCBioPortalAccessModal() {
-    var self = this;
-
-    /* TODO: AMENDMENT SUPPRESSED FUNCTIONALITY
-    this.portalAccessView = new CBioPortalAccessView({
-      el: $("#cbioPortalAccessDiv")
-    });*/
-
-    this.portalAccessor.fetchCancerStudies(function (cancerStudies: any) {
-      /*TODO: AMENDMENT SUPPRESSED FUNCTIONALITY
-      self.portalAccessView.updateCancerStudies(cancerStudies);
-      */
-      console.log("Returned from CBio: ",  cancerStudies);
-    });
-  };
+  }
 
   initCyJS() {
     panzoom(cytoscape);  // register extension
