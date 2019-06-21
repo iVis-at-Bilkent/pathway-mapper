@@ -347,6 +347,9 @@ export default class GenomicDataOverlayManager {
       return;
     }
 
+    console.log("Inside showGenomicData");
+    console.log(this.cy);
+
     this.cy
       .style()
       .selector('node[type="GENE"]')
@@ -366,8 +369,13 @@ export default class GenomicDataOverlayManager {
         return -15;
       })
       .style('background-image', function(ele) {
-        const dataURI = 'data:image/svg+xml;utf8,';
-        return dataURI + encodeURIComponent(self.generateSVGForNode(ele).outerHTML);
+        const x = encodeURIComponent(self.generateSVGForNode(ele).outerHTML);
+        if(x === "undefined"){
+          return 'data:image/';
+        }
+        const dataURI = 'data:image/svg+xml;utf8,' + x;
+        console.log(dataURI)
+        return dataURI;
       })
       .update();
   }
