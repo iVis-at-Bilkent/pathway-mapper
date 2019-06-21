@@ -93,7 +93,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.isModalShown = false;
     this.selectedStudyData = [];
     // TODO: Change below
-    this.alterationData = {"study1_gistic" : {"MDM2": 99, "TP53": 98}, "study2_mutations": {"MDM2": 1, "TP53": 2}};
+    this.alterationData = {};//{"study1_gistic" : {"MDM2": 99, "TP53": 98}, "study2_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
     if(this.props.isCBioPortal){
       this.overlayPortalData();
