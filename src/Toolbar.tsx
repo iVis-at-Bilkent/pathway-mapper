@@ -13,12 +13,11 @@ import saveImage from "./icons/baseline_save_black_36dp.png";
 import infoImage from "./icons/baseline_info_black_36dp.png";
 // @ts-ignore
 import openImage from "./icons/baseline_open_in_new_black_36dp.png";
-import { IProfileMetaData } from './react-pathway-mapper';
+import { IProfileMetaData, IAlterationData } from './react-pathway-mapper';
 interface IToolbarProps {
   pathwayActions: PathwayActions;
   selectedPathway: string;
-  profiles: IProfileMetaData[];
-  genes: any[];
+  alterationData: IAlterationData;
 }
 
 @observer
@@ -34,21 +33,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
     render(){
 
 
-      let studyQuery = "q=";
-
-      this.props.profiles.forEach((profile: IProfileMetaData, i: number) => {
-        studyQuery += profile.studyId + "," + profile.profileId;
-        studyQuery += ((i !== (this.props.profiles.length - 1)) ? "&q=" : ""); 
-      });
-      
-      studyQuery += "&g=";
-
-      this.props.genes.forEach((gene: any, i: number) => {
-        console.log("Genes inside Toolbar render");
-        console.log(gene);
-        studyQuery += gene.hugoGeneSymbol;
-        studyQuery += ((i !== (this.props.genes.length - 1)) ? "&g=" : ""); 
-      });
+      let studyQuery = "q=" + JSON.stringify(this.props.alterationData);
 
 
       return (
@@ -76,8 +61,8 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
           <br/>
           <Row>
               <Col>
-              <Image src={openImage} onClick={() => {window.open("http://localhost:8080/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}/>
-              </Col>
+              <Image src={openImage} onClick={() => {{window.open("http://localhost:8080/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
+              </Col> 
           </Row>
 
     </Col>);

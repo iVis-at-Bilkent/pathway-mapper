@@ -57,7 +57,7 @@ export default class CBioPortalAccessor{
             }
             callbackFunction(cancerStudies);
         }
-        else if  (request.readyState === XMLHttpRequest.DONE && request.status != 200)
+        else if  (request.readyState === XMLHttpRequest.DONE && request.status !== 200)
         {
             console.error("Error retrieving studies");
             // window.notificationManager.createNotification("Error retrieving cancer studies", "fail")

@@ -2,49 +2,38 @@ import React from 'react';
 import { render } from 'react-dom';
 import PathwayMapper from "./react-pathway-mapper";
 
-const rootEl = document.getElementById('app');
-console.log(window.location.search);
-const placeHolderGenes = [{hugoGeneSymbol: "MDM2"}, {hugoGeneSymbol: "TP53"}];
+window.onload = () => {
+  const rootEl = document.getElementById('app');
+  console.log(window.location.search);
+  const placeHolderGenes = [{hugoGeneSymbol: "MDM2"}, {hugoGeneSymbol: "TP53"}];
 
 
-const pathwayName = findGetParameter("pathwayName");
-console.log(pathwayName);
-const profiles = findGetParameter("q");
-console.log(profiles);
-const genes = findGetParameter("g");
-console.log(genes);
+  const pathwayName = findGetParameter("pathwayName");
+  console.log(pathwayName);
+  const alterationJSON = findGetParameter("q");
+  const alterationData = JSON.parse(alterationJSON);
+  console.log(alterationData);
 
-for(let i = 0; i < genes.length; i++){
-  genes[i] = {hugoGeneSymbol: genes[i]};
-}
-console.log(genes);
-
-if(pathwayName.length === 0){
-  render(<PathwayMapper isCBioPortal={true} genes={placeHolderGenes} store={undefined}/>, rootEl);
-} else {
-  render(<PathwayMapper isCBioPortal={false} genes={genes} store={undefined} pathwayName={pathwayName} profiles={parseProfiles(profiles)}/>, rootEl);
-}
-
-if (module.hot) {
-  module.hot.accept();
-}
-
-function parseProfiles(profiles){
-  const res = [];
-  profiles.forEach(profile => {
-    const tmp = profile.split(",");
-    res.push({studyId: tmp[0], profileId: tmp[1]});
-  });
-  return res;
-}
-
-function findGetParameter(parameterName) {
-  var result = [],
-      tmp = [];
-  var items = location.search.substr(1).split("&");
-  for (var index = 0; index < items.length; index++) {
-      tmp = items[index].split("=");
-      if (tmp[0] === parameterName) result.push(decodeURIComponent(tmp[1]));
+  if(!pathwayName){
+    render(<PathwayMapper isCBioPortal={true} genes={placeHolderGenes} store={undefined}/>, rootEl);
+  } else {
+    render(<PathwayMapper isCBioPortal={false} genes={placeHolderGenes} store={undefined} pathwayName={pathwayName} alterationData={alterationData}/>, rootEl);
   }
-  return result;
+
+  if (module.hot) {
+    module.hot.accept();
+  }
+
+  function findGetParameter(parameterName) {
+    var result = null,
+        tmp = [];
+    location.search
+        .substr(1)
+        .split("&")
+        .forEach(function (item) {
+          tmp = item.split("=");
+          if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+        });
+    return result;
+  }
 }

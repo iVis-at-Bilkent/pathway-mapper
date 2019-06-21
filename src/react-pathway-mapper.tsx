@@ -26,13 +26,20 @@ import Loader from 'react-loader-spinner';
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap: any;
 
+
 interface IPathwayMapperProps{
   isCBioPortal: boolean;
   genes: any[];
   store: any;
   pathwayName? : string;
-  profiles?: IProfileMetaData[];
+  alterationData?: IAlterationData;
 }
+
+
+export interface IAlterationData{
+  [key: string]: {[key: string]: number};
+}
+
 export interface IProfileMetaData{
   profileId: string;
   studyId: string;
@@ -66,7 +73,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   cancerStudies: any[];
   portalAcessor: CBioPortalAccessor;
 
-  alterationData: {[key: string]: {[key: string]: number}} = {};//{"study1_gistic" : {"MDM2": 99, "TP53": 98}, "study2_mutations": {"MDM2": 1, "TP53": 2}};
+  @observable
+  alterationData: IAlterationData;
 
   pathwayGeneMap: {[key: string]: {[key: string]: string}} = {};
   bestPathwaysAlgos: any[][] = [];
@@ -84,10 +92,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.pathwayActions = new PathwayActions(this.pathwayHandler);
     this.isModalShown = false;
     this.selectedStudyData = [];
+    // TODO: Change below
+    this.alterationData = {"study1_gistic" : {"MDM2": 99, "TP53": 98}, "study2_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
     if(this.props.isCBioPortal){
       this.overlayPortalData();
-      // this.mutationData = {"study1" : {"MDM2": 10, "TP53": 20}, "study2" : {"TP53": 10}};
       this.getBestPathway(0);
       this.getBestPathway(1);
       this.getBestPathway(2);
@@ -340,27 +349,13 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     }
   }
 
-  loadRedirectedPortalData(profiles: IProfileMetaData[]){
-    if(!profiles){ // If undefined that means it is not redirected.
+  loadRedirectedPortalData(){
+    if(!this.props.alterationData){ // If size 0 that means it is not redirected.
       return;
     }
-
-    profiles.forEach((profile) => {
-      this.portalAcessor.getProfileData({
-        caseSetId: profile.studyId,
-        geneticProfileId: profile.profileId,
-        genes: Object.values(this.props.genes).map((gene) => gene.hugoGeneSymbol)
-      },
-                                        (data: any) =>{ 
-        
-        console.log("From loadRedirectedPortalData"); 
-        console.log(profile);
-        console.log(this.props.genes);
-        console.log(data); 
-        this.profiles.push(profile);
-        this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID()); 
-      });
-    });
+    console.log("Here");
+    console.log(this.props.alterationData);
+    this.editor.addPortalGenomicData(this.props.alterationData, this.editor.getEmptyGroupID());
   }
 
   preparePortalAccess(studyId: string){
@@ -410,12 +405,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   
   return (
       <div>
-          <Loader 
-            type="Puff"
-            color="#00BFFF"
-            height="100"	
-            width="100"
-          />  
           <br/>
           <Bootstrap.Row>
             { !isCBioPortal && (<Menubar pathwayActions={this.pathwayActions} openCBioModal={this.handleOpen}/>)}
@@ -425,7 +414,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
               {
               ( isCBioPortal &&
               <Bootstrap.Col xs={1}>
-                  <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} profiles={this.profiles} genes={this.props.genes}/>
+                  <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}/>
               </Bootstrap.Col>)
               }
 
@@ -499,8 +488,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
     } else {
       this.portalAcessor = new CBioPortalAccessor(this.editor);
-      this.loadRedirectedPortalData(this.props.profiles);
-      this.fetchStudy();
+      //this.fetchStudy();
+
+      this.loadRedirectedPortalData();
+
     }
   }
 
