@@ -7,7 +7,7 @@ import CytoscapeArea from "./CytoscapeArea";
 import Ranking from "./Ranking";
 import EditorActionsManager from "./EditorActionsManager";
 import autobind from "autobind-decorator";
-import {observable} from "mobx";
+import {observable, computed} from "mobx";
 import {observer} from "mobx-react";
 import FileOperationsManager from './FileOperationsManager';
 import * as Bootstrap from "react-bootstrap"; 
@@ -43,6 +43,7 @@ export interface IAlterationData{
 export interface IProfileMetaData{
   profileId: string;
   studyId?: string;
+  enabled: boolean;
 }
 
 export interface IDataTypeMetaData{
@@ -93,7 +94,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.isModalShown = false;
     this.selectedStudyData = [];
     // TODO: Change below
-    this.alterationData = {};//{"study1_gistic" : {"MDM2": 99, "TP53": 98}, "study2_mutations": {"MDM2": 1, "TP53": 2}};
+    this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
     if(this.props.isCBioPortal){
       this.overlayPortalData();
@@ -103,10 +104,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.getBestPathway(3);
     }
     /*
-    const profile1 = {profileId: "study1_gistic", studyId: "study1"};
-    const profile2 = {profileId: "study2_gistic", studyId: "study2"};
-    this.profiles.push(profile1, profile2);
-    */
+    const profile1 = {profileId: "study1_gistic", studyId: "study1", enabled: true};
+    const profile2 = {profileId: "study2_gistic", studyId: "study2", enabled: true};
+    const profile3 = {profileId: "study3_mutations", studyId: "study3", enabled: true};
+    this.profiles.push(profile1, profile2, profile3);*/
+    
     console.log("Profiles");
     console.log(this.profiles);
   }
@@ -156,7 +158,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         mutations.forEach((mutation) => {
             if(this.alterationData[mutation.molecularProfileId] === undefined){
                 this.alterationData[mutation.molecularProfileId] = {};
-                this.profiles.push({profileId: mutation.molecularProfileId, studyId: mutation.studyId});
+                this.profiles.push({profileId: mutation.molecularProfileId, studyId: mutation.studyId, enabled: true});
             }
             const mutationAmount = this.alterationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol];
             if( mutationAmount === undefined){
@@ -189,7 +191,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
       if(this.alterationData[genomicData.molecularProfileId] === undefined){
           this.alterationData[genomicData.molecularProfileId] = {};
-          this.profiles.push({profileId: genomicData.molecularProfileId, studyId: genomicData.studyId});
+          this.profiles.push({profileId: genomicData.molecularProfileId, studyId: genomicData.studyId, enabled: true});
       }
       const mutationAmount = this.alterationData[genomicData.molecularProfileId][genomicData.gene.hugoGeneSymbol];
       if( mutationAmount === undefined){
@@ -356,7 +358,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(!this.props.alterationData){ // If size 0 that means it is not redirected.
       return;
     }
-    const redirectedProfiles = Object.keys(this.props.alterationData).map((data: string) : IProfileMetaData => {return {profileId: data}});
+    const redirectedProfiles = Object.keys(this.props.alterationData).map((data: string) : IProfileMetaData => {return {profileId: data, enabled: true}});
     redirectedProfiles.forEach((redirectedProfile) => {
       this.profiles.push(redirectedProfile);
     });
@@ -396,7 +398,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         console.log("Inside load cBio:", this.dataTypes[dataType].checked);
         console.log(this.selectedStudyData);
 
-        this.profiles.push({studyId: this.selectedStudyData[0], profileId: this.dataTypes[dataType].profile});
+        this.profiles.push({studyId: this.selectedStudyData[0], profileId: this.dataTypes[dataType].profile, enabled: true});
 
         this.portalAcessor.getProfileData({
             caseSetId: this.selectedStudyData[0],
@@ -407,10 +409,27 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     }
   }
 
+  @computed get profileEnabledMap(){
+    const profileEnabledMap = {};
+    this.profiles.forEach((profile: IProfileMetaData) => {profileEnabledMap[profile.profileId] = profile.enabled});
+    console.log(profileEnabledMap);
+    return profileEnabledMap;
+  }
+
   render() {
   const isCBioPortal = this.props.isCBioPortal; 
-  
+  const profileLabels = this.profiles.map((profile: IProfileMetaData, i: number) => 
+  [<Label onClick={() => {
+    this.profiles[i].enabled = !this.profiles[i].enabled;
+    this.editor.updateGenomicDataVisibility(this.profileEnabledMap);
+    }}
+    onMouseEnter={() => {document.body.style.cursor = "pointer";}}
+    onMouseLeave={() => {document.body.style.cursor = "default";}}
+    bsStyle={this.profiles[i].enabled ? "primary" : "default"}>{profile.profileId}</Label>, " "]);
+
   return (
+
+
       <div>
           <br/>
           <Bootstrap.Row>
@@ -432,14 +451,14 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             { 
             ( !isCBioPortal &&
             <Bootstrap.Row>
-              {this.profiles.map((profile: IProfileMetaData) => [<Label bsStyle="primary">{profile.profileId}</Label>, " "])}
+              {profileLabels}
             </Bootstrap.Row>)
             }
 
             { isCBioPortal &&
             <Bootstrap.Col xs={4}>
                 <Bootstrap.Row>
-                {this.profiles.map((profile: IProfileMetaData) => [<Label bsStyle="primary">{profile.profileId}</Label>, " "])}
+                {profileLabels}
                 </Bootstrap.Row>
                 <br/>
                 <Bootstrap.Row>
