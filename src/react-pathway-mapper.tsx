@@ -42,7 +42,7 @@ export interface IAlterationData{
 
 export interface IProfileMetaData{
   profileId: string;
-  studyId: string;
+  studyId?: string;
 }
 
 export interface IDataTypeMetaData{
@@ -177,6 +177,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.handleMutations();
 
     console.log("Alteration data0");
+    console.log(this.alterationData);
+
+    console.log("Genomic data0");
     console.log(this.alterationData);
     const profileCounts = this.props.store.molecularProfileIdToProfiledSampleCount.result;
 
@@ -353,6 +356,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(!this.props.alterationData){ // If size 0 that means it is not redirected.
       return;
     }
+    const redirectedProfiles = Object.keys(this.props.alterationData).map((data: string) : IProfileMetaData => {return {profileId: data}});
+    redirectedProfiles.forEach((redirectedProfile) => {
+      this.profiles.push(redirectedProfile);
+    });
     console.log("Here");
     console.log(this.props.alterationData);
     this.editor.addPortalGenomicData(this.props.alterationData, this.editor.getEmptyGroupID());
