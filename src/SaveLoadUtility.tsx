@@ -217,7 +217,7 @@ export default class SaveLoadUtility{
       var nodeW = (lineData.length > 7) ? lineData[6] : "150";
       var nodeH = (lineData.length > 7) ? lineData[7] : "52";
 
-      if(nodeName === " "){
+      if(nodeName === " " || nodeName === ""){
         console.error("Here empty");
         nodeName = "No Name " + (i + 1);
       }
