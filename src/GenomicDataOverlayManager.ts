@@ -1,8 +1,8 @@
 export default class GenomicDataOverlayManager {
-  private genomicDataMap: {};
-  private visibleGenomicDataMapByType: {};
-  private groupedGenomicDataMap: {};
-  private groupedGenomicDataCount: number;
+  public genomicDataMap: {};
+  public visibleGenomicDataMapByType: {};
+  public groupedGenomicDataCount: number;
+  public groupedGenomicDataMap: {};
   private DEFAULT_VISIBLE_GENOMIC_DATA_COUNT: number;
   private MAX_VISIBLE_GENOMIC_DATA_COUNT: number;
   private observers: any[];

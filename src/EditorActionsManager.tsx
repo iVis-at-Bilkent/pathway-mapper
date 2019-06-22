@@ -9,11 +9,12 @@ export default class EditorActionsManager{
 
     public cy: any;
     public defaultLayoutProperties: any;
+    public layoutProperties: any;
+    public genomicDataOverlayManager: GenomicDataOverlayManager;
+
     private FIT_CONSTANT: number;
-    private layoutProperties: any;
     private observers: any[];
     private svgExporter: SVGExporter;
-    private genomicDataOverlayManager: GenomicDataOverlayManager;
     private selectedNodeStack: any;
     private undoRedoManager: any;
     private isCbioPortal: boolean;
