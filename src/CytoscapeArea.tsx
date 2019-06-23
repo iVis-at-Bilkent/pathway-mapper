@@ -5,7 +5,7 @@ import $ from "jquery";
 window.$ = $;
 import autobind from "autobind-decorator";
 import {observer} from "mobx-react";
-import ViewOperationsManager from "./ViewOperationsManager"
+import ViewOperationsManager from "./ViewOperationsManager";
 import EditorActionsManager from "./EditorActionsManager";
 import DragDropNodeAddPlugin from "./DragDropNodeAddPlugin";
 import ContextMenuManager from "./ContextMenuManager";
@@ -67,7 +67,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       super(props);
       this.isCollaborative = props.isCollaborative;
       this.edgeAddingMode = 0;
-      this.shareDBManager = new ShareDBManager();
       this.isCbioPortal = props.isCbioPortal;
       // this.init();
       // this.createSampleMenu(); //TODO: AMENDMENT Menu must be react.
@@ -157,7 +156,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     // Create portal accessor
     this.portalAccessor = new CBioPortalAccessor(this.editor);
     //this.appManager = this;
-  };
+  }
 
   placePanzoomAndOverlay(){
     //TODO place navigator !!!
@@ -239,6 +238,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.undoRedoManager = this.cy.undoRedo();
     console.log("undoRedoManager" + this.undoRedoManager);
     // Create Manager Classes
+    this.shareDBManager = new ShareDBManager(() => {console.log("ShareDB Bilmemne");});
     this.editor = new EditorActionsManager(this.isCollaborative,
                                            this.shareDBManager,
                                            this.cy,
@@ -246,6 +246,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
                                            this.edgeEditing,
                                            this.undoRedoManager,
                                            this.portalAccessor);
+    this.shareDBManager.setEditor(this.editor);
+    this.shareDBManager.initShareDB();
     //@ts-ignore
     window.editorActionsManager = this.editor;
     this.gridOptionsManager = new GridOptionsManager();
@@ -609,7 +611,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       this.editor.changeNodePositionsByArrows(this.cy.nodes(":selected"));
     });
 
-  };
+  }
 
   initKeyboardHandlers() {
     if (!this.isCollaborative && !this.isCbioPortal) {
@@ -644,7 +646,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
         }
       }
     });
-  };
+  }
 
   initUndoRedoFunctionality() {
     if (this.isCollaborative || this.isCbioPortal) {
@@ -654,7 +656,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       document.getElementById("localOrCollaborativeToolbar").style.display = "none";
       */
     }
-  };
+  }
 
 
   initCBioPortalFunctionalities() {
@@ -671,7 +673,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       document.getElementById("cBioPortal-Wrapper").style.display = "inline-block";
       document.getElementById("about-model-header").innerHTML = "ReactPathwayMapper Viewer 2.0";*/
     }
-  };
+  }
 
   /*
   createSampleMenu(){

@@ -23,11 +23,14 @@ export default class ShareDBManager {
     doc: any;
     postFileLoad: any;
     editor: EditorActionsManager;
-    constructor(postFileLoadCallback, editor) {
+    constructor(postFileLoadCallback) {
         //Doc data maps names and keys
         this.postFileLoad = postFileLoadCallback;
-        this.editor = editor;
     };
+
+    setEditor(editor: EditorActionsManager){
+        this.editor = editor;
+    }
 
     //Applies any given sharDB opeation to shared document and notifies other clients
     applyShareDBOperation(op) {

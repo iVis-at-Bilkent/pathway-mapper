@@ -32,7 +32,7 @@ export default class EditorActionsManager{
         this.isCbioPortal = isCBioPortal;
         this.edgeEditing = edgeEditing;
         this.portalAccessor = portalAccessor;
-        if(this.isCollaborative && shareDBManager) {
+        if(this.isCollaborative) {
           this.shareDBManager = shareDBManager;
         }
 
@@ -95,7 +95,7 @@ export default class EditorActionsManager{
     handleChangePositionByAlignment(movedNodeArr: any)
     {
         if (this.isCollaborative)
-            console.log("ShareDB Was here");// this.shareDBManager.changeElementsPositionByAlignment(movedNodeArr);
+            this.shareDBManager.changeElementsPositionByAlignment(movedNodeArr);
         else
             this.undoRedoManager.do("changePositions", movedNodeArr)
     };
@@ -142,7 +142,7 @@ export default class EditorActionsManager{
     changeNodePositionsByArrows(selectedNodes: any)
     {
         if (this.isCollaborative)
-            console.log("ShareDB Was here", selectedNodes);//this.shareDBManager.changeNodePositionsShareDB(selectedNodes);
+            this.shareDBManager.changeNodePositionsShareDB(selectedNodes);
         //resize-node extension already deals for the movement in local mode
     };
 
@@ -217,7 +217,7 @@ export default class EditorActionsManager{
     {
         if (this.isCollaborative)
         {
-            console.log("ShareDB Was here");//this.shareDBManager.changeName(ele, newName);
+            this.shareDBManager.changeName(ele, newName);
         }
         else
         {
@@ -279,7 +279,7 @@ export default class EditorActionsManager{
         });
         this.cy.elements(":selected").unselect();
         if (this.isCollaborative)
-            console.log("ShareDB Was here");//this.shareDBManager.changeVisibility(nodesToHide, true);
+            this.shareDBManager.changeVisibility(nodesToHide, true);
         else
             this.undoRedoManager.do('hideNode', nodesToHide);
     };
@@ -303,7 +303,7 @@ export default class EditorActionsManager{
     {
         var hid = this.cy.nodes(":hidden");
         if (this.isCollaborative)
-            console.log("ShareDB Was here");//this.shareDBManager.changeVisibility(hid, false);
+            this.shareDBManager.changeVisibility(hid, false);
         else
             this.undoRedoManager.do('showAllNodes', hid);
     };
@@ -381,7 +381,7 @@ export default class EditorActionsManager{
                         invalidGenes.push(gene.id());
                 }
             });
-            console.log("ShareDB Was here");//this.shareDBManager.changeHighlightInvalidGenes(invalidGenes, true);
+            this.shareDBManager.changeHighlightInvalidGenes(invalidGenes, true);
             // TODO: Amendment by Ziya
             /*
             if (invalidGenes.length > 0)
@@ -430,7 +430,7 @@ export default class EditorActionsManager{
                         geneIDs.push(gene.id());
                 }
             });
-            console.log("ShareDB Was here");//this.shareDBManager.changeHighlightInvalidGenes(geneIDs, false);
+            this.shareDBManager.changeHighlightInvalidGenes(geneIDs, false);
         }
         else
         {
@@ -484,7 +484,7 @@ export default class EditorActionsManager{
                 elementsToHighlight = elementsToHighlight.union(ele);
         });
         if (this.isCollaborative)
-            console.log("ShareDB Was here");//this.shareDBManager.changeHighlight(elementsToHighlight, true);
+            this.shareDBManager.changeHighlight(elementsToHighlight, true);
         else
             this.undoRedoManager.do('highlightOthers', elementsToHighlight);
     };
@@ -501,7 +501,7 @@ export default class EditorActionsManager{
                 elementsToHighlight = elementsToHighlight.union(ele);
         });
         if (this.isCollaborative)
-            console.log("ShareDB Was here");//this.shareDBManager.changeHighlight(elementsToHighlight, true);
+            this.shareDBManager.changeHighlight(elementsToHighlight, true);
         else
             this.undoRedoManager.do('highlightOthers', elementsToHighlight);
     };
@@ -509,7 +509,7 @@ export default class EditorActionsManager{
     highlightBySearch(args: any[])
     {
         if (this.isCollaborative)
-            console.log("ShareDB Was here");//this.shareDBManager.changeHighlight(args, true);
+            this.shareDBManager.changeHighlight(args, true);
         else
             this.undoRedoManager.do('highlightOthers', args);
     };
@@ -524,7 +524,7 @@ export default class EditorActionsManager{
         });
 
         if (this.isCollaborative)
-            console.log("ShareDB Was here");//this.shareDBManager.changeHighlight(nodesToRemoveHighlight, false);
+            this.shareDBManager.changeHighlight(nodesToRemoveHighlight, false);
         else
             actions.push({name: "removeOtherHighlight", param: nodesToRemoveHighlight});
         // this.undoRedoManager.do('removeOtherHighlight', nodesToRemoveHighlight);
@@ -613,7 +613,7 @@ export default class EditorActionsManager{
     getEmptyGroupID()
     {
         if(this.isCollaborative)
-            return console.log("ShareDB Was here");//this.shareDBManager.getEmptyGroupID();
+            return this.shareDBManager.getEmptyGroupID();
         else
             return this.genomicDataOverlayManager.getEmptyGroupID();
     };
@@ -623,14 +623,14 @@ export default class EditorActionsManager{
      * **/
     groupGenomicData(cancerNames: any[], groupID: string)
     {
-        return console.log("ShareDB Was here", cancerNames, groupID);//this.shareDBManager.groupGenomicData(cancerNames, groupID);
+        return this.shareDBManager.groupGenomicData(cancerNames, groupID);
     };
 
     addPubmedIDs(edge: any, pubmedIDs: number)
     {
         if (this.isCollaborative)
         {
-            console.log("ShareDB Was here");//this.shareDBManager.addPubmedIDs(edge.id(), pubmedIDs);
+            this.shareDBManager.addPubmedIDs(edge.id(), pubmedIDs);
         }
         else
         {
@@ -647,7 +647,7 @@ export default class EditorActionsManager{
     {
         if (this.isCollaborative)
         {
-            console.log("ShareDB Was here");//this.shareDBManager.removePubmedID(edge.id(), pubmedIDs);
+            this.shareDBManager.removePubmedID(edge.id(), pubmedIDs);
         }
         else
         {
@@ -676,7 +676,7 @@ export default class EditorActionsManager{
             // edge.data("bendPointPositions", bendPointsArray);
             // edgeEditing.initBendPoints(edge);
 
-            console.log("ShareDB Was here");//this.shareDBManager.updateEdgeBendPoints(edge.id(), bendPointsArray);
+            this.shareDBManager.updateEdgeBendPoints(edge.id(), bendPointsArray);
         }
     }
 
@@ -728,8 +728,8 @@ export default class EditorActionsManager{
         if(this.isCollaborative)
         {
             //TODO compound OP
-            // console.log("ShareDB Was here");//this.shareDBManager.clearGenomicVisData();
-            console.log("ShareDB Was here");//this.shareDBManager.addGenomicVisibilityData(dataMap);
+            // this.shareDBManager.clearGenomicVisData();
+            this.shareDBManager.addGenomicVisibilityData(dataMap);
         }
         else
         {
@@ -760,7 +760,7 @@ export default class EditorActionsManager{
     updateGlobalOptions(newOptions: any)
     {
         if(this.isCollaborative)
-            console.log("ShareDB Was here", newOptions);//this.shareDBManager.updateGlobalOptions(newOptions);
+            this.shareDBManager.updateGlobalOptions(newOptions);
     }
 
     //Layout properties related functions
@@ -771,7 +771,7 @@ export default class EditorActionsManager{
             // Call a real time function that updated real time object and
             // its callback (updateLayoutPropertiesCallback) will handle sync of this object
             // across collaborators
-            console.log("ShareDB Was here");//this.shareDBManager.updateLayoutProperties(newLayoutProps);
+            this.shareDBManager.updateLayoutProperties(newLayoutProps);
         }
         else
         {
@@ -931,7 +931,7 @@ export default class EditorActionsManager{
 
     addNewNodeToShareDB(nodeData: any, posData: any)
     {
-        console.log("ShareDB Was here", nodeData, posData);//this.shareDBManager.addNewNode(nodeData,posData);
+        this.shareDBManager.addNewNode(nodeData,posData);
     };
 
     //Edge related functions
@@ -976,7 +976,7 @@ export default class EditorActionsManager{
 
     addNewEdgeShareDB(edgeData: any)
     {
-        console.log("ShareDB Was here", edgeData);//this.shareDBManager.addNewEdge(edgeData);
+        this.shareDBManager.addNewEdge(edgeData);
     };
 
     addNewEdgetoCy(edgeData: any)
@@ -1149,7 +1149,7 @@ export default class EditorActionsManager{
     };
 
     reconnectEdgeInShareDB(sourceID: string, targetID: string, edgeData: any) {
-        console.log("ShareDB Was here", sourceID, targetID, edgeData);//this.shareDBManager.reconnectEdge(sourceID, targetID, edgeData);
+        this.shareDBManager.reconnectEdge(sourceID, targetID, edgeData);
     };
 
     //Removal functions
@@ -1186,7 +1186,7 @@ export default class EditorActionsManager{
 
     removeElementFromShareDB(ele: any)
     {
-        console.log("ShareDB Was here", ele);//this.shareDBManager.removeElement(ele.id());
+        this.shareDBManager.removeElement(ele.id());
     };
 
     changeParents(eles: any[], newParentId: string)
@@ -1309,7 +1309,7 @@ export default class EditorActionsManager{
         var rootNodeR = new NodeObj(null);
 
         traverseNodes(topMostNodes, rootNodeR);
-        console.log("ShareDB Was here", newParentId);//this.shareDBManager.changeParent(rootNodeR, newParentId, connectedEdges);
+        this.shareDBManager.changeParent(rootNodeR, newParentId, connectedEdges);
     };
 
     changeParentCy(eles: any[], newParentId: string)
@@ -1383,7 +1383,7 @@ export default class EditorActionsManager{
                 var previousWidth = ele.width();
                 var previousHeight = ele.height();
                 //Sync movement to real time api
-                console.log("ShareDB Was here");//this.shareDBManager.resizeElement(ele, previousWidth, previousHeight);
+                this.shareDBManager.resizeElement(ele, previousWidth, previousHeight);
             }
             else {
                 var minWidth = ele.style('min-width');
@@ -1394,7 +1394,7 @@ export default class EditorActionsManager{
                 var minHeightBiasBottom = ele.style('min-height-bias-bottom');
 
                 //Sync movement to real time api
-                console.log("ShareDB Was here");//this.shareDBManager.resizeCompound(ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom);
+                this.shareDBManager.resizeCompound(ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom);
             }
         }
     };
@@ -1404,7 +1404,7 @@ export default class EditorActionsManager{
         if (this.isCollaborative)
         {
             //Collaborative usage
-            console.log("ShareDB Was here");//this.shareDBManager.mergeGraph(nodes,edges);
+            this.shareDBManager.mergeGraph(nodes,edges);
         }
         else
         {
@@ -1533,14 +1533,14 @@ export default class EditorActionsManager{
 
     loadfileShareDB(nodes: any[], edges: any[])
     {
-        console.log("ShareDB Was here", nodes, edges);//this.shareDBManager.loadGraph(nodes,edges);
+        this.shareDBManager.loadGraph(nodes,edges);
     };
 
     removeAllElements()
     {
         if (this.isCollaborative)
         {
-            console.log("ShareDB Was here");//this.shareDBManager.removeAllElements();
+            this.shareDBManager.removeAllElements();
         }
         else
         {
@@ -1667,12 +1667,11 @@ export default class EditorActionsManager{
 
         if(this.isCollaborative)
         {
-            /* TODO: A disaster happended here
             var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataShareDB(genomicData);
-            console.log("ShareDB Was here");//this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);//this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
+            this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
+            this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
                 groupID);
-                //this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
-            */
+            this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
         }
         else
         {
@@ -1684,13 +1683,11 @@ export default class EditorActionsManager{
     {
         if(this.isCollaborative)
         {
-          /*TODO: A disaster happended here
             var parsedGenomicData = this.genomicDataOverlayManager.preparePortalGenomicDataShareDB(genomicData);
-            console.log("ShareDB Was here");//this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
-            console.log("ShareDB Was here");//this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
+            this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
+            this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
                 groupID);
-            console.log("ShareDB Was here");//this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
-            */
+            this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
         }
         else
         {

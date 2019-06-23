@@ -14,7 +14,7 @@ import * as Bootstrap from "react-bootstrap";
 import {Navbar, Nav, NavDropdown, MenuItem, NavItem, Button, Label} from 'react-bootstrap';
 import pathways from "./pathways.json";
 import Menubar from './Menubar';
-import {Modal, DropdownButton, Checkbox} from 'react-bootstrap';
+import {Modal, DropdownButton, Checkbox, Panel} from 'react-bootstrap';
 import PathwayActions from './PathwayActions';
 import CBioPortalAccessor from './CBioPortalAccessor';
 import SaveLoadUtility from './SaveLoadUtility';
@@ -22,6 +22,7 @@ import "./base.css";
 import "cytoscape-panzoom/cytoscape.js-panzoom.css";
 import "cytoscape-navigator/cytoscape.js-navigator.css";
 import Loader from 'react-loader-spinner';
+import Sidebar from './Sidebar';
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap: any;
@@ -437,14 +438,21 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           </Bootstrap.Row>
 
           <Bootstrap.Row>
-              {
-              ( isCBioPortal &&
-              <Bootstrap.Col xs={1}>
-                  <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}/>
-              </Bootstrap.Col>)
-              }
+            {
+            ( isCBioPortal &&
+            <Bootstrap.Col xs={2}>
+                <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}/>
+            </Bootstrap.Col>)
+            }
+            {
+            (!isCBioPortal && 
+            <Bootstrap.Col xs={1}>
+              <Sidebar/>
+            </Bootstrap.Col>)
+          
 
-            <Bootstrap.Col xs={isCBioPortal ? 7 : 12}>
+            }
+            <Bootstrap.Col xs={isCBioPortal ? 7 : 10}>
                 <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
 

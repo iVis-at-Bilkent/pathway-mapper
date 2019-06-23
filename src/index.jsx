@@ -15,11 +15,11 @@ window.onload = () => {
   console.log(alterationData);
 
   if(!pathwayName){
-    render(<PathwayMapper isCBioPortal={true} genes={placeHolderGenes} store={undefined}/>, rootEl);
+    render(<PathwayMapper isCBioPortal={false} genes={placeHolderGenes} store={undefined}/>, rootEl);
   } else {
     render(<PathwayMapper isCBioPortal={false} genes={placeHolderGenes} store={undefined} pathwayName={pathwayName} alterationData={alterationData}/>, rootEl);
   }
-
+  console.log("hello");
   if (module.hot) {
     module.hot.accept();
   }
