@@ -21,8 +21,8 @@
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "start": "node_modules/.bin/webpack-dev-server --mode development --open --hot",
-    "startServer": "node ./src/server.js",
+    "startServer": "node_modules/.bin/webpack-dev-server --mode development --open --hot",
+    "start": "node ./src/server.js",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",

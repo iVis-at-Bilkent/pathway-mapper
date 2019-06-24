@@ -15,7 +15,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
     render(){
 
         const nodeTypes = ["Gene", "Family", "Complex", "Compartment", "Process"];
-        const edgeTypes = ["Activates", "Inhibits", "Induces", "Represses", "Binds"];
+        const edgeTypes = ["Activatdsgdfges", "Inhibits", "Induces", "Represses", "Binds"];
 
         return(
             <Navbar>

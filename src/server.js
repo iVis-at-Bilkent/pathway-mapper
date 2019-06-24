@@ -14,7 +14,7 @@ const WebSocket = require('ws');
 const db = require('sharedb-mongo')('mongodb://pathwaymapper:1234abc@ds111072.mlab.com:11072/pathwaymapper');
 const backend = new ShareDB({db});
 
-const server = app.listen(8081, function () {
+const server = app.listen(process.env.PORT || 8080, function () {
 
 })
 
