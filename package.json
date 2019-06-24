@@ -21,7 +21,6 @@
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
     "start": "node_modules/.bin/webpack-dev-server --mode development --open --hot",
     "startServer": "node ./src/server.js",
     "test": "jest --coverage",
