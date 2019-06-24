@@ -447,7 +447,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             {
             (!isCBioPortal && 
             <Bootstrap.Col xs={1}>
-              <Sidebar/>
+              <Sidebar pathwayActions={this.pathwayActions}/>
             </Bootstrap.Col>)
           
 

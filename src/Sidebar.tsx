@@ -1,14 +1,21 @@
 import React from "react";
 import {Panel, Button, Col, Row} from "react-bootstrap";
-export default class Sidebar extends React.Component{
+import PathwayActions from "./PathwayActions";
 
-    constructor(props){
+interface ISideBarProps{
+    pathwayActions: PathwayActions;
+}
+
+export default class Sidebar extends React.Component<ISideBarProps, {}>{
+
+    constructor(props: ISideBarProps){
         super(props);
     }
 
     render(){
 
-
+        const nodeTypes = ["Gene", "Family", "Complex", "Compartment", "Process"];
+        const edgeTypes = ["Activates", "Inhibits", "Induces", "Represses", "Binds"];
         return(
             <div>
             <Panel bsStyle="primary">
@@ -36,26 +43,16 @@ export default class Sidebar extends React.Component{
                   <Panel.Title componentClass="h3" style={{textAlign: "center"}}>Node Palette</Panel.Title>
                 </Panel.Heading>
                 <Panel.Body style={{textAlign: "center"}}>
-                    
-                    <Row>
-                        <Button>Gene</Button>
-                    </Row>
-                    <br/>
-                    <Row>
-                        <Button>Family</Button>
-                    </Row>
-                    <br/>
-                    <Row>
-                        <Button>Complex</Button>
-                    </Row>
-                    <br/>
-                    <Row>
-                        <Button>Compartment</Button>
-                    </Row>
-                    <br/>
-                    <Row>
-                        <Button>Process</Button>
-                    </Row>
+                      {
+                        nodeTypes.map((nodeType) => {
+                        return (
+                            <Row>
+                            <Button onClick={() => {this.props.pathwayActions.addNode(nodeType)}}>
+                                {nodeType}
+                            </Button>
+                            </Row> );
+                        })
+                      }
                 </Panel.Body>
               </Panel>
 
@@ -64,32 +61,18 @@ export default class Sidebar extends React.Component{
                   <Panel.Title componentClass="h3" style={{textAlign: "center"}}>Interaction Palette </Panel.Title>
                 </Panel.Heading>
                 <Panel.Body style={{textAlign: "center"}}>
-                    
-                    <Row>
-                        <Button>Activates</Button>
-                    </Row>
-                    <br/>
-                    <Row>
-                        <Button>Inhibits</Button>
-                    </Row>
-                    <br/>
-                    <Row>
-                        <Button>Induces</Button>
-                    </Row>
-                    <br/>
-                    <Row>
-                        <Button>Represses</Button>
-                    </Row>
-                    <br/>
-                    <Row>
-                        <Button>Binds</Button>
-                    </Row>
+                    {
+                    edgeTypes.map((nodeType: string, i: number) => {
+                    return (
+                        <Row>
+                        <Button onClick={() => {this.props.pathwayActions.addEdge(i)}}>
+                            {nodeType}
+                        </Button>
+                        </Row> );
+                    })
+                    }
                 </Panel.Body>
               </Panel>
-
-
-
-
               </div>
 
 
