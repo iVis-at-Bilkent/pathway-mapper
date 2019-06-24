@@ -247,7 +247,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
                                            this.undoRedoManager,
                                            this.portalAccessor);
     this.shareDBManager.setEditor(this.editor);
-    this.shareDBManager.initShareDB();
+    // this.shareDBManager.initShareDB();
     //@ts-ignore
     window.editorActionsManager = this.editor;
     this.gridOptionsManager = new GridOptionsManager();

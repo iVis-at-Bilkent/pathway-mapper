@@ -1,10 +1,10 @@
 import EditorActionsManager from "./EditorActionsManager";
 import _ from "underscore";
 import GraphUtilities from "./GraphUtilities";
-
+/*
 var sharedb = require('sharedb/lib/client');
 var socket = new WebSocket('ws://' + window.location.host);
-var connection = new sharedb.Connection(socket);
+var connection = new sharedb.Connection(socket);*/
 
 export default class ShareDBManager {
 
@@ -185,7 +185,7 @@ export default class ShareDBManager {
                 genomicDataGroupCount: 0
             };
             window.history.pushState(null, null, '?id=' + new_id);
-            self.doc = connection.get('cy', new_id);
+            //self.doc = connection.get('cy', new_id);
             self.doc.create(data, loadFileCallback);
         };
 
@@ -193,7 +193,7 @@ export default class ShareDBManager {
         //If exists open the shared document
         if (id) {
             // Check any document exists with given id
-            this.doc = connection.get('cy', id);
+            //this.doc = connection.get('cy', id);
             this.doc.fetch(function (err) {
                 if (err)
                     throw err;
