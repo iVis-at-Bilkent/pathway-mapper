@@ -374,7 +374,7 @@ export default class GenomicDataOverlayManager {
           return 'data:image/';
         }
         const dataURI = 'data:image/svg+xml;utf8,' + x;
-        console.log(dataURI)
+        // console.log(dataURI)
         return dataURI;
       })
       .update();
