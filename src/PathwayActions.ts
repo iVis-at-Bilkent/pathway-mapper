@@ -2,8 +2,7 @@ import autobind from 'autobind-decorator';
 import { observable } from 'mobx';
 import EditorActionsManager from './EditorActionsManager';
 import FileOperationsManager from './FileOperationsManager';
-import { observer } from 'mobx-react';
-
+import $ from 'jquery';
 export default class PathwayActions {
   @observable
   selectedPathway: string;
@@ -25,6 +24,7 @@ export default class PathwayActions {
   newPathway() {
     this.fileManager.createNewPathway();
   }
+  
 
   @autobind
   addEdge(edgeTypeIndex: number){
@@ -33,6 +33,14 @@ export default class PathwayActions {
         // @ts-ignore
     this.eh.enableDrawMode();
   }
+
+  @autobind
+  changeNodeName(oldName: string, newName: string){
+    const cyNode = this.editor.cy.$('#' + oldName + '')[0];
+    console.log(this.editor.cy.$('#' + oldName + ''));
+    this.editor.changeName(cyNode, newName);
+  }
+
 
   @autobind
   addNode(nodeType) {
@@ -70,7 +78,7 @@ export default class PathwayActions {
       'NF1\t-12\t-4\t30\t20\n' +
       'PIK3CA\t18\t40\t-50\t20\n' +
       'KRAS\t11\t-5\t0\t20\n' +
-      'BRAF\t0\t-2\t0\t20\n' +
+      'ZIYA\t0\t-2\t0\t20\n' +
       'AKT1\t3\t30\t-10\t20\n' +
       'AKT2\t6\t-3\t20\t20\n' +
       'AKT3\t6\t-3\t20\t20\n' +

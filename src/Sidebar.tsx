@@ -25,7 +25,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                 <Panel.Body style={{textAlign: "center"}}>
                     
                     <Row>
-                        <Button>Details...</Button>
+                        <Button onClick={() => {this.props.pathwayActions.changeNodeName("PTEN", "ZIYA")}}>Details...</Button>
                     </Row>
                     <br/>
                     <Row>

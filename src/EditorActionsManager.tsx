@@ -797,6 +797,7 @@ export default class EditorActionsManager{
     {
         if (this.isCollaborative)
         {
+            console.log("Add node to DB");
             this.addNewNodeToShareDB(nodeData, posData);
         }
         else
@@ -1427,7 +1428,7 @@ export default class EditorActionsManager{
             var ele = nodes[index];
             nodeMap[ele.data.id] = ele;
 
-            if (this.cy.filter('node[name = "'+ele.data.name+'"]').length <= 0)
+            if (this.cy.filter('node[name = '+ele.data.name+']').length <= 0)
             {
                 delete ele.data.id;
                 //TODO need to update parent ?
@@ -1511,7 +1512,7 @@ export default class EditorActionsManager{
         if (this.isCollaborative)
         {
             //Real time load graph
-            this.loadfileShareDB(nodes,edges);
+            this.loadfileShareDB(nodes, edges);
         }
         else
         {

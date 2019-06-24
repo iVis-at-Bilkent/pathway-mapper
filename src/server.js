@@ -4,6 +4,7 @@ const path = require('path');
 
 const staticPath = path.join(__dirname, '/');
 app.use(express.static(staticPath));
+app.use(express.static(path.join(__dirname, '/icons')));
 
 app.get('/', function (req, res) {
    res.sendFile(path.join(__dirname + '/index.html'));})

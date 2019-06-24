@@ -28,7 +28,6 @@ const styleSheet = require('./GraphStyleSheet.tsx');
 const panzoomOpts = require('./PanzoomOptions.tsx');
 const navigator = require('cytoscape-navigator');
 const contextMenus = require('cytoscape-context-menus');
-
 const konva = require('konva');
 const viewUtilities = require('cytoscape-view-utilities');
 
@@ -207,7 +206,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   initCyJS() {
     panzoom(cytoscape);  // register extension
     // cxtmenu( cytoscape, $ ); // register extension
-    // cyqtip(cytoscape, $); // register extension
     regCose(cytoscape); // register extension
     navigator(cytoscape); // register extension
     // grid_guide(cytoscape, $); // register extension
@@ -217,11 +215,10 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     edgeEditing(cytoscape, $); // register extension
     viewUtilities(cytoscape, $); // register extension
     cytoscape.use(edgeHandles);
-
+    // cytoscape.use( qtip );
 
     this.edgeAddingMode = 0;
     // var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
-    console.log(this.cyDiv);
     this.cy = cytoscape({
       container: this.cyDiv,
       boxSelectionEnabled: true,
@@ -233,7 +230,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       motionBlur: true,
       layout: {name: 'preset'}
     });
-    console.log(this.cy);
 
     this.undoRedoManager = this.cy.undoRedo();
     console.log("undoRedoManager" + this.undoRedoManager);
@@ -247,7 +243,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
                                            this.undoRedoManager,
                                            this.portalAccessor);
     this.shareDBManager.setEditor(this.editor);
-    // this.shareDBManager.initShareDB();
+    if(this.isCollaborative)
+      this.shareDBManager.initShareDB();
     //@ts-ignore
     window.editorActionsManager = this.editor;
     this.gridOptionsManager = new GridOptionsManager();
@@ -258,35 +255,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.qtipManager = new QtipManager(this.cy, this.editor);
     this.cxtMenuManager = new ContextMenuManager(this.cy, this.editor, this.isCbioPortal);
     this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editor, this.cy);
-
-    // this.nodeResizeOptionsView = new NodeResizeOptionsView({
-    //     el: $('#nodeResizeOptionsDiv')
-    // }).render();
-    /* TODO AMENDMENT These will be moved to react
-    //Render layout properties view after editor actions manager is created !
-    this.layoutPropertiesView = new LayoutProperties({
-      el: $('#layoutPropertiesDiv'),
-      editorActionsManager: this.editorActionsManager
-    }).render();
-
-    this.promptConfirmationView = new PromptConfirmationView({
-      el: $('#promptConfirmationDiv')
-    }).render();
-
-    this.gridOptionsView = new GridOptionsView({
-      el: $('#gridOptionsDiv')
-    }).render();
-
-
-
-    this.genomicDataExplorerView = new GenomicDataExplorerView({
-      el: $('#genomicDataExplorerDiv'),
-      editorActionsManager: this.editor
-    }).render();
-
-    this.pathwayDetailsView = new PathwayDetailsView({
-      el: $('#pathwayDetailsDiv')
-    }).render();*/
 
     // Initialize panzoom
     this.cy.panzoom(panzoomOpts);
@@ -529,6 +497,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       // @ts-ignore
       var eventIsDirect = (e.target === this);
 
+      alert("Double tapped")
       if (eventIsDirect) {
         //Remove qtips
         $(".qtip").remove();
@@ -546,12 +515,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       var eventIsDirect = (e.target === this);
 
       if (eventIsDirect) {
-        $(".qtip").remove();
-        that.qtipManager.addQtipToElements(e.target);
-        // var api = this.qtip('api');
-        // if (api) {
-        //     api.show();
-        // }
       }
     });
 
@@ -661,108 +624,12 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
   initCBioPortalFunctionalities() {
     if (this.isCbioPortal) {
-      /* TODO: AMENDMENT
       const contextMenu = this.cy.contextMenus('get');
 
-      //Destroy context menu
       contextMenu.destroy();
-      //Hide toolbar, sidebar, navbar
-      document.getElementById("pathway-toolbar").style.display = "none";
-      document.getElementById("pathway-sidebar").style.display = "none";
-      document.getElementById("pathway-navbar").style.display = "none";
-      document.getElementById("cBioPortal-Wrapper").style.display = "inline-block";
-      document.getElementById("about-model-header").innerHTML = "ReactPathwayMapper Viewer 2.0";*/
     }
   }
 
-  /*
-  createSampleMenu(){
-    //Get template file data first
-    const self = this;
-    const request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-      if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-        var templateData = JSON.parse(request.responseText);
-
-        for (var key in templateData) {
-          if (templateData.hasOwnProperty(key)) {
-            var newTCGAMenu = $('<li class="dropdown-submenu" id="' + key + '">' +
-              '<a href="#">' + key + '</a>' +
-              '</li>');
-            var newTCGAPathway = $('<ul class="dropdown-menu"></ul>');
-
-            for (var i in templateData[key]) {
-              var newPath = templateData[key][i];
-              var pName = newPath.replace(/-/gi, " ").substring(0, newPath.length - 4);
-              var sampleLink = $('<li><a  path="' + newPath + '" href="#">' + pName + '</a></li>');
-              sampleLink.on('click', checkMenuClickHandler);
-
-              //Add it to pan cancer menu
-              if (key.includes('PanCancer')) {
-                //panCancerSubMenu
-                $('#panCancerSubMenu').append(sampleLink);
-              }
-              else {
-                newTCGAPathway.append(sampleLink);
-                newTCGAMenu.append(newTCGAPathway);
-              }
-            }
-
-            //Add sub menus if they do not include pancaner and creighton
-            if (!key.includes('PanCancer') && !key.includes('Creighton')) {
-              $('#sampleSubMenu').append(newTCGAMenu);
-              if (self.isCbioPortal) {
-                $('#templateSubMenu').append(newTCGAMenu);
-              }
-            }
-
-          }
-        }
-      }
-    };
-
-    //Checks whether there is a visible pathway and displays a warning
-    function checkMenuClickHandler(event: MouseEvent) {
-      if (this.cy.elements().length != 0)
-        window.appManager.promptConfirmationView.render(function () {
-          sampleMenuClickHandler(event)
-        });
-      else
-        sampleMenuClickHandler(event);
-    };
-
-    function updateTCGAInformation(title, desription) {
-      document.getElementById("TCGA-header").innerHTML = title;
-      document.getElementById("TCGA-textarea").innerText = desription;
-    }
-
-    function sampleMenuClickHandler(event) {
-      var request = new XMLHttpRequest();
-      request.onreadystatechange = function () {
-        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-          var allEles = SaveLoadUtilities.parseGraph(request.responseText);
-          self.editor.loadFile(allEles.nodes, allEles.edges);
-          window.undoRedoManager.reset();
-          window.appManager.pathwayDetailsView.updatePathwayProperties({
-            fileName: allEles.title + ".txt",
-            pathwayTitle: allEles.title,
-            pathwayDescription: allEles.description
-          });
-          if(self.isCbioPortal) {
-            updateTCGAInformation(allEles.title, allEles.description);
-          }
-        }
-      };
-      //Send request for selected pathway
-      var pathwayName = event.target.attributes[0].value;
-      request.open("GET", "/pathway?filename=" + pathwayName);
-      request.send();
-    }
-
-
-    request.open("GET", "/getTemplateFileData");
-    request.send();
-  };*/
 
 }
 

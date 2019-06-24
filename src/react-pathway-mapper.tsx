@@ -23,6 +23,7 @@ import "cytoscape-panzoom/cytoscape.js-panzoom.css";
 import "cytoscape-navigator/cytoscape.js-navigator.css";
 import Loader from 'react-loader-spinner';
 import Sidebar from './Sidebar';
+import StudyModal from './modals/StudyModal';
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap: any;
@@ -59,8 +60,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   @observable
   selectedPathway: string;
 
-  @observable
-  selectedStudyData: any[];
   fileManager: FileOperationsManager;
   editor: EditorActionsManager;
   pathwayActions: PathwayActions;
@@ -69,10 +68,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   isModalShown: boolean;
 
   @observable
-  dataTypes: {[dataType: string]: IDataTypeMetaData} = {};
-  @observable
   itemArray: any[];
-  cancerStudies: any[];
   portalAcessor: CBioPortalAccessor;
 
   @observable
@@ -93,7 +89,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.selectedPathway = this.props.pathwayName || "Creighton-PI3K-pathway";
     this.pathwayActions = new PathwayActions(this.pathwayHandler);
     this.isModalShown = false;
-    this.selectedStudyData = [];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
@@ -322,38 +317,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       console.log(this.pathwayGeneMap);
     }
 
-  fetchStudy(){ 
-    this.itemArray = [];
-
-
-    this.portalAcessor.getDataTypes().forEach((dataType) => {
-      this.dataTypes[dataType] = {enabled: false, checked: false, profile: undefined};
-    });
-  
-    this.portalAcessor.fetchCancerStudies((cancerStudies: any) => {
-      this.cancerStudies = cancerStudies;
-      for(const study in cancerStudies){
-
-        if(!cancerStudies.hasOwnProperty(study)){
-          continue;
-        }
-        const item = <MenuItem key={study} onClick={() => {this.selectedStudyData = cancerStudies[study]; this.preparePortalAccess(cancerStudies[study][0]);}}>
-        {cancerStudies[study][0]}
-        </MenuItem>;
-  
-        this.itemArray.push(item);
-      }
-    });
-    console.log(this.itemArray);
-  }
-
-  disableAllDataTypes(){
-    for(const dataType of Object.keys(this.dataTypes)){
-      this.dataTypes[dataType].enabled = false;
-      this.dataTypes[dataType].checked = false;
-      this.dataTypes[dataType].profile = undefined;
-    }
-  }
 
   loadRedirectedPortalData(){
     if(!this.props.alterationData){ // If size 0 that means it is not redirected.
@@ -368,48 +331,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.editor.addPortalGenomicData(this.props.alterationData, this.editor.getEmptyGroupID());
   }
 
-  preparePortalAccess(studyId: string){
-    this.portalAcessor.getSupportedGeneticProfiles(studyId, (data) => {
-      this.disableAllDataTypes();
-      // Iterate through profiles
-      for(const profile of Object.keys(data)){
-        const type = CBioPortalAccessor.getDataType(profile);
-        if(type !== ""){
-          this.dataTypes[type].enabled = true;
-          this.dataTypes[type].profile = profile;
-        }
-      }
-    });
-  }
-
-  @autobind
-  handleCheckboxClick(dataType){
-    this.dataTypes[dataType].checked = !this.dataTypes[dataType].checked;
-    console.log(this.dataTypes[dataType].checked);
-  }
-
-  
-
-  @autobind
-  loadFromCBio(){
-    for (const dataType of Object.keys(this.dataTypes))
-    {
-        if(!this.dataTypes[dataType].checked) continue;
-
-        console.log("Inside load cBio:", this.dataTypes[dataType].checked);
-        console.log(this.selectedStudyData);
-
-        this.profiles.push({studyId: this.selectedStudyData[0], profileId: this.dataTypes[dataType].profile, enabled: true});
-
-        this.portalAcessor.getProfileData({
-            caseSetId: this.selectedStudyData[0],
-            geneticProfileId: this.dataTypes[dataType].profile,
-            genes: Object.keys(this.pathwayGeneMap[this.selectedPathway])
-        },
-        (data: any) =>{ console.log(data); this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID()); });
-    }
-  }
-
   @computed get profileEnabledMap(){
     const profileEnabledMap = {};
     this.profiles.forEach((profile: IProfileMetaData) => {profileEnabledMap[profile.profileId] = profile.enabled});
@@ -417,6 +338,23 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     return profileEnabledMap;
   }
 
+  @autobind
+  loadFromCBio(dataTypes: {[dataType: string]: IDataTypeMetaData}, selectedStudyData: any[]){
+      for (const dataType of Object.keys(dataTypes))
+      {
+          if(!dataTypes[dataType].checked) continue;
+
+
+          this.profiles.push({studyId: selectedStudyData[0], profileId: dataTypes[dataType].profile, enabled: true});
+
+          this.portalAcessor.getProfileData({
+              caseSetId: selectedStudyData[0],
+              geneticProfileId: dataTypes[dataType].profile,
+              genes: Object.keys(this.pathwayGeneMap[this.selectedPathway])
+          },
+          (data: any) =>{ console.log(data); this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID()); });
+      }
+  }
   render() {
   const isCBioPortal = this.props.isCBioPortal; 
   const profileLabels = this.profiles.map((profile: IProfileMetaData, i: number) => 
@@ -452,7 +390,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           
 
             }
-            <Bootstrap.Col xs={isCBioPortal ? 7 : 10}>
+            <Bootstrap.Col xs={isCBioPortal ? 6 : 10}>
                 <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
 
@@ -476,41 +414,21 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             }
           </Bootstrap.Row>
 
-          <Modal show={this.isModalShown} onHide={this.handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>Load from cBioPortal</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              
-
-            <DropdownButton id="dropdown-study" title={this.selectedStudyData[1] || "Choose study"}>
-              {this.itemArray}
-            </DropdownButton>
-            
-            { Object.keys(this.dataTypes).map((dataType: string) => {
-                return <Checkbox key={dataType} disabled={!this.dataTypes[dataType].enabled} 
-                          onClick={() => {this.handleCheckboxClick(dataType);}} checked={this.dataTypes[dataType].checked}> 
-                          {dataType}
-                        </Checkbox>;
-              })
-            }
-
-            <Button bsClass="success" onClick={this.loadFromCBio}>Load</Button>
-
-            </Modal.Body>
-          </Modal>
+          <StudyModal isModalShown={this.isModalShown} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
+          
       </div>
   );
   }
 
   @autobind
-  handleClose(){
-    this.isModalShown = false;
-  }
-
-  @autobind
   handleOpen(){
     this.isModalShown = true;
+  }
+
+
+  @autobind
+  handleClose(){
+      this.isModalShown = false;
   }
 
   @autobind

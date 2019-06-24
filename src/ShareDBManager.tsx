@@ -1,10 +1,10 @@
 import EditorActionsManager from "./EditorActionsManager";
 import _ from "underscore";
 import GraphUtilities from "./GraphUtilities";
-/*
+
 var sharedb = require('sharedb/lib/client');
 var socket = new WebSocket('ws://' + window.location.host);
-var connection = new sharedb.Connection(socket);*/
+var connection = new sharedb.Connection(socket);
 
 export default class ShareDBManager {
 
@@ -19,13 +19,14 @@ export default class ShareDBManager {
     readonly GENOMIC_DATA_GROUP_NAME = 'genomicDataGroupList';
     readonly GENOMIC_DATA_GROUP_COUNT = 'genomicDataGroupCount';
     
-
+    graphUtilities: GraphUtilities;
     doc: any;
     postFileLoad: any;
     editor: EditorActionsManager;
     constructor(postFileLoadCallback) {
         //Doc data maps names and keys
         this.postFileLoad = postFileLoadCallback;
+        this.graphUtilities = new GraphUtilities();
     };
 
     setEditor(editor: EditorActionsManager){
@@ -185,7 +186,7 @@ export default class ShareDBManager {
                 genomicDataGroupCount: 0
             };
             window.history.pushState(null, null, '?id=' + new_id);
-            //self.doc = connection.get('cy', new_id);
+            self.doc = connection.get('cy', new_id);
             self.doc.create(data, loadFileCallback);
         };
 
@@ -193,7 +194,7 @@ export default class ShareDBManager {
         //If exists open the shared document
         if (id) {
             // Check any document exists with given id
-            //this.doc = connection.get('cy', id);
+            this.doc = connection.get('cy', id);
             this.doc.fetch(function (err) {
                 if (err)
                     throw err;
@@ -366,42 +367,42 @@ export default class ShareDBManager {
      * Initialize event listeners for any operation coming from shareDB
      *
      */
-    initSharedDocEventHandlers = function () {
+    initSharedDocEventHandlers () {
 
         var self = this;
 
         //Setup event handlers for maps
         var nodeAddRemoveHandler = function (op) {
-            this.editor.shareDBNodeAddRemoveEventCallBack(op);
+            self.editor.shareDBNodeAddRemoveEventCallBack(op);
         };
 
         var edgeAddRemoveHandler = function (op) {
-            this.editor.shareDBEdgeAddRemoveEventCallBack(op);
+            self.editor.shareDBEdgeAddRemoveEventCallBack(op);
         };
 
         var genomicDataAddRemoveHandler = function (op) {
-            this.editor.shareDBGenomicDataHandler(op);
+            self.editor.shareDBGenomicDataHandler(op);
         };
 
         var genomicDataVisibilityChangeHandler = function (op) {
-            this.editor.shareDBGenomicDataVsibilityHandler(op);
+            self.editor.shareDBGenomicDataVsibilityHandler(op);
             self.checkShareDBGenomicData();
         };
 
         var genomicDataGroupChangeHandler = function (op) {
-            this.editor.shareDBGenomicDataGroupChangeHandler(op);
+            self.editor.shareDBGenomicDataGroupChangeHandler(op);
         };
 
         var updateElementHandler = function (op) {
-            this.editor.updateElementCallback(op);
+            self.editor.updateElementCallback(op);
         };
 
         var updateLayoutPropsHandler = function (op) {
-            this.editor.updateLayoutPropertiesCallback(op);
+            self.editor.updateLayoutPropertiesCallback(op);
         };
 
         var updateGlobalOptionsHandler = function (op) {
-            this.editor.changeGlobalOptions(op);
+            self.editor.changeGlobalOptions(op);
         };
 
 
@@ -450,7 +451,7 @@ export default class ShareDBManager {
     /*
      * Make sure that genomic cloud data is syncronized
      */
-    checkShareDBGenomicData = function () {
+    checkShareDBGenomicData () {
 
         var self = this;
         var genomicDataMap = self.doc.data[this.GENOMIC_DATA_MAP_NAME];
@@ -483,7 +484,7 @@ export default class ShareDBManager {
      *
     */
 
-    getEmptyGroupID = function () {
+    getEmptyGroupID() {
         var returnCount = this.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
         this.incrementShareDBGroupCount();
         return returnCount;
@@ -495,7 +496,7 @@ export default class ShareDBManager {
      * by group id or group name
      *
     */
-    groupGenomicData = function (cancerNames, inGroupId) {
+    groupGenomicData(cancerNames, inGroupId) {
         var genomicGroupMap = this.doc.data[this.GENOMIC_DATA_GROUP_NAME];
         var genomicVisMap = this.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
 
@@ -522,11 +523,11 @@ export default class ShareDBManager {
     };
 
     //Clears genomic data on shared document
-    clearGenomicData = function () {
+    clearGenomicData() {
         this.clearShareDBGenomicData();
     };
 
-    addGenomicData = function (geneData) {
+    addGenomicData(geneData) {
         var genomicMap = this.doc.data[this.GENOMIC_DATA_MAP_NAME];
 
         //Iterate over all genmoic data which is mapped by geneSymbol to list of alteration values
@@ -549,7 +550,7 @@ export default class ShareDBManager {
         this.applyShareDBOperation(ops);
     };
 
-    addGenomicVisibilityData = function (visMap) {
+    addGenomicVisibilityData(visMap) {
         var ops = [];
         for (var cancerStudy in visMap) {
             ops.push({
@@ -560,7 +561,7 @@ export default class ShareDBManager {
         this.applyShareDBOperation(ops);
     };
 
-    changeVisibility = function (nodesToHide, isHidden) {
+    changeVisibility(nodesToHide, isHidden) {
         var self = this;
         var nodeMap = self.doc.data[this.NODEMAP_NAME];
 
@@ -574,7 +575,7 @@ export default class ShareDBManager {
         });
     };
 
-    changeHighlight = function (elementsToHighlight, isHighlighted) {
+    changeHighlight(elementsToHighlight, isHighlighted) {
         var self = this;
         var nodeMap = self.doc.data[this.NODEMAP_NAME];
         var edgeMap = self.doc.data[this.EDGEMAP_NAME];
@@ -594,7 +595,7 @@ export default class ShareDBManager {
         });
     };
 
-    addNewNode = function (nodeData, posData) {
+    addNewNode(nodeData, posData) {
         var realTimeGeneratedID = this.getCustomObjId();
         var params = {
             name: nodeData.name,
@@ -620,7 +621,7 @@ export default class ShareDBManager {
         this.insertShareDBObject(this.NODEMAP_NAME, realTimeGeneratedID, newNode);
     };
 
-    addNewEdge = function (edgeData) {
+    addNewEdge(edgeData) {
         var realTimeGeneratedID = this.getCustomObjId();
         var params = {
             type: edgeData.type,
@@ -654,7 +655,7 @@ export default class ShareDBManager {
     };
 
 
-    removeElement = function (elementID) {
+    removeElement (elementID) {
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
@@ -669,7 +670,7 @@ export default class ShareDBManager {
         }
     };
 
-    moveElement = function (ele) {
+    moveElement (ele) {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
@@ -687,7 +688,7 @@ export default class ShareDBManager {
     };
 
     //This function is used for movements of all selected elements wrt alignment selected
-    changeElementsPositionByAlignment = function (coll) {
+    changeElementsPositionByAlignment (coll) {
         var self = this;
         var nodeMap = self.doc.data[this.NODEMAP_NAME];
 
@@ -705,7 +706,7 @@ export default class ShareDBManager {
         });
     };
 
-    resizeElement = function (ele, previousWidth, previousHeight) {
+    resizeElement (ele, previousWidth, previousHeight) {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
@@ -727,7 +728,7 @@ export default class ShareDBManager {
         }
     };
 
-    setSizeOfElement = function (ele, newWidth, newHeight) {
+    setSizeOfElement (ele, newWidth, newHeight) {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
@@ -743,7 +744,7 @@ export default class ShareDBManager {
         }
     };
 
-    resizeCompound = function (ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom) {
+    resizeCompound (ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom) {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         var elementID = ele.id();
@@ -767,7 +768,7 @@ export default class ShareDBManager {
         }
     };
 
-    changeNodePositionsShareDB = function (nodes) {
+    changeNodePositionsShareDB (nodes) {
         var self = this;
         var nodeMap = self.doc.data[self.NODEMAP_NAME];
 
@@ -786,7 +787,7 @@ export default class ShareDBManager {
         });
     };
 
-    changeHighlightInvalidGenes = function (nodeIDs, isInvalid) {
+    changeHighlightInvalidGenes (nodeIDs, isInvalid) {
         var nodeMap = this.doc.data[this.NODEMAP_NAME];
 
         //TODO check compound operation inside or outside of for ?
@@ -801,7 +802,7 @@ export default class ShareDBManager {
 
     };
 
-    addPubmedIDs = function (edgeID, pubmedIDs) {
+    addPubmedIDs (edgeID, pubmedIDs) {
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
 
 
@@ -1026,7 +1027,7 @@ export default class ShareDBManager {
         }
 
         //Create graph hierarchy from given list of flat nodes
-        var tree = GraphUtilities.createGraphHierarchyRealTime(nodes);
+        var tree = this.graphUtilities.createGraphHierarchyRealTime(nodes);
         //Traverse from root nodes of tree
         for (const rootLevelNode of tree) {
             traverseTree(rootLevelNode, undefined);
@@ -1047,7 +1048,7 @@ export default class ShareDBManager {
         }
     };
 
-    mergeGraph = function (nodes, edges) {
+    mergeGraph (nodes, edges) {
         var self = this;
         var nodeMap = self.doc.data[this.NODEMAP_NAME];
 
@@ -1112,7 +1113,7 @@ export default class ShareDBManager {
         }
 
         //Traverse from root nodes of tree
-        var tree = GraphUtilities.createGraphHierarchyRealTime(nodes);
+        var tree = this.graphUtilities.createGraphHierarchyRealTime(nodes);
         for (const rootLevelNode of tree) {
             traverseTree(rootLevelNode, rootLevelNode.data.id);
         }
@@ -1136,11 +1137,11 @@ export default class ShareDBManager {
         self.applyShareDBOperation(ops);
     };
 
-    updateLayoutProperties = function (newLayoutProperties) {
+    updateLayoutProperties (newLayoutProperties) {
         this.updateShareDBLayoutProperties(newLayoutProperties);
     };
 
-    updateGlobalOptions = function (newOptions) {
+    updateGlobalOptions (newOptions) {
         this.updateShareDBGlobalOptions(newOptions);
     };
 
@@ -1155,7 +1156,7 @@ export default class ShareDBManager {
      * a node in corresponding level.
      *
      * */
-    createGraphHierarchy = function (nodes) {
+    createGraphHierarchy (nodes) {
         //Some arrays and maps for creating graph hierarchy
         var tree = [];
         var mappedArr = {};
@@ -1183,7 +1184,7 @@ export default class ShareDBManager {
     };
 
     //Makes sure that edge is compatible with edges in shared document
-    edgeInitializer = function (params) {
+    edgeInitializer (params) {
         var edge: any = {};
         edge.id = params.id || this.getCustomObjId();
         edge.type = params.type || "undefined";
@@ -1238,7 +1239,7 @@ export default class ShareDBManager {
     };
 
     //Makes sure that layout properties is compatible with layout properties in shared document
-    layoutPropertiesInitializer = function (params) {
+    layoutPropertiesInitializer (params) {
         var layoutProperties: any = {};
         layoutProperties.name = params.name || 'undefined';
         layoutProperties.nodeRepulsion = params.nodeRepulsion || 'undefined';
@@ -1261,7 +1262,7 @@ export default class ShareDBManager {
     };
 
     //Makes sure that global options is compatible with global options in shared document
-    globalOptionsInitializer = function (params) {
+    globalOptionsInitializer (params) {
         var globalOptions: any = {};
         globalOptions.zoomLevel = params.zoomLevel || 'undefined';
         globalOptions.panLevel = params.panLevel || 'undefined';
@@ -1269,7 +1270,7 @@ export default class ShareDBManager {
     };
 
     //Create unique ID for elements
-    getCustomObjId = function () {
+    getCustomObjId () {
         // see http://stackoverflow.com/a/8809472
         // we need to take care of our own IDs because the ones automatically generated by cytoscape (also UUID)
         // don't comply with xsd:SID type that must not begin with a number
@@ -1285,7 +1286,7 @@ export default class ShareDBManager {
         });
     };
 
-    getParam = function (urlParam) {
+    getParam (urlParam) {
         const regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
         let match: any = window.location.search.match(regExp);
         if (match && match.length) {

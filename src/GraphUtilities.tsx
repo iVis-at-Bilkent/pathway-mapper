@@ -5,17 +5,7 @@
 export default class GraphUtilities {
     
     
-    
-    /*
-     * Creates graph hierarchy from given cytoscape.js node collection
-     *
-     * @param nodes {array}: cy node collection
-     * @return {array}: Tree representation in array, entries are root level nodes. node.children gives children nodes
-     * of each node in the returned array.
-     * a node in corresponding level.
-     *
-     * */
-    static createGraphHierarchy(nodes)
+    createGraphHierarchy(nodes)
     {
         //Some arrays and maps for creating graph hierarchy
         var tree = [];
@@ -29,7 +19,7 @@ export default class GraphUtilities {
             mappedArr[arrElem.id()].childNodes = [];
         }
 
-        for (const id of Object.keys(mappedArr))
+        for (var id in mappedArr)
         {
             var mappedElem = mappedArr[id];
 
@@ -58,11 +48,11 @@ export default class GraphUtilities {
      * a node in corresponding level.
      *
      * */
-    static createGraphHierarchyRealTime(nodes)
+    createGraphHierarchyRealTime(nodes)
     {
         //Some arrays and maps for creating graph hierarchy
-        const tree = [];
-        const mappedArr = {};
+        var tree = [];
+        var mappedArr = {};
 
         // First map the nodes of the array to an object -> create a hash table.
         for (var i = 0, len = nodes.length; i < len; i++)
@@ -71,13 +61,12 @@ export default class GraphUtilities {
             mappedArr[arrElem.data.id] = arrElem;
             mappedArr[arrElem.data.id].children = [];
         }
-
-        for (const id of Object.keys(mappedArr))
+        for (var id in mappedArr)
         {
             var mappedElem = mappedArr[id];
 
             // If the element is not at the root level, add it to its parent array of children.
-            if (mappedElem.data.parent)
+            if (mappedElem.data.parent != -1)
             {
                 mappedArr[mappedElem.data.parent].children.push(mappedElem);
             }
