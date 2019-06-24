@@ -20,9 +20,10 @@
   },
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prebuild": "rimraf dist",
+    "prebuild": "rimraf ./src/dist",
+    "build": "node_modules/.bin/webpack ./src/index.jsx --config webpack.config.js --mode development",
     "startServer": "node_modules/.bin/webpack-dev-server --mode development --open --hot",
-    "start": "node_modules/.bin/webpack ./src/index.jsx --config webpack.config.js --mode development && node ./src/server.js",
+    "start": "node ./src/server.js",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",
