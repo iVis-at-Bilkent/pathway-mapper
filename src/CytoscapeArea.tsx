@@ -97,7 +97,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
       // TODO ATTENTION ids are moved from ID TO Name
       allEles.nodes.forEach((node) => {
-        //console.log(node);
+        console.log(node.data);
         //node.data.parent = (node.data.parent === -1) ? -1 : nodeMap[node.data.parent].data.name;
         //node.data.id = node.data.name;
       });
@@ -174,11 +174,11 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
     if(!this.isCbioPortal) {
       $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset);
-      $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
+      //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
     }
     else {
       $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - heightPathwayToolbar - heightPatwayNavbar - 3 * offset);
-      $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator + widthcBioPortalSideBar + offset - widthSideBar);
+      //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator + widthcBioPortalSideBar + offset - widthSideBar);
     }
 
     //Relative is used so that its position depends on the below properties

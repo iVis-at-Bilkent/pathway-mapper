@@ -51,8 +51,8 @@ export default class PathwayActions {
       h: '52'
     };
     const posData = {
-      x: this.editor.cy.height() / 2,
-      y: this.editor.cy.width() / 2
+      x: this.editor.cy.width() / 2,
+      y: this.editor.cy.height() / 2
     };
 
     this.editor.addNode(nodeData, posData);

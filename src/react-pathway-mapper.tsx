@@ -385,13 +385,13 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             }
             {
             (!isCBioPortal && 
-            <Bootstrap.Col xs={1}>
+            <Bootstrap.Col xs={2}>
               <Sidebar pathwayActions={this.pathwayActions}/>
             </Bootstrap.Col>)
           
 
             }
-            <Bootstrap.Col xs={isCBioPortal ? 6 : 10}>
+            <Bootstrap.Col xs={isCBioPortal ? 7 : 10}>
                 <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false} 
                 openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
