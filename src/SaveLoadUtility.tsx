@@ -219,7 +219,7 @@ export default class SaveLoadUtility{
 
       if(nodeName === " " || nodeName === ""){
         console.error("Here empty");
-        nodeName = "No Name " + (i + 1);
+        //nodeName = "No Name " + (i + 1);
       }
 
 
@@ -255,6 +255,8 @@ export default class SaveLoadUtility{
         break;
       }
 
+      if(!isArray)
+      console.log(lines);
       var lineData = lines[i].split('\t');
       var edgeID = lineData[0];
       var edgeSource = lineData[1];
@@ -282,10 +284,10 @@ export default class SaveLoadUtility{
       const newEdge = {
         group: 'edges', data:
           {
-            id: ((isFound) ? edgeID : i - edgesStartIndex),
-            type: ((isFound) ? edgeType : edgeTarget),
-            source: ((isFound) ? edgeSource : edgeID),
-            target: ((isFound) ? edgeTarget : edgeSource),
+            id: edgeID,//((isFound) ? edgeID : i - edgesStartIndex),
+            type: edgeType,//((isFound) ? edgeType : edgeTarget),
+            source: edgeSource,//((isFound) ? edgeSource : edgeID),
+            target: edgeTarget,//((isFound) ? edgeTarget : edgeSource),
             pubmedIDs: pubmedIDs,
             name: label,
             bendPointPositions: bendPointPositions/*[{x:100,y:100}]*/

@@ -36,8 +36,8 @@ export default class PathwayActions {
 
   @autobind
   changeNodeName(oldName: string, newName: string){
-    const cyNode = this.editor.cy.$('#' + oldName + '')[0];
-    console.log(this.editor.cy.$('#' + oldName + ''));
+    const cyNode = this.editor.cy.$('[name="' + oldName + '"]')[0];
+    console.log(this.editor.cy.$('[name="' + oldName + '"]'));
     this.editor.changeName(cyNode, newName);
   }
 

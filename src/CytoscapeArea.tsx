@@ -89,28 +89,17 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
       const parsedGraph = SaveLoadUtility.parseGraph(data, true);
 
-      const pathwayData = {
-        pathwayTitle: parsedGraph.title,
-        graphJSON: {
-          elements: {
-            nodes: parsedGraph.nodes,
-            edges: parsedGraph.edges
-          }
-        }};
-/*
-      console.log("Pathway Data");
-      console.log(pathwayData);*/
 
       const nodeMap = {};
-      const outData = SaveLoadUtility.exportAsSIFNX(pathwayData, nodeMap);
-      const allEles = SaveLoadUtility.parseGraph(outData, false);
+      //const outData = SaveLoadUtility.exportAsSIFNX(pathwayData, nodeMap);
+      const allEles = parsedGraph;
       console.log(nodeMap);
 
       // TODO ATTENTION ids are moved from ID TO Name
       allEles.nodes.forEach((node) => {
         //console.log(node);
-        node.data.parent = (node.data.parent === -1) ? -1 : nodeMap[node.data.parent].data.name;
-        node.data.id = node.data.name;
+        //node.data.parent = (node.data.parent === -1) ? -1 : nodeMap[node.data.parent].data.name;
+        //node.data.id = node.data.name;
       });
 
       this.editor.loadFile(allEles.nodes, allEles.edges);/*

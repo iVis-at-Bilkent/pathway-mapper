@@ -1,4 +1,3 @@
-
-export default class ViewOperationsManager {
-
+export default class ViewOperationsManager{
+    
 }

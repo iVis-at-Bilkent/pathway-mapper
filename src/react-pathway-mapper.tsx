@@ -87,7 +87,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   constructor(props: IPathwayMapperProps){
     super(props);
-    this.selectedPathway = this.props.pathwayName || "Creighton-PI3K-pathway";
+    this.selectedPathway = this.props.pathwayName || "ACC-2016-TP53-RB-pathway";
     this.pathwayActions = new PathwayActions(this.pathwayHandler);
     this.isModalShown = [false, false];
     // TODO: Change below
