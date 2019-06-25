@@ -26,7 +26,7 @@ import Sidebar from './Sidebar';
 import StudyModal from './modals/StudyModal';
 
 const maxHeapFn = require('@datastructures-js/max-heap');
-let maxHeap: any;
+let maxHeap = maxHeapFn();
 
 
 interface IPathwayMapperProps{
@@ -440,8 +440,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
     } else {
       this.portalAcessor = new CBioPortalAccessor(this.editor);
-      //this.fetchStudy();
-
       this.loadRedirectedPortalData();
 
     }

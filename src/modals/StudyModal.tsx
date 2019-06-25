@@ -86,8 +86,6 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
       console.log(this.dataTypes[dataType].checked);
     }
     render(){
-
-
         return(
             <Modal show={this.props.isModalShown} onHide={this.props.handleClose}>
                 <Modal.Header closeButton>
@@ -111,10 +109,6 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
 
                 </Modal.Body>
             </Modal>
-
-
-            
         )
     }
-
 }

@@ -2,9 +2,9 @@ import EditorActionsManager from "./EditorActionsManager";
 import _ from "underscore";
 import GraphUtilities from "./GraphUtilities";
 
-var sharedb = require('sharedb/lib/client');
-var socket = new WebSocket('ws://' + window.location.host);
-var connection = new sharedb.Connection(socket);
+let sharedb;
+let socket;
+let connection;
 
 export default class ShareDBManager {
 
@@ -165,7 +165,12 @@ export default class ShareDBManager {
     };
 
     initShareDB() {
+        sharedb = require('sharedb/lib/client');
+        socket = new WebSocket('ws://' + window.location.host);
+        connection = new sharedb.Connection(socket);
+
         var self = this;
+
         var id = this.getParam('id');
 
         var loadFileCallback = function () {
