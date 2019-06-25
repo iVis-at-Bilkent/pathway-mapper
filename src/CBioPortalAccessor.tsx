@@ -161,7 +161,8 @@ export default class CBioPortalAccessor{
       outData[geneticProfileId] = {};
 
       const geneticProfileType = CBioPortalAccessor.getDataType(geneticProfileId);
-
+      console.log("geneticProfileType");
+      console.log(geneticProfileType);
       // skip meta line and iterate over tumor sample data
       for(let i = startIndex + 1; i < lines.length; i++)
       {
@@ -169,21 +170,25 @@ export default class CBioPortalAccessor{
               continue;
 
           //Iterate over samples for each gene to calculate profile data
-          const lineData = lines[i].split('\t');
+          const lineData: string[] = lines[i].split('\t');
           let profileDataAlteration = 0;
           for(let j = 2; j < lineData.length; j++)
           {
               if(lineData[j] !== 'NaN')
               {
-                  if( geneticProfileType === CBioPortalAccessor.MUTATION )
-                      profileDataAlteration++;
-                  else if ( (geneticProfileType === CBioPortalAccessor.CNA) 
-                  && ( lineData[j] === CBioPortalAccessor.CNA_GAIN || lineData[j] === CBioPortalAccessor.CNA_DELETION )  )
-                      profileDataAlteration++;
-                  else if ( (geneticProfileType === CBioPortalAccessor.GENE_EXPRESSION) 
-                  && (parseInt(lineData[j]) >= CBioPortalAccessor.Z_SCORE_UPPER_THRESHOLD 
-                  || parseInt(lineData[j]) <= CBioPortalAccessor.Z_SCORE_LOWER_THRESHOLD))
-                      profileDataAlteration++;
+                console.log("NonNan: " + lineData[j]);
+                if( geneticProfileType === CBioPortalAccessor.MUTATION )
+                    profileDataAlteration++;
+                else if ( (geneticProfileType === CBioPortalAccessor.CNA) 
+                && ( parseInt(lineData[j]) === CBioPortalAccessor.CNA_GAIN || parseInt(lineData[j]) === CBioPortalAccessor.CNA_DELETION )  ){
+                    profileDataAlteration++;
+                }
+                else if ( (geneticProfileType === CBioPortalAccessor.GENE_EXPRESSION) 
+                && (parseFloat(lineData[j]) >= CBioPortalAccessor.Z_SCORE_UPPER_THRESHOLD 
+                || parseFloat(lineData[j]) <= CBioPortalAccessor.Z_SCORE_LOWER_THRESHOLD)){
+                    profileDataAlteration++;
+                    console.log(parseInt(lineData[j]), parseFloat(lineData[j]), lineData[j]);
+                }
               }
           }
 
@@ -217,6 +222,8 @@ export default class CBioPortalAccessor{
       {
           if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
           {
+              console.log("Query Result");
+              console.log(request.responseText);
               self.calcAlterationPercentages(request.responseText, params.geneticProfileId, callbackFunction);
               console.log("Profile data " + params.geneticProfileId + " is succesfully loaded from cBioPortal ",
                   "success");
@@ -234,7 +241,6 @@ export default class CBioPortalAccessor{
       queryURL += "&genetic_profile_id=" + params.geneticProfileId;
       queryURL += "&gene_list=";
       let isFirst = true;
-      console.log(params.genes)
       for(const gene of params.genes)
       {
           if(!isFirst){
@@ -245,6 +251,7 @@ export default class CBioPortalAccessor{
           queryURL += gene;
           
       }
+      console.log("queryURL");
       console.log(queryURL);
 
       request.open("GET", queryURL);
