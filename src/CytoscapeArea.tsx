@@ -37,6 +37,7 @@ type PathwayMapperType = {
   isCbioPortal: boolean;
   editorHandler: Function;
   selectedPathway: string;
+  openChangeNameModal: Function;
 };
 @observer
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}>{
@@ -129,6 +130,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
           <div className="cytoscape-navigator-wrapper"></div>
         </div>);
     }
+
     componentDidMount(): void {
       if(this.isMountedFirst){
         this.init();
@@ -493,20 +495,11 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     });
 
     this.cy.on('doubleTap', 'node',  function (e: any) {
-      // TODO: this.cy
       // @ts-ignore
       var eventIsDirect = (e.target === this);
 
-      alert("Double tapped")
       if (eventIsDirect) {
-        //Remove qtips
-        $(".qtip").remove();
-        that.qtipManager.addQtipToElements(e.target);
-        // @ts-ignore
-        var api = this.cy.qtip('api');
-        if (api) {
-          api.show();
-        }
+        that.props.openChangeNameModal(e.target.data('name'));
       }
     });
 

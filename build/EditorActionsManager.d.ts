@@ -1,12 +1,13 @@
 import CBioPortalAccessor from "./CBioPortalAccessor";
+import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
 export default class EditorActionsManager {
     cy: any;
     defaultLayoutProperties: any;
+    layoutProperties: any;
+    genomicDataOverlayManager: GenomicDataOverlayManager;
     private FIT_CONSTANT;
-    private layoutProperties;
     private observers;
     private svgExporter;
-    private genomicDataOverlayManager;
     private selectedNodeStack;
     private undoRedoManager;
     private isCbioPortal;
@@ -56,7 +57,7 @@ export default class EditorActionsManager {
     undoHighlight(args: any): any;
     removeAllHighlight(): void;
     postLayout(): void;
-    getEmptyGroupID(): void;
+    getEmptyGroupID(): any;
     groupGenomicData(cancerNames: any[], groupID: string): void;
     addPubmedIDs(edge: any, pubmedIDs: number): void;
     removePubmedID(edge: any, pubmedIDs: number[]): void;

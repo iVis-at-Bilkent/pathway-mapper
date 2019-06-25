@@ -24,6 +24,7 @@ import "cytoscape-navigator/cytoscape.js-navigator.css";
 import Loader from 'react-loader-spinner';
 import Sidebar from './Sidebar';
 import StudyModal from './modals/StudyModal';
+import ChangeNameModal from './modals/ChangeNameModal';
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
@@ -65,7 +66,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   pathwayActions: PathwayActions;
 
   @observable
-  isModalShown: boolean;
+  isModalShown: boolean[];
 
   @observable
   itemArray: any[];
@@ -78,7 +79,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   bestPathwaysAlgos: any[][] = [];
 
   @observable
-  studyQuery = "";
+  oldName = "";
   
   @observable
   profiles: IProfileMetaData[] = [];
@@ -88,7 +89,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     super(props);
     this.selectedPathway = this.props.pathwayName || "Creighton-PI3K-pathway";
     this.pathwayActions = new PathwayActions(this.pathwayHandler);
-    this.isModalShown = false;
+    this.isModalShown = [false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
@@ -391,7 +392,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
             }
             <Bootstrap.Col xs={isCBioPortal ? 6 : 10}>
-                <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
+                <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false} 
+                openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
 
             { 
@@ -414,21 +416,27 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             }
           </Bootstrap.Row>
 
-          <StudyModal isModalShown={this.isModalShown} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
-          
+          <StudyModal isModalShown={this.isModalShown[0]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
+          <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[1]} handleClose={this.handleClose} oldName={this.oldName}/>
       </div>
   );
   }
 
   @autobind
+  openChangeNameModal(oldName: string){
+    this.isModalShown[1] = true;
+    this.oldName = oldName;
+  }
+
+  @autobind
   handleOpen(){
-    this.isModalShown = true;
+    this.isModalShown[0] = true;
   }
 
 
   @autobind
-  handleClose(){
-      this.isModalShown = false;
+  handleClose(modalId: number){
+      this.isModalShown[modalId] = false;
   }
 
   @autobind

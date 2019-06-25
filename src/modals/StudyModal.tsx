@@ -87,7 +87,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
     }
     render(){
         return(
-            <Modal show={this.props.isModalShown} onHide={this.props.handleClose}>
+            <Modal show={this.props.isModalShown} onHide={() => {this.props.handleClose(0)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>Load from cBioPortal</Modal.Title>
                 </Modal.Header>

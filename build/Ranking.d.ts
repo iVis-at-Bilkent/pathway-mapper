@@ -1,8 +1,18 @@
 import React from 'react';
-export default class Ranking extends React.Component {
-    hello: number;
-    constructor(props: any);
-    readonly getHello: number;
-    clickHandler(): void;
+import PathwayActions from './PathwayActions.js';
+interface IRankingProps {
+    pathwayActions: PathwayActions;
+    bestPathwaysAlgos: any[][];
+}
+export default class Ranking extends React.Component<IRankingProps, {}> {
+    bestPathways: any[];
+    dropDownTitle: string;
+    isPercentageMatch: number;
+    isAlterationEnabled: number;
+    constructor(props: IRankingProps);
+    setBestPathwayMethod(i: number): void;
+    onPathwayClick(pathway: string): void;
+    onApplyClick(): void;
     render(): JSX.Element;
 }
+export {};
