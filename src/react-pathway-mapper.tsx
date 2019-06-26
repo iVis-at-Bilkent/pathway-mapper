@@ -378,7 +378,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <Bootstrap.Row>
             {
             ( isCBioPortal &&
-            <Bootstrap.Col xs={2}>
+            <Bootstrap.Col xs={1} align="center">
                 <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}/>
             </Bootstrap.Col>)
             }

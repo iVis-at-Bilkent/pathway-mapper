@@ -28,7 +28,7 @@ export default class ChangeNameModal extends React.Component<IChangeNameModalPro
 
             <Modal show={this.props.isModalShown} onHide={() => {this.props.handleClose(1)}}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Change Gene Name</Modal.Title>
+                    <Modal.Title>Change Node Name</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
 

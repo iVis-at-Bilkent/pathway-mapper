@@ -48,14 +48,12 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                 </Panel.Heading>
                 <Panel.Body style={{textAlign: "center"}}>
                     
-                    <Row>
+                    <Row style={{marginBottom: 5}}>
                         <Button onClick={() => {this.props.pathwayActions.changeNodeName("PTEN", "ZIYA")}}>Details...</Button>
                     </Row>
-                    <br/>
-                    <Row>
+                    <Row style={{marginBottom: 5}}>
                         <Button>Import</Button>
                     </Row>
-                    <br/>
                     <Row>
                         <Button>Export</Button>
                     </Row>
@@ -71,10 +69,10 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                       {
                         nodeTypes.map((nodeType, i) => {
                         return (<div>
-                            <Row>
+                            <Row style={{marginBottom: 5}}>
                             <img onClick={() => {this.props.pathwayActions.addNode(nodeType)}} src={nodeImgs[i]}>
                             </img>
-                            </Row><br/></div>);
+                            </Row></div>);
                         })
                       }
                 </Panel.Body>
@@ -89,10 +87,10 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                     {
                     edgeTypes.map((nodeType: string, i: number) => {
                     return (<div>
-                        <ListGroupItem onClick={() => {this.props.pathwayActions.addEdge(i)}} >
-                        <img src={edgeImgs[i]}></img> 
+                        <ListGroupItem style={{marginBottom: 5}} onClick={() => {this.props.pathwayActions.addEdge(i)}} >
+                        <img src={edgeImgs[i]}></img>{' '}
                         {nodeType}
-                        </ListGroupItem><br/></div>);
+                        </ListGroupItem></div>);
                     })
                     }
                     </ListGroup>

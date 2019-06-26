@@ -50,10 +50,14 @@ export default class PathwayActions {
       w: '150',
       h: '52'
     };
+    const extent = this.editor.cy.extent();
     const posData = {
-      x: this.editor.cy.width() / 2,
-      y: this.editor.cy.height() / 2
+      x: (extent.x1 + extent.x2)  / 2,
+      y: (extent.y1 + extent.y2) / 2
     };
+
+    console.log("this.editor.cy.extent()");
+    console.log();
 
     this.editor.addNode(nodeData, posData);
   }
