@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "keywords": [],
-  "main": "dist/react-pathway-mapper.umd.js",
+  "main": "dist/react-pathway-mapper.es5.js",
   "module": "dist/react-pathway-mapper.es5.js",
-  "typings": "dist/types/react-pathway-mapper.d.ts",
+  "typings": "build/react-pathway-mapper.d.ts",
   "files": [
     "dist"
   ],
