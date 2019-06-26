@@ -26,6 +26,7 @@ import Sidebar from './Sidebar';
 import StudyModal from './modals/StudyModal';
 import ChangeNameModal from './modals/ChangeNameModal';
 import Buttonbar from "./ui/Buttonbar";
+import ProfilesModal from './modals/ProfilesModal';
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
@@ -63,7 +64,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   selectedPathway: string;
 
   fileManager: FileOperationsManager;
+
+  @observable
   editor: EditorActionsManager;
+
   pathwayActions: PathwayActions;
 
   @observable
@@ -90,7 +94,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     super(props);
     this.selectedPathway = this.props.pathwayName || "ACC-2016-TP53-RB-pathway";
     this.pathwayActions = new PathwayActions(this.pathwayHandler);
-    this.isModalShown = [false, false];
+    this.isModalShown = [false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
@@ -413,6 +417,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
           <StudyModal isModalShown={this.isModalShown[0]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
           <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[1]} handleClose={this.handleClose} oldName={this.oldName}/>
+          <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[2]} handleClose={this.handleClose} />
       </div>
   );
   }
@@ -421,14 +426,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   openProfilesModal(){
     this.isModalShown[2] = true;
 
-    const profileLabels = this.profiles.map((profile: IProfileMetaData, i: number) => 
-    [<Label onClick={() => {
-      this.profiles[i].enabled = !this.profiles[i].enabled;
-      this.editor.updateGenomicDataVisibility(this.profileEnabledMap);
-      }}
-      onMouseEnter={() => {document.body.style.cursor = "pointer";}}
-      onMouseLeave={() => {document.body.style.cursor = "default";}}
-      bsStyle={this.profiles[i].enabled ? "primary" : "default"}>{profile.profileId}</Label>, " "]);
+    
   }
 
   @autobind

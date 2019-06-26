@@ -85,8 +85,6 @@ export default class BUttonbar extends React.Component<IButtonbarProps, {}>{
                                 <Glyphicon onClick={() => { this.props.pathwayActions.searchGene(this.searchedGene) }} glyph="search" />
                             </InputGroup.Addon>
                         </InputGroup>
-
-
                     </NavItem>
                 </Nav>
             </Navbar>
