@@ -1,1 +1,0 @@
-{"version":3,"file":"ContextMenuManager.js","sourceRoot":"","sources":["../src/ContextMenuManager.tsx"],"names":[],"mappings":"AAEA,MAAM,CAAC,OAAO,OAAO,kBAAkB;IAGrC,YAAY,EAAO,EAAE,MAA4B;QAC/C,IAAI,CAAC,EAAE,GAAG,EAAE,CAAC;QACb,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;IACvB,CAAC;CACF"}

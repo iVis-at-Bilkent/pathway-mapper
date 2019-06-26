@@ -7,8 +7,8 @@ module.exports = {
   devtool: 'source-map',
   entry: "./src/index.jsx",
   output: {
-    path: path.join(__dirname, "/src/dist"),
-    filename: "index_bundle.js"
+    path: path.join(__dirname, "/dist"),
+    filename: "react-pathway-mapper.es5.js"
   },
   node: {
     fs: 'empty'

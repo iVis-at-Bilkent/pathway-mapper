@@ -371,7 +371,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
 
       <div>
-          <br/>
           <Bootstrap.Row>
             { !isCBioPortal && (<Menubar pathwayActions={this.pathwayActions} openCBioModal={this.handleOpen}/>)}
           </Bootstrap.Row>
