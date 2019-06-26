@@ -62,14 +62,22 @@ module.exports = {
         }
       )
     },
-      {
-        test: /\.(png|jpg|gif)$/,
-        use: [
-          {
-            loader: 'file-loader'
-          }
-        ]
-      }
+    {
+      test: /\.(png|jpg|gif)$/,
+      use: [
+        {
+          loader: 'file-loader'
+        }
+      ]
+    },
+    {
+      test: /\.svg$/,
+      use: [
+        {
+          loader: 'svg-inline-loader'
+        }
+      ]
+    }
     ]
   },
   plugins: [

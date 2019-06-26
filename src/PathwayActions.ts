@@ -63,6 +63,23 @@ export default class PathwayActions {
   }
 
   @autobind
+  searchGene(geneName: string){
+    const selector = "node[name @*= '" + geneName + "']";
+    const nodesContainingSearchedGene  = this.editor.cy.filter(selector);
+    let nodesToSelect = this.editor.cy.collection();
+    nodesContainingSearchedGene.forEach(function(ele, index){
+        if (!ele.hasClass('highlightedNode') &&  !ele.hasClass('invalidGeneHighlight'))
+            nodesToSelect = nodesToSelect.union(ele);
+    });
+    this.editor.highlightBySearch(nodesToSelect);
+  }
+
+  @autobind
+  removeAllHighlight(){
+    this.editor.removeAllHighlight();
+  }
+
+  @autobind
   saveAsPng() {
     this.fileManager.saveAsPNG();
   }

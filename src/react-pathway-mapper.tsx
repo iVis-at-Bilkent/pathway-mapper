@@ -25,6 +25,7 @@ import Loader from 'react-loader-spinner';
 import Sidebar from './Sidebar';
 import StudyModal from './modals/StudyModal';
 import ChangeNameModal from './modals/ChangeNameModal';
+import Buttonbar from "./ui/Buttonbar";
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
@@ -371,10 +372,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
 
       <div>
+          {!isCBioPortal && 
           <Bootstrap.Row>
-            { !isCBioPortal && (<Menubar pathwayActions={this.pathwayActions} openCBioModal={this.handleOpen}/>)}
+              <Menubar pathwayActions={this.pathwayActions} openCBioModal={this.handleOpen} openProfilesModal={this.openProfilesModal}/>
+              <Buttonbar pathwayActions={this.pathwayActions} openCBioModal={this.handleOpen}/>
           </Bootstrap.Row>
-
+          }
           <Bootstrap.Row>
             {
             ( isCBioPortal &&
@@ -384,23 +387,16 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             }
             {
             (!isCBioPortal && 
-            <Bootstrap.Col xs={2}>
+            <Bootstrap.Col xs={2} align="center">
               <Sidebar pathwayActions={this.pathwayActions}/>
             </Bootstrap.Col>)
           
 
             }
-            <Bootstrap.Col xs={isCBioPortal ? 7 : 10}>
+            <Bootstrap.Col xs={isCBioPortal ? 7 : 10} style={{right: 10}} >
                 <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false} 
                 openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
-
-            { 
-            ( !isCBioPortal &&
-            <Bootstrap.Row>
-              {profileLabels}
-            </Bootstrap.Row>)
-            }
 
             { isCBioPortal &&
             <Bootstrap.Col xs={4}>
@@ -419,6 +415,20 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[1]} handleClose={this.handleClose} oldName={this.oldName}/>
       </div>
   );
+  }
+
+  @autobind
+  openProfilesModal(){
+    this.isModalShown[2] = true;
+
+    const profileLabels = this.profiles.map((profile: IProfileMetaData, i: number) => 
+    [<Label onClick={() => {
+      this.profiles[i].enabled = !this.profiles[i].enabled;
+      this.editor.updateGenomicDataVisibility(this.profileEnabledMap);
+      }}
+      onMouseEnter={() => {document.body.style.cursor = "pointer";}}
+      onMouseLeave={() => {document.body.style.cursor = "default";}}
+      bsStyle={this.profiles[i].enabled ? "primary" : "default"}>{profile.profileId}</Label>, " "]);
   }
 
   @autobind

@@ -27,6 +27,8 @@ interface ISideBarProps{
     pathwayActions: PathwayActions;
 }
 
+const panelStyle = {width: window.innerWidth * 0.1};
+
 export default class Sidebar extends React.Component<ISideBarProps, {}>{
 
     constructor(props: ISideBarProps){
@@ -42,14 +44,14 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
         const edgeImgs = [acImg, inhImg, indImg, repImg, bindImg];
         return(
             <div>
-            <Panel bsStyle="primary">
+            <Panel bsStyle="primary" style={panelStyle}>
                 <Panel.Heading>
                   <Panel.Title componentClass="h3" style={{textAlign: "center"}}>Network</Panel.Title>
                 </Panel.Heading>
                 <Panel.Body style={{textAlign: "center"}}>
                     
                     <Row style={{marginBottom: 5}}>
-                        <Button onClick={() => {this.props.pathwayActions.changeNodeName("PTEN", "ZIYA")}}>Details...</Button>
+                        <Button onClick={() => {this.props.pathwayActions.changeNodeName("PTEN", "ZIYA")}}>Details</Button>
                     </Row>
                     <Row style={{marginBottom: 5}}>
                         <Button>Import</Button>
@@ -60,7 +62,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                 </Panel.Body>
               </Panel>
 
-            <Panel bsStyle="primary">
+            <Panel bsStyle="primary" style={panelStyle}>
                 <Panel.Heading>
                   <Panel.Title componentClass="h3" style={{textAlign: "center"}}>Node Palette</Panel.Title>
                 </Panel.Heading>
@@ -70,7 +72,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                         nodeTypes.map((nodeType, i) => {
                         return (<div>
                             <Row style={{marginBottom: 5}}>
-                            <img onClick={() => {this.props.pathwayActions.addNode(nodeType)}} src={nodeImgs[i]}>
+                            <img width="60%" onClick={() => {this.props.pathwayActions.addNode(nodeType)}} src={nodeImgs[i]}>
                             </img>
                             </Row></div>);
                         })
@@ -78,7 +80,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                 </Panel.Body>
               </Panel>
 
-            <Panel bsStyle="primary">
+            <Panel bsStyle="primary" style={panelStyle}>
                 <Panel.Heading>
                   <Panel.Title componentClass="h3" style={{textAlign: "center"}}>Interaction Palette </Panel.Title>
                 </Panel.Heading>
@@ -87,8 +89,8 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                     {
                     edgeTypes.map((nodeType: string, i: number) => {
                     return (<div>
-                        <ListGroupItem style={{marginBottom: 5}} onClick={() => {this.props.pathwayActions.addEdge(i)}} >
-                        <img src={edgeImgs[i]}></img>{' '}
+                        <ListGroupItem style={{marginBottom: 5}} width="30%" onClick={() => {this.props.pathwayActions.addEdge(i)}} >
+                        <img width="20%" src={edgeImgs[i]}></img>{' '}
                         {nodeType}
                         </ListGroupItem></div>);
                     })
@@ -97,10 +99,6 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                 </Panel.Body>
               </Panel>
               </div>
-
-
         );
-
     }
-
 }

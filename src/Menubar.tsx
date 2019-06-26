@@ -6,6 +6,7 @@ import PathwayActions from './PathwayActions.js';
 interface IMenubarProps{
     pathwayActions: PathwayActions;
     openCBioModal: () => void;
+    openProfilesModal: () => void;
 }
 
 export default class Menubar extends React.Component<IMenubarProps, {}>{
@@ -72,11 +73,12 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={3.1}>Action</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={4} title="Highlight" id="basic-nav-highlight">
-                  <MenuItem eventKey={4.1}>Action</MenuItem>
+                  <MenuItem eventKey={4.1} onClick={this.props.pathwayActions.removeAllHighlight}>Remove All Highlights</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={5} title="Alteration %" id="basic-nav-alteration">
                   <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.loadSampleData}>Load Sample Data</MenuItem>
                   <MenuItem eventKey={5.1} onClick={this.props.openCBioModal}>Load cBioPortal Data</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={this.props.openProfilesModal}>View Settings...</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={6} title="Layout" id="basic-nav-layout">
                   <MenuItem eventKey={6.1} onClick={this.props.pathwayActions.performLayout}>Perform Layout</MenuItem>
