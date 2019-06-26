@@ -3,6 +3,7 @@ import { observable } from 'mobx';
 import EditorActionsManager from './EditorActionsManager';
 import FileOperationsManager from './FileOperationsManager';
 import $ from 'jquery';
+import { IProfileMetaData } from './react-pathway-mapper';
 export default class PathwayActions {
   @observable
   selectedPathway: string;
@@ -11,8 +12,11 @@ export default class PathwayActions {
   pathwayHandler: (pathwayName: string) => void;
   eh: any;
 
-  constructor(pathwayHandler: (pathwayName: string) => void) {
+  profiles: IProfileMetaData[];
+
+  constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[]) {
     this.pathwayHandler = pathwayHandler;
+    this.profiles = profiles;
   }
 
   @autobind
@@ -31,6 +35,7 @@ export default class PathwayActions {
     // @ts-ignore
     window.edgeAddingMode = edgeTypeIndex + 1;
         // @ts-ignore
+    this.eh.disableDrawMode();
     this.eh.enableDrawMode();
   }
 
@@ -72,6 +77,12 @@ export default class PathwayActions {
             nodesToSelect = nodesToSelect.union(ele);
     });
     this.editor.highlightBySearch(nodesToSelect);
+  }
+
+  @autobind
+  removeAllData(){
+    this.editor.removeGenomicData();
+    this.profiles.length = 0;
   }
 
   @autobind

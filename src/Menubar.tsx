@@ -79,6 +79,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.loadSampleData}>Load Sample Data</MenuItem>
                   <MenuItem eventKey={5.1} onClick={this.props.openCBioModal}>Load cBioPortal Data</MenuItem>
                   <MenuItem eventKey={5.1} onClick={this.props.openProfilesModal}>View Settings...</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.removeAllData}>Remove All Data</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={6} title="Layout" id="basic-nav-layout">
                   <MenuItem eventKey={6.1} onClick={this.props.pathwayActions.performLayout}>Perform Layout</MenuItem>
