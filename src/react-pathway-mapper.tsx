@@ -28,6 +28,9 @@ import ChangeNameModal from './modals/ChangeNameModal';
 import Buttonbar from "./ui/Buttonbar";
 import ProfilesModal from './modals/ProfilesModal';
 
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
 
@@ -344,21 +347,39 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     return profileEnabledMap;
   }
 
+  doesProfileExist(profileId: string){
+
+    let exists = false;
+    this.profiles.forEach((profile: IProfileMetaData) => {
+      if(profile.profileId === profileId){
+        exists = true;
+      }
+    });
+
+    return exists;
+  }
+
   @autobind
   loadFromCBio(dataTypes: {[dataType: string]: IDataTypeMetaData}, selectedStudyData: any[]){
       for (const dataType of Object.keys(dataTypes))
       {
-          if(!dataTypes[dataType].checked) continue;
+        if(!dataTypes[dataType].checked) continue;
+        if(this.doesProfileExist(dataTypes[dataType].profile)){
+          toast(dataTypes[dataType].profile + " already exists");
+          continue;
+        }
 
 
-          this.profiles.push({studyId: selectedStudyData[0], profileId: dataTypes[dataType].profile, enabled: true});
+        this.profiles.push({studyId: selectedStudyData[0], profileId: dataTypes[dataType].profile, enabled: true});
 
-          this.portalAcessor.getProfileData({
-              caseSetId: selectedStudyData[0],
-              geneticProfileId: dataTypes[dataType].profile,
-              genes: Object.keys(this.pathwayGeneMap[this.selectedPathway])
-          },
-          (data: any) =>{ console.log(data); this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID()); });
+        this.portalAcessor.getProfileData({
+            caseSetId: selectedStudyData[0],
+            geneticProfileId: dataTypes[dataType].profile,
+            genes: Object.keys(this.pathwayGeneMap[this.selectedPathway])
+        },
+                                          (data: any) =>{
+          this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID());
+        });
       }
   }
   render() {
@@ -418,6 +439,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <StudyModal isModalShown={this.isModalShown[0]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
           <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[1]} handleClose={this.handleClose} oldName={this.oldName}/>
           <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[2]} handleClose={this.handleClose} />
+          <ToastContainer />
       </div>
   );
   }

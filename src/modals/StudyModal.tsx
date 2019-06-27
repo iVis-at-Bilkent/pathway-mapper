@@ -79,6 +79,11 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
         console.log(this.itemArray);
     }
 
+    @autobind
+    resetModal(){
+        this.disableAllDataTypes();
+        this.selectedStudyData = [];
+    }
 
     @autobind
     handleCheckboxClick(dataType){
@@ -87,7 +92,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
     }
     render(){
         return(
-            <Modal show={this.props.isModalShown} onHide={() => {this.props.handleClose(0)}}>
+            <Modal show={this.props.isModalShown} onHide={() => {this.props.handleClose(0); this.resetModal();}}>
                 <Modal.Header closeButton>
                     <Modal.Title>Load from cBioPortal</Modal.Title>
                 </Modal.Header>
@@ -105,10 +110,11 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
                     })
                     }
 
-                    <Button bsClass="success" onClick={() => {this.props.loadFromCBio(this.dataTypes, this.selectedStudyData);}}>Load</Button>
+                    <Button bsClass="success" 
+                    onClick={() => {this.props.loadFromCBio(this.dataTypes, this.selectedStudyData); this.props.handleClose(0);}}>Load</Button>
 
                 </Modal.Body>
             </Modal>
-        )
+        );
     }
 }

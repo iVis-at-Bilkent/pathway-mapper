@@ -1,5 +1,9 @@
 import EditorActionsManager from "./EditorActionsManager";
 import _ from "underscore";
+
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export default class CBioPortalAccessor{
   static readonly CNA_GAIN = 2;
 
@@ -59,8 +63,7 @@ export default class CBioPortalAccessor{
         }
         else if  (request.readyState === XMLHttpRequest.DONE && request.status !== 200)
         {
-            console.error("Error retrieving studies");
-            // window.notificationManager.createNotification("Error retrieving cancer studies", "fail")
+            toast("Error retrieving studies");
         }
     };
     request.open("GET", CBioPortalAccessor.GET_ALL_CANCER_STUDIES_URL);
@@ -176,7 +179,6 @@ export default class CBioPortalAccessor{
           {
               if(lineData[j] !== 'NaN')
               {
-                console.log("NonNan: " + lineData[j]);
                 if( geneticProfileType === CBioPortalAccessor.MUTATION )
                     profileDataAlteration++;
                 else if ( (geneticProfileType === CBioPortalAccessor.CNA) 
@@ -225,11 +227,7 @@ export default class CBioPortalAccessor{
               console.log("Query Result");
               console.log(request.responseText);
               self.calcAlterationPercentages(request.responseText, params.geneticProfileId, callbackFunction);
-              console.log("Profile data " + params.geneticProfileId + " is succesfully loaded from cBioPortal ",
-                  "success");
-              /*window.notificationManager.createNotification(
-                  "Profile data " + params.geneticProfileId + " is succesfully loaded from cBioPortal ",
-                  "success");*/
+              toast(params.geneticProfileId + " is succesfully loaded from cBioPortal");
 
           }
       };
