@@ -115,7 +115,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
     render(){
         return (<div>
-          <div ref={this.cyDivHandler} id="cy" style={{"border": "1px solid orange", "height": "800px"}}/>
+          <div ref={this.cyDivHandler} id="cy" style={{"border": "3px solid #1abc9c", "height": "800px"}}/>
           <div className="cytoscape-navigator-wrapper"></div>
         </div>);
     }
@@ -160,7 +160,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     // @ts-ignore
     var heightCy = $(this.cyDiv).outerHeight();
     // @ts-ignore
-    var widthCy = $(this.cyDiv).outerWidth();
+    var widthCy = window.innerWidth * 0.81;
     var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
     var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
     var heightPatwayNavbar = $('.pathway-navbar').outerHeight();

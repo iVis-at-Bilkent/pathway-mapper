@@ -28,49 +28,49 @@ export default class BUttonbar extends React.Component<IButtonbarProps, {}>{
             <Navbar style={{ backgroundColor: "#eff0f2" }}>
                 <Nav>
                     <NavItem>
-                        <ButtonToolbar>
+                        <ButtonToolbar className="toolbar pathway-toolbar">
                             <ButtonGroup>
-                                <Button onClick={this.props.pathwayActions.newPathway}>1</Button>
-                                <Button>2</Button>
-                                <Button>3</Button>
+                                <Button onClick={this.props.pathwayActions.newPathway}>A</Button>
+                                <Button>B</Button>
+                                <Button>C</Button>
                             </ButtonGroup>
 
                             <ButtonGroup>
-                                <Button>5</Button>
+                                <Button>D</Button>
                             </ButtonGroup>
 
                             <ButtonGroup>
-                                <Button>8</Button>
-                                <Button>8</Button>
-                                <Button>8</Button>
-                                <Button>8</Button>
-                                <Button>8</Button>
-                                <Button>8</Button>
+                                <Button>E</Button>
+                                <Button>F</Button>
+                                <Button>G</Button>
+                                <Button>H</Button>
+                                <Button>I</Button>
+                                <Button>J</Button>
                             </ButtonGroup>
 
                             <ButtonGroup>
-                                <Button>8</Button>
-                                <Button>8</Button>
+                                <Button>K</Button>
+                                <Button>L</Button>
                             </ButtonGroup>
 
                             <ButtonGroup>
-                                <Button>8</Button>
-                                <Button>8</Button>
+                                <Button>M</Button>
+                                <Button>N</Button>
                             </ButtonGroup>
 
                             <ButtonGroup>
-                                <Button onClick={this.props.openCBioModal}>8</Button>
-                                <Button>8</Button>
+                                <Button onClick={this.props.openCBioModal}>O</Button>
+                                <Button>P</Button>
                             </ButtonGroup>
 
                             <ButtonGroup>
-                                <Button onClick={this.props.pathwayActions.performLayout}>8</Button>
-                                <Button>8</Button>
+                                <Button onClick={this.props.pathwayActions.performLayout}>Q</Button>
+                                <Button>R</Button>
                             </ButtonGroup>
 
                             <ButtonGroup>
-                                <Button>8</Button>
-                                <Button>8</Button>
+                                <Button>S</Button>
+                                <Button>T</Button>
                             </ButtonGroup>
                         </ButtonToolbar>
                     </NavItem>

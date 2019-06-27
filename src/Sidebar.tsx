@@ -12,7 +12,6 @@ import complexImg from "./nodes/Complex.png";
 import compartmentImg from "./nodes/Compartment.png";
 // @ts-ignore
 import processImg from "./nodes/Process.png";
-
 // @ts-ignore
 import acImg from "./edges/activates.png";
 // @ts-ignore
@@ -23,11 +22,12 @@ import indImg from "./edges/induces.png";
 import repImg from "./edges/represses.png";
 // @ts-ignore
 import bindImg from "./edges/binds.png";
+
+import "./supp.css"
+
 interface ISideBarProps{
     pathwayActions: PathwayActions;
 }
-
-const panelStyle = {width: window.innerWidth * 0.1};
 
 export default class Sidebar extends React.Component<ISideBarProps, {}>{
 
@@ -43,48 +43,46 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
         const nodeImgs = [geneImg, familyImg, complexImg, compartmentImg, processImg];
         const edgeImgs = [acImg, inhImg, indImg, repImg, bindImg];
         return(
-            <div>
-            <Panel bsStyle="primary" style={panelStyle}>
-                <Panel.Heading>
-                  <Panel.Title componentClass="h3" style={{textAlign: "center"}}>Network</Panel.Title>
+          <div id="pathway-sidebar" className="sideBarWrapper">
+            <Panel className="pnl">
+                <Panel.Heading className="pnl-header">
+                  Network
                 </Panel.Heading>
-                <Panel.Body style={{textAlign: "center"}}>
+                <Panel.Body className="pnl-body pathwayPanel">
                     
-                    <Row style={{marginBottom: 5}}>
-                        <Button onClick={() => {this.props.pathwayActions.changeNodeName("PTEN", "ZIYA")}}>Details</Button>
-                    </Row>
-                    <Row style={{marginBottom: 5}}>
+                    <div className="buttonContainer">
+                        <Button  onClick={() => {this.props.pathwayActions.changeNodeName("PTEN", "ZIYA")}}>Details</Button>
+                    </div>
+                    <div className="buttonContainer"> 
                         <Button>Import</Button>
-                    </Row>
-                    <Row>
+                    </div>
+                    <div className="buttonContainer">
                         <Button>Export</Button>
-                    </Row>
+                    </div>
                 </Panel.Body>
               </Panel>
 
-            <Panel bsStyle="primary" style={panelStyle}>
-                <Panel.Heading>
-                  <Panel.Title componentClass="h3" style={{textAlign: "center"}}>Node Palette</Panel.Title>
+            <Panel className="pnl">
+                <Panel.Heading className="pnl-header">
+                 Node Palette
                 </Panel.Heading>
-                <Panel.Body style={{textAlign: "center"}}>
+                <Panel.Body className="pnl-body">
                     
                       {
                         nodeTypes.map((nodeType, i) => {
-                        return (<div>
-                            <Row style={{marginBottom: 5}}>
-                            <img width="60%" onClick={() => {this.props.pathwayActions.addNode(nodeType)}} src={nodeImgs[i]}>
-                            </img>
-                            </Row></div>);
+                        return (<div className="dragButtonContainer ui-cytoscape-nodeadd-nodediv">
+                            <img width="110px" onClick={() => {this.props.pathwayActions.addNode(nodeType)}} src={nodeImgs[i]}>
+                            </img></div>);
                         })
                       }
                 </Panel.Body>
               </Panel>
 
-            <Panel bsStyle="primary" style={panelStyle}>
-                <Panel.Heading>
-                  <Panel.Title componentClass="h3" style={{textAlign: "center"}}>Interaction Palette </Panel.Title>
+            <Panel className="pnl edgePanel">
+                <Panel.Heading className="pnl-header">
+                  Interaction Palette
                 </Panel.Heading>
-                <Panel.Body style={{textAlign: "center"}}>
+                <Panel.Body className="pnl-body">
                     <ListGroup>
                     {
                     edgeTypes.map((nodeType: string, i: number) => {

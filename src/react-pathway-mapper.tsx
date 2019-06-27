@@ -395,13 +395,15 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   return (
 
-
-      <div>
+      <Bootstrap.Grid>
           {!isCBioPortal && 
-          <Bootstrap.Row>
+          [<Bootstrap.Row>
               <Menubar pathwayActions={this.pathwayActions} openCBioModal={this.handleOpen} openProfilesModal={this.openProfilesModal}/>
-              <Buttonbar pathwayActions={this.pathwayActions} openCBioModal={this.handleOpen}/>
           </Bootstrap.Row>
+          ,
+          <Bootstrap.Row>
+            <Buttonbar pathwayActions={this.pathwayActions} openCBioModal={this.handleOpen}/> 
+          </Bootstrap.Row>]
           }
           <Bootstrap.Row>
             {
@@ -412,13 +414,13 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             }
             {
             (!isCBioPortal && 
-            <Bootstrap.Col xs={2} align="center">
+            <Bootstrap.Col xs={1} style={{paddingLeft: "0px"}}>
               <Sidebar pathwayActions={this.pathwayActions}/>
             </Bootstrap.Col>)
           
 
             }
-            <Bootstrap.Col xs={isCBioPortal ? 7 : 10} style={{right: 10}} >
+            <Bootstrap.Col xs={isCBioPortal ? 7 : 11} >
                 <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false} 
                 openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
@@ -440,8 +442,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[1]} handleClose={this.handleClose} oldName={this.oldName}/>
           <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[2]} handleClose={this.handleClose} />
           <ToastContainer />
-      </div>
+      </Bootstrap.Grid>
   );
+  }
+
+  componentDidMount(){
+    $(".container").css('width', innerWidth * 0.9);
   }
 
   @autobind

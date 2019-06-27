@@ -19,12 +19,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
         const edgeTypes = ["Activates", "Inhibits", "Induces", "Represses", "Binds"];
 
         return(
-            <Navbar>
-              <Navbar.Header>
-                <Navbar.Brand>
-                  <a href="#">PathwayMapper</a>
-                </Navbar.Brand>
-              </Navbar.Header>
+            <Navbar width={innerWidth * 0.9 + "px"}>
               <Nav>
                 <NavDropdown eventKey={1} title="Network" id="basic-nav-network">
                   <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.newPathway}>New</MenuItem>
@@ -88,6 +83,12 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={7.1}>Action</MenuItem>
                 </NavDropdown>
               </Nav>
+              <Nav pullRight>
+                <Navbar.Brand>
+                  <a href="#">PathwayMapper</a>
+                </Navbar.Brand>
+              </Nav>
+
             </Navbar>
         )
 
