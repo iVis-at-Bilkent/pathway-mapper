@@ -5,8 +5,7 @@ import PathwayActions from './PathwayActions.js';
 
 interface IMenubarProps{
     pathwayActions: PathwayActions;
-    openCBioModal: () => void;
-    openProfilesModal: () => void;
+    handleOpen: (modalId: number) => void;
 }
 
 export default class Menubar extends React.Component<IMenubarProps, {}>{
@@ -72,15 +71,15 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                 </NavDropdown>
                 <NavDropdown eventKey={5} title="Alteration %" id="basic-nav-alteration">
                   <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.loadSampleData}>Load Sample Data</MenuItem>
-                  <MenuItem eventKey={5.1} onClick={this.props.openCBioModal}>Load cBioPortal Data</MenuItem>
-                  <MenuItem eventKey={5.1} onClick={this.props.openProfilesModal}>View Settings...</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(0)}}>Load cBioPortal Data</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(2)}}>View Settings...</MenuItem>
                   <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.removeAllData}>Remove All Data</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={6} title="Layout" id="basic-nav-layout">
                   <MenuItem eventKey={6.1} onClick={this.props.pathwayActions.performLayout}>Perform Layout</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={7} title="Help" id="basic-nav-help">
-                  <MenuItem eventKey={7.1}>Action</MenuItem>
+                  <MenuItem eventKey={7.1} onClick={ () => {this.props.handleOpen(3);}}>About</MenuItem>
                 </NavDropdown>
               </Nav>
               <Nav pullRight>

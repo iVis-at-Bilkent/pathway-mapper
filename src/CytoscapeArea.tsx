@@ -41,97 +41,82 @@ type PathwayMapperType = {
 };
 @observer
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}>{
-    private cy:any;
-    private cyDiv: HTMLDivElement | undefined;
-    private editor: EditorActionsManager;
-    private edgeAddingMode: any;
-    private viewOperationsManager: ViewOperationsManager;
-    private gridOptionsManager: GridOptionsManager;
-    private fileOperationsManager: FileOperationsManager;
-    private qtipManager: QtipManager;
-    private genomicDataExplorerView: any;
-    private pathwayDetailsView: any;
-    private edgeEditing: any;
-    private viewUtilities: any;
-    private isCollaborative: boolean;
-    private isCbioPortal: boolean;
-    private shareDBManager: ShareDBManager;
-    private cxtMenuManager: ContextMenuManager;
-    private dragDropNodeAddManager: DragDropNodeAddPlugin;
-    private undoRedoManager: any;
-    private portalAccessor: CBioPortalAccessor;
-    private isMountedFirst = true;
+  private cy:any;
+  private cyDiv: HTMLDivElement | undefined;
+  private editor: EditorActionsManager;
+  private edgeAddingMode: any;
+  private viewOperationsManager: ViewOperationsManager;
+  private gridOptionsManager: GridOptionsManager;
+  private fileOperationsManager: FileOperationsManager;
+  private qtipManager: QtipManager;
+  private genomicDataExplorerView: any;
+  private pathwayDetailsView: any;
+  private edgeEditing: any;
+  private viewUtilities: any;
+  private isCollaborative: boolean;
+  private isCbioPortal: boolean;
+  private shareDBManager: ShareDBManager;
+  private cxtMenuManager: ContextMenuManager;
+  private dragDropNodeAddManager: DragDropNodeAddPlugin;
+  private undoRedoManager: any;
+  private portalAccessor: CBioPortalAccessor;
+  private isMountedFirst = true;
 
 
-    constructor (props: PathwayMapperType) {
-      super(props);
-      this.isCollaborative = props.isCollaborative;
-      this.edgeAddingMode = 0;
-      this.isCbioPortal = props.isCbioPortal;
-      // this.init();
-      // this.createSampleMenu(); //TODO: AMENDMENT Menu must be react.
-      // this.createCBioPortalAccessModal();
+  constructor (props: PathwayMapperType) {
+    super(props);
+    this.isCollaborative = props.isCollaborative;
+    this.edgeAddingMode = 0;
+    this.isCbioPortal = props.isCbioPortal;
+    // this.init();
+    // this.createSampleMenu(); //TODO: AMENDMENT Menu must be react.
+    // this.createCBioPortalAccessModal();
+  }
+
+
+  componentWillUpdate(nextProps: PathwayMapperType) {
+    console.log("Component will update", nextProps.selectedPathway);
+    this.getPathway(nextProps.selectedPathway);
+  }
+
+  getPathway(selectedPathway: string){
+
+    const data = pathways[selectedPathway];
+    // TODO Problematic const data = pathways["../samples/BLCA-2014-RTK-RAS-PI(3)K-pathway.txt"];
+
+    const parsedGraph = SaveLoadUtility.parseGraph(data, true);
+
+
+    const allEles = parsedGraph;
+    this.editor.loadFile(allEles.nodes, allEles.edges);
+
+    /*
+    window.appManager.pathwayDetailsView.updatePathwayProperties({
+      fileName: allEles.title + ".txt",
+      pathwayTitle: allEles.title,
+      pathwayDescription: allEles.description
+    });*/
+  }
+
+  render(){
+      return (<div>
+        <div ref={this.cyDivHandler} id="cy" style={{"border": "3px solid #1abc9c", "height": "800px"}}/>
+        <div className="cytoscape-navigator-wrapper"></div>
+      </div>);
+  }
+
+  componentDidMount(): void {
+    if(this.isMountedFirst){
+      this.init();
+      this.isMountedFirst = false;
     }
+    // this.getPathway(this.props.selectedPathway);
+  }
 
-
-    componentWillUpdate(nextProps: PathwayMapperType) {
-      console.log("Component will update", nextProps.selectedPathway);
-      this.getPathway(nextProps.selectedPathway);
-    }
-
-    getPathway(selectedPathway: string){
-
-      const data = pathways[selectedPathway];
-      // TODO Problematic const data = pathways["../samples/BLCA-2014-RTK-RAS-PI(3)K-pathway.txt"];
-
-      console.log("Pathway: ");
-      console.log(data);
-
-      const parsedGraph = SaveLoadUtility.parseGraph(data, true);
-
-
-      const nodeMap = {};
-      //const outData = SaveLoadUtility.exportAsSIFNX(pathwayData, nodeMap);
-      const allEles = parsedGraph;
-      console.log(nodeMap);
-
-      // TODO ATTENTION ids are moved from ID TO Name
-      allEles.nodes.forEach((node) => {
-        console.log(node.data);
-        //node.data.parent = (node.data.parent === -1) ? -1 : nodeMap[node.data.parent].data.name;
-        //node.data.id = node.data.name;
-      });
-
-      this.editor.loadFile(allEles.nodes, allEles.edges);/*
-      console.log("After LoadFile");
-      console.log(this.cy.edges());*/
-      /*
-      window.appManager.pathwayDetailsView.updatePathwayProperties({
-        fileName: allEles.title + ".txt",
-        pathwayTitle: allEles.title,
-        pathwayDescription: allEles.description
-      });*/
-    }
-
-    render(){
-        return (<div>
-          <div ref={this.cyDivHandler} id="cy" style={{"border": "3px solid #1abc9c", "height": "800px"}}/>
-          <div className="cytoscape-navigator-wrapper"></div>
-        </div>);
-    }
-
-    componentDidMount(): void {
-      if(this.isMountedFirst){
-        this.init();
-        this.isMountedFirst = false;
-      }
-      this.getPathway(this.props.selectedPathway);
-    }
-
-    @autobind
-    cyDivHandler(div:HTMLDivElement){
-        this.cyDiv = div;
-    }
+  @autobind
+  cyDivHandler(div:HTMLDivElement){
+      this.cyDiv = div;
+  }
 
   init(){
     // Initializes cytoscape
@@ -173,8 +158,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     //var widthPanzoom = $('.cy-panzoom').outerWidth();
 
     if(!this.isCbioPortal) {
-      $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - 340);
-      $('.cytoscape-navigator-wrapper').css('right', 17);
+      $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - 330);
+      $('.cytoscape-navigator-wrapper').css('right', 22);
       //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
     }
     else {

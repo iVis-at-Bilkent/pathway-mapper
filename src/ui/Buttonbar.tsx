@@ -6,7 +6,7 @@ import { observable } from "mobx";
 import InlineSVG from 'svg-inline-react';
 interface IButtonbarProps {
     pathwayActions: PathwayActions;
-    openCBioModal: () => void;
+    handleOpen: (modelId: number) => void;
 }
 
 export default class BUttonbar extends React.Component<IButtonbarProps, {}>{
@@ -26,66 +26,62 @@ export default class BUttonbar extends React.Component<IButtonbarProps, {}>{
 
         return (
             <Navbar style={{ backgroundColor: "#eff0f2" }}>
-                <Nav>
-                    <NavItem>
-                        <ButtonToolbar className="toolbar pathway-toolbar">
-                            <ButtonGroup>
-                                <Button onClick={this.props.pathwayActions.newPathway}>A</Button>
-                                <Button>B</Button>
-                                <Button>C</Button>
-                            </ButtonGroup>
+                <Nav style={{marginTop: "8px"}}>
+                    <ButtonToolbar className="toolbar pathway-toolbar">
+                        <ButtonGroup>
+                            <Button onClick={this.props.pathwayActions.newPathway}>A</Button>
+                            <Button>B</Button>
+                            <Button>C</Button>
+                        </ButtonGroup>
 
-                            <ButtonGroup>
-                                <Button>D</Button>
-                            </ButtonGroup>
+                        <ButtonGroup>
+                            <Button>D</Button>
+                        </ButtonGroup>
 
-                            <ButtonGroup>
-                                <Button>E</Button>
-                                <Button>F</Button>
-                                <Button>G</Button>
-                                <Button>H</Button>
-                                <Button>I</Button>
-                                <Button>J</Button>
-                            </ButtonGroup>
+                        <ButtonGroup>
+                            <Button>E</Button>
+                            <Button>F</Button>
+                            <Button>G</Button>
+                            <Button>H</Button>
+                            <Button>I</Button>
+                            <Button>J</Button>
+                        </ButtonGroup>
 
-                            <ButtonGroup>
-                                <Button>K</Button>
-                                <Button>L</Button>
-                            </ButtonGroup>
+                        <ButtonGroup>
+                            <Button>K</Button>
+                            <Button>L</Button>
+                        </ButtonGroup>
 
-                            <ButtonGroup>
-                                <Button>M</Button>
-                                <Button>N</Button>
-                            </ButtonGroup>
+                        <ButtonGroup>
+                            <Button>M</Button>
+                            <Button>N</Button>
+                        </ButtonGroup>
 
-                            <ButtonGroup>
-                                <Button onClick={this.props.openCBioModal}>O</Button>
-                                <Button>P</Button>
-                            </ButtonGroup>
+                        <ButtonGroup>
+                            <Button onClick={() => {this.props.handleOpen(0)}}>O</Button>
+                            <Button>P</Button>
+                        </ButtonGroup>
 
-                            <ButtonGroup>
-                                <Button onClick={this.props.pathwayActions.performLayout}>Q</Button>
-                                <Button>R</Button>
-                            </ButtonGroup>
+                        <ButtonGroup>
+                            <Button onClick={this.props.pathwayActions.performLayout}>Q</Button>
+                            <Button>R</Button>
+                        </ButtonGroup>
 
-                            <ButtonGroup>
-                                <Button>S</Button>
-                                <Button>T</Button>
-                            </ButtonGroup>
-                        </ButtonToolbar>
-                    </NavItem>
+                        <ButtonGroup>
+                            <Button>S</Button>
+                            <Button>T</Button>
+                        </ButtonGroup>
+                    </ButtonToolbar>
                 </Nav>
-                <Nav pullRight>
-                    <NavItem eventKey={1} href="#">
-                        <InputGroup >
-                            <FormControl type="text"
-                                onChange={(e: any) => { this.searchedGene = e.target.value; }}
-                                onKeyPress={(e: any) => { if (e.key !== "Enter") return; this.props.pathwayActions.searchGene(this.searchedGene) }} />
-                            <InputGroup.Addon>
-                                <Glyphicon onClick={() => { this.props.pathwayActions.searchGene(this.searchedGene) }} glyph="search" />
-                            </InputGroup.Addon>
-                        </InputGroup>
-                    </NavItem>
+                <Nav pullRight style={{marginTop: "8px"}}>
+                    <InputGroup >
+                        <FormControl type="text"
+                            onChange={(e: any) => { this.searchedGene = e.target.value; }}
+                            onKeyPress={(e: any) => { if (e.key !== "Enter") return; this.props.pathwayActions.searchGene(this.searchedGene) }} />
+                        <InputGroup.Addon>
+                            <Glyphicon onClick={() => { this.props.pathwayActions.searchGene(this.searchedGene) }} glyph="search" />
+                        </InputGroup.Addon>
+                    </InputGroup>
                 </Nav>
             </Navbar>
         )

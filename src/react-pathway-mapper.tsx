@@ -30,6 +30,7 @@ import ProfilesModal from './modals/ProfilesModal';
 
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AboutModal from './modals/AboutModal';
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
@@ -97,7 +98,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     super(props);
     this.selectedPathway = this.props.pathwayName || "ACC-2016-TP53-RB-pathway";
     this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles);
-    this.isModalShown = [false, false, false];
+    this.isModalShown = [false, false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
@@ -398,11 +399,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       <Bootstrap.Grid>
           {!isCBioPortal && 
           [<Bootstrap.Row>
-              <Menubar pathwayActions={this.pathwayActions} openCBioModal={this.handleOpen} openProfilesModal={this.openProfilesModal}/>
+              <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen}/>
           </Bootstrap.Row>
           ,
           <Bootstrap.Row>
-            <Buttonbar pathwayActions={this.pathwayActions} openCBioModal={this.handleOpen}/> 
+            <Buttonbar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen}/> 
           </Bootstrap.Row>]
           }
           <Bootstrap.Row>
@@ -441,6 +442,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <StudyModal isModalShown={this.isModalShown[0]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
           <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[1]} handleClose={this.handleClose} oldName={this.oldName}/>
           <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[2]} handleClose={this.handleClose} />
+          <AboutModal isModalShown={this.isModalShown[3]} handleClose={this.handleClose}/>
           <ToastContainer />
       </Bootstrap.Grid>
   );
@@ -451,21 +453,14 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   }
 
   @autobind
-  openProfilesModal(){
-    this.isModalShown[2] = true;
-
-    
-  }
-
-  @autobind
   openChangeNameModal(oldName: string){
     this.isModalShown[1] = true;
     this.oldName = oldName;
   }
 
   @autobind
-  handleOpen(){
-    this.isModalShown[0] = true;
+  handleOpen(modalId: number){
+    this.isModalShown[modalId] = true;
   }
 
 
