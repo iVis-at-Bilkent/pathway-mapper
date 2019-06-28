@@ -81,6 +81,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
   getPathway(selectedPathway: string){
 
+    if(!selectedPathway || selectedPathway === '') return;
+
     const data = pathways[selectedPathway];
     // TODO Problematic const data = pathways["../samples/BLCA-2014-RTK-RAS-PI(3)K-pathway.txt"];
 
@@ -110,7 +112,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       this.init();
       this.isMountedFirst = false;
     }
-    // this.getPathway(this.props.selectedPathway);
+    this.getPathway(this.props.selectedPathway);
   }
 
   @autobind
@@ -145,7 +147,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     // @ts-ignore
     var heightCy = $(this.cyDiv).outerHeight();
     // @ts-ignore
-    var widthCy = window.innerWidth * 0.81;
+    var widthCy = ((!this.isCbioPortal ? window.innerWidth * 0.81 :($(this.cyDiv).outerWidth())));
     var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
     var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
     var heightPatwayNavbar = $('.pathway-navbar').outerHeight();
@@ -163,7 +165,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
     }
     else {
-      $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - heightPathwayToolbar - heightPatwayNavbar - 3 * offset);
+      $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - heightPathwayToolbar - heightPatwayNavbar - 3 * offset + 8);
+      $('.cytoscape-navigator-wrapper').css('right', 20);
       //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator + widthcBioPortalSideBar + offset - widthSideBar);
     }
 

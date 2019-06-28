@@ -1,6 +1,3 @@
-// Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
-  // import "core-js/fn/array.find"
-  // ...
 import React from 'react';
 import Toolbar from "./Toolbar";
 import CytoscapeArea from "./CytoscapeArea";
@@ -97,7 +94,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   constructor(props: IPathwayMapperProps){
     super(props);
-    this.selectedPathway = this.props.pathwayName || "ACC-2016-TP53-RB-pathway";
+    this.selectedPathway = this.props.pathwayName || "";
     this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles);
     this.isModalShown = [false, false, false, false];
     // TODO: Change below
@@ -110,11 +107,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.getBestPathway(2);
       this.getBestPathway(3);
     }
-    /*
+    
     const profile1 = {profileId: "study1_gistic", studyId: "study1", enabled: true};
     const profile2 = {profileId: "study2_gistic", studyId: "study2", enabled: true};
     const profile3 = {profileId: "study3_mutations", studyId: "study3", enabled: true};
-    this.profiles.push(profile1, profile2, profile3);*/
+    this.profiles.push(profile1, profile2, profile3);
     
     console.log("Profiles");
     console.log(this.profiles);
@@ -397,7 +394,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   return (
 
-      <Bootstrap.Grid>
+      <Bootstrap.Grid style={{width: window.innerWidth}}>
           {!isCBioPortal && 
           [<Bootstrap.Row>
               <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen}/>
@@ -410,7 +407,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <Bootstrap.Row>
             {
             ( isCBioPortal &&
-            <Bootstrap.Col xs={1} align="center">
+            <Bootstrap.Col xs={1}>
                 <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}/>
             </Bootstrap.Col>)
             }
@@ -430,11 +427,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             { isCBioPortal &&
             <Bootstrap.Col xs={4}>
                 <Bootstrap.Row>
-                {profileLabels}
-                </Bootstrap.Row>
-                <br/>
-                <Bootstrap.Row>
-                  <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos}/>
+                  <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} profileLabels={profileLabels}/>
                 </Bootstrap.Row>
             </Bootstrap.Col>
             }
@@ -450,6 +443,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   }
 
   componentDidMount(){
+    if(!this.props.isCBioPortal)
     $(".container").css('width', innerWidth * 0.9);
   }
 

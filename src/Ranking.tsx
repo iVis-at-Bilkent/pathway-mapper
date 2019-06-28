@@ -9,6 +9,7 @@ import PathwayActions from './PathwayActions.js';
 interface IRankingProps{
     pathwayActions: PathwayActions;
     bestPathwaysAlgos: any[][];
+    profileLabels: (string | JSX.Element)[][];
 }
 
 
@@ -56,22 +57,36 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
         return (
           <div>
-              <DropdownButton
-                title={this.dropDownTitle}
-                id="0"
-                >
-                <MenuItem onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match Amount";} }>Match Amount</MenuItem>
-                <MenuItem onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match Percentage";}}>Match Percentage</MenuItem>
-            </DropdownButton>
+            <div style={{marginBottom: "10px"}} >
+                <b>Studies to show: </b>
+                <div style={{marginLeft: "20px", marginTop: "6px"}}>
+                {this.props.profileLabels}
+                <br/>
+                <br/>
+                </div>
+            </div>
 
-            <Checkbox onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1;} }>
-            Consider alteration data
-            </Checkbox>
+            <div style={{marginBottom: "10px"}} >
 
-            <Button onClick={this.onApplyClick}>Apply</Button>
+                <b>Ranking criteria: </b>
+                <div style={{marginLeft: "20px", marginTop: "6px"}}>
+                    <DropdownButton
+                        title={this.dropDownTitle}
+                        id="0"
+                        >
+                        <MenuItem onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match Amount";} }>Match Amount</MenuItem>
+                        <MenuItem onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match Percentage";}}>Match Percentage</MenuItem>
+                    </DropdownButton>   
+                    <Checkbox onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1;} }>
+                    Consider alteration data
+                    </Checkbox>
+                    <Button onClick={this.onApplyClick}>Apply</Button>
+                </div>
+            </div>
             <br/>
             <br/>
-            <Table striped bordered condensed hover>
+            <b>Pathway Rankings: </b>
+            <Table striped bordered condensed hover style={{marginTop: "6px"}}>
                 <thead>
                     <tr>
                     <th>Rank</th>
