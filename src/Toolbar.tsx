@@ -18,6 +18,7 @@ interface IToolbarProps {
   pathwayActions: PathwayActions;
   selectedPathway: string;
   alterationData: IAlterationData;
+  handleOpen: (modalId: number) => void;
 }
 
 @observer
@@ -44,7 +45,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
           <Image style={{cursor: "pointer"}} data-tip="Perform layout" data-place="right" data-effect="solid" src={layoutImage} onClick={this.props.pathwayActions.performLayout} />              
 
           <br/>
-          <Image style={{cursor: "pointer"}} data-tip="About" data-place="right" data-effect="solid" src={infoImage}/>
+          <Image style={{cursor: "pointer"}} data-tip="About" data-place="right" data-effect="solid" src={infoImage} onClick={() => {this.props.handleOpen(3);}}/>
 
           <br/>
           <Image style={{cursor: "pointer"}} data-tip="Open full-blown mode" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://localhost:8080/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>

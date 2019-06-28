@@ -108,11 +108,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.getBestPathway(2);
       this.getBestPathway(3);
     }
-    
+    /*
     const profile1 = {profileId: "study1_gistic", studyId: "study1", enabled: true};
     const profile2 = {profileId: "study2_gistic", studyId: "study2", enabled: true};
     const profile3 = {profileId: "study3_mutations", studyId: "study3", enabled: true};
-    this.profiles.push(profile1, profile2, profile3);
+    this.profiles.push(profile1, profile2, profile3);*/
     
     console.log("Profiles");
     console.log(this.profiles);
@@ -409,7 +409,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             {
             ( isCBioPortal &&
             <Bootstrap.Col xs={1}>
-                <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}/>
+                <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData} handleOpen={this.handleOpen}/>
             </Bootstrap.Col>)
             }
             {
@@ -437,7 +437,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <StudyModal isModalShown={this.isModalShown[0]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
           <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[1]} handleClose={this.handleClose} oldName={this.oldName}/>
           <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[2]} handleClose={this.handleClose} />
-          <AboutModal isModalShown={this.isModalShown[3]} handleClose={this.handleClose}/>
+          <AboutModal isModalShown={this.isModalShown[3]} handleClose={this.handleClose} isCBioPortal={this.props.isCBioPortal}/>
           <ToastContainer />
           <ReactTooltip />
       </Bootstrap.Grid>
