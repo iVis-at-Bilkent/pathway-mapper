@@ -33,7 +33,7 @@
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "precommit": "lint-staged",
-    "prepare": "npm run build",
+    "prepare": "yarn run build",
     "travis-deploy-once": "travis-deploy-once"
   },
   "lint-staged": {
@@ -85,12 +85,14 @@
     "mobx": "^5.10.1",
     "mobx-react": "^5.4.3",
     "net": "^1.0.2",
+    "raw-loader": "^3.0.0",
     "react": "^16.8.6",
     "react-bootstrap": "^0.32.0",
     "react-dom": "^16.8.6",
     "react-loader-spinner": "^2.3.0",
     "react-scripts": "2.1.8",
     "react-scrollbar": "^0.5.6",
+    "react-svg-inline": "^2.1.1",
     "react-toastify": "^5.3.1",
     "sharedb": "^1.0.0-beta.1",
     "sharedb-mongo": "^1.0.0-beta.4",
@@ -98,6 +100,7 @@
     "ts-loader": "^6.0.2",
     "typescript": "3.4.3",
     "underscore": "~1.8.3",
+    "url-loader": "^1.1.2",
     "websocket-json-stream": "0.0.1",
     "ws": "^1.1.0"
   },

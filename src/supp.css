@@ -1,3 +1,13 @@
 .list-group{
-    margin-bottom: 0px
+    margin-bottom: 0px;
+}
+
+.toolbar svg {
+    margin-right: 4px;
+    margin-right: 4px;
+}
+
+.toolbar .toolbar-button{
+    margin-right: 1px;
+    margin-left: 1px
 }
