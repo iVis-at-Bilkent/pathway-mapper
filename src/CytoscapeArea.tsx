@@ -165,7 +165,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
     }
     else {
-      $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - heightPathwayToolbar - heightPatwayNavbar - 3 * offset + 8);
+      $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - 3 * offset + 53);
       $('.cytoscape-navigator-wrapper').css('right', 20);
       //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator + widthcBioPortalSideBar + offset - widthSideBar);
     }

@@ -38,32 +38,16 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
       return (
       <Col>
-          <Row>
-              <Col>
-                <Image src={saveImage} onClick={this.props.pathwayActions.saveAsPng}/>
-              </Col>
-          </Row>
+          <Image style={{cursor: "pointer"}} data-tip="Save as PNG" data-place="right" data-effect="solid" src={saveImage} onClick={this.props.pathwayActions.saveAsPng}/>
 
           <br/>
-          <Row>
-              <Col>
-              <Image src={layoutImage} onClick={this.props.pathwayActions.performLayout} />              
-              </Col>
-          </Row>
+          <Image style={{cursor: "pointer"}} data-tip="Perform layout" data-place="right" data-effect="solid" src={layoutImage} onClick={this.props.pathwayActions.performLayout} />              
 
           <br/>
-          <Row>
-              <Col>
-              <Image src={infoImage}/>
-              </Col>
-          </Row>
+          <Image style={{cursor: "pointer"}} data-tip="About" data-place="right" data-effect="solid" src={infoImage}/>
 
           <br/>
-          <Row>
-              <Col>
-              <Image src={openImage} onClick={() => {{window.open("http://localhost:8080/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
-              </Col> 
-          </Row>
+          <Image style={{cursor: "pointer"}} data-tip="Open full-blown mode" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://localhost:8080/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
 
     </Col>);
 

@@ -9,5 +9,9 @@
 
 .toolbar .toolbar-button{
     margin-right: 1px;
-    margin-left: 1px
+    margin-left: 1px 
+}
+
+tbody tr:hover{
+    background: rgb(26, 188, 156) !important
 }

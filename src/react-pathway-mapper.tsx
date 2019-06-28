@@ -29,6 +29,7 @@ import ProfilesModal from './modals/ProfilesModal';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AboutModal from './modals/AboutModal';
+import ReactTooltip from 'react-tooltip'
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
@@ -394,7 +395,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   return (
 
-      <Bootstrap.Grid style={{width: window.innerWidth}}>
+      <Bootstrap.Grid style={{width: window.innerWidth * 0.9}}>
           {!isCBioPortal && 
           [<Bootstrap.Row>
               <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen}/>
@@ -438,6 +439,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[2]} handleClose={this.handleClose} />
           <AboutModal isModalShown={this.isModalShown[3]} handleClose={this.handleClose}/>
           <ToastContainer />
+          <ReactTooltip />
       </Bootstrap.Grid>
   );
   }
