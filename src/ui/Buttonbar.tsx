@@ -54,6 +54,11 @@ interface IButtonbarProps {
     handleOpen: (modelId: number) => void;
 }
 
+interface ISVGFunction{
+    svg: any;
+    function: Function;    
+}
+
 export default class BUttonbar extends React.Component<IButtonbarProps, {}>{
 
 
@@ -66,33 +71,71 @@ export default class BUttonbar extends React.Component<IButtonbarProps, {}>{
     }
 
     render() {
+        
+        const fileFunctions: ISVGFunction[] = [
+            {svg: newSvg, function: this.props.pathwayActions.newPathway},
+            {svg: loadSvg, function: this.props.pathwayActions.newPathway},
+            {svg: saveSvg, function: this.props.pathwayActions.newPathway}];
+        
+        const modFunctions: ISVGFunction[] = [
+            {svg: deleteSvg, function: this.props.pathwayActions.deleteSelected},
+            {svg: undoSvg, function: () => {this.props.pathwayActions.newPathway();}},
+            {svg: redoSvg, function: () => {this.props.pathwayActions.newPathway();}}];
+        
+        const alignFunctions: ISVGFunction[] = [
+            {svg: ahtSvg, function: () => {this.props.pathwayActions.newPathway();}},
+            {svg: ahmSvg, function: () => {this.props.pathwayActions.newPathway();}},
+            {svg: ahbSvg, function: () => {this.props.pathwayActions.newPathway();}},
+            {svg: avlSvg, function: () => {this.props.pathwayActions.newPathway();}},
+            {svg: avcSvg, function: () => {this.props.pathwayActions.newPathway();}},
+            {svg: avrSvg, function: () => {this.props.pathwayActions.newPathway();}}];
+            
+        const utilFunctions: ISVGFunction[] = [
+            {svg: gridSvg, function: this.props.pathwayActions.deleteSelected},
+            {svg: guideSvg, function: () => {this.props.pathwayActions.newPathway();}}];
 
+        const visibilityFunctions: ISVGFunction[] = [
+            {svg: hideSvg, function: () => {this.props.pathwayActions.hideSelected();}},
+            {svg: showSvg, function: () => {this.props.pathwayActions.showAll();}}];
+
+        const layoutFunctions: ISVGFunction[] = [
+            {svg: layoutSvg, function: () => {this.props.pathwayActions.performLayout();}},
+            {svg: layoutPropSvg, function: () => {this.props.pathwayActions.performLayout();}}];
+
+        const portalFunctions: ISVGFunction[] = [
+            {svg: portalSvg, function: () => {this.props.handleOpen(0);}},
+            {svg: setingsSvg, function: () => {this.props.handleOpen(2);}}];
+
+        const infoFunctions: ISVGFunction[] = [
+            {svg: helpSvg, function: () => {this.props.handleOpen(3);}},
+            {svg: aboutSvg, function: () => {this.props.handleOpen(3);}}];
+        
         return (
-            <Navbar style={{ backgroundColor: "#eff0f2" }}>
+            <Navbar style={{backgroundColor: "#eff0f2" }}>
                 <Nav style={{marginTop: "8px"}}>
                     <ButtonToolbar className="toolbar pathway-toolbar">
                         <ButtonGroup>
-                            { ([newSvg, loadSvg, saveSvg]).map((svg: any) => 
+                            { fileFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg}></SVGInline>
+                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
                                 </div>)
                                 )
                             }
                         </ButtonGroup>
 
                         <ButtonGroup>
-                            { ([deleteSvg, undoSvg, redoSvg]).map((svg: any) => 
+                            { modFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg}></SVGInline>
+                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
                                 </div>)
                                 )
                             }
                         </ButtonGroup>
 
                         <ButtonGroup>
-                            { ([ahtSvg, ahmSvg, ahbSvg, avlSvg, avcSvg, avrSvg]).map((svg: any) => 
+                            { alignFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg}></SVGInline>
+                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
                                 </div>)
                                 )
                             }
@@ -100,45 +143,45 @@ export default class BUttonbar extends React.Component<IButtonbarProps, {}>{
                         </ButtonGroup>
 
                         <ButtonGroup>
-                            { ([gridSvg, guideSvg]).map((svg: any) => 
+                            { utilFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg}></SVGInline>
+                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
                                 </div>)
                                 )
                             }
                         </ButtonGroup>
 
                         <ButtonGroup>
-                            { ([hideSvg, showSvg]).map((svg: any) => 
+                            { visibilityFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg}></SVGInline>
+                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
                                 </div>)
                                 )
                             }
                         </ButtonGroup>
 
                         <ButtonGroup>
-                            { ([portalSvg, setingsSvg]).map((svg: any) => 
+                            { portalFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg}></SVGInline>
+                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
                                 </div>)
                                 )
                             }
                         </ButtonGroup>
 
                         <ButtonGroup>
-                            { ([layoutSvg, layoutPropSvg]).map((svg: any) => 
+                            { layoutFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg}></SVGInline>
+                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
                                 </div>)
                                 )
                             }
                         </ButtonGroup>
 
                         <ButtonGroup>
-                            { ([helpSvg, aboutSvg]).map((svg: any) => 
+                            { infoFunctions.map((svg: any) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg}></SVGInline>
+                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
                                 </div>)
                                 )
                             }

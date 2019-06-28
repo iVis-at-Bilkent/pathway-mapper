@@ -28,7 +28,23 @@ export default class PathwayActions {
   newPathway() {
     this.fileManager.createNewPathway();
   }
+
+
+  @autobind
+  showAll(){
+    this.editor.showAllNodes();
+  }
   
+  @autobind
+  hideSelected(){
+    this.editor.hideSelectedNodes();
+  }
+
+  @autobind
+  deleteSelected(){
+    const selectedEles = this.editor.cy.elements(':selected');
+    this.editor.removeElement(selectedEles);
+  }
 
   @autobind
   addEdge(edgeTypeIndex: number){
