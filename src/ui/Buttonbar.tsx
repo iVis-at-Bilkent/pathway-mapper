@@ -59,7 +59,7 @@ interface ISVGFunction{
     function: Function;    
 }
 
-export default class BUttonbar extends React.Component<IButtonbarProps, {}>{
+export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
 
 
     @observable
@@ -79,8 +79,8 @@ export default class BUttonbar extends React.Component<IButtonbarProps, {}>{
         
         const modFunctions: ISVGFunction[] = [
             {svg: deleteSvg, function: this.props.pathwayActions.deleteSelected},
-            {svg: undoSvg, function: () => {this.props.pathwayActions.newPathway();}},
-            {svg: redoSvg, function: () => {this.props.pathwayActions.newPathway();}}];
+            {svg: undoSvg, function: () => {this.props.pathwayActions.undo();}},
+            {svg: redoSvg, function: () => {this.props.pathwayActions.redo();}}];
         
         const alignFunctions: ISVGFunction[] = [
             {svg: ahtSvg, function: () => {this.props.pathwayActions.newPathway();}},

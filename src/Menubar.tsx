@@ -67,6 +67,9 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={3.1}>Action</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={4} title="Highlight" id="basic-nav-highlight">
+                  <MenuItem eventKey={4.1} onClick={this.props.pathwayActions.highlightSelected}>Highlight Selected</MenuItem>
+                  <MenuItem eventKey={4.1} onClick={this.props.pathwayActions.highlightNeighbours}>Highlight Neighbors Of Selected</MenuItem>
+                  <MenuItem eventKey={4.1} onClick={this.props.pathwayActions.validateGenes}>Identify Invalid Genes</MenuItem>
                   <MenuItem eventKey={4.1} onClick={this.props.pathwayActions.removeAllHighlight}>Remove All Highlights</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={5} title="Alteration %" id="basic-nav-alteration">

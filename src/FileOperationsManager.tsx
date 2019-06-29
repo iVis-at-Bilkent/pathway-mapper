@@ -76,6 +76,14 @@ export default class FileOperationsManager{
         window.appManager.pathwayDetailsView.updatePathwayProperties(pathwayData);
     };*/
 
+    undo(){
+        this.undoRedoManager.undo();
+    }
+
+    redo(){
+        this.undoRedoManager.redo();
+    }
+
     resetUndoStack()
     {
         this.undoRedoManager.reset();

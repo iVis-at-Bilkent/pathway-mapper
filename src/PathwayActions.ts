@@ -19,14 +19,41 @@ export default class PathwayActions {
     this.profiles = profiles;
   }
 
+
+  
   @autobind
   changePathway(pathwayName: string) {
     this.pathwayHandler(pathwayName);
+  }
+  
+  @autobind
+  highlightNeighbours() {
+    this.editor.highlightNeighbors();
+  }
+  
+  @autobind
+  highlightSelected() {
+    this.editor.highlightSelected();
+  }
+  
+  @autobind
+  validateGenes() {
+    this.editor.validateGenes();
   }
 
   @autobind
   newPathway() {
     this.fileManager.createNewPathway();
+  }
+
+  @autobind
+  redo(){
+    this.fileManager.redo();
+  }
+
+  @autobind
+  undo(){
+    this.fileManager.undo();
   }
 
 
