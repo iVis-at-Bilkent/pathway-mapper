@@ -92,6 +92,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   @observable
   profiles: IProfileMetaData[] = [];
 
+  setActiveEdge: (edgeId: number) => void;
+
 
   constructor(props: IPathwayMapperProps){
     super(props);
@@ -117,8 +119,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     console.log("Profiles");
     console.log(this.profiles);
   }
-
-
 
   getGeneStudyMap(studyGeneMap: any){
     
@@ -382,6 +382,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         });
       }
   }
+
+  @autobind
+  setActiveEdgeHandler(setActiveEdge: (edgeId: number) => void){
+    this.setActiveEdge = setActiveEdge;
+  }
+
   render() {
   const isCBioPortal = this.props.isCBioPortal; 
   const profileLabels = this.profiles.map((profile: IProfileMetaData, i: number) => 
@@ -393,6 +399,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     onMouseLeave={() => {document.body.style.cursor = "default";}}
     bsStyle={this.profiles[i].enabled ? "primary" : "default"}>{profile.profileId}</Label>, " "]);
 
+
+    
   return (
 
       <Bootstrap.Grid style={{width: window.innerWidth * 0.9}}>
@@ -415,13 +423,13 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             {
             (!isCBioPortal && 
             <Bootstrap.Col xs={1} style={{paddingLeft: "0px"}}>
-              <Sidebar pathwayActions={this.pathwayActions}/>
+              <Sidebar pathwayActions={this.pathwayActions} setActiveEdgeHandler={this.setActiveEdgeHandler}/>
             </Bootstrap.Col>)
           
 
             }
             <Bootstrap.Col xs={isCBioPortal ? 7 : 11} >
-                <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false} 
+                <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false}  setActiveEdge={this.setActiveEdge}
                 openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
 

@@ -38,6 +38,7 @@ type PathwayMapperType = {
   editorHandler: Function;
   selectedPathway: string;
   openChangeNameModal: Function;
+  setActiveEdge: Function;
 };
 @observer
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}>{
@@ -338,7 +339,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
           //TODO refactor this, so terrible for now
           $('.edge-palette a').blur().removeClass('active');
           self.edgeAddingMode = -1;
-          eh.disableDrawMode();      
+          eh.disableDrawMode();    
+          self.props.setActiveEdge(-1);  
         }
       };
     //Edge Handles initialization

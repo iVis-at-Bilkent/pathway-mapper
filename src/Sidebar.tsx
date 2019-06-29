@@ -25,15 +25,40 @@ import repImg from "./edges/represses.png";
 import bindImg from "./edges/binds.png";
 
 import "./supp.css"
+import { observable } from "mobx";
+import { observer } from "mobx-react";
+import autobind from "autobind-decorator";
 
 interface ISideBarProps{
     pathwayActions: PathwayActions;
+    setActiveEdgeHandler: Function;
+
 }
 
+@observer
 export default class Sidebar extends React.Component<ISideBarProps, {}>{
+
+    @observable
+    activeEdge: number;
 
     constructor(props: ISideBarProps){
         super(props);
+        this.activeEdge = -1;
+        this.props.setActiveEdgeHandler(this.setActiveEdge);
+    }
+
+    addEdge(edgeIndex: number){
+      if(edgeIndex === this.activeEdge){
+        this.setActiveEdge(-1);
+        return;
+      }
+      this.setActiveEdge(edgeIndex);
+      this.props.pathwayActions.addEdge(edgeIndex);
+    }
+
+    @autobind
+    setActiveEdge(edgeIndex: number){
+      this.activeEdge = edgeIndex;
     }
 
     render(){
@@ -89,11 +114,12 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                 <Panel.Body className="pnl-body">
                     <ListGroup>
                     {
-                    edgeTypes.map((nodeType: string, i: number) => {
+                    edgeTypes.map((edgeType: string, i: number) => {
                     return (<div>
-                        <ListGroupItem style={{marginBottom: 5}} width="30%" active={true} onClick={() => {this.props.pathwayActions.addEdge(i)}} >
+                        <ListGroupItem style={{marginBottom: 5}} width="30%" active={this.activeEdge === i} 
+                        onClick={() => {this.addEdge(i)}} >
                         <img width="20%" src={edgeImgs[i]}></img>{' '}
-                        {nodeType}
+                        {edgeType}
                         </ListGroupItem></div>);
                     })
                     }
