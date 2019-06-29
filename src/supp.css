@@ -1,3 +1,4 @@
+
 .list-group{
     margin-bottom: 0px;
 }
@@ -14,4 +15,18 @@
 
 tbody tr:hover{
     background: rgb(26, 188, 156) !important
+}
+
+.ui-cytoscape-nodeadd-nodediv{
+    background: rgb(251, 251, 251) none repeat scroll 0% 0%;
+
+    border: 0px solid rgb(255, 255, 255);
+
+    border-radius: 5px;
+
+    font-size: 1.3em !important;
+
+    cursor: pointer;
+
+    text-align: center;
 }

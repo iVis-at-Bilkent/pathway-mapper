@@ -1,17 +1,18 @@
 import React from "react";
 import {Panel, Button, Col, Row, ListGroup, ListGroupItem} from "react-bootstrap";
 import PathwayActions from "./PathwayActions";
+import SVGInline from "react-svg-inline";
 
 // @ts-ignore
-import geneImg from "./nodes/Gene.png";
+import geneImg from "./nodes/gene.svg";
 // @ts-ignore
-import familyImg from "./nodes/Family.png";
+import familyImg from "./nodes/family.svg";
 // @ts-ignore
-import complexImg from "./nodes/Complex.png";
+import complexImg from "./nodes/complex.svg";
 // @ts-ignore
-import compartmentImg from "./nodes/Compartment.png";
+import compartmentImg from "./nodes/compartment.svg";
 // @ts-ignore
-import processImg from "./nodes/Process.png";
+import processImg from "./nodes/process.svg";
 // @ts-ignore
 import acImg from "./edges/activates.png";
 // @ts-ignore
@@ -51,7 +52,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                 <Panel.Body className="pnl-body pathwayPanel">
                     
                     <div className="buttonContainer">
-                        <Button  onClick={() => {this.props.pathwayActions.changeNodeName("PTEN", "ZIYA")}}>Details</Button>
+                        <Button>Details</Button>
                     </div>
                     <div className="buttonContainer"> 
                         <Button>Import</Button>
@@ -67,12 +68,15 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                  Node Palette
                 </Panel.Heading>
                 <Panel.Body className="pnl-body">
-                    
-                      {
+                      
+                {
                         nodeTypes.map((nodeType, i) => {
-                        return (<div className="dragButtonContainer ui-cytoscape-nodeadd-nodediv">
-                            <img width="110px" onClick={() => {this.props.pathwayActions.addNode(nodeType)}} src={nodeImgs[i]}>
-                            </img></div>);
+                        return (
+                        <div className="ui-cytoscape-nodeadd dragButtonContainer">
+                          <div className="ui-cytoscape-nodeadd-nodediv">
+                            <SVGInline svg={nodeImgs[i]} onClick={() => {this.props.pathwayActions.addNode(nodeType)}} width="110px" height="28px"/>
+                          </div>
+                        </div>);
                         })
                       }
                 </Panel.Body>
@@ -87,7 +91,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                     {
                     edgeTypes.map((nodeType: string, i: number) => {
                     return (<div>
-                        <ListGroupItem style={{marginBottom: 5}} width="30%" onClick={() => {this.props.pathwayActions.addEdge(i)}} >
+                        <ListGroupItem style={{marginBottom: 5}} width="30%" active={true} onClick={() => {this.props.pathwayActions.addEdge(i)}} >
                         <img width="20%" src={edgeImgs[i]}></img>{' '}
                         {nodeType}
                         </ListGroupItem></div>);
