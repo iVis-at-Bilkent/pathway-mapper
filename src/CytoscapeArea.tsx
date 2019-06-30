@@ -10,7 +10,6 @@ import EditorActionsManager from "./EditorActionsManager";
 import DragDropNodeAddPlugin from "./DragDropNodeAddPlugin";
 import ContextMenuManager from "./ContextMenuManager";
 import GridOptionsManager from "./GridOptionsManager";
-import FileOperationsManager from "./FileOperationsManager";
 import QtipManager from "./QtipManager";
 import ShareDBManager from "./ShareDBManager";
 import CBioPortalAccessor from "./CBioPortalAccessor";
@@ -48,7 +47,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   private edgeAddingMode: any;
   private viewOperationsManager: ViewOperationsManager;
   private gridOptionsManager: GridOptionsManager;
-  private fileOperationsManager: FileOperationsManager;
   private qtipManager: QtipManager;
   private genomicDataExplorerView: any;
   private pathwayDetailsView: any;
@@ -230,7 +228,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     window.editorActionsManager = this.editor;
     this.gridOptionsManager = new GridOptionsManager();
     this.viewOperationsManager = new ViewOperationsManager();
-    this.fileOperationsManager = new FileOperationsManager(this.cy, this.undoRedoManager, this.editor);
 
 
     this.qtipManager = new QtipManager(this.cy, this.editor);
@@ -348,7 +345,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     console.log("Edge Handles inside Cytoscape ARea");
     const eh = this.cy.edgehandles(edgeHandleDefaults);
 
-    this.props.editorHandler(this.editor, this.fileOperationsManager, eh);
+    this.props.editorHandler(this.editor, eh, this.undoRedoManager);
     //Navigator for cytoscape js
     var navDefaults = {
       container: '.cytoscape-navigator-wrapper' // can be a HTML or jQuery element or jQuery selector

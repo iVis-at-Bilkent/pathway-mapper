@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
-import { observable } from 'mobx';
+import { observable, computed } from 'mobx';
 import EditorActionsManager from './EditorActionsManager';
-import FileOperationsManager from './FileOperationsManager';
+import FileOperationsManager, { IPathwayInfo } from './FileOperationsManager';
 import $ from 'jquery';
 import { IProfileMetaData } from './react-pathway-mapper';
 export default class PathwayActions {
@@ -9,21 +9,62 @@ export default class PathwayActions {
   selectedPathway: string;
   fileManager: FileOperationsManager;
   editor: EditorActionsManager;
+  undoRedoManager: any;
   pathwayHandler: (pathwayName: string) => void;
   eh: any;
-
   profiles: IProfileMetaData[];
 
-  constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[]) {
+  constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager) {
     this.pathwayHandler = pathwayHandler;
     this.profiles = profiles;
+    this.fileManager = fileManager;
   }
 
+  @computed
+  get
+  getPathwayInfo(){
+    return this.fileManager.getPathwayInfo;
+  }
 
   
+  @autobind 
+  setPathwayInfo(other: IPathwayInfo){
+    this.fileManager.setPathwayInfo(other);
+  }
+
+  
+  undo(){
+    this.undoRedoManager.undo();
+  }
+
+  redo(){
+    this.undoRedoManager.redo();
+  }
+
+  resetUndoStack()
+  {
+    this.undoRedoManager.reset();
+  };
+
+  newPathway()
+  {
+      this.editor.removeAllElements();
+      /*
+      this.changePathwayDetails(
+      {
+          fileName: "pathway.txt",
+          pathwayTitle: "New Pathway",
+          pathwayDescription: ""
+      });*/
+      this.resetUndoStack();
+
+  };
+
   @autobind
   changePathway(pathwayName: string) {
     this.pathwayHandler(pathwayName);
+    this.fileManager.setPathwayInfo({pathwayTitle: pathwayName, pathwayDetails: "", fileName: pathwayName + ".txt"});
+    console.log(this.fileManager.getPathwayInfo);
   }
   
   @autobind
@@ -39,21 +80,6 @@ export default class PathwayActions {
   @autobind
   validateGenes() {
     this.editor.validateGenes();
-  }
-
-  @autobind
-  newPathway() {
-    this.fileManager.createNewPathway();
-  }
-
-  @autobind
-  redo(){
-    this.fileManager.redo();
-  }
-
-  @autobind
-  undo(){
-    this.fileManager.undo();
   }
 
 
@@ -135,14 +161,14 @@ export default class PathwayActions {
 
   @autobind
   saveAsPng() {
-    this.fileManager.saveAsPNG();
+    this.fileManager.saveAsPNG(this.editor.cy);
   }
 
   @autobind
-  editorHandler(editor, fileManager, eh) {
+  editorHandler(editor, eh, undoRedoManager) {
     this.editor = editor;
-    this.fileManager = fileManager;
     this.eh = eh;
+    this.undoRedoManager = undoRedoManager;
   }
 
   @autobind

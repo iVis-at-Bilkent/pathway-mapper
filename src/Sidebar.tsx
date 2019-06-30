@@ -30,9 +30,9 @@ import { observer } from "mobx-react";
 import autobind from "autobind-decorator";
 
 interface ISideBarProps{
-    pathwayActions: PathwayActions;
-    setActiveEdgeHandler: Function;
-
+  pathwayActions: PathwayActions;
+  setActiveEdgeHandler: Function;
+  handleOpen: Function;
 }
 
 @observer
@@ -77,7 +77,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                 <Panel.Body className="pnl-body pathwayPanel">
                     
                     <div className="buttonContainer">
-                        <Button>Details</Button>
+                        <Button onClick={() => {this.props.handleOpen(4)}}>Properties</Button>
                     </div>
                     <div className="buttonContainer"> 
                         <Button>Import</Button>

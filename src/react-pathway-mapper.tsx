@@ -30,6 +30,7 @@ import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AboutModal from './modals/AboutModal';
 import ReactTooltip from 'react-tooltip'
+import PathwayDetailsModal from './modals/PathwayDetailsModal';
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
@@ -98,7 +99,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   constructor(props: IPathwayMapperProps){
     super(props);
     this.selectedPathway = this.props.pathwayName || "";
-    this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles);
+    this.fileManager = new FileOperationsManager();
+    this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager);
     this.isModalShown = [false, false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
@@ -406,7 +408,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       <Bootstrap.Grid style={{width: window.innerWidth * 0.9}}>
           {!isCBioPortal && 
           [<Bootstrap.Row>
-              <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen}/>
+              <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen} setActiveEdge={this.setActiveEdge}/>
           </Bootstrap.Row>
           ,
           <Bootstrap.Row>
@@ -423,7 +425,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             {
             (!isCBioPortal && 
             <Bootstrap.Col xs={1} style={{paddingLeft: "0px"}}>
-              <Sidebar pathwayActions={this.pathwayActions} setActiveEdgeHandler={this.setActiveEdgeHandler}/>
+              <Sidebar pathwayActions={this.pathwayActions} setActiveEdgeHandler={this.setActiveEdgeHandler} handleOpen={this.handleOpen}/>
             </Bootstrap.Col>)
           
 
@@ -446,6 +448,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[1]} handleClose={this.handleClose} oldName={this.oldName}/>
           <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[2]} handleClose={this.handleClose} />
           <AboutModal isModalShown={this.isModalShown[3]} handleClose={this.handleClose} isCBioPortal={this.props.isCBioPortal}/>
+          <PathwayDetailsModal isModalShown={this.isModalShown[4]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
           <ToastContainer />
           <ReactTooltip />
       </Bootstrap.Grid>
@@ -475,16 +478,14 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   }
 
   @autobind
-  editorHandler(editor, fileManager, eh){
+  editorHandler(editor, eh, undoRedoManager){
     this.editor = editor;
-    this.fileManager = fileManager;
-    this.pathwayActions.editorHandler(editor, fileManager, eh);
+    this.pathwayActions.editorHandler(editor, eh, undoRedoManager);
     if(this.props.isCBioPortal){
       this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
     } else {
       this.portalAcessor = new CBioPortalAccessor(this.editor);
       this.loadRedirectedPortalData();
-
     }
   }
 

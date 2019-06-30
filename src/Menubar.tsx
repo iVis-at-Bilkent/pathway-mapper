@@ -6,6 +6,7 @@ import PathwayActions from './PathwayActions.js';
 interface IMenubarProps{
     pathwayActions: PathwayActions;
     handleOpen: (modalId: number) => void;
+    setActiveEdge: Function;
 }
 
 export default class Menubar extends React.Component<IMenubarProps, {}>{
@@ -26,7 +27,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                     {
                       Object.keys(pathways).map((pathwayName) => {
                           return (
-                          <MenuItem onClick={() => {this.props.pathwayActions.pathwayHandler(pathwayName)}}>
+                          <MenuItem onClick={() => {this.props.pathwayActions.changePathway(pathwayName)}}>
                             {pathwayName}
                           </MenuItem>);
                       })
@@ -57,6 +58,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                           onClick={
                           () => {
                             this.props.pathwayActions.addEdge(i);
+                            this.props.setActiveEdge(i);
                           }}>
                         {nodeType}
                       </MenuItem>)} )

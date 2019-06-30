@@ -1,15 +1,33 @@
 import SaveLoadUtilities from './SaveLoadUtility.js';
 import {saveAs} from 'file-saver';
 import EditorActionsManager from './EditorActionsManager.js';
+import { observable, computed } from 'mobx';
+
+
+export interface IPathwayInfo{
+    fileName: string;
+    pathwayTitle: string;
+    pathwayDetails: string;
+}
+
 
 export default class FileOperationsManager{
-    private cy: any;
-    undoRedoManager: any;
-    editor: EditorActionsManager;
-    constructor(cy: any, undoRedoManager: any, editor: EditorActionsManager){
-        this.cy = cy;
-        this.undoRedoManager = undoRedoManager;
-        this.editor = editor;
+
+    @observable
+    pathwayInfo: IPathwayInfo;
+
+    constructor(){
+        this.pathwayInfo = {pathwayTitle: "", pathwayDetails: "", fileName: ""};
+    }
+
+
+    @computed get
+    getPathwayInfo(){
+        return this.pathwayInfo;
+    }
+
+    setPathwayInfo(other: IPathwayInfo){
+        this.pathwayInfo = other;
     }
     
     // see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
@@ -37,10 +55,10 @@ export default class FileOperationsManager{
         return blob;
     };
 
-    saveAsJPEG()
+    saveAsJPEG(cy: any)
     {
         // var fileName = getFileName();
-        var graphData = this.cy.jpeg();
+        var graphData = cy.jpeg();
         // this is to remove the beginning of the pngContent: data:img/png;base64,
         var b64data = graphData.substr(graphData.indexOf(",") + 1);
         var imageData = this.b64toBlob(b64data, "image/jpeg");
@@ -48,10 +66,10 @@ export default class FileOperationsManager{
         saveAs(blob, "pathway.jpg");
     };
 
-    saveAsPNG()
+    saveAsPNG(cy: any)
     {
         // var fileName = getFileName();
-        var graphData = this.cy.png();
+        var graphData = cy.png();
         // this is to remove the beginning of the pngContent: data:img/png;base64,
         var b64data = graphData.substr(graphData.indexOf(",") + 1);
         var imageData = this.b64toBlob(b64data, "image/png");
@@ -76,30 +94,4 @@ export default class FileOperationsManager{
         window.appManager.pathwayDetailsView.updatePathwayProperties(pathwayData);
     };*/
 
-    undo(){
-        this.undoRedoManager.undo();
-    }
-
-    redo(){
-        this.undoRedoManager.redo();
-    }
-
-    resetUndoStack()
-    {
-        this.undoRedoManager.reset();
-    };
-    
-    createNewPathway()
-    {
-        this.editor.removeAllElements();
-        /*
-        this.changePathwayDetails(
-        {
-            fileName: "pathway.txt",
-            pathwayTitle: "New Pathway",
-            pathwayDescription: ""
-        });*/
-        this.resetUndoStack();
-
-    };
 }
