@@ -98,9 +98,13 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   constructor(props: IPathwayMapperProps){
     super(props);
-    this.selectedPathway = this.props.pathwayName || "";
     this.fileManager = new FileOperationsManager();
     this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager);
+    if(this.props.pathwayName){
+      this.pathwayActions.changePathway(this.props.pathwayName);
+    } else {
+      this.selectedPathway = "";
+    }
     this.isModalShown = [false, false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
@@ -431,7 +435,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
             }
             <Bootstrap.Col xs={isCBioPortal ? 7 : 11} >
-                <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false}  setActiveEdge={this.setActiveEdge}
+                <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={true}  setActiveEdge={this.setActiveEdge}
                 openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
 

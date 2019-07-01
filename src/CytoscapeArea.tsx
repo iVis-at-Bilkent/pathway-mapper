@@ -13,12 +13,12 @@ import GridOptionsManager from "./GridOptionsManager";
 import QtipManager from "./QtipManager";
 import ShareDBManager from "./ShareDBManager";
 import CBioPortalAccessor from "./CBioPortalAccessor";
-import edgeEditing from "cytoscape-edge-editing";
 import SaveLoadUtility from "./SaveLoadUtility";
 import pathways from "./pathways.json";
 import {action, computed} from "mobx";
 
 const edgeHandles = require('cytoscape-edgehandles');
+const edgeEditing = require('cytoscape-edge-editing');
 const regCose = require('cytoscape-cose-bilkent');
 const nodeResize = require('cytoscape-node-resize');
 const undoRedo = require('cytoscape-undo-redo');
@@ -50,7 +50,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   private qtipManager: QtipManager;
   private genomicDataExplorerView: any;
   private pathwayDetailsView: any;
-  private edgeEditing: any;
   private viewUtilities: any;
   private isCollaborative: boolean;
   private isCbioPortal: boolean;
@@ -210,6 +209,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       layout: {name: 'preset'}
     });
 
+    
+
     this.undoRedoManager = this.cy.undoRedo();
     console.log("undoRedoManager" + this.undoRedoManager);
     // Create Manager Classes
@@ -218,7 +219,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
                                            this.shareDBManager,
                                            this.cy,
                                            this.isCbioPortal,
-                                           this.edgeEditing,
                                            this.undoRedoManager,
                                            this.portalAccessor);
     this.shareDBManager.setEditor(this.editor);
@@ -359,29 +359,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
     //TODO: AMENDMENT declaration removed
     this.cy.navigator(navDefaults); // get navigator instance, nav
-
-    const edgeEditingOptions = {
-      // this function specifies the positions of bend points
-      bendPositionsFunction: function (ele: any) {
-        return ele.data('bendPointPositions');
-      },
-      // whether to initilize bend points on creation of this extension automatically
-      initBendPointsAutomatically: true,
-      // whether the bend editing operations are undoable (requires cytoscape-undo-redo.js)
-      undoable: true,
-      // the size of bend shape is obtained by multipling width of edge with this parameter
-      bendShapeSizeFactor: 6,
-      // whether to start the plugin in the enabled state
-      enabled: true,
-      // title of add bend point menu item (User may need to adjust width of menu items according to length of this option)
-      addBendMenuItemTitle: "Add Bend Point",
-      // title of remove bend point menu item (User may need to adjust width of menu items according to length of this option)
-      removeBendMenuItemTitle: "Remove Bend Point",
-
-      handleReconnectEdge: this.editor.reconnectEdge.bind(this.editor),
-    };
-    this.edgeEditing = this.cy.edgeEditing(edgeEditingOptions);
-
 
     const viewUtilitiesOpts = {
       node: {

@@ -24,13 +24,34 @@ export default class EditorActionsManager{
     private portalAccessor: CBioPortalAccessor;
 
     constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean,
-                edgeEditing: any, undoRedoManager: any, portalAccessor: CBioPortalAccessor)
+                undoRedoManager: any, portalAccessor: CBioPortalAccessor)
     {
         // Set cy instance and set real time manager reference if collaborative mode
         this.cy = cyInst;
         this.isCollaborative = isCollaborative;
         this.isCbioPortal = isCBioPortal;
-        this.edgeEditing = edgeEditing;
+        const edgeEditingOptions = {
+        // this function specifies the positions of bend points
+        bendPositionsFunction: function (ele: any) {
+            return ele.data('bendPointPositions');
+        },
+        // whether to initilize bend points on creation of this extension automatically
+        initBendPointsAutomatically: true,
+        // whether the bend editing operations are undoable (requires cytoscape-undo-redo.js)
+        undoable: true,
+        // the size of bend shape is obtained by multipling width of edge with this parameter
+        bendShapeSizeFactor: 6,
+        // whether to start the plugin in the enabled state
+        enabled: true,
+        // title of add bend point menu item (User may need to adjust width of menu items according to length of this option)
+        addBendMenuItemTitle: "Add Bend Point",
+        // title of remove bend point menu item (User may need to adjust width of menu items according to length of this option)
+        removeBendMenuItemTitle: "Remove Bend Point",
+    
+        handleReconnectEdge: this.reconnectEdge.bind(this),
+        };
+        
+        this.edgeEditing = this.cy.edgeEditing(edgeEditingOptions);
         this.portalAccessor = portalAccessor;
         if(this.isCollaborative) {
           this.shareDBManager = shareDBManager;
@@ -1512,6 +1533,7 @@ export default class EditorActionsManager{
         if (this.isCollaborative)
         {
             //Real time load graph
+            console.log("Real time load graph");
             this.loadfileShareDB(nodes, edges);
         }
         else

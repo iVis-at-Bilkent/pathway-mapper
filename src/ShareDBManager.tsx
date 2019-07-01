@@ -84,6 +84,9 @@ export default class ShareDBManager {
     */
     insertShareDBObject(mapName, objectKey, object) {
         this.doc.submitOp([{p: [mapName, objectKey], oi: object}], this.shareDBError);
+        console.log("this.doc");
+        console.log(this.doc); 
+        console.log(mapName, objectKey, object);
     };
 
     /*
@@ -1033,6 +1036,7 @@ export default class ShareDBManager {
 
         //Create graph hierarchy from given list of flat nodes
         var tree = this.graphUtilities.createGraphHierarchyRealTime(nodes);
+        console.log(tree)
         //Traverse from root nodes of tree
         for (const rootLevelNode of tree) {
             traverseTree(rootLevelNode, undefined);
@@ -1043,6 +1047,7 @@ export default class ShareDBManager {
           real time
         */
         for (const edge of edges) {
+            console.log(edge);
             edge.data.source = oldIdNewIdMap[edge.data.source];
             edge.data.target = oldIdNewIdMap[edge.data.target];
             var params = edge.data;

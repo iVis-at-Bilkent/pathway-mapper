@@ -116,7 +116,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                     {
                     edgeTypes.map((edgeType: string, i: number) => {
                     return (<div>
-                        <ListGroupItem style={{marginBottom: 5}} width="30%" active={this.activeEdge === i} 
+                        <ListGroupItem focus={false} style={{marginBottom: 5}} width="30%" active={this.activeEdge === i} 
                         onClick={() => {this.addEdge(i)}} >
                         <img width="20%" src={edgeImgs[i]}></img>{' '}
                         {edgeType}
