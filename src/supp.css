@@ -40,6 +40,14 @@ tbody tr:hover{
     margin-top: 6px;
 }
 
+#ranking-bar:first-child{
+    margin-top: 10px;
+}
+
+#cy{
+    margin-top: 10px;
+}
+
 #ranking-table {
     margin-left: 20px; 
     margin-top: 6px;
@@ -53,4 +61,12 @@ tbody tr:hover{
 .ui-cytoscape-nodeadd img {
     width: 110px;
     height: 28px;
+}
+
+#ranking-bar .label:hover{
+    background-color: lightskyblue
+}
+
+.label:hover{
+    cursor: pointer;
 }

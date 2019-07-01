@@ -402,8 +402,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.profiles[i].enabled = !this.profiles[i].enabled;
     this.editor.updateGenomicDataVisibility(this.profileEnabledMap);
     }}
-    onMouseEnter={() => {document.body.style.cursor = "pointer";}}
-    onMouseLeave={() => {document.body.style.cursor = "default";}}
     bsStyle={this.profiles[i].enabled ? "primary" : "default"}>{profile.profileId}</Label>, " "]);
 
 

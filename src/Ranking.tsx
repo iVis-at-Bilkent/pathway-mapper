@@ -4,7 +4,7 @@ import {action, computed, observable} from "mobx";
 import autobind from "autobind-decorator";
 import {ListGroup} from "react-bootstrap";
 import pathways from "./pathways.json";
-import {Table, DropdownButton,MenuItem, Checkbox, Button} from "react-bootstrap";
+import {Table, DropdownButton,MenuItem, Checkbox, Button, Label} from "react-bootstrap";
 import PathwayActions from './PathwayActions.js';
 interface IRankingProps{
     pathwayActions: PathwayActions;
