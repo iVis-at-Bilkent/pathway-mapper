@@ -51,7 +51,7 @@ export default class WelcomePage extends React.Component<IWelcomePageProps, {}>{
                     <Row className="welPageButtons">
                         <div id="localUsage" className={"welcomePageCheckable " + (this.activeType === 0 ? "active" : "")}  style={{marginRight: "5px"}}
                                 onClick={() => {this.handleTypeClick(0);}}
-                                data-tip="Create a pathway individually" data-place="left" data-isCapture="true" data-event='click' data-effect="solid"
+                                data-tip="Create a pathway individually" data-place="left" data-iscapture="true" data-event='click' data-effect="solid"
                                 >
                         <i className="fa fa-check"></i>
                         Local

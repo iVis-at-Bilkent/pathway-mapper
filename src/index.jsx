@@ -22,19 +22,19 @@ window.onload = () => {
   } else {
     postWelcome(true);
   }
-}
 
-function postWelcome(isCollaborative){
+  function postWelcome(isCollaborative){
+    
+    if(!pathwayName){
+      render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={placeHolderGenes} store={undefined}/>, rootEl);
+    } else {
+      render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={placeHolderGenes} store={undefined} pathwayName={pathwayName} alterationData={alterationData}/>, rootEl);
+    }
+    if (module.hot) {
+      module.hot.accept();
+    }
   
-  if(!pathwayName){
-    render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={placeHolderGenes} store={undefined}/>, rootEl);
-  } else {
-    render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={placeHolderGenes} store={undefined} pathwayName={pathwayName} alterationData={alterationData}/>, rootEl);
   }
-  if (module.hot) {
-    module.hot.accept();
-  }
-
 }
 
 function findGetParameter(parameterName) {
