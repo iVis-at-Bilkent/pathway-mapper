@@ -68,6 +68,9 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
 
         const nodeImgs = [geneImg, familyImg, complexImg, compartmentImg, processImg];
         const edgeImgs = [acImg, inhImg, indImg, repImg, bindImg];
+
+        const nodeIds = ["simpleNodeDiv", "familyNodeDiv", "complexNodeDiv", "compartmentNodeDiv", "processNodeDiv"];
+
         return(
           <div id="pathway-sidebar" className="sideBarWrapper">
             <Panel className="pnl">
@@ -95,12 +98,9 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                 <Panel.Body className="pnl-body">
                       
                 {
-                        nodeTypes.map((nodeType, i) => {
+                        nodeIds.map((id) => {
                         return (
-                        <div className="ui-cytoscape-nodeadd dragButtonContainer">
-                          <div className="ui-cytoscape-nodeadd-nodediv">
-                            <SVGInline svg={nodeImgs[i]} onClick={() => {this.props.pathwayActions.addNode(nodeType)}} width="110px" height="28px"/>
-                          </div>
+                        <div id={id} className="dragButtonContainer">
                         </div>);
                         })
                       }

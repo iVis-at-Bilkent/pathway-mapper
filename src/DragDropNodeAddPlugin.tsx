@@ -1,7 +1,8 @@
 import EditorActionsManager from "./EditorActionsManager";
-import $ from "jquery"
+import $ from "jquery";
 import 'jquery-ui-dist/jquery-ui';
 import cytoscape from 'cytoscape';
+
 
 export default class DragDropNodeAddPlugin {
 
@@ -51,9 +52,8 @@ export default class DragDropNodeAddPlugin {
             return $(this).each(function()
             {
               var components = options.components;
-              for (var index in components)
+              for (const component of components)
               {
-                var component = components[index];
                 var dragContainer = component.container;
                 //var explanationText = component.explanationText;
 
@@ -61,7 +61,7 @@ export default class DragDropNodeAddPlugin {
                 dragContainer.append($nodeadd);
                 var $nodeDragHandle = $('<div class="ui-cytoscape-nodeadd-nodediv"> \
                                                 <span id="ui-cytoscape-nodeadd-icon" class="draggable" nodeType="'+ component.nodeType +'">\
-                                                  <img style="width:110px;" src="./assets/nodes/'+component.nodeType+'.svg" alt="" />\
+                                                  <span>'+component.icon+'</span>\
                                                 </span>\
                                               </div>');
                 $nodeadd.append($nodeDragHandle);

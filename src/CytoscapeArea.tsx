@@ -17,6 +17,17 @@ import SaveLoadUtility from "./SaveLoadUtility";
 import pathways from "./pathways.json";
 import {action, computed} from "mobx";
 
+// @ts-ignore
+import geneImg from "./nodes/gene.svg";
+// @ts-ignore
+import familyImg from "./nodes/family.svg";
+// @ts-ignore
+import complexImg from "./nodes/complex.svg";
+// @ts-ignore
+import compartmentImg from "./nodes/compartment.svg";
+// @ts-ignore
+import processImg from "./nodes/process.svg";
+
 const edgeHandles = require('cytoscape-edgehandles');
 const edgeEditing = require('cytoscape-edge-editing');
 const regCose = require('cytoscape-cose-bilkent');
@@ -29,7 +40,6 @@ const navigator = require('cytoscape-navigator');
 const contextMenus = require('cytoscape-context-menus');
 const konva = require('konva');
 const viewUtilities = require('cytoscape-view-utilities');
-
 
 type PathwayMapperType = {
   isCollaborative: boolean;
@@ -246,27 +256,27 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
             {
               container: $('#simpleNodeDiv'),
               nodeType: 'Gene',
-              // icon: 'fa fa-square-o'
+              icon: geneImg
             },
             {
               container: $('#familyNodeDiv'),
               nodeType: 'Family',
-              // icon: 'fa fa-square-o'
+              icon: familyImg
             },
             {
               container: $('#complexNodeDiv'),
               nodeType: 'Complex',
-              icon: 'fa fa-square-o'
+              icon: complexImg
             },
             {
               container: $('#compartmentNodeDiv'),
               nodeType: 'Compartment',
-              icon: 'fa fa-square-o'
+              icon: compartmentImg
             },
             {
               container: $('#processNodeDiv'),
               nodeType: 'Process',
-              // icon: 'fa fa-square-o'
+              icon: processImg
             }
           ]
 

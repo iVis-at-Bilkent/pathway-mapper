@@ -49,3 +49,8 @@ tbody tr:hover{
 #toolbar svg {
     margin-top: 10px;
 }
+
+.ui-cytoscape-nodeadd svg {
+    width: 110px;
+    height: 28px;
+}
