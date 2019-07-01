@@ -405,7 +405,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     
   return (
 
-      <Bootstrap.Grid style={{width: window.innerWidth * 0.9}}>
+      <Bootstrap.Grid style={{width: window.innerWidth * 0.99}}>
           {!isCBioPortal && 
           [<Bootstrap.Row>
               <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen} setActiveEdge={this.setActiveEdge}/>
@@ -418,7 +418,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <Bootstrap.Row>
             {
             ( isCBioPortal &&
-            <Bootstrap.Col xs={1}>
+            <Bootstrap.Col xs={1} style={{width: "3%"}}>
                 <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData} handleOpen={this.handleOpen}/>
             </Bootstrap.Col>)
             }

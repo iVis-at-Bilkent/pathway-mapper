@@ -59,7 +59,7 @@ export default class PathwayDetailsModal extends React.Component<IPathwayDetails
                     </FormGroup>
 
                     <FormGroup>
-                        <Col smOffset={2} sm={10}>
+                        <Col smOffset={1} sm={10}>
                         <Button onClick={() => {this.props.pathwayActions.setPathwayInfo(this.pathwayInfo); this.props.handleClose(4);}}>Save</Button>
                         </Col>
                     </FormGroup>

@@ -30,3 +30,22 @@ tbody tr:hover{
 
     text-align: center;
 }
+
+#ranking-bar .info-entry{
+    margin-bottom: 10px;
+}
+
+#ranking-bar .info-entry .indent{
+    margin-left: 20px;
+    margin-top: 6px;
+}
+
+#ranking-table {
+    margin-left: 20px; 
+    margin-top: 6px;
+    margin-right: 6px;
+}
+
+#toolbar svg {
+    margin-top: 10px;
+}

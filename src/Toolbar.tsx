@@ -6,14 +6,17 @@ import {observer} from "mobx-react";
 import {observable} from "mobx";
 import PathwayActions from './PathwayActions';
 // @ts-ignore
-import layoutImage from "./icons/baseline_refresh_black_36dp.png";
+import layoutImage from "./toolbar/layout-cose.svg";
 // @ts-ignore
-import saveImage from "./icons/baseline_save_black_36dp.png";
+import saveImage from "./toolbar/save.svg";
 // @ts-ignore
-import infoImage from "./icons/baseline_info_black_36dp.png";
+import infoImage from "./toolbar/about.svg";
 // @ts-ignore
-import openImage from "./icons/baseline_open_in_new_black_36dp.png";
+import openImage from "./toolbar/edit.svg";
+
 import { IProfileMetaData, IAlterationData } from './react-pathway-mapper';
+import SVGInline from "react-svg-inline";
+
 interface IToolbarProps {
   pathwayActions: PathwayActions;
   selectedPathway: string;
@@ -38,19 +41,19 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
 
       return (
-      <Col>
-          <Image style={{cursor: "pointer"}} data-tip="Save as PNG" data-place="right" data-effect="solid" src={saveImage} onClick={this.props.pathwayActions.saveAsPng}/>
+      <div id="toolbar">
+          <SVGInline height="22px" width="22px" style={{cursor: "pointer"}} data-tip="Save as PNG" data-place="right" data-effect="solid" svg={saveImage} onClick={this.props.pathwayActions.saveAsPng}/>
 
           <br/>
-          <Image style={{cursor: "pointer"}} data-tip="Perform layout" data-place="right" data-effect="solid" src={layoutImage} onClick={this.props.pathwayActions.performLayout} />              
+          <SVGInline height="22px" width="22px" style={{cursor: "pointer"}} data-tip="Perform layout" data-place="right" data-effect="solid" svg={layoutImage} onClick={this.props.pathwayActions.performLayout} />              
 
           <br/>
-          <Image style={{cursor: "pointer"}} data-tip="About" data-place="right" data-effect="solid" src={infoImage} onClick={() => {this.props.handleOpen(3);}}/>
+          <SVGInline height="22px" width="22px" style={{cursor: "pointer"}} data-tip="About" data-place="right" data-effect="solid" svg={infoImage} onClick={() => {this.props.handleOpen(3);}}/>
 
           <br/>
-          <Image style={{cursor: "pointer"}} data-tip="Open full-blown mode" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://localhost:8080/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
+          <SVGInline height="22px" width="22px" style={{cursor: "pointer"}} data-tip="Open full-blown mode" data-place="right" data-effect="solid" svg={openImage} onClick={() => {{window.open("http://localhost:8080/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
 
-    </Col>);
+    </div>);
 
   }
 }
