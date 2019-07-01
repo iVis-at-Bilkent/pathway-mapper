@@ -38,6 +38,7 @@ let maxHeap = maxHeapFn();
 
 interface IPathwayMapperProps{
   isCBioPortal: boolean;
+  isCollaborative: boolean;
   genes: any[];
   store: any;
   pathwayName? : string;
@@ -435,7 +436,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
             }
             <Bootstrap.Col xs={isCBioPortal ? 7 : 11} >
-                <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={false}  setActiveEdge={this.setActiveEdge}
+                <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}  setActiveEdge={this.setActiveEdge}
                 openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
 
