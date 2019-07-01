@@ -3,7 +3,7 @@
     margin-bottom: 0px;
 }
 
-.toolbar svg {
+.toolbar img {
     margin-right: 4px;
     margin-right: 4px;
 }
@@ -46,11 +46,11 @@ tbody tr:hover{
     margin-right: 6px;
 }
 
-#toolbar svg {
+#toolbar img {
     margin-top: 10px;
 }
 
-.ui-cytoscape-nodeadd svg {
+.ui-cytoscape-nodeadd img {
     width: 110px;
     height: 28px;
 }

@@ -48,7 +48,6 @@ import layoutPropSvg from '../toolbar/layout-properties.svg';
 import helpSvg from '../toolbar/quick-help.svg';
 
 
-import SVGInline from "react-svg-inline";
 interface IButtonbarProps {
     pathwayActions: PathwayActions;
     handleOpen: (modelId: number) => void;
@@ -56,7 +55,7 @@ interface IButtonbarProps {
 
 interface ISVGFunction{
     svg: any;
-    function: Function;    
+    function: () => void;    
 }
 
 export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
@@ -117,7 +116,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                         <ButtonGroup>
                             { fileFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
+                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
                                 </div>)
                                 )
                             }
@@ -126,7 +125,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                         <ButtonGroup>
                             { modFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
+                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
                                 </div>)
                                 )
                             }
@@ -135,7 +134,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                         <ButtonGroup>
                             { alignFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
+                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
                                 </div>)
                                 )
                             }
@@ -145,7 +144,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                         <ButtonGroup>
                             { utilFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
+                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
                                 </div>)
                                 )
                             }
@@ -154,7 +153,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                         <ButtonGroup>
                             { visibilityFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
+                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
                                 </div>)
                                 )
                             }
@@ -163,7 +162,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                         <ButtonGroup>
                             { portalFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
+                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
                                 </div>)
                                 )
                             }
@@ -172,7 +171,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                         <ButtonGroup>
                             { layoutFunctions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
+                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
                                 </div>)
                                 )
                             }
@@ -181,7 +180,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                         <ButtonGroup>
                             { infoFunctions.map((svg: any) => 
                                 (<div className="toolbar-button">
-                                    <SVGInline height="22px" width="22px" svg={svg.svg} onClick={svg.function}></SVGInline>
+                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
                                 </div>)
                                 )
                             }

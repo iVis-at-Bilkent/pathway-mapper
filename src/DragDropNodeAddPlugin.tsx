@@ -61,7 +61,7 @@ export default class DragDropNodeAddPlugin {
                 dragContainer.append($nodeadd);
                 var $nodeDragHandle = $('<div class="ui-cytoscape-nodeadd-nodediv"> \
                                                 <span id="ui-cytoscape-nodeadd-icon" class="draggable" nodeType="'+ component.nodeType +'">\
-                                                  <span>'+component.icon+'</span>\
+                                                  <img src="'+component.icon+'"</img>\
                                                 </span>\
                                               </div>');
                 $nodeadd.append($nodeDragHandle);

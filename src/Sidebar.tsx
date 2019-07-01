@@ -1,7 +1,6 @@
 import React from "react";
 import {Panel, Button, Col, Row, ListGroup, ListGroupItem} from "react-bootstrap";
 import PathwayActions from "./PathwayActions";
-import SVGInline from "react-svg-inline";
 
 // @ts-ignore
 import geneImg from "./nodes/gene.svg";
