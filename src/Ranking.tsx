@@ -6,6 +6,7 @@ import {ListGroup} from "react-bootstrap";
 import pathways from "./pathways.json";
 import {Table, DropdownButton,MenuItem, Checkbox, Button, Label} from "react-bootstrap";
 import PathwayActions from './PathwayActions.js';
+import { string } from 'prop-types';
 interface IRankingProps{
     pathwayActions: PathwayActions;
     bestPathwaysAlgos: any[][];
@@ -75,9 +76,9 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
             <div className="info-entry">
                 <b>Studies to show: </b>
-                <div className="indent">
-                {this.props.profileLabels.length === 0 ? "None" : this.props.profileLabels}
-                <br/>
+                    <div className="indent">
+                        {this.props.profileLabels.length === 0 ? "None" : this.props.profileLabels}
+                    <br/>
                 <br/>
                 </div>
             </div>
@@ -107,18 +108,27 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                     <td><i>Rank</i></td>
                     <td><i>Pathway name</i></td>
                     <td><i>Score</i></td>
-                    <td><i>Genes matched</i></td>
+                    <td><i>Gene matches</i></td>
                     </tr>
                 </thead>
                 <tbody>
                 {
                     this.bestPathways.map((pathway: any, i: number) => {
+                        const pwName = pathway.pathwayName as string;
+                        const isPwNameShort = pwName.length <= 8;
+
+                        const geneStr = pathway.genesMatched.join(" ") as string;
+                        const isGeneStrShort = geneStr.length <= 8;
                         return (
-                            <tr onClick={() => {this.onPathwayClick(pathway.pathwayName)}} style={{cursor: "pointer"}}>
+                            <tr onClick={() => {this.onPathwayClick(pwName)}} style={{cursor: "pointer"}}>
                                 <td>{i + 1}</td>
-                                <td>{pathway.pathwayName}</td>
+                                <td id={"_" + pwName} data-tip={pwName} data-place="top" data-effect="solid">
+                                    {(isPwNameShort ? pwName : pwName.substring(0, 9) + "...")}
+                                </td>
                                 <td>{pathway.score.toFixed(2)}</td>
-                                <td>{pathway.genesMatched.map((gene: string) => gene + " ")}</td>
+                                <td data-tip={geneStr} data-multiline="true" data-place="right" data-effect="solid">
+                                    {isGeneStrShort ? geneStr : geneStr.substring(0, 9) + "..."}
+                                </td>
                             </tr>
                         );
                     })

@@ -68,7 +68,16 @@ tbody tr:hover{
 }
 
 #ranking-bar .label:hover{
-    background-color: lightskyblue
+    background-color: lightskyblue;
+}
+
+#ranking-bar .label{
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-bottom: 4px;
+    display: inline-block;
+    margin-right: 4px;
+    font-size: 11px;
 }
 
 .label:hover{

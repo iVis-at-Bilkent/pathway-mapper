@@ -121,8 +121,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     const profile1 = {profileId: "study1_gistic", studyId: "study1", enabled: true};
     const profile2 = {profileId: "study2_gistic", studyId: "study2", enabled: true};
     const profile3 = {profileId: "study3_mutations", studyId: "study3", enabled: true};
-    this.profiles.push(profile1, profile2, profile3);*/
-    
+    const profile4 = {profileId: "study3_mutations", studyId: "study3", enabled: true};
+    const profile5 = {profileId: "study3_mutations", studyId: "study3", enabled: true};
+    const profile6 = {profileId: "study3_mutations", studyId: "study3", enabled: true};
+    this.profiles.push(profile1, profile2, profile3, profile4, profile5, profile6);
+    */
     console.log("Profiles");
     console.log(this.profiles);
   }
@@ -402,7 +405,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.profiles[i].enabled = !this.profiles[i].enabled;
     this.editor.updateGenomicDataVisibility(this.profileEnabledMap);
     }}
-    bsStyle={this.profiles[i].enabled ? "primary" : "default"}>{profile.profileId}</Label>, " "]);
+    bsStyle={this.profiles[i].enabled ? "primary" : "default"}>{profile.profileId}</Label>]);
 
 
     
@@ -433,13 +436,13 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           
 
             }
-            <Bootstrap.Col xs={isCBioPortal ? 7 : 11} style={{paddingLeft: "0px"}}>
+            <Bootstrap.Col xs={isCBioPortal ? 8 : 11} style={{paddingLeft: "0px"}}>
                 <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}  setActiveEdge={this.setActiveEdge}
                 openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
 
             { isCBioPortal &&
-            <Bootstrap.Col xs={4}>
+            <Bootstrap.Col xs={2}>
                 <Bootstrap.Row>
                   <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} profileLabels={profileLabels}/>
                 </Bootstrap.Row>
