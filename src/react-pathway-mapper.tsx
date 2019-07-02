@@ -271,7 +271,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             // Calculate sum of all alterations
             let sumOfAlterations = 0;
             for(const gene of this.props.genes){
-                if(this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol)){
+                if(this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) 
+                    && this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE"){
                   genesMatching.push(gene.hugoGeneSymbol);
                   sumOfAlterations += alterationPerGene[gene.hugoGeneSymbol];
                 }
