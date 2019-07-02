@@ -218,6 +218,9 @@ export default class ShareDBManager {
             //Create new shared document
             createNewDocument();
         }
+
+        console.log("this.doc");
+        console.log(this.doc);
     };
 
     /*

@@ -91,3 +91,7 @@ tbody tr:hover{
 .label:hover{
     cursor: pointer;
 }
+
+.dropdown-submenu .caret{
+    display: none;
+}

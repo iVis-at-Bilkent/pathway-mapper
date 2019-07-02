@@ -23,7 +23,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
               <Nav>
                 <NavDropdown eventKey={1} title="Network" id="basic-nav-network">
                   <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.newPathway}>New</MenuItem>
-                  <NavDropdown eventKey={1} title="TCGA" id="basic-nav-TCGA">
+                  <NavDropdown className="dropdown-submenu" eventKey={1} title="TCGA" id="basic-nav-TCGA">
                     {
                       Object.keys(pathways).map((pathwayName) => {
                           return (
@@ -34,7 +34,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                     }
                   </NavDropdown>
 
-                  <NavDropdown eventKey={1} title="Export as" id="basic-nav-export">
+                  <NavDropdown className="dropdown-submenu" eventKey={1} title="Export as" id="basic-nav-export">
                     <MenuItem eventKey={1.1}>JPEG</MenuItem>
                     <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.saveAsPng}>PNG</MenuItem>
                     <MenuItem eventKey={1.1}>SVG</MenuItem>
@@ -43,7 +43,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                 </NavDropdown>
 
                 <NavDropdown eventKey={2} title="Edit" id="basic-nav-edit">
-                  <NavDropdown eventKey={2.1} title="Add Node">
+                  <NavDropdown className="dropdown-submenu" eventKey={2.1} title="Add Node">
                       {
                         nodeTypes.map((nodeType) => {
                         return (<MenuItem onClick={() => {this.props.pathwayActions.addNode(nodeType)}}>
@@ -51,7 +51,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                       </MenuItem>)} )
                       }
                   </NavDropdown>
-                  <NavDropdown eventKey={2.1} title="Add Edge">
+                  <NavDropdown className="dropdown-submenu" eventKey={2.1} title="Add Edge">
                       {
                         edgeTypes.map((nodeType, i) => {
                         return (<MenuItem 

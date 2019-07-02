@@ -50,7 +50,7 @@ export default class PathwayActions {
   {
       this.editor.removeAllElements();    
       this.fileManager.setPathwayInfo({pathwayTitle: "", pathwayDetails: "", fileName: "pathway.txt"});
-
+      this.removeAllData();
       this.resetUndoStack();
 
   };
@@ -59,6 +59,7 @@ export default class PathwayActions {
   changePathway(pathwayName: string) {
     this.pathwayHandler(pathwayName);
     this.fileManager.setPathwayInfo({pathwayTitle: pathwayName, pathwayDetails: "", fileName: pathwayName + ".txt"});
+    this.removeAllData();
     console.log(this.fileManager.getPathwayInfo);
   }
   
