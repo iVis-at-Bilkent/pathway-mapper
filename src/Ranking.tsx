@@ -31,7 +31,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
         super(props);
         this.isPercentageMatch = 0;
         this.isAlterationEnabled = 0;
-        this.dropDownTitle = "Match Amount";
+        this.dropDownTitle = "Match count";
         this.setBestPathwayMethod(0);
         
         console.log("Pathway Algos");
@@ -54,6 +54,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
     @autobind
     onApplyClick(){
+        // Mapping from dropdown + checkbox selection to pathway method.
         this.setBestPathwayMethod(2 * this.isAlterationEnabled + this.isPercentageMatch);
     }
 
@@ -89,11 +90,11 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                         title={this.dropDownTitle}
                         id="0"
                         >
-                        <MenuItem onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match Amount";} }>Match Amount</MenuItem>
-                        <MenuItem onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match Percentage";}}>Match Percentage</MenuItem>
+                        <MenuItem onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match count";} }>Match count</MenuItem>
+                        <MenuItem onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match percentage";}}>Match percentage</MenuItem>
                     </DropdownButton>   
                     <Checkbox onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1;} }>
-                    Consider alteration data
+                    Consider gene alteration frequency
                     </Checkbox>
                     <Button onClick={this.onApplyClick}>Apply</Button>
                 </div>
@@ -103,16 +104,14 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
             <Table id="ranking-table" striped bordered condensed hover>
                 <thead>
                     <tr>
-                    <th>Rank</th>
-                    <th>Pathway name</th>
-                    <th>Score</th>
-                    <th>Genes matched</th>
+                    <td><i>Rank</i></td>
+                    <td><i>Pathway name</i></td>
+                    <td><i>Score</i></td>
+                    <td><i>Genes matched</i></td>
                     </tr>
                 </thead>
                 <tbody>
-
                 {
-                  
                     this.bestPathways.map((pathway: any, i: number) => {
                         return (
                             <tr onClick={() => {this.onPathwayClick(pathway.pathwayName)}} style={{cursor: "pointer"}}>

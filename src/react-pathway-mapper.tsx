@@ -408,7 +408,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     
   return (
 
-      <Bootstrap.Grid style={{width: window.innerWidth * 0.99}}>
+      <Bootstrap.Grid style={{width: window.innerWidth * 0.99}} className={isCBioPortal ? "cBioMode" : ""}>
           {!isCBioPortal && 
           [<Bootstrap.Row>
               <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen} setActiveEdge={this.setActiveEdge}/>
@@ -433,7 +433,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           
 
             }
-            <Bootstrap.Col xs={isCBioPortal ? 7 : 11} >
+            <Bootstrap.Col xs={isCBioPortal ? 7 : 11} style={{paddingLeft: "0px"}}>
                 <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}  setActiveEdge={this.setActiveEdge}
                 openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>

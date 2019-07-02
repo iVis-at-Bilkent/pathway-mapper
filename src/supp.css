@@ -14,7 +14,11 @@
 }
 
 tbody tr:hover{
-    background: rgb(26, 188, 156) !important
+    background: #5dbcd2 !important;
+}
+
+.cBioMode .cytoscape-navigatorView{
+    background: #5dbcd2;
 }
 
 .ui-cytoscape-nodeadd-nodediv{
