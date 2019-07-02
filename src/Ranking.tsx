@@ -102,13 +102,13 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
             </div>
             <br/>
             <b>Pathway Rankings: </b>
-            <Table id="ranking-table" striped bordered condensed hover>
+            <Table id="ranking-table" striped bordered condensed hover style={{width: "75%"}}>
                 <thead>
                     <tr>
                     <td><i>Rank</i></td>
                     <td><i>Pathway name</i></td>
                     <td><i>Score</i></td>
-                    <td><i>Gene matches</i></td>
+                    <td><i>Genes matched</i></td>
                     </tr>
                 </thead>
                 <tbody>

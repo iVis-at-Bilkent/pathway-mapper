@@ -442,7 +442,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             </Bootstrap.Col>
 
             { isCBioPortal &&
-            <Bootstrap.Col xs={2}>
+            <Bootstrap.Col xs={3}>
                 <Bootstrap.Row>
                   <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} profileLabels={profileLabels}/>
                 </Bootstrap.Row>
