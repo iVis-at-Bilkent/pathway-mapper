@@ -66,7 +66,9 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
         return (
           <div id="ranking-bar">
             <div className="info-entry">
-                <b>Pathway name: </b>
+                <div className="info-title">
+                    <b style={{marginLeft: "2px"}}>Pathway name</b>
+                </div>
                 <div className="indent">
                 {this.selectedPathway}
                 <br/>
@@ -75,7 +77,9 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
             </div>
 
             <div className="info-entry">
-                <b>Studies to show: </b>
+                <div className="info-title">
+                    <b style={{marginLeft: "2px"}}>Studies to show</b>
+                </div>
                     <div className="indent">
                         {this.props.profileLabels.length === 0 ? "None" : this.props.profileLabels}
                     <br/>
@@ -85,7 +89,9 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
             <div className="info-entry">
 
-                <b>Ranking criteria: </b>
+                <div className="info-title">
+                    <b style={{marginLeft: "2px"}}>Ranking criteria</b>
+                </div>
                 <div className="indent" >
                     <DropdownButton
                         title={this.dropDownTitle}
@@ -101,7 +107,9 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                 </div>
             </div>
             <br/>
-            <b>Pathway Rankings: </b>
+            <div className="info-title">
+                <b style={{marginLeft: "2px"}}>Studies to show</b>
+            </div>
             <Table id="ranking-table" striped bordered condensed hover style={{width: "75%"}}>
                 <thead>
                     <tr>

@@ -48,6 +48,14 @@ tbody tr:hover{
     margin-top: 10px;
 }
 
+#ranking-bar .info-title{
+    background-color: lightskyblue;
+    width: 100%; 
+    color: white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 #cy{
     margin-top: 10px;
 }
