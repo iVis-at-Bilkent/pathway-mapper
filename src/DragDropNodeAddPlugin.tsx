@@ -179,13 +179,16 @@ export default class DragDropNodeAddPlugin {
 
       // @ts-ignore
       $.fn.cynodeadd = $.fn.cytoscapeNodeadd;
-
+      try{
       /* Adding as an extension to the core functionality of cytoscape.js*/
       cytoscape('core', 'nodeadd', function(options: any) {
 
         // @ts-ignore
         $(this.container()).cytoscapeNodeadd(options);
       });
+      } catch(err){
+        console.log(err);
+      }
     }
 
 

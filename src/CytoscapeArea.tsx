@@ -192,18 +192,53 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   }
 
   initCyJS() {
-    panzoom(cytoscape);  // register extension
+    try{
+      panzoom(cytoscape, $);  // register extension
+    } catch(err){
+      console.log(err);
+    }
     // cxtmenu( cytoscape, $ ); // register extension
-    regCose(cytoscape); // register extension
-    navigator(cytoscape); // register extension
+    try { 
+      regCose(cytoscape); // register extension
+    } catch(err){
+      console.log(err);
+    }
+    try { 
+      navigator(cytoscape); // register extension
+    } catch(err){
+      console.log(err);
+    }
     // grid_guide(cytoscape, $); // register extension
-    undoRedo(cytoscape); // register extension
-    contextMenus(cytoscape, $); // register extension
-    nodeResize(cytoscape, $, konva); // register extension
-    edgeEditing(cytoscape, $); // register extension
-    viewUtilities(cytoscape, $); // register extension
-    cytoscape.use(edgeHandles);
-    // cytoscape.use( qtip );
+    try { 
+      undoRedo(cytoscape); // register extension
+    } catch(err){
+      console.log(err);
+    }
+    try { 
+      contextMenus(cytoscape, $); // register extension
+    } catch(err){
+      console.log(err);
+    }
+    try { 
+      nodeResize(cytoscape, $, konva); // register extension
+    } catch(err){
+      console.log(err);
+    }
+    try { 
+      edgeEditing(cytoscape, $); // register extension
+    } catch(err){
+      console.log(err);
+    }
+    try { 
+      viewUtilities(cytoscape, $); // register extension
+    } catch(err){
+      console.log(err);
+    }
+    try { 
+      cytoscape.use(edgeHandles);
+    } catch(err){
+      console.log(err);
+    }
 
     this.edgeAddingMode = 0;
     // var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
