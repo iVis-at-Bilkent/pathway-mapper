@@ -18,6 +18,19 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
         const nodeTypes = ["Gene", "Family", "Complex", "Compartment", "Process"];
         const edgeTypes = ["Activates", "Inhibits", "Induces", "Represses", "Binds"];
 
+        const pathwayDropdownData: {[pwHead: string]: string[]} = {};
+        for(const pwName of Object.keys(pathways)){
+          // If a pathway name ain't include 'pathway' word then it is under pancanatlas.
+          const isPancanatlas = !pwName.includes('pathway');
+          const dashPos = pwName.indexOf('-');
+          const pwHead = (isPancanatlas) ? 'PanCanAtlas' : pwName.substring(0, dashPos);
+          if(pwHead in pathwayDropdownData){
+            pathwayDropdownData[pwHead].push(pwName);
+          } else {
+            pathwayDropdownData[pwHead] = [pwName];
+          }
+        }
+
         return(
             <Navbar width={innerWidth * 0.9 + "px"}>
               <Nav>
@@ -25,11 +38,17 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.newPathway}>New</MenuItem>
                   <NavDropdown className="dropdown-submenu" eventKey={1} title="TCGA" id="basic-nav-TCGA">
                     {
-                      Object.keys(pathways).map((pathwayName) => {
+                      Object.keys(pathwayDropdownData).map((pwHead) => {
                           return (
-                          <MenuItem onClick={() => {this.props.pathwayActions.changePathway(pathwayName)}}>
-                            {pathwayName}
-                          </MenuItem>);
+                            <NavDropdown className="dropdown-submenu" eventKey={1} title={pwHead}>
+                              
+                              {
+                                pathwayDropdownData[pwHead].map((pwName) => 
+                                <MenuItem onClick={() => {this.props.pathwayActions.changePathway(pwName)}}>{pwName.split('-').join(" ")}</MenuItem>
+                                )
+                              }
+                              
+                            </NavDropdown>);
                       })
                     }
                   </NavDropdown>
