@@ -99,13 +99,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
     const allEles = parsedGraph;
     this.editor.loadFile(allEles.nodes, allEles.edges);
-
-    /*
-    window.appManager.pathwayDetailsView.updatePathwayProperties({
-      fileName: allEles.title + ".txt",
-      pathwayTitle: allEles.title,
-      pathwayDescription: allEles.description
-    });*/
   }
 
   render(){

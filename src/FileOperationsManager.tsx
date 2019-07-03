@@ -2,6 +2,7 @@ import SaveLoadUtilities from './SaveLoadUtility.js';
 import {saveAs} from 'file-saver';
 import EditorActionsManager from './EditorActionsManager.js';
 import { observable, computed } from 'mobx';
+import SaveLoadUtility from './SaveLoadUtility';
 
 
 export interface IPathwayInfo{
@@ -76,22 +77,14 @@ export default class FileOperationsManager{
         var blob = new Blob([imageData]);
         saveAs(blob, "pathway.png");
     };
-    /*
+    
 
-    saveGraph(isSIFNX)
+    saveGraph(isSIFNX: boolean, editor: EditorActionsManager)
     {
-        var pathwayData = window.appManager.pathwayDetailsView.getPathwayData();
-        pathwayData.graphJSON = this.cy.json();
-
-        var returnString = (isSIFNX) ? SaveLoadUtilities.exportAsSIFNX(pathwayData):
-                                       SaveLoadUtilities.exportGraph(pathwayData);
-        var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
+        const pathwayData = this.pathwayInfo;
+        const returnString = (isSIFNX) ? SaveLoadUtility.exportAsSIFNX(pathwayData, editor.cy.json()):
+                                       SaveLoadUtility.exportGraph(pathwayData, editor.cy, editor.edgeEditing, editor.cy.json());
+        const blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
         saveAs(blob, pathwayData.fileName);
     };
-
-    changePathwayDetails(pathwayData)
-    {
-        window.appManager.pathwayDetailsView.updatePathwayProperties(pathwayData);
-    };*/
-
 }

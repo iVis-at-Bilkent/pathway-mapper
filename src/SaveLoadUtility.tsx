@@ -1,23 +1,28 @@
+import { IPathwayInfo } from "./FileOperationsManager";
 
 export default class SaveLoadUtility{
   //Exports given json graph(based on cy.export()) into a string
-  static exportGraph(pathwayDetails, cy, edgeEditing)
+  static exportGraph(pathwayDetails: IPathwayInfo, cy, edgeEditing, graphJSON: any)
   {
+    console.log(graphJSON);
     var returnString = pathwayDetails.pathwayTitle + '\n\n';
-    returnString += pathwayDetails.pathwayDescription +'\n\n';
+    returnString += pathwayDetails.pathwayDetails +'\n\n';
 
     //Get nodes and edges
-    var nodes = pathwayDetails.graphJSON.elements.nodes;
+    var nodes = graphJSON.elements.nodes;
     // var edges = pathwayDetails.graphJSON.elements.edges;
     var edges = cy.edges();
 
     //Prepare Meta Line
      returnString += '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY\tWIDTH\tHEIGHT--'+'\n';
 
+     console.log("Here");
     if (nodes)
     {
-      for (var i = 0; i < nodes.length; i++)
+      for (let i = 0; i < nodes.length; i++)
       {
+        console.log("nodes[i]");
+        console.log(nodes[i]);
         returnString += this.exportNode(nodes[i]);
       }
     }
@@ -28,7 +33,7 @@ export default class SaveLoadUtility{
 
     if (edges) {
       //Write edges
-      for (var i = 0; i < edges.length; i++)
+      for (let i = 0; i < edges.length; i++)
       {
         var edgeID = edges[i].data('id');
         var edgeType = edges[i].data('type');
@@ -70,14 +75,14 @@ export default class SaveLoadUtility{
     //Finally return a string that includes whole graph lovely and peacefully :)
     return returnString;
   }
-  static exportAsSIFNX(pathwayDetails: any, nodeMap: any)
+  static exportAsSIFNX(pathwayDetails: any, graphJSON: any)
   {
-    var returnString = "";
+    let returnString = "";
 
     //Get nodes and edges
-    var nodes = pathwayDetails.graphJSON.elements.nodes;
-    var edges = pathwayDetails.graphJSON.elements.edges;
-
+    const nodes = graphJSON.elements.nodes;
+    const edges = graphJSON.elements.edges;
+    const nodeMap = {};
     //Put a blank line between nodes and edges
     returnString += '\n';
     returnString += 'PARTICIPANT\tPARTICIPANT_TYPE\tPARENT_ID\tPOSX\tPOSY\tWIDTH\tHEIGHT'+'\n';
@@ -86,7 +91,7 @@ export default class SaveLoadUtility{
     {
       for (var i = 0; i < nodes.length; i++)
       {
-        returnString += SaveLoadUtility.exportNode(nodes[i]);
+        returnString += this.exportNode(nodes[i]);
 
         nodeMap[nodes[i].data.id] = nodes[i];
       }
@@ -96,6 +101,7 @@ export default class SaveLoadUtility{
     returnString += '\n';
     returnString += 'PARTICIPANT_A\tPARTICIPANT_B\tTYPE\tPUBMED_IDS\n';
 
+    
     if (edges) {
       //Write edges
       for (var i = 0; i < edges.length; i++)
@@ -160,9 +166,9 @@ export default class SaveLoadUtility{
   }
   static parseGraph(graph, isArray) {
 
-    var allEles = [];
-    var nodes = [];
-    var edges = [];
+    const allEles = [];
+    const nodes = [];
+    const edges = [];
 
     // By lines
     // Match all new line character representations

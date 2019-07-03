@@ -11,6 +11,7 @@ export default class EditorActionsManager{
     public defaultLayoutProperties: any;
     public layoutProperties: any;
     public genomicDataOverlayManager: GenomicDataOverlayManager;
+    public edgeEditing: any;
 
     private FIT_CONSTANT: number;
     private observers: any[];
@@ -20,7 +21,6 @@ export default class EditorActionsManager{
     private isCbioPortal: boolean;
     private isCollaborative: boolean;
     private shareDBManager: ShareDBManager;
-    private edgeEditing: any;
     private portalAccessor: CBioPortalAccessor;
 
     constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean,

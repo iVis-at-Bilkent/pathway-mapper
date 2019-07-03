@@ -52,12 +52,13 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                       })
                     }
                   </NavDropdown>
-
+                  
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.export(false);}}>Export</MenuItem>
                   <NavDropdown className="dropdown-submenu" eventKey={1} title="Export as" id="basic-nav-export">
                     <MenuItem eventKey={1.1}>JPEG</MenuItem>
                     <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.saveAsPng}>PNG</MenuItem>
                     <MenuItem eventKey={1.1}>SVG</MenuItem>
-                    <MenuItem eventKey={1.1}>SIFNG</MenuItem>
+                    <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.export(true);}}>SIFNX</MenuItem>
                   </NavDropdown>
                 </NavDropdown>
 
@@ -65,7 +66,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <NavDropdown className="dropdown-submenu" eventKey={2.1} title="Add Node">
                       {
                         nodeTypes.map((nodeType) => {
-                        return (<MenuItem onClick={() => {this.props.pathwayActions.addNode(nodeType)}}>
+                        return (<MenuItem onClick={() => {this.props.pathwayActions.addNode(nodeType);}}>
                         {nodeType}
                       </MenuItem>)} )
                       }

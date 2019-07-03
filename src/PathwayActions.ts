@@ -33,19 +33,28 @@ export default class PathwayActions {
   }
 
   
+  @autobind
   undo(){
     this.undoRedoManager.undo();
   }
 
+  @autobind
   redo(){
     this.undoRedoManager.redo();
   }
 
+  @autobind
+  export(isSIFNX: boolean){
+    this.fileManager.saveGraph(isSIFNX, this.editor);
+  }
+
+  @autobind
   resetUndoStack()
   {
     this.undoRedoManager.reset();
   };
 
+  @autobind
   newPathway()
   {
       this.editor.removeAllElements();    
