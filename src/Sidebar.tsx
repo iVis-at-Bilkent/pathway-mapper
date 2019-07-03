@@ -85,7 +85,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                         <Button>Import</Button>
                     </div>
                     <div className="buttonContainer">
-                        <Button>Export</Button>
+                        <Button onClick={() => {this.props.pathwayActions.export(false)}}>Export</Button>
                     </div>
                 </Panel.Body>
               </Panel>

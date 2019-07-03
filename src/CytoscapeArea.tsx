@@ -48,6 +48,7 @@ type PathwayMapperType = {
   selectedPathway: string;
   openChangeNameModal: Function;
   setActiveEdge: Function;
+  pathwayActionsHandler: Function;
 };
 @observer
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}>{

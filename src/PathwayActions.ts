@@ -68,7 +68,10 @@ export default class PathwayActions {
   changePathway(pathwayName: string) {
     this.pathwayHandler(pathwayName);
     this.fileManager.setPathwayInfo({pathwayTitle: pathwayName, pathwayDetails: "", fileName: pathwayName + ".txt"});
-    this.removeAllData();
+    // At the beginning changePathway is called editor is not ready hence removeData shall not be called
+    if(this.editor){
+      this.removeAllData();
+    }
     console.log(this.fileManager.getPathwayInfo);
   }
   

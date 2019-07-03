@@ -439,7 +439,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             }
             <Bootstrap.Col xs={isCBioPortal ? 8 : 11} style={{paddingLeft: "0px"}}>
                 <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}  setActiveEdge={this.setActiveEdge}
-                openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} selectedPathway={this.selectedPathway}/>
+                openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} pathwayActionsHandler={this.pathwayActionsHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
 
             { isCBioPortal &&
@@ -487,6 +487,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   @autobind
   editorHandler(editor, eh, undoRedoManager){
     this.editor = editor;
+
     this.pathwayActions.editorHandler(editor, eh, undoRedoManager);
     if(this.props.isCBioPortal){
       this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
@@ -494,6 +495,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.portalAcessor = new CBioPortalAccessor(this.editor);
       this.loadRedirectedPortalData();
     }
+  }
+
+  @autobind
+  pathwayActionsHandler(pathwayActions: PathwayActions){
+
   }
 
   @autobind
