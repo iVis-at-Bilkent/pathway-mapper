@@ -13,23 +13,12 @@ interface IMenubarProps{
 
 export default class Menubar extends React.Component<IMenubarProps, {}>{
 
-  
+
     constructor(props: IMenubarProps){
         super(props);
     }
-    
-    @autobind
-    onChangeFile(e: any){
-      const file = e.target.files[0] as File;
-      console.log(file);
-      this.props.pathwayActions.processFile(file);
-    }
 
-    
-    
     render(){
-
-      
         const nodeTypes = ["Gene", "Family", "Complex", "Compartment", "Process"];
         const edgeTypes = ["Activates", "Inhibits", "Induces", "Represses", "Binds"];
 
@@ -50,16 +39,11 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
             <Navbar width={innerWidth * 0.9 + "px"}>
 
 
-              <input id="myInput"
-                type="file"
-                ref="uploader"
-                style={{display: 'none'}}
-                onChange={this.onChangeFile}
-              />
+              
               <Nav>
                 <NavDropdown eventKey={1} title="Network" id="basic-nav-network">
                   <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.newPathway}>New</MenuItem>
-                  <MenuItem eventKey={1.1} onClick={() => {(this.refs.uploader as any).click();}}>Import</MenuItem>
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.upload();}}>Import</MenuItem>
                   <NavDropdown className="dropdown-submenu" eventKey={1} title="TCGA" id="basic-nav-TCGA">
                     {
                       Object.keys(pathwayDropdownData).map((pwHead) => {

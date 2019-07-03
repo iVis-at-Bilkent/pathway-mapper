@@ -3,7 +3,7 @@ import { observable, computed } from 'mobx'
 import EditorActionsManager from './EditorActionsManager'
 import FileOperationsManager, { IPathwayInfo } from './FileOperationsManager'
 import $ from 'jquery'
-import { IProfileMetaData } from './react-pathway-mapper'
+import { IProfileMetaData, IPathwayData } from './react-pathway-mapper'
 import SaveLoadUtility from './SaveLoadUtility'
 export default class PathwayActions {
   @observable
@@ -12,17 +12,39 @@ export default class PathwayActions {
   editor: EditorActionsManager
   undoRedoManager: any
   pathwayHandler: (pathwayName: string) => void
+  includePathway: (pathwayData: IPathwayData) => void
   eh: any
   profiles: IProfileMetaData[]
+
+  uploader: any
 
   constructor(
     pathwayHandler: (pathwayName: string) => void,
     profiles: IProfileMetaData[],
-    fileManager: FileOperationsManager
+    fileManager: FileOperationsManager,
+    includePathway: (pathwayData: IPathwayData) => void
   ) {
     this.pathwayHandler = pathwayHandler
     this.profiles = profiles
     this.fileManager = fileManager
+    this.includePathway = includePathway
+  }
+
+  @autobind
+  onChangeFile(e: any) {
+    const file = e.target.files[0] as File
+    console.log(file)
+    this.processFile(file)
+  }
+
+  @autobind
+  upload() {
+    this.uploader.click()
+  }
+
+  @autobind
+  setUploader(uploader: any) {
+    this.uploader = uploader
   }
 
   @computed
@@ -186,15 +208,12 @@ export default class PathwayActions {
         request.readyState === XMLHttpRequest.DONE &&
         request.status === 200
       ) {
-        var graphData = SaveLoadUtility.parseGraph(request.responseText, false)
-        this.editor.loadFile(graphData.nodes, graphData.edges)
-        this.fileManager.setPathwayInfo({
-          fileName: file.name,
-          pathwayTitle: graphData.title,
-          pathwayDetails: graphData.description
-        })
-
-        this.resetUndoStack()
+        const pathwayData: IPathwayData = SaveLoadUtility.parseGraph(
+          request.responseText,
+          false
+        )
+        this.includePathway(pathwayData)
+        this.changePathway(pathwayData.title)
       }
     }
     request.open('POST', '/loadGraph')

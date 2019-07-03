@@ -45,6 +45,12 @@ interface IPathwayMapperProps{
   alterationData?: IAlterationData;
 }
 
+export interface IPathwayData{
+  title: string;
+  description: string;
+  nodes: any[];
+  edges: any[];
+}
 
 export interface IAlterationData{
   [key: string]: {[key: string]: number};
@@ -78,8 +84,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   @observable
   isModalShown: boolean[];
 
-  @observable
-  itemArray: any[];
   portalAcessor: CBioPortalAccessor;
 
   @observable
@@ -100,7 +104,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   constructor(props: IPathwayMapperProps){
     super(props);
     this.fileManager = new FileOperationsManager();
-    this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager);
+    this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, this.includePathway);
     if(this.props.pathwayName){
       this.pathwayActions.changePathway(this.props.pathwayName);
     } else {
@@ -313,24 +317,30 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     console.log(matchedGenesMap);
   }
   
+  // This method except pathwa Data which is generated
+  // as a result of parseGraph method.
+  @autobind
+  includePathway(pathwayData: IPathwayData){
+    const genes = pathwayData.nodes;
+
+    const geneHash: any = {};
+
+    for(const gene of genes){
+
+        geneHash[gene.data.name] = gene.data.type;
+
+    }
+
+    this.pathwayGeneMap[pathwayData.title] = geneHash;
+  }
 
   extractAllGenes(){
 
       for(const pathwayName in pathways){
           if(pathways.hasOwnProperty(pathwayName)){
 
-              const pathwayData = SaveLoadUtility.parseGraph(pathways[pathwayName], true);
-              const genes = pathwayData.nodes;
-
-              const geneHash: any = {};
-
-              for(const gene of genes){
-
-                  geneHash[gene.data.name] = gene.data.type;
-
-              }
-
-              this.pathwayGeneMap[pathwayName] = geneHash;
+              const pathwayData: IPathwayData = SaveLoadUtility.parseGraph(pathways[pathwayName], true);
+              this.includePathway(pathwayData);
           }
       }
       console.log("Pathway & Gene Map");
@@ -458,6 +468,13 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <PathwayDetailsModal isModalShown={this.isModalShown[4]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
           <ToastContainer />
           <ReactTooltip />
+
+          <input id="myInput"
+            type="file"
+            ref={(ref) => {this.pathwayActions.setUploader(ref);}}
+            style={{display: 'none'}}
+            onChange={this.pathwayActions.onChangeFile}
+          />
       </Bootstrap.Grid>
   );
   }
