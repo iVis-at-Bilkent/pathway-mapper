@@ -81,7 +81,7 @@ export default class PathwayActions {
   newPathway() {
     this.editor.removeAllElements()
     this.fileManager.setPathwayInfo({
-      pathwayTitle: '',
+      pathwayTitle: 'New Pathway',
       pathwayDetails: '',
       fileName: 'pathway.txt'
     })

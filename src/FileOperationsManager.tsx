@@ -18,7 +18,7 @@ export default class FileOperationsManager{
     pathwayInfo: IPathwayInfo;
 
     constructor(){
-        this.pathwayInfo = {pathwayTitle: "", pathwayDetails: "", fileName: "pathway.txt"};
+        this.pathwayInfo = {pathwayTitle: "New Pathway", pathwayDetails: "", fileName: "pathway.txt"};
     }
 
 

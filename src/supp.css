@@ -49,7 +49,7 @@ tbody tr:hover{
 }
 
 #ranking-bar .info-title{
-    background-color: lightskyblue;
+    background-color: #4389c0;
     width: 100%; 
     color: white;
     padding-top: 5px;
@@ -76,7 +76,7 @@ tbody tr:hover{
 }
 
 #ranking-bar .label:hover{
-    background-color: lightskyblue;
+    background-color: #4389c0;
 }
 
 #ranking-bar .label{

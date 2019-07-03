@@ -64,6 +64,7 @@
     "@types/jquery": "^3.3.29",
     "@types/node": "11.13.4",
     "@types/react": "16.8.13",
+    "@types/react-bootstrap": "^0.32.19",
     "@types/react-dom": "16.8.4",
     "autobind-decorator": "^2.4.0",
     "bootstrap": "^4.3.1",

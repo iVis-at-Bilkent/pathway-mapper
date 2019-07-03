@@ -104,7 +104,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
   render(){
       return (<div>
-        <div ref={this.cyDivHandler} id="cy" style={{"border": `3px solid ${this.isCbioPortal ? "#5dbcd2" : "#1abc9c"}`, "height": "800px"}}/>
+        <div ref={this.cyDivHandler} id="cy" style={{"border": `3px solid ${this.isCbioPortal ? "#4389c0" : "#1abc9c"}`, "height": "800px"}}/>
         <div className="cytoscape-navigator-wrapper"></div>
       </div>);
   }

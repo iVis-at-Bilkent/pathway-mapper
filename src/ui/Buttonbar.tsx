@@ -55,7 +55,8 @@ interface IButtonbarProps {
 
 interface ISVGFunction{
     svg: any;
-    function: () => void;    
+    function: () => void;
+    tooltip: string;    
 }
 
 export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
@@ -72,125 +73,66 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
     render() {
         
         const fileFunctions: ISVGFunction[] = [
-            {svg: newSvg, function: this.props.pathwayActions.newPathway},
-            {svg: loadSvg, function: this.props.pathwayActions.newPathway},
-            {svg: saveSvg, function: this.props.pathwayActions.newPathway}];
+            {svg: newSvg, function: this.props.pathwayActions.newPathway, tooltip: "New Pathway"},
+            {svg: loadSvg, function: this.props.pathwayActions.upload, tooltip: "Load Pathway" },
+            {svg: saveSvg, function: this.props.pathwayActions.newPathway, tooltip: "Save Pathway"}];
         
         const modFunctions: ISVGFunction[] = [
-            {svg: deleteSvg, function: this.props.pathwayActions.deleteSelected},
-            {svg: undoSvg, function: () => {this.props.pathwayActions.undo();}},
-            {svg: redoSvg, function: () => {this.props.pathwayActions.redo();}}];
+            {svg: deleteSvg, function: this.props.pathwayActions.deleteSelected, tooltip: "Delete Selected"},
+            {svg: undoSvg, function: () => {this.props.pathwayActions.undo();}, tooltip: "Undo"},
+            {svg: redoSvg, function: () => {this.props.pathwayActions.redo();}, tooltip: "Redo"}];
         
         const alignFunctions: ISVGFunction[] = [
-            {svg: ahtSvg, function: () => {this.props.pathwayActions.newPathway();}},
-            {svg: ahmSvg, function: () => {this.props.pathwayActions.newPathway();}},
-            {svg: ahbSvg, function: () => {this.props.pathwayActions.newPathway();}},
-            {svg: avlSvg, function: () => {this.props.pathwayActions.newPathway();}},
-            {svg: avcSvg, function: () => {this.props.pathwayActions.newPathway();}},
-            {svg: avrSvg, function: () => {this.props.pathwayActions.newPathway();}}];
+            {svg: ahtSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Align Horizontal Top"},
+            {svg: ahmSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Align Horizontal Middle"},
+            {svg: ahbSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Align Horizontal Bottom"},
+            {svg: avlSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Align Vertical Left"},
+            {svg: avcSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Align Vertical Center"},
+            {svg: avrSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Align Vertical Right"}];
             
         const utilFunctions: ISVGFunction[] = [
-            {svg: gridSvg, function: this.props.pathwayActions.deleteSelected},
-            {svg: guideSvg, function: () => {this.props.pathwayActions.newPathway();}}];
+            {svg: gridSvg, function: this.props.pathwayActions.deleteSelected, tooltip: "Enable Grid: Show and snap to grid"},
+            {svg: guideSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Enable Guidelines: Enable and snap to alignment guidelines"}];
 
         const visibilityFunctions: ISVGFunction[] = [
-            {svg: hideSvg, function: () => {this.props.pathwayActions.hideSelected();}},
-            {svg: showSvg, function: () => {this.props.pathwayActions.showAll();}}];
+            {svg: hideSvg, function: () => {this.props.pathwayActions.hideSelected();}, tooltip: "Hide Selected"},
+            {svg: showSvg, function: () => {this.props.pathwayActions.showAll();}, tooltip: "Show All"}];
 
         const layoutFunctions: ISVGFunction[] = [
-            {svg: layoutSvg, function: () => {this.props.pathwayActions.performLayout();}},
-            {svg: layoutPropSvg, function: () => {this.props.pathwayActions.performLayout();}}];
+            {svg: layoutSvg, function: () => {this.props.pathwayActions.performLayout();}, tooltip: "Fetch Genomic Data From cBioPortal"},
+            {svg: layoutPropSvg, function: () => {this.props.pathwayActions.performLayout();}, tooltip: "Genomic Data Visibility Settings"}];
 
         const portalFunctions: ISVGFunction[] = [
-            {svg: portalSvg, function: () => {this.props.handleOpen(0);}},
-            {svg: setingsSvg, function: () => {this.props.handleOpen(2);}}];
+            {svg: portalSvg, function: () => {this.props.handleOpen(0);}, tooltip: "Perform Layout"},
+            {svg: setingsSvg, function: () => {this.props.handleOpen(2);}, tooltip: "Layout Properties"}];
 
         const infoFunctions: ISVGFunction[] = [
-            {svg: helpSvg, function: () => {this.props.handleOpen(3);}},
-            {svg: aboutSvg, function: () => {this.props.handleOpen(3);}}];
+            {svg: helpSvg, function: () => {this.props.handleOpen(3);}, tooltip: "Quick Help"},
+            {svg: aboutSvg, function: () => {this.props.handleOpen(3);}, tooltip: "About"}];
+        
+        const allFunctions = [fileFunctions, modFunctions, alignFunctions, utilFunctions, visibilityFunctions, layoutFunctions, portalFunctions, infoFunctions];
+
         
         return (
             <Navbar style={{backgroundColor: "#eff0f2" }}>
                 <Nav style={{marginTop: "8px"}}>
                     <ButtonToolbar className="toolbar pathway-toolbar">
+                        {   allFunctions.map((functions) =>
                         <ButtonGroup>
-                            { fileFunctions.map((svg: ISVGFunction) => 
+                            { functions.map((svg: ISVGFunction) => 
                                 (<div className="toolbar-button">
-                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
+                                    <img height="22px" width="22px" src={svg.svg} data-tip={svg.tooltip} data-place="bottom" data-effect="solid" onClick={svg.function}></img>
                                 </div>)
                                 )
                             }
-                        </ButtonGroup>
-
-                        <ButtonGroup>
-                            { modFunctions.map((svg: ISVGFunction) => 
-                                (<div className="toolbar-button">
-                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
-                                </div>)
-                                )
-                            }
-                        </ButtonGroup>
-
-                        <ButtonGroup>
-                            { alignFunctions.map((svg: ISVGFunction) => 
-                                (<div className="toolbar-button">
-                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
-                                </div>)
-                                )
-                            }
-
-                        </ButtonGroup>
-
-                        <ButtonGroup>
-                            { utilFunctions.map((svg: ISVGFunction) => 
-                                (<div className="toolbar-button">
-                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
-                                </div>)
-                                )
-                            }
-                        </ButtonGroup>
-
-                        <ButtonGroup>
-                            { visibilityFunctions.map((svg: ISVGFunction) => 
-                                (<div className="toolbar-button">
-                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
-                                </div>)
-                                )
-                            }
-                        </ButtonGroup>
-
-                        <ButtonGroup>
-                            { portalFunctions.map((svg: ISVGFunction) => 
-                                (<div className="toolbar-button">
-                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
-                                </div>)
-                                )
-                            }
-                        </ButtonGroup>
-
-                        <ButtonGroup>
-                            { layoutFunctions.map((svg: ISVGFunction) => 
-                                (<div className="toolbar-button">
-                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
-                                </div>)
-                                )
-                            }
-                        </ButtonGroup>
-
-                        <ButtonGroup>
-                            { infoFunctions.map((svg: any) => 
-                                (<div className="toolbar-button">
-                                    <img height="22px" width="22px" src={svg.svg} onClick={svg.function}></img>
-                                </div>)
-                                )
-                            }
-                        </ButtonGroup>
+                        </ButtonGroup>)
+                        }
                     </ButtonToolbar>
                 </Nav>
                 <Nav pullRight style={{marginTop: "8px"}}>
                     <InputGroup >
                         <FormControl type="text"
-                            onChange={(e: any) => { this.searchedGene = e.target.value; }}
+                            onChange={(e: any) => { this.searchedGene = e.target.value;}}
                             placeHolder="Search Gene"
                             onKeyPress={(e: any) => { if (e.key !== "Enter") return; this.props.pathwayActions.searchGene(this.searchedGene) }} />
                         <InputGroup.Addon>
