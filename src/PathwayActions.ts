@@ -1,128 +1,133 @@
-import autobind from 'autobind-decorator';
-import { observable, computed } from 'mobx';
-import EditorActionsManager from './EditorActionsManager';
-import FileOperationsManager, { IPathwayInfo } from './FileOperationsManager';
-import $ from 'jquery';
-import { IProfileMetaData } from './react-pathway-mapper';
+import autobind from 'autobind-decorator'
+import { observable, computed } from 'mobx'
+import EditorActionsManager from './EditorActionsManager'
+import FileOperationsManager, { IPathwayInfo } from './FileOperationsManager'
+import $ from 'jquery'
+import { IProfileMetaData } from './react-pathway-mapper'
+import SaveLoadUtility from './SaveLoadUtility'
 export default class PathwayActions {
   @observable
-  selectedPathway: string;
-  fileManager: FileOperationsManager;
-  editor: EditorActionsManager;
-  undoRedoManager: any;
-  pathwayHandler: (pathwayName: string) => void;
-  eh: any;
-  profiles: IProfileMetaData[];
+  selectedPathway: string
+  fileManager: FileOperationsManager
+  editor: EditorActionsManager
+  undoRedoManager: any
+  pathwayHandler: (pathwayName: string) => void
+  eh: any
+  profiles: IProfileMetaData[]
 
-  constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager) {
-    this.pathwayHandler = pathwayHandler;
-    this.profiles = profiles;
-    this.fileManager = fileManager;
+  constructor(
+    pathwayHandler: (pathwayName: string) => void,
+    profiles: IProfileMetaData[],
+    fileManager: FileOperationsManager
+  ) {
+    this.pathwayHandler = pathwayHandler
+    this.profiles = profiles
+    this.fileManager = fileManager
   }
 
   @computed
-  get
-  getPathwayInfo(){
-    return this.fileManager.getPathwayInfo;
-  }
-
-  
-  @autobind 
-  setPathwayInfo(other: IPathwayInfo){
-    this.fileManager.setPathwayInfo(other);
-  }
-
-  
-  @autobind
-  undo(){
-    this.undoRedoManager.undo();
+  get getPathwayInfo() {
+    return this.fileManager.getPathwayInfo
   }
 
   @autobind
-  redo(){
-    this.undoRedoManager.redo();
+  setPathwayInfo(other: IPathwayInfo) {
+    this.fileManager.setPathwayInfo(other)
   }
 
   @autobind
-  export(isSIFNX: boolean){
-    this.fileManager.saveGraph(isSIFNX, this.editor);
+  undo() {
+    this.undoRedoManager.undo()
   }
 
   @autobind
-  resetUndoStack()
-  {
-    this.undoRedoManager.reset();
-  };
+  redo() {
+    this.undoRedoManager.redo()
+  }
 
   @autobind
-  newPathway()
-  {
-      this.editor.removeAllElements();    
-      this.fileManager.setPathwayInfo({pathwayTitle: "", pathwayDetails: "", fileName: "pathway.txt"});
-      this.removeAllData();
-      this.resetUndoStack();
+  export(isSIFNX: boolean) {
+    this.fileManager.saveGraph(isSIFNX, this.editor)
+  }
 
-  };
+  @autobind
+  resetUndoStack() {
+    this.undoRedoManager.reset()
+  }
+
+  @autobind
+  newPathway() {
+    this.editor.removeAllElements()
+    this.fileManager.setPathwayInfo({
+      pathwayTitle: '',
+      pathwayDetails: '',
+      fileName: 'pathway.txt'
+    })
+    this.removeAllData()
+    this.resetUndoStack()
+  }
 
   @autobind
   changePathway(pathwayName: string) {
-    this.pathwayHandler(pathwayName);
-    this.fileManager.setPathwayInfo({pathwayTitle: pathwayName, pathwayDetails: "", fileName: pathwayName + ".txt"});
+    this.pathwayHandler(pathwayName)
+    this.fileManager.setPathwayInfo({
+      pathwayTitle: pathwayName,
+      pathwayDetails: '',
+      fileName: pathwayName + '.txt'
+    })
     // At the beginning changePathway is called editor is not ready hence removeData shall not be called
-    if(this.editor){
-      this.removeAllData();
+    if (this.editor) {
+      this.removeAllData()
     }
-    console.log(this.fileManager.getPathwayInfo);
+    console.log(this.fileManager.getPathwayInfo)
   }
-  
+
   @autobind
   highlightNeighbours() {
-    this.editor.highlightNeighbors();
+    this.editor.highlightNeighbors()
   }
-  
+
   @autobind
   highlightSelected() {
-    this.editor.highlightSelected();
+    this.editor.highlightSelected()
   }
-  
+
   @autobind
   validateGenes() {
-    this.editor.validateGenes();
-  }
-
-
-  @autobind
-  showAll(){
-    this.editor.showAllNodes();
-  }
-  
-  @autobind
-  hideSelected(){
-    this.editor.hideSelectedNodes();
+    this.editor.validateGenes()
   }
 
   @autobind
-  deleteSelected(){
-    const selectedEles = this.editor.cy.elements(':selected');
-    this.editor.removeElement(selectedEles);
+  showAll() {
+    this.editor.showAllNodes()
   }
 
   @autobind
-  addEdge(edgeTypeIndex: number){
+  hideSelected() {
+    this.editor.hideSelectedNodes()
+  }
+
+  @autobind
+  deleteSelected() {
+    const selectedEles = this.editor.cy.elements(':selected')
+    this.editor.removeElement(selectedEles)
+  }
+
+  @autobind
+  addEdge(edgeTypeIndex: number) {
     // @ts-ignore
-    window.edgeAddingMode = edgeTypeIndex + 1;
-        // @ts-ignore
-    this.eh.disableDrawMode();
-    this.eh.enableDrawMode();
+    window.edgeAddingMode = edgeTypeIndex + 1
+    // @ts-ignore
+    this.eh.disableDrawMode()
+    this.eh.enableDrawMode()
   }
 
   @autobind
-  changeNodeName(oldName: string, newName: string){
-    const cyNode = this.editor.cy.$('[name="' + oldName + '"]')[0];
-    console.log(this.editor.cy.$('[name="' + oldName + '"]'));
-    this.editor.changeName(cyNode, newName);
+  changeNodeName(oldName: string, newName: string) {
+    const cyNode = this.editor.cy.$('[name="' + oldName + '"]')[0]
+    console.log(this.editor.cy.$('[name="' + oldName + '"]'))
+    this.editor.changeName(cyNode, newName)
   }
-
 
   @autobind
   addNode(nodeType) {
@@ -131,52 +136,81 @@ export default class PathwayActions {
       name: 'New ' + nodeType,
       w: '150',
       h: '52'
-    };
-    const extent = this.editor.cy.extent();
+    }
+    const extent = this.editor.cy.extent()
     const posData = {
-      x: (extent.x1 + extent.x2)  / 2,
+      x: (extent.x1 + extent.x2) / 2,
       y: (extent.y1 + extent.y2) / 2
-    };
+    }
 
-    console.log("this.editor.cy.extent()");
-    console.log();
+    console.log('this.editor.cy.extent()')
+    console.log()
 
-    this.editor.addNode(nodeData, posData);
+    this.editor.addNode(nodeData, posData)
   }
 
   @autobind
-  searchGene(geneName: string){
-    const selector = "node[name @*= '" + geneName + "']";
-    const nodesContainingSearchedGene  = this.editor.cy.filter(selector);
-    let nodesToSelect = this.editor.cy.collection();
-    nodesContainingSearchedGene.forEach(function(ele, index){
-        if (!ele.hasClass('highlightedNode') &&  !ele.hasClass('invalidGeneHighlight'))
-            nodesToSelect = nodesToSelect.union(ele);
-    });
-    this.editor.highlightBySearch(nodesToSelect);
+  searchGene(geneName: string) {
+    const selector = "node[name @*= '" + geneName + "']"
+    const nodesContainingSearchedGene = this.editor.cy.filter(selector)
+    let nodesToSelect = this.editor.cy.collection()
+    nodesContainingSearchedGene.forEach(function(ele, index) {
+      if (
+        !ele.hasClass('highlightedNode') &&
+        !ele.hasClass('invalidGeneHighlight')
+      )
+        nodesToSelect = nodesToSelect.union(ele)
+    })
+    this.editor.highlightBySearch(nodesToSelect)
   }
 
   @autobind
-  removeAllData(){
-    this.editor.removeGenomicData();
-    this.profiles.length = 0;
+  removeAllData() {
+    this.editor.removeGenomicData()
+    this.profiles.length = 0
   }
 
   @autobind
-  removeAllHighlight(){
-    this.editor.removeAllHighlight();
+  removeAllHighlight() {
+    this.editor.removeAllHighlight()
+  }
+
+  @autobind
+  processFile(file: File) {
+    // Create a new FormData object.
+    const formData = new FormData()
+    formData.append('graphFile', file)
+    const request = new XMLHttpRequest()
+    request.onreadystatechange = () => {
+      if (
+        request.readyState === XMLHttpRequest.DONE &&
+        request.status === 200
+      ) {
+        var graphData = SaveLoadUtility.parseGraph(request.responseText, false)
+        this.editor.loadFile(graphData.nodes, graphData.edges)
+        this.fileManager.setPathwayInfo({
+          fileName: file.name,
+          pathwayTitle: graphData.title,
+          pathwayDetails: graphData.description
+        })
+
+        this.resetUndoStack()
+      }
+    }
+    request.open('POST', '/loadGraph')
+    request.send(formData)
   }
 
   @autobind
   saveAsPng() {
-    this.fileManager.saveAsPNG(this.editor.cy);
+    this.fileManager.saveAsPNG(this.editor.cy)
   }
 
   @autobind
   editorHandler(editor, eh, undoRedoManager) {
-    this.editor = editor;
-    this.eh = eh;
-    this.undoRedoManager = undoRedoManager;
+    this.editor = editor
+    this.eh = eh
+    this.undoRedoManager = undoRedoManager
   }
 
   @autobind
@@ -191,12 +225,12 @@ export default class PathwayActions {
       'AKT1\t3\t30\t-10\t20\n' +
       'AKT2\t6\t-3\t20\t20\n' +
       'AKT3\t6\t-3\t20\t20\n' +
-      '\n';
-    this.editor.addGenomicData(data);
+      '\n'
+    this.editor.addGenomicData(data)
   }
 
   @autobind
   performLayout() {
-    this.editor.performLayout();
+    this.editor.performLayout()
   }
 }

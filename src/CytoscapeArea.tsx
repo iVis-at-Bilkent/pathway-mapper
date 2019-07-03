@@ -313,7 +313,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     const self = this;
     const edgeHandleDefaults ={
         preview: false, // whether to show added edges preview before releasing selection
-        stackOrder: 4, // Controls stack order of edgehandles canvas element by setting it's z-index
+        stackOrder: 10000, // Controls stack order of edgehandles canvas element by setting it's z-index
         handleSize: 10, // the size of the edge handle put on nodes
         handleColor: '#1abc9c', // the colour of the handle and the line drawn from it
         handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line

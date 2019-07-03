@@ -43,7 +43,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
     constructor(props: ISideBarProps){
         super(props);
         this.activeEdge = -1;
-        this.props.setActiveEdgeHandler(this.setActiveEdge);
+        props.setActiveEdgeHandler(this.setActiveEdge);
     }
 
     addEdge(edgeIndex: number){
