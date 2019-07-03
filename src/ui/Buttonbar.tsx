@@ -133,7 +133,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                     <InputGroup >
                         <FormControl type="text"
                             onChange={(e: any) => { this.searchedGene = e.target.value;}}
-                            placeHolder="Search Gene"
+                            placeholder="Search Gene"
                             onKeyPress={(e: any) => { if (e.key !== "Enter") return; this.props.pathwayActions.searchGene(this.searchedGene) }} />
                         <InputGroup.Addon>
                             <Glyphicon onClick={() => { this.props.pathwayActions.searchGene(this.searchedGene) }} glyph="search" />

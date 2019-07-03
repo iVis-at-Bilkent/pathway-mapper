@@ -58,7 +58,6 @@
   },
   "dependencies": {
     "@datastructures-js/max-heap": "^2.0.0",
-    "@types/bootstrap": "^4.3.0",
     "@types/cytoscape": "^3.4.0",
     "@types/jest": "24.0.11",
     "@types/jquery": "^3.3.29",

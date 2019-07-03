@@ -4,6 +4,7 @@ import ReactTooltip from 'react-tooltip'
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import autobind from 'autobind-decorator';
+import { VisibilityProperty } from 'csstype';
 
 interface IWelcomePageProps{
     postWelcome: Function;
@@ -14,7 +15,7 @@ interface IWelcomePageProps{
 export default class WelcomePage extends React.Component<IWelcomePageProps, {}>{
 
     @observable
-    private continueButtonVisibility: string;
+    private continueButtonVisibility: VisibilityProperty;
 
     @observable
     private activeType: number;

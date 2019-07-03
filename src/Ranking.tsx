@@ -107,10 +107,10 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                 </div>
             </div>
             <br/>
-            <div className="info-title">
+            <div className="info-title table-title">
                 <b style={{marginLeft: "2px"}}>Pathway rankings</b>
             </div>
-            <Table id="ranking-table" striped bordered condensed hover style={{width: "75%"}}>
+            <Table id="ranking-table" striped bordered condensed hover>
                 <thead>
                     <tr>
                     <td><i>Rank</i></td>

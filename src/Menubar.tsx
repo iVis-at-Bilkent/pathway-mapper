@@ -48,7 +48,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                     {
                       Object.keys(pathwayDropdownData).map((pwHead) => {
                           return (
-                            <NavDropdown className="dropdown-submenu" eventKey={1} title={pwHead}>
+                            <NavDropdown id={pwHead + "_dropdown"} className="dropdown-submenu" eventKey={1} title={pwHead}>
                               
                               {
                                 pathwayDropdownData[pwHead].map((pwName) => 
@@ -71,7 +71,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                 </NavDropdown>
 
                 <NavDropdown eventKey={2} title="Edit" id="basic-nav-edit">
-                  <NavDropdown className="dropdown-submenu" eventKey={2.1} title="Add Node">
+                  <NavDropdown id="add-node-submenu" className="dropdown-submenu" eventKey={2.1} title="Add Node">
                       {
                         nodeTypes.map((nodeType) => {
                         return (<MenuItem onClick={() => {this.props.pathwayActions.addNode(nodeType);}}>
@@ -79,7 +79,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                       </MenuItem>)} )
                       }
                   </NavDropdown>
-                  <NavDropdown className="dropdown-submenu" eventKey={2.1} title="Add Edge">
+                  <NavDropdown id="add-edge-submenu" className="dropdown-submenu" eventKey={2.1} title="Add Edge">
                       {
                         edgeTypes.map((nodeType, i) => {
                         return (<MenuItem 
