@@ -97,9 +97,6 @@ tbody tr:hover{
     display: none;
 }
 
-#ranking-bar table td{
-    font-size: 12px;
-}
 
 #ranking-bar .fa-question-circle{
     cursor: pointer
@@ -108,4 +105,12 @@ tbody tr:hover{
 .__react_component_tooltip{
     max-width: 350px;
     z-index: 1040;
+}
+
+#ranking-bar thead td{
+    font-size: 12px;
+}
+
+#ranking-bar tbody td{
+    font-size: 11px;
 }
