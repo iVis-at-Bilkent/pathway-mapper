@@ -16,7 +16,7 @@ export default class EditorActionsManager{
     private FIT_CONSTANT: number;
     private observers: any[];
     private svgExporter: SVGExporter;
-    private selectedNodeStack: any;
+    public selectedNodeStack: any;
     private undoRedoManager: any;
     private isCbioPortal: boolean;
     private isCollaborative: boolean;

@@ -5,6 +5,7 @@ import FileOperationsManager, { IPathwayInfo } from './FileOperationsManager'
 import $ from 'jquery'
 import { IProfileMetaData, IPathwayData } from './react-pathway-mapper'
 import SaveLoadUtility from './SaveLoadUtility'
+import ViewOperationsManager from './ViewOperationsManager'
 export default class PathwayActions {
   @observable
   selectedPathway: string
@@ -18,6 +19,7 @@ export default class PathwayActions {
 
   uploader: any
   isCBioPortal: boolean
+  viewOperationsManager: ViewOperationsManager
 
   constructor(
     pathwayHandler: (pathwayName: string) => void,
@@ -31,6 +33,11 @@ export default class PathwayActions {
     this.fileManager = fileManager
     this.includePathway = includePathway
     this.isCBioPortal = isCBioPortal
+  }
+
+  @autobind
+  align(param: string) {
+    this.viewOperationsManager.handleNodeAlignment(param)
   }
 
   @autobind
@@ -231,10 +238,11 @@ export default class PathwayActions {
   }
 
   @autobind
-  editorHandler(editor, eh, undoRedoManager) {
+  editorHandler(editor, eh, undoRedoManager, viewOperationsManager) {
     this.editor = editor
     this.eh = eh
     this.undoRedoManager = undoRedoManager
+    this.viewOperationsManager = viewOperationsManager
   }
 
   @autobind

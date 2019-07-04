@@ -1,5 +1,5 @@
-import { configure } from 'mobx';
-configure({ isolateGlobalState: true });
+//import { configure } from 'mobx';
+//configure({ isolateGlobalState: true });
 
 import React from 'react';
 import Toolbar from "./Toolbar";
@@ -34,6 +34,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import AboutModal from './modals/AboutModal';
 import ReactTooltip from 'react-tooltip'
 import PathwayDetailsModal from './modals/PathwayDetailsModal';
+import ViewOperationsManager from './ViewOperationsManager';
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
@@ -102,6 +103,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   profiles: IProfileMetaData[] = [];
 
   setActiveEdge: (edgeId: number) => void;
+  viewOperationsManager: any;
 
 
   constructor(props: IPathwayMapperProps){
@@ -509,7 +511,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   editorHandler(editor, eh, undoRedoManager){
     this.editor = editor;
 
-    this.pathwayActions.editorHandler(editor, eh, undoRedoManager);
+    this.viewOperationsManager = new ViewOperationsManager(this.editor, this.editor.cy);
+    this.pathwayActions.editorHandler(editor, eh, undoRedoManager, this.viewOperationsManager);
+
     if(this.props.isCBioPortal){
       this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
     } else {

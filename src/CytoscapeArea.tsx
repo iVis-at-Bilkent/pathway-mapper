@@ -266,7 +266,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     //@ts-ignore
     window.editorActionsManager = this.editor;
     this.gridOptionsManager = new GridOptionsManager();
-    this.viewOperationsManager = new ViewOperationsManager();
 
 
     this.qtipManager = new QtipManager(this.cy, this.editor);

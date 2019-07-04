@@ -1,6 +1,7 @@
 import EditorActionsManager from './EditorActionsManager';
 import FileOperationsManager, { IPathwayInfo } from './FileOperationsManager';
 import { IProfileMetaData, IPathwayData } from './react-pathway-mapper';
+import ViewOperationsManager from './ViewOperationsManager';
 export default class PathwayActions {
     selectedPathway: string;
     fileManager: FileOperationsManager;
@@ -12,7 +13,9 @@ export default class PathwayActions {
     profiles: IProfileMetaData[];
     uploader: any;
     isCBioPortal: boolean;
+    viewOperationsManager: ViewOperationsManager;
     constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, includePathway: (pathwayData: IPathwayData) => void, isCBioPortal: boolean);
+    align(param: string): void;
     onChangeFile(e: any): void;
     upload(): void;
     setUploader(uploader: any): void;
@@ -38,7 +41,7 @@ export default class PathwayActions {
     removeAllHighlight(): void;
     processFile(file: File): void;
     saveAsPng(): void;
-    editorHandler(editor: any, eh: any, undoRedoManager: any): void;
+    editorHandler(editor: any, eh: any, undoRedoManager: any, viewOperationsManager: any): void;
     loadSampleData(): void;
     performLayout(): void;
 }

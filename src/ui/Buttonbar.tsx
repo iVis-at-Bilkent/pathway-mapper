@@ -83,12 +83,12 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
             {svg: redoSvg, function: () => {this.props.pathwayActions.redo();}, tooltip: "Redo"}];
         
         const alignFunctions: ISVGFunction[] = [
-            {svg: ahtSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Align Horizontal Top"},
-            {svg: ahmSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Align Horizontal Middle"},
-            {svg: ahbSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Align Horizontal Bottom"},
-            {svg: avlSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Align Vertical Left"},
-            {svg: avcSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Align Vertical Center"},
-            {svg: avrSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Align Vertical Right"}];
+            {svg: ahtSvg, function: () => {this.props.pathwayActions.align("hTop");}, tooltip: "Align Horizontal Top"},
+            {svg: ahmSvg, function: () => {this.props.pathwayActions.align("hMid");}, tooltip: "Align Horizontal Middle"},
+            {svg: ahbSvg, function: () => {this.props.pathwayActions.align("hBot");}, tooltip: "Align Horizontal Bottom"},
+            {svg: avlSvg, function: () => {this.props.pathwayActions.align("vLeft");}, tooltip: "Align Vertical Left"},
+            {svg: avcSvg, function: () => {this.props.pathwayActions.align("vCen");}, tooltip: "Align Vertical Center"},
+            {svg: avrSvg, function: () => {this.props.pathwayActions.align("vRight");}, tooltip: "Align Vertical Right"}];
             
         const utilFunctions: ISVGFunction[] = [
             {svg: gridSvg, function: this.props.pathwayActions.deleteSelected, tooltip: "Enable Grid: Show and snap to grid"},

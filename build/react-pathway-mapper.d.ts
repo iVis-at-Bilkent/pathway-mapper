@@ -55,6 +55,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     oldName: string;
     profiles: IProfileMetaData[];
     setActiveEdge: (edgeId: number) => void;
+    viewOperationsManager: any;
     constructor(props: IPathwayMapperProps);
     getGeneStudyMap(studyGeneMap: any): any;
     getAlterationAveragePerGene(genomicDataMap: any): any;

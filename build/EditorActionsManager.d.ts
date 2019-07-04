@@ -9,7 +9,7 @@ export default class EditorActionsManager {
     private FIT_CONSTANT;
     private observers;
     private svgExporter;
-    private selectedNodeStack;
+    selectedNodeStack: any;
     private undoRedoManager;
     private isCbioPortal;
     private isCollaborative;
