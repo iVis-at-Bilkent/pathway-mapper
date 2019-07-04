@@ -104,3 +104,8 @@ tbody tr:hover{
 #ranking-bar .fa-question-circle{
     cursor: pointer
 }
+
+.__react_component_tooltip{
+    max-width: 350px;
+    z-index: 1040;
+}

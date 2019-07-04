@@ -27,8 +27,8 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     isPercentageMatch: number;
     isAlterationEnabled: number;
 
-    readonly COUNT_PERC_EXPLANATION = "Match count/percentage: Whether we should favor the number of genes of interest that the ones in a pathway or the percentage of such genes in that pathway.<br/>For instance, suppose genes of interest are A, B, and C, and the pathway contains genes B, C, D, and E. When we consider count, the score is 2 (for the two genes that match). However, when we consider percentage the score will be 50% as 2 of the 4 genes in the pathway are among genes of interest.";
-    readonly ALTERATION_EXPLANATION = "Consider gene alteration frequency: When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and %50 for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (20+30)/4=%12.5 for match count and percentage, respectively.";
+    readonly COUNT_PERC_EXPLANATION = "Whether we should favor the number of genes of interest that the ones in a pathway or the percentage of such genes in that pathway.<br/>For instance, suppose genes of interest are A, B, and C, and the pathway contains genes B, C, D, and E. When we consider count, the score is 2 (for the two genes that match). However, when we consider percentage the score will be 50% as 2 of the 4 genes in the pathway are among genes of interest.";
+    readonly ALTERATION_EXPLANATION = "When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and %50 for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (20+30)/4=%12.5 for match count and percentage, respectively.";
     
 
     constructor(props: IRankingProps){
@@ -108,7 +108,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                     <div data-tip={this.COUNT_PERC_EXPLANATION} data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
 
                     <Checkbox onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1;} }>
-                        Consider gene alteration frequency                    
+                        Consider gene alteration frequency&nbsp;                  
                         <div data-tip={this.ALTERATION_EXPLANATION} data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
                     </Checkbox>
 
