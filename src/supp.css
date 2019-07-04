@@ -14,11 +14,11 @@
 }
 
 tbody tr:hover{
-    background: #5dbcd2 !important;
+    background: #4389c0 !important;
 }
 
 .cBioMode .cytoscape-navigatorView{
-    background: #5dbcd2;
+    background: #4389c0;
 }
 
 .ui-cytoscape-nodeadd-nodediv{
@@ -54,6 +54,7 @@ tbody tr:hover{
     color: white;
     padding-top: 3px;
     padding-bottom: 3px;
+    border-radius: 4px;
 }
 
 #cy{
@@ -61,7 +62,7 @@ tbody tr:hover{
 }
 
 #ranking-table {
-    margin-left: 20px; 
+    /*margin-left: 20px; */
     margin-top: 6px;
     margin-right: 6px;
 }
@@ -96,9 +97,10 @@ tbody tr:hover{
     display: none;
 }
 
-#ranking-bar .table-title{
-    width: 370px;
+#ranking-bar table td{
+    font-size: 12px;
 }
-#ranking-bar table{
-    width: 330px;
+
+#ranking-bar .fa-question-circle{
+    cursor: pointer
 }

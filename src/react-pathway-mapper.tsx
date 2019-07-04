@@ -317,10 +317,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     console.log(matchedGenesMap);
   }
   
-  // This method except pathwa Data which is generated
+  // This method except pathway Data which is generated
   // as a result of parseGraph method.
+  // Note: Pathway title
   @autobind
-  includePathway(pathwayData: IPathwayData){
+  includePathway(pathwayData?: IPathwayData, pathwayName?: string){
     const genes = pathwayData.nodes;
 
     const geneHash: any = {};
@@ -447,13 +448,13 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           
 
             }
-            <Bootstrap.Col xs={isCBioPortal ? 8 : 11} style={{paddingLeft: "0px"}}>
+            <Bootstrap.Col xs={isCBioPortal ? 9 : 11} style={{paddingLeft: "0px"}}>
                 <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}  setActiveEdge={this.setActiveEdge}
                 openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} pathwayActionsHandler={this.pathwayActionsHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
 
             { isCBioPortal &&
-            <Bootstrap.Col xs={3}>
+            <Bootstrap.Col xs={2}>
                 <Bootstrap.Row>
                   <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} profileLabels={profileLabels}/>
                 </Bootstrap.Row>

@@ -19,7 +19,7 @@
 "K9h1lRMzclc1\t-le5m2j6cWa2\tLrJe2ktmcVzK\tINHIBITS"
 ],
 "ACC-2016-WNT-signaling-pathway": [
-"CC-2016-WNT-signaling-pathway",
+"ACC-2016-WNT-signaling-pathway",
 "",
 "",
 "",
@@ -37,7 +37,7 @@
 "V58DLRlddN04\tD1VT3C7Tc9uz\tg2oPjTN1c_MF\tINHIBITS"
 ],
 "BLCA-2014-Histone-modification-pathway": [
-"LCA-2014-Histone-modification-pathway",
+"BLCA-2014-Histone-modification-pathway",
 "",
 "",
 "",
@@ -239,7 +239,7 @@
 "hxwMi4kydOBT\tAtC08ZQJc2KU\toHj1iu9Nc3_k\tACTIVATES",
 "uh5qfjUjdKB7\tEZw1mFjYc0Pb\tAtC08ZQJc2KU\tACTIVATES"
 ],
-"Cell-Cycle": [
+"Cell Cycle": [
 "Cell Cycle",
 "",
 "Regulation of mitotic cell cycle progression involving a signaling cascade of cyclins and cyclin-dependent kinases as well as a number of regulatory checkpoints.",
