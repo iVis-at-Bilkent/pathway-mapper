@@ -1,3 +1,6 @@
+import { configure } from 'mobx';
+configure({ isolateGlobalState: true });
+
 import React from 'react';
 import Toolbar from "./Toolbar";
 import CytoscapeArea from "./CytoscapeArea";

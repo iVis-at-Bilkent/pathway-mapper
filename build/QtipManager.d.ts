@@ -1,5 +1,4 @@
 /// <reference types="jquery" />
-/// <reference types="bootstrap" />
 import EditorActionsManager from "./EditorActionsManager";
 export default class QtipManager {
     private cy;
