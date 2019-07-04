@@ -104,7 +104,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   constructor(props: IPathwayMapperProps){
     super(props);
     this.fileManager = new FileOperationsManager();
-    this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, this.includePathway);
+    this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, this.includePathway, this.props.isCBioPortal);
     if(this.props.pathwayName){
       this.pathwayActions.changePathway(this.props.pathwayName);
     } else {

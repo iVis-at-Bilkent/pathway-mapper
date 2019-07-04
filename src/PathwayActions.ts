@@ -17,17 +17,20 @@ export default class PathwayActions {
   profiles: IProfileMetaData[]
 
   uploader: any
+  isCBioPortal: boolean
 
   constructor(
     pathwayHandler: (pathwayName: string) => void,
     profiles: IProfileMetaData[],
     fileManager: FileOperationsManager,
-    includePathway: (pathwayData: IPathwayData) => void
+    includePathway: (pathwayData: IPathwayData) => void,
+    isCBioPortal: boolean
   ) {
     this.pathwayHandler = pathwayHandler
     this.profiles = profiles
     this.fileManager = fileManager
     this.includePathway = includePathway
+    this.isCBioPortal = isCBioPortal
   }
 
   @autobind
@@ -92,16 +95,18 @@ export default class PathwayActions {
   @autobind
   changePathway(pathwayName: string) {
     this.pathwayHandler(pathwayName)
-    this.fileManager.setPathwayInfo({
-      pathwayTitle: pathwayName,
-      pathwayDetails: '',
-      fileName: pathwayName + '.txt'
-    })
-    // At the beginning changePathway is called editor is not ready hence removeData shall not be called
-    if (this.editor) {
-      this.removeAllData()
+
+    if (!this.isCBioPortal) {
+      this.fileManager.setPathwayInfo({
+        pathwayTitle: pathwayName,
+        pathwayDetails: '',
+        fileName: pathwayName + '.txt'
+      })
+      // At the beginning changePathway is called editor is not ready hence removeData shall not be called
+      if (this.editor) {
+        this.removeAllData()
+      }
     }
-    console.log(this.fileManager.getPathwayInfo)
   }
 
   @autobind

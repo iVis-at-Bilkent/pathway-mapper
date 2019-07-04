@@ -99,18 +99,18 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
             {svg: showSvg, function: () => {this.props.pathwayActions.showAll();}, tooltip: "Show All"}];
 
         const layoutFunctions: ISVGFunction[] = [
-            {svg: layoutSvg, function: () => {this.props.pathwayActions.performLayout();}, tooltip: "Fetch Genomic Data From cBioPortal"},
-            {svg: layoutPropSvg, function: () => {this.props.pathwayActions.performLayout();}, tooltip: "Genomic Data Visibility Settings"}];
+            {svg: layoutSvg, function: () => {this.props.pathwayActions.performLayout();}, tooltip: "Perform Layout"},
+            {svg: layoutPropSvg, function: () => {this.props.pathwayActions.performLayout();}, tooltip: "Layout Properties"}];
 
         const portalFunctions: ISVGFunction[] = [
-            {svg: portalSvg, function: () => {this.props.handleOpen(0);}, tooltip: "Perform Layout"},
-            {svg: setingsSvg, function: () => {this.props.handleOpen(2);}, tooltip: "Layout Properties"}];
+            {svg: portalSvg, function: () => {this.props.handleOpen(0);}, tooltip: "Fetch Genomic Data From cBioPortal"},
+            {svg: setingsSvg, function: () => {this.props.handleOpen(2);}, tooltip: "Genomic Data Visibility Settings"}];
 
         const infoFunctions: ISVGFunction[] = [
             {svg: helpSvg, function: () => {this.props.handleOpen(3);}, tooltip: "Quick Help"},
             {svg: aboutSvg, function: () => {this.props.handleOpen(3);}, tooltip: "About"}];
         
-        const allFunctions = [fileFunctions, modFunctions, alignFunctions, utilFunctions, visibilityFunctions, layoutFunctions, portalFunctions, infoFunctions];
+        const allFunctions = [fileFunctions, modFunctions, alignFunctions, utilFunctions, visibilityFunctions, portalFunctions, layoutFunctions, infoFunctions];
 
         
         return (

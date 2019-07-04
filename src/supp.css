@@ -52,8 +52,8 @@ tbody tr:hover{
     background-color: #4389c0;
     width: 100%; 
     color: white;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 
 #cy{
@@ -80,8 +80,8 @@ tbody tr:hover{
 }
 
 #ranking-bar .label{
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-top: 6px;
+    padding-bottom: 6px;
     margin-bottom: 4px;
     display: inline-block;
     margin-right: 4px;
@@ -97,8 +97,8 @@ tbody tr:hover{
 }
 
 #ranking-bar .table-title{
-    width: 82%;
+    width: 370px;
 }
 #ranking-bar table{
-    width: 75%;
+    width: 330px;
 }
