@@ -1,0 +1,46 @@
+import React from 'react';
+declare type PathwayMapperType = {
+    isCollaborative: boolean;
+    isCbioPortal: boolean;
+    editorHandler: Function;
+    selectedPathway: string;
+    openChangeNameModal: Function;
+    setActiveEdge: Function;
+    pathwayActionsHandler: Function;
+};
+export default class CytoscapeArea extends React.Component<PathwayMapperType, {}> {
+    private cy;
+    private cyDiv;
+    private editor;
+    private edgeAddingMode;
+    private viewOperationsManager;
+    private gridOptionsManager;
+    private qtipManager;
+    private genomicDataExplorerView;
+    private pathwayDetailsView;
+    private viewUtilities;
+    private isCollaborative;
+    private isCbioPortal;
+    private shareDBManager;
+    private cxtMenuManager;
+    private dragDropNodeAddManager;
+    private undoRedoManager;
+    private portalAccessor;
+    private isMountedFirst;
+    constructor(props: PathwayMapperType);
+    componentWillUpdate(nextProps: PathwayMapperType): void;
+    getPathway(selectedPathway: string): void;
+    render(): JSX.Element;
+    componentDidMount(): void;
+    cyDivHandler(div: HTMLDivElement): void;
+    init(): void;
+    placePanzoomAndOverlay(): void;
+    getPathwayData(): any;
+    initCyJS(): void;
+    getGlobalEdgeType(): string;
+    initCyHandlers(): void;
+    initKeyboardHandlers(): void;
+    initUndoRedoFunctionality(): void;
+    initCBioPortalFunctionalities(): void;
+}
+export {};
