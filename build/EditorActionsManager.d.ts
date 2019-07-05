@@ -121,6 +121,7 @@ export default class EditorActionsManager {
     getGenomicDataSVG(node: any): any;
     removeGenomicData(): void;
     addGenomicData(genomicData: any): void;
+    adjustVisibilityShareDB(profileId: string, isEnabled: boolean): void;
     addToProfiles(profileId: string): void;
     addPortalGenomicData(genomicData: any, groupID: any): void;
     shareDBGenomicDataHandler(op: any): void;

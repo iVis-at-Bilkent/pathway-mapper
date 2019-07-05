@@ -201,12 +201,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       return;
     }
     this.handleMutations();
-
+/*
     console.log("Alteration data0");
     console.log(this.alterationData);
 
     console.log("Genomic data0");
-    console.log(this.alterationData);
+    console.log(this.alterationData);*/
     const profileCounts = this.props.store.molecularProfileIdToProfiledSampleCount.result;
 
     for(const genomicData of this.props.store.molecularData.result){

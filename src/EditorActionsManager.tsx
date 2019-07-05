@@ -1713,6 +1713,11 @@ export default class EditorActionsManager{
         }
     }
 
+    adjustVisibilityShareDB(profileId: string, isEnabled: boolean){
+        const targetProfileIndex = this.profiles.map(profile => profile.profileId).indexOf(profileId);
+        this.profiles[targetProfileIndex].enabled = isEnabled;   
+    }
+
     addToProfiles(profileId: string){
         // Check if this profile already exists
         if(this.profiles.map(profile => profile.profileId).includes(profileId)){
@@ -1747,13 +1752,11 @@ export default class EditorActionsManager{
         var newData = op.oi;
         var geneSymbol = op.p[1];
 
+
         if(!isRemove)
         {
             this.genomicDataOverlayManager.addGenomicDataWithGeneSymbol(geneSymbol, newData);
 
-            Object.keys(newData).forEach((profileID: string) => {
-                this.addToProfiles(profileID);
-            });
         }
         // Removal
         else
@@ -1774,6 +1777,13 @@ export default class EditorActionsManager{
         if(!isRemove)
         {
             this.genomicDataOverlayManager.addGenomicGroupData(key, data);
+            console.log("key");
+            console.log(key);
+            console.log(data);
+            if(data.length !== 1){
+                throw new Error("Grouped genomic data expected to be of length 1");
+            }
+            this.addToProfiles(data[0]);
         }
         // //Removal
         // else
@@ -1794,15 +1804,14 @@ export default class EditorActionsManager{
         {
             this.genomicDataOverlayManager.addGenomicVisData(key, data);
 
-            console.log("data");
-            const targetProfileIndex = this.profiles.map(profile => profile.profileId).indexOf(key);
-            this.profiles[targetProfileIndex].enabled = data;
+            this.adjustVisibilityShareDB(key, data);
         }
         // Removal
         else
         {
-
+            console.log("Removal from vis handler");
             this.genomicDataOverlayManager.removeGenomicVisData();
+            this.profiles.length = 0;
         }
 
         this.genomicDataOverlayManager.showGenomicData();
@@ -1813,9 +1822,9 @@ export default class EditorActionsManager{
     {
         if(this.isCollaborative)
         {
-            var visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
-            var labelWithData = 148 + (visibleNumberOfData-3) * 36;
-            var rt = this.shareDBManager;
+            const visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
+            const labelWithData = 148 + (visibleNumberOfData-3) * 36;
+            const rt = this.shareDBManager;
             nodes.forEach(function( ele ){
                 if (!ele.isParent())
                 {
@@ -1856,7 +1865,7 @@ export default class EditorActionsManager{
             const actions: any[] = [];
 
             const visibleNumberOfData = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
-            var labelWithData = 150 + (visibleNumberOfData-3) * 36;
+            const labelWithData = 150 + (visibleNumberOfData-3) * 36;
             nodes.forEach(function( ele: any){
                 if (!ele.isParent())
                 {

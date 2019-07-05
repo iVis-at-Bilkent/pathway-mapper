@@ -111,7 +111,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
                     }
 
                     <Button bsClass="success" 
-                    onClick={() => {this.props.loadFromCBio(this.dataTypes, this.selectedStudyData); this.props.handleClose(0);}}>Load</Button>
+                    onClick={() => {this.props.loadFromCBio(this.dataTypes, this.selectedStudyData); this.props.handleClose(0); this.resetModal();}}>Load</Button>
 
                 </Modal.Body>
             </Modal>
