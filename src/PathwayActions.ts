@@ -36,6 +36,11 @@ export default class PathwayActions {
   }
 
   @autobind
+  resizeToContent() {
+    this.editor.resizeNodesToContent(this.editor.cy.nodes())
+  }
+
+  @autobind
   align(param: string) {
     this.viewOperationsManager.handleNodeAlignment(param)
   }

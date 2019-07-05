@@ -15,6 +15,7 @@ export default class PathwayActions {
     isCBioPortal: boolean;
     viewOperationsManager: ViewOperationsManager;
     constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, includePathway: (pathwayData: IPathwayData) => void, isCBioPortal: boolean);
+    resizeToContent(): void;
     align(param: string): void;
     onChangeFile(e: any): void;
     upload(): void;

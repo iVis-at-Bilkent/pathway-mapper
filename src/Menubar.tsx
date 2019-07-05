@@ -92,6 +92,11 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                       </MenuItem>)} )
                       }
                   </NavDropdown>
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.deleteSelected();}}>Delete Selected</MenuItem>
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.resizeToContent();}}>Resize Nodes to Content</MenuItem>
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.undo();}}>Undo</MenuItem>
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.redo();}}>Redo</MenuItem>
+
                 </NavDropdown>
                 <NavDropdown eventKey={3} title="View" id="basic-nav-view">
                   <MenuItem eventKey={3.1}>Action</MenuItem>
