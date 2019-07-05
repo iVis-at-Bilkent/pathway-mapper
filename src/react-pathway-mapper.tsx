@@ -358,7 +358,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(!this.props.alterationData){ // If size 0 that means it is not redirected.
       return;
     }
-    const redirectedProfiles = Object.keys(this.props.alterationData).map((data: string) : IProfileMetaData => {return {profileId: data, enabled: true}});
+    const redirectedProfiles = Object.keys(this.props.alterationData).map((data: string) : IProfileMetaData => ({profileId: data, enabled: true}));
     redirectedProfiles.forEach((redirectedProfile) => {
       this.profiles.push(redirectedProfile);
     });
@@ -454,7 +454,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
             }
             <Bootstrap.Col xs={isCBioPortal ? 9 : 11} style={{paddingLeft: "0px"}}>
-                <CytoscapeArea isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}  setActiveEdge={this.setActiveEdge}
+                <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}  setActiveEdge={this.setActiveEdge}
                 openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} pathwayActionsHandler={this.pathwayActionsHandler} selectedPathway={this.selectedPathway}/>
             </Bootstrap.Col>
 

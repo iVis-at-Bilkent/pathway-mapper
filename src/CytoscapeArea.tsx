@@ -27,6 +27,7 @@ import complexImg from "./nodes/complex.svg";
 import compartmentImg from "./nodes/compartment.svg";
 // @ts-ignore
 import processImg from "./nodes/process.svg";
+import { IProfileMetaData } from './react-pathway-mapper';
 
 const edgeHandles = require('cytoscape-edgehandles');
 const edgeEditing = require('cytoscape-edge-editing');
@@ -49,6 +50,7 @@ type PathwayMapperType = {
   openChangeNameModal: Function;
   setActiveEdge: Function;
   pathwayActionsHandler: Function;
+  profiles: IProfileMetaData[];
 };
 @observer
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}>{
@@ -259,7 +261,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
                                            this.cy,
                                            this.isCbioPortal,
                                            this.undoRedoManager,
-                                           this.portalAccessor);
+                                           this.portalAccessor,
+                                           this.props.profiles);
     this.shareDBManager.setEditor(this.editor);
     if(this.isCollaborative)
       this.shareDBManager.initShareDB();

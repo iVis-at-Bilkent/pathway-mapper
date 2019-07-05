@@ -1,5 +1,6 @@
 import CBioPortalAccessor from "./CBioPortalAccessor";
 import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
+import { IProfileMetaData } from "./react-pathway-mapper";
 export default class EditorActionsManager {
     cy: any;
     defaultLayoutProperties: any;
@@ -15,7 +16,8 @@ export default class EditorActionsManager {
     private isCollaborative;
     private shareDBManager;
     private portalAccessor;
-    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, undoRedoManager: any, portalAccessor: CBioPortalAccessor);
+    private profiles;
+    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[]);
     handleChangePositionByAlignment(movedNodeArr: any): void;
     doChangePosition(movedNodes: any): any[];
     undoChangePosition(movedNodes: any): any[];
@@ -119,9 +121,10 @@ export default class EditorActionsManager {
     getGenomicDataSVG(node: any): any;
     removeGenomicData(): void;
     addGenomicData(genomicData: any): void;
+    addToProfiles(profileId: string): void;
     addPortalGenomicData(genomicData: any, groupID: any): void;
     shareDBGenomicDataHandler(op: any): void;
     shareDBGenomicDataGroupChangeHandler(op: any): void;
-    shareDBGenomicDataVsibilityHandler(op: any): void;
+    shareDBGenomicDataVisibilityHandler(op: any): void;
     resizeNodesToContent(nodes: any[]): void;
 }

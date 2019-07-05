@@ -14,6 +14,7 @@ export default class ShareDBManager {
     postFileLoad: any;
     editor: EditorActionsManager;
     constructor(postFileLoadCallback: any);
+    getDoc(): any;
     setEditor(editor: EditorActionsManager): void;
     applyShareDBOperation(op: any): void;
     clearShareDBGenomicData(): void;

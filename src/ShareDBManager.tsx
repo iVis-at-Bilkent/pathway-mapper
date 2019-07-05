@@ -29,6 +29,12 @@ export default class ShareDBManager {
         this.graphUtilities = new GraphUtilities();
     };
 
+
+
+    getDoc(){
+        return this.doc;
+    }
+
     setEditor(editor: EditorActionsManager){
         this.editor = editor;
     }
@@ -355,11 +361,20 @@ export default class ShareDBManager {
         for (const key_g of Object.keys(genomicDataMap)) {
             this.editor.genomicDataOverlayManager.genomicDataMap[key_g] =
                 genomicDataMap[key_g];
+
+            Object.keys(genomicDataMap[key_g]).forEach((profileId: string) => {
+                this.editor.addToProfiles(profileId);
+            });
+
         }
+
+        console.log("visDataMap");
+        console.log(visDataMap);
 
         for (const key_g of Object.keys(visDataMap)) {
             this.editor.genomicDataOverlayManager.visibleGenomicDataMapByType[key_g] =
                 visDataMap[key_g];
+            
         }
 
         for (const key_g of Object.keys(groupedGenomicDataMap)) {
@@ -396,7 +411,7 @@ export default class ShareDBManager {
         };
 
         var genomicDataVisibilityChangeHandler = function (op) {
-            self.editor.shareDBGenomicDataVsibilityHandler(op);
+            self.editor.shareDBGenomicDataVisibilityHandler(op);
             self.checkShareDBGenomicData();
         };
 

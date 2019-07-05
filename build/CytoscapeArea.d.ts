@@ -1,4 +1,5 @@
 import React from 'react';
+import { IProfileMetaData } from './react-pathway-mapper';
 declare type PathwayMapperType = {
     isCollaborative: boolean;
     isCbioPortal: boolean;
@@ -7,6 +8,7 @@ declare type PathwayMapperType = {
     openChangeNameModal: Function;
     setActiveEdge: Function;
     pathwayActionsHandler: Function;
+    profiles: IProfileMetaData[];
 };
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}> {
     private cy;

@@ -2,6 +2,8 @@ import ShareDBManager from "./ShareDBManager";
 import CBioPortalAccessor from "./CBioPortalAccessor";
 import SVGExporter from "./SVGExporter";
 import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
+import { IProfileMetaData } from "./react-pathway-mapper";
+import { observable } from "mobx";
 
 const _ = require('underscore');
 
@@ -23,13 +25,18 @@ export default class EditorActionsManager{
     private shareDBManager: ShareDBManager;
     private portalAccessor: CBioPortalAccessor;
 
+    @observable
+    private profiles: IProfileMetaData[];
+
     constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean,
-                undoRedoManager: any, portalAccessor: CBioPortalAccessor)
+                undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[])
     {
         // Set cy instance and set real time manager reference if collaborative mode
         this.cy = cyInst;
         this.isCollaborative = isCollaborative;
         this.isCbioPortal = isCBioPortal;
+        this.profiles = profiles;
+
         const edgeEditingOptions = {
         // this function specifies the positions of bend points
         bendPositionsFunction: function (ele: any) {
@@ -1202,7 +1209,7 @@ export default class EditorActionsManager{
         var self = this;
         eles.forEach(function (ele)
         {
-            console.log("ShareDB Was here", ele);//self.shareDBManager.removeElement(ele.id());
+            self.shareDBManager.removeElement(ele.id());
         });
     };
 
@@ -1672,7 +1679,7 @@ export default class EditorActionsManager{
     {
         if(this.isCollaborative)
         {
-            console.log("ShareDB Was here");// this.shareDBManager.clearGenomicData();
+            this.shareDBManager.clearGenomicData();
         }
         else
         {
@@ -1687,6 +1694,10 @@ export default class EditorActionsManager{
     addGenomicData(genomicData: any)
     {
         const groupID = this.getEmptyGroupID();
+        
+        console.log("genomicData");
+        console.log(genomicData);
+
 
         if(this.isCollaborative)
         {
@@ -1702,11 +1713,23 @@ export default class EditorActionsManager{
         }
     }
 
+    addToProfiles(profileId: string){
+        // Check if this profile already exists
+        if(this.profiles.map(profile => profile.profileId).includes(profileId)){
+            return;
+        }
+
+        this.profiles.push({profileId: profileId, enabled: true});
+    }
+
     addPortalGenomicData(genomicData: any, groupID: any)
     {
+        
         if(this.isCollaborative)
         {
             var parsedGenomicData = this.genomicDataOverlayManager.preparePortalGenomicDataShareDB(genomicData);
+            console.log("genomicData");
+            console.log(parsedGenomicData);
             this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
             this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
                 groupID);
@@ -1727,6 +1750,10 @@ export default class EditorActionsManager{
         if(!isRemove)
         {
             this.genomicDataOverlayManager.addGenomicDataWithGeneSymbol(geneSymbol, newData);
+
+            Object.keys(newData).forEach((profileID: string) => {
+                this.addToProfiles(profileID);
+            });
         }
         // Removal
         else
@@ -1757,7 +1784,7 @@ export default class EditorActionsManager{
         this.genomicDataOverlayManager.notifyObservers();
     }
 
-    shareDBGenomicDataVsibilityHandler(op: any)
+    shareDBGenomicDataVisibilityHandler(op: any)
     {
         var data = op.oi;
         var key = op.p[1];
@@ -1766,6 +1793,10 @@ export default class EditorActionsManager{
         if(!isRemove)
         {
             this.genomicDataOverlayManager.addGenomicVisData(key, data);
+
+            console.log("data");
+            const targetProfileIndex = this.profiles.map(profile => profile.profileId).indexOf(key);
+            this.profiles[targetProfileIndex].enabled = data;
         }
         // Removal
         else
