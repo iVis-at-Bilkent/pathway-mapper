@@ -1,23 +1,24 @@
 import CBioPortalAccessor from "./CBioPortalAccessor";
 import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
-import { IProfileMetaData } from "./react-pathway-mapper";
+import { IProfileMetaData, IPathwayData } from "./react-pathway-mapper";
 export default class EditorActionsManager {
     cy: any;
     defaultLayoutProperties: any;
     layoutProperties: any;
     genomicDataOverlayManager: GenomicDataOverlayManager;
     edgeEditing: any;
+    selectedNodeStack: any;
     private FIT_CONSTANT;
     private observers;
     private svgExporter;
-    selectedNodeStack: any;
     private undoRedoManager;
     private isCbioPortal;
     private isCollaborative;
     private shareDBManager;
     private portalAccessor;
     private profiles;
-    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[]);
+    private modifyPathwayGeneMap;
+    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[], modifyPathwayGeneMap: (pathwayData: IPathwayData, isRemove: boolean) => void);
     handleChangePositionByAlignment(movedNodeArr: any): void;
     doChangePosition(movedNodes: any): any[];
     undoChangePosition(movedNodes: any): any[];

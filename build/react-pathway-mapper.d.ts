@@ -67,6 +67,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
      *
      */
     getBestPathway(rankingMode: number): void;
+    modifyPathwayGeneMap(pathwayData: IPathwayData, isRemove: boolean): void;
     includePathway(pathwayData?: IPathwayData, pathwayName?: string): void;
     extractAllGenes(): void;
     loadRedirectedPortalData(): void;
@@ -82,7 +83,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     handleOpen(modalId: number): void;
     handleClose(modalId: number): void;
     editorHandler(editor: any, eh: any, undoRedoManager: any): void;
-    pathwayActionsHandler(pathwayActions: PathwayActions): void;
     pathwayHandler(pathway: string): void;
 }
 export {};

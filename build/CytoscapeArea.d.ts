@@ -1,5 +1,5 @@
 import React from 'react';
-import { IProfileMetaData } from './react-pathway-mapper';
+import { IProfileMetaData, IPathwayData } from './react-pathway-mapper';
 declare type PathwayMapperType = {
     isCollaborative: boolean;
     isCbioPortal: boolean;
@@ -7,8 +7,10 @@ declare type PathwayMapperType = {
     selectedPathway: string;
     openChangeNameModal: Function;
     setActiveEdge: Function;
-    pathwayActionsHandler: Function;
     profiles: IProfileMetaData[];
+    includePathway: (pathwayData?: IPathwayData, pathwayName?: string) => void;
+    pathwayHandler: (pathwayName: string) => void;
+    modifyPathwayGeneMap: (pathwayData: IPathwayData, isRemove: boolean) => void;
 };
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}> {
     private cy;

@@ -27,7 +27,7 @@ import complexImg from "./nodes/complex.svg";
 import compartmentImg from "./nodes/compartment.svg";
 // @ts-ignore
 import processImg from "./nodes/process.svg";
-import { IProfileMetaData } from './react-pathway-mapper';
+import { IProfileMetaData, IPathwayData } from './react-pathway-mapper';
 
 const edgeHandles = require('cytoscape-edgehandles');
 const edgeEditing = require('cytoscape-edge-editing');
@@ -49,8 +49,10 @@ type PathwayMapperType = {
   selectedPathway: string;
   openChangeNameModal: Function;
   setActiveEdge: Function;
-  pathwayActionsHandler: Function;
   profiles: IProfileMetaData[];
+  includePathway: (pathwayData?: IPathwayData, pathwayName?: string) => void;
+  pathwayHandler: (pathwayName: string) => void;
+  modifyPathwayGeneMap: (pathwayData: IPathwayData, isRemove: boolean) => void;
 };
 @observer
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}>{
@@ -95,6 +97,11 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     if(!selectedPathway || selectedPathway === '') return;
 
     const data = pathways[selectedPathway];
+
+    // It might be non-existent due to pathway being created using collaboratiev mode.
+    if(!data){ 
+      return;
+    }
     // TODO Problematic const data = pathways["../samples/BLCA-2014-RTK-RAS-PI(3)K-pathway.txt"];
 
     const parsedGraph = SaveLoadUtility.parseGraph(data, true);
@@ -255,17 +262,29 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.undoRedoManager = this.cy.undoRedo();
     console.log("undoRedoManager" + this.undoRedoManager);
     // Create Manager Classes
-    this.shareDBManager = new ShareDBManager(() => {console.log("ShareDB Bilmemne");});
+    this.shareDBManager = new ShareDBManager(() => {
+      const dbDoc = this.shareDBManager.getDoc();
+      this.props.includePathway(
+        {
+          title: "Collab Pathway", 
+          description: "", 
+          nodes: Object.values(dbDoc.data['nodes']).map((obj) => ({data: obj})),
+          edges: dbDoc.data['edges']
+        });
+      this.props.pathwayHandler("Collab Pathway");
+    });
     this.editor = new EditorActionsManager(this.isCollaborative,
                                            this.shareDBManager,
                                            this.cy,
                                            this.isCbioPortal,
                                            this.undoRedoManager,
                                            this.portalAccessor,
-                                           this.props.profiles);
+                                           this.props.profiles,
+                                           this.props.modifyPathwayGeneMap);
     this.shareDBManager.setEditor(this.editor);
-    if(this.isCollaborative)
+    if(this.isCollaborative){
       this.shareDBManager.initShareDB();
+    }
     //@ts-ignore
     window.editorActionsManager = this.editor;
     this.gridOptionsManager = new GridOptionsManager();

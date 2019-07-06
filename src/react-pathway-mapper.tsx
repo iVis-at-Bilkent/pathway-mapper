@@ -321,6 +321,18 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     console.log("Score Map");
     console.log(matchedGenesMap);
   }
+
+
+  @autobind
+  modifyPathwayGeneMap(pathwayData: IPathwayData, isRemove: boolean){
+    const gene = pathwayData.nodes[0];
+
+    if(!isRemove){
+      this.pathwayGeneMap[pathwayData.title][gene.data.name] = gene.data.type; 
+    } else {
+      delete this.pathwayGeneMap[pathwayData.title][gene.data.name];
+    }
+  }
   
   // This method except pathway Data which is generated
   // as a result of parseGraph method.
@@ -328,7 +340,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   @autobind
   includePathway(pathwayData?: IPathwayData, pathwayName?: string){
     const genes = pathwayData.nodes;
-
+    console.log("genes::includePathway");
+    console.log(genes);
     const geneHash: any = {};
 
     for(const gene of genes){
@@ -398,7 +411,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
 
         this.profiles.push({studyId: selectedStudyData[0], profileId: dataTypes[dataType].profile, enabled: true});
-
+        console.log("this.pathwayGeneMap");
+        console.log(this.pathwayGeneMap);
         this.portalAcessor.getProfileData({
             caseSetId: selectedStudyData[0],
             geneticProfileId: dataTypes[dataType].profile,
@@ -455,7 +469,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             }
             <Bootstrap.Col xs={isCBioPortal ? 9 : 11} style={{paddingLeft: "0px"}}>
                 <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}  setActiveEdge={this.setActiveEdge}
-                openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} pathwayActionsHandler={this.pathwayActionsHandler} selectedPathway={this.selectedPathway}/>
+                openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} 
+                includePathway={this.includePathway} selectedPathway={this.selectedPathway}
+                pathwayHandler={this.pathwayHandler}
+                modifyPathwayGeneMap={this.modifyPathwayGeneMap}/>
             </Bootstrap.Col>
 
             { isCBioPortal &&
@@ -520,11 +537,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.portalAcessor = new CBioPortalAccessor(this.editor);
       this.loadRedirectedPortalData();
     }
-  }
-
-  @autobind
-  pathwayActionsHandler(pathwayActions: PathwayActions){
-
   }
 
   @autobind
