@@ -18,6 +18,7 @@ export default class PathwayActions {
   profiles: IProfileMetaData[]
 
   uploader: any
+  merger: any
   isCBioPortal: boolean
   viewOperationsManager: ViewOperationsManager
 
@@ -46,10 +47,10 @@ export default class PathwayActions {
   }
 
   @autobind
-  onChangeFile(e: any) {
+  onChangeFile(e: any, isMerge: boolean) {
     const file = e.target.files[0] as File
     console.log(file)
-    this.processFile(file)
+    this.processFile(file, isMerge)
   }
 
   @autobind
@@ -58,8 +59,14 @@ export default class PathwayActions {
   }
 
   @autobind
-  setUploader(uploader: any) {
-    this.uploader = uploader
+  merge() {
+    this.merger.click()
+  }
+
+  @autobind
+  setUploaders(inputRef: any, isMerge: boolean) {
+    if (isMerge) this.merger = inputRef
+    else this.uploader = inputRef
   }
 
   @computed
@@ -215,7 +222,7 @@ export default class PathwayActions {
   }
 
   @autobind
-  processFile(file: File) {
+  processFile(file: File, isMerge: boolean) {
     // Create a new FormData object.
     const formData = new FormData()
     formData.append('graphFile', file)
@@ -229,8 +236,21 @@ export default class PathwayActions {
           request.responseText,
           false
         )
+
+        if (isMerge) {
+          this.editor.mergeGraph(pathwayData.nodes, pathwayData.edges)
+          //TODO change file name maybe, probabyly  not necessary ?
+          pathwayData.title = 'Merged Graph'
+          const graphJSON = this.editor.cy.json()
+          // Pathway nodes and edges are now combination of both previous and new pathway.
+          pathwayData.nodes = graphJSON.elements.nodes //this.editor.cy.nodes().map((node) => ({data: node.data()}));
+          pathwayData.edges = graphJSON.elements.edges //this.editor.cy.edges().map((edge) => ({data: edge.data()}));
+        }
+
         this.includePathway(pathwayData)
         this.changePathway(pathwayData.title)
+
+        this.resetUndoStack()
       }
     }
     request.open('POST', '/loadGraph')

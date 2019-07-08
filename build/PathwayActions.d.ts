@@ -12,14 +12,16 @@ export default class PathwayActions {
     eh: any;
     profiles: IProfileMetaData[];
     uploader: any;
+    merger: any;
     isCBioPortal: boolean;
     viewOperationsManager: ViewOperationsManager;
     constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, includePathway: (pathwayData: IPathwayData) => void, isCBioPortal: boolean);
     resizeToContent(): void;
     align(param: string): void;
-    onChangeFile(e: any): void;
+    onChangeFile(e: any, isMerge: boolean): void;
     upload(): void;
-    setUploader(uploader: any): void;
+    merge(): void;
+    setUploaders(inputRef: any, isMerge: boolean): void;
     readonly getPathwayInfo: IPathwayInfo;
     setPathwayInfo(other: IPathwayInfo): void;
     undo(): void;
@@ -40,7 +42,7 @@ export default class PathwayActions {
     searchGene(geneName: string): void;
     removeAllData(): void;
     removeAllHighlight(): void;
-    processFile(file: File): void;
+    processFile(file: File, isMerge: boolean): void;
     saveAsPng(): void;
     editorHandler(editor: any, eh: any, undoRedoManager: any, viewOperationsManager: any): void;
     loadSampleData(): void;

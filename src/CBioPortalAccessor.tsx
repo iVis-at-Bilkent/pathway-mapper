@@ -23,13 +23,6 @@ export default class CBioPortalAccessor{
   static readonly GENE_EXPRESSION = "Gene Expression";
   static readonly CNA = "Copy Number Alteration";
 
-  editor: EditorActionsManager;
-
-  constructor(editor: EditorActionsManager)
-  {
-      this.editor = editor;
-  }
-
   getDataTypes(){
       return [CBioPortalAccessor.MUTATION, CBioPortalAccessor.GENE_EXPRESSION, CBioPortalAccessor.CNA];
   }
@@ -256,7 +249,7 @@ export default class CBioPortalAccessor{
       request.send();
   };
 
-  validateGenes(nodeSymbols)
+  validateGenes(nodeSymbols, editor: EditorActionsManager)
   {
       const request = new XMLHttpRequest();
       const self = this;
@@ -270,7 +263,7 @@ export default class CBioPortalAccessor{
               {
                   return object.hugoGeneSymbol;
               });
-              self.editor.highlightInvalidGenes(validGeneArray);
+              editor.highlightInvalidGenes(validGeneArray);
           }
       };
       const queryURL = CBioPortalAccessor.VALIDATE_GENES_URL;

@@ -15,8 +15,6 @@ export default class CBioPortalAccessor {
     static readonly MUTATION = "Mutation";
     static readonly GENE_EXPRESSION = "Gene Expression";
     static readonly CNA = "Copy Number Alteration";
-    editor: EditorActionsManager;
-    constructor(editor: EditorActionsManager);
     getDataTypes(): string[];
     fetchCancerStudies(callbackFunction: any): void;
     getSupportedGeneticProfiles(cancerStudy: any, callbackFunction: any): void;
@@ -24,5 +22,5 @@ export default class CBioPortalAccessor {
     static getDataType(cancerProfileName: string): "" | "Gene Expression" | "Copy Number Alteration" | "Mutation";
     calcAlterationPercentages(paramLines: any, geneticProfileId: any, callbackFunction: any): void;
     getProfileData(params: any, callbackFunction: any): void;
-    validateGenes(nodeSymbols: any): void;
+    validateGenes(nodeSymbols: any, editor: EditorActionsManager): void;
 }

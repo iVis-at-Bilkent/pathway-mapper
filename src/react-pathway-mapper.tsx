@@ -326,7 +326,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     const gene = pathwayData.nodes[0];
 
     if(!isRemove){
-      this.pathwayGeneMap[pathwayData.title][gene.data.name] = gene.data.type; 
+      if(gene.data.type === "GENE")
+        this.pathwayGeneMap[pathwayData.title][gene.data.name] = gene.data.type; 
     } else {
       delete this.pathwayGeneMap[pathwayData.title][gene.data.name];
     }
@@ -344,6 +345,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
     for(const gene of genes){
 
+      if(gene.data.type === "GENE")
         geneHash[gene.data.name] = gene.data.type;
 
     }
@@ -463,8 +465,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <Col xs={1} style={{paddingLeft: "0px"}}>
               <Sidebar pathwayActions={this.pathwayActions} setActiveEdgeHandler={this.setActiveEdgeHandler} handleOpen={this.handleOpen}/>
             </Col>)
-          
-
             }
             <Col xs={isCBioPortal ? 9 : 11} style={{paddingLeft: "0px"}}>
                 <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}  setActiveEdge={this.setActiveEdge}
@@ -498,10 +498,18 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
           <input id="myInput"
             type="file"
-            ref={(ref) => {this.pathwayActions.setUploader(ref);}}
+            ref={(ref) => {this.pathwayActions.setUploaders(ref, false);}}
             style={{display: 'none'}}
-            onChange={this.pathwayActions.onChangeFile}
-          /></div>)
+            onChange={(e) => {this.pathwayActions.onChangeFile(e, false)}}
+          />
+          <input id="myInput2"
+            type="file"
+            ref={(ref) => {this.pathwayActions.setUploaders(ref, true);}}
+            style={{display: 'none'}}
+            onChange={(e) => {this.pathwayActions.onChangeFile(e, true)}}
+          />
+          
+          </div>)
             }
       </Grid>
   );
@@ -539,7 +547,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(this.props.isCBioPortal){
       this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
     } else {
-      this.portalAcessor = new CBioPortalAccessor(this.editor);
+      this.portalAcessor = new CBioPortalAccessor();
       this.loadRedirectedPortalData();
     }
   }

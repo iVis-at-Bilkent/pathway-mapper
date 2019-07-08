@@ -27,7 +27,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
     constructor(props: IStudyModalProps){
         super(props);
         this.selectedStudyData = [];
-        this.portalAccessor = new CBioPortalAccessor(null); // editor is given as null
+        this.portalAccessor = new CBioPortalAccessor();
         this.fetchStudy();
     }
 

@@ -43,6 +43,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
               <Nav>
                 <NavDropdown eventKey={1} title="Network" id="basic-nav-network">
                   <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.newPathway}>New</MenuItem>
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.handleOpen(3)}}>Properties...</MenuItem>
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.upload();}}>Import</MenuItem>
                   <NavDropdown className="dropdown-submenu" eventKey={1} title="TCGA" id="basic-nav-TCGA">
                     {
@@ -60,7 +61,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                       })
                     }
                   </NavDropdown>
-                  
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.merge()}}>Merge With...</MenuItem>
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.export(false);}}>Export</MenuItem>
                   <NavDropdown className="dropdown-submenu" eventKey={1} title="Export as" id="basic-nav-export">
                     <MenuItem eventKey={1.1}>JPEG</MenuItem>
@@ -100,13 +101,19 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                 </NavDropdown>
                 <NavDropdown eventKey={3} title="View" id="basic-nav-view">
                   <NavDropdown id="align-view-submenu" className="dropdown-submenu" eventKey={2.1} title="Align">
-                      <NavDropdown id="align-vertical-submenu" className="dropdown-submenu" eventKey={2.1} title="Vertical">
-                        
-                      </NavDropdown>
-                      <NavDropdown id="align-horizontal-submenu" className="dropdown-submenu" eventKey={2.1} title="Horizontal">
-                        
-                      </NavDropdown>
+                    <NavDropdown id="align-vertical-submenu" className="dropdown-submenu" eventKey={2.1} title="Vertical">
+                      <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.align("vLeft");}}>Left</MenuItem>
+                      <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.align("vCen");}}>Center</MenuItem>
+                      <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.align("vRight");}}>Right</MenuItem>
                     </NavDropdown>
+                    <NavDropdown id="align-horizontal-submenu" className="dropdown-submenu" eventKey={2.1} title="Horizontal">
+                      <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.align("hTop");}}>Top</MenuItem>
+                      <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.align("hMid");}}>Middle</MenuItem>
+                      <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.align("hBot");}}>Bottom</MenuItem>
+                    </NavDropdown>
+                  </NavDropdown>
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.hideSelected();}}>Hide Selected Nodes</MenuItem>
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.showAll();}}>Show All Nodes</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={4} title="Highlight" id="basic-nav-highlight">
                   <MenuItem eventKey={4.1} onClick={this.props.pathwayActions.highlightSelected}>Highlight Selected</MenuItem>

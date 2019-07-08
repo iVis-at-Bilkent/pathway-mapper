@@ -132,6 +132,10 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   }
 
   init(){
+
+    // Create portal accessor
+    this.portalAccessor = new CBioPortalAccessor();
+
     // Initializes cytoscape
     this.initCyJS();
     // Initialize cytoscape based handlers here
@@ -141,8 +145,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.initCBioPortalFunctionalities();
     this.placePanzoomAndOverlay();
 
-    // Create portal accessor
-    this.portalAccessor = new CBioPortalAccessor(this.editor);
     //this.appManager = this;
   }
 
