@@ -99,7 +99,14 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
 
                 </NavDropdown>
                 <NavDropdown eventKey={3} title="View" id="basic-nav-view">
-                  <MenuItem eventKey={3.1}>Action</MenuItem>
+                  <NavDropdown id="align-view-submenu" className="dropdown-submenu" eventKey={2.1} title="Align">
+                      <NavDropdown id="align-vertical-submenu" className="dropdown-submenu" eventKey={2.1} title="Vertical">
+                        
+                      </NavDropdown>
+                      <NavDropdown id="align-horizontal-submenu" className="dropdown-submenu" eventKey={2.1} title="Horizontal">
+                        
+                      </NavDropdown>
+                    </NavDropdown>
                 </NavDropdown>
                 <NavDropdown eventKey={4} title="Highlight" id="basic-nav-highlight">
                   <MenuItem eventKey={4.1} onClick={this.props.pathwayActions.highlightSelected}>Highlight Selected</MenuItem>

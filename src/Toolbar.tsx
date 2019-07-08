@@ -36,8 +36,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
     render(){
 
 
-      let studyQuery = "q=" + JSON.stringify(this.props.alterationData);
-
+      const studyQuery = "q=" + JSON.stringify(this.props.alterationData);
 
       return (
       <div id="toolbar">

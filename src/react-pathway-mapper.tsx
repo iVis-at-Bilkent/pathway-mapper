@@ -1,5 +1,5 @@
-//import { configure } from 'mobx';
-//configure({ isolateGlobalState: true });
+import { configure } from 'mobx';
+configure({ isolateGlobalState: true });
 
 import React from 'react';
 import Toolbar from "./Toolbar";
@@ -10,11 +10,9 @@ import autobind from "autobind-decorator";
 import {observable, computed} from "mobx";
 import {observer} from "mobx-react";
 import FileOperationsManager from './FileOperationsManager';
-import * as Bootstrap from "react-bootstrap"; 
-import {Navbar, Nav, NavDropdown, MenuItem, NavItem, Button, Label} from 'react-bootstrap';
+import {Row, Col, Grid, Label} from "react-bootstrap"; 
 import pathways from "./pathways.json";
 import Menubar from './Menubar';
-import {Modal, DropdownButton, Checkbox, Panel} from 'react-bootstrap';
 import PathwayActions from './PathwayActions';
 import CBioPortalAccessor from './CBioPortalAccessor';
 import SaveLoadUtility from './SaveLoadUtility';
@@ -32,7 +30,7 @@ import ProfilesModal from './modals/ProfilesModal';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AboutModal from './modals/AboutModal';
-import ReactTooltip from 'react-tooltip'
+import ReactTooltip from 'react-tooltip';
 import PathwayDetailsModal from './modals/PathwayDetailsModal';
 import ViewOperationsManager from './ViewOperationsManager';
 
@@ -431,6 +429,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   render() {
   const isCBioPortal = this.props.isCBioPortal; 
+  console.log(Toolbar);
+  
   const profileLabels = this.profiles.map((profile: IProfileMetaData, i: number) => 
   [<Label onClick={() => {
     this.profiles[i].enabled = !this.profiles[i].enabled;
@@ -438,52 +438,56 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     }}
     bsStyle={this.profiles[i].enabled ? "primary" : "default"}>{profile.profileId}</Label>]);
 
-
     
   return (
 
-      <Bootstrap.Grid style={{width: window.innerWidth * 0.99}} className={isCBioPortal ? "cBioMode" : ""}>
+      <Grid style={{width: window.innerWidth * 0.99}} className={isCBioPortal ? "cBioMode" : ""}>
           {!isCBioPortal && 
-          [<Bootstrap.Row>
+          [<Row>
               <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen} setActiveEdge={this.setActiveEdge}/>
-          </Bootstrap.Row>
+          </Row>
           ,
-          <Bootstrap.Row>
+          <Row>
             <Buttonbar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen}/> 
-          </Bootstrap.Row>]
+          </Row>]
           }
-          <Bootstrap.Row>
+          <Row>
             {
             ( isCBioPortal &&
-            <Bootstrap.Col xs={1} style={{width: "3%"}}>
+            <Col xs={1} style={{width: "3%"}}>
                 <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData} handleOpen={this.handleOpen}/>
-            </Bootstrap.Col>)
+            </Col>)
             }
             {
             (!isCBioPortal && 
-            <Bootstrap.Col xs={1} style={{paddingLeft: "0px"}}>
+            <Col xs={1} style={{paddingLeft: "0px"}}>
               <Sidebar pathwayActions={this.pathwayActions} setActiveEdgeHandler={this.setActiveEdgeHandler} handleOpen={this.handleOpen}/>
-            </Bootstrap.Col>)
+            </Col>)
           
 
             }
-            <Bootstrap.Col xs={isCBioPortal ? 9 : 11} style={{paddingLeft: "0px"}}>
+            <Col xs={isCBioPortal ? 9 : 11} style={{paddingLeft: "0px"}}>
                 <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}  setActiveEdge={this.setActiveEdge}
                 openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} 
                 includePathway={this.includePathway} selectedPathway={this.selectedPathway}
                 pathwayHandler={this.pathwayHandler}
                 modifyPathwayGeneMap={this.modifyPathwayGeneMap}/>
-            </Bootstrap.Col>
+            </Col>
 
             { isCBioPortal &&
-            <Bootstrap.Col xs={2}>
-                <Bootstrap.Row>
+            <Col xs={2}>
+                <Row>
                   <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} profileLabels={profileLabels}/>
-                </Bootstrap.Row>
-            </Bootstrap.Col>
+                </Row>
+            </Col>
             }
-          </Bootstrap.Row>
+          </Row>
 
+
+
+
+
+            { !isCBioPortal && (<div id="invisibles">
           <StudyModal isModalShown={this.isModalShown[0]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
           <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[1]} handleClose={this.handleClose} oldName={this.oldName}/>
           <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[2]} handleClose={this.handleClose} />
@@ -497,8 +501,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             ref={(ref) => {this.pathwayActions.setUploader(ref);}}
             style={{display: 'none'}}
             onChange={this.pathwayActions.onChangeFile}
-          />
-      </Bootstrap.Grid>
+          /></div>)
+            }
+      </Grid>
   );
   }
 

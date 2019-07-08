@@ -64,8 +64,6 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
 
     render(){
-
-
         return (
           <div id="ranking-bar">
             <div className="info-entry">
@@ -137,7 +135,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
                         const geneStr = this.calculateGeneStr(pathway.genesMatched, lengthThreshold);
                         return (
-                            <tr onClick={() => {this.onPathwayClick(pwName)}} style={{cursor: "pointer"}}>
+                            <tr key={"ranked_" + i} onClick={() => {this.onPathwayClick(pwName);}} style={{cursor: "pointer"}}>
                                 <td>{i + 1}</td>
                                 <td id={"_" + pwName} data-tip={pwName} data-place="top" data-effect="solid">
                                     {(isPwNameShort ? pwName : pwName.substring(0, lengthThreshold) + "...")}

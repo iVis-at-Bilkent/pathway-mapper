@@ -225,7 +225,7 @@ export default class SaveLoadUtility{
       var nodeH = (lineData.length > 7) ? lineData[7] : "52";
 
       if(nodeName === " " || nodeName === ""){
-        console.error("Here empty");
+        console.log("Here empty");
         //nodeName = "No Name " + (i + 1);
       }
 
