@@ -6,6 +6,8 @@ import $ from 'jquery'
 import { IProfileMetaData, IPathwayData } from './react-pathway-mapper'
 import SaveLoadUtility from './SaveLoadUtility'
 import ViewOperationsManager from './ViewOperationsManager'
+import pathways from './pathways.json'
+
 export default class PathwayActions {
   @observable
   selectedPathway: string
@@ -109,6 +111,7 @@ export default class PathwayActions {
     })
     this.removeAllData()
     this.resetUndoStack()
+    this.pathwayHandler('Dummy')
   }
 
   @autobind
@@ -189,10 +192,8 @@ export default class PathwayActions {
       y: (extent.y1 + extent.y2) / 2
     }
 
-    console.log('this.editor.cy.extent()')
-    console.log()
-
     this.editor.addNode(nodeData, posData)
+    this.pathwayHandler('Additional Pathway')
   }
 
   @autobind
@@ -238,18 +239,25 @@ export default class PathwayActions {
         )
 
         if (isMerge) {
+          console.log('It is a merge')
           this.editor.mergeGraph(pathwayData.nodes, pathwayData.edges)
-          //TODO change file name maybe, probabyly  not necessary ?
-          pathwayData.title = 'Merged Graph'
           const graphJSON = this.editor.cy.json()
+
+          //TODO change file name maybe, probabyly  not necessary ?
           // Pathway nodes and edges are now combination of both previous and new pathway.
           pathwayData.nodes = graphJSON.elements.nodes //this.editor.cy.nodes().map((node) => ({data: node.data()}));
           pathwayData.edges = graphJSON.elements.edges //this.editor.cy.edges().map((edge) => ({data: edge.data()}));
+          pathwayData.title = 'Additional Pathway'
+        } else {
+          this.editor.loadFile(pathwayData.nodes, pathwayData.edges)
+          this.fileManager.setPathwayInfo({
+            pathwayTitle: pathwayData.title,
+            pathwayDetails: pathwayData.description,
+            fileName: pathwayData.title + '.txt'
+          })
         }
 
-        this.includePathway(pathwayData)
-        this.changePathway(pathwayData.title)
-
+        this.pathwayHandler(pathwayData.title)
         this.resetUndoStack()
       }
     }

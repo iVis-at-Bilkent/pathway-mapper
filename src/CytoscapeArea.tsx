@@ -92,13 +92,15 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.getPathway(nextProps.selectedPathway);
   }
 
+  // This method only opens pathways that are available in pathway.json. Namely, imported or merged pathways are not opened via this method.
+  // Yet, they individually call parsing method.
   getPathway(selectedPathway: string){
 
     if(!selectedPathway || selectedPathway === '') return;
 
     const data = pathways[selectedPathway];
 
-    // It might be non-existent due to pathway being created using collaboratiev mode.
+    // It might be non-existent due to pathway being created using collaborative mode, or pathway loaded elsewhere (import vs.)
     if(!data){ 
       return;
     }
@@ -294,7 +296,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
     this.qtipManager = new QtipManager(this.cy, this.editor);
     this.cxtMenuManager = new ContextMenuManager(this.cy, this.editor, this.isCbioPortal);
-    this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editor, this.cy);
+    this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editor, this.cy, this.props.pathwayHandler);
 
     // Initialize panzoom
     this.cy.panzoom(panzoomOpts);

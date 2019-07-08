@@ -333,8 +333,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     }
   }
   
-  // This method except pathway Data which is generated
-  // as a result of parseGraph method.
+  // This method extracts all genes of a pathway and adds it to the pathwayGeneMap
+  // so that it can be used by percentage calculation and genomic data 
   // Note: Pathway title
   @autobind
   includePathway(pathwayData?: IPathwayData, pathwayName?: string){
@@ -351,6 +351,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     }
 
     this.pathwayGeneMap[pathwayData.title] = geneHash;
+
+    console.log(this.pathwayGeneMap);
   }
 
   extractAllGenes(){
@@ -416,7 +418,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         this.portalAcessor.getProfileData({
             caseSetId: selectedStudyData[0],
             geneticProfileId: dataTypes[dataType].profile,
-            genes: Object.keys(this.pathwayGeneMap[this.selectedPathway])
+            genes: this.editor.cy.json().elements.nodes.filter((node) => (node.data.type === "GENE")).map((node) => (node.data.name))
         },
                                           (data: any) =>{
           this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID());
@@ -554,7 +556,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   @autobind
   pathwayHandler(pathway: string){
+      console.log("PathwayHandler called");
+      console.log(pathway);
       this.selectedPathway = pathway;
+      console.log("PathwayHandler after");
+      console.log(this.selectedPathway);
   }
 
   

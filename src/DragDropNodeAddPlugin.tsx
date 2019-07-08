@@ -6,12 +6,18 @@ import cytoscape from 'cytoscape';
 
 export default class DragDropNodeAddPlugin {
 
+
+
+    pathwayHandler: (pathwayName: string) => void;
+
     private cy: any;
     private editor: EditorActionsManager;
-    constructor(editor: EditorActionsManager, cy: any)
+
+    constructor(editor: EditorActionsManager, cy: any, pathwayHandler: (pathwayName: string) => void)
     {
       this.editor = editor;
       this.cy = cy;
+      this.pathwayHandler = pathwayHandler;
       this.initNodeAdd();
     }
 
@@ -35,6 +41,8 @@ export default class DragDropNodeAddPlugin {
           return {};
         }
       };
+
+      const self = this;
 
       // @ts-ignore
       $.fn.cytoscapeNodeadd = function(params: any) {
@@ -158,6 +166,7 @@ export default class DragDropNodeAddPlugin {
                   relX = relX / cy.zoom() + cy.extent().x1;
                   relY = relY / cy.zoom() + cy.extent().y1;
                   nodeAddClass.editor.addNode(nodeData,{x: relX,y: relY});
+                  self.pathwayHandler("Additional Pathway");
 
                 }
               });

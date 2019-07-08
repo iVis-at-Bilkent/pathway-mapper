@@ -3,6 +3,7 @@ import {Navbar, Nav, NavDropdown, MenuItem, NavItem} from 'react-bootstrap';
 import pathways from "./pathways.json";
 import PathwayActions from './PathwayActions.js';
 import autobind from 'autobind-decorator';
+import SaveLoadUtility from './SaveLoadUtility';
 
 interface IMenubarProps{
     pathwayActions: PathwayActions;
@@ -16,7 +17,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
 
     constructor(props: IMenubarProps){
         super(props);
-    }
+  }
 
     render(){
         const nodeTypes = ["Gene", "Family", "Complex", "Compartment", "Process"];
@@ -43,7 +44,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
               <Nav>
                 <NavDropdown eventKey={1} title="Network" id="basic-nav-network">
                   <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.newPathway}>New</MenuItem>
-                  <MenuItem eventKey={1.1} onClick={() => {this.props.handleOpen(3)}}>Properties...</MenuItem>
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.handleOpen(4)}}>Properties...</MenuItem>
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.upload();}}>Import</MenuItem>
                   <NavDropdown className="dropdown-submenu" eventKey={1} title="TCGA" id="basic-nav-TCGA">
                     {
@@ -53,7 +54,21 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                               
                               {
                                 pathwayDropdownData[pwHead].map((pwName) => 
-                                <MenuItem onClick={() => {this.props.pathwayActions.changePathway(pwName)}}>{pwName.split('-').join(" ")}</MenuItem>
+                                <MenuItem onClick={() => {
+
+                                  // Below code is necessary because user might click a pathway and make merge on it,
+                                  // and then s/he might want to open this pathway again. Since selectedPathway will be same
+                                  // componentWillUpdate won't be called in CytoscapeArea thereby preventing loading fresh version of 
+                                  // this pathway. Below code makes sure that selectedPathway is nulled. 
+                                  // this.props.pathwayActions.pathwayHandler("SElam");
+                                  // Above code does not do what is intended.
+                                  // Refresh pathwayGeneMap entry of this pathway.
+                                  // this.props.pathwayActions.includePathway(SaveLoadUtility.parseGraph(pathways[pwName], true));
+                                  this.props.pathwayActions.changePathway(pwName);
+                                }
+                                }>
+                                  {pwName.split('-').join(" ")}
+                                </MenuItem>
                                 )
                               }
                               
