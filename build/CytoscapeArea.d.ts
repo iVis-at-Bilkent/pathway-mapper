@@ -10,7 +10,6 @@ declare type PathwayMapperType = {
     profiles: IProfileMetaData[];
     includePathway: (pathwayData?: IPathwayData, pathwayName?: string) => void;
     pathwayHandler: (pathwayName: string) => void;
-    modifyPathwayGeneMap: (pathwayData: IPathwayData, isRemove: boolean) => void;
 };
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}> {
     private cy;

@@ -52,7 +52,6 @@ type PathwayMapperType = {
   profiles: IProfileMetaData[];
   includePathway: (pathwayData?: IPathwayData, pathwayName?: string) => void;
   pathwayHandler: (pathwayName: string) => void;
-  modifyPathwayGeneMap: (pathwayData: IPathwayData, isRemove: boolean) => void;
 };
 @observer
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}>{
@@ -268,14 +267,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     // Create Manager Classes
     this.shareDBManager = new ShareDBManager(() => {
       const dbDoc = this.shareDBManager.getDoc();
-      this.props.includePathway(
-        {
-          title: "Collab Pathway", 
-          description: "", 
-          nodes: Object.values(dbDoc.data['nodes']).map((obj) => ({data: obj})),
-          edges: dbDoc.data['edges']
-        });
-      this.props.pathwayHandler("Collab Pathway");
     });
     this.editor = new EditorActionsManager(this.isCollaborative,
                                            this.shareDBManager,
@@ -283,8 +274,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
                                            this.isCbioPortal,
                                            this.undoRedoManager,
                                            this.portalAccessor,
-                                           this.props.profiles,
-                                           this.props.modifyPathwayGeneMap);
+                                           this.props.profiles);
     this.shareDBManager.setEditor(this.editor);
     if(this.isCollaborative){
       this.shareDBManager.initShareDB();

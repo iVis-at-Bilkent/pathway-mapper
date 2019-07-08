@@ -319,19 +319,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     console.log("Score Map");
     console.log(matchedGenesMap);
   }
-
-
-  @autobind
-  modifyPathwayGeneMap(pathwayData: IPathwayData, isRemove: boolean){
-    const gene = pathwayData.nodes[0];
-
-    if(!isRemove){
-      if(gene.data.type === "GENE")
-        this.pathwayGeneMap[pathwayData.title][gene.data.name] = gene.data.type; 
-    } else {
-      delete this.pathwayGeneMap[pathwayData.title][gene.data.name];
-    }
-  }
   
   // This method extracts all genes of a pathway and adds it to the pathwayGeneMap
   // so that it can be used by percentage calculation and genomic data 
@@ -472,8 +459,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
                 <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}  setActiveEdge={this.setActiveEdge}
                 openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} 
                 includePathway={this.includePathway} selectedPathway={this.selectedPathway}
-                pathwayHandler={this.pathwayHandler}
-                modifyPathwayGeneMap={this.modifyPathwayGeneMap}/>
+                pathwayHandler={this.pathwayHandler}/>
             </Col>
 
             { isCBioPortal &&

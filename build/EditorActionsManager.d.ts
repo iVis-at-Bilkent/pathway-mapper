@@ -1,6 +1,6 @@
 import CBioPortalAccessor from "./CBioPortalAccessor";
 import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
-import { IProfileMetaData, IPathwayData } from "./react-pathway-mapper";
+import { IProfileMetaData } from "./react-pathway-mapper";
 export default class EditorActionsManager {
     cy: any;
     defaultLayoutProperties: any;
@@ -18,7 +18,7 @@ export default class EditorActionsManager {
     private portalAccessor;
     private profiles;
     private modifyPathwayGeneMap;
-    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[], modifyPathwayGeneMap: (pathwayData: IPathwayData, isRemove: boolean) => void);
+    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[]);
     handleChangePositionByAlignment(movedNodeArr: any): void;
     doChangePosition(movedNodes: any): any[];
     undoChangePosition(movedNodes: any): any[];

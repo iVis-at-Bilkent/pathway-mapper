@@ -31,15 +31,13 @@ export default class EditorActionsManager{
 
 
     constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean,
-                undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[],
-                modifyPathwayGeneMap: (pathwayData: IPathwayData, isRemove: boolean) => void)
+                undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[])
     {
         // Set cy instance and set real time manager reference if collaborative mode
         this.cy = cyInst;
         this.isCollaborative = isCollaborative;
         this.isCbioPortal = isCBioPortal;
         this.profiles = profiles;
-        this.modifyPathwayGeneMap = modifyPathwayGeneMap;
         const edgeEditingOptions = {
         // this function specifies the positions of bend points
         bendPositionsFunction: function (ele: any) {
@@ -921,7 +919,6 @@ export default class EditorActionsManager{
         //Get real time node object and sync it to node addition or removal
         var isRemove = Object.keys(op)[1] === 'od';
         var node = op.oi || op.od;
-        this.modifyPathwayGeneMap({title: "Collab Pathway", description: "", nodes: [{data: node}], edges: []}, isRemove);
         //Removal Operation
         if (isRemove)
         {
@@ -1461,7 +1458,7 @@ export default class EditorActionsManager{
             var ele = nodes[index];
             nodeMap[ele.data.id] = ele;
 
-            if (this.cy.filter('node[name = "'+ele.data.name+'"]').length <= 0)
+            if (this.cy.filter('node[name = "'+ele.data.name+']').length <= 0)
             {
                 delete ele.data.id;
                 //TODO need to update parent ?

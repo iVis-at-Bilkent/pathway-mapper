@@ -67,7 +67,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
      *
      */
     getBestPathway(rankingMode: number): void;
-    modifyPathwayGeneMap(pathwayData: IPathwayData, isRemove: boolean): void;
     includePathway(pathwayData?: IPathwayData, pathwayName?: string): void;
     extractAllGenes(): void;
     loadRedirectedPortalData(): void;
