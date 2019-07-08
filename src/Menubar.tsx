@@ -79,9 +79,9 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.merge()}}>Merge With...</MenuItem>
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.export(false);}}>Export</MenuItem>
                   <NavDropdown className="dropdown-submenu" eventKey={1} title="Export as" id="basic-nav-export">
-                    <MenuItem eventKey={1.1}>JPEG</MenuItem>
-                    <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.saveAsPng}>PNG</MenuItem>
-                    <MenuItem eventKey={1.1}>SVG</MenuItem>
+                    <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.saveAs("JPEG")}}>JPEG</MenuItem>
+                    <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.saveAs("PNG")}}>PNG</MenuItem>
+                    <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.saveAs("SVG")}}>SVG</MenuItem>
                     <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.export(true);}}>SIFNX</MenuItem>
                   </NavDropdown>
                 </NavDropdown>
@@ -137,8 +137,9 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={4.1} onClick={this.props.pathwayActions.removeAllHighlight}>Remove All Highlights</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={5} title="Alteration %" id="basic-nav-alteration">
+                  <MenuItem eventKey={5.1} onClick={() => {this.props.pathwayActions.uploadOverlay()}}>Load From File...</MenuItem>
                   <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.loadSampleData}>Load Sample Data</MenuItem>
-                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(0)}}>Load cBioPortal Data</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(0)}}>Load cBioPortal Data...</MenuItem>
                   <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(2)}}>View Settings...</MenuItem>
                   <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.removeAllData}>Remove All Data</MenuItem>
                 </NavDropdown>

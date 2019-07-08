@@ -59,22 +59,29 @@ export default class FileOperationsManager{
     saveAsJPEG(cy: any)
     {
         // var fileName = getFileName();
-        var graphData = cy.jpeg();
+        const graphData = cy.jpeg();
         // this is to remove the beginning of the pngContent: data:img/png;base64,
-        var b64data = graphData.substr(graphData.indexOf(",") + 1);
-        var imageData = this.b64toBlob(b64data, "image/jpeg");
-        var blob = new Blob([imageData]);
+        const b64data = graphData.substr(graphData.indexOf(",") + 1);
+        const imageData = this.b64toBlob(b64data, "image/jpeg");
+        const blob = new Blob([imageData]);
         saveAs(blob, "pathway.jpg");
     };
+
+    saveAsSVG(editor: EditorActionsManager){
+        const returnString: any = editor.exportSVG();
+        const fileName = 'pathway.svg';
+        const blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, fileName);
+    }
 
     saveAsPNG(cy: any)
     {
         // var fileName = getFileName();
-        var graphData = cy.png();
+        const graphData = cy.png();
         // this is to remove the beginning of the pngContent: data:img/png;base64,
-        var b64data = graphData.substr(graphData.indexOf(",") + 1);
-        var imageData = this.b64toBlob(b64data, "image/png");
-        var blob = new Blob([imageData]);
+        const b64data = graphData.substr(graphData.indexOf(",") + 1);
+        const imageData = this.b64toBlob(b64data, "image/png");
+        const blob = new Blob([imageData]);
         saveAs(blob, "pathway.png");
     };
     

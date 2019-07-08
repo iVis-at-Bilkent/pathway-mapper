@@ -23,6 +23,7 @@ export default class PathwayActions {
   merger: any
   isCBioPortal: boolean
   viewOperationsManager: ViewOperationsManager
+  overlayUploader: any
 
   constructor(
     pathwayHandler: (pathwayName: string) => void,
@@ -55,6 +56,28 @@ export default class PathwayActions {
     this.processFile(file, isMerge)
   }
 
+  uploadOverlay() {
+    this.overlayUploader.click()
+  }
+
+  overlayFromText(file: any) {
+    // Create a new FormData object.
+    var formData = new FormData()
+    formData.append('graphFile', file)
+    var request = new XMLHttpRequest()
+    request.onreadystatechange = () => {
+      if (
+        request.readyState === XMLHttpRequest.DONE &&
+        request.status === 200
+      ) {
+        console.log(request.responseText)
+        this.editor.addGenomicData(request.responseText)
+      }
+    }
+    request.open('POST', '/loadGraph')
+    request.send(formData)
+  }
+
   @autobind
   upload() {
     this.uploader.click()
@@ -63,6 +86,10 @@ export default class PathwayActions {
   @autobind
   merge() {
     this.merger.click()
+  }
+
+  setOverlayUploader(inputRef: any) {
+    this.overlayUploader = inputRef
   }
 
   @autobind
@@ -266,8 +293,14 @@ export default class PathwayActions {
   }
 
   @autobind
-  saveAsPng() {
-    this.fileManager.saveAsPNG(this.editor.cy)
+  saveAs(type: string) {
+    if (type === 'SVG') {
+      this.fileManager.saveAsSVG(this.editor)
+    } else if (type === 'PNG') {
+      this.fileManager.saveAsPNG(this.editor.cy)
+    } else if (type === 'JPEG') {
+      this.fileManager.saveAsJPEG(this.editor.cy)
+    }
   }
 
   @autobind

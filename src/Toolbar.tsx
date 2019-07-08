@@ -40,7 +40,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
       return (
       <div id="toolbar">
-          <img height="22px" width="22px" style={{cursor: "pointer"}} data-tip="Save as PNG" data-place="right" data-effect="solid" src={saveImage} onClick={this.props.pathwayActions.saveAsPng}/>
+          <img height="22px" width="22px" style={{cursor: "pointer"}} data-tip="Save as PNG" data-place="right" data-effect="solid" src={saveImage} onClick={() => {this.props.pathwayActions.saveAs("PNG");}}/>
 
           <br/>
           <img height="22px" width="22px" style={{cursor: "pointer"}} data-tip="Perform layout" data-place="right" data-effect="solid" src={layoutImage} onClick={this.props.pathwayActions.performLayout} />              

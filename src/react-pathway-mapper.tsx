@@ -496,6 +496,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             style={{display: 'none'}}
             onChange={(e) => {this.pathwayActions.onChangeFile(e, true)}}
           />
+          <input id="myInput3"
+            type="file"
+            ref={(ref) => {this.pathwayActions.setOverlayUploader(ref);}}
+            style={{display: 'none'}}
+            onChange={(e) => {this.pathwayActions.overlayFromText(e.target.files[0])}}
+          />
           
           </div>)
             }
@@ -542,11 +548,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   @autobind
   pathwayHandler(pathway: string){
-      console.log("PathwayHandler called");
-      console.log(pathway);
       this.selectedPathway = pathway;
-      console.log("PathwayHandler after");
-      console.log(this.selectedPathway);
   }
 
   
