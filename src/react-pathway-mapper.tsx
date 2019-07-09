@@ -33,6 +33,7 @@ import AboutModal from './modals/AboutModal';
 import ReactTooltip from 'react-tooltip';
 import PathwayDetailsModal from './modals/PathwayDetailsModal';
 import ViewOperationsManager from './ViewOperationsManager';
+import GridSettings from './modals/GridSettings';
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
@@ -45,6 +46,15 @@ interface IPathwayMapperProps{
   store: any;
   pathwayName? : string;
   alterationData?: IAlterationData;
+}
+
+export enum EModalType{
+  STUDY,
+  CHANGE_NAME,
+  PROFILES,
+  ABOUT,
+  PW_DETAILS,
+  GRID
 }
 
 export interface IPathwayData{
@@ -113,7 +123,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     } else {
       this.selectedPathway = "";
     }
-    this.isModalShown = [false, false, false, false];
+    this.isModalShown = [false, false, false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
@@ -476,11 +486,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
 
             { !isCBioPortal && (<div id="invisibles">
-          <StudyModal isModalShown={this.isModalShown[0]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
-          <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[1]} handleClose={this.handleClose} oldName={this.oldName}/>
-          <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[2]} handleClose={this.handleClose} />
-          <AboutModal isModalShown={this.isModalShown[3]} handleClose={this.handleClose} isCBioPortal={this.props.isCBioPortal}/>
-          <PathwayDetailsModal isModalShown={this.isModalShown[4]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
+          <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
+          <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[EModalType.CHANGE_NAME]} handleClose={this.handleClose} oldName={this.oldName}/>
+          <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[EModalType.PROFILES]} handleClose={this.handleClose} />
+          <AboutModal isModalShown={this.isModalShown[EModalType.ABOUT]} handleClose={this.handleClose} isCBioPortal={this.props.isCBioPortal}/>
+          <PathwayDetailsModal isModalShown={this.isModalShown[EModalType.PW_DETAILS]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
+          <GridSettings isModalShown={this.isModalShown[EModalType.GRID]} handleClose={this.handleClose}/>
           <ToastContainer />
           <ReactTooltip style={{maxWidth: "350px", zIndex: 1040}}/>
 
@@ -516,18 +527,18 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   @autobind
   openChangeNameModal(oldName: string){
-    this.isModalShown[1] = true;
+    this.isModalShown[EModalType.CHANGE_NAME] = true;
     this.oldName = oldName;
   }
 
   @autobind
-  handleOpen(modalId: number){
+  handleOpen(modalId: EModalType){
     this.isModalShown[modalId] = true;
   }
 
 
   @autobind
-  handleClose(modalId: number){
+  handleClose(modalId: EModalType){
       this.isModalShown[modalId] = false;
   }
 

@@ -3,6 +3,7 @@ import PathwayActions from "../PathwayActions";
 import {Modal, FormControl, ControlLabel, Button} from "react-bootstrap";
 import { observable } from "mobx";
 import autobind from "autobind-decorator";
+import { EModalType } from "../react-pathway-mapper";
 interface IChangeNameModalProps {
     pathwayActions: PathwayActions;
     isModalShown: boolean;
@@ -26,7 +27,7 @@ export default class ChangeNameModal extends React.Component<IChangeNameModalPro
         return(
 
 
-            <Modal show={this.props.isModalShown} onHide={() => {this.props.handleClose(1)}}>
+            <Modal show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.CHANGE_NAME)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>Change Node Name</Modal.Title>
                 </Modal.Header>

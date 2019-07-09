@@ -4,10 +4,11 @@ import pathways from "./pathways.json";
 import PathwayActions from './PathwayActions.js';
 import autobind from 'autobind-decorator';
 import SaveLoadUtility from './SaveLoadUtility';
+import { EModalType } from './react-pathway-mapper';
 
 interface IMenubarProps{
     pathwayActions: PathwayActions;
-    handleOpen: (modalId: number) => void;
+    handleOpen: (modalId: EModalType) => void;
     setActiveEdge: Function;
 }
 
@@ -44,7 +45,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
               <Nav>
                 <NavDropdown eventKey={1} title="Network" id="basic-nav-network">
                   <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.newPathway}>New</MenuItem>
-                  <MenuItem eventKey={1.1} onClick={() => {this.props.handleOpen(4)}}>Properties...</MenuItem>
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.handleOpen(EModalType.PW_DETAILS)}}>Properties...</MenuItem>
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.upload();}}>Import</MenuItem>
                   <NavDropdown className="dropdown-submenu" eventKey={1} title="TCGA" id="basic-nav-TCGA">
                     {
@@ -112,7 +113,6 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.resizeToContent();}}>Resize Nodes to Content</MenuItem>
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.undo();}}>Undo</MenuItem>
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.redo();}}>Redo</MenuItem>
-
                 </NavDropdown>
                 <NavDropdown eventKey={3} title="View" id="basic-nav-view">
                   <NavDropdown id="align-view-submenu" className="dropdown-submenu" eventKey={2.1} title="Align">
@@ -127,6 +127,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                       <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.align("hBot");}}>Bottom</MenuItem>
                     </NavDropdown>
                   </NavDropdown>
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.handleOpen(EModalType.GRID);}}>Grid...</MenuItem>
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.hideSelected();}}>Hide Selected Nodes</MenuItem>
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.showAll();}}>Show All Nodes</MenuItem>
                 </NavDropdown>
@@ -139,15 +140,15 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                 <NavDropdown eventKey={5} title="Alteration %" id="basic-nav-alteration">
                   <MenuItem eventKey={5.1} onClick={() => {this.props.pathwayActions.uploadOverlay()}}>Load From File...</MenuItem>
                   <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.loadSampleData}>Load Sample Data</MenuItem>
-                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(0)}}>Load cBioPortal Data...</MenuItem>
-                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(2)}}>View Settings...</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(EModalType.STUDY)}}>Load cBioPortal Data...</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(EModalType.PROFILES)}}>View Settings...</MenuItem>
                   <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.removeAllData}>Remove All Data</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={6} title="Layout" id="basic-nav-layout">
                   <MenuItem eventKey={6.1} onClick={this.props.pathwayActions.performLayout}>Perform Layout</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={7} title="Help" id="basic-nav-help">
-                  <MenuItem eventKey={7.1} onClick={ () => {this.props.handleOpen(3);}}>About</MenuItem>
+                  <MenuItem eventKey={7.1} onClick={ () => {this.props.handleOpen(EModalType.ABOUT);}}>About</MenuItem>
                 </NavDropdown>
               </Nav>
               <Nav pullRight>

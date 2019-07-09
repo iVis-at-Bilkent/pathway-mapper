@@ -1,8 +1,9 @@
 import React from 'react';
 import PathwayActions from './PathwayActions.js';
+import { EModalType } from './react-pathway-mapper';
 interface IMenubarProps {
     pathwayActions: PathwayActions;
-    handleOpen: (modalId: number) => void;
+    handleOpen: (modalId: EModalType) => void;
     setActiveEdge: Function;
 }
 export default class Menubar extends React.Component<IMenubarProps, {}> {

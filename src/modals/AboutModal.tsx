@@ -5,6 +5,7 @@ import {Modal} from 'react-bootstrap';
 import iVisImg from "../about/i-vis.png";
 // @ts-ignore
 import mskccImg from "../about/mskcc.png";
+import { EModalType } from '../react-pathway-mapper';
 interface IAboutModalProps{
     isModalShown: boolean;
     isCBioPortal: boolean;
@@ -26,7 +27,7 @@ export default class AboutModal extends React.Component<IAboutModalProps, {}> {
             
             <Modal
           show={this.props.isModalShown}
-          onHide={() => {this.props.handleClose(3)}}
+          onHide={() => {this.props.handleClose(EModalType.ABOUT)}}
         >
           <Modal.Header closeButton>
             <Modal.Title>

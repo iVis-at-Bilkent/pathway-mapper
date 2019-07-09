@@ -2,7 +2,7 @@ import React from 'react';
 import {Modal, MenuItem, DropdownButton, Checkbox, Button} from 'react-bootstrap';
 import { observable } from 'mobx';
 import autobind from 'autobind-decorator';
-import { IDataTypeMetaData } from '../react-pathway-mapper';
+import { IDataTypeMetaData, EModalType } from '../react-pathway-mapper';
 import CBioPortalAccessor from '../CBioPortalAccessor';
 import { observer } from 'mobx-react';
 
@@ -92,7 +92,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
     }
     render(){
         return(
-            <Modal show={this.props.isModalShown} onHide={() => {this.props.handleClose(0); this.resetModal();}}>
+            <Modal show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.STUDY); this.resetModal();}}>
                 <Modal.Header closeButton>
                     <Modal.Title>Load from cBioPortal</Modal.Title>
                 </Modal.Header>
@@ -111,7 +111,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
                     }
 
                     <Button bsClass="success" 
-                    onClick={() => {this.props.loadFromCBio(this.dataTypes, this.selectedStudyData); this.props.handleClose(0); this.resetModal();}}>Load</Button>
+                    onClick={() => {this.props.loadFromCBio(this.dataTypes, this.selectedStudyData); this.props.handleClose(EModalType.STUDY); this.resetModal();}}>Load</Button>
 
                 </Modal.Body>
             </Modal>

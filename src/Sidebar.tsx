@@ -27,6 +27,7 @@ import "./supp.css"
 import { observable } from "mobx";
 import { observer } from "mobx-react";
 import autobind from "autobind-decorator";
+import { EModalType } from "./react-pathway-mapper";
 
 interface ISideBarProps{
   pathwayActions: PathwayActions;
@@ -79,7 +80,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                 <Panel.Body className="pnl-body pathwayPanel">
                     
                     <div className="buttonContainer">
-                        <Button onClick={() => {this.props.handleOpen(4)}}>Properties</Button>
+                        <Button onClick={() => {this.props.handleOpen(EModalType.PW_DETAILS)}}>Properties</Button>
                     </div>
                     <div className="buttonContainer"> 
                         <Button onClick={() => {this.props.pathwayActions.upload();}}>Import</Button>

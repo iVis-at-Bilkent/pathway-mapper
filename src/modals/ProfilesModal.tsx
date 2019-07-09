@@ -1,7 +1,7 @@
 import React from "react";
 import {Label, Modal} from "react-bootstrap";
 import { observer } from "mobx-react";
-import { IProfileMetaData } from "../react-pathway-mapper";
+import { IProfileMetaData, EModalType } from "../react-pathway-mapper";
 import EditorActionsManager from "../EditorActionsManager";
 import { computed } from "mobx";
 interface IProfilesModalProps {
@@ -39,7 +39,7 @@ export default class ProfilesModal extends React.Component<IProfilesModalProps, 
 
         return (
 
-            <Modal show={this.props.isModalShown} onHide={() => {this.props.handleClose(2)}}>
+            <Modal show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.PROFILES)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>View Settings</Modal.Title>
                 </Modal.Header>

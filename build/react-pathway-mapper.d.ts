@@ -16,6 +16,14 @@ interface IPathwayMapperProps {
     pathwayName?: string;
     alterationData?: IAlterationData;
 }
+export declare enum EModalType {
+    STUDY = 0,
+    CHANGE_NAME = 1,
+    PROFILES = 2,
+    ABOUT = 3,
+    PW_DETAILS = 4,
+    GRID = 5
+}
 export interface IPathwayData {
     title: string;
     description: string;
@@ -79,8 +87,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     render(): JSX.Element;
     componentDidMount(): void;
     openChangeNameModal(oldName: string): void;
-    handleOpen(modalId: number): void;
-    handleClose(modalId: number): void;
+    handleOpen(modalId: EModalType): void;
+    handleClose(modalId: EModalType): void;
     editorHandler(editor: any, eh: any, undoRedoManager: any): void;
     pathwayHandler(pathway: string): void;
 }

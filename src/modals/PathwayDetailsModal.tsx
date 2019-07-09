@@ -3,6 +3,7 @@ import {Modal, Form, FormGroup, FormControl, Col, Button} from 'react-bootstrap'
 import { observer } from 'mobx-react';
 import PathwayActions from '../PathwayActions';
 import { IPathwayInfo } from '../FileOperationsManager';
+import { EModalType } from '../react-pathway-mapper';
 
 interface IPathwayDetailsModalProps{
     isModalShown: boolean;
@@ -60,7 +61,7 @@ export default class PathwayDetailsModal extends React.Component<IPathwayDetails
 
                     <FormGroup>
                         <Col smOffset={1} sm={10}>
-                        <Button onClick={() => {this.props.pathwayActions.setPathwayInfo(this.pathwayInfo); this.props.handleClose(4);}}>Save</Button>
+                        <Button onClick={() => {this.props.pathwayActions.setPathwayInfo(this.pathwayInfo); this.props.handleClose(EModalType.PW_DETAILS);}}>Save</Button>
                         </Col>
                     </FormGroup>
                 </Form>

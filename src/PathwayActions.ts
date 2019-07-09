@@ -325,7 +325,7 @@ export default class PathwayActions {
   @autobind
   loadSampleData() {
     const data =
-      'gene\tlung\tovarian\tx\ty\n' +
+      'gene\tlung\tovarian\tbreast\ty\n' +
       'PTEN\t-7\t-20\t10\t20\n' +
       'NF1\t-12\t-4\t30\t20\n' +
       'PIK3CA\t18\t40\t-50\t20\n' +
@@ -336,6 +336,11 @@ export default class PathwayActions {
       'AKT3\t6\t-3\t20\t20\n' +
       '\n'
     this.editor.addGenomicData(data)
+    this.profiles.push(
+      { profileId: 'lung', enabled: true },
+      { profileId: 'ovarian', enabled: true },
+      { profileId: 'breast', enabled: true }
+    )
   }
 
   @autobind

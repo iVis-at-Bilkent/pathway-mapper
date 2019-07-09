@@ -46,11 +46,12 @@ import layoutSvg from '../toolbar/layout-cose.svg';
 import layoutPropSvg from '../toolbar/layout-properties.svg';
 // @ts-ignore
 import helpSvg from '../toolbar/quick-help.svg';
+import { EModalType } from "../react-pathway-mapper";
 
 
 interface IButtonbarProps {
     pathwayActions: PathwayActions;
-    handleOpen: (modelId: number) => void;
+    handleOpen: (modelId: EModalType) => void;
 }
 
 interface ISVGFunction{
@@ -103,12 +104,12 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
             {svg: layoutPropSvg, function: () => {this.props.pathwayActions.performLayout();}, tooltip: "Layout Properties"}];
 
         const portalFunctions: ISVGFunction[] = [
-            {svg: portalSvg, function: () => {this.props.handleOpen(0);}, tooltip: "Fetch Genomic Data From cBioPortal"},
-            {svg: setingsSvg, function: () => {this.props.handleOpen(2);}, tooltip: "Genomic Data Visibility Settings"}];
+            {svg: portalSvg, function: () => {this.props.handleOpen(EModalType.STUDY);}, tooltip: "Fetch Genomic Data From cBioPortal"},
+            {svg: setingsSvg, function: () => {this.props.handleOpen(EModalType.PROFILES);}, tooltip: "Genomic Data Visibility Settings"}];
 
         const infoFunctions: ISVGFunction[] = [
-            {svg: helpSvg, function: () => {this.props.handleOpen(3);}, tooltip: "Quick Help"},
-            {svg: aboutSvg, function: () => {this.props.handleOpen(3);}, tooltip: "About"}];
+            {svg: helpSvg, function: () => {this.props.handleOpen(EModalType.ABOUT);}, tooltip: "Quick Help"},
+            {svg: aboutSvg, function: () => {this.props.handleOpen(EModalType.ABOUT);}, tooltip: "About"}];
         
         const allFunctions = [fileFunctions, modFunctions, alignFunctions, utilFunctions, visibilityFunctions, portalFunctions, layoutFunctions, infoFunctions];
 
