@@ -485,7 +485,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
 
 
-            { !isCBioPortal && (<div id="invisibles">
+            { (<div id="invisibles">
           <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
           <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[EModalType.CHANGE_NAME]} handleClose={this.handleClose} oldName={this.oldName}/>
           <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[EModalType.PROFILES]} handleClose={this.handleClose} />

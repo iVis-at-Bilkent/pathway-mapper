@@ -23,6 +23,7 @@
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
     "build": "webpack --config webpack.config.js --mode development --hot",
+    "build:cBio": "webpack --config webpack-cbio.config.js --mode production --hot",
     "start": "node ./src/server.js",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
