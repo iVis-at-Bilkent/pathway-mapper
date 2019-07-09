@@ -2,24 +2,34 @@ const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+const root = path.resolve(__dirname);
+const src = path.join(root, 'src');
+const modules = path.join(root, 'node_modules');
+
 
 module.exports = {
   devtool: 'source-map',
-  entry: "./src/index.jsx",
+  entry: "./src/react-pathway-mapper.tsx",
   output: {
     path: path.join(__dirname, "/dist"),
-    filename: "react-pathway-mapper.es5.js"
+    filename: "react-pathway-mapper.es5.js",
+    library: 'react-pathway-mapper',
+    libraryTarget: 'commonjs-module'
   },
   node: {
     fs: 'empty'
   },
   resolve: {
-    'extensions': [
+    extensions: [
       '.js',
       '.jsx',
       '.json',
       '.ts',
       '.tsx',
+    ],
+    modules: [
+      src,
+      modules
     ]
   },
   module: {
@@ -89,6 +99,6 @@ module.exports = {
       filename: "index.html",  //target html
       template: "./src/index.html" //source html
     }),
-    new ExtractTextPlugin({ filename: './src/base.css' })
+    new ExtractTextPlugin({ filename: './base.css' })
   ]
 };
