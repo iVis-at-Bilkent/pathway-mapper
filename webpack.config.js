@@ -9,12 +9,10 @@ const modules = path.join(root, 'node_modules');
 
 module.exports = {
   devtool: 'source-map',
-  entry: "./src/react-pathway-mapper.tsx",
+  entry: "./src/index.jsx",
   output: {
     path: path.join(__dirname, "/dist"),
     filename: "react-pathway-mapper.es5.js",
-    library: 'react-pathway-mapper',
-    libraryTarget: 'commonjs-module'
   },
   node: {
     fs: 'empty'

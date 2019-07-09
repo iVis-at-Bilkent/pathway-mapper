@@ -1735,8 +1735,6 @@ export default class EditorActionsManager{
         if(this.isCollaborative)
         {
             var parsedGenomicData = this.genomicDataOverlayManager.preparePortalGenomicDataShareDB(genomicData);
-            console.log("genomicData");
-            console.log(parsedGenomicData);
             this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
             this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
                 groupID);
@@ -1744,6 +1742,8 @@ export default class EditorActionsManager{
         }
         else
         {
+            console.log("genomicData");
+            console.log(genomicData);
             this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
         }
     }

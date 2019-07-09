@@ -21,7 +21,7 @@ export default class PathwayActions {
     align(param: string): void;
     onChangeFile(e: any, isMerge: boolean): void;
     uploadOverlay(): void;
-    overlayFromText(file: any): void;
+    overlayFromText(file: File): void;
     upload(): void;
     merge(): void;
     setOverlayUploader(inputRef: any): void;

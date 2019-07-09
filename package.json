@@ -22,7 +22,7 @@
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build": "webpack --config webpack.config.js --mode production --hot",
+    "build": "webpack --config webpack.config.js --mode development --hot",
     "start": "node ./src/server.js",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",

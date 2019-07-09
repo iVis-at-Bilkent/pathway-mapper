@@ -60,7 +60,7 @@ export default class PathwayActions {
     this.overlayUploader.click()
   }
 
-  overlayFromText(file: any) {
+  overlayFromText(file: File) {
     // Create a new FormData object.
     var formData = new FormData()
     formData.append('graphFile', file)
@@ -70,7 +70,18 @@ export default class PathwayActions {
         request.readyState === XMLHttpRequest.DONE &&
         request.status === 200
       ) {
+        console.log('request.responseText')
         console.log(request.responseText)
+        const linesOfData = request.responseText.split('\n')
+        if (linesOfData.length > 0) {
+          const profileIdsFromFile = linesOfData[0].split('\t').slice(1)
+          console.log(profileIdsFromFile)
+          this.profiles.push(
+            ...profileIdsFromFile.map(id => ({ profileId: id, enabled: true }))
+          )
+        } else {
+          console.log('No valid data')
+        }
         this.editor.addGenomicData(request.responseText)
       }
     }
