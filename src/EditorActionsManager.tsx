@@ -1783,9 +1783,9 @@ export default class EditorActionsManager{
             console.log(key);
             console.log(data);
             if(data.length !== 1){
-                throw new Error("Grouped genomic data expected to be of length 1");
+                console.log("Grouped genomic data expected to be of length 1");
             }
-            this.addToProfiles(data[0]);
+            data.forEach((profileId: any) => {this.addToProfiles(profileId)});
         }
         // //Removal
         // else

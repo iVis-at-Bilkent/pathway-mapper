@@ -370,11 +370,11 @@ export default class ShareDBManager {
         for (const key_g of Object.keys(groupedGenomicDataMap)) {
             this.editor.genomicDataOverlayManager.groupedGenomicDataMap[key_g] =
                 groupedGenomicDataMap[key_g];
-
-            if(groupedGenomicDataMap[key_g].length !== 1){
-                throw new Error("Grouped genomic data expected to be of length 1 (from sync)");
+            const data = groupedGenomicDataMap[key_g];
+            if(data.length !== 1){
+                console.log("Grouped genomic data expected to be of length 1 (from sync)");
             }
-            this.editor.addToProfiles(groupedGenomicDataMap[key_g][0]);
+            data.forEach((profileId: any) => {this.editor.addToProfiles(profileId)});
         }
 
         for (const key_g of Object.keys(visDataMap)) {
