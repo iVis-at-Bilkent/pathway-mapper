@@ -140,7 +140,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                                 <td id={"_" + pwName} data-border="true" data-type="light" data-tip={pwName} data-place="top" data-effect="solid">
                                     {(isPwNameShort ? pwName : pwName.substring(0, lengthThreshold) + "...")}
                                 </td>
-                                <td>{pathway.score.toFixed(2)}</td>
+                                <td className="score">{pathway.score.toFixed(2)}</td>
                                 <td data-border="true" data-type="light" data-tip={pathway.genesMatched.join(" ")} data-multiline="true" data-place="right" data-effect="solid">
                                     {geneStr}
                                 </td>

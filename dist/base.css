@@ -762,6 +762,10 @@ tbody tr:hover{
     background-color: #adadad !important;
 }
 
+#ranking-bar .table tbody tr td{
+    padding: 5px !important;
+}
+
 #ranking-bar .label{
     padding-top: 6px;
     padding-bottom: 6px;
