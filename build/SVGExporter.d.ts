@@ -1,4 +1,4 @@
-import EditorActionsManager from "./EditorActionsManager";
+import EditorActionsManager from './EditorActionsManager';
 export default class SVGExporter {
     SVGNameSpace: string;
     svg: Element;

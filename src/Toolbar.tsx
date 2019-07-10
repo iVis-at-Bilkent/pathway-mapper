@@ -8,7 +8,9 @@ import PathwayActions from './PathwayActions';
 // @ts-ignore
 import layoutImage from "./toolbar/layout-cose.svg";
 // @ts-ignore
-import saveImage from "./toolbar/save_png.svg";
+import savePNGImage from "./toolbar/save_png.svg";
+// @ts-ignore
+import saveSVGImage from "./toolbar/save_svg.svg";
 // @ts-ignore
 const infoImage = require("./toolbar/about.svg");
 // @ts-ignore
@@ -40,7 +42,10 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
       return (
       <div id="toolbar">
-          <img height="22px" width="22px" style={{cursor: "pointer"}} data-border="true" data-type="light" data-tip="Save as PNG" data-place="right" data-effect="solid" src={saveImage} onClick={() => {this.props.pathwayActions.saveAs("PNG");}}/>
+          <img height="22px" width="22px" style={{cursor: "pointer"}} data-border="true" data-type="light" data-tip="Save as PNG" data-place="right" data-effect="solid" src={savePNGImage} onClick={() => {this.props.pathwayActions.saveAs("PNG");}}/>
+
+          <br/>
+          <img height="22px" width="22px" style={{cursor: "pointer"}} data-border="true" data-type="light" data-tip="Save as SVG" data-place="right" data-effect="solid" src={saveSVGImage} onClick={() => {this.props.pathwayActions.saveAs("SVG");}}/>
 
           <br/>
           <img height="22px" width="22px" style={{cursor: "pointer"}} data-border="true" data-type="light" data-tip="Perform layout" data-place="right" data-effect="solid" src={layoutImage} onClick={this.props.pathwayActions.performLayout} />              
