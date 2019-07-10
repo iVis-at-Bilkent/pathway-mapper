@@ -103,11 +103,11 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                         <MenuItem onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match percentage";}}>Match percentage</MenuItem>
                     </DropdownButton>  
                     &nbsp; 
-                    <div data-tip={this.COUNT_PERC_EXPLANATION} data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
+                    <div data-tip={this.COUNT_PERC_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
 
                     <Checkbox onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1;} }>
                         Consider gene alteration frequency&nbsp;                  
-                        <div data-tip={this.ALTERATION_EXPLANATION} data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
+                        <div data-tip={this.ALTERATION_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
                     </Checkbox>
 
                     <Button onClick={this.onApplyClick}>Apply</Button>
@@ -137,11 +137,11 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                         return (
                             <tr key={"ranked_" + i} onClick={() => {this.onPathwayClick(pwName);}} style={{cursor: "pointer"}}>
                                 <td>{i + 1}</td>
-                                <td id={"_" + pwName} data-tip={pwName} data-place="top" data-effect="solid">
+                                <td id={"_" + pwName} data-border="true" data-type="light" data-tip={pwName} data-place="top" data-effect="solid">
                                     {(isPwNameShort ? pwName : pwName.substring(0, lengthThreshold) + "...")}
                                 </td>
                                 <td>{pathway.score.toFixed(2)}</td>
-                                <td data-tip={pathway.genesMatched.join(" ")} data-multiline="true" data-place="right" data-effect="solid">
+                                <td data-border="true" data-type="light" data-tip={pathway.genesMatched.join(" ")} data-multiline="true" data-place="right" data-effect="solid">
                                     {geneStr}
                                 </td>
                             </tr>

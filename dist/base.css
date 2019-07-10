@@ -692,7 +692,7 @@
 }
 
 tbody tr:hover{
-    background: #4389c0 !important;
+    background: #97bfdb !important;
 }
 
 .cBioMode .cytoscape-navigatorView{
@@ -771,6 +771,10 @@ tbody tr:hover{
     cursor: pointer;
 }
 
+.label-default{
+    background-color: #adadad;
+}
+
 .dropdown-submenu .caret{
     display: none;
 }
@@ -783,8 +787,16 @@ tbody tr:hover{
 .__react_component_tooltip{
     max-width: 350px;
     z-index: 1040;
+    
 }
 
+.__react_component_tooltip.type-light.border{
+    border: 1px solid #878686;
+}
+
+.__react_component_tooltip.show{
+    opacity: 1
+}
 #ranking-bar thead td{
     font-size: 12px;
 }

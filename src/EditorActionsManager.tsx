@@ -50,7 +50,7 @@ export default class EditorActionsManager{
         // the size of bend shape is obtained by multipling width of edge with this parameter
         bendShapeSizeFactor: 6,
         // whether to start the plugin in the enabled state
-        enabled: true,
+        enabled: !this.isCbioPortal,
         // title of add bend point menu item (User may need to adjust width of menu items according to length of this option)
         addBendMenuItemTitle: "Add Bend Point",
         // title of remove bend point menu item (User may need to adjust width of menu items according to length of this option)
