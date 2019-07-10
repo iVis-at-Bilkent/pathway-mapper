@@ -755,7 +755,11 @@ tbody tr:hover{
 }
 
 #ranking-bar .label:hover{
-    background-color: #4389c0;
+    background-color: #97bfdb !important;
+}
+
+#ranking-bar .label-default{
+    background-color: #adadad !important;
 }
 
 #ranking-bar .label{
@@ -771,9 +775,6 @@ tbody tr:hover{
     cursor: pointer;
 }
 
-#ranking-bar .label-default{
-    background-color: #adadad !important;
-}
 
 .dropdown-submenu .caret{
     display: none;
