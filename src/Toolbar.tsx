@@ -8,7 +8,7 @@ import PathwayActions from './PathwayActions';
 // @ts-ignore
 import layoutImage from "./toolbar/layout-cose.svg";
 // @ts-ignore
-import saveImage from "./toolbar/save.svg";
+import saveImage from "./toolbar/save_png.svg";
 // @ts-ignore
 const infoImage = require("./toolbar/about.svg");
 // @ts-ignore
