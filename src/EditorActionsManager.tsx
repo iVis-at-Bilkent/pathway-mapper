@@ -103,7 +103,7 @@ export default class EditorActionsManager{
         this.layoutProperties = _.clone(this.defaultLayoutProperties);
         this.observers = [];
         this.genomicDataOverlayManager = new GenomicDataOverlayManager(this.cy);
-        this.svgExporter = new SVGExporter();
+        this.svgExporter = new SVGExporter(this.edgeEditing, this);
 
         this.selectedNodeStack = {};
         this.undoRedoManager = undoRedoManager;

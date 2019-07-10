@@ -68,7 +68,7 @@ export default class EditorActionsManager {
     pushSelectedNodeStack(ele: any): void;
     removeElementFromSelectedNodeStack(ele: any): void;
     clearSelectedNodeStack(): void;
-    exportSVG(): void;
+    exportSVG(): string;
     registerObserver(observer: any): void;
     notifyObservers(): void;
     registerGenomicDataObserver(observer: any): void;
