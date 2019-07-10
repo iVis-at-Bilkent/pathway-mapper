@@ -809,4 +809,8 @@ tbody tr:hover{
 #ranking-bar tbody td{
     font-size: 11px;
 }
+
+#about-model-header{
+    margin-bottom: 15px !important;
+}
 /*# sourceMappingURL=base.css.map*/

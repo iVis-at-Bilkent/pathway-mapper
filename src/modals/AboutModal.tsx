@@ -36,7 +36,6 @@ export default class AboutModal extends React.Component<IAboutModalProps, {}> {
           </Modal.Header>
           <Modal.Body>
               <h3 id="about-model-header">PathwayMapper {this.props.isCBioPortal ? "for cBioPortal" : "2.0"}</h3>
-
               <div className="aboutImageContent">
                 <img src={require("../about/i-vis.png")} alt="" height="25px"/>
               </div>
