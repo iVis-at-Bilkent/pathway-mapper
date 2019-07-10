@@ -93,8 +93,8 @@ tbody tr:hover{
     cursor: pointer;
 }
 
-.label-default{
-    background-color: #adadad;
+#ranking-bar .label-default{
+    background-color: #adadad !important;
 }
 
 .dropdown-submenu .caret{
