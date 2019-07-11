@@ -31,7 +31,7 @@ export default class AboutModal extends React.Component<IAboutModalProps, {}> {
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              About
+              <h3>About</h3>
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>

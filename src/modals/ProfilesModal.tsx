@@ -41,10 +41,10 @@ export default class ProfilesModal extends React.Component<IProfilesModalProps, 
 
             <Modal show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.PROFILES)}}>
                 <Modal.Header closeButton>
-                    <Modal.Title>View Settings</Modal.Title>
+                    <Modal.Title><h3>Genomic Data Explorer</h3></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {profileLabels}
+                    {(profileLabels.length > 0 ? profileLabels : <h4 className="modal-title">There is currently no data to show</h4>)}
                 </Modal.Body>
             </Modal>
 

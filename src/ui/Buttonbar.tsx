@@ -132,7 +132,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
             {svg: setingsSvg, function: () => {this.props.handleOpen(EModalType.PROFILES);}, tooltip: "Genomic Data Visibility Settings"}];
 
         const infoFunctions: ISVGFunction[] = [
-            {svg: helpSvg, function: () => {this.props.handleOpen(EModalType.ABOUT);}, tooltip: "Quick Help"},
+            {svg: helpSvg, function: () => {this.props.handleOpen(EModalType.HELP);}, tooltip: "Quick Help"},
             {svg: aboutSvg, function: () => {this.props.handleOpen(EModalType.ABOUT);}, tooltip: "About"}];
         
         const allFunctions = [fileFunctions, modFunctions, alignFunctions, utilFunctions, visibilityFunctions, portalFunctions, layoutFunctions, infoFunctions];

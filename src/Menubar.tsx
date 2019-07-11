@@ -115,7 +115,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.redo();}}>Redo</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={3} title="View" id="basic-nav-view">
-                  <NavDropdown id="align-view-submenu" className="dropdown-submenu" eventKey={2.1} title="Align">
+                  <NavDropdown id="align-view-submenu" className="dropdown-submenu" eventKey={2.1} title="Align Selected">
                     <NavDropdown id="align-vertical-submenu" className="dropdown-submenu" eventKey={2.1} title="Vertical">
                       <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.align("vLeft");}}>Left</MenuItem>
                       <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.align("vCen");}}>Center</MenuItem>
@@ -148,6 +148,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={6.1} onClick={this.props.pathwayActions.performLayout}>Perform Layout</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={7} title="Help" id="basic-nav-help">
+                  <MenuItem eventKey={7.1} onClick={ () => {this.props.handleOpen(EModalType.HELP);}}>Quick Help</MenuItem>
                   <MenuItem eventKey={7.1} onClick={ () => {this.props.handleOpen(EModalType.ABOUT);}}>About</MenuItem>
                 </NavDropdown>
               </Nav>
