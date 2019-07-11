@@ -9,6 +9,7 @@ interface IChangeNameModalProps {
 export default class ChangeNameModal extends React.Component<IChangeNameModalProps, {}> {
     newName: string;
     constructor(props: IChangeNameModalProps);
+    entrezGene(): void;
     render(): JSX.Element;
     handleChange(e: any): void;
 }

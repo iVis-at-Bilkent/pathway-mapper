@@ -6,7 +6,8 @@ const multer = require('multer');
 const DEFAULT_PORT = 8080;
 const APP_PORT = process.env.PORT || DEFAULT_PORT;
 const fs = require('fs');
-
+const qs = require("querystring");
+var request = require('request');
 const multerInstance = multer({dest:'./uploads/'});
 
 const staticPath = path.join(__dirname, '../dist');
@@ -17,6 +18,7 @@ app.get('/', function (req, res) {
    res.sendFile(path.join(__dirname + '/index.html'));
 })
 app.post('/loadGraph', multerInstance.single('graphFile'), loadGraphHandler);
+app.post('/getBioGeneData', multerInstance.array(), biogeneDataHandler);
 
 const ShareDB = require('sharedb');
 const WebSocketJSONStream = require('websocket-json-stream');
@@ -36,6 +38,33 @@ server.listen(APP_PORT, function (){
 });
 
 
+function biogeneDataHandler(req,res)
+{
+    var queryParams =
+        {
+            'query': req.body['query'],
+            'format': 'json',
+            'org': 'human'
+        };
+
+    var paramString = qs.stringify(queryParams);
+    var bioGeneURL = 'http://cbio.mskcc.org/biogene/retrieve.do?'
+    var queryURL = bioGeneURL + paramString;
+
+    request(queryURL, function (error, response, body)
+    {
+        if (!error && response.statusCode == 200)
+        {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(response.body);
+            res.end();
+        }
+        else {
+            console.log(response.statusCode) // Print the error
+        }
+    })
+
+}
 
 function loadGraphHandler(req, res)
 {

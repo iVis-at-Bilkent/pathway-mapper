@@ -21,8 +21,52 @@ export default class ChangeNameModal extends React.Component<IChangeNameModalPro
     }
 
 
-    render(){
 
+
+    entrezGene(){
+
+        const nodeID = $(this).attr('nodeid');
+        const nodeSymbol = this.props.oldName//self.cy.$('#'+nodeID)[0]._private.data['name'];
+        //const parent = $(this).parent();
+        //parent.empty().append('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>');
+
+        const formData = new FormData();
+        formData.append('query', nodeSymbol);
+
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = function ()
+        {
+            if(request.readyState === XMLHttpRequest.DONE)
+            {
+            if (request.status === 200)
+            {
+                const jsonData = JSON.parse(request.responseText);
+                console.log("Here json data");
+                if (jsonData.count > 0)
+                {
+                console.log(jsonData.geneInfo[0]);
+                //var backboneView = new BackboneView({model: jsonData.geneInfo[0]}).render().html();
+                //parent.empty().append(backboneView);
+                }
+                else
+                {
+                console.log('There is no extra information for this gene');
+                //parent.empty().append('There is no extra information for this gene');
+                }
+            }
+            else
+            {
+                console.log('Error occured');
+                //parent.empty().append('An error occured while retrieving the data');
+            }
+            }
+        };
+        request.open("POST", "/getBioGeneData");
+        request.send(formData);
+    }
+
+    render(){
+        this.entrezGene();
 
         return(
 
