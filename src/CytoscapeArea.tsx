@@ -9,7 +9,6 @@ import ViewOperationsManager from "./ViewOperationsManager";
 import EditorActionsManager from "./EditorActionsManager";
 import DragDropNodeAddPlugin from "./DragDropNodeAddPlugin";
 import ContextMenuManager from "./ContextMenuManager";
-import GridOptionsManager from "./GridOptionsManager";
 import QtipManager from "./QtipManager";
 import ShareDBManager from "./ShareDBManager";
 import CBioPortalAccessor from "./CBioPortalAccessor";
@@ -41,6 +40,7 @@ const navigator = require('cytoscape-navigator');
 const contextMenus = require('cytoscape-context-menus');
 const konva = require('konva');
 const viewUtilities = require('cytoscape-view-utilities');
+const grid_guide = require('cytoscape-grid-guide');
 
 type PathwayMapperType = {
   isCollaborative: boolean;
@@ -60,7 +60,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   private editor: EditorActionsManager;
   private edgeAddingMode: any;
   private viewOperationsManager: ViewOperationsManager;
-  private gridOptionsManager: GridOptionsManager;
   private qtipManager: QtipManager;
   private genomicDataExplorerView: any;
   private pathwayDetailsView: any;
@@ -214,7 +213,11 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     } catch(err){
       console.log(err);
     }
-    // grid_guide(cytoscape, $); // register extension
+    try { 
+      grid_guide(cytoscape, $); // register extension
+    } catch(err){
+      console.log(err);
+    }
     try { 
       undoRedo(cytoscape); // register extension
     } catch(err){
@@ -281,7 +284,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     }
     //@ts-ignore
     window.editorActionsManager = this.editor;
-    this.gridOptionsManager = new GridOptionsManager();
 
 
     this.qtipManager = new QtipManager(this.cy, this.editor);

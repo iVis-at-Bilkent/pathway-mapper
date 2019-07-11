@@ -7,6 +7,7 @@ import { IProfileMetaData, IPathwayData } from './react-pathway-mapper'
 import SaveLoadUtility from './SaveLoadUtility'
 import ViewOperationsManager from './ViewOperationsManager'
 import pathways from './pathways.json'
+import GridOptionsManager from './GridOptionsManager'
 
 export default class PathwayActions {
   @observable
@@ -18,6 +19,7 @@ export default class PathwayActions {
   includePathway: (pathwayData: IPathwayData) => void
   eh: any
   profiles: IProfileMetaData[]
+  gridOptionsManager: GridOptionsManager
 
   uploader: any
   merger: any
@@ -37,6 +39,14 @@ export default class PathwayActions {
     this.fileManager = fileManager
     this.includePathway = includePathway
     this.isCBioPortal = isCBioPortal
+  }
+
+  @autobind
+  toggleGrid(isEnabled: boolean) {
+    if (isEnabled) {
+      this.gridOptionsManager.setShowGrid(true)
+      this.gridOptionsManager.setSnapToGuidelines(false)
+    }
   }
 
   @autobind
@@ -315,11 +325,18 @@ export default class PathwayActions {
   }
 
   @autobind
-  editorHandler(editor, eh, undoRedoManager, viewOperationsManager) {
+  editorHandler(
+    editor,
+    eh,
+    undoRedoManager,
+    viewOperationsManager: ViewOperationsManager,
+    gridOptionsManager: GridOptionsManager
+  ) {
     this.editor = editor
     this.eh = eh
     this.undoRedoManager = undoRedoManager
     this.viewOperationsManager = viewOperationsManager
+    this.gridOptionsManager = gridOptionsManager
   }
 
   @autobind

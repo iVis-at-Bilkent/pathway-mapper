@@ -2,6 +2,7 @@ import EditorActionsManager from './EditorActionsManager';
 import FileOperationsManager, { IPathwayInfo } from './FileOperationsManager';
 import { IProfileMetaData, IPathwayData } from './react-pathway-mapper';
 import ViewOperationsManager from './ViewOperationsManager';
+import GridOptionsManager from './GridOptionsManager';
 export default class PathwayActions {
     selectedPathway: string;
     fileManager: FileOperationsManager;
@@ -11,12 +12,14 @@ export default class PathwayActions {
     includePathway: (pathwayData: IPathwayData) => void;
     eh: any;
     profiles: IProfileMetaData[];
+    gridOptionsManager: GridOptionsManager;
     uploader: any;
     merger: any;
     isCBioPortal: boolean;
     viewOperationsManager: ViewOperationsManager;
     overlayUploader: any;
     constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, includePathway: (pathwayData: IPathwayData) => void, isCBioPortal: boolean);
+    toggleGrid(isEnabled: boolean): void;
     resizeToContent(): void;
     align(param: string): void;
     onChangeFile(e: any, isMerge: boolean): void;
@@ -48,7 +51,7 @@ export default class PathwayActions {
     removeAllHighlight(): void;
     processFile(file: File, isMerge: boolean): void;
     saveAs(type: string): void;
-    editorHandler(editor: any, eh: any, undoRedoManager: any, viewOperationsManager: any): void;
+    editorHandler(editor: any, eh: any, undoRedoManager: any, viewOperationsManager: ViewOperationsManager, gridOptionsManager: GridOptionsManager): void;
     loadSampleData(): void;
     performLayout(): void;
 }

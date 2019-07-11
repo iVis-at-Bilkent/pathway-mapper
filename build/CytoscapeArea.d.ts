@@ -17,7 +17,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     private editor;
     private edgeAddingMode;
     private viewOperationsManager;
-    private gridOptionsManager;
     private qtipManager;
     private genomicDataExplorerView;
     private pathwayDetailsView;

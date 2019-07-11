@@ -34,7 +34,7 @@ import ReactTooltip from 'react-tooltip';
 import PathwayDetailsModal from './modals/PathwayDetailsModal';
 import ViewOperationsManager from './ViewOperationsManager';
 import GridSettings from './modals/GridSettings';
-
+import GridOptionsManager from './GridOptionsManager';
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
 
@@ -111,13 +111,15 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   profiles: IProfileMetaData[] = [];
 
   setActiveEdge: (edgeId: number) => void;
-  viewOperationsManager: any;
+  viewOperationsManager: ViewOperationsManager;
+  gridOptionsManager: GridOptionsManager;
 
 
   constructor(props: IPathwayMapperProps){
     super(props);
     this.fileManager = new FileOperationsManager();
-    this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, this.includePathway, this.props.isCBioPortal);
+    this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, 
+      this.includePathway, this.props.isCBioPortal);
     if(this.props.pathwayName){
       this.pathwayActions.changePathway(this.props.pathwayName);
     } else {
@@ -551,8 +553,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   editorHandler(editor, eh, undoRedoManager){
     this.editor = editor;
 
+    this.gridOptionsManager = new GridOptionsManager(this.editor.cy);
     this.viewOperationsManager = new ViewOperationsManager(this.editor, this.editor.cy);
-    this.pathwayActions.editorHandler(editor, eh, undoRedoManager, this.viewOperationsManager);
+    this.pathwayActions.editorHandler(editor, eh, undoRedoManager, this.viewOperationsManager, this.gridOptionsManager);
 
     if(this.props.isCBioPortal){
       this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());

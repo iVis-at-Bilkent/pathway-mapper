@@ -92,7 +92,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
             {svg: avrSvg, function: () => {this.props.pathwayActions.align("vRight");}, tooltip: "Align Vertical Right"}];
             
         const utilFunctions: ISVGFunction[] = [
-            {svg: gridSvg, function: this.props.pathwayActions.deleteSelected, tooltip: "Enable Grid: Show and snap to grid"},
+            {svg: gridSvg, function: () => {this.props.pathwayActions.toggleGrid(true)}, tooltip: "Enable Grid: Show and snap to grid"},
             {svg: guideSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Enable Guidelines: Enable and snap to alignment guidelines"}];
 
         const visibilityFunctions: ISVGFunction[] = [

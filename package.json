@@ -73,6 +73,7 @@
     "cytoscape-cose-bilkent": "^4.0.0",
     "cytoscape-edge-editing": "github:iVis-at-Bilkent/cytoscape.js-edge-editing#unstable",
     "cytoscape-edgehandles": "^3.5.1",
+    "cytoscape-grid-guide": "^2.2.1",
     "cytoscape-navigator": "^1.3.3",
     "cytoscape-node-resize": "github:iVis-at-Bilkent/cytoscape.js-node-resize#unstable",
     "cytoscape-panzoom": "~2.5.2",

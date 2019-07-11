@@ -8,6 +8,8 @@ import "./pmv2.css";
 import "cytoscape-panzoom/cytoscape.js-panzoom.css";
 import "cytoscape-navigator/cytoscape.js-navigator.css";
 import 'react-toastify/dist/ReactToastify.css';
+import ViewOperationsManager from './ViewOperationsManager';
+import GridOptionsManager from './GridOptionsManager';
 interface IPathwayMapperProps {
     isCBioPortal: boolean;
     isCollaborative: boolean;
@@ -63,7 +65,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     oldName: string;
     profiles: IProfileMetaData[];
     setActiveEdge: (edgeId: number) => void;
-    viewOperationsManager: any;
+    viewOperationsManager: ViewOperationsManager;
+    gridOptionsManager: GridOptionsManager;
     constructor(props: IPathwayMapperProps);
     getGeneStudyMap(studyGeneMap: any): any;
     getAlterationAveragePerGene(genomicDataMap: any): any;

@@ -723,7 +723,7 @@ tbody tr:hover{
 }
 
 #ranking-bar:first-child{
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 #ranking-bar .info-title{
@@ -745,6 +745,9 @@ tbody tr:hover{
     margin-right: 6px;
 }
 
+#toolbar {
+    margin-top: 10px;
+}
 #toolbar img {
     margin-top: 10px;
 }
