@@ -4,18 +4,45 @@ import SVGExporter from "./SVGExporter";
 import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
 import { IProfileMetaData, IPathwayData } from "./react-pathway-mapper";
 import { observable } from "mobx";
+import { ILayoutProperties } from "./modals/LayoutProperties";
 
 const _ = require('underscore');
 
 export default class EditorActionsManager{
 
+    public static defaultLayoutProperties: ILayoutProperties =
+    {
+        name: 'cose-bilkent',
+        nodeRepulsion: 4500,
+        idealEdgeLength: 50,
+        edgeElasticity: 0.45,
+        nestingFactor: 0.1,
+        gravity: 0.25,
+        numIter: 2500,
+        tile: true,
+        animate: true,
+        randomize: false,
+        gravityRangeCompound: 1.5,
+        // Gravity force (constant) for compounds
+        gravityCompound: 1.0,
+        // Gravity range (constant)
+        gravityRange: 3.8,
+        // Amount of vertical space to put between degree zero nodes during tiling (can also be a function)
+        tilingPaddingVertical: 10,
+        // Amount of horizontal space to put between degree zero nodes during tiling (can also be a function)
+        tilingPaddingHorizontal: 10,
+        // Initial cooling factor for incremental layout
+        initialEnergyOnIncremental: 0.5,
+        animationDuration: 2000,
+        animationEasing: 'cubic-bezier(0.17,0.72,0.41,0.98)',
+    };
+    
     public cy: any;
-    public defaultLayoutProperties: any;
-    public layoutProperties: any;
     public genomicDataOverlayManager: GenomicDataOverlayManager;
     public edgeEditing: any;
     public selectedNodeStack: any;
-
+    public layoutProperties: ILayoutProperties;
+    
     private FIT_CONSTANT: number;
     private observers: any[];
     private svgExporter: SVGExporter;
@@ -65,42 +92,9 @@ export default class EditorActionsManager{
           this.shareDBManager = shareDBManager;
         }
 
-        this.defaultLayoutProperties =
-            {
-                name: 'cose-bilkent',
-                nodeRepulsion: 4500,
-                idealEdgeLength: 50,
-                edgeElasticity: 0.45,
-                nestingFactor: 0.1,
-                gravity: 0.25,
-                numIter: 2500,
-                tile: true,
-                animate: "end",
-                randomize: false,
-                gravityRangeCompound: 1.5,
-                // Gravity force (constant) for compounds
-                gravityCompound: 1.0,
-                // Gravity range (constant)
-                gravityRange: 3.8,
-
-                // Amount of vertical space to put between degree zero nodes during tiling (can also be a function)
-                tilingPaddingVertical: 10,
-                // Amount of horizontal space to put between degree zero nodes during tiling (can also be a function)
-                tilingPaddingHorizontal: 10,
-                // Initial cooling factor for incremental layout
-                initialEnergyOnIncremental: 0.5,
-                animationDuration: 2000,
-                animationEasing: 'cubic-bezier(0.17,0.72,0.41,0.98)',
-                // Called on `layoutready`
-                ready: function () {
-                },
-                // Called on `layoutstop`
-                stop: function () {
-                }
-            };
         this.FIT_CONSTANT = 50;
 
-        this.layoutProperties = _.clone(this.defaultLayoutProperties);
+        this.layoutProperties = _.clone(EditorActionsManager.defaultLayoutProperties);
         this.observers = [];
         this.genomicDataOverlayManager = new GenomicDataOverlayManager(this.cy);
         this.svgExporter = new SVGExporter(this.edgeEditing, this);

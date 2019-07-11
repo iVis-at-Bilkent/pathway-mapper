@@ -1,13 +1,14 @@
 import CBioPortalAccessor from "./CBioPortalAccessor";
 import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
 import { IProfileMetaData } from "./react-pathway-mapper";
+import { ILayoutProperties } from "./modals/LayoutProperties";
 export default class EditorActionsManager {
+    static defaultLayoutProperties: ILayoutProperties;
     cy: any;
-    defaultLayoutProperties: any;
-    layoutProperties: any;
     genomicDataOverlayManager: GenomicDataOverlayManager;
     edgeEditing: any;
     selectedNodeStack: any;
+    layoutProperties: ILayoutProperties;
     private FIT_CONSTANT;
     private observers;
     private svgExporter;
