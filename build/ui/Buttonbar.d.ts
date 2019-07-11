@@ -7,7 +7,9 @@ interface IButtonbarProps {
 }
 export default class Buttonbar extends React.Component<IButtonbarProps, {}> {
     private searchedGene;
+    private gridGuide;
     constructor(props: IButtonbarProps);
+    setGridGuide(isToggleGrid: boolean): void;
     render(): JSX.Element;
 }
 export {};

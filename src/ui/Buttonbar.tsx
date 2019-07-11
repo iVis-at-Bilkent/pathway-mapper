@@ -47,6 +47,7 @@ import layoutPropSvg from '../toolbar/layout-properties.svg';
 // @ts-ignore
 import helpSvg from '../toolbar/quick-help.svg';
 import { EModalType } from "../react-pathway-mapper";
+import { observer } from "mobx-react";
 
 
 interface IButtonbarProps {
@@ -58,19 +59,42 @@ interface ISVGFunction{
     svg: any;
     function: () => void;
     tooltip: string;    
+    isFocused?: boolean;
 }
 
+interface IGridGuidelineState{
+    isGridEnabled: boolean;
+    isGuideEnabled : boolean;
+}
+
+@observer
 export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
 
 
     @observable
     private searchedGene: string;
 
+    @observable
+    private gridGuide: IGridGuidelineState;
+
     constructor(props: IButtonbarProps) {
         super(props);
         this.searchedGene = "";
+        this.gridGuide = {isGridEnabled: false, isGuideEnabled: false};
     }
 
+    setGridGuide(isToggleGrid: boolean){
+
+        if(isToggleGrid){
+            this.gridGuide.isGridEnabled = !this.gridGuide.isGridEnabled;
+            this.gridGuide.isGuideEnabled = false;
+            this.props.pathwayActions.toggleGrid(this.gridGuide.isGridEnabled);
+        } else {
+            this.gridGuide.isGuideEnabled = !this.gridGuide.isGuideEnabled;
+            this.gridGuide.isGridEnabled = false;
+            this.props.pathwayActions.toggleGuide(this.gridGuide.isGuideEnabled);
+        }
+    }
     render() {
         
         const fileFunctions: ISVGFunction[] = [
@@ -92,8 +116,8 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
             {svg: avrSvg, function: () => {this.props.pathwayActions.align("vRight");}, tooltip: "Align Vertical Right"}];
             
         const utilFunctions: ISVGFunction[] = [
-            {svg: gridSvg, function: () => {this.props.pathwayActions.toggleGrid(true)}, tooltip: "Enable Grid: Show and snap to grid"},
-            {svg: guideSvg, function: () => {this.props.pathwayActions.newPathway();}, tooltip: "Enable Guidelines: Enable and snap to alignment guidelines"}];
+            {isFocused: this.gridGuide.isGridEnabled, svg: gridSvg, function: () => {this.setGridGuide(true);}, tooltip: "Enable Grid: Show and snap to grid"},
+            {isFocused: this.gridGuide.isGuideEnabled, svg: guideSvg, function: () => {this.setGridGuide(false);}, tooltip: "Enable Guidelines: Enable and snap to alignment guidelines"}];
 
         const visibilityFunctions: ISVGFunction[] = [
             {svg: hideSvg, function: () => {this.props.pathwayActions.hideSelected();}, tooltip: "Hide Selected"},
@@ -121,7 +145,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                         {   allFunctions.map((functions) =>
                         <ButtonGroup>
                             { functions.map((svg: ISVGFunction) => 
-                                (<div className="toolbar-button">
+                                (<div className={"toolbar-button" + ((svg.isFocused ? " toolbar-button-focused" : ""))}>
                                     <img height="22px" width="22px" src={svg.svg} data-tip={svg.tooltip} data-place="bottom" data-effect="solid" onClick={svg.function}></img>
                                 </div>)
                                 )

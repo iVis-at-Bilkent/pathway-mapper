@@ -20,6 +20,7 @@ export default class PathwayActions {
     overlayUploader: any;
     constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, includePathway: (pathwayData: IPathwayData) => void, isCBioPortal: boolean);
     toggleGrid(isEnabled: boolean): void;
+    toggleGuide(isEnabled: boolean): void;
     resizeToContent(): void;
     align(param: string): void;
     onChangeFile(e: any, isMerge: boolean): void;

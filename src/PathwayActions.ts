@@ -43,10 +43,14 @@ export default class PathwayActions {
 
   @autobind
   toggleGrid(isEnabled: boolean) {
-    if (isEnabled) {
-      this.gridOptionsManager.setShowGrid(true)
-      this.gridOptionsManager.setSnapToGuidelines(false)
-    }
+    this.gridOptionsManager.setSnapToGuidelines(false)
+    this.gridOptionsManager.setShowGrid(isEnabled)
+  }
+
+  @autobind
+  toggleGuide(isEnabled: boolean) {
+    this.gridOptionsManager.setSnapToGuidelines(isEnabled)
+    this.gridOptionsManager.setShowGrid(false)
   }
 
   @autobind
