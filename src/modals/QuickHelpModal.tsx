@@ -6,11 +6,10 @@ interface IQuickHelpModalProps{
     handleClose: (modalId: EModalType) => void;
 }
 
-export default class QuickHelpModal extends React.Component<IQuickHelpModalProps, {selam: 5}>{
+export default class QuickHelpModal extends React.Component<IQuickHelpModalProps>{
 
     constructor(props: IQuickHelpModalProps){
         super(props);
-        console.log(this.state);
     }
 
     render(){

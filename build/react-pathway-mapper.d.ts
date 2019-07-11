@@ -25,7 +25,8 @@ export declare enum EModalType {
     ABOUT = 3,
     PW_DETAILS = 4,
     GRID = 5,
-    HELP = 6
+    HELP = 6,
+    LAYOUT = 7
 }
 export interface IPathwayData {
     title: string;

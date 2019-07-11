@@ -36,6 +36,7 @@ import ViewOperationsManager from './ViewOperationsManager';
 import GridSettings from './modals/GridSettings';
 import GridOptionsManager from './GridOptionsManager';
 import QuickHelpModal from './modals/QuickHelpModal';
+import LayoutProperties from './modals/LayoutProperties';
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
 
@@ -56,7 +57,8 @@ export enum EModalType{
   ABOUT,
   PW_DETAILS,
   GRID,
-  HELP
+  HELP,
+  LAYOUT
 }
 
 export interface IPathwayData{
@@ -127,7 +129,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     } else {
       this.selectedPathway = "";
     }
-    this.isModalShown = [false, false, false, false, false, false];
+    this.isModalShown = [false, false, false, false, false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
@@ -499,6 +501,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <PathwayDetailsModal isModalShown={this.isModalShown[EModalType.PW_DETAILS]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <GridSettings isModalShown={this.isModalShown[EModalType.GRID]} handleClose={this.handleClose}/>
             <QuickHelpModal isModalShown={this.isModalShown[EModalType.HELP]} handleClose={this.handleClose}/>
+            <LayoutProperties isModalShown={this.isModalShown[EModalType.LAYOUT]} handleClose={this.handleClose}/>
           </div>)
           }
           <AboutModal isModalShown={this.isModalShown[EModalType.ABOUT]} handleClose={this.handleClose} isCBioPortal={this.props.isCBioPortal}/>

@@ -4,9 +4,7 @@ interface IQuickHelpModalProps {
     isModalShown: boolean;
     handleClose: (modalId: EModalType) => void;
 }
-export default class QuickHelpModal extends React.Component<IQuickHelpModalProps, {
-    selam: 5;
-}> {
+export default class QuickHelpModal extends React.Component<IQuickHelpModalProps> {
     constructor(props: IQuickHelpModalProps);
     render(): JSX.Element;
 }
