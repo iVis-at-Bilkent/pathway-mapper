@@ -3,6 +3,7 @@ import FileOperationsManager, { IPathwayInfo } from './FileOperationsManager';
 import { IProfileMetaData, IPathwayData } from './react-pathway-mapper';
 import ViewOperationsManager from './ViewOperationsManager';
 import GridOptionsManager from './GridOptionsManager';
+import { ILayoutProperties } from './modals/LayoutProperties';
 export default class PathwayActions {
     selectedPathway: string;
     fileManager: FileOperationsManager;
@@ -19,6 +20,7 @@ export default class PathwayActions {
     viewOperationsManager: ViewOperationsManager;
     overlayUploader: any;
     constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, includePathway: (pathwayData: IPathwayData) => void, isCBioPortal: boolean);
+    setLayoutProperties(layoutProperties: ILayoutProperties): void;
     toggleGrid(isEnabled: boolean): void;
     toggleGuide(isEnabled: boolean): void;
     resizeToContent(): void;

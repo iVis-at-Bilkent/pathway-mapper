@@ -3,10 +3,14 @@ import { EModalType } from '../react-pathway-mapper';
 import {Modal, Form, InputGroup, ControlLabel, Col, FormControl, Checkbox, Button} from 'react-bootstrap';
 import EditorActionsManager from '../EditorActionsManager';
 import _ from 'lodash';
+import PathwayActions from '../PathwayActions';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
 
 interface ILayoutPropertiesProps{
     isModalShown: boolean;
     handleClose: (modelId: EModalType) => void;
+    pathwayActions: PathwayActions;
 }
 
 export interface ILayoutProperties{
@@ -30,8 +34,10 @@ export interface ILayoutProperties{
     randomize: boolean;
 }
 
+@observer
 export default class LayoutProperties extends React.Component<ILayoutPropertiesProps>{
     
+    @observable
     layoutProperties: ILayoutProperties;
     
     
@@ -42,6 +48,10 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
         console.log(this.layoutProperties);
     }
     
+
+    updateLayoutProperties(property: string, val: boolean | number){
+        this.layoutProperties[property] = val;
+    }
     
 
     render(){
@@ -67,7 +77,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <FormControl type="text" value={this.layoutProperties.nodeRepulsion} onChange={(e: any) => {this.layoutProperties.nodeRepulsion = Number(e.target.value);}} />
+                                <FormControl type="text" value={this.layoutProperties.nodeRepulsion + ""} onChange={(e: any) => {this.layoutProperties.nodeRepulsion = Number(e.target.value);}} />
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -76,7 +86,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <FormControl type="text" value={this.layoutProperties.idealEdgeLength} onChange={(e: any) => {this.layoutProperties.idealEdgeLength = Number(e.target.value);}}/>
+                                <FormControl type="text" value={this.layoutProperties.idealEdgeLength + ""} onChange={(e: any) => {this.layoutProperties.idealEdgeLength = Number(e.target.value);}}/>
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -85,7 +95,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <FormControl type="text" value={this.layoutProperties.edgeElasticity} onChange={(e: any) => {this.layoutProperties.edgeElasticity = e.target.value;}} />
+                                <FormControl type="text" value={this.layoutProperties.edgeElasticity + ""} onChange={(e: any) => {this.layoutProperties.edgeElasticity = e.target.value;}} />
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -94,7 +104,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <FormControl type="text" value={this.layoutProperties.nestingFactor} onChange={(e: any) => {this.layoutProperties.nestingFactor = e.target.value;}} />
+                                <FormControl type="text" value={this.layoutProperties.nestingFactor + ""} onChange={(e: any) => {this.layoutProperties.nestingFactor = e.target.value;}} />
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -103,7 +113,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <FormControl type="text" value={this.layoutProperties.gravity} onChange={(e: any) => {this.layoutProperties.gravity = e.target.value;}} />
+                                <FormControl type="text" value={this.layoutProperties.gravity + ""} onChange={(e: any) => {this.layoutProperties.gravity = e.target.value;}} />
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -112,7 +122,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <FormControl type="text" value={this.layoutProperties.gravityRange} onChange={(e: any) => {this.layoutProperties.gravityRange = e.target.value;}} />
+                                <FormControl type="text" value={this.layoutProperties.gravityRange + ""} onChange={(e: any) => {this.layoutProperties.gravityRange = e.target.value;}} />
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -121,7 +131,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <FormControl type="text" value={this.layoutProperties.gravityCompound} onChange={(e: any) => {this.layoutProperties.gravityCompound = e.target.value;}}/>
+                                <FormControl type="text" value={this.layoutProperties.gravityCompound + ""} onChange={(e: any) => {this.layoutProperties.gravityCompound = e.target.value;}}/>
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -130,7 +140,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <FormControl type="text" value={this.layoutProperties.gravityRangeCompound} onChange={(e: any) => {this.layoutProperties.gravityRangeCompound = e.target.value;}} />
+                                <FormControl type="text" value={this.layoutProperties.gravityRangeCompound + ""} onChange={(e: any) => {this.layoutProperties.gravityRangeCompound = e.target.value;}} />
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -139,7 +149,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <FormControl type="text" value={this.layoutProperties.numIter} onChange={(e: any) => {this.layoutProperties.numIter = e.target.value;}} />
+                                <FormControl type="text" value={this.layoutProperties.numIter + ""} onChange={(e: any) => {this.layoutProperties.numIter = e.target.value;}} />
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -148,7 +158,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <FormControl type="text" value={this.layoutProperties.tilingPaddingVertical} onChange={(e: any) => {this.layoutProperties.tilingPaddingVertical = e.target.value;}} />
+                                <FormControl type="text" value={this.layoutProperties.tilingPaddingVertical + ""} onChange={(e: any) => {this.layoutProperties.tilingPaddingVertical = e.target.value;}} />
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -157,7 +167,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <FormControl type="text" value={this.layoutProperties.tilingPaddingHorizontal} onChange={(e: any) => {this.layoutProperties.tilingPaddingHorizontal = e.target.value;}} />
+                                <FormControl type="text" value={this.layoutProperties.tilingPaddingHorizontal + ""} onChange={(e: any) => {this.layoutProperties.tilingPaddingHorizontal = e.target.value;}} />
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -166,7 +176,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <Checkbox checked={!this.layoutProperties.tile} onChange={(e: any) => {this.layoutProperties.tile = !this.layoutProperties.tile;}}></Checkbox>
+                                <Checkbox checked={this.layoutProperties.tile} onChange={(e: any) => {this.layoutProperties.tile = !this.layoutProperties.tile;}}></Checkbox>
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -175,7 +185,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <Checkbox checked={!this.layoutProperties.animate} onChange={(e: any) => {this.layoutProperties.animate = !this.layoutProperties.animate;}}></Checkbox>
+                                <Checkbox checked={this.layoutProperties.animate} onChange={(e: any) => {this.layoutProperties.animate = !this.layoutProperties.animate;}}></Checkbox>
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -184,7 +194,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <Checkbox checked={this.layoutProperties.randomize} onChange={(e: any) => {this.layoutProperties.randomize = !this.layoutProperties.randomize;}}></Checkbox>
+                                <Checkbox checked={!this.layoutProperties.randomize} onChange={(e: any) => {this.layoutProperties.randomize = !this.layoutProperties.randomize;}}></Checkbox>
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -193,7 +203,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <FormControl type="text" value={this.layoutProperties.initialEnergyOnIncremental} onChange={(e:any) => {this.layoutProperties.initialEnergyOnIncremental = e.target.value;}} />
+                                <FormControl type="text" value={this.layoutProperties.initialEnergyOnIncremental + ""} onChange={(e:any) => {this.layoutProperties.initialEnergyOnIncremental = e.target.value;}} />
                             </Col>
                         </InputGroup>
                     </Form>
@@ -202,7 +212,13 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
 
 
                 <Modal.Footer>
-                    <Button>Save</Button>
+                    <Button onClick={() => {this.props.pathwayActions.setLayoutProperties(this.layoutProperties); this.props.handleClose(EModalType.LAYOUT);}}>
+                        Save
+                    </Button>
+
+                    <Button onClick={() => {this.layoutProperties = _.clone(EditorActionsManager.defaultLayoutProperties); this.props.pathwayActions.setLayoutProperties(this.layoutProperties)}}>
+                        Default
+                    </Button>
 
                 </Modal.Footer>
             </Modal>

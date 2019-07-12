@@ -1,8 +1,10 @@
 import React from 'react';
 import { EModalType } from '../react-pathway-mapper';
+import PathwayActions from '../PathwayActions';
 interface ILayoutPropertiesProps {
     isModalShown: boolean;
     handleClose: (modelId: EModalType) => void;
+    pathwayActions: PathwayActions;
 }
 export interface ILayoutProperties {
     name: string;
@@ -27,6 +29,7 @@ export interface ILayoutProperties {
 export default class LayoutProperties extends React.Component<ILayoutPropertiesProps> {
     layoutProperties: ILayoutProperties;
     constructor(props: ILayoutPropertiesProps);
+    updateLayoutProperties(property: string, val: boolean | number): void;
     render(): JSX.Element;
 }
 export {};

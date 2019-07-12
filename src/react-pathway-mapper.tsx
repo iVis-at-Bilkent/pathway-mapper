@@ -501,7 +501,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <PathwayDetailsModal isModalShown={this.isModalShown[EModalType.PW_DETAILS]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <GridSettings isModalShown={this.isModalShown[EModalType.GRID]} handleClose={this.handleClose}/>
             <QuickHelpModal isModalShown={this.isModalShown[EModalType.HELP]} handleClose={this.handleClose}/>
-            <LayoutProperties isModalShown={this.isModalShown[EModalType.LAYOUT]} handleClose={this.handleClose}/>
+            <LayoutProperties isModalShown={this.isModalShown[EModalType.LAYOUT]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
           </div>)
           }
           <AboutModal isModalShown={this.isModalShown[EModalType.ABOUT]} handleClose={this.handleClose} isCBioPortal={this.props.isCBioPortal}/>

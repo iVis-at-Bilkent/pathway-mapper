@@ -8,6 +8,7 @@ import SaveLoadUtility from './SaveLoadUtility'
 import ViewOperationsManager from './ViewOperationsManager'
 import pathways from './pathways.json'
 import GridOptionsManager from './GridOptionsManager'
+import { ILayoutProperties } from './modals/LayoutProperties'
 
 export default class PathwayActions {
   @observable
@@ -39,6 +40,10 @@ export default class PathwayActions {
     this.fileManager = fileManager
     this.includePathway = includePathway
     this.isCBioPortal = isCBioPortal
+  }
+
+  setLayoutProperties(layoutProperties: ILayoutProperties) {
+    this.editor.saveLayoutProperties(layoutProperties)
   }
 
   @autobind
@@ -76,9 +81,9 @@ export default class PathwayActions {
 
   overlayFromText(file: File) {
     // Create a new FormData object.
-    var formData = new FormData()
+    const formData = new FormData()
     formData.append('graphFile', file)
-    var request = new XMLHttpRequest()
+    const request = new XMLHttpRequest()
     request.onreadystatechange = () => {
       if (
         request.readyState === XMLHttpRequest.DONE &&

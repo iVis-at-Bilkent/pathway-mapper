@@ -125,7 +125,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
 
         const layoutFunctions: ISVGFunction[] = [
             {svg: layoutSvg, function: () => {this.props.pathwayActions.performLayout();}, tooltip: "Perform Layout"},
-            {svg: layoutPropSvg, function: () => {this.props.pathwayActions.performLayout();}, tooltip: "Layout Properties"}];
+            {svg: layoutPropSvg, function: () => {this.props.handleOpen(EModalType.LAYOUT);}, tooltip: "Layout Properties"}];
 
         const portalFunctions: ISVGFunction[] = [
             {svg: portalSvg, function: () => {this.props.handleOpen(EModalType.STUDY);}, tooltip: "Fetch Genomic Data From cBioPortal"},
