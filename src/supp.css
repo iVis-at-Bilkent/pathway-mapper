@@ -133,3 +133,7 @@ tbody tr:hover{
 #about-model-header{
     margin-bottom: 15px !important;
 }
+
+.list-group-item:focus{
+    background-color: white;
+}

@@ -100,7 +100,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
         const fileFunctions: ISVGFunction[] = [
             {svg: newSvg, function: this.props.pathwayActions.newPathway, tooltip: "New Pathway"},
             {svg: loadSvg, function: this.props.pathwayActions.upload, tooltip: "Load Pathway" },
-            {svg: saveSvg, function: this.props.pathwayActions.newPathway, tooltip: "Save Pathway"}];
+            {svg: saveSvg, function: () => {this.props.pathwayActions.export(false)}, tooltip: "Save Pathway"}];
         
         const modFunctions: ISVGFunction[] = [
             {svg: deleteSvg, function: this.props.pathwayActions.deleteSelected, tooltip: "Delete Selected"},

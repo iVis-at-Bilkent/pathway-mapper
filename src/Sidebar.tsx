@@ -50,6 +50,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
     addEdge(edgeIndex: number){
       if(edgeIndex === this.activeEdge){
         this.setActiveEdge(-1);
+        this.props.pathwayActions.addEdge(-1);
         return;
       }
       this.setActiveEdge(edgeIndex);
@@ -111,19 +112,19 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                 <Panel.Heading className="pnl-header">
                   Interaction Palette
                 </Panel.Heading>
-                <Panel.Body className="pnl-body">
-                    <ListGroup>
+                <Panel.Body className="pnl-body edgePaletteWrapper">
+                    <div className="list-group edge-palette">
                     {
                     edgeTypes.map((edgeType: string, i: number) => {
                     return (<div>
-                        <ListGroupItem style={{marginBottom: 5}} width="30%" active={this.activeEdge === i} 
-                        onClick={() => {this.addEdge(i)}} >
-                        <img width="20%" src={edgeImgs[i]}></img>{' '}
+                        <a style={{marginBottom: "5px"}} className={ "list-group-item " + (this.activeEdge === i ? "active" : "")} 
+                        onClick={() => {this.addEdge(i);}} href="#" >
+                        <img width="20%" className="pull-left"src={edgeImgs[i]}></img>{' '}
                         {edgeType}
-                        </ListGroupItem></div>);
+                        </a></div>);
                     })
                     }
-                    </ListGroup>
+                    </div>
                 </Panel.Body>
               </Panel>
               </div>

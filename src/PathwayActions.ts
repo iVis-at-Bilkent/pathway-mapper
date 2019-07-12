@@ -223,6 +223,11 @@ export default class PathwayActions {
   addEdge(edgeTypeIndex: number) {
     // @ts-ignore
     window.edgeAddingMode = edgeTypeIndex + 1
+
+    if (edgeTypeIndex === -1) {
+      this.eh.disableDrawMode()
+      return
+    }
     // @ts-ignore
     this.eh.disableDrawMode()
     this.eh.enableDrawMode()
