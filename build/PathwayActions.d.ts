@@ -1,6 +1,6 @@
 import EditorActionsManager from './EditorActionsManager';
 import FileOperationsManager, { IPathwayInfo } from './FileOperationsManager';
-import { IProfileMetaData, IPathwayData } from './react-pathway-mapper';
+import { IProfileMetaData, EModalType } from './react-pathway-mapper';
 import ViewOperationsManager from './ViewOperationsManager';
 import GridOptionsManager from './GridOptionsManager';
 import { ILayoutProperties } from './modals/LayoutProperties';
@@ -11,7 +11,7 @@ export default class PathwayActions {
     editor: EditorActionsManager;
     undoRedoManager: any;
     pathwayHandler: (pathwayName: string) => void;
-    includePathway: (pathwayData: IPathwayData) => void;
+    handleOpen: (modalId: EModalType) => void;
     eh: any;
     profiles: IProfileMetaData[];
     gridOptionsManager: GridOptionsManager;
@@ -21,7 +21,7 @@ export default class PathwayActions {
     viewOperationsManager: ViewOperationsManager;
     overlayUploader: any;
     enabledType: EGridType;
-    constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, includePathway: (pathwayData: IPathwayData) => void, isCBioPortal: boolean);
+    constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, handleOpen: (modalId: EModalType) => void, isCBioPortal: boolean);
     setLayoutProperties(layoutProperties: ILayoutProperties): void;
     toggleGrid(isEnabled: boolean): void;
     toggleGuide(isEnabled: boolean): void;

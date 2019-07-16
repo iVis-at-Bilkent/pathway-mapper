@@ -1452,7 +1452,7 @@ export default class EditorActionsManager{
             var ele = nodes[index];
             nodeMap[ele.data.id] = ele;
 
-            if (this.cy.filter('node[name = "'+ele.data.name+']').length <= 0)
+            if (this.cy.filter('node[name = "'+ele.data.name+'"]').length <= 0)
             {
                 delete ele.data.id;
                 //TODO need to update parent ?

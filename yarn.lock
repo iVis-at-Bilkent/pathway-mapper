@@ -5177,10 +5177,9 @@ cytoscape-navigator@^1.3.3:
   dependencies:
     jquery "^2.0.0 || ^1.4.0"
 
-cytoscape-node-resize@^3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/cytoscape-node-resize/-/cytoscape-node-resize-3.1.2.tgz#e870910e2ceffe947794688c5bcf039363db38bf"
-  integrity sha512-AmQFbWVHi4bVA36E+KLnPULMXnU0AaLt9xgRlP1LHQ+6+2krWqSF/xvIeJfJ7/tnL5YBKIzcP8D149ztxhipqg==
+"cytoscape-node-resize@github:iVis-at-Bilkent/cytoscape.js-node-resize#unstable":
+  version "3.0.0"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-node-resize/tar.gz/bffdbe5b4ba5a0d0b885de66094c558aa18d16ed"
 
 cytoscape-panzoom@~2.5.2:
   version "2.5.3"

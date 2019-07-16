@@ -3,13 +3,18 @@ import { observable, computed } from 'mobx'
 import EditorActionsManager from './EditorActionsManager'
 import FileOperationsManager, { IPathwayInfo } from './FileOperationsManager'
 import $ from 'jquery'
-import { IProfileMetaData, IPathwayData } from './react-pathway-mapper'
+import {
+  IProfileMetaData,
+  IPathwayData,
+  EModalType
+} from './react-pathway-mapper'
 import SaveLoadUtility from './SaveLoadUtility'
 import ViewOperationsManager from './ViewOperationsManager'
 import pathways from './pathways.json'
 import GridOptionsManager from './GridOptionsManager'
 import { ILayoutProperties } from './modals/LayoutProperties'
 import { EGridType } from './modals/GridSettings'
+import ConfirmationModal from './modals/ConfirmationModal'
 
 export default class PathwayActions {
   @observable
@@ -18,7 +23,7 @@ export default class PathwayActions {
   editor: EditorActionsManager
   undoRedoManager: any
   pathwayHandler: (pathwayName: string) => void
-  includePathway: (pathwayData: IPathwayData) => void
+  handleOpen: (modalId: EModalType) => void
   eh: any
   profiles: IProfileMetaData[]
   gridOptionsManager: GridOptionsManager
@@ -36,13 +41,13 @@ export default class PathwayActions {
     pathwayHandler: (pathwayName: string) => void,
     profiles: IProfileMetaData[],
     fileManager: FileOperationsManager,
-    includePathway: (pathwayData: IPathwayData) => void,
+    handleOpen: (modalId: EModalType) => void,
     isCBioPortal: boolean
   ) {
     this.pathwayHandler = pathwayHandler
     this.profiles = profiles
     this.fileManager = fileManager
-    this.includePathway = includePathway
+    this.handleOpen = handleOpen
     this.isCBioPortal = isCBioPortal
     this.enabledType = EGridType.NONE
   }
@@ -122,7 +127,14 @@ export default class PathwayActions {
 
   @autobind
   upload() {
-    this.uploader.click()
+    if (this.editor.cy.elements().length > 0) {
+      this.handleOpen(EModalType.CONFIRMATION)
+      ConfirmationModal.pendingFunction = () => {
+        this.uploader.click()
+      }
+    } else {
+      this.uploader.click()
+    }
   }
 
   @autobind
@@ -172,15 +184,24 @@ export default class PathwayActions {
 
   @autobind
   newPathway() {
-    this.editor.removeAllElements()
-    this.fileManager.setPathwayInfo({
-      pathwayTitle: 'New Pathway',
-      pathwayDetails: '',
-      fileName: 'pathway.txt'
-    })
-    this.removeAllData()
-    this.resetUndoStack()
-    this.pathwayHandler('Dummy')
+    const commitNewPathway = () => {
+      this.editor.removeAllElements()
+      this.fileManager.setPathwayInfo({
+        pathwayTitle: 'New Pathway',
+        pathwayDetails: '',
+        fileName: 'pathway.txt'
+      })
+      this.removeAllData()
+      this.resetUndoStack()
+      this.pathwayHandler('Dummy')
+    }
+
+    if (this.editor.cy.elements().length > 0) {
+      this.handleOpen(EModalType.CONFIRMATION)
+      ConfirmationModal.pendingFunction = commitNewPathway
+    } else {
+      commitNewPathway()
+    }
   }
 
   @autobind

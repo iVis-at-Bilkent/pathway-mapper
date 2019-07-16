@@ -37,6 +37,7 @@ import GridSettings from './modals/GridSettings';
 import GridOptionsManager from './GridOptionsManager';
 import QuickHelpModal from './modals/QuickHelpModal';
 import LayoutProperties from './modals/LayoutProperties';
+import ConfirmationModal from './modals/ConfirmationModal';
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
 
@@ -52,7 +53,7 @@ interface IPathwayMapperProps{
 
 export enum EModalType{
   STUDY,
-  CHANGE_NAME,
+  CONFIRMATION,
   PROFILES,
   ABOUT,
   PW_DETAILS,
@@ -123,13 +124,13 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     super(props);
     this.fileManager = new FileOperationsManager();
     this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, 
-      this.includePathway, this.props.isCBioPortal);
+                                             this.handleOpen, this.props.isCBioPortal);
     if(this.props.pathwayName){
       this.pathwayActions.changePathway(this.props.pathwayName);
     } else {
       this.selectedPathway = "";
     }
-    this.isModalShown = [false, false, false, false, false, false];
+    this.isModalShown = [false, false, false, false, false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
@@ -496,6 +497,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <GridSettings isModalShown={this.isModalShown[EModalType.GRID]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <QuickHelpModal isModalShown={this.isModalShown[EModalType.HELP]} handleClose={this.handleClose}/>
             <LayoutProperties isModalShown={this.isModalShown[EModalType.LAYOUT]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
+            <ConfirmationModal isModalShown={this.isModalShown[EModalType.CONFIRMATION]} handleClose={this.handleClose} />
           </div>)
           }
           <AboutModal isModalShown={this.isModalShown[EModalType.ABOUT]} handleClose={this.handleClose} isCBioPortal={this.props.isCBioPortal}/>

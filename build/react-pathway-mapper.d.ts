@@ -21,7 +21,7 @@ interface IPathwayMapperProps {
 }
 export declare enum EModalType {
     STUDY = 0,
-    CHANGE_NAME = 1,
+    CONFIRMATION = 1,
     PROFILES = 2,
     ABOUT = 3,
     PW_DETAILS = 4,
