@@ -5188,6 +5188,14 @@ cytoscape-panzoom@~2.5.2:
   dependencies:
     jquery "^1.4 || ^2.0 || ^3.0"
 
+cytoscape-qtip@^2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/cytoscape-qtip/-/cytoscape-qtip-2.7.1.tgz#8ed1f689c125d9d741a16e78a8355e4c224f14f2"
+  integrity sha1-jtH2icEl2ddBoW54qDVeTCJPFPI=
+  dependencies:
+    jquery "^2.0 || ^1.10.0"
+    qtip2 "^3.0 || ^2.2.0"
+
 "cytoscape-undo-redo@github:iVis-at-Bilkent/cytoscape.js-undo-redo#master":
   version "1.3.1"
   resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-undo-redo/tar.gz/bc9b29052843a11028c1d3c1607c21a8f52f36cc"
@@ -6242,6 +6250,11 @@ etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
+
+ev-emitter@^1.0.0:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/ev-emitter/-/ev-emitter-1.1.1.tgz#8f18b0ce5c76a5d18017f71c0a795c65b9138f2a"
+  integrity sha512-ipiDYhdQSCZ4hSbX4rMW+XzNKMD1prg/sTvoVmSLkuQ1MVlwjJQQA+sW8tMYR3BLUr9KjodFV4pvzunvRhd33Q==
 
 event-emitter@~0.3.5:
   version "0.3.5"
@@ -7991,6 +8004,13 @@ ignore@^5.1.1:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.2.tgz#e28e584d43ad7e92f96995019cc43b9e1ac49558"
   integrity sha512-vdqWBp7MyzdmHkkRWV5nY+PfGRbYbahfuvsBCh277tq+w9zyNi7h5CYJCK0kmzti9kU+O/cB7sE8HvKv6aXAKQ==
 
+imagesloaded@>=3.0.0:
+  version "4.1.4"
+  resolved "https://registry.yarnpkg.com/imagesloaded/-/imagesloaded-4.1.4.tgz#1376efcd162bb768c34c3727ac89cc04051f3cc7"
+  integrity sha512-ltiBVcYpc/TYTF5nolkMNsnREHW+ICvfQ3Yla2Sgr71YFwQ86bDwV9hgpFhFtrGPuwEx5+LqOHIrdXBdoWwwsA==
+  dependencies:
+    ev-emitter "^1.0.0"
+
 immer@1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/immer/-/immer-1.10.0.tgz#bad67605ba9c810275d91e1c2a47d4582e98286d"
@@ -9541,12 +9561,12 @@ jquery-ui-dist@^1.12.1:
   resolved "https://registry.yarnpkg.com/jquery-ui-dist/-/jquery-ui-dist-1.12.1.tgz#5c0815d3cc6f90ff5faaf5b268a6e23b4ca904fa"
   integrity sha1-XAgV08xvkP9fqvWyaKbiO0ypBPo=
 
-"jquery@^1.4 || ^2.0 || ^3.0", jquery@latest:
+jquery@>=1.6.0, "jquery@^1.4 || ^2.0 || ^3.0", jquery@latest:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
   integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
 
-"jquery@^2.0.0 || ^1.4.0":
+"jquery@^2.0 || ^1.10.0", "jquery@^2.0.0 || ^1.4.0":
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.4.tgz#2c89d6889b5eac522a7eea32c14521559c6cbf02"
   integrity sha1-LInWiJterFIqfuoywUUhVZxsvwI=
@@ -13540,6 +13560,14 @@ qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
   integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
+
+"qtip2@^3.0 || ^2.2.0":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/qtip2/-/qtip2-3.0.3.tgz#7df088ae4412c24a4064de69e824cb3cf76210dc"
+  integrity sha1-ffCIrkQSwkpAZN5p6CTLPPdiENw=
+  dependencies:
+    imagesloaded ">=3.0.0"
+    jquery ">=1.6.0"
 
 query-string@^4.1.0:
   version "4.3.4"

@@ -8,6 +8,7 @@ import "./pmv2.css";
 import "cytoscape-panzoom/cytoscape.js-panzoom.css";
 import "cytoscape-navigator/cytoscape.js-navigator.css";
 import 'react-toastify/dist/ReactToastify.css';
+import './qtip.css';
 import ViewOperationsManager from './ViewOperationsManager';
 import GridOptionsManager from './GridOptionsManager';
 interface IPathwayMapperProps {
@@ -91,7 +92,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     setActiveEdgeHandler(setActiveEdge: (edgeId: number) => void): void;
     render(): JSX.Element;
     componentDidMount(): void;
-    openChangeNameModal(oldName: string): void;
     handleOpen(modalId: EModalType): void;
     handleClose(modalId: EModalType): void;
     editorHandler(editor: any, eh: any, undoRedoManager: any): void;

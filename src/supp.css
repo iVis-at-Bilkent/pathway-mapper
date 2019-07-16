@@ -137,3 +137,7 @@ tbody tr:hover{
 .list-group-item:focus{
     background-color: white;
 }
+
+.qtip-tipsy{
+    background: rgba(47,65,84,.92) !important;
+}

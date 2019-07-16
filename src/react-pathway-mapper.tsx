@@ -21,10 +21,10 @@ import "./pmv2.css";
 import "cytoscape-panzoom/cytoscape.js-panzoom.css";
 import "cytoscape-navigator/cytoscape.js-navigator.css";
 import 'react-toastify/dist/ReactToastify.css';
+import './qtip.css';
 import Loader from 'react-loader-spinner';
 import Sidebar from './Sidebar';
 import StudyModal from './modals/StudyModal';
-import ChangeNameModal from './modals/ChangeNameModal';
 import Buttonbar from "./ui/Buttonbar";
 import ProfilesModal from './modals/ProfilesModal';
 
@@ -129,7 +129,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     } else {
       this.selectedPathway = "";
     }
-    this.isModalShown = [false, false, false, false, false, false, false];
+    this.isModalShown = [false, false, false, false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
@@ -387,7 +387,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   @computed get profileEnabledMap(){
     const profileEnabledMap = {};
-    this.profiles.forEach((profile: IProfileMetaData) => {profileEnabledMap[profile.profileId] = profile.enabled});
+    this.profiles.forEach((profile: IProfileMetaData) => {profileEnabledMap[profile.profileId] = profile.enabled;});
     console.log(profileEnabledMap);
     return profileEnabledMap;
   }
@@ -472,8 +472,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             </Col>)
             }
             <Col xs={isCBioPortal ? 9 : 11} style={{paddingLeft: "0px"}}>
-                <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}  setActiveEdge={this.setActiveEdge}
-                openChangeNameModal={this.openChangeNameModal} editorHandler={this.editorHandler} 
+                <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}
+                setActiveEdge={this.setActiveEdge} editorHandler={this.editorHandler} 
                 includePathway={this.includePathway} selectedPathway={this.selectedPathway}
                 pathwayHandler={this.pathwayHandler}/>
             </Col>
@@ -491,7 +491,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           {
           (!this.props.isCBioPortal && <div id="pm-modals">
             <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
-            <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[EModalType.CHANGE_NAME]} handleClose={this.handleClose} oldName={this.oldName}/>
             <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[EModalType.PROFILES]} handleClose={this.handleClose} />
             <PathwayDetailsModal isModalShown={this.isModalShown[EModalType.PW_DETAILS]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <GridSettings isModalShown={this.isModalShown[EModalType.GRID]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
@@ -507,19 +506,19 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             type="file"
             ref={(ref) => {this.pathwayActions.setUploaders(ref, false);}}
             style={{display: 'none'}}
-            onChange={(e) => {this.pathwayActions.onChangeFile(e, false)}}
+            onChange={(e) => {this.pathwayActions.onChangeFile(e, false);}}
           />
           <input id="myInput2"
             type="file"
             ref={(ref) => {this.pathwayActions.setUploaders(ref, true);}}
             style={{display: 'none'}}
-            onChange={(e) => {this.pathwayActions.onChangeFile(e, true)}}
+            onChange={(e) => {this.pathwayActions.onChangeFile(e, true);}}
           />
           <input id="myInput3"
             type="file"
             ref={(ref) => {this.pathwayActions.setOverlayUploader(ref);}}
             style={{display: 'none'}}
-            onChange={(e) => {this.pathwayActions.overlayFromText(e.target.files[0])}}
+            onChange={(e) => {this.pathwayActions.overlayFromText(e.target.files[0]);}}
           />
           
           </div>)
@@ -532,13 +531,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(!this.props.isCBioPortal)
     $(".container").css('width', innerWidth * 0.9);
   }
-
-  @autobind
-  openChangeNameModal(oldName: string){
-    this.isModalShown[EModalType.CHANGE_NAME] = true;
-    this.oldName = oldName;
-  }
-
   @autobind
   handleOpen(modalId: EModalType){
     this.isModalShown[modalId] = true;

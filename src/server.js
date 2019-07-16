@@ -60,7 +60,7 @@ function biogeneDataHandler(req,res)
             res.end();
         }
         else {
-            console.log(response.statusCode) // Print the error
+            //console.log(response.statusCode) // Print the error
         }
     })
 
@@ -68,9 +68,7 @@ function biogeneDataHandler(req,res)
 
 function loadGraphHandler(req, res)
 {
-    console.log("bastik");
-    console.log(req);
-    console.log(res);
+    console.log("LoadGraphHandler called");
     if(req.file)
     {
         fs.readFile(req.file.path, {encoding: 'utf-8'}, function(err,data)
@@ -80,9 +78,11 @@ function loadGraphHandler(req, res)
                 res.writeHead(200, {'Content-Type': 'multipart/form-data'});
                 res.write(data);
                 res.end();
+                console.log("Graph loaded");
             }
             else
             {
+                console.log("err");
                 console.log(err);
             }
             fs.unlinkSync(req.file.path);

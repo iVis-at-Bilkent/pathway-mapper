@@ -7,7 +7,7 @@ export default class QtipManager{
   {
     this.cy = cy;
     this.editor = editor;
-  };
+  }
 
   generateEdgeQtipContentHTML(edge)
   {
@@ -187,7 +187,7 @@ export default class QtipManager{
     }
 
     return wrapper;
-  };
+  }
 
   addQtipToElements(eles)
   {
@@ -250,7 +250,7 @@ export default class QtipManager{
       }
       ele.qtip(qTipOpts);
     });
-  };
+  }
 
 
   //Utility Functions

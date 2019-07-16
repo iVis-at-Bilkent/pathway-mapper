@@ -5,7 +5,6 @@ declare type PathwayMapperType = {
     isCbioPortal: boolean;
     editorHandler: Function;
     selectedPathway: string;
-    openChangeNameModal: Function;
     setActiveEdge: Function;
     profiles: IProfileMetaData[];
     includePathway: (pathwayData?: IPathwayData, pathwayName?: string) => void;

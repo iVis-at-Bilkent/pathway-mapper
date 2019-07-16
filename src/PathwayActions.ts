@@ -311,6 +311,7 @@ export default class PathwayActions {
           request.responseText,
           false
         )
+        console.log('Process File')
 
         if (isMerge) {
           console.log('It is a merge')
@@ -333,6 +334,10 @@ export default class PathwayActions {
 
         this.pathwayHandler(pathwayData.title)
         this.resetUndoStack()
+      } else {
+        console.error(
+          'Process File error: ' + request.status + ', ' + request.responseText
+        )
       }
     }
     request.open('POST', '/loadGraph')

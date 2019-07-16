@@ -41,13 +41,13 @@ const contextMenus = require('cytoscape-context-menus');
 const konva = require('konva');
 const viewUtilities = require('cytoscape-view-utilities');
 const grid_guide = require('cytoscape-grid-guide');
+const cyqtip = require('cytoscape-qtip');
 
 type PathwayMapperType = {
   isCollaborative: boolean;
   isCbioPortal: boolean;
   editorHandler: Function;
   selectedPathway: string;
-  openChangeNameModal: Function;
   setActiveEdge: Function;
   profiles: IProfileMetaData[];
   includePathway: (pathwayData?: IPathwayData, pathwayName?: string) => void;
@@ -240,6 +240,11 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     }
     try { 
       viewUtilities(cytoscape, $); // register extension
+    } catch(err){
+      console.log(err);
+    }
+    try { 
+      cyqtip(cytoscape, $); // register extension
     } catch(err){
       console.log(err);
     }
@@ -505,19 +510,30 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     });
 
     this.cy.on('doubleTap', 'node',  function (e: any) {
-      // @ts-ignore
-      var eventIsDirect = (e.target === this);
+
+      const eventIsDirect = (e.target === this);
 
       if (eventIsDirect) {
-        that.props.openChangeNameModal(e.target.data('name'));
+        //Remove qtips
+        $(".qtip").remove();
+        that.qtipManager.addQtipToElements(e.target);
+        var api = this.qtip('api');
+        if (api) {
+            api.show();
+        }
       }
     });
 
     this.cy.on('doubleTap', 'edge', function (e: any) {
-      // @ts-ignore
-      var eventIsDirect = (e.target === this);
+      const eventIsDirect = (e.target === this);
 
       if (eventIsDirect) {
+          $(".qtip").remove();
+          that.qtipManager.addQtipToElements(e.target);
+          // var api = this.qtip('api');
+          // if (api) {
+          //     api.show();
+          // }
       }
     });
 
