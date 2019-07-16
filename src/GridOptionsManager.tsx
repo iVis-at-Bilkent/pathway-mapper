@@ -3,13 +3,7 @@ import _ from "lodash";
 export default class GridOptionsManager
 {
 
-    defaultGridGuideOptions: any;
-    currentProperties: any;
-    cy: any;
-    constructor(cy: any)
-    {
-        this.cy = cy;
-        this.defaultGridGuideOptions =
+    static defaultGridGuideOptions = 
         {
             // On/Off Modules
             /* From the following four snap options, at most one should be true at a given time */
@@ -56,9 +50,14 @@ export default class GridOptionsManager
             // Parent Padding
             parentSpacing: -1 // -1 to set paddings of parents to gridSpacing
         };
+    currentProperties: any;
+    cy: any;
+    constructor(cy: any)
+    {
+        this.cy = cy;
 
         this.currentProperties = {};
-        this.changeParameters(this.defaultGridGuideOptions);
+        this.changeParameters(GridOptionsManager.defaultGridGuideOptions);
 
     }
 
@@ -75,7 +74,7 @@ export default class GridOptionsManager
 
     getDefaultOptions()
     {
-        return this.defaultGridGuideOptions;
+        return GridOptionsManager.defaultGridGuideOptions;
     }
 
     setSnapToGuidelines(state)

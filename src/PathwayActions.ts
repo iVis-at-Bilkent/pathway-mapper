@@ -9,6 +9,7 @@ import ViewOperationsManager from './ViewOperationsManager'
 import pathways from './pathways.json'
 import GridOptionsManager from './GridOptionsManager'
 import { ILayoutProperties } from './modals/LayoutProperties'
+import { EGridType } from './modals/GridSettings'
 
 export default class PathwayActions {
   @observable
@@ -28,6 +29,9 @@ export default class PathwayActions {
   viewOperationsManager: ViewOperationsManager
   overlayUploader: any
 
+  @observable
+  enabledType: EGridType
+
   constructor(
     pathwayHandler: (pathwayName: string) => void,
     profiles: IProfileMetaData[],
@@ -40,6 +44,7 @@ export default class PathwayActions {
     this.fileManager = fileManager
     this.includePathway = includePathway
     this.isCBioPortal = isCBioPortal
+    this.enabledType = EGridType.NONE
   }
 
   setLayoutProperties(layoutProperties: ILayoutProperties) {
@@ -56,6 +61,13 @@ export default class PathwayActions {
   toggleGuide(isEnabled: boolean) {
     this.gridOptionsManager.setSnapToGuidelines(isEnabled)
     this.gridOptionsManager.setShowGrid(false)
+  }
+
+  adjustGridSettings(gridSize: number, color: string) {
+    this.gridOptionsManager.currentProperties.gridSpacing = gridSize
+    this.gridOptionsManager.currentProperties.guidelinesStyle.strokeStyle = color
+    this.gridOptionsManager.currentProperties.guidelinesStyle.horizontalDistColor = color
+    this.gridOptionsManager.currentProperties.guidelinesStyle.verticalDistColor = color
   }
 
   @autobind

@@ -48,6 +48,7 @@ import layoutPropSvg from '../toolbar/layout-properties.svg';
 import helpSvg from '../toolbar/quick-help.svg';
 import { EModalType } from "../react-pathway-mapper";
 import { observer } from "mobx-react";
+import { EGridType } from "../modals/GridSettings";
 
 
 interface IButtonbarProps {
@@ -62,10 +63,6 @@ interface ISVGFunction{
     isFocused?: boolean;
 }
 
-interface IGridGuidelineState{
-    isGridEnabled: boolean;
-    isGuideEnabled : boolean;
-}
 
 @observer
 export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
@@ -74,25 +71,29 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
     @observable
     private searchedGene: string;
 
-    @observable
-    private gridGuide: IGridGuidelineState;
 
     constructor(props: IButtonbarProps) {
         super(props);
         this.searchedGene = "";
-        this.gridGuide = {isGridEnabled: false, isGuideEnabled: false};
+        this.props.pathwayActions.enabledType = EGridType.NONE;
     }
 
-    setGridGuide(isToggleGrid: boolean){
-
-        if(isToggleGrid){
-            this.gridGuide.isGridEnabled = !this.gridGuide.isGridEnabled;
-            this.gridGuide.isGuideEnabled = false;
-            this.props.pathwayActions.toggleGrid(this.gridGuide.isGridEnabled);
+    setEnabledType(newType: EGridType){
+        if(newType === this.props.pathwayActions.enabledType){
+            this.props.pathwayActions.enabledType = EGridType.NONE;
         } else {
-            this.gridGuide.isGuideEnabled = !this.gridGuide.isGuideEnabled;
-            this.gridGuide.isGridEnabled = false;
-            this.props.pathwayActions.toggleGuide(this.gridGuide.isGuideEnabled);
+            this.props.pathwayActions.enabledType = newType;
+        }
+
+        // Enabled type calculated
+
+        if(this.props.pathwayActions.enabledType === EGridType.GRID){
+            this.props.pathwayActions.toggleGrid(true);
+        }
+        else if(this.props.pathwayActions.enabledType === EGridType.GUIDE){
+            this.props.pathwayActions.toggleGuide(true);
+        } else {
+            this.props.pathwayActions.toggleGrid(false); // This will disable both.
         }
     }
     render() {
@@ -116,8 +117,8 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
             {svg: avrSvg, function: () => {this.props.pathwayActions.align("vRight");}, tooltip: "Align Vertical Right"}];
             
         const utilFunctions: ISVGFunction[] = [
-            {isFocused: this.gridGuide.isGridEnabled, svg: gridSvg, function: () => {this.setGridGuide(true);}, tooltip: "Enable Grid: Show and snap to grid"},
-            {isFocused: this.gridGuide.isGuideEnabled, svg: guideSvg, function: () => {this.setGridGuide(false);}, tooltip: "Enable Guidelines: Enable and snap to alignment guidelines"}];
+            {isFocused: this.props.pathwayActions.enabledType === EGridType.GRID, svg: gridSvg, function: () => {this.setEnabledType(EGridType.GRID);}, tooltip: "Enable Grid: Show and snap to grid"},
+            {isFocused: this.props.pathwayActions.enabledType === EGridType.GUIDE, svg: guideSvg, function: () => {this.setEnabledType(EGridType.GUIDE);}, tooltip: "Enable Guidelines: Enable and snap to alignment guidelines"}];
 
         const visibilityFunctions: ISVGFunction[] = [
             {svg: hideSvg, function: () => {this.props.pathwayActions.hideSelected();}, tooltip: "Hide Selected"},

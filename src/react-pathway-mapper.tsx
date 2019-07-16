@@ -486,11 +486,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             </Col>
             }
           </Row>
-
-
-
-
-
             { (<div id="invisibles">
 
           {
@@ -499,7 +494,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <ChangeNameModal pathwayActions={this.pathwayActions} isModalShown={this.isModalShown[EModalType.CHANGE_NAME]} handleClose={this.handleClose} oldName={this.oldName}/>
             <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[EModalType.PROFILES]} handleClose={this.handleClose} />
             <PathwayDetailsModal isModalShown={this.isModalShown[EModalType.PW_DETAILS]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
-            <GridSettings isModalShown={this.isModalShown[EModalType.GRID]} handleClose={this.handleClose}/>
+            <GridSettings isModalShown={this.isModalShown[EModalType.GRID]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <QuickHelpModal isModalShown={this.isModalShown[EModalType.HELP]} handleClose={this.handleClose}/>
             <LayoutProperties isModalShown={this.isModalShown[EModalType.LAYOUT]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
           </div>)
