@@ -995,7 +995,6 @@ export default class EditorActionsManager{
             newEdges.push(newEdge);
         }
         console.log("From addEdgesCy");
-        console.log(this.cy.filter('node[name="MYC"]'));
         this.cy.add(newEdges);
     };
 
