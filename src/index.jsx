@@ -6,7 +6,7 @@ import WelcomePage from "./WelcomePage";
 window.onload = () => {
   const rootEl = document.getElementById('app');
   console.log(window.location.search);
-  const placeHolderGenes = [{hugoGeneSymbol: "TP53"}, {hugoGeneSymbol: "CDKN2A"}, {hugoGeneSymbol: "CCNE1"}];
+  const placeHolderGenes = [{hugoGeneSymbol: "TP53Q"}, {hugoGeneSymbol: "CDKN2AQ"}, {hugoGeneSymbol: "CCNE1Q"}];
 
 
   const pathwayName = findGetParameter("pathwayName");
@@ -26,7 +26,7 @@ window.onload = () => {
   function postWelcome(isCollaborative){
     
     if(!pathwayName){
-      render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={placeHolderGenes} store={undefined}/>, rootEl);
+      render(<PathwayMapper isCBioPortal={true} isCollaborative={isCollaborative} genes={placeHolderGenes} store={undefined}/>, rootEl);
     } else {
       render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={placeHolderGenes} store={undefined} pathwayName={pathwayName} alterationData={alterationData}/>, rootEl);
     }

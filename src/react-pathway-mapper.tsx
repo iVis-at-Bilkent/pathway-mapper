@@ -312,16 +312,14 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
               //console.log(geneType);
             }
 
-            if(genesMatching.length !== 0){
-              if(rankingMode === 0){
-                maxHeap.insert(genesMatching.length, {pathwayName: pathwayName});
-              } else if(rankingMode === 1){
-                maxHeap.insert(genesMatching.length / geneCount * 100, {pathwayName: pathwayName}); 
-              } else if(rankingMode === 2){
-                maxHeap.insert(sumOfAlterations, {pathwayName: pathwayName}); 
-              } else if(rankingMode === 3){
-                maxHeap.insert(genesMatching.length * sumOfAlterations / geneCount, {pathwayName: pathwayName});
-              }
+            if(rankingMode === 0){
+              maxHeap.insert(genesMatching.length, {pathwayName: pathwayName});
+            } else if(rankingMode === 1){
+              maxHeap.insert(genesMatching.length / geneCount * 100, {pathwayName: pathwayName}); 
+            } else if(rankingMode === 2){
+              maxHeap.insert(sumOfAlterations, {pathwayName: pathwayName}); 
+            } else if(rankingMode === 3){
+              maxHeap.insert(genesMatching.length * sumOfAlterations / geneCount, {pathwayName: pathwayName});
             }
 
         }
@@ -332,10 +330,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         const pathwayName = top.getValue().pathwayName;
         bestPathways.push({score: top.getKey(), genesMatched: matchedGenesMap[pathwayName], pathwayName: pathwayName});
     }
-    if(this.bestPathwaysAlgos.length === 0 && bestPathways.length > 0) // First pathway of the first method is shown as the default pathway.
+    if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
       this.selectedPathway = bestPathways[0].pathwayName;
-    if(bestPathways.length > 0)
-      this.bestPathwaysAlgos.push(bestPathways);
+    this.bestPathwaysAlgos.push(bestPathways);
     console.log("Genes");
     console.log(this.props.genes);
     console.log("Score Map");
@@ -527,7 +524,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             style={{display: 'none'}}
             onChange={(e) => {this.pathwayActions.overlayFromText(e.target.files[0]);}}
           />
-          
           </div>)
             }
       </Grid>
