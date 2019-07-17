@@ -4,7 +4,7 @@ import SVGExporter from "./SVGExporter";
 import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
 import { IProfileMetaData, IPathwayData } from "./react-pathway-mapper";
 import { observable } from "mobx";
-import { ILayoutProperties } from "./modals/LayoutProperties";
+import LayoutProperties, { ILayoutProperties } from "./modals/LayoutProperties";
 
 const _ = require('underscore');
 
@@ -806,6 +806,7 @@ export default class EditorActionsManager{
     {
         var newLayoutProps = op.li;
         this.layoutProperties = _.clone(newLayoutProps);
+        LayoutProperties.layoutProperties = _.clone(this.layoutProperties);
         //Notify observers to reflect changes on colalborative object to the views
         this.notifyObservers();
     };

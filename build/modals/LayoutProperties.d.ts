@@ -27,7 +27,7 @@ export interface ILayoutProperties {
     randomize: boolean;
 }
 export default class LayoutProperties extends React.Component<ILayoutPropertiesProps> {
-    layoutProperties: ILayoutProperties;
+    static layoutProperties: ILayoutProperties;
     constructor(props: ILayoutPropertiesProps);
     updateLayoutProperties(property: string, val: boolean | number): void;
     render(): JSX.Element;

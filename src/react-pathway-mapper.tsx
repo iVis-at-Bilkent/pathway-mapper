@@ -125,11 +125,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.fileManager = new FileOperationsManager();
     this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, 
                                              this.handleOpen, this.props.isCBioPortal);
-    if(this.props.pathwayName){
-      this.pathwayActions.changePathway(this.props.pathwayName);
-    } else {
-      this.selectedPathway = "";
-    }
     this.isModalShown = [false, false, false, false, false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
@@ -533,6 +528,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   componentDidMount(){
     if(!this.props.isCBioPortal)
     $(".container").css('width', innerWidth * 0.9);
+
+    if(this.props.pathwayName){
+      this.pathwayActions.changePathway(this.props.pathwayName);
+    } else {
+      this.selectedPathway = "";
+    }
   }
   @autobind
   handleOpen(modalId: EModalType){
