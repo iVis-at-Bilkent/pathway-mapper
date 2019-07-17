@@ -70,7 +70,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
             continue;
             }
             const item = <MenuItem key={study} onClick={() => {console.log(this.selectedStudyData); this.selectedStudyData = cancerStudies[study]; this.preparePortalAccess(cancerStudies[study][0]);}}>
-            {cancerStudies[study][0]}
+            {cancerStudies[study][1]}
             </MenuItem>;
     
             this.itemArray.push(item);
@@ -92,28 +92,33 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
     }
     render(){
         return(
-            <Modal show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.STUDY); this.resetModal();}}>
+            <Modal id="cbioPortalModal" show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.STUDY); this.resetModal();}}>
                 <Modal.Header closeButton>
                     <Modal.Title><h3>Profile Data from cBioPortal</h3></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                
-                    <DropdownButton id="dropdown-study" title={this.selectedStudyData[1] || "Choose study"}>
-                    {this.itemArray}
-                    </DropdownButton>
-                    
+
+                    <div id="cancerDropDown">
+                        <h4>Select Cancer Study</h4>
+                        <DropdownButton id="dropdown-study" title={this.selectedStudyData[1] || "Choose study"}>
+                        {this.itemArray}
+                        </DropdownButton>
+                    </div>
                     { Object.keys(this.dataTypes).map((dataType: string) => {
                         return <Checkbox key={dataType} disabled={!this.dataTypes[dataType].enabled} 
-                                onClick={() => {this.handleCheckboxClick(dataType);}} checked={this.dataTypes[dataType].checked}> 
+                        onClick={() => {this.handleCheckboxClick(dataType);}} checked={this.dataTypes[dataType].checked}> 
                                 {dataType}
                                 </Checkbox>;
                     })
                     }
-
-                    <Button bsClass="success" 
-                    onClick={() => {this.props.loadFromCBio(this.dataTypes, this.selectedStudyData); this.props.handleClose(EModalType.STUDY); this.resetModal();}}>Load</Button>
-
+                    
+                    <br/>
                 </Modal.Body>
+
+                <Modal.Footer>
+                    <Button bsClass="success" 
+                    onClick={() => {this.props.loadFromCBio(this.dataTypes, this.selectedStudyData); this.props.handleClose(EModalType.STUDY); this.resetModal();}}>Load Data</Button>
+                </Modal.Footer>
             </Modal>
         );
     }

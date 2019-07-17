@@ -141,3 +141,8 @@ tbody tr:hover{
 .qtip-tipsy{
     background: rgba(47,65,84,.92) !important;
 }
+
+#dropdown-study{
+    width: 500px;
+    text-align: left;
+}
