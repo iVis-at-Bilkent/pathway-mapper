@@ -36,8 +36,14 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
         this.isPercentageMatch = 0;
         this.isAlterationEnabled = 0;
         this.dropDownTitle = "Match count";
-        this.setBestPathwayMethod(0);
-        
+
+        if(this.props.bestPathwaysAlgos.length === 0){
+            this.selectedPathway = "ACC-2016-TP53-RB-pathway";
+            this.props.pathwayActions.changePathway(this.selectedPathway);
+            this.bestPathways = [];
+        } else {
+            this.setBestPathwayMethod(0);
+        }
         console.log("Pathway Algos");
         console.log(this.props.bestPathwaysAlgos);
     }

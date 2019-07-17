@@ -5207,7 +5207,7 @@ cytoscape-view-utilities@^2.0.6:
   dependencies:
     mousetrap "^1.6.0"
 
-cytoscape@^3.8.1:
+cytoscape@latest:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/cytoscape/-/cytoscape-3.8.1.tgz#0b87f646054ea3e86f347e9c53a2fc64df1be31b"
   integrity sha512-hfoGBlqj8LJPnU5WgmQKdGpZaMknk8dPyGEJlzLa1xPwhmBscPMrmPxK2ffyKJIozeHm4UoYw4gPc0rAif4kVA==
@@ -9873,7 +9873,7 @@ kleur@^2.0.1:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-2.0.2.tgz#b704f4944d95e255d038f0cb05fb8a602c55a300"
   integrity sha512-77XF9iTllATmG9lSlIv0qdQ2BQ/h9t0bJllHlbvsQ0zUWfU7Yi0S8L5JXzPZgkefIiajLmBJJ4BsMJmqcf7oxQ==
 
-konva@^3.4.0:
+konva@latest:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/konva/-/konva-3.4.0.tgz#71caa4c82f593710affa47d66fe39b1ee9df51cf"
   integrity sha512-UBQPix4oStWHw32xgIeM/UygtKHBta6HYrPyfGIlnieQYgJZG7fjG4+TUkq6atY+DCs8jroEU0/a94N9dIgOdg==

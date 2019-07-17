@@ -311,26 +311,31 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
               }
               //console.log(geneType);
             }
-            if(rankingMode === 0){
-              maxHeap.insert(genesMatching.length, {pathwayName: pathwayName});
-            } else if(rankingMode === 1){
-              maxHeap.insert(genesMatching.length / geneCount * 100, {pathwayName: pathwayName}); 
-            } else if(rankingMode === 2){
-              maxHeap.insert(sumOfAlterations, {pathwayName: pathwayName}); 
-            } else if(rankingMode === 3){
-              maxHeap.insert(genesMatching.length * sumOfAlterations / geneCount, {pathwayName: pathwayName});
+
+            if(genesMatching.length !== 0){
+              if(rankingMode === 0){
+                maxHeap.insert(genesMatching.length, {pathwayName: pathwayName});
+              } else if(rankingMode === 1){
+                maxHeap.insert(genesMatching.length / geneCount * 100, {pathwayName: pathwayName}); 
+              } else if(rankingMode === 2){
+                maxHeap.insert(sumOfAlterations, {pathwayName: pathwayName}); 
+              } else if(rankingMode === 3){
+                maxHeap.insert(genesMatching.length * sumOfAlterations / geneCount, {pathwayName: pathwayName});
+              }
             }
+
         }
     }
     console.log("Best Pathways");
-    for(let i = 0; i < this.NUMBER_OF_PATHWAYS_TO_SHOW; i++){
+    for(let i = 0; i < this.NUMBER_OF_PATHWAYS_TO_SHOW && maxHeap.size() > 0; i++){
         const top = maxHeap.extractMax();
         const pathwayName = top.getValue().pathwayName;
         bestPathways.push({score: top.getKey(), genesMatched: matchedGenesMap[pathwayName], pathwayName: pathwayName});
     }
-    if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
+    if(this.bestPathwaysAlgos.length === 0 && bestPathways.length > 0) // First pathway of the first method is shown as the default pathway.
       this.selectedPathway = bestPathways[0].pathwayName;
-    this.bestPathwaysAlgos.push(bestPathways);
+    if(bestPathways.length > 0)
+      this.bestPathwaysAlgos.push(bestPathways);
     console.log("Genes");
     console.log(this.props.genes);
     console.log("Score Map");
