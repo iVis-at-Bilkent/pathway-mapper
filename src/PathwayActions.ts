@@ -357,7 +357,7 @@ export default class PathwayActions {
           })
         }
 
-        this.pathwayHandler(pathwayData.title)
+        this.pathwayHandler(pathwayData.title + '_imported')
         this.resetUndoStack()
       } else {
         console.error(
