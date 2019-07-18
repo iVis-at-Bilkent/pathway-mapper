@@ -1371,7 +1371,7 @@ tbody tr:hover{
 
 .ui-cytoscape-nodeadd img {
     width: 110px;
-    height: 28px;
+    height: 28.5px;
 }
 
 #ranking-bar .label:hover{
@@ -1449,5 +1449,9 @@ tbody tr:hover{
 
 #searchGeneToolbar{
     max-width: 200px;
+}
+
+#compartmentNodeDiv img{
+    height: 30.26px;
 }
 /*# sourceMappingURL=base.css.map*/

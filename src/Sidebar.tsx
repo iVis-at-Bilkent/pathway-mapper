@@ -119,7 +119,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                     return (<div>
                         <a style={{marginBottom: "5px"}} className={ "list-group-item " + (this.activeEdge === i ? "active" : "")} 
                         onClick={() => {this.addEdge(i);}} href="#" >
-                        <img width="20%" className="pull-left"src={edgeImgs[i]}></img>{' '}
+                        <img style={{width:"30px"}} className="pull-left" src={edgeImgs[i]}></img>{' '}
                         {edgeType}
                         </a></div>);
                     })
