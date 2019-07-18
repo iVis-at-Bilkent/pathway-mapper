@@ -1250,6 +1250,7 @@ export default class EditorActionsManager{
                 posDiffY: 0
             };
             this.undoRedoManager.do('changeParent', param);
+            console.log(this.undoRedoManager.getUndoStack());
 
             //The elements after change parent operation are different so we find them by using the saved ids
             // and add them to the collection

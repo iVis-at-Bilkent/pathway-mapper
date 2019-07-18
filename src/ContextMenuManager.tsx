@@ -1,13 +1,18 @@
 import EditorActionsManager from "./EditorActionsManager";
+import { EModalType } from "./react-pathway-mapper";
 
 export default class ContextMenuManager {
   private cy: any;
   private editor: EditorActionsManager;
   private isCBioPortal: boolean;
-  constructor(cy: any, editor: EditorActionsManager, isCBioPortal: boolean){
+  private handleOpen: (modalId: EModalType) => void;
+  private undoRedoManager: any;
+  constructor(cy: any, editor: EditorActionsManager, isCBioPortal: boolean, handleOpen: (modalId: EModalType) => void, undoRedoManager: any){
     this.cy = cy;
     this.editor = editor;
     this.isCBioPortal = isCBioPortal;
+    this.handleOpen = handleOpen;
+    this.undoRedoManager = undoRedoManager;
     this.init();
   }
 
@@ -23,8 +28,8 @@ export default class ContextMenuManager {
         // Filters the elements to have this menu item on cxttap
         // If the selector is not truthy no elements will have this menu item on cxttap
         coreAsWell: true,
-        onClickFunction: function (event) {
-            var selectedEles = this.cy.elements(':selected');
+        onClickFunction: (event) => {
+            const selectedEles = this.cy.elements(':selected');
             classRef.editor.removeElement(selectedEles);
         },
         disabled: false, // Whether the item will be created as disabled
@@ -48,8 +53,8 @@ export default class ContextMenuManager {
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           coreAsWell: true,
-          onClickFunction: function (event) {
-            //this.appManager.portalAccessView.render();
+          onClickFunction: (event) => {
+            this.handleOpen(EModalType.STUDY);
           },
           disabled: false, // Whether the item will be created as disabled
           hasTrailingDivider: true, // Whether the item will have a trailing divider
@@ -149,10 +154,10 @@ export default class ContextMenuManager {
         // If the selector is not truthy no elements will have this menu item on cxttap
         selector: 'node',
         onClickFunction: function (event) {
-          var ele = event.target;
-          var selectedNodes = classRef.cy.nodes(':selected');
+          const ele = event.target;
+          const selectedNodes = classRef.cy.nodes(':selected');
 
-          var notValid = false;
+          let notValid = false;
           selectedNodes.forEach(function (tmpNode, i) {
 
             if (tmpNode.isParent()) {
@@ -187,7 +192,7 @@ export default class ContextMenuManager {
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           coreAsWell: true,
-          onClickFunction: function (event) {
+          onClickFunction: (event) => {
               this.undoRedoManager.undo();
           },
           disabled: false, // Whether the item will be created as disabled
@@ -199,8 +204,8 @@ export default class ContextMenuManager {
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           coreAsWell: true,
-          onClickFunction: function (event) {
-            // classRef.undoRedoManager.redo();
+          onClickFunction: (event) => {
+            this.undoRedoManager.redo();
           },
           disabled: false, // Whether the item will be created as disabled
           hasTrailingDivider: true, // Whether the item will have a trailing divider
@@ -211,8 +216,8 @@ export default class ContextMenuManager {
           // Filters the elements to have this menu item on cxttap
           // If the selector is not truthy no elements will have this menu item on cxttap
           coreAsWell: true,
-          onClickFunction: function (event) {
-            classRef.editor.performLayout();
+          onClickFunction: (event) => {
+            this.editor.performLayout();
           },
           disabled: false, // Whether the item will be created as disabled
           hasTrailingDivider: true, // Whether the item will have a trailing divider

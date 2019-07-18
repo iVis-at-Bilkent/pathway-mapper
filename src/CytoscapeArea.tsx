@@ -26,7 +26,7 @@ import complexImg from "./nodes/complex.svg";
 import compartmentImg from "./nodes/compartment.svg";
 // @ts-ignore
 import processImg from "./nodes/process.svg";
-import { IProfileMetaData, IPathwayData } from './react-pathway-mapper';
+import { IProfileMetaData, IPathwayData, EModalType } from './react-pathway-mapper';
 
 const edgeHandles = require('cytoscape-edgehandles');
 const edgeEditing = require('cytoscape-edge-editing');
@@ -52,6 +52,7 @@ type PathwayMapperType = {
   profiles: IProfileMetaData[];
   includePathway: (pathwayData?: IPathwayData, pathwayName?: string) => void;
   pathwayHandler: (pathwayName: string) => void;
+  handleOpen: (modalId: EModalType) => void;
 };
 @observer
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}>{
@@ -292,7 +293,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
 
     this.qtipManager = new QtipManager(this.cy, this.editor);
-    this.cxtMenuManager = new ContextMenuManager(this.cy, this.editor, this.isCbioPortal);
+    this.cxtMenuManager = new ContextMenuManager(this.cy, this.editor, this.isCbioPortal, this.props.handleOpen, this.undoRedoManager);
     this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editor, this.cy, this.props.pathwayHandler);
 
     // Initialize panzoom
@@ -680,6 +681,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.cy.on('noderesize.moveend', () => {
       this.editor.changeNodePositionsByArrows(this.cy.nodes(":selected"));
     });
+
 
   }
 
