@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal, Form, FormGroup, FormControl, Col, Button} from 'react-bootstrap';
+import {Modal, Form, FormGroup, FormControl, Col, Button, InputGroup} from 'react-bootstrap';
 import { observer } from 'mobx-react';
 import PathwayActions from '../PathwayActions';
 import { IPathwayInfo } from '../FileOperationsManager';
@@ -26,46 +26,46 @@ export default class PathwayDetailsModal extends React.Component<IPathwayDetails
 
         return(
 
-            <Modal show={this.props.isModalShown} onHide={() => {this.props.handleClose(4)}}>
+            <Modal id="pathwayDetailsDiv" show={this.props.isModalShown} onHide={() => {this.props.handleClose(4)}}>
                 <Modal.Header closeButton>
                     <Modal.Title><h3>Pathway Properties</h3></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                <Form horizontal>
-                    <FormGroup controlId="formHorizontalEmail">
-                        <Col sm={4}>
-                        File Name:
+                <Form horizontal id="pathwayDetailsForm">
+                    <InputGroup>
+                        <Col style={{textAlign: "left", marginTop: "10px"}}  sm={4}>
+                        File Name
                         </Col>
                         <Col sm={8}>
                         <FormControl type="text" onChange={(e: any) => {this.pathwayInfo.fileName = e.target.value;}}value={this.pathwayInfo.fileName}/>
                         </Col>
-                    </FormGroup>
+                    </InputGroup>
 
-                    <FormGroup controlId="formHorizontalPassword">
-                        <Col sm={4}>
+                    <InputGroup>
+                        <Col style={{textAlign: "left", marginTop: "10px"}} sm={4}>
                         Pathway Title:
                         </Col>
                         <Col sm={8}>
                         <FormControl type="text" onChange={(e: any) => {this.pathwayInfo.pathwayTitle = e.target.value;}}value={this.pathwayInfo.pathwayTitle}/>
                         </Col>
-                    </FormGroup>
+                    </InputGroup>
 
-                    <FormGroup controlId="formHorizontalPassword">
-                        <Col sm={4}>
+                    <InputGroup>
+                        <Col style={{textAlign: "left", marginTop: "10px"}} sm={4}>
                         Pathway Description:
                         </Col>
                         <Col sm={8}>
-                        <FormControl type="text" onChange={(e: any) => {this.pathwayInfo.pathwayDetails = e.target.value;}}value={this.pathwayInfo.pathwayDetails}/>
+                        <textarea className="form-control" rows={3} onChange={(e: any) => {this.pathwayInfo.pathwayDetails = e.target.value;}} value={this.pathwayInfo.pathwayDetails}>
+                            </textarea>
                         </Col>
-                    </FormGroup>
+                    </InputGroup>
 
-                    <FormGroup>
-                        <Col smOffset={1} sm={10}>
-                        <Button onClick={() => {this.props.pathwayActions.setPathwayInfo(this.pathwayInfo); this.props.handleClose(EModalType.PW_DETAILS);}}>Save</Button>
-                        </Col>
-                    </FormGroup>
                 </Form>
                 </Modal.Body>
+
+                <Modal.Footer>
+                    <Button onClick={() => {this.props.pathwayActions.setPathwayInfo(this.pathwayInfo); this.props.handleClose(EModalType.PW_DETAILS);}}>Save</Button>
+                </Modal.Footer>
             </Modal>
 
         )
