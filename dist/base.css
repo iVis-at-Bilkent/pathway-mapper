@@ -1464,4 +1464,8 @@ tbody tr:hover{
     font-size: 12px;
     border-radius: 7px;
 }
+
+.checkbox.layProps{
+    margin-top: 0;
+}
 /*# sourceMappingURL=base.css.map*/

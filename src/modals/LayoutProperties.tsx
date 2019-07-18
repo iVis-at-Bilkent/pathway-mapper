@@ -69,11 +69,11 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body id="layoutPropsForm" className="leftText">
-                    <Form horizontal>
+                    <Form>
                             
                         <InputGroup>
-                            <Col sm={4}>
-                                <ControlLabel>Node Repulsion:</ControlLabel>
+                            <Col className="control-label" sm={4}>
+                                Node Repulsion:
                             </Col>
 
                             <Col sm={8}>
@@ -182,16 +182,16 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <Checkbox checked={LayoutProperties.layoutProperties.tile} onChange={(e: any) => {LayoutProperties.layoutProperties.tile = !LayoutProperties.layoutProperties.tile;}}></Checkbox>
+                                <Checkbox className="layProps" checked={LayoutProperties.layoutProperties.tile} onChange={(e: any) => {LayoutProperties.layoutProperties.tile = !LayoutProperties.layoutProperties.tile;}}></Checkbox>
                             </Col>
                         </InputGroup>
                         <InputGroup>
-                            <Col sm={4}>
-                                <ControlLabel >Animate:</ControlLabel>
+                            <Col className="control-label" sm={4}>
+                                Animate:
                             </Col>
 
                             <Col sm={8}>
-                                <Checkbox checked={LayoutProperties.layoutProperties.animate} onChange={(e: any) => {LayoutProperties.layoutProperties.animate = !LayoutProperties.layoutProperties.animate;}}></Checkbox>
+                                <Checkbox className="layProps" checked={LayoutProperties.layoutProperties.animate} onChange={(e: any) => {LayoutProperties.layoutProperties.animate = !LayoutProperties.layoutProperties.animate;}}></Checkbox>
                             </Col>
                         </InputGroup>
                         <InputGroup>
@@ -200,7 +200,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                             </Col>
 
                             <Col sm={8}>
-                                <Checkbox checked={!LayoutProperties.layoutProperties.randomize} onChange={(e: any) => {LayoutProperties.layoutProperties.randomize = !LayoutProperties.layoutProperties.randomize;}}></Checkbox>
+                                <Checkbox className="layProps" checked={!LayoutProperties.layoutProperties.randomize} onChange={(e: any) => {LayoutProperties.layoutProperties.randomize = !LayoutProperties.layoutProperties.randomize;}}></Checkbox>
                             </Col>
                         </InputGroup>
                         <InputGroup>
