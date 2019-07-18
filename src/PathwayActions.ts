@@ -56,6 +56,10 @@ export default class PathwayActions {
     this.editor.saveLayoutProperties(layoutProperties)
   }
 
+  doesCyHaveElements() {
+    return this.editor.cy.elements().length > 0
+  }
+
   @autobind
   toggleGrid(isEnabled: boolean) {
     this.gridOptionsManager.setSnapToGuidelines(false)

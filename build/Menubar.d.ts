@@ -1,5 +1,5 @@
 import React from 'react';
-import PathwayActions from './PathwayActions.js';
+import PathwayActions from './PathwayActions';
 import { EModalType } from './react-pathway-mapper';
 interface IMenubarProps {
     pathwayActions: PathwayActions;

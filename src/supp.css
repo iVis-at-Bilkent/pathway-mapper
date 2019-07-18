@@ -146,3 +146,7 @@ tbody tr:hover{
     width: 500px;
     text-align: left;
 }
+
+#searchGeneToolbar{
+    max-width: 200px;
+}

@@ -1,10 +1,11 @@
 import React from 'react';
 import {Navbar, Nav, NavDropdown, MenuItem, NavItem} from 'react-bootstrap';
 import pathways from "./pathways.json";
-import PathwayActions from './PathwayActions.js';
+import PathwayActions from './PathwayActions';
 import autobind from 'autobind-decorator';
 import SaveLoadUtility from './SaveLoadUtility';
 import { EModalType } from './react-pathway-mapper';
+import ConfirmationModal from './modals/ConfirmationModal';
 
 interface IMenubarProps{
     pathwayActions: PathwayActions;
@@ -57,15 +58,12 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                                 pathwayDropdownData[pwHead].map((pwName) => 
                                 <MenuItem onClick={() => {
 
-                                  // Below code is necessary because user might click a pathway and make merge on it,
-                                  // and then s/he might want to open this pathway again. Since selectedPathway will be same
-                                  // componentWillUpdate won't be called in CytoscapeArea thereby preventing loading fresh version of 
-                                  // this pathway. Below code makes sure that selectedPathway is nulled. 
-                                  // this.props.pathwayActions.pathwayHandler("SElam");
-                                  // Above code does not do what is intended.
-                                  // Refresh pathwayGeneMap entry of this pathway.
-                                  // this.props.pathwayActions.includePathway(SaveLoadUtility.parseGraph(pathways[pwName], true));
-                                  this.props.pathwayActions.changePathway(pwName);
+                                    if(this.props.pathwayActions.doesCyHaveElements()){
+                                      this.props.handleOpen(EModalType.CONFIRMATION);
+                                      ConfirmationModal.pendingFunction = () => {this.props.pathwayActions.changePathway(pwName);};
+                                    } else {
+                                      this.props.pathwayActions.changePathway(pwName)
+                                    }
                                 }
                                 }>
                                   {pwName.split('-').join(" ")}

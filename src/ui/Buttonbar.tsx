@@ -155,8 +155,8 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                         }
                     </ButtonToolbar>
                 </Nav>
-                <Nav pullRight style={{marginTop: "8px"}}>
-                    <InputGroup >
+                <Nav pullRight style={{marginTop: "8px"}} className="toolbar">
+                    <InputGroup id="searchGeneToolbar">
                         <FormControl type="text"
                             onChange={(e: any) => { this.searchedGene = e.target.value;}}
                             placeholder="Search Gene"

@@ -23,6 +23,7 @@ export default class PathwayActions {
     enabledType: EGridType;
     constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, handleOpen: (modalId: EModalType) => void, isCBioPortal: boolean);
     setLayoutProperties(layoutProperties: ILayoutProperties): void;
+    doesCyHaveElements(): boolean;
     toggleGrid(isEnabled: boolean): void;
     toggleGuide(isEnabled: boolean): void;
     adjustGridSettings(gridSize: number, color: string): void;
