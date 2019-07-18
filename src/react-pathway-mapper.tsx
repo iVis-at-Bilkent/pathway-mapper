@@ -528,12 +528,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   componentDidMount(){
     if(!this.props.isCBioPortal)
     $(".container").css('width', innerWidth * 0.9);
-
-    if(this.props.pathwayName){
-      this.pathwayActions.changePathway(this.props.pathwayName);
-    } else {
-      this.selectedPathway = "";
-    }
   }
   @autobind
   handleOpen(modalId: EModalType){
@@ -554,6 +548,13 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.viewOperationsManager = new ViewOperationsManager(this.editor, this.editor.cy);
     this.pathwayActions.editorHandler(editor, eh, undoRedoManager, this.viewOperationsManager, this.gridOptionsManager);
 
+
+    if(this.props.pathwayName){
+      this.pathwayActions.changePathway(this.props.pathwayName);
+    } else {
+      this.selectedPathway = "";
+    }
+    
     if(this.props.isCBioPortal){
       this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
     } else {
