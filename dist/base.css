@@ -1382,6 +1382,10 @@ tbody tr:hover{
     background-color: #adadad !important;
 }
 
+.checkbox.disabled{
+    color: #adadad !important;
+}
+
 #ranking-bar .table tbody tr td{
     padding: 5px !important;
 }
