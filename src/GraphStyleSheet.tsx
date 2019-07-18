@@ -113,14 +113,14 @@ module.exports = (function()
 
     // some style for the Edge Handles !!!
     {
-      selector: '.edgehandles-hover',
+      selector: '.eh-hover',
       css: {
         'background-color': '#1abc9c'
       }
     },
 
     {
-      selector: '.edgehandles-source',
+      selector: '.eh-source',
       css: {
         'border-width': 2,
         'border-color': '#1abc9c'
@@ -128,7 +128,7 @@ module.exports = (function()
     },
 
     {
-      selector: '.edgehandles-target',
+      selector: '.eh-target',
       css: {
         'border-width': 2,
         'border-color': '#1abc9c'
@@ -136,7 +136,7 @@ module.exports = (function()
     },
 
     {
-      selector: '.edgehandles-preview, .edgehandles-ghost-edge',
+      selector: '.eh-preview, .eh-ghost-edge',
       css: {
         'line-color': '#1abc9c',
         'target-arrow-color': '#1abc9c',

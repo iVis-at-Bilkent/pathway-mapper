@@ -335,8 +335,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       });
     const self = this;
     const edgeHandleDefaults ={
-        preview: false, // whether to show added edges preview before releasing selection
-        stackOrder: 10000, // Controls stack order of edgehandles canvas element by setting it's z-index
+        preview: true, // whether to show added edges preview before releasing selection
+        stackOrder: 4, // Controls stack order of edgehandles canvas element by setting it's z-index
         handleSize: 10, // the size of the edge handle put on nodes
         handleColor: '#1abc9c', // the colour of the handle and the line drawn from it
         handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line
@@ -346,10 +346,14 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
         cxt: false, // whether cxt events trigger edgehandles (useful on touch)
         enabled: false, // whether to start the extension in the enabled state
         toggleOffOnLeave: true, // whether an edge is cancelled by leaving a node (true), or whether you need to go over again to cancel (false; allows multiple edges in one pass)
+        handleInDrawMode: false, // whether to show the handle in draw mode
         edgeType: function( sourceNode, targetNode ) {
           // can return 'flat' for flat edges between nodes or 'node' for intermediate node between them
           // returning null/undefined means an edge can't be added between the two nodes
           return 'flat';
+        },
+        handlePosition: function( node ){
+          return 'middle top'; // sets the position of the handle in the format of "X-AXIS Y-AXIS" such as "left top", "middle top"
         },
         loopAllowed: function( node ) {
           // for the specified node, return whether edges from itself to itself are allowed
@@ -371,8 +375,10 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
         {
           console.log("Inside start");
           // fired when edgehandles interaction starts (drag on handle)
-          //var type = self.getGlobalEdgeType();
-          // eh.edgehandles('option', 'ghostEdgeType', type);
+          var type = self.getGlobalEdgeType();
+          console.log("Type");
+          console.log(type);
+          self.cy.edgehandles('option', 'ghostEdgeType', type);
         },
         complete: function( sourceNode, targetNodes, addedEntities )
         {
@@ -396,9 +402,9 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
         {
           // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
           //TODO refactor this, so terrible for now
-          $('.edge-palette a').blur().removeClass('active');
+          //$('.edge-palette a').blur().removeClass('active');
           self.edgeAddingMode = -1;
-          eh.disableDrawMode();    
+          eh.disableDrawMode();
           self.props.setActiveEdge(-1);  
         }
       };
