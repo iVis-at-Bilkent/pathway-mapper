@@ -15,7 +15,8 @@ import CBioPortalAccessor from "./CBioPortalAccessor";
 import SaveLoadUtility from "./SaveLoadUtility";
 import pathways from "./pathways.json";
 import {action, computed} from "mobx";
-
+// @ts-ignore
+import resizeCue from './resizeCue.svg';
 // @ts-ignore
 import geneImg from "./nodes/gene.svg";
 // @ts-ignore
@@ -421,13 +422,17 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       undoable: true, // and if cy.undoRedo exists
 
       grappleSize: 8, // size of square dots
-      grappleColor: "green", // color of grapples
+      grappleColor: "#ffc90e", // color of grapples
       inactiveGrappleStroke: "inside 1px blue",
       boundingRectangle: true, // enable/disable bounding rectangle
       boundingRectangleLineDash: [4, 8], // line dash of bounding rectangle
-      boundingRectangleLineColor: "red",
+      boundingRectangleLineColor: "ffc90e",
       boundingRectangleLineWidth: 1.5,
       zIndex: 999,
+
+      moveSelectedNodesOnKeyEvents: function () {
+          return true;
+      },
 
       minWidth: function (node) {
           var data = node.data("resizeMinWidth");
@@ -440,39 +445,61 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
       // Getters for some style properties the defaults returns ele.css('property-name')
       // you are encouraged to override these getters
-      getCompoundMinWidth: function(node) { 
-        return node.css('min-width'); 
+      getCompoundMinWidth: function (node) {
+          return node.style('min-width');
       },
-      getCompoundMinHeight: function(node) { 
-        return node.css('min-height'); 
+      getCompoundMinHeight: function (node) {
+          return node.style('min-height');
       },
-      getCompoundMinWidthBiasRight: function(node) {
-        return node.css('min-width-bias-right');
+      getCompoundMinWidthBiasRight: function (node) {
+          return node.style('min-width-bias-right');
       },
-      getCompoundMinWidthBiasLeft: function(node) { 
-        return node.css('min-width-bias-left');
+      getCompoundMinWidthBiasLeft: function (node) {
+          return node.style('min-width-bias-left');
       },
-      getCompoundMinHeightBiasTop: function(node) {
-        return node.css('min-height-bias-top');
+      getCompoundMinHeightBiasTop: function (node) {
+          return node.style('min-height-bias-top');
       },
-      getCompoundMinHeightBiasBottom: function(node) { 
-        return node.css('min-height-bias-bottom');
-      },
-
-      // These optional functions will be executed to set the width/height of a node in this extension
-      // Using node.css() is not a recommended way (http://js.cytoscape.org/#eles.style) to do this. Therefore,
-      // overriding these defaults so that a data field or something like that will be used to set node dimentions
-      // instead of directly calling node.css() is highly recommended (Of course this will require a proper 
-      // setting in the stylesheet).
-      setWidth: function(node, width) { 
-          node.css('width', width);
-      },
-      setHeight: function(node, height) {
-          node.css('height', height);
+      getCompoundMinHeightBiasBottom: function (node) {
+          return node.style('min-height-bias-bottom');
       },
 
-      isFixedAspectRatioResizeMode: function (node) { return node.is(".fixedAspectRatioResizeMode") },// with only 4 active grapples (at corners)
-      isNoResizeMode: function (node) { return node.is(".noResizeMode, :parent") }, // no active grapples
+
+      isFixedAspectRatioResizeMode: function (node) {
+          return node.is(".fixedAspectRatioResizeMode")
+      },// with only 4 active grapples (at corners)
+      isNoResizeMode: function (node) {
+          return undefined;
+      }, // no active grapples
+
+      // These optional function will be executed to set the width/height of a node in this extension
+      // Using node.css() is not a recommended way (http://js.cytoscape.org/#eles.style) to do this. Therefore, overriding these defaults
+      // so that a data field or something like that will be used to set node dimentions instead of directly calling node.css()
+      // is highly recommended (Of course this will require a proper setting in the stylesheet).
+      setWidth: function (node, width) {
+          node.style('width', width);
+      },
+      setHeight: function (node, height) {
+          node.style('height', height);
+      },
+      setCompoundMinWidth: function (node, minWidth) {
+          node.style('min-width', minWidth);
+      },
+      setCompoundMinHeight: function (node, minHeight) {
+          node.style('min-height', minHeight);
+      },
+      setCompoundMinWidthBiasLeft: function (node, minWidthBiasLeft) {
+          node.style('min-width-bias-left', minWidthBiasLeft);
+      },
+      setCompoundMinWidthBiasRight: function (node, minHeightBiasRight) {
+          node.style('min-width-bias-right', minHeightBiasRight);
+      },
+      setCompoundMinHeightBiasTop: function (node, minHeightBiasTop) {
+          node.style('min-height-bias-top', minHeightBiasTop);
+      },
+      setCompoundMinHeightBiasBottom: function (node, minHeightBiasBottom) {
+          node.style('min-height-bias-bottom', minHeightBiasBottom);
+      },
 
       cursors: { // See http://www.w3schools.com/cssref/tryit.asp?filename=trycss_cursor
           // May take any "cursor" css property
@@ -488,19 +515,11 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
           w: "w-resize"
       },
 
-      // enable resize content cue according to the node
-      resizeToContentCueEnabled: function (node) {
-        return true;
-      },
-      // handle resize to content with given function
-      // default function resizes node according to the label
-      resizeToContentFunction: undefined,
-      // select position of the resize to content cue
-      // options: 'top-left', 'top-right', 'bottom-left', 'bottom-right'
-      resizeToContentCuePosition: 'bottom-right',
-      // relative path of the resize to content cue image
-      resizeToContentCueImage: '/node_modules/cytoscape-node-resize/resizeCue.svg',
-   });
+      resizeToContentCueImage: resizeCue,
+
+      resizeToContentFunction: this.editor.resizeNodesToContent.bind(this.editor),
+
+  });
 
     //Navigator for cytoscape js
     var navDefaults = {
@@ -673,6 +692,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     // });
 
     this.cy.on("noderesize.resizeend", (_e: any, _type: any, node: any) => {
+      
       //Updates 'data' properties from 'style'
       node.data('w', node.width());
       node.data('h', node.height());
