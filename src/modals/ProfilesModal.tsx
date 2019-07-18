@@ -44,7 +44,7 @@ export default class ProfilesModal extends React.Component<IProfilesModalProps, 
                     <Modal.Title><h3>Genomic Data Explorer</h3></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {(profileLabels.length > 0 ? profileLabels : <h4 className="modal-title">There is currently no data to show</h4>)}
+                    {(profileLabels.length > 0 ? [<h4 className="modal-title">Data Set(s) to Show:</h4>, <br/>, profileLabels] : <h4 className="modal-title">There is currently no data to show</h4>)}
                 </Modal.Body>
             </Modal>
 

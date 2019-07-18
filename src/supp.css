@@ -74,11 +74,11 @@ tbody tr:hover{
     height: 28.5px;
 }
 
-#ranking-bar .label:hover{
+.label:hover{
     background-color: #97bfdb !important;
 }
 
-#ranking-bar .label-default{
+.label-default{
     background-color: #adadad !important;
 }
 
@@ -112,7 +112,6 @@ tbody tr:hover{
 .__react_component_tooltip{
     max-width: 350px;
     z-index: 1040;
-    
 }
 
 .__react_component_tooltip.type-light.border{
@@ -153,4 +152,11 @@ tbody tr:hover{
 
 #compartmentNodeDiv img{
     height: 30.26px;
+}
+
+.pmTip{
+    background-color: rgb(47, 65, 84) !important;
+    font-family: arial,sans-serif;
+    font-size: 12px;
+    border-radius: 7px;
 }
