@@ -1,7 +1,7 @@
 import { configure } from 'mobx';
 configure({ isolateGlobalState: true });
 
-import React from 'react';
+import React, { Component } from 'react';
 import Toolbar from "./Toolbar";
 import CytoscapeArea from "./CytoscapeArea";
 import Ranking from "./Ranking";
@@ -58,7 +58,6 @@ interface ICBioData{
   percentAltered: string​;
   sequenced: number;
 }
-
 export enum EModalType{
   STUDY,
   CONFIRMATION,
@@ -92,6 +91,14 @@ export interface IDataTypeMetaData{
   checked: boolean;
   profile: string;
 }
+
+export interface IPathwayMapperTable{
+  name: string;
+  score: string;
+  genes: string;
+}
+
+
 @observer
 export default class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   readonly NUMBER_OF_PATHWAYS_TO_SHOW = 10;
@@ -127,6 +134,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   setActiveEdge: (edgeId: number) => void;
   viewOperationsManager: ViewOperationsManager;
   gridOptionsManager: GridOptionsManager;
+
 
 
   constructor(props: IPathwayMapperProps){
@@ -270,7 +278,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         bestPathways.push({score: top.getKey(), genesMatched: matchedGenesMap[pathwayName], pathwayName: pathwayName});
     }
     if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
-      this.selectedPathway = bestPathways[0].pathwayName;
+    this.selectedPathway = bestPathways[0].pathwayName;
     this.bestPathwaysAlgos.push(bestPathways);
     console.log("Genes");
     console.log(this.props.genes);
@@ -431,7 +439,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           { isCBioPortal &&
           <Row>
             <Col xs={1} style={{width: "3%"}}></Col>
-            <Col xs={9} style={{paddingLeft: "0px", textAlign: "right"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper">PathwayMapper</a></Col>
+            <Col xs={9} style={{paddingLeft: "0px", textAlign: "right"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a></Col>
           </Row>
           }
             { (<div id="invisibles">

@@ -22,6 +22,7 @@ export default class PathwayActions {
     overlayUploader: any;
     enabledType: EGridType;
     constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, handleOpen: (modalId: EModalType) => void, isCBioPortal: boolean);
+    getSelectedNodes(): any;
     setLayoutProperties(layoutProperties: ILayoutProperties): void;
     doesCyHaveElements(): boolean;
     toggleGrid(isEnabled: boolean): void;

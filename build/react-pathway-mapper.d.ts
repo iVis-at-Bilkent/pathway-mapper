@@ -57,6 +57,11 @@ export interface IDataTypeMetaData {
     checked: boolean;
     profile: string;
 }
+export interface IPathwayMapperTable {
+    name: string;
+    score: string;
+    genes: string;
+}
 export default class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     readonly NUMBER_OF_PATHWAYS_TO_SHOW = 10;
     readonly CBIO_PROFILE_NAME = "cBioPortal_data";

@@ -5196,10 +5196,9 @@ cytoscape-qtip@^2.7.1:
     jquery "^2.0 || ^1.10.0"
     qtip2 "^3.0 || ^2.2.0"
 
-cytoscape-undo-redo@cytoscape-undo-redo:
+"cytoscape-undo-redo@github:iVis-at-Bilkent/cytoscape.js-undo-redo#master":
   version "1.3.1"
-  resolved "https://registry.yarnpkg.com/cytoscape-undo-redo/-/cytoscape-undo-redo-1.3.1.tgz#c6612c4313c4c880260bc9f85d240636c782ee75"
-  integrity sha512-wlKbPgVJTLFNLRyMOq6YMVv8etFfe1hjauC+MuBleeArRWq4u47FWJpfWWkkqVkZopn6c9lQ8DJfZ/iZRjWqIg==
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-undo-redo/tar.gz/bc9b29052843a11028c1d3c1607c21a8f52f36cc"
 
 cytoscape-view-utilities@^2.0.6:
   version "2.2.0"
@@ -5208,7 +5207,7 @@ cytoscape-view-utilities@^2.0.6:
   dependencies:
     mousetrap "^1.6.0"
 
-cytoscape@latest:
+cytoscape@^3.8.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/cytoscape/-/cytoscape-3.8.1.tgz#0b87f646054ea3e86f347e9c53a2fc64df1be31b"
   integrity sha512-hfoGBlqj8LJPnU5WgmQKdGpZaMknk8dPyGEJlzLa1xPwhmBscPMrmPxK2ffyKJIozeHm4UoYw4gPc0rAif4kVA==

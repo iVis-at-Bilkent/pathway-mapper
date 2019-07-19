@@ -52,6 +52,10 @@ export default class PathwayActions {
     this.enabledType = EGridType.NONE
   }
 
+  getSelectedNodes() {
+    return this.editor.cy.nodes(':selected')
+  }
+
   setLayoutProperties(layoutProperties: ILayoutProperties) {
     this.editor.saveLayoutProperties(layoutProperties)
   }

@@ -8,6 +8,7 @@ interface IToolbarProps {
     handleOpen: (modalId: number) => void;
 }
 export default class Toolbar extends React.Component<IToolbarProps, {}> {
+    selectedGenes: string[];
     private editor;
     constructor(props: IToolbarProps);
     render(): JSX.Element;

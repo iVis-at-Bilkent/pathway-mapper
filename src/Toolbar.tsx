@@ -28,10 +28,15 @@ interface IToolbarProps {
 @observer
 export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
+
+    @observable
+    selectedGenes: string[];
+
     @observable
     private editor: EditorActionsManager;
     constructor(props: IToolbarProps){
       super(props);
+      this.selectedGenes = [];
     }
 
     
@@ -39,9 +44,9 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
 
       const studyQuery = "q=" + JSON.stringify(this.props.alterationData);
-
       return (
       <div id="toolbar">
+          {this.selectedGenes.join(" ")}
           <img height="22px" width="22px" style={{cursor: "pointer"}} data-border="true" data-type="light" data-tip="Save as PNG" data-place="right" data-effect="solid" src={savePNGImage} onClick={() => {this.props.pathwayActions.saveAs("PNG");}}/>
 
           <br/>
@@ -52,6 +57,9 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
           <br/>
           <img height="22px" width="22px" style={{cursor: "pointer"}} data-border="true" data-type="light" data-tip="Edit pathway" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://react-pathway-mapper.herokuapp.com/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
+          
+          <br/>
+          <img height="22px" width="22px" style={{cursor: "pointer"}} data-border="true" data-type="light" data-tip="Add selected genes to query" data-place="right" data-effect="solid" src={openImage} onClick={() => {this.selectedGenes = this.props.pathwayActions.getSelectedNodes().map((node: any) => node.data().name)}}/>
     </div>);
 
   }

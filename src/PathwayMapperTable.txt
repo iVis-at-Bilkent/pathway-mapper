@@ -1,0 +1,88 @@
+import * as React from 'react';
+import * as _ from "lodash";
+import { observer } from "mobx-react";
+import { observable } from "mobx";
+import { Badge } from 'react-bootstrap';
+import classNames from "classnames";
+
+interface IPathwayMapperTableProps{
+    data: IPathwayMapperTable[];
+    initialSortColumn?: string;
+    LazyMobXTable?: React.Component;
+    Column?: React.Component;
+}
+
+export enum PathwayMapperTableColumnType {
+    NAME,
+    SCORE,
+    GENES,
+}
+
+type PathwayMapperTableColumn = Column<IPathwayMapperTable> & { order?: number, shouldExclude?: () => boolean };
+
+export class PathwayMapperTableComponent extends LazyMobXTable<IPathwayMapperTable> {
+}
+
+@observer
+export default class PathwayMapperTable extends React.Component<IPathwayMapperTableProps, {}> {
+
+
+    public static defaultProps = {
+        columns: [
+            PathwayMapperTableColumnType.NAME,
+            PathwayMapperTableColumnType.SCORE,
+            PathwayMapperTableColumnType.GENES,
+        ],
+        initialSortColumn: "score"
+    };
+
+    @observable protected _columns: { [columnEnum: number]: PathwayMapperTableColumn };
+
+    constructor(props: IPathwayMapperTableProps) {
+        super(props);
+        this._columns = {};
+        this.generateColumns();
+    }
+
+
+    protected generateColumns() {
+        this._columns = {};
+
+        this._columns[PathwayMapperTableColumnType.NAME] = {
+            name: "Name",
+            render: (d: IPathwayMapperTable) => <span><b>{d.name}</b></span>,
+            tooltip: <span>Name</span>,
+            filter: (d: IPathwayMapperTable, filterString: string, filterStringUpper: string) =>
+                d.name.toUpperCase().includes(filterStringUpper),
+            sortBy: (d: IPathwayMapperTable) => d.name,
+            download: (d: IPathwayMapperTable) => d.name
+        };
+
+        this._columns[PathwayMapperTableColumnType.SCORE] = {
+            name: "Score",
+            render: (d: IPathwayMapperTable) => <span><b>{d.score}</b></span>,
+            tooltip: <span>Score</span>,
+            filter: (d: IPathwayMapperTable, filterString: string, filterStringUpper: string) =>
+                d.score.toUpperCase().includes(filterStringUpper),
+            sortBy: (d: IPathwayMapperTable) => d.score,
+            download: (d: IPathwayMapperTable) => d.score
+        };
+
+        this._columns[PathwayMapperTableColumnType.GENES] = {
+            name: "Genes",
+            render: (d: IPathwayMapperTable) => <span>{d.genes}</span>,
+            tooltip: <span>Genes matched</span>,
+            sortBy: (d: IPathwayMapperTable) => d.genes.length, // Sort by length
+            download: (d: IPathwayMapperTable) => d.genes.toString()
+        };
+    }
+
+    render() {
+        const LazyMobXTable = this.props.LazyMobXTable;
+        const orderedColumns = _.sortBy(this._columns, (c: PathwayMapperTableColumn) => c.order);
+        return (
+            <LazyMobXTable columns={orderedColumns} data={this.props.data} initialItemsPerPage={10}
+                initialSortColumn={this.props.initialSortColumn} paginationProps={{ itemsPerPageOptions: [10] }}/>
+        );
+    }
+}
