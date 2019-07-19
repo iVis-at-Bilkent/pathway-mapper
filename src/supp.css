@@ -176,3 +176,7 @@ tbody tr:hover{
 #criteria-title:hover{
     background-color: #97bfdb;
 }
+
+.Toastify__toast-container{
+    width: 420px;
+}

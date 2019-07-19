@@ -359,11 +359,16 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   @autobind
   loadFromCBio(dataTypes: {[dataType: string]: IDataTypeMetaData}, selectedStudyData: any[]){
+      if(!this.pathwayActions.doesCyHaveElements()){
+        toast.warn("Your pathway is empty");
+        return;
+      }
+
       for (const dataType of Object.keys(dataTypes))
       {
         if(!dataTypes[dataType].checked) continue;
         if(this.doesProfileExist(dataTypes[dataType].profile)){
-          toast(dataTypes[dataType].profile + " already exists");
+          toast.warn(dataTypes[dataType].profile + " already exists");
           continue;
         }
 
