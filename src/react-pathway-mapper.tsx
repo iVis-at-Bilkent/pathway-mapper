@@ -46,9 +46,17 @@ interface IPathwayMapperProps{
   isCBioPortal: boolean;
   isCollaborative: boolean;
   genes: any[];
-  store: any;
+  cBioAlterationData?: ICBioData[];
   pathwayName? : string;
   alterationData?: IAlterationData;
+}
+
+interface ICBioData{
+  altered: number;
+  gene: string;
+  ​​oqlLine: string;
+  percentAltered: string​;
+  sequenced: number;
 }
 
 export enum EModalType{
@@ -87,7 +95,8 @@ export interface IDataTypeMetaData{
 @observer
 export default class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   readonly NUMBER_OF_PATHWAYS_TO_SHOW = 10;
-  
+  readonly CBIO_PROFILE_NAME = "cBioPortal_data";
+
   @observable
   selectedPathway: string;
 
@@ -131,7 +140,20 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
     if(this.props.isCBioPortal){
-      this.overlayPortalData();
+      //this.overlayPortalData();
+      
+      // If cBioPortal mode is on it is very likely to have cBioALterationData
+      // but to be on the safe side below assertion is made.
+      if(this.props.cBioAlterationData){
+        // Transform cBioDataAlteration into AlterationData
+        this.alterationData[this.CBIO_PROFILE_NAME] = {};
+        this.props.cBioAlterationData.forEach((geneAltData: ICBioData) => {
+          this.alterationData[this.CBIO_PROFILE_NAME][geneAltData.gene] = (geneAltData.altered / geneAltData.sequenced);
+        });
+      }
+
+
+      this.profiles.push({profileId: this.CBIO_PROFILE_NAME, enabled: true});
       this.getBestPathway(0);
       this.getBestPathway(1);
       this.getBestPathway(2);
@@ -184,85 +206,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     }
 
     return geneAlterationMap;
-  }
-
-  handleMutations(){
-
-    const mutations = this.props.store.mutations.result;
-    if(mutations !== undefined){
-        mutations.forEach((mutation) => {
-            if(this.alterationData[mutation.molecularProfileId] === undefined){
-                this.alterationData[mutation.molecularProfileId] = {};
-                this.profiles.push({profileId: mutation.molecularProfileId, studyId: mutation.studyId, enabled: true});
-            }
-            const mutationAmount = this.alterationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol];
-            if( mutationAmount === undefined){
-                this.alterationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol] = 0;
-            } 
-            this.alterationData[mutation.molecularProfileId][mutation.gene.hugoGeneSymbol]++;
-        });
-    } else {
-        console.log("Mutation undefined!");
-    }
-
-    console.log(this.alterationData);
-  }
-  overlayPortalData(){
-    if(this.props.store === undefined || this.props.store.molecularData.result === undefined){
-      return;
-    }
-    this.handleMutations();
-/*
-    console.log("Alteration data0");
-    console.log(this.alterationData);
-
-    console.log("Genomic data0");
-    console.log(this.alterationData);*/
-    const profileCounts = this.props.store.molecularProfileIdToProfiledSampleCount.result;
-
-    for(const genomicData of this.props.store.molecularData.result){
-      const dataType = CBioPortalAccessor.getDataType(genomicData.molecularProfileId);
-      if(dataType === "") continue;
-
-      if(this.alterationData[genomicData.molecularProfileId] === undefined){
-          this.alterationData[genomicData.molecularProfileId] = {};
-          this.profiles.push({profileId: genomicData.molecularProfileId, studyId: genomicData.studyId, enabled: true});
-      }
-      const mutationAmount = this.alterationData[genomicData.molecularProfileId][genomicData.gene.hugoGeneSymbol];
-      if( mutationAmount === undefined){
-          this.alterationData[genomicData.molecularProfileId][genomicData.gene.hugoGeneSymbol] = 0;
-          console.log("Inside mutationAmount");
-      } 
-
-      // ATTENTION: May cause unexpected behaviour
-      if(genomicData.value === 0) continue;
-
-      // Mutation already handled
-      if ( (dataType === CBioPortalAccessor.CNA) 
-        && ( genomicData.value === CBioPortalAccessor.CNA_GAIN 
-        || genomicData.value === CBioPortalAccessor.CNA_DELETION )  )
-          this.alterationData[genomicData.molecularProfileId][genomicData.gene.hugoGeneSymbol]++;
-      else if ((dataType === CBioPortalAccessor.GENE_EXPRESSION) 
-        && genomicData.value >= CBioPortalAccessor.Z_SCORE_UPPER_THRESHOLD 
-        || genomicData.value <= CBioPortalAccessor.Z_SCORE_LOWER_THRESHOLD)
-          this.alterationData[genomicData.molecularProfileId][genomicData.gene.hugoGeneSymbol]++;
-      
-    }
-    console.log("Alteration data1");
-    console.log(this.alterationData);
-    for(const profileName of Object.keys(this.alterationData)){
-      for(const gene of Object.keys(this.alterationData[profileName])){
-          if(profileCounts !== undefined){
-            
-            this.alterationData[profileName][gene] /= profileCounts[profileName] / 100;
-          }
-      }
-    } 
-    console.log("Alteration data2");
-    console.log(this.alterationData);
-
-    console.log("Profiles");
-    console.log(this.profiles);
   }
 
 

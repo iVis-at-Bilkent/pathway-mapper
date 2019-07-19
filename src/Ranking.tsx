@@ -70,7 +70,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
           <div id="ranking-bar">
 
             <div className="info-title table-title">
-                <b style={{marginLeft: "2px"}}>&nbsp;Pathway rankings</b>
+                <b style={{marginLeft: "2px"}}>&nbsp;Pathways</b>
             </div>
             <Table id="ranking-table" striped bordered condensed hover>
                 <thead>

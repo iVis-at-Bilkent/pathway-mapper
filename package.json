@@ -78,7 +78,7 @@
     "cytoscape-node-resize": "github:iVis-at-Bilkent/cytoscape.js-node-resize#unstable",
     "cytoscape-panzoom": "~2.5.2",
     "cytoscape-qtip": "^2.7.1",
-    "cytoscape-undo-redo": "cytoscape-undo-redo",
+    "cytoscape-undo-redo": "github:iVis-at-Bilkent/cytoscape.js-undo-redo#master",
     "cytoscape-view-utilities": "^2.0.6",
     "express": "^4.17.1",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",

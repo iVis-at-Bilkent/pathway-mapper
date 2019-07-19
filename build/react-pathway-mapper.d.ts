@@ -15,9 +15,16 @@ interface IPathwayMapperProps {
     isCBioPortal: boolean;
     isCollaborative: boolean;
     genes: any[];
-    store: any;
+    cBioAlterationData?: ICBioData[];
     pathwayName?: string;
     alterationData?: IAlterationData;
+}
+interface ICBioData {
+    altered: number;
+    gene: string;
+    oqlLine: string;
+    percentAltered: string;
+    sequenced: number;
 }
 export declare enum EModalType {
     STUDY = 0,
@@ -52,6 +59,7 @@ export interface IDataTypeMetaData {
 }
 export default class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     readonly NUMBER_OF_PATHWAYS_TO_SHOW = 10;
+    readonly CBIO_PROFILE_NAME = "cBioPortal_data";
     selectedPathway: string;
     fileManager: FileOperationsManager;
     editor: EditorActionsManager;
@@ -73,8 +81,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     constructor(props: IPathwayMapperProps);
     getGeneStudyMap(studyGeneMap: any): any;
     getAlterationAveragePerGene(genomicDataMap: any): any;
-    handleMutations(): void;
-    overlayPortalData(): void;
     /**
      *
      * @param rankingMode: number => 0 = Count, 1 = Percentage, 2 = Count with Alteration, 3 = Percentage with Alteration

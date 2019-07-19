@@ -19,7 +19,7 @@ export default class CBioPortalAccessor {
     fetchCancerStudies(callbackFunction: any): void;
     getSupportedGeneticProfiles(cancerStudy: any, callbackFunction: any): void;
     isSupportedCancerProfile(cancerProfileName: string): boolean;
-    static getDataType(cancerProfileName: string): "" | "Gene Expression" | "Copy Number Alteration" | "Mutation";
+    static getDataType(cancerProfileName: string): "" | "Mutation" | "Gene Expression" | "Copy Number Alteration";
     calcAlterationPercentages(paramLines: any, geneticProfileId: any, callbackFunction: any): void;
     getProfileData(params: any, callbackFunction: any): void;
     validateGenes(nodeSymbols: any, editor: EditorActionsManager): void;
