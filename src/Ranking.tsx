@@ -110,7 +110,10 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
             <div className="info-entry">
 
                 <div id="criteria-title" className="info-title" onClick={() => {this.isExpanded = !this.isExpanded;}}>
-                    <b style={{marginLeft: "2px"}}>&nbsp;Ranking criteria</b>
+                    <b style={{display: "inline-block"}}>
+                        &nbsp;Options
+                    </b>
+                    <div style={{float: "right"}} className={"fa fa-chevron-" + ((this.isExpanded) ? "up" : "down")}>&nbsp;</div>
                 </div>
                 <div>
                     <Panel expanded={this.isExpanded}>
