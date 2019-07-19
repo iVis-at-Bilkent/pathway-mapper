@@ -148,7 +148,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         // Transform cBioDataAlteration into AlterationData
         this.alterationData[this.CBIO_PROFILE_NAME] = {};
         this.props.cBioAlterationData.forEach((geneAltData: ICBioData) => {
-          this.alterationData[this.CBIO_PROFILE_NAME][geneAltData.gene] = (geneAltData.altered / geneAltData.sequenced);
+          this.alterationData[this.CBIO_PROFILE_NAME][geneAltData.gene] = (geneAltData.altered / geneAltData.sequenced) * 100;
         });
       }
 
