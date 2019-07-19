@@ -125,6 +125,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.fileManager = new FileOperationsManager();
     this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, 
                                              this.handleOpen, this.props.isCBioPortal);
+    this.selectedPathway = "";
     this.isModalShown = [false, false, false, false, false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
@@ -433,17 +434,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   }
 
   render() {
-  const isCBioPortal = this.props.isCBioPortal; 
-  console.log(Toolbar);
-  
-  const profileLabels = this.profiles.map((profile: IProfileMetaData, i: number) => 
-  [<Label onClick={() => {
-    this.profiles[i].enabled = !this.profiles[i].enabled;
-    this.editor.updateGenomicDataVisibility(this.profileEnabledMap);
-    }}
-    bsStyle={this.profiles[i].enabled ? "primary" : "default"}>{profile.profileId}</Label>]);
+  const isCBioPortal = this.props.isCBioPortal;     
 
-    
   return (
 
       <Grid style={{width: window.innerWidth * 0.99}} className={isCBioPortal ? "cBioMode" : ""}>
@@ -456,6 +448,14 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <Buttonbar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen}/> 
           </Row>]
           }
+          
+          { isCBioPortal &&
+          <Row>
+            <Col xs={1} style={{width: "3%"}}></Col>
+            <Col xs={9} style={{paddingLeft: "0px", marginTop: "12px"}}>{this.selectedPathway}</Col>
+          </Row>
+          }
+          
           <Row>
             {
             ( isCBioPortal &&
@@ -472,18 +472,25 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <Col xs={isCBioPortal ? 9 : 11} style={{paddingLeft: "0px"}}>
                 <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}
                 setActiveEdge={this.setActiveEdge} editorHandler={this.editorHandler} 
-                includePathway={this.includePathway} selectedPathway={this.selectedPathway}
-                pathwayHandler={this.pathwayHandler} handleOpen={this.handleOpen}/>
+                selectedPathway={this.selectedPathway} pathwayHandler={this.pathwayHandler} 
+                handleOpen={this.handleOpen}/>
             </Col>
 
             { isCBioPortal &&
             <Col xs={2}>
                 <Row>
-                  <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} profileLabels={profileLabels}/>
+                  <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos}/>
                 </Row>
             </Col>
             }
           </Row>
+
+          { isCBioPortal &&
+          <Row>
+            <Col xs={1} style={{width: "3%"}}></Col>
+            <Col xs={9} style={{paddingLeft: "0px", textAlign: "right"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper">PathwayMapper</a></Col>
+          </Row>
+          }
             { (<div id="invisibles">
 
           {
@@ -495,9 +502,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <QuickHelpModal isModalShown={this.isModalShown[EModalType.HELP]} handleClose={this.handleClose}/>
             <LayoutProperties isModalShown={this.isModalShown[EModalType.LAYOUT]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <ConfirmationModal isModalShown={this.isModalShown[EModalType.CONFIRMATION]} handleClose={this.handleClose} />
+            <AboutModal isModalShown={this.isModalShown[EModalType.ABOUT]} handleClose={this.handleClose}/>
           </div>)
           }
-          <AboutModal isModalShown={this.isModalShown[EModalType.ABOUT]} handleClose={this.handleClose} isCBioPortal={this.props.isCBioPortal}/>
           <ToastContainer />
           <ReactTooltip className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 1040}}/>
 
@@ -551,8 +558,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
     if(this.props.pathwayName){
       this.pathwayActions.changePathway(this.props.pathwayName);
-    } else {
-      this.selectedPathway = "";
     }
     
     if(this.props.isCBioPortal){

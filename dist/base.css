@@ -1468,4 +1468,12 @@ tbody tr:hover{
 .checkbox.layProps{
     margin-top: 0;
 }
+
+#criteria-title{
+    cursor: pointer;
+}
+
+#criteria-title:hover{
+    background-color: #97bfdb;
+}
 /*# sourceMappingURL=base.css.map*/

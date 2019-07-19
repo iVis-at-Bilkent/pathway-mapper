@@ -51,7 +51,6 @@ type PathwayMapperType = {
   selectedPathway: string;
   setActiveEdge: Function;
   profiles: IProfileMetaData[];
-  includePathway: (pathwayData?: IPathwayData, pathwayName?: string) => void;
   pathwayHandler: (pathwayName: string) => void;
   handleOpen: (modalId: EModalType) => void;
 };

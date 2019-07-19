@@ -1,5 +1,5 @@
 import React from 'react';
-import { IProfileMetaData, IPathwayData, EModalType } from './react-pathway-mapper';
+import { IProfileMetaData, EModalType } from './react-pathway-mapper';
 declare type PathwayMapperType = {
     isCollaborative: boolean;
     isCbioPortal: boolean;
@@ -7,7 +7,6 @@ declare type PathwayMapperType = {
     selectedPathway: string;
     setActiveEdge: Function;
     profiles: IProfileMetaData[];
-    includePathway: (pathwayData?: IPathwayData, pathwayName?: string) => void;
     pathwayHandler: (pathwayName: string) => void;
     handleOpen: (modalId: EModalType) => void;
 };

@@ -26,7 +26,7 @@ window.onload = () => {
   function postWelcome(isCollaborative){
     
     if(!pathwayName){
-      render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={placeHolderGenes} store={undefined}/>, rootEl);
+      render(<PathwayMapper isCBioPortal={true} isCollaborative={isCollaborative} genes={placeHolderGenes} store={undefined}/>, rootEl);
     } else {
       render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={placeHolderGenes} store={undefined} pathwayName={pathwayName} alterationData={alterationData}/>, rootEl);
     }

@@ -8,7 +8,6 @@ import mskccImg from "../about/mskcc.png";
 import { EModalType } from '../react-pathway-mapper';
 interface IAboutModalProps{
     isModalShown: boolean;
-    isCBioPortal: boolean;
     handleClose: Function;
 
 }
@@ -35,7 +34,7 @@ export default class AboutModal extends React.Component<IAboutModalProps, {}> {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <h3 id="about-model-header">PathwayMapper {this.props.isCBioPortal ? "for cBioPortal" : "2.0"}</h3>
+                <h3 id="about-model-header">PathwayMapper "2.0</h3>
                 <div className="aboutImageContent">
                   <img src={require("../about/i-vis.png")} alt="" height="25px"/>
                 </div>

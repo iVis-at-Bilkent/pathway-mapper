@@ -52,10 +52,6 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
           <br/>
           <img height="22px" width="22px" style={{cursor: "pointer"}} data-border="true" data-type="light" data-tip="Edit pathway" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://react-pathway-mapper.herokuapp.com/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
-          
-          <br/>
-          <img height="22px" width="22px" style={{cursor: "pointer"}} data-border="true" data-type="light" data-tip="About" data-place="right" data-effect="solid" src={infoImage} onClick={() => {this.props.handleOpen(3);}}/>
-         
     </div>);
 
   }

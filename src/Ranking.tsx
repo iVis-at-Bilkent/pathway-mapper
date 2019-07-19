@@ -2,7 +2,7 @@ import React from 'react';
 import {observer} from "mobx-react";
 import {action, computed, observable} from "mobx";
 import autobind from "autobind-decorator";
-import {ListGroup} from "react-bootstrap";
+import {ListGroup, Panel} from "react-bootstrap";
 import pathways from "./pathways.json";
 import {Table, DropdownButton,MenuItem, Checkbox, Button, Label} from "react-bootstrap";
 import PathwayActions from './PathwayActions.js';
@@ -10,7 +10,6 @@ import { string } from 'prop-types';
 interface IRankingProps{
     pathwayActions: PathwayActions;
     bestPathwaysAlgos: any[][];
-    profileLabels: (string | JSX.Element)[][];
 }
 
 
@@ -27,6 +26,9 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     isPercentageMatch: number;
     isAlterationEnabled: number;
 
+    @observable
+    isExpanded: boolean;
+
     readonly COUNT_PERC_EXPLANATION = "Whether we should favor the number of genes of interest that the ones in a pathway or the percentage of such genes in that pathway. For instance, suppose genes of interest are A, B, and C, and the pathway contains genes B, C, D, and E. When we consider count, the score is 2 (for the two genes that match). However, when we consider percentage the score will be 50% as 2 of the 4 genes in the pathway are among genes of interest.";
     readonly ALTERATION_EXPLANATION = "When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and %50 for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (20+30)/4=%12.5 for match count and percentage, respectively.";
     
@@ -36,6 +38,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
         this.isPercentageMatch = 0;
         this.isAlterationEnabled = 0;
         this.dropDownTitle = "Match count";
+        this.isExpanded = false;
         this.setBestPathwayMethod(0);
         console.log("Pathway Algos");
         console.log(this.props.bestPathwaysAlgos);
@@ -65,54 +68,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     render(){
         return (
           <div id="ranking-bar">
-            <div className="info-entry">
-                <div className="info-title">
-                    <b style={{marginLeft: "2px"}}>&nbsp;Pathway name</b>
-                </div>
-                <div className="indent">
-                {this.selectedPathway}
-                <br/>
-                <br/>
-                </div>
-            </div>
 
-            <div className="info-entry">
-                <div className="info-title">
-                    <b style={{marginLeft: "2px"}}>&nbsp;Studies to show</b>
-                </div>
-                    <div className="indent">
-                        {this.props.profileLabels.length === 0 ? "None" : this.props.profileLabels}
-                    <br/>
-                <br/>
-                </div>
-            </div>
-
-            <div className="info-entry">
-
-                <div className="info-title">
-                    <b style={{marginLeft: "2px"}}>&nbsp;Ranking criteria</b>
-                </div>
-                <div className="indent" >
-                    <DropdownButton
-                        title={this.dropDownTitle}
-                        id="0"
-                        >
-                        <MenuItem onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match count";} }>Match count</MenuItem>
-                        
-                        <MenuItem onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match percentage";}}>Match percentage</MenuItem>
-                    </DropdownButton>  
-                    &nbsp; 
-                    <div data-tip={this.COUNT_PERC_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
-
-                    <Checkbox onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1;} }>
-                        Consider gene alteration frequency&nbsp;                  
-                        <div data-tip={this.ALTERATION_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
-                    </Checkbox>
-
-                    <Button onClick={this.onApplyClick}>Apply</Button>
-                </div>
-            </div>
-            <br/>
             <div className="info-title table-title">
                 <b style={{marginLeft: "2px"}}>&nbsp;Pathway rankings</b>
             </div>
@@ -150,6 +106,37 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                     
                 </tbody>
             </Table>
+
+            <div className="info-entry">
+
+                <div id="criteria-title" className="info-title" onClick={() => {this.isExpanded = !this.isExpanded;}}>
+                    <b style={{marginLeft: "2px"}}>&nbsp;Ranking criteria</b>
+                </div>
+                <div>
+                    <Panel expanded={this.isExpanded}>
+                        <Panel.Collapse>
+                            <Panel.Body>
+                                <DropdownButton
+                                    title={this.dropDownTitle}
+                                    id="0"
+                                    >
+                                    <MenuItem onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match count"; this.onApplyClick();} }>Match count</MenuItem>
+                                    
+                                    <MenuItem onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match percentage"; this.onApplyClick();}}>Match percentage</MenuItem>
+                                </DropdownButton>  
+                                &nbsp; 
+                                <div data-tip={this.COUNT_PERC_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
+
+                                <Checkbox onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1; this.onApplyClick();}  }>
+                                    Consider gene alteration frequency&nbsp;                  
+                                    <div data-tip={this.ALTERATION_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
+                                </Checkbox>
+                        </Panel.Body>
+                        </Panel.Collapse>
+                    </Panel>
+                </div>
+            </div>
+            <br/>
           </div>
         );
     }
