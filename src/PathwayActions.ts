@@ -52,6 +52,17 @@ export default class PathwayActions {
     this.enabledType = EGridType.NONE
   }
 
+  emphasiseQueryGenes(queryGenes: string[]) {
+    this.editor.cy.nodes().forEach((node: any) => {
+      const nodeName = node.data().name
+      if (queryGenes.includes(nodeName)) {
+        this.editor.cy
+          .nodes(`[name = "${nodeName}"]`)
+          .style('border-width', '4px')
+      }
+    })
+  }
+
   getSelectedNodes() {
     return this.editor.cy.nodes(':selected')
   }

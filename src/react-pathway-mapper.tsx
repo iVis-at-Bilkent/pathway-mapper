@@ -143,6 +143,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, 
                                              this.handleOpen, this.props.isCBioPortal);
     this.selectedPathway = "";
+    if(this.props.pathwayName){
+      this.pathwayActions.changePathway(this.props.pathwayName);
+    }
     this.isModalShown = [false, false, false, false, false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
@@ -486,6 +489,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   componentDidMount(){
     if(!this.props.isCBioPortal)
     $(".container").css('width', innerWidth * 0.9);
+
+    this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
   }
   @autobind
   handleOpen(modalId: EModalType){
@@ -505,11 +510,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.gridOptionsManager = new GridOptionsManager(this.editor.cy);
     this.viewOperationsManager = new ViewOperationsManager(this.editor, this.editor.cy);
     this.pathwayActions.editorHandler(editor, eh, undoRedoManager, this.viewOperationsManager, this.gridOptionsManager);
-
-
-    if(this.props.pathwayName){
-      this.pathwayActions.changePathway(this.props.pathwayName);
-    }
     
     if(this.props.isCBioPortal){
       this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
@@ -517,7 +517,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.portalAcessor = new CBioPortalAccessor();
       this.loadRedirectedPortalData();
     }
+
   }
+
+
 
   @autobind
   pathwayHandler(pathway: string){
