@@ -624,6 +624,9 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
     this.cy.on('doubleTap', 'node',  function (e: any) {
 
+      // if cBioPortal ignore
+      if(that.props.isCbioPortal) return;
+
       const eventIsDirect = (e.target === this);
 
       if (eventIsDirect) {
@@ -638,6 +641,10 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     });
 
     this.cy.on('doubleTap', 'edge', function (e: any) {
+
+      // if cBioPortal ignore
+      if(that.props.isCbioPortal) return;
+      
       const eventIsDirect = (e.target === this);
 
       if (eventIsDirect) {
