@@ -18,6 +18,8 @@ interface IPathwayMapperProps {
     cBioAlterationData?: ICBioData[];
     pathwayName?: string;
     alterationData?: IAlterationData;
+    queryParameter?: any;
+    oncoPrintTab?: string;
 }
 interface ICBioData {
     altered: number;

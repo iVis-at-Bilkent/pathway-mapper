@@ -49,6 +49,8 @@ interface IPathwayMapperProps{
   cBioAlterationData?: ICBioData[];
   pathwayName? : string;
   alterationData?: IAlterationData;
+  queryParameter?: any;
+  oncoPrintTab?: string;
 }
 
 interface ICBioData{
@@ -97,7 +99,6 @@ export interface IPathwayMapperTable{
   score: string;
   genes: string;
 }
-
 
 @observer
 export default class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
@@ -419,7 +420,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             {
             ( isCBioPortal &&
             <Col xs={1} style={{width: "3%"}}>
-                <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData} handleOpen={this.handleOpen}/>
+                <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}
+                 handleOpen={this.handleOpen} queryParameter={this.props.queryParameter} oncoPrintTab={this.props.oncoPrintTab}/>
             </Col>)
             }
             {
