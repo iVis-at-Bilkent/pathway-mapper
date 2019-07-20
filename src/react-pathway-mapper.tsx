@@ -499,6 +499,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
     this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
   }
+
+  componentDidUpdate(){
+    this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
+  }
+
   @autobind
   handleOpen(modalId: EModalType){
     this.isModalShown[modalId] = true;

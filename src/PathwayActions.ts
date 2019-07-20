@@ -53,18 +53,15 @@ export default class PathwayActions {
   }
 
   emphasiseQueryGenes(queryGenes: string[]) {
-    this.editor.cy.nodes().forEach((node: any) => {
-      const nodeName = node.data().name
-      const nodeType = node.data().type
-      console.log(node.data())
-      if (queryGenes.includes(nodeName) && nodeType === 'GENE') {
-        this.editor.cy
-          .style()
-          .selector(`node[name = "${nodeName}"]`)
-          .style({ 'border-width': '4px' })
-          .update()
-      }
-    })
+    if (this.editor)
+      this.editor.cy.nodes().forEach((node: any) => {
+        const nodeName = node.data().name
+        const nodeType = node.data().type
+        console.log(node.data())
+        if (queryGenes.includes(nodeName) && nodeType === 'GENE') {
+          node.style({ 'border-width': '4px' })
+        }
+      })
   }
 
   getSelectedNodes() {

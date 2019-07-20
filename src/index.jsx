@@ -6,7 +6,7 @@ import WelcomePage from "./WelcomePage";
 window.onload = () => {
   const rootEl = document.getElementById('app');
   console.log(window.location.search);
-  const placeHolderGenes = [{hugoGeneSymbol: "TP53"}, {hugoGeneSymbol: "CDKN2A"}, {hugoGeneSymbol: "CCNE1"}, {hugoGeneSymbol: "RB1"}];
+  const placeHolderGenes = [{hugoGeneSymbol: "TP53"}, {hugoGeneSymbol: "CDKN2A"}, {hugoGeneSymbol: "CCNE1"}, {hugoGeneSymbol: "MDM4"}];
 
 
   const pathwayName = findGetParameter("pathwayName");
