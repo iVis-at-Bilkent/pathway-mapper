@@ -48,7 +48,6 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
       const studyQuery = "q=" + JSON.stringify(this.props.alterationData);
       return (
       <div id="toolbar">
-          {this.selectedGenes.join(" ")}
           <img height="22px" width="22px" style={{cursor: "pointer"}} data-border="true" data-type="light" data-tip="Save as PNG" data-place="right" data-effect="solid" src={savePNGImage} onClick={() => {this.props.pathwayActions.saveAs("PNG");}}/>
 
           <br/>

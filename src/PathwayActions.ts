@@ -57,8 +57,10 @@ export default class PathwayActions {
       const nodeName = node.data().name
       if (queryGenes.includes(nodeName)) {
         this.editor.cy
-          .nodes(`[name = "${nodeName}"]`)
-          .style('border-width', '4px')
+          .style()
+          .selector(`node[name = "${nodeName}"]`)
+          .style({ 'border-width': '4px' })
+          .update()
       }
     })
   }
