@@ -55,7 +55,9 @@ export default class PathwayActions {
   emphasiseQueryGenes(queryGenes: string[]) {
     this.editor.cy.nodes().forEach((node: any) => {
       const nodeName = node.data().name
-      if (queryGenes.includes(nodeName)) {
+      const nodeType = node.data().type
+      console.log(node.data())
+      if (queryGenes.includes(nodeName) && nodeType === 'GENE') {
         this.editor.cy
           .style()
           .selector(`node[name = "${nodeName}"]`)

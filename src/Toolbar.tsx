@@ -58,7 +58,10 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
           <br/>
           <img height="22px" width="22px" style={{cursor: "pointer"}} data-border="true" data-type="light" data-tip="Add selected genes to query" data-place="right" data-effect="solid" src={addImage} onClick={() => {
-            this.selectedGenes = this.props.pathwayActions.getSelectedNodes().map((node: any) => node.data().name);
+            this.selectedGenes = this.props.pathwayActions.getSelectedNodes()
+                                                          .filter((node: any) => node.data().type === "GENE")
+                                                          .map((node: any) => node.data().name);
+            console.log(this.selectedGenes);
             this.onAddGenes();
             }}/>
             
