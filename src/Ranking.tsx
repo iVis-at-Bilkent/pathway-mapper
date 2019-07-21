@@ -7,6 +7,8 @@ import pathways from "./pathways.json";
 import {Table, DropdownButton,MenuItem, Checkbox, Button, Label} from "react-bootstrap";
 import PathwayActions from './PathwayActions.js';
 import { string } from 'prop-types';
+import 'react-table/react-table.css';
+import ReactTable from 'react-table'
 interface IRankingProps{
     pathwayActions: PathwayActions;
     bestPathwaysAlgos: any[][];
@@ -66,46 +68,54 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
 
     render(){
+        const lengthThreshold = 13;
+
+        const columns = [{
+        Header: 'Pathway name',
+        accessor: 'pathwayName',
+        Cell: props => {
+
+            const pwName = props.value as string;
+            const isPwNameShort = pwName.length < lengthThreshold;
+            return <div id={"_" + pwName} data-border="true" data-type="light" data-tip={pwName}>
+                {(isPwNameShort ? pwName : pwName.substring(0, lengthThreshold) + "...")}
+                </div>;
+        }
+        }, {
+        Header: 'Score',
+        accessor: 'score',
+        Cell: props =>  <span className='number'>{props.value}</span>
+        }, {
+        id: 'friendName', // Required because our accessor is not a string
+        Header: 'Genes matched',
+        accessor: "genesMatched",
+        Cell: props => {
+
+
+            console.log(props);
+
+            const geneStr = this.calculateGeneStr(props.value, lengthThreshold);
+
+            return (<div data-border="true" data-type="light" data-tip={props.value.join(" ")} data-multiline="true" data-place="right" data-effect="solid">
+                {geneStr}
+            </div>);
+
+        }
+        }];
+         
         return (
           <div id="ranking-bar">
-
             <div className="info-title table-title">
                 <b style={{marginLeft: "2px"}}>&nbsp;Pathways</b>
             </div>
-            <Table id="ranking-table" striped bordered condensed hover>
-                <thead>
-                    <tr>
-                    <td><i>#</i></td>
-                    <td><i>Pathway name</i></td>
-                    <td><i>Score</i></td>
-                    <td><i>Genes matched</i></td>
-                    </tr>
-                </thead>
-                <tbody>
-                {
-                    this.bestPathways.map((pathway: any, i: number) => {
-                        const pwName = pathway.pathwayName as string;
-                        const lengthThreshold = 13;
-                        const isPwNameShort = pwName.length < lengthThreshold;
-
-                        const geneStr = this.calculateGeneStr(pathway.genesMatched, lengthThreshold);
-                        return (
-                            <tr key={"ranked_" + i} onClick={() => {this.onPathwayClick(pwName);}} style={{cursor: "pointer"}}>
-                                <td>{i + 1}</td>
-                                <td id={"_" + pwName} data-border="true" data-type="light" data-tip={pwName} data-place="top" data-effect="solid">
-                                    {(isPwNameShort ? pwName : pwName.substring(0, lengthThreshold) + "...")}
-                                </td>
-                                <td className="score">{pathway.score.toFixed(2)}</td>
-                                <td data-border="true" data-type="light" data-tip={pathway.genesMatched.join(" ")} data-multiline="true" data-place="right" data-effect="solid">
-                                    {geneStr}
-                                </td>
-                            </tr>
-                        );
-                    })
-                }
-                    
-                </tbody>
-            </Table>
+            
+            <ReactTable
+                data={this.bestPathways}
+                columns={columns}
+                defaultPageSize={11}
+                showPageSizeOptions={false}
+                filterable
+            />
 
             <div className="info-entry">
 

@@ -276,7 +276,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         }
     }
     console.log("Best Pathways");
-    for(let i = 0; i < this.NUMBER_OF_PATHWAYS_TO_SHOW && maxHeap.size() > 0; i++){
+    while(maxHeap.size() > 0){
         const top = maxHeap.extractMax();
         const pathwayName = top.getValue().pathwayName;
         bestPathways.push({score: top.getKey(), genesMatched: matchedGenesMap[pathwayName], pathwayName: pathwayName});
