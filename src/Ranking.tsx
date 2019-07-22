@@ -153,7 +153,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                     <div style={{float: "right"}} className={"fa fa-chevron-" + ((this.isExpanded) ? "up" : "down")}>&nbsp;</div>
                 </div>
                 <div>
-                    <Panel expanded={this.isExpanded}>
+                    <Panel expanded={this.isExpanded} style={{border: "0px"}}>
                         <Panel.Collapse>
                             <Panel.Body>
                                 <DropdownButton
@@ -167,9 +167,10 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                                 &nbsp; 
                                 <div data-tip={this.COUNT_PERC_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
 
-                                <Checkbox onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1; this.onApplyClick();}  }>
-                                    Consider gene alteration frequency&nbsp;                  
-                                    <div data-tip={this.ALTERATION_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
+                                <Checkbox id="alterationCheckBox" onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1; this.onApplyClick();}}
+                                        style={{fontSize: "12px", marginTop: "8px"}}>
+                                    Consider gene alteration frequency&nbsp;            
+                                    <span data-tip={this.ALTERATION_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></span>
                                 </Checkbox>
                         </Panel.Body>
                         </Panel.Collapse>

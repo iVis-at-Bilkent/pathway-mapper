@@ -1484,4 +1484,8 @@ tbody tr:hover{
 .Toastify__toast--success{
     background-color: #1abc9c;
 }
+
+#alterationCheckBox{
+    margin-top: 0;
+}
 /*# sourceMappingURL=base.css.map*/
