@@ -79,7 +79,7 @@ export default class WelcomePage extends React.Component<IWelcomePageProps, {}>{
                     </Row>
                 </Grid>
             </div>
-            <ReactTooltip />
+            <ReactTooltip className="pmTip" />
         </div>
         );
     }
