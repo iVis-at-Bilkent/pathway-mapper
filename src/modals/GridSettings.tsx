@@ -55,7 +55,7 @@ export default class GridSettings extends React.Component<IGridSettingsProps, {}
                     <Modal.Title><h4>Grid Settings</h4></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                <Form horizontal>
+                <Form id="gripOptionsForm" className="leftText">
                     <InputGroup>
                         <Col sm={8}>
                             <ControlLabel>Enable Grids:</ControlLabel>

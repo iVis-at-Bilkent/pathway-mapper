@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal, Form, FormGroup, FormControl, Col, Button, InputGroup} from 'react-bootstrap';
+import {Modal, Form, FormGroup, FormControl, Col, Button, InputGroup, ControlLabel} from 'react-bootstrap';
 import { observer } from 'mobx-react';
 import PathwayActions from '../PathwayActions';
 import { IPathwayInfo } from '../FileOperationsManager';
@@ -31,10 +31,10 @@ export default class PathwayDetailsModal extends React.Component<IPathwayDetails
                     <Modal.Title><h3>Pathway Properties</h3></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                <Form horizontal id="pathwayDetailsForm">
+                <Form id="pathwayDetailsForm">
                     <InputGroup>
-                        <Col style={{textAlign: "left", marginTop: "10px"}}  sm={4}>
-                        File Name:
+                        <Col style={{textAlign: "left"}} sm={4}>
+                         <ControlLabel>File Name:</ControlLabel>
                         </Col>
                         <Col sm={8}>
                         <FormControl type="text" onChange={(e: any) => {this.pathwayInfo.fileName = e.target.value;}}value={this.pathwayInfo.fileName}/>
@@ -42,8 +42,8 @@ export default class PathwayDetailsModal extends React.Component<IPathwayDetails
                     </InputGroup>
 
                     <InputGroup>
-                        <Col style={{textAlign: "left", marginTop: "10px"}} sm={4}>
-                        Pathway Title:
+                        <Col style={{textAlign: "left"}} sm={4}>
+                        <ControlLabel>Pathway Title:</ControlLabel>
                         </Col>
                         <Col sm={8}>
                         <FormControl type="text" onChange={(e: any) => {this.pathwayInfo.pathwayTitle = e.target.value;}}value={this.pathwayInfo.pathwayTitle}/>
@@ -51,8 +51,8 @@ export default class PathwayDetailsModal extends React.Component<IPathwayDetails
                     </InputGroup>
 
                     <InputGroup>
-                        <Col style={{textAlign: "left", marginTop: "10px"}} sm={4}>
-                        Pathway Description:
+                        <Col style={{textAlign: "left"}} sm={4}>
+                        <ControlLabel>Pathway Description:</ControlLabel>
                         </Col>
                         <Col sm={8}>
                         <textarea className="form-control" rows={3} onChange={(e: any) => {this.pathwayInfo.pathwayDetails = e.target.value;}} value={this.pathwayInfo.pathwayDetails}>

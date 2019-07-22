@@ -145,6 +145,7 @@ module.exports = (function()
       selector: '.eh-target',
       css: {
         'border-width': 2,
+        'background-color': '#1abc9c',
         'border-color': '#1abc9c'
       }
     },

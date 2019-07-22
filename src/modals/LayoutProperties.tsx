@@ -69,7 +69,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body id="layoutPropsForm" className="leftText">
-                    <Form>
+                    <Form >
                             
                         <InputGroup>
                             <Col className="control-label" sm={4}>
