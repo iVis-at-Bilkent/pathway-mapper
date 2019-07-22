@@ -1,5 +1,5 @@
 import React from "react";
-import { Nav, Navbar, NavItem, FormControl, Glyphicon, InputGroup, ButtonGroup, ButtonToolbar, Button } from "react-bootstrap";
+import { Nav, Navbar, NavItem, FormControl, Glyphicon, InputGroup, ButtonGroup, ButtonToolbar, Button, FormGroup } from "react-bootstrap";
 import PathwayActions from "../PathwayActions";
 import { observable } from "mobx";
 // @ts-ignore
@@ -156,15 +156,17 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                     </ButtonToolbar>
                 </Nav>
                 <Nav pullRight style={{marginTop: "8px"}} className="toolbar">
-                    <InputGroup id="searchGeneToolbar">
-                        <FormControl type="text"
-                            onChange={(e: any) => { this.searchedGene = e.target.value;}}
-                            placeholder="Search Gene"
-                            onKeyPress={(e: any) => { if (e.key !== "Enter") return; this.props.pathwayActions.searchGene(this.searchedGene) }} />
-                        <InputGroup.Addon>
-                            <Glyphicon onClick={() => { this.props.pathwayActions.searchGene(this.searchedGene) }} glyph="search" />
-                        </InputGroup.Addon>
-                    </InputGroup>
+                    <ButtonGroup id="searchGeneToolbar">
+                        <FormGroup>
+                            <FormGroup className="has-feedback">
+                            <FormControl id="searchGene" type="text"
+                                onChange={(e: any) => { this.searchedGene = e.target.value;}}
+                                placeholder="Search Genes..."
+                                onKeyPress={(e: any) => { if (e.key !== "Enter") return; this.props.pathwayActions.searchGene(this.searchedGene) }} />
+                            <Glyphicon className="form-control-feedback" onClick={() => { this.props.pathwayActions.searchGene(this.searchedGene) }} glyph="search" />
+                            </FormGroup>
+                        </FormGroup>
+                    </ButtonGroup>
                 </Nav>
             </Navbar>
         )

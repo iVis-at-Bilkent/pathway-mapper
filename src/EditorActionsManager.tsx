@@ -1225,7 +1225,7 @@ export default class EditorActionsManager{
             var parentData = newParentId ? newParentId : null;
 
             // Old manual way to change parents in local mode
-            // this.changeParentCy(eles, newParentId);
+            //this.changeParentCy(eles, newParentId);
 
             //Save element's previous width & height in dim array
             const dim : any[]= [];
@@ -1241,6 +1241,8 @@ export default class EditorActionsManager{
                 dim.push(parameters);
                 id.push(ele.id());
             });
+
+            console.log(parentData);
 
             var param = {
                 firstTime: true,
