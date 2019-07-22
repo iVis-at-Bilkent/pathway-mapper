@@ -112,6 +112,20 @@ module.exports = (function()
 
 
     // some style for the Edge Handles !!!
+
+    {
+      selector: '.eh-handle',
+      style: {
+        'background-color': '#1abc9c',
+        'width': 12,
+        'height': 12,
+        'shape': 'ellipse',
+        'overlay-opacity': 0,
+        'border-width': 12, // makes the handle easier to hit
+        'border-opacity': 0
+      }
+    },
+
     {
       selector: '.eh-hover',
       css: {

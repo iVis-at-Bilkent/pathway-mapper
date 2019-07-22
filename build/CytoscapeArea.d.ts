@@ -28,6 +28,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     private undoRedoManager;
     private portalAccessor;
     private isMountedFirst;
+    private eh;
     constructor(props: PathwayMapperType);
     componentWillUpdate(nextProps: PathwayMapperType): void;
     getPathway(selectedPathway: string): void;

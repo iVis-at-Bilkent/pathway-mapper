@@ -110,7 +110,6 @@ module.exports = (function()
     // },
 
 
-
     // some style for the Edge Handles !!!
     {
       selector: '.edgehandles-hover',

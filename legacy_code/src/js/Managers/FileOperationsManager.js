@@ -62,7 +62,6 @@ module.exports = (function($)
     {
         var pathwayData = window.appManager.pathwayDetailsView.getPathwayData();
         pathwayData.graphJSON = cy.json();
-
         var returnString = (isSIFNX) ? SaveLoadUtilities.exportAsSIFNX(pathwayData):
                                        SaveLoadUtilities.exportGraph(pathwayData);
         var blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});

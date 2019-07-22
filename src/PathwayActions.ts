@@ -194,6 +194,8 @@ export default class PathwayActions {
 
   @autobind
   export(isSIFNX: boolean) {
+    //this.editor.cy.remove('.eh-handle');
+    this.eh.hide()
     this.fileManager.saveGraph(isSIFNX, this.editor)
   }
 
@@ -276,14 +278,16 @@ export default class PathwayActions {
   addEdge(edgeTypeIndex: number) {
     // @ts-ignore
     window.edgeAddingMode = edgeTypeIndex + 1
-
+    console.log('edgeTypeIndex')
+    console.log(edgeTypeIndex)
     if (edgeTypeIndex === -1) {
-      this.eh.disableDrawMode()
+      this.eh.disable()
+      this.eh.hide()
       return
+    } else {
+      // @ts-ignore
+      this.eh.enable()
     }
-    // @ts-ignore
-    this.eh.disableDrawMode()
-    this.eh.enableDrawMode()
   }
 
   @autobind

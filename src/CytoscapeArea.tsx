@@ -73,6 +73,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   private undoRedoManager: any;
   private portalAccessor: CBioPortalAccessor;
   private isMountedFirst = true;
+  private eh: any;
 
 
   constructor (props: PathwayMapperType) {
@@ -250,7 +251,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       console.log(err);
     }
     try { 
-      cytoscape.use(edgeHandles);
+      edgeHandles(cytoscape, $);
     } catch(err){
       console.log(err);
     }
@@ -346,7 +347,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
         cxt: false, // whether cxt events trigger edgehandles (useful on touch)
         enabled: false, // whether to start the extension in the enabled state
         toggleOffOnLeave: true, // whether an edge is cancelled by leaving a node (true), or whether you need to go over again to cancel (false; allows multiple edges in one pass)
-        handleInDrawMode: false, // whether to show the handle in draw mode
         edgeType: function( sourceNode, targetNode ) {
           // can return 'flat' for flat edges between nodes or 'node' for intermediate node between them
           // returning null/undefined means an edge can't be added between the two nodes
@@ -378,7 +378,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
           var type = self.getGlobalEdgeType();
           console.log("Type");
           console.log(type);
-          self.cy.edgehandles('option', 'ghostEdgeType', type);
+          //self.cy.edgehandles('option', 'ghostEdgeType', type);
         },
         complete: function( sourceNode, targetNodes, addedEntities )
         {
@@ -388,6 +388,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
             //  // FBI takes this case from now on :O
             //  // We will take care of addition in our manager :)
             self.cy.remove(addedEntities);
+            console.log(addedEntities);
             self.editor.addEdge({
               source: sourceNode.id(),
               target: targetNodes[0].id(),
@@ -396,7 +397,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
               pubmedIDs: [],
               name: ""
             });
-            eh.disableDrawMode();
         },
         stop: function( sourceNode )
         {
@@ -404,16 +404,17 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
           //TODO refactor this, so terrible for now
           //$('.edge-palette a').blur().removeClass('active');
           self.edgeAddingMode = -1;
-          eh.disableDrawMode();
-          self.props.setActiveEdge(-1);  
-        }
+          self.eh.disable();
+          self.eh.hide();
+          self.props.setActiveEdge(-1);
+        },
       };
     //Edge Handles initialization
 
     console.log("Edge Handles inside Cytoscape ARea");
-    const eh = this.cy.edgehandles(edgeHandleDefaults);
-
-    this.props.editorHandler(this.editor, eh, this.undoRedoManager);
+    this.eh = this.cy.edgehandles(edgeHandleDefaults);
+    this.eh.disable();
+    this.props.editorHandler(this.editor, this.eh, this.undoRedoManager);
 
     if(!this.isCbioPortal)
     this.cy.nodeResize({
@@ -427,7 +428,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       boundingRectangleLineDash: [4, 8], // line dash of bounding rectangle
       boundingRectangleLineColor: "ffc90e",
       boundingRectangleLineWidth: 1.5,
-      zIndex: 999,
+      zIndex: 1,
 
       moveSelectedNodesOnKeyEvents: function () {
           return true;
