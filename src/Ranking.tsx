@@ -31,8 +31,8 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     @observable
     isExpanded: boolean;
 
-    readonly COUNT_PERC_EXPLANATION = "Whether we should favor the number of genes of interest that the ones in a pathway or the percentage of such genes in that pathway. For instance, suppose genes of interest are A, B, and C, and the pathway contains genes B, C, D, and E. When we consider count, the score is 2 (for the two genes that match). However, when we consider percentage the score will be 50% as 2 of the 4 genes in the pathway are among genes of interest.";
-    readonly ALTERATION_EXPLANATION = "When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and %50 for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (20+30)/4=%12.5 for match count and percentage, respectively.";
+    readonly COUNT_PERC_EXPLANATION = "Whether we should favor the number of genes of interest matching the ones in a pathway or the percentage of such genes in that pathway. For instance, suppose genes of interest are A, B, and C, and the pathway contains genes B, C, D, and E. When we consider count, the score is 2 (for the two genes that match). However, when we consider percentage the score will be 50% as 2 of the 4 genes in the pathway are among genes of interest.";
+    readonly ALTERATION_EXPLANATION = "When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and %50 for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (0.2+0.3)/4=%12.5 for match count and percentage, respectively.";
     
 
     constructor(props: IRankingProps){
@@ -109,13 +109,40 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                 <b style={{marginLeft: "2px"}}>&nbsp;Pathways</b>
             </div>
             
-            <ReactTable
-                data={this.bestPathways}
-                columns={columns}
-                defaultPageSize={11}
-                showPageSizeOptions={false}
-                filterable
-            />
+            <Table id="ranking-table" striped bordered condensed hover>
+                <thead>
+                    <tr>
+                    <td><i>#</i></td>
+                    <td><i>Pathway name</i></td>
+                    <td><i>Score</i></td>
+                    <td><i>Genes matched</i></td>
+                    </tr>
+                </thead>
+                <tbody>
+                {
+                    this.bestPathways.map((pathway: any, i: number) => {
+                        const pwName = pathway.pathwayName as string;
+                        const lengthThreshold = 13;
+                        const isPwNameShort = pwName.length < lengthThreshold;
+
+                        const geneStr = this.calculateGeneStr(pathway.genesMatched, lengthThreshold);
+                        return (
+                            <tr key={"ranked_" + i} onClick={() => {this.onPathwayClick(pwName);}} style={{cursor: "pointer"}}>
+                                <td>{i + 1}</td>
+                                <td id={"_" + pwName} data-border="true" data-type="light" data-tip={pwName} data-place="top" data-effect="solid">
+                                    {(isPwNameShort ? pwName : pwName.substring(0, lengthThreshold) + "...")}
+                                </td>
+                                <td className="score">{pathway.score.toFixed(2)}</td>
+                                <td data-border="true" data-type="light" data-tip={pathway.genesMatched.join(" ")} data-multiline="true" data-place="right" data-effect="solid">
+                                    {geneStr}
+                                </td>
+                            </tr>
+                        );
+                    })
+                }
+                    
+                </tbody>
+            </Table>
 
             <div className="info-entry">
 

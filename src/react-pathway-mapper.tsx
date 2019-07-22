@@ -466,8 +466,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <AboutModal isModalShown={this.isModalShown[EModalType.ABOUT]} handleClose={this.handleClose}/>
           </div>)
           }
-          <ToastContainer />
-          <ReactTooltip className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 1040}}/>
+          <ToastContainer className={"pm-toast-container"}/>
+          <ReactTooltip className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 9999999}}/>
 
           <input id="myInput"
             type="file"

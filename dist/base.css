@@ -1480,4 +1480,8 @@ tbody tr:hover{
 .Toastify__toast-container{
     width: 420px;
 }
+
+.Toastify__toast--success{
+    background-color: #1abc9c;
+}
 /*# sourceMappingURL=base.css.map*/
