@@ -14,6 +14,8 @@ import saveSVGImage from "./toolbar/save_svg.svg";
 // @ts-ignore
 const addImage = require("./toolbar/add.svg");
 // @ts-ignore
+const aboutImage = require("./toolbar/about.svg");
+// @ts-ignore
 import openImage from "./toolbar/edit.svg";
 
 import { IProfileMetaData, IAlterationData } from './react-pathway-mapper';
@@ -67,6 +69,9 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
             
           <br/>
           <img height="22px" width="22px" style={{cursor: "pointer"}} data-border="true" data-type="light" data-tip="Edit pathway" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://react-pathway-mapper.herokuapp.com/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
+          
+          <br/>
+          <img height="22px" width="22px" style={{cursor: "pointer"}} data-border="true" data-type="light" data-tip="Help" data-place="right" data-effect="solid" src={aboutImage} onClick={() => {}}/>
           
     </div>);
   }
