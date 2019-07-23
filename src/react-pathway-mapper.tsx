@@ -128,6 +128,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   @observable
   oldName = "";
+
+  allGenes: any = {};
   
   @observable
   profiles: IProfileMetaData[] = [];
@@ -304,7 +306,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
       if(gene.data.type === "GENE")
         geneHash[gene.data.name] = gene.data.type;
-
+        if(!gene.data.name.includes(" "))
+          this.allGenes[gene.data.name] = 0;
     }
 
     this.pathwayGeneMap[pathwayData.title] = geneHash;
@@ -323,6 +326,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       }
       console.log("Pathway & Gene Map");
       console.log(this.pathwayGeneMap);
+      console.log("All Genes");
+      console.log(this.allGenes);
+      console.log(Object.keys(this.allGenes).length);
+      console.log(Object.keys(this.allGenes).join(" "));
     }
 
 

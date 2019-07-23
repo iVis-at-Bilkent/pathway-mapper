@@ -81,6 +81,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     };
     bestPathwaysAlgos: any[][];
     oldName: string;
+    allGenes: any;
     profiles: IProfileMetaData[];
     setActiveEdge: (edgeId: number) => void;
     viewOperationsManager: ViewOperationsManager;
