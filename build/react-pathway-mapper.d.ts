@@ -20,11 +20,11 @@ interface IPathwayMapperProps {
     alterationData?: IAlterationData;
     queryParameter?: any;
     oncoPrintTab?: string;
+    setTableData?: Function;
 }
-interface ICBioData {
+export interface ICBioData {
     altered: number;
     gene: string;
-    oqlLine: string;
     percentAltered: string;
     sequenced: number;
 }

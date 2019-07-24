@@ -51,12 +51,12 @@ interface IPathwayMapperProps{
   alterationData?: IAlterationData;
   queryParameter?: any;
   oncoPrintTab?: string;
+  setTableData?: Function;
 }
 
-interface ICBioData{
+export interface ICBioData{
   altered: number;
   gene: string;
-  ​​oqlLine: string;
   percentAltered: string​;
   sequenced: number;
 }
@@ -172,6 +172,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.getBestPathway(1);
       this.getBestPathway(2);
       this.getBestPathway(3);
+      this.props.setTableData(this.bestPathwaysAlgos);
     }
     /*
     const profile1 = {profileId: "study1_gistic", studyId: "study1", enabled: true};
