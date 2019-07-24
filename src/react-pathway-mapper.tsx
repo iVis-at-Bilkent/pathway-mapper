@@ -52,6 +52,7 @@ interface IPathwayMapperProps{
   queryParameter?: any;
   oncoPrintTab?: string;
   setTableData?: Function;
+  changePathwayHandler?: Function;
 }
 
 export interface ICBioData{
@@ -145,6 +146,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.fileManager = new FileOperationsManager();
     this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, 
                                              this.handleOpen, this.props.isCBioPortal);
+    if(this.props.changePathwayHandler)
+      this.props.changePathwayHandler(this.pathwayHandler);
     this.selectedPathway = "";
     if(this.props.pathwayName){
       this.pathwayActions.changePathway(this.props.pathwayName);
@@ -172,7 +175,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.getBestPathway(1);
       this.getBestPathway(2);
       this.getBestPathway(3);
-      this.props.setTableData(this.bestPathwaysAlgos);
+      if(this.props.setTableData)
+        this.props.setTableData(this.bestPathwaysAlgos);
     }
     /*
     const profile1 = {profileId: "study1_gistic", studyId: "study1", enabled: true};
@@ -419,19 +423,17 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           
           { isCBioPortal &&
           <Row>
-            <Col xs={1} style={{width: "3%"}}></Col>
-            <Col xs={9} style={{paddingLeft: "0px", marginTop: "12px"}}>{this.selectedPathway}</Col>
+            <Col xs={2} style={{}}>
+              <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}
+                handleOpen={this.handleOpen} queryParameter={this.props.queryParameter} oncoPrintTab={this.props.oncoPrintTab}/>
+            </Col>
+            <Col xs={7} style={{paddingLeft: "0px", marginTop: "15px", textAlign: "right"}}>
+              <div>{this.selectedPathway}</div>
+            </Col>
           </Row>
           }
           
           <Row>
-            {
-            ( isCBioPortal &&
-            <Col xs={1} style={{width: "3%"}}>
-                <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}
-                 handleOpen={this.handleOpen} queryParameter={this.props.queryParameter} oncoPrintTab={this.props.oncoPrintTab}/>
-            </Col>)
-            }
             {
             (!isCBioPortal && 
             <Col xs={1} style={{paddingLeft: "0px"}}>
@@ -444,19 +446,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
                 selectedPathway={this.selectedPathway} pathwayHandler={this.pathwayHandler} 
                 handleOpen={this.handleOpen}/>
             </Col>
-
-            { isCBioPortal &&
-            <Col xs={2}>
-                <Row>
-                  <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos}/>
-                </Row>
-            </Col>
-            }
           </Row>
 
           { isCBioPortal &&
           <Row>
-            <Col xs={1} style={{width: "3%"}}></Col>
             <Col xs={9} style={{paddingLeft: "0px", textAlign: "right"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a></Col>
           </Row>
           }

@@ -21,6 +21,7 @@ interface IPathwayMapperProps {
     queryParameter?: any;
     oncoPrintTab?: string;
     setTableData?: Function;
+    changePathwayHandler?: Function;
 }
 export interface ICBioData {
     altered: number;
