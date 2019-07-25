@@ -86,32 +86,30 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                 {
                 <div id="criteria-title" className="info-title">
                     <b style={{display: "inline-block"}}>
-                        &nbsp;Ranking Options
+                        &nbsp;Ranking options
                     </b>
                 </div>
                 }
                 <div>
                     <Panel style={{border: "0px"}}>
-                        <Panel.Collapse>
-                            <Panel.Body>
-                                <DropdownButton
-                                    title={this.dropDownTitle}
-                                    id="0"
-                                    style={{fontSize: "13px"}}
-                                    >
-                                    <MenuItem onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match count"; this.onApplyClick();} }>Match count</MenuItem>
-                                    <MenuItem onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match percentage"; this.onApplyClick();}}>Match percentage</MenuItem>
-                                </DropdownButton>  
-                                &nbsp; 
-                                <div data-tip={this.COUNT_PERC_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
+                        <Panel.Body>
+                            <DropdownButton
+                                title={this.dropDownTitle}
+                                id="0"
+                                style={{fontSize: "13px"}}
+                                >
+                                <MenuItem onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match count"; this.onApplyClick();} }>Match count</MenuItem>
+                                <MenuItem onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match percentage"; this.onApplyClick();}}>Match percentage</MenuItem>
+                            </DropdownButton>  
+                            &nbsp; 
+                            <div data-tip={this.COUNT_PERC_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
 
-                                <Checkbox id="alterationCheckBox" onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1; this.onApplyClick();}}
-                                        style={{fontSize: "13px", marginTop: "8px"}}>
-                                    Consider alteration frequency&nbsp;            
-                                    <span data-tip={this.ALTERATION_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></span>
-                                </Checkbox>
+                            <Checkbox id="alterationCheckBox" onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1; this.onApplyClick();}}
+                                    style={{fontSize: "13px", marginTop: "8px", bottom: "4px"}}>
+                                Consider alteration frequency&nbsp;            
+                                <span data-tip={this.ALTERATION_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></span>
+                            </Checkbox>
                         </Panel.Body>
-                        </Panel.Collapse>
                     </Panel>
                 </div>
             </div>

@@ -166,10 +166,6 @@ tbody tr:hover{
     margin-top: 0;
 }
 
-#criteria-title{
-    cursor: pointer;
-}
-
 .Toastify__toast-container{
     width: 420px;
 }
@@ -185,4 +181,9 @@ tbody tr:hover{
 #toolbar img {
     cursor: pointer;
     margin-left: 7px;
+}
+
+table .radio {
+    margin-top: 0;
+    margin-bottom: 0;
 }

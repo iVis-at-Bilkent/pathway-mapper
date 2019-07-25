@@ -53,6 +53,7 @@ interface IPathwayMapperProps{
   oncoPrintTab?: string;
   setTableData?: Function;
   changePathwayHandler?: Function;
+  addGenomicDataHandler?: (addGenomicData: (alterationData: ICBioData[]) => void) => void;
   tableComponent?: any;
 }
 
@@ -131,8 +132,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   @observable
   oldName = "";
-
-  allGenes: any = {};
   
   @observable
   profiles: IProfileMetaData[] = [];
@@ -148,8 +147,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.fileManager = new FileOperationsManager();
     this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, 
                                              this.handleOpen, this.props.isCBioPortal);
-    if(this.props.changePathwayHandler)
-      this.props.changePathwayHandler(this.pathwayHandler);
     this.selectedPathway = "";
     if(this.props.pathwayName){
       this.pathwayActions.changePathway(this.props.pathwayName);
@@ -164,11 +161,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       // If cBioPortal mode is on it is very likely to have cBioALterationData
       // but to be on the safe side below assertion is made.
       if(this.props.cBioAlterationData){
-        // Transform cBioDataAlteration into AlterationData
-        this.alterationData[PathwayMapper.CBIO_PROFILE_NAME] = {};
-        this.props.cBioAlterationData.forEach((geneAltData: ICBioData) => {
-          this.alterationData[PathwayMapper.CBIO_PROFILE_NAME][geneAltData.gene] = (geneAltData.altered / geneAltData.sequenced) * 100;
-        });
+        this.calculateAlterationData(this.props.cBioAlterationData);
+      }
+
+      if(this.props.addGenomicDataHandler){
+        this.props.addGenomicDataHandler(this.addGenomicData);
       }
 
 
@@ -191,6 +188,14 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     */
     console.log("Profiles");
     console.log(this.profiles);
+  }
+
+  calculateAlterationData(cBioAlterationData: ICBioData[]){
+    // Transform cBioDataAlteration into AlterationData
+    this.alterationData[PathwayMapper.CBIO_PROFILE_NAME] = {};
+    cBioAlterationData.forEach((geneAltData: ICBioData) => {
+      this.alterationData[PathwayMapper.CBIO_PROFILE_NAME][geneAltData.gene] = (geneAltData.altered / geneAltData.sequenced) * 100;
+    });
   }
 
   getGeneStudyMap(studyGeneMap: any){
@@ -293,10 +298,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
     this.selectedPathway = bestPathways[0].pathwayName;
     this.bestPathwaysAlgos.push(bestPathways);
-    console.log("Genes");
-    console.log(this.props.genes);
-    console.log("Score Map");
-    console.log(matchedGenesMap);
   }
   
   // This method extracts all genes of a pathway and adds it to the pathwayGeneMap
@@ -305,16 +306,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   @autobind
   includePathway(pathwayData?: IPathwayData, pathwayName?: string){
     const genes = pathwayData.nodes;
-    console.log("genes::includePathway");
-    console.log(genes);
     const geneHash: any = {};
 
     for(const gene of genes){
 
       if(gene.data.type === "GENE")
         geneHash[gene.data.name] = gene.data.type;
-        if(!gene.data.name.includes(" "))
-          this.allGenes[gene.data.name] = 0;
     }
 
     this.pathwayGeneMap[pathwayData.title] = geneHash;
@@ -333,10 +330,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       }
       console.log("Pathway & Gene Map");
       console.log(this.pathwayGeneMap);
-      console.log("All Genes");
-      console.log(this.allGenes);
-      console.log(Object.keys(this.allGenes).length);
-      console.log(Object.keys(this.allGenes).join(" "));
     }
 
 
@@ -405,6 +398,14 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   @autobind
   setActiveEdgeHandler(setActiveEdge: (edgeId: number) => void){
     this.setActiveEdge = setActiveEdge;
+  }
+
+
+  @autobind
+  addGenomicData(cBioAlterationData: ICBioData[]){
+    this.calculateAlterationData(cBioAlterationData);
+    this.editor.removeGenomicData();
+    this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
   }
 
   render() {
@@ -545,6 +546,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   @autobind
   pathwayHandler(pathway: string){
       this.selectedPathway = pathway;
+      this.props.changePathwayHandler(Object.keys(this.pathwayGeneMap[pathway]));
   }
 
   

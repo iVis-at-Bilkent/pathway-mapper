@@ -22,6 +22,7 @@ interface IPathwayMapperProps {
     oncoPrintTab?: string;
     setTableData?: Function;
     changePathwayHandler?: Function;
+    addGenomicDataHandler?: (addGenomicData: (alterationData: ICBioData[]) => void) => void;
     tableComponent?: any;
 }
 export interface ICBioData {
@@ -83,12 +84,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     };
     bestPathwaysAlgos: any[][];
     oldName: string;
-    allGenes: any;
     profiles: IProfileMetaData[];
     setActiveEdge: (edgeId: number) => void;
     viewOperationsManager: ViewOperationsManager;
     gridOptionsManager: GridOptionsManager;
     constructor(props: IPathwayMapperProps);
+    calculateAlterationData(cBioAlterationData: ICBioData[]): void;
     getGeneStudyMap(studyGeneMap: any): any;
     getAlterationAveragePerGene(genomicDataMap: any): any;
     /**
@@ -106,6 +107,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         [dataType: string]: IDataTypeMetaData;
     }, selectedStudyData: any[]): void;
     setActiveEdgeHandler(setActiveEdge: (edgeId: number) => void): void;
+    addGenomicData(cBioAlterationData: ICBioData[]): void;
     render(): JSX.Element;
     componentDidMount(): void;
     componentDidUpdate(): void;
