@@ -546,7 +546,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   @autobind
   pathwayHandler(pathway: string){
       this.selectedPathway = pathway;
-      this.props.changePathwayHandler(Object.keys(this.pathwayGeneMap[pathway]));
+      if(this.pathwayActions[pathway] && this.props.changePathwayHandler)
+        this.props.changePathwayHandler(Object.keys(this.pathwayGeneMap[pathway]));
   }
 
   

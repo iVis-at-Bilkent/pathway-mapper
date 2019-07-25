@@ -19,6 +19,5 @@ export default class Ranking extends React.Component<IRankingProps, {}> {
     onPathwayClick(pathway: string): void;
     onApplyClick(): void;
     render(): JSX.Element;
-    private calculateGeneStr;
 }
 export {};
