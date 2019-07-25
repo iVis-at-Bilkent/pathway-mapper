@@ -1,9 +1,9 @@
 import React from 'react';
 import PathwayActions from './PathwayActions.js';
-import 'react-table/react-table.css';
 interface IRankingProps {
     pathwayActions: PathwayActions;
     bestPathwaysAlgos: any[][];
+    tableComponent: any;
 }
 export default class Ranking extends React.Component<IRankingProps, {}> {
     bestPathways: any[];

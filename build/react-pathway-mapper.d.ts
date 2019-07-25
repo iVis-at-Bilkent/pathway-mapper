@@ -22,6 +22,7 @@ interface IPathwayMapperProps {
     oncoPrintTab?: string;
     setTableData?: Function;
     changePathwayHandler?: Function;
+    tableComponent?: any;
 }
 export interface ICBioData {
     altered: number;
@@ -66,8 +67,8 @@ export interface IPathwayMapperTable {
     genes: string;
 }
 export default class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
+    static readonly CBIO_PROFILE_NAME = "cBioPortal_data";
     readonly NUMBER_OF_PATHWAYS_TO_SHOW = 10;
-    readonly CBIO_PROFILE_NAME = "cBioPortal_data";
     selectedPathway: string;
     fileManager: FileOperationsManager;
     editor: EditorActionsManager;

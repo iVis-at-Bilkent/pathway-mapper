@@ -53,6 +53,7 @@ interface IPathwayMapperProps{
   oncoPrintTab?: string;
   setTableData?: Function;
   changePathwayHandler?: Function;
+  tableComponent?: any;
 }
 
 export interface ICBioData{
@@ -103,9 +104,10 @@ export interface IPathwayMapperTable{
 
 @observer
 export default class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
-  readonly NUMBER_OF_PATHWAYS_TO_SHOW = 10;
-  readonly CBIO_PROFILE_NAME = "cBioPortal_data";
+  static readonly CBIO_PROFILE_NAME = "cBioPortal_data";
 
+  readonly NUMBER_OF_PATHWAYS_TO_SHOW = 10;
+  
   @observable
   selectedPathway: string;
 
@@ -163,20 +165,20 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       // but to be on the safe side below assertion is made.
       if(this.props.cBioAlterationData){
         // Transform cBioDataAlteration into AlterationData
-        this.alterationData[this.CBIO_PROFILE_NAME] = {};
+        this.alterationData[PathwayMapper.CBIO_PROFILE_NAME] = {};
         this.props.cBioAlterationData.forEach((geneAltData: ICBioData) => {
-          this.alterationData[this.CBIO_PROFILE_NAME][geneAltData.gene] = (geneAltData.altered / geneAltData.sequenced) * 100;
+          this.alterationData[PathwayMapper.CBIO_PROFILE_NAME][geneAltData.gene] = (geneAltData.altered / geneAltData.sequenced) * 100;
         });
       }
 
 
-      this.profiles.push({profileId: this.CBIO_PROFILE_NAME, enabled: true});
+      this.profiles.push({profileId: PathwayMapper.CBIO_PROFILE_NAME, enabled: true});
       this.getBestPathway(0);
       this.getBestPathway(1);
       this.getBestPathway(2);
       this.getBestPathway(3);
       if(this.props.setTableData)
-        this.props.setTableData(this.bestPathwaysAlgos);
+        this.props.setTableData(this.bestPathwaysAlgos, this.pathwayGeneMap);
     }
     /*
     const profile1 = {profileId: "study1_gistic", studyId: "study1", enabled: true};
@@ -420,7 +422,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <Buttonbar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen}/> 
           </Row>]
           }
-          
           { isCBioPortal &&
           <Row>
             <Col xs={2} style={{}}>
@@ -446,6 +447,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
                 selectedPathway={this.selectedPathway} pathwayHandler={this.pathwayHandler} 
                 handleOpen={this.handleOpen}/>
             </Col>
+            {
+            (isCBioPortal && this.props.tableComponent && 
+            <Col xs={3} style={{paddingLeft: "0px"}}>
+              <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} tableComponent={this.props.tableComponent}/>
+            </Col>)
+            }
           </Row>
 
           { isCBioPortal &&
