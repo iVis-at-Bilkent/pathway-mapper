@@ -118,18 +118,5 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
         );
     }
 
-    private calculateGeneStr(genesMatched: string[], lengthThreshold: number){
-        let runningLength = 0;
-        let geneStr = "";
-        for(const geneName of genesMatched){
-            runningLength += geneName.length;
-            if(runningLength < lengthThreshold){
-                geneStr += geneName + " ";
-                runningLength++; //Whitespace is added
-            } else{
-                return geneStr + "...";
-            }
-        }
-        return geneStr;
-    }
+    
 }
