@@ -104,10 +104,12 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
             {svg: saveSvg, function: () => {this.props.pathwayActions.export(false)}, tooltip: "Save Pathway"}];
         
         const modFunctions: ISVGFunction[] = [
-            {svg: deleteSvg, function: this.props.pathwayActions.deleteSelected, tooltip: "Delete Selected"},
-            {svg: undoSvg, function: () => {this.props.pathwayActions.undo();}, tooltip: "Undo"},
-            {svg: redoSvg, function: () => {this.props.pathwayActions.redo();}, tooltip: "Redo"}];
-        
+            {svg: deleteSvg, function: this.props.pathwayActions.deleteSelected, tooltip: "Delete Selected"}];
+
+        if(!this.props.pathwayActions.isCollaborative){
+            modFunctions.push({svg: undoSvg, function: () => {this.props.pathwayActions.undo();}, tooltip: "Undo"},
+                              {svg: redoSvg, function: () => {this.props.pathwayActions.redo();}, tooltip: "Redo"});
+        }
         const alignFunctions: ISVGFunction[] = [
             {svg: ahtSvg, function: () => {this.props.pathwayActions.align("hTop");}, tooltip: "Align Horizontal Top"},
             {svg: ahmSvg, function: () => {this.props.pathwayActions.align("hMid");}, tooltip: "Align Horizontal Middle"},

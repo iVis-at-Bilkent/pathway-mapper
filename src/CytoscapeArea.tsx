@@ -294,7 +294,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
 
     this.qtipManager = new QtipManager(this.cy, this.editor);
-    this.cxtMenuManager = new ContextMenuManager(this.cy, this.editor, this.isCbioPortal, this.props.handleOpen, this.undoRedoManager);
+    this.cxtMenuManager = new ContextMenuManager(this.cy, this.editor, this.isCbioPortal,
+                                                 this.props.handleOpen, this.undoRedoManager, this.props.isCollaborative);
     this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editor, this.cy, this.props.pathwayHandler);
 
     // Initialize panzoom

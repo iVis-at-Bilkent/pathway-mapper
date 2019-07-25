@@ -7,12 +7,16 @@ export default class ContextMenuManager {
   private isCBioPortal: boolean;
   private handleOpen: (modalId: EModalType) => void;
   private undoRedoManager: any;
-  constructor(cy: any, editor: EditorActionsManager, isCBioPortal: boolean, handleOpen: (modalId: EModalType) => void, undoRedoManager: any){
+  private isCollaborative: any;
+  constructor(cy: any, editor: EditorActionsManager, isCBioPortal: boolean,
+              handleOpen: (modalId: EModalType) => void, undoRedoManager: any,
+              isCollaborative: boolean){
     this.cy = cy;
     this.editor = editor;
     this.isCBioPortal = isCBioPortal;
     this.handleOpen = handleOpen;
     this.undoRedoManager = undoRedoManager;
+    this.isCollaborative = isCollaborative;
     this.init();
   }
 
@@ -21,7 +25,7 @@ export default class ContextMenuManager {
 
     const ctxMenus = this.cy.contextMenus();
 
-    const nonCBioMenuItems = [
+    let menuItems = [
       {
         id: 'deleteSelected', // ID of menu item
         content: 'Delete Selected', // content of menu item
@@ -181,10 +185,22 @@ export default class ContextMenuManager {
         disabled: false, // Whether the item will be created as disabled
         hasTrailingDivider: true, // Whether the item will have a trailing divider
         coreAsWell: false // Whether core instance have this item on cxttap
+      },
+      {
+          id: 'performLayout', // ID of menu item
+          content: 'Perform Layout', // content of menu item
+          // Filters the elements to have this menu item on cxttap
+          // If the selector is not truthy no elements will have this menu item on cxttap
+          coreAsWell: true,
+          onClickFunction: (event) => {
+            this.editor.performLayout();
+          },
+          disabled: false, // Whether the item will be created as disabled
+          hasTrailingDivider: true, // Whether the item will have a trailing divider
       }
 
     ];
-    let menuItems = [ 
+    let nonCollabItems = [ 
       //Context menu items when clicking on blank space
       {
           id: 'undoAction', // ID of menu item
@@ -209,23 +225,11 @@ export default class ContextMenuManager {
           },
           disabled: false, // Whether the item will be created as disabled
           hasTrailingDivider: true, // Whether the item will have a trailing divider
-      },
-      {
-          id: 'performLayout', // ID of menu item
-          content: 'Perform Layout', // content of menu item
-          // Filters the elements to have this menu item on cxttap
-          // If the selector is not truthy no elements will have this menu item on cxttap
-          coreAsWell: true,
-          onClickFunction: (event) => {
-            this.editor.performLayout();
-          },
-          disabled: false, // Whether the item will be created as disabled
-          hasTrailingDivider: true, // Whether the item will have a trailing divider
       }
     ];
 
-    if(!this.isCBioPortal){
-      menuItems = menuItems.concat(nonCBioMenuItems);
+    if(!this.isCollaborative){
+      menuItems = menuItems.concat(nonCollabItems);
     }
     ctxMenus.appendMenuItems(menuItems);
   }

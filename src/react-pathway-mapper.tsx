@@ -146,7 +146,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     super(props);
     this.fileManager = new FileOperationsManager();
     this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, 
-                                             this.handleOpen, this.props.isCBioPortal);
+                                             this.handleOpen, this.props.isCBioPortal, this.props.isCollaborative);
     this.selectedPathway = "";
     if(this.props.pathwayName){
       this.pathwayActions.changePathway(this.props.pathwayName);
@@ -429,7 +429,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
               <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}
                 handleOpen={this.handleOpen} queryParameter={this.props.queryParameter} oncoPrintTab={this.props.oncoPrintTab}/>
             </Col>
-            <Col xs={7} style={{paddingLeft: "0px", marginTop: "15px", textAlign: "right"}}>
+            <Col xs={7} style={{paddingLeft: "0px", marginTop: "15px", textAlign: "right", paddingRight: "35px"}}>
               <div>{this.selectedPathway}</div>
             </Col>
           </Row>

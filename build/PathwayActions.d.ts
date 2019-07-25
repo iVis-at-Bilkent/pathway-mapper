@@ -18,10 +18,11 @@ export default class PathwayActions {
     uploader: any;
     merger: any;
     isCBioPortal: boolean;
+    isCollaborative: boolean;
     viewOperationsManager: ViewOperationsManager;
     overlayUploader: any;
     enabledType: EGridType;
-    constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, handleOpen: (modalId: EModalType) => void, isCBioPortal: boolean);
+    constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, handleOpen: (modalId: EModalType) => void, isCBioPortal: boolean, isCollaborative: boolean);
     emphasiseQueryGenes(queryGenes: string[]): void;
     getSelectedNodes(): any;
     setLayoutProperties(layoutProperties: ILayoutProperties): void;

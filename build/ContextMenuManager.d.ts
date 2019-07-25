@@ -6,7 +6,8 @@ export default class ContextMenuManager {
     private isCBioPortal;
     private handleOpen;
     private undoRedoManager;
-    constructor(cy: any, editor: EditorActionsManager, isCBioPortal: boolean, handleOpen: (modalId: EModalType) => void, undoRedoManager: any);
+    private isCollaborative;
+    constructor(cy: any, editor: EditorActionsManager, isCBioPortal: boolean, handleOpen: (modalId: EModalType) => void, undoRedoManager: any, isCollaborative: boolean);
     init(): void;
     isChildren(node: any, queryNode: any): boolean;
 }

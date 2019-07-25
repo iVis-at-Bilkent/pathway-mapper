@@ -31,6 +31,7 @@ export default class PathwayActions {
   uploader: any
   merger: any
   isCBioPortal: boolean
+  isCollaborative: boolean
   viewOperationsManager: ViewOperationsManager
   overlayUploader: any
 
@@ -42,13 +43,15 @@ export default class PathwayActions {
     profiles: IProfileMetaData[],
     fileManager: FileOperationsManager,
     handleOpen: (modalId: EModalType) => void,
-    isCBioPortal: boolean
+    isCBioPortal: boolean,
+    isCollaborative: boolean
   ) {
     this.pathwayHandler = pathwayHandler
     this.profiles = profiles
     this.fileManager = fileManager
     this.handleOpen = handleOpen
     this.isCBioPortal = isCBioPortal
+    this.isCollaborative = isCollaborative
     this.enabledType = EGridType.NONE
   }
 
@@ -57,7 +60,6 @@ export default class PathwayActions {
       this.editor.cy.nodes().forEach((node: any) => {
         const nodeName = node.data().name
         const nodeType = node.data().type
-        console.log(node.data())
         if (queryGenes.includes(nodeName) && nodeType === 'GENE') {
           node.style({ 'border-width': '4px' })
         }

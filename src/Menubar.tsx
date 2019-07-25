@@ -46,7 +46,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
               <Nav>
                 <NavDropdown eventKey={1} title="Network" id="basic-nav-network">
                   <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.newPathway}>New</MenuItem>
-                  <MenuItem eventKey={1.1} onClick={() => {this.props.handleOpen(EModalType.PW_DETAILS)}}>Properties...</MenuItem>
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.handleOpen(EModalType.PW_DETAILS);}}>Properties...</MenuItem>
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.upload();}}>Import</MenuItem>
                   <NavDropdown className="dropdown-submenu" eventKey={1} title="TCGA" id="basic-nav-TCGA">
                     {
@@ -62,7 +62,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                                       this.props.handleOpen(EModalType.CONFIRMATION);
                                       ConfirmationModal.pendingFunction = () => {this.props.pathwayActions.changePathway(pwName);};
                                     } else {
-                                      this.props.pathwayActions.changePathway(pwName)
+                                      this.props.pathwayActions.changePathway(pwName);
                                     }
                                 }
                                 }>
@@ -75,12 +75,12 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                       })
                     }
                   </NavDropdown>
-                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.merge()}}>Merge With...</MenuItem>
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.merge();}}>Merge With...</MenuItem>
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.export(false);}}>Export</MenuItem>
                   <NavDropdown className="dropdown-submenu" eventKey={1} title="Export as" id="basic-nav-export">
-                    <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.saveAs("JPEG")}}>JPEG</MenuItem>
-                    <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.saveAs("PNG")}}>PNG</MenuItem>
-                    <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.saveAs("SVG")}}>SVG</MenuItem>
+                    <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.saveAs("JPEG");}}>JPEG</MenuItem>
+                    <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.saveAs("PNG");}}>PNG</MenuItem>
+                    <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.saveAs("SVG");}}>SVG</MenuItem>
                     <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.export(true);}}>SIFNX</MenuItem>
                   </NavDropdown>
                 </NavDropdown>
@@ -91,7 +91,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                         nodeTypes.map((nodeType) => {
                         return (<MenuItem onClick={() => {this.props.pathwayActions.addNode(nodeType);}}>
                         {nodeType}
-                      </MenuItem>)} )
+                      </MenuItem>);} )
                       }
                   </NavDropdown>
                   <NavDropdown id="add-edge-submenu" className="dropdown-submenu" eventKey={2.1} title="Add Edge">
@@ -104,13 +104,16 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                             this.props.setActiveEdge(i);
                           }}>
                         {nodeType}
-                      </MenuItem>)} )
+                      </MenuItem>);} )
                       }
                   </NavDropdown>
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.deleteSelected();}}>Delete Selected</MenuItem>
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.resizeToContent();}}>Resize Nodes to Content</MenuItem>
-                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.undo();}}>Undo</MenuItem>
-                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.redo();}}>Redo</MenuItem>
+
+                  { !this.props.pathwayActions.isCollaborative && 
+                  [<MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.undo();}}>Undo</MenuItem>,
+                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.redo();}}>Redo</MenuItem>]
+                  }
                 </NavDropdown>
                 <NavDropdown eventKey={3} title="View" id="basic-nav-view">
                   <NavDropdown id="align-view-submenu" className="dropdown-submenu" eventKey={2.1} title="Align Selected">
@@ -136,10 +139,10 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={4.1} onClick={this.props.pathwayActions.removeAllHighlight}>Remove All Highlights</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={5} title="Alteration %" id="basic-nav-alteration">
-                  <MenuItem eventKey={5.1} onClick={() => {this.props.pathwayActions.uploadOverlay()}}>Load From File...</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={() => {this.props.pathwayActions.uploadOverlay();}}>Load From File...</MenuItem>
                   <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.loadSampleData}>Load Sample Data</MenuItem>
-                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(EModalType.STUDY)}}>Load cBioPortal Data...</MenuItem>
-                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(EModalType.PROFILES)}}>View Settings...</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(EModalType.STUDY);}}>Load cBioPortal Data...</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(EModalType.PROFILES);}}>View Settings...</MenuItem>
                   <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.removeAllData}>Remove All Data</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={6} title="Layout" id="basic-nav-layout">
@@ -158,6 +161,6 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                 </Navbar.Brand>
               </Nav>
             </Navbar>
-        )
+        );
     }
 }
