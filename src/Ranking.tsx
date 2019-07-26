@@ -78,8 +78,9 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                 <b style={{marginLeft: "2px"}}>&nbsp;Pathways</b>
               </div>*/}
 
+            { this.props.tableComponent &&
             <this.props.tableComponent data={this.bestPathways.map((data: any) => ({name: data.pathwayName, score: data.score, genes: data.genesMatched}))} selectedPathway={this.selectedPathway} changePathway={this.onPathwayClick}/>
-
+            }
             <div className="info-entry" style={{marginTop: "10px"}}>
 
 
@@ -90,30 +91,25 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                     </b>
                 </div>
                 }
-                <div>
-                    <Panel style={{border: "0px"}}>
-                        <Panel.Body>
-                            <DropdownButton
-                                title={this.dropDownTitle}
-                                id="0"
-                                style={{fontSize: "13px"}}
-                                >
-                                <MenuItem onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match count"; this.onApplyClick();} }>Match count</MenuItem>
-                                <MenuItem onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match percentage"; this.onApplyClick();}}>Match percentage</MenuItem>
-                            </DropdownButton>  
-                            &nbsp; 
-                            <div data-tip={this.COUNT_PERC_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
+                <div className="indent" style={{marginTop: "10px"}}>
+                    <DropdownButton
+                        title={this.dropDownTitle}
+                        id="0"
+                        style={{fontSize: "13px"}}
+                        >
+                        <MenuItem onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match count"; this.onApplyClick();} }>Match count</MenuItem>
+                        <MenuItem onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match percentage"; this.onApplyClick();}}>Match percentage</MenuItem>
+                    </DropdownButton>  
+                    &nbsp; 
+                    <div data-tip={this.COUNT_PERC_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
 
-                            <Checkbox id="alterationCheckBox" onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1; this.onApplyClick();}}
-                                    style={{fontSize: "13px", marginTop: "8px", bottom: "4px"}}>
-                                Consider alteration frequency&nbsp;            
-                                <span data-tip={this.ALTERATION_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></span>
-                            </Checkbox>
-                        </Panel.Body>
-                    </Panel>
+                    <Checkbox id="alterationCheckBox" onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1; this.onApplyClick();}}
+                            style={{fontSize: "13px", marginTop: "18px", bottom: "4px"}}>
+                        Consider alteration frequency&nbsp;            
+                        <span data-tip={this.ALTERATION_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></span>
+                    </Checkbox>
                 </div>
             </div>
-            <br/>
           </div>
         );
     }

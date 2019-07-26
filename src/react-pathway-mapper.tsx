@@ -450,7 +450,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
                 handleOpen={this.handleOpen}/>
             </Col>
             {
-            (isCBioPortal && this.props.tableComponent && 
+            (isCBioPortal && 
             <Col xs={3} style={{paddingLeft: "0px"}}>
               <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} tableComponent={this.props.tableComponent}/>
             </Col>)

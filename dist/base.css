@@ -1344,9 +1344,10 @@ tbody tr:hover{
 }
 
 #ranking-bar .info-title{
-    background-color: #4389c0;
+    background-color: white;
     width: 100%; 
-    color: white;
+    color: black;
+    font-weight: bold;
     padding-top: 3px;
     padding-bottom: 3px;
     border-radius: 4px;
@@ -1486,5 +1487,9 @@ tbody tr:hover{
 table .radio {
     margin-top: 0!important;
     margin-bottom: 0!important;
+}
+
+.cBioMode #showMoreButton{
+    width: 100px;
 }
 /*# sourceMappingURL=base.css.map*/
