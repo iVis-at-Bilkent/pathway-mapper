@@ -18,7 +18,7 @@ const aboutImage = require("./toolbar/about.svg");
 // @ts-ignore
 import openImage from "./toolbar/edit.svg";
 
-import { IProfileMetaData, IAlterationData } from './react-pathway-mapper';
+import { IProfileMetaData, IAlterationData, EModalType } from './react-pathway-mapper';
 
 interface IToolbarProps {
   pathwayActions: PathwayActions;
@@ -67,7 +67,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
             
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Edit pathway" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://react-pathway-mapper.herokuapp.com/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
           
-          <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Help" data-place="right" data-effect="solid" src={aboutImage} onClick={() => {}}/>
+          <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Help" data-place="right" data-effect="solid" src={aboutImage} onClick={() => {console.log("Here");this.props.handleOpen(EModalType.CHELP);}}/>
           
     </div>);
   }

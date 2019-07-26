@@ -38,6 +38,7 @@ import GridOptionsManager from './GridOptionsManager';
 import QuickHelpModal from './modals/QuickHelpModal';
 import LayoutProperties from './modals/LayoutProperties';
 import ConfirmationModal from './modals/ConfirmationModal';
+import CBioHelpModal from './modals/CBioHelpModal';
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
 
@@ -71,7 +72,8 @@ export enum EModalType{
   PW_DETAILS,
   GRID,
   HELP,
-  LAYOUT
+  LAYOUT,
+  CHELP
 }
 
 export interface IPathwayData{
@@ -151,7 +153,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(this.props.pathwayName){
       this.pathwayActions.changePathway(this.props.pathwayName);
     }
-    this.isModalShown = [false, false, false, false, false, false, false];
+    this.isModalShown = [false, false, false, false, false, false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
@@ -462,10 +464,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <Col xs={9} style={{paddingLeft: "0px", textAlign: "right"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a></Col>
           </Row>
           }
+
             { (<div id="invisibles">
 
           {
-          (!this.props.isCBioPortal && <div id="pm-modals">
+          (<div id="pm-modals">
             <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
             <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[EModalType.PROFILES]} handleClose={this.handleClose} />
             <PathwayDetailsModal isModalShown={this.isModalShown[EModalType.PW_DETAILS]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
@@ -473,6 +476,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <QuickHelpModal isModalShown={this.isModalShown[EModalType.HELP]} handleClose={this.handleClose}/>
             <LayoutProperties isModalShown={this.isModalShown[EModalType.LAYOUT]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <ConfirmationModal isModalShown={this.isModalShown[EModalType.CONFIRMATION]} handleClose={this.handleClose} />
+            <CBioHelpModal isModalShown={this.isModalShown[EModalType.CHELP]} handleClose={this.handleClose}/>
             <AboutModal isModalShown={this.isModalShown[EModalType.ABOUT]} handleClose={this.handleClose}/>
           </div>)
           }
