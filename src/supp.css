@@ -190,5 +190,5 @@ table .radio {
 }
 
 .cBioMode #showMoreButton{
-    width: 100px;
+    width: 100px!important;
 }
