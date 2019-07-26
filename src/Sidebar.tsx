@@ -116,7 +116,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                     <div className="list-group edge-palette">
                     {
                     edgeTypes.map((edgeType: string, i: number) => {
-                    return (<div data-tip="Click to activate; then, start the interaction by dragging from the source node!" data-effect="solid" data-place="bottom" data-delay-show="1000" >
+                    return (<div data-tip="Click to activate; then, start the interaction from the little circle on the source node!" data-effect="solid" data-place="bottom" data-delay-show="1000" >
                         <a style={{marginBottom: "5px"}} className={ "list-group-item " + (this.activeEdge === i ? "active" : "")} 
                         onClick={() => {this.addEdge(i);}} href="#" >
                         <img style={{width:"30px"}} className="pull-left" src={edgeImgs[i]}></img>{' '}

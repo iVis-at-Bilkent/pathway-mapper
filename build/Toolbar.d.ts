@@ -8,6 +8,7 @@ interface IToolbarProps {
     handleOpen: (modalId: number) => void;
     queryParameter: any;
     oncoPrintTab: string;
+    genes: any[];
 }
 export default class Toolbar extends React.Component<IToolbarProps, {}> {
     selectedGenes: string[];

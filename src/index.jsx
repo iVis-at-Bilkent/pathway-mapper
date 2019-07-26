@@ -6,14 +6,21 @@ import WelcomePage from "./WelcomePage";
 window.onload = () => {
   const rootEl = document.getElementById('app');
   console.log(window.location.search);
-  const placeHolderGenes = []; //[{hugoGeneSymbol: "TP53"}, {hugoGeneSymbol: "CDKN2A"}, {hugoGeneSymbol: "CCNE1"}, {hugoGeneSymbol: "MDM4"}];
+  const placeHolderGenes = [{hugoGeneSymbol: "TP53"}, {hugoGeneSymbol: "CDKN2A"}, {hugoGeneSymbol: "CCNE1"}, {hugoGeneSymbol: "MDM4"}];
 
 
   const pathwayName = findGetParameter("pathwayName");
-  console.log(pathwayName);
+
   const alterationJSON = findGetParameter("q");
   const alterationData = JSON.parse(alterationJSON);
-  console.log(alterationData);
+
+  const genesParam = findGetParameter("g");
+  let genes = [];
+  if(genesParam){
+    genes = genesParam.split("+").map(gene => ({hugoGeneSymbol: gene}))
+  }
+
+  console.log(genes);
 
   const id = findGetParameter("id");
 
@@ -26,9 +33,9 @@ window.onload = () => {
   function postWelcome(isCollaborative){
     const cBioAlteration = [/*{gene: "MDM2", altered: 5, sequenced: 6}*/];
     if(!pathwayName){
-      render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={placeHolderGenes} cBioAlterationData={cBioAlteration}/>, rootEl);
+      render(<PathwayMapper isCBioPortal={true} isCollaborative={isCollaborative} genes={placeHolderGenes} cBioAlterationData={cBioAlteration}/>, rootEl);
     } else {
-      render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={placeHolderGenes} pathwayName={pathwayName} alterationData={alterationData}/>, rootEl);
+      render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={genes} pathwayName={pathwayName} alterationData={alterationData}/>, rootEl);
     }
     if (module.hot) {
       module.hot.accept();

@@ -158,7 +158,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(this.props.isCBioPortal){
       //this.overlayPortalData();
       
-      // If cBioPortal mode is on it is very likely to have cBioALterationData
+      // If cBioPortal mode is 'on' it is very likely to have cBioALterationData
       // but to be on the safe side below assertion is made.
       if(this.props.cBioAlterationData){
         this.calculateAlterationData(this.props.cBioAlterationData);
@@ -337,6 +337,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(!this.props.alterationData){ // If size 0 that means it is not redirected.
       return;
     }
+    
     const redirectedProfiles = Object.keys(this.props.alterationData).map((data: string) : IProfileMetaData => ({profileId: data, enabled: true}));
     redirectedProfiles.forEach((redirectedProfile) => {
       this.profiles.push(redirectedProfile);
@@ -427,7 +428,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <Row>
             <Col xs={2} style={{}}>
               <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}
-                handleOpen={this.handleOpen} queryParameter={this.props.queryParameter} oncoPrintTab={this.props.oncoPrintTab}/>
+                genes={this.props.genes} handleOpen={this.handleOpen} queryParameter={this.props.queryParameter} oncoPrintTab={this.props.oncoPrintTab}/>
             </Col>
             <Col xs={7} style={{paddingLeft: "0px", marginTop: "15px", textAlign: "right", paddingRight: "35px"}}>
               <div>{this.selectedPathway}</div>

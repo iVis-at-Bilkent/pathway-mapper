@@ -27,6 +27,7 @@ interface IToolbarProps {
   handleOpen: (modalId: number) => void;
   queryParameter: any;
   oncoPrintTab: string;
+  genes: any[];
 }
 
 @observer
@@ -47,7 +48,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
     render(){
 
 
-      const studyQuery = "q=" + JSON.stringify(this.props.alterationData);
+      const studyQuery = "q=" + JSON.stringify(this.props.alterationData) + "&g=" + this.props.genes.map(gene => gene.hugoGeneSymbol).join("+");
       return (
       <div id="toolbar">
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Save as PNG" data-place="right" data-effect="solid" src={savePNGImage} onClick={() => {this.props.pathwayActions.saveAs("PNG");}}/>
