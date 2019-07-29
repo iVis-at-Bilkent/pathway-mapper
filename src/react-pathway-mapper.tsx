@@ -461,7 +461,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
           { isCBioPortal &&
           <Row>
-            <Col xs={9} style={{paddingLeft: "0px", textAlign: "right"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a></Col>
+            <Col xs={9} style={{paddingLeft: "0px", textAlign: "right", fontSize: "13px"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a></Col>
           </Row>
           }
 

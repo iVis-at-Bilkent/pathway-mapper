@@ -61,7 +61,7 @@ export default class PathwayActions {
         const nodeName = node.data().name
         const nodeType = node.data().type
         if (queryGenes.includes(nodeName) && nodeType === 'GENE') {
-          node.style({ 'border-width': '4px' })
+          node.style({ 'border-width': '4px', 'font-weight': 'bold' })
         }
       })
   }
