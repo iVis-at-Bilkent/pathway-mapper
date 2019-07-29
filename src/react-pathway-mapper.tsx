@@ -427,7 +427,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           </Row>]
           }
           { isCBioPortal &&
-          <Row>
+          <Row style={{marginBottom: "10px"}}>
             <Col xs={2} style={{}}>
               <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}
                 genes={this.props.genes} handleOpen={this.handleOpen} queryParameter={this.props.queryParameter} oncoPrintTab={this.props.oncoPrintTab}/>
@@ -441,11 +441,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <Row>
             {
             (!isCBioPortal && 
-            <Col xs={1} style={{paddingLeft: "0px"}}>
+            <Col xs={1} style={{}}>
               <Sidebar pathwayActions={this.pathwayActions} setActiveEdgeHandler={this.setActiveEdgeHandler} handleOpen={this.handleOpen}/>
             </Col>)
             }
-            <Col xs={isCBioPortal ? 9 : 11} style={{paddingLeft: "0px"}}>
+            <Col xs={isCBioPortal ? 9 : 11} style={{}}>
                 <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}
                 setActiveEdge={this.setActiveEdge} editorHandler={this.editorHandler} 
                 selectedPathway={this.selectedPathway} pathwayHandler={this.pathwayHandler} 
@@ -469,7 +469,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
           {
           (<div id="pm-modals">
-            <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
             <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[EModalType.PROFILES]} handleClose={this.handleClose} />
             <PathwayDetailsModal isModalShown={this.isModalShown[EModalType.PW_DETAILS]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <GridSettings isModalShown={this.isModalShown[EModalType.GRID]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
@@ -480,7 +479,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <AboutModal isModalShown={this.isModalShown[EModalType.ABOUT]} handleClose={this.handleClose}/>
           </div>)
           }
-          <ToastContainer className={"pm-toast-container"}/>
+          { !this.props.isCBioPortal && [
+            <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>,
+            <ToastContainer className={"pm-toast-container"}/>]
+          }
           <ReactTooltip className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 9999999}}/>
 
           <input id="myInput"

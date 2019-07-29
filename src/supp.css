@@ -192,3 +192,7 @@ table .radio {
 .cBioMode #showMoreButton{
     width: 100px!important;
 }
+
+#cBioHelpModal table td{
+    padding: 4px;
+}
