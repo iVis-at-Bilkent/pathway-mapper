@@ -7,12 +7,12 @@ import 'react-toastify/dist/ReactToastify.css';
 export default class CBioPortalAccessor{
   static readonly CNA_GAIN = 2;
 
-  static readonly GET_ALL_CANCER_STUDIES_URL  = "http://www.cbioportal.org/webservice.do?cmd=getCancerStudies";
-  static readonly GET_GENETIC_PROFILES_URL = "http://www.cbioportal.org/webservice.do?cmd=getGeneticProfiles&cancer_study_id=";
-  static readonly GET_PROFILE_DATA_URL = "http://www.cbioportal.org/webservice.do?cmd=getProfileData";
+  static readonly GET_ALL_CANCER_STUDIES_URL  = "https://www.cbioportal.org/webservice.do?cmd=getCancerStudies";
+  static readonly GET_GENETIC_PROFILES_URL = "https://www.cbioportal.org/webservice.do?cmd=getGeneticProfiles&cancer_study_id=";
+  static readonly GET_PROFILE_DATA_URL = "https://www.cbioportal.org/webservice.do?cmd=getProfileData";
   static readonly MRNA_EXP_STUDY_NAME = "_mrna_median_Zscores";
   static readonly CNA_EXP_STUDY_NAME = "_gistic";
-  static readonly VALIDATE_GENES_URL  = 'http://www.cbioportal.org/api/genes/fetch?geneIdType=HUGO_GENE_SYMBOL&projection=ID'
+  static readonly VALIDATE_GENES_URL  = 'https://www.cbioportal.org/api/genes/fetch?geneIdType=HUGO_GENE_SYMBOL&projection=ID'
   static readonly MUTATION_EXP_STUDY_NAME = "_mutations";
 
   static readonly CNA_DELETION = -2;
