@@ -95,6 +95,7 @@ export default class QtipManager{
         var newName = $(this).find('input').val();
         $(this).find('input').val("");
 
+        cyEdge.style({"text-background-opacity": "0"});
         //TODO call associated Editor Actions Manager function
         self.editor.changeName(cyEdge, newName);
     });
