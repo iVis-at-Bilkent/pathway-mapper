@@ -199,5 +199,6 @@ table .radio {
 }
 
 .cBioMode .Toastify__toast--default{
-    color: black;
+    background-color: #dff0d8;
+    color: #333333;
 }
