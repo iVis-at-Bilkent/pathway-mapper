@@ -197,3 +197,7 @@ table .radio {
 #cBioHelpModal table td{
     padding: 4px;
 }
+
+.cBioMode .Toastify__toast--default{
+    color: black;
+}
