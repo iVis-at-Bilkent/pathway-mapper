@@ -461,7 +461,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
           { isCBioPortal &&
           <Row>
-            <Col xs={9} style={{paddingLeft: "0px", textAlign: "right", fontSize: "13px"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a></Col>
+            <Col xs={9} style={{paddingRight: "22px", textAlign: "right", fontSize: "13px"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a></Col>
           </Row>
           }
 
@@ -479,10 +479,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <AboutModal isModalShown={this.isModalShown[EModalType.ABOUT]} handleClose={this.handleClose}/>
           </div>)
           }
-          { !this.props.isCBioPortal && [
-            <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>,
-            <ToastContainer className={"pm-toast-container"}/>]
+          { !this.props.isCBioPortal &&
+            <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
           }
+          <ToastContainer className={"pm-toast-container"}/>]
           <ReactTooltip className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 9999999}}/>
 
           <input id="myInput"
@@ -560,6 +560,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.selectedPathway = pathway;
       if(this.pathwayGeneMap[pathway] && this.props.changePathwayHandler)
         this.props.changePathwayHandler(Object.keys(this.pathwayGeneMap[pathway]));
+      if(this.props.isCBioPortal){
+        toast("Alteration data of genes not listed in gene list might take a while to load!");
+      }
   }
 
   
