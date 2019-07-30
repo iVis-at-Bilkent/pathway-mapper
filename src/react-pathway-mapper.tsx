@@ -482,7 +482,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           { !this.props.isCBioPortal &&
             <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
           }
-          <ToastContainer className={"pm-toast-container"}/>]
+          <ToastContainer className={"pm-toast-container"}/>
           <ReactTooltip className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 9999999}}/>
 
           <input id="myInput"
