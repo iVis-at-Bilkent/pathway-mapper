@@ -215,7 +215,7 @@ export default class PathwayActions {
         pathwayDetails: '',
         fileName: 'pathway.txt'
       })
-      this.removeAllData()
+      //this.removeAllData()
       this.resetUndoStack()
       this.pathwayHandler('Dummy')
     }
@@ -240,7 +240,8 @@ export default class PathwayActions {
       })
       // At the beginning changePathway is called editor is not ready hence removeData shall not be called
       if (this.editor) {
-        this.removeAllData()
+        //this.removeAllData()
+        this.resetUndoStack()
       }
     }
   }

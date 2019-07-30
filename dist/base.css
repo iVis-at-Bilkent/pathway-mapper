@@ -1365,6 +1365,7 @@ tbody tr:hover{
 
 #toolbar {
     margin-top: 10px;
+    margin-left: 13px;
 }
 
 .ui-cytoscape-nodeadd img {
