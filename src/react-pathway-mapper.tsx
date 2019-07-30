@@ -513,11 +513,16 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(!this.props.isCBioPortal)
     $(".container").css('width', innerWidth * 0.9);
 
-    this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
+
+    if(this.props.isCBioPortal){
+      this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
+    }
   }
 
   componentDidUpdate(){
-    this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
+    if(this.props.isCBioPortal){
+      this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
+    }
   }
 
   @autobind
