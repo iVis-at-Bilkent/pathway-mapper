@@ -516,6 +516,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
     if(this.props.isCBioPortal){
       this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
+
+      toast("Alteration data of genes not listed in gene list might take a while to load!", {autoClose: false});
     }
   }
 
@@ -560,9 +562,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.selectedPathway = pathway;
       if(this.pathwayGeneMap[pathway] && this.props.changePathwayHandler)
         this.props.changePathwayHandler(Object.keys(this.pathwayGeneMap[pathway]));
-      if(this.props.isCBioPortal){
-        toast("Alteration data of genes not listed in gene list might take a while to load!");
-      }
   }
 
   
