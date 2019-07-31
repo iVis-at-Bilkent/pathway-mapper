@@ -561,7 +561,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   pathwayHandler(pathway: string){
       this.selectedPathway = pathway;
       if(this.pathwayGeneMap[pathway] && this.props.changePathwayHandler)
-        this.props.changePathwayHandler(Object.keys(this.pathwayGeneMap[pathway]));
+        this.props.changePathwayHandler(
+                    Object.keys(this.pathwayGeneMap[pathway])
+                    .filter(gene => (!this.alterationData[PathwayMapper.CBIO_PROFILE_NAME].hasOwnProperty(gene)))
+                  
+                  );
   }
 
   
