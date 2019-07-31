@@ -1502,4 +1502,8 @@ table .radio {
     background-color: #dff0d8;
     color: #333333;
 }
+
+.cBioMode .Toastify__toast-container{
+    width: 550px !important;
+}
 /*# sourceMappingURL=base.css.map*/

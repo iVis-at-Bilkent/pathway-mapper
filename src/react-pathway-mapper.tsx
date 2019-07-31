@@ -450,6 +450,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
                 setActiveEdge={this.setActiveEdge} editorHandler={this.editorHandler} 
                 selectedPathway={this.selectedPathway} pathwayHandler={this.pathwayHandler} 
                 handleOpen={this.handleOpen}/>
+                <div style={{paddingRight: "22px", textAlign: "right", fontSize: "13px"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a></div>
             </Col>
             {
             (isCBioPortal && 
@@ -459,10 +460,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             }
           </Row>
 
-          { isCBioPortal &&
+          {/* isCBioPortal &&
           <Row>
             <Col xs={9} style={{paddingRight: "22px", textAlign: "right", fontSize: "13px"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a></Col>
-          </Row>
+          </Row>*/
           }
 
             { (<div id="invisibles">
