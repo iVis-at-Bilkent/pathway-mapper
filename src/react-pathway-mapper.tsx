@@ -480,9 +480,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           </div>)
           }
           { !this.props.isCBioPortal &&
-            <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
+            [<StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>,
+            <ToastContainer className={"pm-toast-container"}/>]
           }
-          <ToastContainer className={"pm-toast-container"}/>
           <ReactTooltip className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 9999999}}/>
 
           <input id="myInput"
@@ -517,7 +517,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(this.props.isCBioPortal){
       this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
 
-      toast("Alteration data of genes not listed in gene list might take a while to load!", {autoClose: false});
+      //toast("Alteration data of genes not listed in gene list might take a while to load!", {autoClose: false});
     }
   }
 
@@ -562,10 +562,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.selectedPathway = pathway;
       if(this.pathwayGeneMap[pathway] && this.props.changePathwayHandler)
         this.props.changePathwayHandler(
-                    Object.keys(this.pathwayGeneMap[pathway])
-                    .filter(gene => (!this.alterationData[PathwayMapper.CBIO_PROFILE_NAME].hasOwnProperty(gene)))
-                  
-                  );
+          Object.keys(this.pathwayGeneMap[pathway])
+          .filter(gene => (!this.alterationData[PathwayMapper.CBIO_PROFILE_NAME].hasOwnProperty(gene)))
+        
+        );
   }
 
   
