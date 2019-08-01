@@ -10,6 +10,7 @@ interface IToolbarProps {
     oncoPrintTab: string;
     genes: any[];
     isValidGene: (gene: string) => boolean;
+    toast: any;
 }
 export default class Toolbar extends React.Component<IToolbarProps, {}> {
     selectedGenes: string[];

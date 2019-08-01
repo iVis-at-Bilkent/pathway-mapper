@@ -30,6 +30,7 @@ interface IToolbarProps {
   oncoPrintTab: string;
   genes: any[];
   isValidGene: (gene: string) => boolean;
+  toast: any;
 }
 
 @observer
@@ -71,9 +72,14 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
             });
 
             if(invalidGenes.length === 0){
-              this.onAddGenes();
+
+              if(this.selectedGenes.length > 0){
+                this.onAddGenes();
+              }
             } else {
               toast("Following gene symbols are invalid: " + invalidGenes.join(", "));
+              this.props.toast("Following gene symbols are invalid: " + invalidGenes.join(", "));
+              console.log("Following gene symbols are invalid: " + invalidGenes.join(", "));
             }
             }}/>
             

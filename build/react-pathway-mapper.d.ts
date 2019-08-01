@@ -25,6 +25,7 @@ interface IPathwayMapperProps {
     addGenomicDataHandler?: (addGenomicData: (alterationData: ICBioData[]) => void) => void;
     tableComponent?: any;
     isValidGene?: (gene: string) => boolean;
+    toast: any;
 }
 export interface ICBioData {
     altered: number;
