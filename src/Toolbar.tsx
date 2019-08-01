@@ -80,7 +80,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
                 this.onAddGenes();
               }
             } else {
-              this.props.toast("Following gene symbols are invalid: " + invalidGenes.join(", "), {autoClose: false, position: "bottom-left"});
+              this.props.toast("Following gene symbols are invalid or already in gene list: " + invalidGenes.join(", "), {autoClose: false, position: "bottom-left"});
             }
             }}/>
             
