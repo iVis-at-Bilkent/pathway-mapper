@@ -12,7 +12,9 @@ import savePNGImage from "./toolbar/save_png.svg";
 // @ts-ignore
 import saveSVGImage from "./toolbar/save_svg.svg";
 // @ts-ignore
-const addImage = require("./toolbar/add.svg");
+const addSelImage = require("./toolbar/add-selected.svg");
+// @ts-ignore
+const addAllImage = require("./toolbar/add-all.svg");
 // @ts-ignore
 const aboutImage = require("./toolbar/about.svg");
 // @ts-ignore
@@ -31,6 +33,7 @@ interface IToolbarProps {
   genes: any[];
   isValidGene: (gene: string) => boolean;
   toast: any;
+  pathwayGenes: string[];
 }
 
 @observer
@@ -60,7 +63,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Perform layout" data-place="right" data-effect="solid" src={layoutImage} onClick={this.props.pathwayActions.performLayout} />              
 
-          <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Add selected genes to query" data-place="right" data-effect="solid" src={addImage} onClick={() => {
+          <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Add selected genes to query" data-place="right" data-effect="solid" src={addSelImage} onClick={() => {
             this.selectedGenes = this.props.pathwayActions.getSelectedNodes()
                                                           .filter((node: any) => node.data().type === "GENE")
                                                           .map((node: any) => node.data().name as string);
@@ -78,10 +81,20 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
               }
             } else {
               this.props.toast("Following gene symbols are invalid: " + invalidGenes.join(", "), {autoClose: false, position: "bottom-left"});
-              console.log("Following gene symbols are invalid: " + invalidGenes.join(", "));
             }
             }}/>
             
+          <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Add all valid genes to query" data-place="right" data-effect="solid" src={addAllImage} onClick={() => {
+
+            this.selectedGenes = this.props.pathwayGenes.filter((gene: string) => {
+              return this.props.isValidGene(gene);
+            });
+            
+            if(this.selectedGenes.length > 0){
+              this.onAddGenes();
+            }
+          }}/>
+          
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Edit pathway" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://react-pathway-mapper.herokuapp.com/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
           
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Help" data-place="right" data-effect="solid" src={aboutImage} onClick={() => {console.log("Here");this.props.handleOpen(EModalType.CHELP);}}/>

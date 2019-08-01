@@ -11,6 +11,7 @@ interface IToolbarProps {
     genes: any[];
     isValidGene: (gene: string) => boolean;
     toast: any;
+    pathwayGenes: string[];
 }
 export default class Toolbar extends React.Component<IToolbarProps, {}> {
     selectedGenes: string[];

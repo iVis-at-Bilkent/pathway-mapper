@@ -8,7 +8,9 @@ import savePNGImage from "../toolbar/save_png.svg";
 // @ts-ignore
 import saveSVGImage from "../toolbar/save_svg.svg";
 // @ts-ignore
-const addImage = require("../toolbar/add.svg");
+const addSelImage = require("../toolbar/add-selected.svg");
+// @ts-ignore
+const addAllImage = require("../toolbar/add-all.svg");
 // @ts-ignore
 import openImage from "../toolbar/edit.svg";
 
@@ -49,7 +51,6 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
                     <ul>
 
                         <table cellPadding={5}>
-
                             <tr>
                                 <td><img height="22px" width="22px" src={savePNGImage}/></td> <td>Save as PNG</td>
                             </tr>
@@ -60,7 +61,10 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
                                 <td><img height="22px" width="22px" src={layoutImage}/></td> <td>Perform layout: Layout is recalculated taking current node positions into account</td>
                             </tr>
                             <tr>
-                                <td><img height="22px" width="22px" src={addImage}/></td> <td>Add selected genes to query: You may select additional genes from the pathway by left clicking (Shift + left click to add more genes)</td>
+                                <td><img height="22px" width="22px" src={addSelImage}/></td> <td>Add selected genes to query: You may select additional genes from the pathway by left clicking (Shift + left click to add more genes)</td>
+                            </tr>
+                            <tr>
+                                <td><img height="22px" width="22px" src={addAllImage}/></td> <td>Add all valid genes to query: All valid gene symbols will be added to the query; others will be ignored</td>
                             </tr>
                             <tr>
                                 <td><img height="22px" width="22px" src={openImage}/></td> <td>Edit pathway: Edit both the topology and the geometry of the current pathway with the full blown PathwayMapper editor</td>
