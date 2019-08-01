@@ -206,3 +206,7 @@ table .radio {
 .cBioMode .Toastify__toast-container{
     width: 550px !important;
 }
+
+.cytoscape-navigator-wrapper{
+    transform: scale(0.86);
+}

@@ -19,6 +19,7 @@ const aboutImage = require("./toolbar/about.svg");
 import openImage from "./toolbar/edit.svg";
 
 import { IProfileMetaData, IAlterationData, EModalType } from './react-pathway-mapper';
+import { toast } from 'react-toastify';
 
 interface IToolbarProps {
   pathwayActions: PathwayActions;
@@ -28,6 +29,7 @@ interface IToolbarProps {
   queryParameter: any;
   oncoPrintTab: string;
   genes: any[];
+  isValidGene: (gene: string) => boolean;
 }
 
 @observer
@@ -60,9 +62,19 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Add selected genes to query" data-place="right" data-effect="solid" src={addImage} onClick={() => {
             this.selectedGenes = this.props.pathwayActions.getSelectedNodes()
                                                           .filter((node: any) => node.data().type === "GENE")
-                                                          .map((node: any) => node.data().name);
-            console.log(this.selectedGenes);
-            this.onAddGenes();
+                                                          .map((node: any) => node.data().name as string);
+            const invalidGenes: string[] = [];
+            this.selectedGenes.forEach((gene: string) => {
+              if(!this.props.isValidGene(gene)){
+                invalidGenes.push(gene);
+              }
+            });
+
+            if(invalidGenes.length === 0){
+              this.onAddGenes();
+            } else {
+              toast("Following gene symbols are invalid: " + invalidGenes.join(", "));
+            }
             }}/>
             
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Edit pathway" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://react-pathway-mapper.herokuapp.com/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>

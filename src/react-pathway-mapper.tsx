@@ -56,6 +56,7 @@ interface IPathwayMapperProps{
   changePathwayHandler?: Function;
   addGenomicDataHandler?: (addGenomicData: (alterationData: ICBioData[]) => void) => void;
   tableComponent?: any;
+  isValidGene?: (gene: string) => boolean;
 }
 
 export interface ICBioData{
@@ -169,7 +170,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       if(this.props.addGenomicDataHandler){
         this.props.addGenomicDataHandler(this.addGenomicData);
       }
-
 
       this.profiles.push({profileId: PathwayMapper.CBIO_PROFILE_NAME, enabled: true});
       this.getBestPathway(0);
@@ -430,7 +430,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           <Row style={{marginBottom: "6px"}}>
             <Col xs={2} style={{}}>
               <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}
-                genes={this.props.genes} handleOpen={this.handleOpen} queryParameter={this.props.queryParameter} oncoPrintTab={this.props.oncoPrintTab}/>
+                genes={this.props.genes} handleOpen={this.handleOpen} queryParameter={this.props.queryParameter}
+                oncoPrintTab={this.props.oncoPrintTab} isValidGene={this.props.isValidGene}/>
             </Col>
             <Col xs={7} style={{paddingLeft: "0px", marginTop: "15px", textAlign: "right", paddingRight: "35px"}}>
               <div>{this.selectedPathway}</div>
@@ -450,7 +451,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
                 setActiveEdge={this.setActiveEdge} editorHandler={this.editorHandler} 
                 selectedPathway={this.selectedPathway} pathwayHandler={this.pathwayHandler} 
                 handleOpen={this.handleOpen}/>
-                <div style={{paddingRight: "22px", textAlign: "right", fontSize: "13px"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a></div>
+                <div style={{paddingRight: "9px", textAlign: "right", fontSize: "13px"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a></div>
             </Col>
             {
             (isCBioPortal && 
