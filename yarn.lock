@@ -2323,7 +2323,7 @@ async-each@^1.0.0, async-each@^1.0.1:
   resolved "https://registry.yarnpkg.com/async-each/-/async-each-1.0.3.tgz#b727dbf87d7651602f06f4d4ac387f47d91b0cbf"
   integrity sha512-z/WhQ5FPySLdvREByI2vZiTWwCnF0moMJ1hK9YQwDTHKh6I7/uSckMetoRGb5UBZPC1z0jlw+n/XCgjeH7y1AQ==
 
-async-limiter@~1.0.0:
+async-limiter@^1.0.0, async-limiter@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.0.tgz#78faed8c3d074ab81f22b4e985d79e8738f720f8"
   integrity sha512-jp/uFnooOiO+L211eZOoSyzpOITMXx1rBITauYykG3BRYPu8h0UcxsPNB04RR5vo4Tyz3+ay17tR6JVf9qzYWg==
@@ -5186,7 +5186,7 @@ cytoscape-navigator@^1.3.3:
 
 "cytoscape-node-resize@github:iVis-at-Bilkent/cytoscape.js-node-resize#unstable":
   version "3.0.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-node-resize/tar.gz/bffdbe5b4ba5a0d0b885de66094c558aa18d16ed"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-node-resize/tar.gz/44db881fc0ab9d3ac3815b9570d54a9a14f4ba81"
 
 cytoscape-panzoom@~2.5.2:
   version "2.5.3"
@@ -11832,11 +11832,6 @@ optionator@^0.8.1, optionator@^0.8.2:
     type-check "~0.3.2"
     wordwrap "~1.0.0"
 
-options@>=0.0.5:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/options/-/options-0.0.6.tgz#ec22d312806bb53e731773e7cdaefcf1c643128f"
-  integrity sha1-7CLTEoBrtT5zF3Pnza788cZDEo8=
-
 original@>=0.0.5, original@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/original/-/original-1.0.2.tgz#e442a61cffe1c5fd20a65f3261c26663b303f25f"
@@ -15027,16 +15022,16 @@ shallow-clone@^1.0.0:
     kind-of "^5.0.0"
     mixin-object "^2.0.1"
 
-sharedb-mongo@^1.0.0-beta.4:
-  version "1.0.0-beta.8"
-  resolved "https://registry.yarnpkg.com/sharedb-mongo/-/sharedb-mongo-1.0.0-beta.8.tgz#03f7c05d8602c41e8431b62172801ba78308fb6b"
-  integrity sha512-xzo8+bvMNZoNVQHdUYDC2KoXE0hq6eq+5qcW1E+SnGaIKwpuZzxdas3AjnlyIqkFKDFLVEuK4U4kjYo4EZGK3A==
+sharedb-mongo@latest:
+  version "1.0.0-beta.9"
+  resolved "https://registry.yarnpkg.com/sharedb-mongo/-/sharedb-mongo-1.0.0-beta.9.tgz#1a79f301e44d337e859e57173e0590666e097e27"
+  integrity sha512-ZbBCjDmVZV52P5lIR8ZsYX/P5Tb61jYD5EtfOnNJnwjzIE1i0NpsDRXuOO8x+saqu+eDurxfMa1cbYD8vfhQww==
   dependencies:
     async "^1.4.2"
     mongodb "^2.1.2"
     sharedb "^1.0.0-beta"
 
-sharedb@^1.0.0-beta, sharedb@^1.0.0-beta.1:
+sharedb@^1.0.0-beta, sharedb@latest:
   version "1.0.0-beta.23"
   resolved "https://registry.yarnpkg.com/sharedb/-/sharedb-1.0.0-beta.23.tgz#494d60e1d38edcb02b660dff047f79d5f6da6f2e"
   integrity sha512-Kb2AhiiUNnHNqA4Ls9F3xcUn3hz577k0LxIwalKaFbptCDW6A5eGM1XLihXRAi+M4UV3KEbpB/0fG4vhQHkB4g==
@@ -16572,11 +16567,6 @@ uid-number@0.0.6:
   resolved "https://registry.yarnpkg.com/uid-number/-/uid-number-0.0.6.tgz#0ea10e8035e8eb5b8e4449f06da1c730663baa81"
   integrity sha1-DqEOgDXo61uOREnwbaHHMGY7qoE=
 
-ultron@1.0.x:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/ultron/-/ultron-1.0.2.tgz#ace116ab557cd197386a4e88f4685378c8b2e4fa"
-  integrity sha1-rOEWq1V80Zc4ak6I9GhTeMiy5Po=
-
 umask@^1.1.0, umask@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/umask/-/umask-1.1.0.tgz#f29cebf01df517912bb58ff9c4e50fde8e33320d"
@@ -17344,10 +17334,10 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
   integrity sha512-nqHUnMXmBzT0w570r2JpJxfiSD1IzoI+HGVdd3aZ0yNi3ngvQ4jv1dtHt5VGxfI2yj5yqImPhOK4vmIh2xMbGg==
 
-websocket-json-stream@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/websocket-json-stream/-/websocket-json-stream-0.0.1.tgz#e387cc04de6ab85a8ca2a8c820808dcabf86e2e4"
-  integrity sha1-44fMBN5quFqMoqjIIICNyr+G4uQ=
+websocket-json-stream@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/websocket-json-stream/-/websocket-json-stream-0.0.3.tgz#e66eb7f90861425b1f7c0d699c64cb6aacc517f8"
+  integrity sha1-5m63+QhhQlsffA1pnGTLaqzFF/g=
 
 whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.3:
   version "1.0.5"
@@ -17658,20 +17648,19 @@ write@^0.2.1:
   dependencies:
     mkdirp "^0.5.1"
 
-ws@^1.1.0:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-1.1.5.tgz#cbd9e6e75e09fc5d2c90015f21f0c40875e0dd51"
-  integrity sha512-o3KqipXNUdS7wpQzBHSe180lBGO60SoK0yVo3CYJgb2MkobuWuBX6dhkYP5ORCLd55y+SaflMOV5fqAB53ux4w==
-  dependencies:
-    options ">=0.0.5"
-    ultron "1.0.x"
-
 ws@^5.2.0:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/ws/-/ws-5.2.2.tgz#dffef14866b8e8dc9133582514d1befaf96e980f"
   integrity sha512-jaHFD6PFv6UgoIVda6qZllptQsMlDEJkTQcybzzXDYM1XO9Y8em691FGMPmM46WGyLU4z9KMgQN+qrux/nhlHA==
   dependencies:
     async-limiter "~1.0.0"
+
+ws@latest:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.1.1.tgz#f9942dc868b6dffb72c14fd8f2ba05f77a4d5983"
+  integrity sha512-o41D/WmDeca0BqYhsr3nJzQyg9NF5X8l/UdnFNux9cS3lwB+swm8qGWX5rn+aD6xfBU3rGmtHij7g7x6LxFU3A==
+  dependencies:
+    async-limiter "^1.0.0"
 
 x-is-string@^0.1.0:
   version "0.1.0"
