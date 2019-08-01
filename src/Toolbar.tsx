@@ -77,8 +77,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
                 this.onAddGenes();
               }
             } else {
-              toast("Following gene symbols are invalid: " + invalidGenes.join(", "));
-              this.props.toast("Following gene symbols are invalid: " + invalidGenes.join(", "));
+              this.props.toast("Following gene symbols are invalid: " + invalidGenes.join(", "), {autoClose: false, position: "bottom-left"});
               console.log("Following gene symbols are invalid: " + invalidGenes.join(", "));
             }
             }}/>
