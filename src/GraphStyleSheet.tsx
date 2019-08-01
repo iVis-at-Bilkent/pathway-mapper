@@ -77,7 +77,7 @@ module.exports = (function()
         'arrow-scale': 1.7,
         'curve-style': 'bezier',
         'text-background-color': '#EEEEEE',
-        'text-background-opacity': 0.7,
+        'text-background-opacity': 0,
         'target-arrow-shape': function( ele )
         {
           return edgeTargetArrowTypeHandler(ele);
