@@ -437,8 +437,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
                 oncoPrintTab={this.props.oncoPrintTab} isValidGene={this.props.isValidGene}
                 toast={this.props.toast} pathwayGenes={Object.keys(this.pathwayGeneMap[this.selectedPathway])}/>
             </Col>
-            <Col xs={7} style={{paddingLeft: "0px", marginTop: "15px", textAlign: "right", paddingRight: "35px"}}>
-              <div>{this.selectedPathway}</div>
+            <Col xs={7} style={{paddingLeft: "0px", marginTop: "17px", textAlign: "right", paddingRight: "35px"}}>
+              {this.selectedPathway}
             </Col>
           </Row>
           }
