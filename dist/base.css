@@ -1503,6 +1503,10 @@ table .radio {
     color: #333333;
 }
 
+.cBioMode .Toastify__toast{
+    min-height: 50px !important;
+}
+
 .cBioMode .Toastify__toast-container{
     width: 550px !important;
 }
