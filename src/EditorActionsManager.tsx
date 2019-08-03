@@ -1262,6 +1262,7 @@ export default class EditorActionsManager{
                 var elementById = this.cy.getElementById(id[i]);
                 collection = collection.add(elementById);
             }
+            console.log(collection);
             //Set their previous size to the new elements in the collection
             collection.forEach(function (ele: any, i: number)
             {
@@ -1739,8 +1740,6 @@ export default class EditorActionsManager{
         }
         else
         {
-            console.log("genomicData");
-            console.log(genomicData);
             this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
         }
     }

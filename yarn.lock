@@ -5214,10 +5214,10 @@ cytoscape-view-utilities@^2.0.6:
   dependencies:
     mousetrap "^1.6.0"
 
-cytoscape@^3.8.1:
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/cytoscape/-/cytoscape-3.8.1.tgz#0b87f646054ea3e86f347e9c53a2fc64df1be31b"
-  integrity sha512-hfoGBlqj8LJPnU5WgmQKdGpZaMknk8dPyGEJlzLa1xPwhmBscPMrmPxK2ffyKJIozeHm4UoYw4gPc0rAif4kVA==
+cytoscape@^3.8.2:
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/cytoscape/-/cytoscape-3.8.2.tgz#d78f9872c89ebb313451543312929d1036a69f30"
+  integrity sha512-60aQ4Q9WpWuofiwSI89XtTTp+4baAXdOVs0QDA2zC5RjwN78rkPntkrEmjNx6WR69Id3pe6tCcUNZrZALT/a2g==
   dependencies:
     heap "^0.2.6"
     lodash.debounce "^4.0.8"

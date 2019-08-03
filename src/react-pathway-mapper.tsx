@@ -417,17 +417,23 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   render() {
   const isCBioPortal = this.props.isCBioPortal;     
 
+  const cytoComp = <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}
+  setActiveEdge={this.setActiveEdge} editorHandler={this.editorHandler} 
+  selectedPathway={this.selectedPathway} pathwayHandler={this.pathwayHandler} 
+  handleOpen={this.handleOpen}/>;
+
   return (
 
-      <Grid style={{width: window.innerWidth * 0.99}} className={isCBioPortal ? "cBioMode" : ""}>
+      <div style={isCBioPortal ? {width: window.innerWidth * 0.99} : {}} className={isCBioPortal ? "cBioMode container" : "customMargins"}>
           {!isCBioPortal && 
-          [<Row>
-              <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen} setActiveEdge={this.setActiveEdge}/>
-          </Row>
+          [
+          <div>
+            <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen} setActiveEdge={this.setActiveEdge}/>
+          </div>
           ,
-          <Row>
+          <div>
             <Buttonbar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen}/> 
-          </Row>]
+          </div>]
           }
           { isCBioPortal &&
           <Row style={{marginBottom: "6px"}}>
@@ -443,27 +449,28 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           </Row>
           }
           
-          <Row>
+          <div className={isCBioPortal ? "row" : "mainContentWrapper"}>
             {
             (!isCBioPortal && 
-            <Col xs={1} style={{}}>
+            <div>
               <Sidebar pathwayActions={this.pathwayActions} setActiveEdgeHandler={this.setActiveEdgeHandler} handleOpen={this.handleOpen}/>
-            </Col>)
+            </div>)
             }
-            <Col xs={isCBioPortal ? 9 : 11} style={{}}>
-                <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}
-                setActiveEdge={this.setActiveEdge} editorHandler={this.editorHandler} 
-                selectedPathway={this.selectedPathway} pathwayHandler={this.pathwayHandler} 
-                handleOpen={this.handleOpen}/>
-                <div style={{paddingRight: "9px", textAlign: "right", fontSize: "13px"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a></div>
-            </Col>
+
+            { isCBioPortal ?
+              (<Col xs={9}>
+                  {cytoComp}
+                  <div style={{paddingRight: "9px", textAlign: "right", fontSize: "13px"}}>Powered by <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a></div>
+              </Col>)
+              : (cytoComp)
+            }
             {
             (isCBioPortal && 
             <Col xs={3} style={{paddingLeft: "0px"}}>
               <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} tableComponent={this.props.tableComponent}/>
             </Col>)
             }
-          </Row>
+          </div>
 
           {/* isCBioPortal &&
           <Row>
@@ -511,19 +518,17 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           />
           </div>)
             }
-      </Grid>
+      </div>
   );
   }
 
   componentDidMount(){
-    if(!this.props.isCBioPortal)
-    $(".container").css('width', innerWidth * 0.9);
-
-
-    if(this.props.isCBioPortal){
+    if(!this.props.isCBioPortal){
+      $(".container").css('width', innerWidth * 0.9);
+      $(".container").css('paddingLeft', 0);
+      $(".container").css('marginLeft', 5);
+    } else {
       this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
-
-      //toast("Alteration data of genes not listed in gene list might take a while to load!", {autoClose: false});
     }
   }
 
@@ -560,8 +565,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     }
 
   }
-
-
 
   @autobind
   pathwayHandler(pathway: string){

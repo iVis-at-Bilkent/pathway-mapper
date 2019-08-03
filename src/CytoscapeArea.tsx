@@ -114,7 +114,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   }
 
   render(){
-      return (<div>
+      return (<div className={this.props.isCbioPortal ? "" : "cyContainer"} style={{border: 0}}>
         <div ref={this.cyDivHandler} id="cy" 
         style={{"border": `3px solid ${this.isCbioPortal ? "#4389c0" : "#1abc9c"}`, 
         "height": "800px", "borderRadius": "6px", marginTop: "0px"}}/>
@@ -177,12 +177,12 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     //var widthPanzoom = $('.cy-panzoom').outerWidth();
 
     if(!this.isCbioPortal) {
-      $('.cytoscape-navigator-wrapper').css('bottom', 11.4);
-      $('.cytoscape-navigator-wrapper').css('right', 0);
+      $('.cytoscape-navigator-wrapper').css('bottom', 12);
+      $('.cytoscape-navigator-wrapper').css('right', 25);
       //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
     }
     else {
-      $('.cytoscape-navigator-wrapper').css('bottom', 7.5);
+      $('.cytoscape-navigator-wrapper').css('bottom', 11);
       $('.cytoscape-navigator-wrapper').css('right', 0);
       //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator + widthcBioPortalSideBar + offset - widthSideBar);
     }
