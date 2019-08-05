@@ -39,7 +39,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
         }
 
         return(
-            <Navbar width={innerWidth * 0.9 + "px"}>
+            <Navbar className="pathway-navbar">
 
 
               

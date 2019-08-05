@@ -117,7 +117,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       return (<div className={this.props.isCbioPortal ? "" : "cyContainer"} style={{border: 0}}>
         <div ref={this.cyDivHandler} id="cy" 
         style={{"border": `3px solid ${this.isCbioPortal ? "#4389c0" : "#1abc9c"}`, 
-        "height": "800px", "borderRadius": "6px", marginTop: "0px"}}/>
+        "height": this.isCbioPortal ? "800px" : "100%","borderRadius": "6px", marginTop: "0px"}}/>
         <div className="cytoscape-navigator-wrapper"></div>
       </div>);
   }
@@ -164,7 +164,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     // @ts-ignore
     var heightCy = $(this.cyDiv).outerHeight();
     // @ts-ignore
-    var widthCy = ((!this.isCbioPortal ? window.innerWidth * 0.81 :($(this.cyDiv).outerWidth())));
+    var widthCy = $(this.cyDiv).outerWidth();
     var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
     var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
     var heightPatwayNavbar = $('.pathway-navbar').outerHeight();
@@ -172,13 +172,17 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     var widthSideBar = $('.sideBarWrapper').outerWidth();
     var widthcBioPortalSideBar = $('.cBioPortal-sidebar').outerWidth();
 
+    console.log(widthSideBar, widthCy, leftCy, widthNavigator, offset);
 
+//706px 1513.15px
+//694px 1391.15px
     //var heightPanzoom = $('.cy-panzoom').outerHeight();
     //var widthPanzoom = $('.cy-panzoom').outerWidth();
 
     if(!this.isCbioPortal) {
-      $('.cytoscape-navigator-wrapper').css('bottom', 12);
-      $('.cytoscape-navigator-wrapper').css('right', 25);
+      
+      $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset + 13);
+      $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset + 21 - 0.5 + 0.35);
       //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
     }
     else {
@@ -186,6 +190,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       $('.cytoscape-navigator-wrapper').css('right', 0);
       //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator + widthcBioPortalSideBar + offset - widthSideBar);
     }
+    $('.cytoscape-navigator-wrapper').css('z-index', 1039);
 
     //Relative is used so that its position depends on the below properties
     $('.cy-panzoom').css('position', 'relative');

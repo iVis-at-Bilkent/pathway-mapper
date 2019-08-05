@@ -142,7 +142,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
 
         
         return (
-            <Navbar style={{backgroundColor: "#eff0f2" }}>
+            <Navbar style={{backgroundColor: "#eff0f2" }} className="pathway-toolbar">
                 <Nav style={{marginTop: "8px"}}>
                     <ButtonToolbar className="toolbar pathway-toolbar">
                         {   allFunctions.map((functions) =>

@@ -524,7 +524,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   componentDidMount(){
     if(!this.props.isCBioPortal){
-      $(".container").css('width', innerWidth * 0.9);
+      $(".container").css('width', "auto");
       $(".container").css('paddingLeft', 0);
       $(".container").css('marginLeft', 5);
     } else {
