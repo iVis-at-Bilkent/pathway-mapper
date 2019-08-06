@@ -45,14 +45,13 @@ let maxHeap = maxHeapFn();
 
 interface IPathwayMapperProps{
   isCBioPortal: boolean;
-  isCollaborative: boolean;
   genes: any[];
+  isCollaborative?: boolean;
   cBioAlterationData?: ICBioData[];
   pathwayName? : string;
   alterationData?: IAlterationData;
   queryParameter?: any;
   oncoPrintTab?: string;
-  setTableData?: Function;
   changePathwayHandler?: Function;
   addGenomicDataHandler?: (addGenomicData: (alterationData: ICBioData[]) => void) => void;
   tableComponent?: any;
@@ -179,8 +178,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       this.getBestPathway(1);
       this.getBestPathway(2);
       this.getBestPathway(3);
-      if(this.props.setTableData)
-        this.props.setTableData(this.bestPathwaysAlgos, this.pathwayGeneMap);
     }
     /*
     const profile1 = {profileId: "study1_gistic", studyId: "study1", enabled: true};

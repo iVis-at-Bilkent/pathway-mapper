@@ -1228,7 +1228,8 @@ export default class ShareDBManager {
             if (edge.pubmedIDs == undefined) {
                 edge.pubmedIDs = [];
             }
-            edge.pubmedIDs.push(params.pubmedIDs);
+            if(params.pubmedIDs.length > 0)
+                edge.pubmedIDs.push(params.pubmedIDs);
         }
         else {
             edge.pubmedIDs = [];

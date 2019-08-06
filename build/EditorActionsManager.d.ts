@@ -63,7 +63,7 @@ export default class EditorActionsManager {
     postLayout(): void;
     getEmptyGroupID(): any;
     groupGenomicData(cancerNames: any[], groupID: string): void;
-    addPubmedIDs(edge: any, pubmedIDs: number): void;
+    addPubmedIDs(edge: any, pubmedIDs: number[]): void;
     removePubmedID(edge: any, pubmedIDs: number[]): void;
     updateEdgeBendPoints(edge: any): void;
     pushSelectedNodeStack(ele: any): void;

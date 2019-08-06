@@ -16,10 +16,14 @@ export default class QtipManager{
     var pubmedIDList = $('<div class="pubmedIDList"></div>');
     var pubmedURL = 'https://www.ncbi.nlm.nih.gov/pubmed/';
     var pubmedData = edge.data('pubmedIDs');
+    console.log("edge.data('pubmedIDs')");
+    console.log(edge.data('pubmedIDs'));
     var edgeLabelInput = $('<div class="col-xs-6 inputCol"><input type="text" class="form-control" edgeid="' + edge.id() + '"value="'+ edge.data('name') +'"></div>');
 
     function generatePubmedLinks(argData, isInitialDisplay)
     {
+      console.log(argData);
+      console.log(self.cy.edges());
       for (var key in argData)
       {
         if(!argData.hasOwnProperty(key)){

@@ -13,14 +13,13 @@ import ViewOperationsManager from './ViewOperationsManager';
 import GridOptionsManager from './GridOptionsManager';
 interface IPathwayMapperProps {
     isCBioPortal: boolean;
-    isCollaborative: boolean;
     genes: any[];
+    isCollaborative?: boolean;
     cBioAlterationData?: ICBioData[];
     pathwayName?: string;
     alterationData?: IAlterationData;
     queryParameter?: any;
     oncoPrintTab?: string;
-    setTableData?: Function;
     changePathwayHandler?: Function;
     addGenomicDataHandler?: (addGenomicData: (alterationData: ICBioData[]) => void) => void;
     tableComponent?: any;

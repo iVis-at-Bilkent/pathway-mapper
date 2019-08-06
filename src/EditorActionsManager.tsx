@@ -649,10 +649,11 @@ export default class EditorActionsManager{
         return this.shareDBManager.groupGenomicData(cancerNames, groupID);
     };
 
-    addPubmedIDs(edge: any, pubmedIDs: number)
+    addPubmedIDs(edge: any, pubmedIDs: number[])
     {
         if (this.isCollaborative)
         {
+            console.log(edge, pubmedIDs);
             this.shareDBManager.addPubmedIDs(edge.id(), pubmedIDs);
         }
         else
