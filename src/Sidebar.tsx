@@ -13,15 +13,15 @@ import compartmentImg from "./nodes/compartment.svg";
 // @ts-ignore
 import processImg from "./nodes/process.svg";
 // @ts-ignore
-import acImg from "./edges/activates.png";
+import acImg from "./edges/activates.svg";
 // @ts-ignore
-import inhImg from "./edges/binds.png";
+import inhImg from "./edges/inhibits.svg";
 // @ts-ignore
-import indImg from "./edges/induces.png";
+import indImg from "./edges/induces.svg";
 // @ts-ignore
-import repImg from "./edges/represses.png";
+import repImg from "./edges/represses.svg";
 // @ts-ignore
-import bindImg from "./edges/binds.png";
+import bindImg from "./edges/binds.svg";
 
 import "./supp.css"
 import { observable } from "mobx";
