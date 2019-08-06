@@ -843,7 +843,7 @@ export default class ShareDBManager {
                     nonDuplicateArray.push(pubmedIDs[i]);
                 }
             }
-            tmpEdge.pubmedIDs.concat(nonDuplicateArray);
+            tmpEdge.pubmedIDs = tmpEdge.pubmedIDs.concat(nonDuplicateArray);
             this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
         }
         else {
