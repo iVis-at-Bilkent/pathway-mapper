@@ -944,7 +944,6 @@ export default class ShareDBManager {
 
                 var newNodeData =
                     {
-                        id: -1,
                         name: nodeData.name,
                         type: nodeData.type,
                         x: posData.x,
