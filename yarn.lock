@@ -5203,9 +5203,9 @@ cytoscape-qtip@^2.7.1:
     jquery "^2.0 || ^1.10.0"
     qtip2 "^3.0 || ^2.2.0"
 
-"cytoscape-undo-redo@github:iVis-at-Bilkent/cytoscape.js-undo-redo#master":
+"cytoscape-undo-redo@github:iVis-at-Bilkent/cytoscape.js-undo-redo#unstable":
   version "1.3.1"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-undo-redo/tar.gz/bc9b29052843a11028c1d3c1607c21a8f52f36cc"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-undo-redo/tar.gz/7bae9bee1585cc320af7cd004c4b8030a5f94ac8"
 
 cytoscape-view-utilities@^2.0.6:
   version "2.2.0"
