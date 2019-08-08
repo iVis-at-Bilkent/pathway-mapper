@@ -147,9 +147,17 @@ margin-bottom: 0 !important;
 .pathwayMapper .cBioMode #showMoreButton {
 width: 100px !important;
 }
-.pathwayMapper #cBioHelpModal table td {
+#cBioHelpModal table td {
 padding: 4px;
 }
+
+#cBioHelpModal .modal-header {
+    background-color: #ececec;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    text-align: center;
+}
+
 .pathwayMapper .cBioMode .Toastify__toast--default {
 background-color: #dff0d8;
 color: #333333;
