@@ -32,7 +32,7 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
         return(
             <Modal id="cBioHelpModal" show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.CHELP)}}>
                 <Modal.Header closeButton>
-                    <Modal.Title><h3>Help</h3></Modal.Title>
+                    <Modal.Title><h3>PathwayMapper cBioPortal Edition 2.0</h3></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <p className="leftText">
