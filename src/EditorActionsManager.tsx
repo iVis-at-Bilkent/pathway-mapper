@@ -1244,13 +1244,13 @@ export default class EditorActionsManager{
             });
 
             console.log(parentData);
-
+            const parentElem = this.cy.getElementById(parentData);
             var param = {
                 firstTime: true,
                 parentData: parentData, // It keeps the newParentId (Just an id for each nodes for the first time)
                 nodes: eles,
-                posDiffX: 0,
-                posDiffY: 0
+                posDiffX: (!parentData) ? 0 : parentElem.position('x') - eles[0].position('x'),
+                posDiffY: (!parentData) ? 0 : parentElem.position('y') - eles[0].position('y')
             };
             this.undoRedoManager.do('changeParent', param);
             console.log(this.undoRedoManager.getUndoStack());
