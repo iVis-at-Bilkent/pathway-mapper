@@ -421,6 +421,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   return (
 
+    <div className="pathwayMapper">
       <div style={isCBioPortal ? {width: window.innerWidth * 0.99} : {}} className={isCBioPortal ? "cBioMode container" : "customMargins"}>
           {!isCBioPortal && 
           [
@@ -516,6 +517,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           </div>)
             }
       </div>
+    </div>
   );
   }
 

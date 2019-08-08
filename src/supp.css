@@ -1,216 +1,165 @@
-
-.list-group{
-    margin-bottom: 0px;
+.pathwayMapper .list-group {
+margin-bottom: 0px;
 }
-
-.toolbar .toolbar-button{
-    margin-right: 1px;
-    margin-left: 1px 
+.pathwayMapper .toolbar .toolbar-button {
+margin-right: 1px;
+margin-left: 1px;
 }
-
-tbody tr:hover{
-    background: #97bfdb !important;
+.pathwayMapper tbody tr:hover {
+background: #97bfdb !important;
 }
-
-.cBioMode .cytoscape-navigatorView{
-    background: #4389c0;
+.pathwayMapper .cBioMode .cytoscape-navigatorView {
+background: #4389c0;
 }
-
-.ui-cytoscape-nodeadd-nodediv{
-    background: rgb(251, 251, 251) none repeat scroll 0% 0%;
-
-    border: 0px solid rgb(255, 255, 255);
-
-    border-radius: 5px;
-
-    font-size: 1.3em !important;
-
-    cursor: pointer;
-
-    text-align: center;
+.pathwayMapper .ui-cytoscape-nodeadd-nodediv {
+background: #fbfbfb none repeat scroll 0% 0%;
+border: 0px solid white;
+border-radius: 5px;
+font-size: 1.3em !important;
+cursor: pointer;
+text-align: center;
 }
-
-#ranking-bar .info-entry{
-    margin-bottom: 10px;
+.pathwayMapper #ranking-bar .info-entry {
+margin-bottom: 10px;
 }
-
-#ranking-bar .info-entry .indent{
-    margin-left: 20px;
-    margin-top: 6px;
+.pathwayMapper #ranking-bar .info-entry .indent {
+margin-left: 20px;
+margin-top: 6px;
 }
-
-#ranking-bar:first-child{
-    margin-top: 20px;
+.pathwayMapper #ranking-bar:first-child {
+margin-top: 20px;
 }
-
-#ranking-bar .info-title{
-    background-color: white;
-    width: 100%; 
-    color: black;
-    font-weight: bold;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    border-radius: 4px;
+.pathwayMapper #ranking-bar .info-title {
+background-color: white;
+width: 100%;
+color: black;
+font-weight: bold;
+padding-top: 3px;
+padding-bottom: 3px;
+border-radius: 4px;
 }
-
-#cy{
-    margin-top: 10px;
+.pathwayMapper #cy {
+margin-top: 10px;
 }
-
-#ranking-table {
-    /*margin-left: 20px; */
-    margin-top: 6px;
-    margin-right: 6px;
+.pathwayMapper #ranking-table {
+/*margin-left: 20px; */
+margin-top: 6px;
+margin-right: 6px;
 }
-
-#toolbar {
-    margin-top: 10px;
-    margin-left: 13px;
+.pathwayMapper #toolbar {
+margin-top: 10px;
+margin-left: 13px;
 }
-
-.ui-cytoscape-nodeadd img {
-    width: 110px;
-    height: 28.5px;
+.pathwayMapper .ui-cytoscape-nodeadd img {
+width: 110px;
+height: 28.5px;
 }
-
-.label:hover{
-    background-color: #97bfdb !important;
+.pathwayMapper .label:hover {
+background-color: #97bfdb !important;
 }
-
-.label-default{
-    background-color: #adadad !important;
+.pathwayMapper .label-default {
+background-color: #adadad !important;
 }
-
-.checkbox.disabled{
-    color: #adadad !important;
+.pathwayMapper .checkbox.disabled {
+color: #adadad !important;
 }
-
-#ranking-bar .table tbody tr td{
-    padding: 5px !important;
+.pathwayMapper #ranking-bar .table tbody tr td {
+padding: 5px !important;
 }
-
-#ranking-bar .label{
-    padding-top: 6px;
-    padding-bottom: 6px;
-    margin-bottom: 4px;
-    display: inline-block;
-    margin-right: 4px;
-    font-size: 11px;
+.pathwayMapper #ranking-bar .label {
+padding-top: 6px;
+padding-bottom: 6px;
+margin-bottom: 4px;
+display: inline-block;
+margin-right: 4px;
+font-size: 11px;
 }
-
-.label:hover{
-    cursor: pointer;
+.pathwayMapper .label:hover {
+cursor: pointer;
 }
-
-
-.dropdown-submenu .caret{
-    display: none;
+.pathwayMapper .dropdown-submenu .caret {
+display: none;
 }
-
-
-#ranking-bar .fa-question-circle{
-    cursor: pointer
+.pathwayMapper #ranking-bar .fa-question-circle {
+cursor: pointer;
 }
-
-.__react_component_tooltip{
-    max-width: 350px;
-    z-index: 1040;
+.pathwayMapper .__react_component_tooltip {
+max-width: 350px;
+z-index: 1040;
 }
-
-.__react_component_tooltip.type-light.border{
-    border: 1px solid #878686;
+.pathwayMapper .__react_component_tooltip.type-light.border {
+border: 1px solid #878686;
 }
-
-.__react_component_tooltip.show{
-    opacity: 1
+.pathwayMapper .__react_component_tooltip.show {
+opacity: 1;
 }
-#ranking-bar thead td{
-    font-size: 12px;
+.pathwayMapper #ranking-bar thead td {
+font-size: 12px;
 }
-
-#ranking-bar tbody td{
-    font-size: 11px;
+.pathwayMapper #ranking-bar tbody td {
+font-size: 11px;
 }
-
-#about-model-header{
-    margin-bottom: 15px !important;
+.pathwayMapper #about-model-header {
+margin-bottom: 15px !important;
 }
-
-.list-group-item:focus{
-    background-color: white;
+.pathwayMapper .list-group-item:focus {
+background-color: white;
 }
-
-.qtip-tipsy{
-    background: rgba(47,65,84,.92) !important;
+.pathwayMapper .qtip-tipsy {
+background: rgba(47, 65, 84, 0.92) !important;
 }
-
-#dropdown-study{
-    width: 500px;
-    text-align: left;
+.pathwayMapper #dropdown-study {
+width: 500px;
+text-align: left;
 }
-
-#searchGeneToolbar{
-    max-width: 200px;
+.pathwayMapper #searchGeneToolbar {
+max-width: 200px;
 }
-
-#compartmentNodeDiv img{
-    height: 30.26px;
+.pathwayMapper #compartmentNodeDiv img {
+height: 30.26px;
 }
-
-.pmTip{
-    background-color: rgb(47, 65, 84) !important;
-    font-family: arial,sans-serif;
-    font-size: 12px;
-    border-radius: 7px;
+.pathwayMapper .pmTip {
+background-color: #2f4154 !important;
+font-family: arial, sans-serif;
+font-size: 12px;
+border-radius: 7px;
 }
-
-.checkbox.layProps{
-    margin-top: 0;
+.pathwayMapper .checkbox.layProps {
+margin-top: 0;
 }
-
-.Toastify__toast-container{
-    width: 420px;
+.pathwayMapper .Toastify__toast-container {
+width: 420px;
 }
-
-.Toastify__toast--success{
-    background-color: #1abc9c;
+.pathwayMapper .Toastify__toast--success {
+background-color: #1abc9c;
 }
-
-#alterationCheckBox{
-    margin-top: 0;
+.pathwayMapper #alterationCheckBox {
+margin-top: 0;
 }
-
-#toolbar img {
-    cursor: pointer;
-    margin-left: 5px;
+.pathwayMapper #toolbar img {
+cursor: pointer;
+margin-left: 5px;
 }
-
-table .radio {
-    margin-top: 0!important;
-    margin-bottom: 0!important;
+.pathwayMapper table .radio {
+margin-top: 0 !important;
+margin-bottom: 0 !important;
 }
-
-.cBioMode #showMoreButton{
-    width: 100px!important;
+.pathwayMapper .cBioMode #showMoreButton {
+width: 100px !important;
 }
-
-#cBioHelpModal table td{
-    padding: 4px;
+.pathwayMapper #cBioHelpModal table td {
+padding: 4px;
 }
-
-.cBioMode .Toastify__toast--default{
-    background-color: #dff0d8;
-    color: #333333;
+.pathwayMapper .cBioMode .Toastify__toast--default {
+background-color: #dff0d8;
+color: #333333;
 }
-
-.cBioMode .Toastify__toast{
-    min-height: 50px !important;
+.pathwayMapper .cBioMode .Toastify__toast {
+min-height: 50px !important;
 }
-
-.cBioMode .Toastify__toast-container{
-    width: 550px !important;
+.pathwayMapper .cBioMode .Toastify__toast-container {
+width: 550px !important;
 }
-
-.cytoscape-navigator-wrapper{
-    transform: scale(0.86);
+.pathwayMapper .cytoscape-navigator-wrapper {
+transform: scale(0.86);
 }
