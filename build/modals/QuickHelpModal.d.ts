@@ -1,5 +1,5 @@
 import React from 'react';
-import { EModalType } from '../react-pathway-mapper';
+import { EModalType } from '../ui/react-pathway-mapper';
 interface IQuickHelpModalProps {
     isModalShown: boolean;
     handleClose: (modalId: EModalType) => void;

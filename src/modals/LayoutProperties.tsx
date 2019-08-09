@@ -1,9 +1,9 @@
 import React from 'react';
-import { EModalType } from '../react-pathway-mapper';
+import { EModalType } from '../ui/react-pathway-mapper';
 import {Modal, Form, InputGroup, ControlLabel, Col, FormControl, Checkbox, Button} from 'react-bootstrap';
-import EditorActionsManager from '../EditorActionsManager';
+import EditorActionsManager from '../managers/EditorActionsManager';
 import _ from 'lodash';
-import PathwayActions from '../PathwayActions';
+import PathwayActions from '../utils/PathwayActions';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 

@@ -1,8 +1,8 @@
 import React from "react";
 import {Label, Modal} from "react-bootstrap";
 import { observer } from "mobx-react";
-import { IProfileMetaData, EModalType } from "../react-pathway-mapper";
-import EditorActionsManager from "../EditorActionsManager";
+import { IProfileMetaData, EModalType } from "../ui/react-pathway-mapper";
+import EditorActionsManager from "../managers/EditorActionsManager";
 import { computed } from "mobx";
 interface IProfilesModalProps {
     profiles: IProfileMetaData[];

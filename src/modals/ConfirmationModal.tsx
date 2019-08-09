@@ -1,6 +1,6 @@
 import React from 'react';
 import {Modal, Button} from 'react-bootstrap';
-import { EModalType } from '../react-pathway-mapper';
+import { EModalType } from '../ui/react-pathway-mapper';
 
 interface IConfirmationModalProps{
     isModalShown: boolean;

@@ -5186,7 +5186,7 @@ cytoscape-navigator@^1.3.3:
 
 "cytoscape-node-resize@github:iVis-at-Bilkent/cytoscape.js-node-resize#unstable":
   version "3.0.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-node-resize/tar.gz/44db881fc0ab9d3ac3815b9570d54a9a14f4ba81"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-node-resize/tar.gz/3051babea3e9f72581c1b0212802426e293317c4"
 
 cytoscape-panzoom@~2.5.2:
   version "2.5.3"

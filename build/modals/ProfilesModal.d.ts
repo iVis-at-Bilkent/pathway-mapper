@@ -1,6 +1,6 @@
 import React from "react";
-import { IProfileMetaData } from "../react-pathway-mapper";
-import EditorActionsManager from "../EditorActionsManager";
+import { IProfileMetaData } from "../ui/react-pathway-mapper";
+import EditorActionsManager from "../managers/EditorActionsManager";
 interface IProfilesModalProps {
     profiles: IProfileMetaData[];
     editor: EditorActionsManager;

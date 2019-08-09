@@ -2,8 +2,8 @@ import React from 'react';
 import {Modal, MenuItem, DropdownButton, Checkbox, Button} from 'react-bootstrap';
 import { observable } from 'mobx';
 import autobind from 'autobind-decorator';
-import { IDataTypeMetaData, EModalType } from '../react-pathway-mapper';
-import CBioPortalAccessor from '../CBioPortalAccessor';
+import { IDataTypeMetaData, EModalType } from '../ui/react-pathway-mapper';
+import CBioPortalAccessor from '../utils/CBioPortalAccessor';
 import { observer } from 'mobx-react';
 
 interface IStudyModalProps {

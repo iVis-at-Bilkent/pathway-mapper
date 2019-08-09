@@ -1,18 +1,18 @@
 import React from 'react';
-import { EModalType } from '../react-pathway-mapper';
+import { EModalType } from '../ui/react-pathway-mapper';
 import {Modal} from 'react-bootstrap';
 // @ts-ignore
-import layoutImage from "../toolbar/layout-cose.svg";
+import layoutImage from "../images/toolbar/layout-cose.svg";
 // @ts-ignore
-import savePNGImage from "../toolbar/save_png.svg";
+import savePNGImage from "../images/toolbar/save_png.svg";
 // @ts-ignore
-import saveSVGImage from "../toolbar/save_svg.svg";
+import saveSVGImage from "../images/toolbar/save_svg.svg";
 // @ts-ignore
-const addSelImage = require("../toolbar/add-selected.svg");
+const addSelImage = require("../images/toolbar/add-selected.svg");
 // @ts-ignore
-const addAllImage = require("../toolbar/add-all.svg");
+const addAllImage = require("../images/toolbar/add-all.svg");
 // @ts-ignore
-import openImage from "../toolbar/edit.svg";
+import openImage from "../images/toolbar/edit.svg";
 
 interface ICBioHelpModalProps{
     isModalShown: boolean;

@@ -1,5 +1,5 @@
 import React from 'react';
-import PathwayActions from '../PathwayActions';
+import PathwayActions from '../utils/PathwayActions';
 interface IGridSettingsProps {
     isModalShown: boolean;
     handleClose: Function;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { EModalType } from '../react-pathway-mapper';
+import { EModalType } from '../ui/react-pathway-mapper';
 import {Modal} from 'react-bootstrap';
 interface IQuickHelpModalProps{
     isModalShown: boolean;

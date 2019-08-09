@@ -1,9 +1,9 @@
 import React from 'react';
 import {Modal, Form, FormGroup, Col, Row, FormControl, ControlLabel, Checkbox, Button, InputGroup} from 'react-bootstrap';
-import { EModalType } from '../react-pathway-mapper';
-import EditorActionsManager from '../EditorActionsManager';
-import GridOptionsManager from '../GridOptionsManager';
-import PathwayActions from '../PathwayActions';
+import { EModalType } from '../ui/react-pathway-mapper';
+import EditorActionsManager from '../managers/EditorActionsManager';
+import GridOptionsManager from '../managers/GridOptionsManager';
+import PathwayActions from '../utils/PathwayActions';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 interface IGridSettingsProps{

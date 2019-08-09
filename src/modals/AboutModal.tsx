@@ -5,7 +5,7 @@ import {Modal} from 'react-bootstrap';
 import iVisImg from "../about/i-vis.png";
 // @ts-ignore
 import mskccImg from "../about/mskcc.png";
-import { EModalType } from '../react-pathway-mapper';
+import { EModalType } from '../ui/react-pathway-mapper';
 interface IAboutModalProps{
     isModalShown: boolean;
     handleClose: Function;
@@ -36,10 +36,10 @@ export default class AboutModal extends React.Component<IAboutModalProps, {}> {
             <Modal.Body>
                 <h3 id="about-model-header">PathwayMapper 2.0</h3>
                 <div className="aboutImageContent">
-                  <img src={require("../about/i-vis.png")} alt="" height="25px"/>
+                  <img src={require("../images/about/i-vis.png")} alt="" height="25px"/>
                 </div>
                 <div className="aboutImageContent">
-                  <img src={require("../about/mskcc.png")} alt="" height="30px"/>
+                  <img src={require("../images/about/mskcc.png")} alt="" height="30px"/>
                 </div>
                 <div className="adressText">
                   <p>i-Vis information Visualization Lab</p>

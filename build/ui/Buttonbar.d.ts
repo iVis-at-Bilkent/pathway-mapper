@@ -1,6 +1,6 @@
 import React from "react";
-import PathwayActions from "../PathwayActions";
-import { EModalType } from "../react-pathway-mapper";
+import PathwayActions from "../utils/PathwayActions";
+import { EModalType } from "./react-pathway-mapper";
 import { EGridType } from "../modals/GridSettings";
 interface IButtonbarProps {
     pathwayActions: PathwayActions;

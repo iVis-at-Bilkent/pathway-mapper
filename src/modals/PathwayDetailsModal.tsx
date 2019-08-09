@@ -1,9 +1,9 @@
 import React from 'react';
 import {Modal, Form, FormGroup, FormControl, Col, Button, InputGroup, ControlLabel} from 'react-bootstrap';
 import { observer } from 'mobx-react';
-import PathwayActions from '../PathwayActions';
-import { IPathwayInfo } from '../FileOperationsManager';
-import { EModalType } from '../react-pathway-mapper';
+import PathwayActions from '../utils/PathwayActions';
+import { IPathwayInfo } from '../managers/FileOperationsManager';
+import { EModalType } from '../ui/react-pathway-mapper';
 
 interface IPathwayDetailsModalProps{
     isModalShown: boolean;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
-import PathwayMapper from "./react-pathway-mapper";
-import WelcomePage from "./WelcomePage";
+import PathwayMapper from "./ui/react-pathway-mapper";
+import WelcomePage from "./ui/WelcomePage";
 
 window.onload = () => {
   const rootEl = document.getElementById('app');

@@ -1,6 +1,6 @@
 import React from 'react';
-import PathwayActions from '../PathwayActions';
-import { IPathwayInfo } from '../FileOperationsManager';
+import PathwayActions from '../utils/PathwayActions';
+import { IPathwayInfo } from '../managers/FileOperationsManager';
 interface IPathwayDetailsModalProps {
     isModalShown: boolean;
     handleClose: Function;

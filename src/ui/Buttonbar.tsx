@@ -1,52 +1,52 @@
 import React from "react";
 import { Nav, Navbar, NavItem, FormControl, Glyphicon, InputGroup, ButtonGroup, ButtonToolbar, Button, FormGroup } from "react-bootstrap";
-import PathwayActions from "../PathwayActions";
+import PathwayActions from "../utils/PathwayActions";
 import { observable } from "mobx";
 // @ts-ignore
-import loadSvg from '../toolbar/load.svg';
+import loadSvg from '../images/toolbar/load.svg';
 // @ts-ignore
-import aboutSvg from '../toolbar/about.svg';
+import aboutSvg from '../images/toolbar/about.svg';
 // @ts-ignore
-import newSvg from '../toolbar/new.svg';
+import newSvg from '../images/toolbar/new.svg';
 // @ts-ignore
-import saveSvg from '../toolbar/save.svg';
+import saveSvg from '../images/toolbar/save.svg';
 // @ts-ignore
-import deleteSvg from '../toolbar/delete-simple.svg';
+import deleteSvg from '../images/toolbar/delete-simple.svg';
 // @ts-ignore
-import undoSvg from '../toolbar/undo.svg';
+import undoSvg from '../images/toolbar/undo.svg';
 // @ts-ignore
-import redoSvg from '../toolbar/redo.svg';
+import redoSvg from '../images/toolbar/redo.svg';
 // @ts-ignore
-import ahtSvg from '../toolbar/align/align-horizontal-top.svg';
+import ahtSvg from '../images/toolbar/align/align-horizontal-top.svg';
 // @ts-ignore
-import ahmSvg from '../toolbar/align/align-horizontal-middle.svg';
+import ahmSvg from '../images/toolbar/align/align-horizontal-middle.svg';
 // @ts-ignore
-import ahbSvg from '../toolbar/align/align-horizontal-bottom.svg';
+import ahbSvg from '../images/toolbar/align/align-horizontal-bottom.svg';
 // @ts-ignore
-import avlSvg from '../toolbar/align/align-vertical-left.svg';
+import avlSvg from '../images/toolbar/align/align-vertical-left.svg';
 // @ts-ignore
-import avcSvg from '../toolbar/align/align-vertical-center.svg';
+import avcSvg from '../images/toolbar/align/align-vertical-center.svg';
 // @ts-ignore
-import avrSvg from '../toolbar/align/align-vertical-right.svg';
+import avrSvg from '../images/toolbar/align/align-vertical-right.svg';
 // @ts-ignore
-import gridSvg from '../toolbar/grid.svg';
+import gridSvg from '../images/toolbar/grid.svg';
 // @ts-ignore
-import guideSvg from '../toolbar/guidelines.svg';
+import guideSvg from '../images/toolbar/guidelines.svg';
 // @ts-ignore
-import hideSvg from '../toolbar/hide-selected.svg';
+import hideSvg from '../images/toolbar/hide-selected.svg';
 // @ts-ignore
-import showSvg from '../toolbar/show-all.svg';
+import showSvg from '../images/toolbar/show-all.svg';
 // @ts-ignore
-import portalSvg from '../toolbar/portal.svg';
+import portalSvg from '../images/toolbar/portal.svg';
 // @ts-ignore
-import setingsSvg from '../toolbar/settings.svg';
+import setingsSvg from '../images/toolbar/settings.svg';
 // @ts-ignore
-import layoutSvg from '../toolbar/layout-cose.svg';
+import layoutSvg from '../images/toolbar/layout-cose.svg';
 // @ts-ignore
-import layoutPropSvg from '../toolbar/layout-properties.svg';
+import layoutPropSvg from '../images/toolbar/layout-properties.svg';
 // @ts-ignore
-import helpSvg from '../toolbar/quick-help.svg';
-import { EModalType } from "../react-pathway-mapper";
+import helpSvg from '../images/toolbar/quick-help.svg';
+import { EModalType } from "./react-pathway-mapper";
 import { observer } from "mobx-react";
 import { EGridType } from "../modals/GridSettings";
 
