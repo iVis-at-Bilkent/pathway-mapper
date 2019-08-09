@@ -1,0 +1,39 @@
+.ui-cytoscape-nodeadd{
+	z-index: 99999;
+	/* Fix for plugin to render correctly when Bootstrap is being used*/
+	-webkit-box-sizing: content-box;
+     -moz-box-sizing: content-box;
+          box-sizing: content-box;
+	margin-bottom: 5px;
+
+}
+
+#ui-cytoscape-nodeadd-icon{
+	font-size: 1.3em !important;
+  .explanationText
+  {
+    font: 14px helvetica neue, helvetica, arial, sans-serif;
+  }
+	img{
+		width: 110px;
+	}
+}
+
+.ui-cytoscape-nodeadd-nodediv{
+	z-index: 99999;
+	padding: 3px;
+	text-align: center;
+	width: 110px;
+
+	/* Fix for line trail left by drag (in Chrome)*/
+	-webkit-backface-visibility: hidden;
+
+	/* Fix for plugin to render correctly when Bootstrap is being used*/
+	-webkit-box-sizing: content-box;
+     -moz-box-sizing: content-box;
+          box-sizing: content-box;
+}
+
+#ui-cytoscape-nodeadd-icon{
+	cursor: pointer;
+}

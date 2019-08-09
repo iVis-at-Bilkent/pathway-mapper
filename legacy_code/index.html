@@ -1,0 +1,914 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-109822503-1"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-109822503-1');
+  </script>
+  <meta charset="UTF-8">
+  <title>PathwayMapper</title>
+  <!-- Google Real Time Style  -->
+  <!-- Load Styles -->
+  <!-- <link href="https://www.gstat
+  ic.com/realtime/quickstart-styles.css" rel="stylesheet" type="text/css"/> -->
+
+  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" charset="utf-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link href="node_modules/cytoscape-panzoom/cytoscape.js-panzoom.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="node_modules/cytoscape-navigator/cytoscape.js-navigator.css" charset="utf-8">
+  <link rel="stylesheet" href="node_modules/bootstrap-select/dist/css/bootstrap-select.min.css" charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.css">
+  <link rel="stylesheet" type="text/css" href="node_modules/html5tooltipsjs/html5tooltips.css">
+
+  <!--For debugging-->
+   <!-- <link rel="stylesheet" href="bin/base.css" charset="utf-8"> -->
+  <link rel="stylesheet" href="bin/base.min.css" charset="utf-8">
+</head>
+<body>
+
+<div id='aboutModal' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">About</h3>
+      </div>
+      <div class="modal-body">
+        <h3 id="about-model-header">PathwayMapper 2.0</h3>
+        <div class="aboutImageContent">
+          <img src="./assets/i-vis.png" alt="" height="25px"/>
+        </div>
+        <div class="aboutImageContent">
+          <img src="./assets/mskcc.png" alt="" height="30px"/>
+        </div>
+        <div class="adressText">
+          <p>i-Vis information Visualization Lab</p>
+          <p>Bilkent University, Ankara, Turkey</p>
+        </div>
+        <div class="adressText">
+          <p>Memorial Sloan-Kettering Cancer Center</p>
+          <p>New York, USA</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="">
+          <a href="https://github.com/iVis-at-Bilkent/pathway-mapper">https://github.com/iVis-at-Bilkent/pathway-mapper</a>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id='quickHelpModal' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Quick Help</h3>
+      </div>
+      <div class="modal-body">
+        <ul class="leftText">
+          <li><strong>To add a node:</strong> Drag and drop from node palette</li>
+          <li><strong>To add an interaction:</strong> Click on interaction type; then click on small circle on source node and release on target node</li>
+          <li><strong>To add a node into a container (family, complex, compartment or process):</strong> Drag the node into its container node or select nodes to be contained and right click on container node and choose "Add Selected Into This"</li>
+          <li><strong>To delete nodes/interactions:</strong> Select and perform Edit > Delete Selected</li>
+          <li><strong>To overlay experiment data:</strong> Select Alteration % > Load From cBioPortal...</li>
+        </ul>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id='edge_legend_modal' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Interaction Legend</h3>
+      </div>
+      <div class="modal-body">
+        <img src="./assets/edge_legend.png" alt="" />
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id='node_legend_modal' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Node Legend</h3>
+      </div>
+      <div class="modal-body">
+        <img src="./assets/gene_legend.png" alt="" />
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id='layoutPropertiesDiv' class="modal fade" tabindex="-1" role="dialog">
+</div><!-- /.modal -->
+
+<script id="layoutPropertiesTemplate" type="text/template" class="template">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" id="close-layout" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Layout Properties</h3>
+      </div>
+      <div class="modal-body">
+        <form role="form" id="layoutPropsForm">
+          <!-- We match float values with regex oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+               and input values with oninput="this.value = this.value.replace(/[^0-9]/g, '');" -->
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="node-repulsion">Node Repulsion:</label>
+            <div class="col-sm-8">
+              <input id="node-repulsion" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                     class="form-control" value=<%= nodeRepulsion %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="ideal-edge-length">Ideal Edge Length:</label>
+            <div class="col-sm-8">
+              <input id="ideal-edge-length" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                     class="form-control" value= <%= idealEdgeLength %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="edge-elasticity">Edge Elasticity:</label>
+            <div class="col-sm-8">
+              <input id="edge-elasticity" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= edgeElasticity %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="nesting-factor">Nesting Factor:</label>
+            <div class="col-sm-8">
+              <input id="nesting-factor" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= nestingFactor %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="gravity">Gravity:</label>
+            <div class="col-sm-8">
+              <input id="gravity" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= gravity %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="grav-range">Gravity Range:</label>
+            <div class="col-sm-8">
+              <input id="grav-range" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= gravityRange %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="comp-grav">Compound Gravity:</label>
+            <div class="col-sm-8">
+              <input id="comp-grav" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= gravityCompound %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="comp-gravRange">Compound Gravity Range:</label>
+            <div class="col-sm-8">
+              <input id="comp-gravRange" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= gravityRangeCompound %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="num-iter">Number of Iterations:</label>
+            <div class="col-sm-8">
+              <input id="num-iter" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                     class="form-control" value= <%= numIter %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="tile-verticalPadding">Tiling Vertical Padding:</label>
+            <div class="col-sm-8">
+              <input id="tile-verticalPadding" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                     class="form-control" value= <%= tilingPaddingVertical %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="tile-horizontalPadding">Tiling Horizontal Padding:</label>
+            <div class="col-sm-8">
+              <input id="tile-horizontalPadding" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                     class="form-control" value= <%= tilingPaddingHorizontal %> >
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="tile">Tile Disconnected:</label>
+            <div class="col-sm-8 leftText">
+              <input id="tile" type="checkbox" class="input-small layout-text" <% if (tile){ %> checked<%}%>>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="animate">Animate:</label>
+            <div class="col-sm-8 leftText">
+              <input id="animate" type="checkbox" class="input-small layout-text" <% if (animate){ %> checked<%}%>>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" factiveor="randomize">Incremental:</label>
+            <div class="col-sm-8 leftText">
+              <input id="randomize" type="checkbox" class="input-small layout-text" <% if (!randomize){ %> checked<%}%>>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="incr-coolingFactor">Incremental Cooling Factor:</label>
+            <div class="col-sm-8">
+              <input id="incr-coolingFactor" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                     class="form-control" value= <%= initialEnergyOnIncremental %> >
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button id="save-layout" class="btn btn-default" >Save</button>
+          <button id="default-layout" class="btn btn-default">Default</button>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div>
+</script>
+
+<div class="pageContentWrapper">
+  <div class="customMargins">
+    <div class="">
+      <nav class="navbar navbar-default navbar-embossed pathway-navbar" id="pathway-navbar" role="navigation">
+        <div class="navbar-header pull-right">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+            <span class="sr-only">Toggle navigation</span>
+          </button>
+          <a class="navbar-brand" class="active" href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">PathwayMapper</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-collapse-01">
+          <div class="">
+            <ul class="nav navbar-nav">
+              <li class="dropdown fileDropDown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Network <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a role="new" href="#">New</a></li>
+                  <li><a role="details" href="#">Properties...</a></li>
+                  <li><a role="load" href="#">Import...</a></li>
+                  <li class="dropdown-submenu" id="SamplesMenu">
+                    <a tabindex="-1" href="#">TCGA</a>
+                    <ul class="dropdown-menu" id="sampleSubMenu">
+                    </ul>
+                  </li>
+                  <li><a role="merge" href="#">Merge With...</a></li>
+                  <li><a role="save" href="#">Export</a></li>
+                  <li class="dropdown-submenu">
+                    <a tabindex="-1" href="#">Export As</a>
+                    <ul class="dropdown-menu">
+                      <li><a  edgeTypeIndex='1' role="jpeg" href="#">JPEG</a></li>
+                      <li><a  edgeTypeIndex='1' role="png"  href="#">PNG</a></li>
+                      <li><a  edgeTypeIndex='1' role="svg"  href="#">SVG</a></li>
+                      <li><a  edgeTypeIndex='1' role="sifnx"  href="#">SIFNX</a></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown editDropDown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Edit <span class="caret"></span></a>
+                <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                  <li class="dropdown-submenu">
+                    <a tabindex="-1" href="#">Add Node</a>
+                    <ul class="dropdown-menu">
+                      <li><a role="addGene" href="#">Gene</a></li>
+                      <li><a role="addGene"  href="#">Family</a></li>
+                      <li><a role="addGene"  href="#">Complex</a></li>
+                      <li><a role="addGene"  href="#">Compartment</a></li>
+                      <li><a role="addGene"  href="#">Process</a></li>
+                    </ul>
+                  </li>
+                  <li class="dropdown-submenu">
+                    <a tabindex="-1" href="#">Add Interaction</a>
+                    <ul class="dropdown-menu">
+                      <li><a  edgeTypeIndex='1' role="addEdge"  href="#">Activates</a></li>
+                      <li><a  edgeTypeIndex='2' role="addEdge"  href="#">Inhibits</a></li>
+                      <li><a  edgeTypeIndex='3' role="addEdge"  href="#">Induces</a></li>
+                      <li><a  edgeTypeIndex='4' role="addEdge"  href="#">Represses</a></li>
+                      <li><a  edgeTypeIndex='5' role="addEdge"  href="#">Binds</a></li>
+                    </ul>
+                  </li>
+                  <li><a role="deleteSelected" href="#">Delete Selected</a></li>
+                  <li><a role="resizeNodesToContent" href="#">Resize Nodes To Content</a></li>
+                  <li><a role="undo" href="#">Undo</a></li>
+                  <li><a role="redo" href="#">Redo</a></li>
+                </ul>
+              </li>
+              <li class="dropdown viewDropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-submenu">
+                    <a tabindex="-1" role="alignment" href="#">Align Selected</a>
+                    <ul class="dropdown-menu">
+                      <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">Vertical</a>
+                        <ul class="dropdown-menu">
+                          <li><a role="vLeft" href="#">Left</a></li>
+                          <li><a role="vCen" href="#">Center</a></li>
+                          <li><a role="vRight" href="#">Right</a></li>
+                        </ul>
+                      </li>
+                      <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">Horizontal</a>
+                        <ul class="dropdown-menu">
+                          <li><a role="hTop" href="#">Top</a></li>
+                          <li><a role="hMid" href="#">Middle</a></li>
+                          <li><a role="hBot" href="#">Bottom</a></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                  <li><a tabindex="-1" role="grid" href="#">Grid...</a></li>
+                  <!--<li><a tabindex="-1" role="nodeResize" href="#">Node Resize</a></li>-->
+                  <li><a tabindex="-1" role="hideSelectedNodes" href="#">Hide Selected Nodes</a></li>
+                  <li><a tabindex="-1" role="showAllNodes" href="#">Show All Nodes</a></li>
+                </ul>
+              </li>
+              <li class="dropdown highlightDropDown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Highlight <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a tabindex="-1" role="goToSearch"  href="#">Search Genes By Name...</a></li>
+                  <li><a tabindex="-1" role="highlightSelected" href="#">Highlight Selected</a></li>
+                  <li><a tabindex="-1" role="highlightNeighbors"  href="#">Highlight Neighbors Of Selected</a></li>
+                  <li><a tabindex="-1" role="highlightInvalidGenes" href="#">Identify Invalid Genes</a></li>
+                  <li><a tabindex="-1" role="removeAllHighlight" href="#">Remove All Highlights</a></li>
+                </ul>
+              </li>
+              <li class="dropdown dataDropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Alteration % <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a role="loadGenomic" href="#">Load From File...</a></li>
+                  <li><a role="loadPortal" href="#">Load From cBioPortal...</a></li>
+                  <li><a role="loadSampleGenomicData" href="#">Load Sample</a></li>
+                  <li><a role="dataViewSettings" href="#">View Settings...</a></li>
+                  <li><a role="removeGenomicData" href="#">Remove Data</a></li>
+                </ul>
+              </li>
+              <li class="dropdown layoutDropDown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Layout <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a role="perform_layout" href="#">Perform Layout</a></li>
+                  <li><a role="layout_properties" href="#">Layout Properties...</a></li>
+                </ul>
+              </li>
+              <li class="dropdown aboutDropDown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a role="help" href="#">Quick Help</a></li>
+		          <li><a role="howToUse" href="#">How To Use</a></li>
+                  <!-- <li><a role="node_legend" href="#">Node Legend</a></li>
+                  <li><a role="edge_legend" href="#">Interaction Legend</a></li> -->
+                  <li><a role="about" href="#">About</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div><!-- /.navbar-collapse -->
+      </nav><!-- /navbar -->
+    </div>
+    <div id="pathway-toolbar" class="toolbar pathway-toolbar">
+      <div class="btn-toolbar" role="toolbar" >
+        <div id="fileToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="New Pathway"><img src="assets/toolbar/new.svg" role="new" ></div>
+          <div class="toolbar-button" data-tooltip="Load Pathway"><img src="assets/toolbar/load.svg" role="load" ></div>
+          <div class="toolbar-button" data-tooltip="Save Pathway"><img src="assets/toolbar/save.svg" role="save" ></div>
+        </div>
+        <div id="editToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="Delete Selected"><img src="assets/toolbar/delete-simple.svg" role="deleteSelected" ></div>
+          <span id="localOrCollaborativeToolbar">
+          <div class="toolbar-button" data-tooltip="Undo"><img src="assets/toolbar/undo.svg" role="undo" ></div>
+          <div class="toolbar-button" data-tooltip="Redo"><img src="assets/toolbar/redo.svg" role="redo" ></div>
+          </span>
+        </div>
+        <div id="viewToolbarButtons" class="btn-group mr-2" role="group" >
+          <!--<div class="toolbar-button"><img src="assets/align.svg"></div>-->
+          <div class="toolbar-button" data-tooltip="Align Horizontal Top"><img role="hTop" src="assets/align/align-horizontal-top.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Horizontal Middle"><img role="hMid" src="assets/align/align-horizontal-middle.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Horizontal Bottom"><img role="hBot" src="assets/align/align-horizontal-bottom.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Vertical Left"><img role="vLeft" src="assets/align/align-vertical-left.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Vertical Center"><img role="vCen" src="assets/align/align-vertical-center.svg"></div>
+          <div class="toolbar-button" data-tooltip="Align Vertical Right"><img role="vRight" src="assets/align/align-vertical-right.svg"></div>
+        </div>
+        <div id="gridGuideToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="Enable Grid: Show and snap to grid"><img src="assets/toolbar/grid.svg" role="showGrid" ></div>
+          <div class="toolbar-button" data-tooltip="Enable Guidelines: Enable and snap to alignment guidelines"><img src="assets/toolbar/guidelines.svg" role="snapToGrid"></div>
+        </div>
+        <div id="hideShowToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="Hide Selected"><img src="assets/toolbar/hide-selected.svg" role="hideSelectedNodes" ></div>
+          <div class="toolbar-button" data-tooltip="Show All"><img src="assets/toolbar/show-all.svg" role="showAllNodes"></div>
+        </div>
+        <div id="portalToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="Fetch Genomic Data From cBioPortal"><img role="portalData" src="assets/toolbar/portal.svg"></div>
+          <div class="toolbar-button" data-tooltip="Genomic Data Visibility Settings"><img role="portalSettings" src="assets/toolbar/settings.svg"></div>
+        </div>
+        <div id="layoutToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="Perform Layout"><img src="assets/toolbar/layout-cose.svg" role="performLayout" ></div>
+          <div class="toolbar-button" data-tooltip="Layout Properties"><img src="assets/toolbar/layout-properties.svg" role="layoutProperties" ></div>
+        </div>
+        <div id="helpToolbarButtons" class="btn-group mr-2" role="group" >
+          <div class="toolbar-button" data-tooltip="Quick Help"><img src="assets/toolbar/quick-help.svg" role="help" ></div>
+          <div class="toolbar-button" data-tooltip="About"><img src="assets/toolbar/about.svg" role="about" ></div>
+        </div>
+        <div id="searchGeneToolbar" class="btn-group mr-2">
+                <div class="form-group">
+                    <div class="form-group has-feedback">
+                        <input type="text" class="form-control" id="searchGene" placeholder="Search Genes..."/>
+                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                    </div>
+                </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="cBioPortal-Wrapper" class="cBioPortal-Wrapper" style="display: none" style="display: none">
+      <div id="pathway-cBioPortal-comboBox" class="sideBar cBioPortal-sidebar">
+        <div>
+          <ul class="nav navbar-nav">
+            <div class= "dropdown  TCGA-dropdown">
+              <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Select Network
+              </a>
+              <div class="dropdown-menu" id="templateSubMenu">
+              </div>
+            </div>
+          </ul>
+          <div id="TCGA-information" class="TCGA-information pull-right">
+            <textarea id="TCGA-header" class="pull-left"  style="min-width: 100px; max-width: 100px" readonly></textarea>
+            <textarea id="TCGA-textarea" class="pull-left" style="min-width: 700px" readonly></textarea>
+            <div id="pathway-sidebar-cBioPortal-buttons" class="btn-group pull-right">
+              <div class="pnl-body">
+                <div class="cBioPortal-button" data-tooltip="Save as Text">
+                  <img src="assets/sidebar/save_text.svg" role="save-as-text" >
+                </div>
+                <div class="cBioPortal-button" data-tooltip="Save as SVG">
+                  <img src="assets/sidebar/save_svg.svg" role="save-as-svg" >
+                </div>
+                <div class="cBioPortal-button" data-tooltip="Save as PNG">
+                  <img src="assets/sidebar/save_png.svg" role="save-as-png" >
+                </div>
+                <div class="cBioPortal-button" data-tooltip="Rearrange Layout">
+                  <img src="assets/sidebar/rearrange-layout.svg" role="rearrange-layout" >
+                </div>
+                <div class="cBioPortal-button"  data-tooltip="Edit in Pathway Mapper">
+                  <img src="assets/sidebar/edit.svg" role="edit-in-pathway" >
+                </div>
+                <div class="cBioPortal-button"  data-tooltip="About">
+                  <img src="assets/sidebar/help.svg" role="help" >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+    </div>
+
+
+    <div class="mainContentWrapper">
+      <div id="pathway-sidebar" class="sideBarWrapper">
+        <div class="sideBar">
+          <div class="pnl">
+            <div class="pnl-header">
+              Network
+            </div>
+            <div class="pnl-body pathwayPanel">
+              <div class="buttonContainer">
+                <button id="pathwayDetailsBtn" type="button" class="btn btn-default">
+                  <i class="fui-upload"></i> Properties...
+                </button>
+              </div>
+              <div class="buttonContainer">
+                <button id="loadGraphBtn" type="button" class="btn btn-default">
+                  <i class="fui-upload"></i> Import...
+                </button>
+              </div>
+              <div class="buttonContainer">
+                <button id="saveGraphBtn" type="button" class="btn btn-default">
+                  <i class="fui-folder"></i> Export
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="pnl">
+            <div class="pnl-header">
+              Node Palette
+            </div>
+            <div class="pnl-body">
+              <div id="simpleNodeDiv" class="dragButtonContainer" data-tooltip-delay="2000" data-tooltip="Click on this and drag to the&lt;br /&gt;location on drawing canvas&lt;br /&gt;and release!"></div>
+              <div id="familyNodeDiv" class="dragButtonContainer" data-tooltip-delay="2000" data-tooltip="Click on this and drag to the&lt;br /&gt;location on drawing canvas&lt;br /&gt;and release!"></div>
+              <div id="complexNodeDiv" class="dragButtonContainer" data-tooltip-delay="2000" data-tooltip="Click on this and drag to the&lt;br /&gt;location on drawing canvas&lt;br /&gt;and release!"></div>
+              <div id="compartmentNodeDiv" class="dragButtonContainer" data-tooltip-delay="2000" data-tooltip="Click on this and drag to the&lt;br /&gt;location on drawing canvas&lt;br /&gt;and release!"></div>
+              <div id="processNodeDiv" class="dragButtonContainer" data-tooltip-delay="2000" data-tooltip="Click on this and drag to the&lt;br /&gt;location on drawing canvas&lt;br /&gt;and release!"></div>
+            </div>
+          </div>
+          <div class="pnl edgePanel">
+            <div class="pnl-header">
+              Interaction Palette
+            </div>
+            <div class="pnl-body">
+              <div class="edgePaletteWrapper">
+                <div class="edge-palette list-group">
+                  <!-- <li class="list-group-item"><a dropDownIndex='0' href="#">None</a></li> -->
+                  <div data-tooltip-delay="2000" data-tooltip="Click to activate; then, start the &lt;br /&gt; interaction from the little circle &lt;br /&gt; on the source node!">
+                    <a edgeTypeIndex='1' href="#"  class="list-group-item"><img src="./assets/edges/activates.svg" class="pull-left"   />Activates</a>
+                  </div>
+                  <div data-tooltip-delay="2000" data-tooltip="Click to activate; then, start the &lt;br /&gt; interaction from the little circle &lt;br /&gt; on the source node!">
+                    <a edgeTypeIndex='2' href="#"  class="list-group-item"><img src="./assets/edges/inhibits.svg" class="pull-left"  />Inhibits</a>
+                  </div>
+                  <div data-tooltip-delay="2000" data-tooltip="Click to activate; then, start the &lt;br /&gt; interaction from the little circle &lt;br /&gt; on the source node!">
+                    <a edgeTypeIndex='3' href="#"  class="list-group-item"><img src="./assets/edges/induces.svg" class="pull-left"  />Induces</a>
+                  </div>
+                  <div data-tooltip-delay="2000" data-tooltip="Click to activate; then, start the &lt;br /&gt; interaction from the little circle &lt;br /&gt; on the source node!">
+                    <a edgeTypeIndex='4' href="#"  class="list-group-item"><img src="./assets/edges/represses.svg" class="pull-left"  />Represses</a>
+                  </div>
+                  <div data-tooltip-delay="2000" data-tooltip="Click to activate; then, start the &lt;br /&gt; interaction from the little circle &lt;br /&gt; on the source node!">
+                    <a edgeTypeIndex='5' href="#"  class="list-group-item"><img src="./assets/edges/binds.svg" class="pull-left"  />Binds</a>
+                  </div>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cyContainer">
+        <div id="cy" class=""></div>
+        <div class="cytoscape-navigator-wrapper">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="welcomePageContainer centerText">
+</div>
+
+<!-- BioGeneView template for backbone.js -->
+<script type="text/template" id="biogene-template">
+  <div class='node-details-text'>
+    <table class="table leftText bioGeneTable" cellspacing="10">
+      <tr class="biogene-info biogene-description node-details-summary">
+        <th valign="top">Gene Summary:</th>
+        <td colspan="2" class="">
+          <div class="scrollable">
+            <%=geneSummary %>
+          </div>
+        </td>
+      </tr>
+      <tr class="biogene-info biogene-aliases">
+        <th valign="top">Aliases:</th>
+        <td>
+          <%=geneAliases %>
+        </td>
+      </tr>
+      <tr class="biogene-info biogene-description">
+        <th>Description:</th>
+        <td class="">
+          <%=geneDescription %>
+        </td>
+      </tr>
+      <tr class="biogene-info biogene-location">
+        <th valign="top">Chromosome Location:</th>
+        <td>
+          <%=geneLocation %>
+        </td>
+      </tr>
+      <tr class="biogene-info biogene-uniprot-links">
+        <th valign="top">UniProt ID:</th>
+        <td>
+          <a href='http://www.uniprot.org/uniprot/<%= geneUniprotId %>' target='blank'>
+            <%=geneUniprotId %>
+          </a>
+    <span class='biogene-uniprot-links-extra'>
+    <%= geneUniprotLinks %>
+    </span>
+        </td>
+      </tr>
+      <tr class="biogene-info biogene-id">
+        <th valign="top">Gene ID:</th>
+        <td>
+          <a href='http://www.ncbi.nlm.nih.gov/gene?term=<%= geneId %>' target='blank'>
+            <%=geneId %>
+          </a>
+        </td>
+      </tr>
+    </table>
+  </div>
+</script>
+
+<script type="text/template" id="uniprot-link-template">
+  <a href="http://www.uniprot.org/uniprot/<%= id %>" target="_blank">
+    <%=id %>
+  </a>
+</script>
+
+<script type="text/template" id="loading-small-template">
+  <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+</script>
+
+
+<script type="text/template" id="welcomePageTemplate">
+  <div class="landingContent">
+    <div class="container">
+      <div class="row">
+        <h1>Welcome to PathwayMapper</h1>
+        <div class="creditInformation">
+          <a href="https://academic.oup.com/bioinformatics/article/doi/10.1093/bioinformatics/btx149/3072875/PathwayMapper-a-collaborative-visual-web-editor" target="_blank"><h5>Please cite the following when using PathwayMapper: Bahceci et al. (2017) "PathwayMapper: a collaborative visual web editor for cancer pathways and genomic data", Bioinformatics.</h5></a>
+        </div>
+        <div class="contactInformation">
+          <a href="mailto:pathwaymapper@gmail.com?subject=PathwayMapper">pathwaymapper@gmail.com</a> <br>
+          <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">https://github.com/iVis-at-Bilkent/pathway-mapper</a>
+        </div>
+
+        <h3>Please choose the type of your usage:</h3>
+      </div>
+      <div class="row welcomePageLoading">
+        <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+      </div>
+      <div class="row welPageButtons">
+        <div id="localUsage" class="welcomePageCheckable">
+          <i class="fa fa-check"></i>
+          Local
+        </div>
+        <div id="collaborativeUsage" class="welcomePageCheckable" >
+          <i class="fa fa-check"></i>
+          Collaborative
+        </div>
+        <div id="cBioPortalUsage" class="welcomePageCheckable" style="display:none" >
+          <i class="fa fa-check"></i>
+          cBioPortal
+        </div>
+      </div>
+      <div class="row continueRow">
+        <div class="col-md-12 centerText">
+          <div class="continueButton" >
+            Continue
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/template" id="collaborativePopoverContent">
+  <div>
+    <p>
+      Share the pathway ID with other(s) to collaboratively create a pathway
+    </p>
+  </div>
+</script>
+
+<div id='promptConfirmationDiv' class="modal fade" tabindex="-1" role="dialog">
+</div><!-- /.modal -->
+
+<script id="promptConfirmationTemplate" type="text/template" class="template">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Confirmation</h3>
+      </div>
+      <div class="modal-body">
+        <div class="wrapper">
+          <span>All unsaved changes will be lost. Do you want to continue?</span>
+        </div>
+      </div>
+      <div class="modal-footer" style="text-align: center">
+        <div>
+          <button id="promptConfirmationAccept" class="btn btn-default">Yes</button>
+          <button id="promptConfirmationCancel" class="btn btn-default">No</button>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div>
+</script>
+
+<div id='genomicDataExplorerDiv' class="modal fade" tabindex="-1" role="dialog">
+</div><!-- /.modal -->
+
+<script id="genomicDataExplorerTemplate" type="text/template" class="template">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Genomic Data Explorer</h3>
+      </div>
+      <div class="modal-body">
+        <div class="wrapper">
+          <div class="genomicDataContentDiv">
+          </div>
+          <!--<button id="load-genomic" class=" btn genomicLoadButton" >Load Genomic Data</button>-->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button id="save-genomic" class="btn btn-default" >Save</button>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div>
+</script>
+
+<div id='pathwayDetailsDiv' class="modal fade" tabindex="-1" role="dialog">
+</div><!-- /.modal -->
+
+<div id='gridOptionsDiv' class="modal fade" tabindex="-1" role="dialog">
+</div><!-- /.modal -->
+
+<div id='nodeResizeOptionsDiv' class="modal fade" tabindex="-1" role="dialog">
+</div><!-- /.modal -->
+
+<div id='cbioPortalAccessDiv' class="modal fade" tabindex="-1" role="dialog">
+  <div id="cbioPortalModal" class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Profile Data from cBioPortal </h3>
+      </div>
+      <div class="modal-body">
+        <div class="section">
+          <div id="cancerDropDown">
+          </div>
+        </div>
+        <div class="section">
+          <div id="dataTypeSelection">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button id="getProfileData" class="btn btn-default" >Load Data</button>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div>
+</div><!-- /.modal -->
+
+<script id="pathwayDetailsTemplate" type="text/template" class="template">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Pathway Properties</h3>
+      </div>
+      <div class="modal-body">
+        <form role="form" id="pathwayDetailsForm">
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="node-repulsion">File Name:</label>
+            <div class="col-sm-8">
+              <input class="form-control" value="<%= pathwayName %>" rows="1" id="pName">
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="pTitle">Pathway Title:</label>
+            <div class="col-sm-8">
+              <textarea class="form-control" rows="1" id="pTitle"><%= pathwayTitle %></textarea>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="control-label col-sm-4" for="pDesc">Pathway Description:</label>
+            <div class="col-sm-8">
+              <textarea class="form-control" rows="3" id="pDesc"><%= pathwayDescription %></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button id="savePathwayDetails" class="btn btn-default" >Save</button>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div>
+</script>
+
+<script id="gridOptionsTemplate" type="text/template" class="template">
+  <div class="modal-dialog gridModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Grid Options</h3>
+      </div>
+      <div class="modal-body">
+        <div class="modal-body">
+          <form role="form" id="gripOptionsForm">
+            <div class="input-group">
+              <label class="control-label col-sm-8" for="enableGrid">Enable Grid:</label>
+              <div class="col-sm-4 leftText">
+                <input id="enableGrid" type="checkbox" class="input-small layout-text" <% if (drawGrid){ %> checked<%}%>>
+              </div>
+            </div>
+            <div class="input-group">
+              <label class="control-label col-sm-8" for="enableGuides">Enable Guidelines:</label>
+              <div class="col-sm-4 leftText">
+                <input id="enableGuides" type="checkbox" class="input-small layout-text" <% if (geometricGuideline){ %> checked<%}%>>
+              </div>
+            </div>
+            <div class="input-group">
+              <label class="control-label col-sm-8" for="gridSize">Grid Size:</label>
+              <div class="col-sm-4">
+                <input id="gridSize" type="text" class="form-control" value=<%= gridSpacing %> >
+              </div>
+            </div>
+            <div class="input-group">
+              <label class="control-label col-sm-8" for="guidelineColor">Guideline Color:</label>
+              <div class="col-sm-4">
+                <input id="guidelineColor" type="color" class="form-control" value=<%= guidelinesStyle.strokeStyle %>>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button id="applyGridOptions" class="btn btn-default" > Save </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+
+<script id="nodeResizeOptionsTemplate" type="text/template" class="template">
+  <div class="modal-dialog nodeResizeModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Node Resize Options</h3>
+      </div>
+      <div class="modal-body">
+        <div class="modal-body">
+          <form role="form" id="nodeResizeOptionsForm">
+            <div class="input-group">
+              <h1><%= jsVariable %></h1>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button id="applyNodeResizeOptions" class="btn btn-default" > Save </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+<!---->
+<!--File input related html elements-->
+<!---->
+<div class="hiddenfile">
+  <form id="fileUploadForm" method="post">
+    <input type="file" id="fileinput" name="graphFile" />
+  </form>
+</div>
+
+<div class="hiddenfile">
+  <form method="post">
+    <input type="file" id="mergeInput" name="graphFile" />
+  </form>
+</div>
+
+<div class="hiddenfile">
+  <form method="post">
+    <input type="file" id="genomicDataInput" name="graphFile" />
+  </form>
+</div>
+
+<script>
+    function changeFocus(){
+        document.getElementById("findGeneArea").focus();
+    }
+</script>
+
+<!--Script Includes-->
+<!-- Google Real Time Scripts  -->
+<!-- Load the Realtime JavaScript library -->
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="lib/js/FileSaver.js" charset="utf-8"></script>
+
+<!--For debugging-->
+ <!-- <script src="bin/base.js"></script> -->
+<script src="bin/base.min.js"></script>
+
+<script src="lib/js/cytoscape-edgeHandles.js" charset="utf-8"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.js"></script>
+<script src="https://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>
+
+</body>
+</html>

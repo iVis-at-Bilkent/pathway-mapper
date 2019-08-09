@@ -1,0 +1,18 @@
+#pathwayDetailsDiv{
+  .modal,.modal-body
+  {
+    max-height: 100%;
+
+    .form-control:focus {
+      //border: 2px solid $menuHoverColor;
+      box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.075), 0 0 8px $menuHoverColor;
+      color: #2f4154;
+    }
+  }
+
+  .modal-footer{
+    button{
+      border: none !important;
+    }
+  }
+}

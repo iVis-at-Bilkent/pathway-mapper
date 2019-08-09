@@ -1,0 +1,33 @@
+[data-notify="container"][class*="alert-pathwayMapper-"]
+{
+  .close{
+    opacity: 1.0;
+    color: #FFFFFF;
+    margin-top: 7px;
+    outline: none;
+  }
+
+  .close:hover{
+    color: #FFFFFF;
+  }
+}
+
+[data-notify="container"].alert-pathwayMapper-success
+{
+    background-color: $menuHoverColor;
+      color: #FFFFFF;
+}
+
+[data-notify="container"].alert-pathwayMapper-fail
+{
+  background-color: #ff2644;
+  color: #FFFFFF;
+}
+
+//[data-notify="container"].alert-pastel-danger {
+//  border-left-color: rgb(255, 103, 76);
+//}
+
+[data-notify="container"][class*="alert-pathwayMapper-"] > [data-notify="message"] {
+  //font-weight: 400;
+}

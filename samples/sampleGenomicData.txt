@@ -2,8 +2,7 @@ gene	lung	ovarian	breast
 PTEN	-7	-20	10
 NF1	-12	-4	30
 PIK3CA	18	40	-50
-KRAS	11	-5	0
+MDM2	11	-5	0
 BRAF	0	-2	0
-AKT1	3	30	-10
-AKT2	6	-3	20
+TP53	3	30	-10
 
