@@ -9,7 +9,7 @@ interface IToolbarProps {
     queryParameter: any;
     oncoPrintTab: string;
     genes: any[];
-    isValidGene: (gene: string) => boolean;
+    validGenes: any;
     toast: any;
     pathwayGenes: string[];
 }

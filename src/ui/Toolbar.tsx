@@ -30,7 +30,7 @@ interface IToolbarProps {
   queryParameter: any;
   oncoPrintTab: string;
   genes: any[];
-  isValidGene: (gene: string) => boolean;
+  validGenes: any;
   toast: any;
   pathwayGenes: string[];
 }
@@ -67,8 +67,9 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
                                                           .filter((node: any) => node.data().type === "GENE")
                                                           .map((node: any) => node.data().name as string);
             const invalidGenes: string[] = [];
+
             this.selectedGenes.forEach((gene: string) => {
-              if(!this.props.isValidGene(gene)){
+              if(!this.props.validGenes.hasOwnProperty(gene)){
                 invalidGenes.push(gene);
               }
             });
@@ -86,7 +87,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Add all valid genes to query" data-place="right" data-effect="solid" src={addAllImage} onClick={() => {
 
             this.selectedGenes = this.props.pathwayGenes.filter((gene: string) => {
-              return this.props.isValidGene(gene);
+              return this.props.validGenes.hasOwnProperty(gene);
             });
             
             if(this.selectedGenes.length > 0){

@@ -55,7 +55,7 @@ interface IPathwayMapperProps{
   changePathwayHandler?: Function;
   addGenomicDataHandler?: (addGenomicData: (alterationData: ICBioData[]) => void) => void;
   tableComponent?: any;
-  isValidGene?: (gene: string) => boolean;
+  validGenes?: any;
   toast: any;
 }
 
@@ -438,7 +438,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <Col xs={2} style={{}}>
               <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}
                 genes={this.props.genes} handleOpen={this.handleOpen} queryParameter={this.props.queryParameter}
-                oncoPrintTab={this.props.oncoPrintTab} isValidGene={this.props.isValidGene}
+                oncoPrintTab={this.props.oncoPrintTab} validGenes={this.props.validGenes}
                 toast={this.props.toast} pathwayGenes={Object.keys(this.pathwayGeneMap[this.selectedPathway])}/>
             </Col>
             <Col xs={7} style={{paddingLeft: "0px", marginTop: "17px", textAlign: "right", paddingRight: "35px"}}>

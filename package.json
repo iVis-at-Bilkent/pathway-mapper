@@ -5,7 +5,7 @@
   "keywords": [],
   "main": "dist/react-pathway-mapper.es5.js",
   "module": "dist/react-pathway-mapper.es5.js",
-  "typings": "build/react-pathway-mapper.d.ts",
+  "typings": "build/ui/react-pathway-mapper.d.ts",
   "files": [
     "dist",
     "build"

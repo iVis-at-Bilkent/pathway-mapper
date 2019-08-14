@@ -33,7 +33,7 @@ window.onload = () => {
   function postWelcome(isCollaborative){
     const cBioAlteration = [/*{gene: "MDM2", altered: 5, sequenced: 6}*/];
     if(!pathwayName){
-      render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={placeHolderGenes} cBioAlterationData={cBioAlteration}/>, rootEl);
+      render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative}/>, rootEl);
     } else {
       render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={genes} pathwayName={pathwayName} alterationData={alterationData}/>, rootEl);
     }

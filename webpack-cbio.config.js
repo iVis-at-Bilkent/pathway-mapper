@@ -9,7 +9,7 @@ const modules = path.join(root, 'node_modules');
 
 module.exports = {
   devtool: 'source-map',
-  entry: "./src/react-pathway-mapper.tsx",
+  entry: "./src/ui/react-pathway-mapper.tsx",
   output: {
     path: path.join(__dirname, "/dist"),
     filename: "react-pathway-mapper.es5.js",
