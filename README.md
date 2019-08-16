@@ -94,6 +94,15 @@ After tool runs, all of your changes on src folder will be reflected to tool tha
 
 Please note that the app runs on the port 3000 by default. To change the port follow the same steps in previous section.
 
+### Sample TCGA Pathways
+
+A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) studies and those resulting from TCGA PanCanAtlas Project are available under Network > TCGA menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
+<p align="center">
+  <img src="assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="440"/>
+</p>
+
+The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
+
 ### Adding Genes and Interactions
 
 PathwayMapper allows creation of following node types:
@@ -138,16 +147,11 @@ One can associate any number of PubMed IDs with an interaction by simply double-
   <img src="assets/sample-PubMed-IDs.png" width="340"/>
 </p>
 
-### Sample TCGA Pathways
+### Editing Pathways
 
-A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) studies and those resulting from TCGA PanCanAtlas Project are available under Network > TCGA menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
-<p align="center">
-  <img src="assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="440"/>
-</p>
+#### Editing and Aligning Nodes
 
-The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
-
-### Aligning Nodes
+ToDo
 
 Alignment guidelines help us align nodes manually in a vertical or horizontal manner. Alternatively, one may select two or more nodes and align using View > Align Selected menu item. Alignment is performed with respect to the firstly selected node.
 
@@ -161,7 +165,11 @@ After alignment:
   <img src="assets/align-after.png" width="300"/>
 </p>
 
-### Performing Automatic Layout
+#### Editing and Reconnecting Interactions
+
+ToDo
+
+#### Performing Automatic Layout
 
 At any point, the user may want to rearrange the layout of the pathway. By default, automatic layout is performed incrementally, starting with the current positions of nodes. If you'd rather perform a static layout from scratch, you may check the Incremental option under Layout > Layout Properties.
 
@@ -175,7 +183,17 @@ The same pathway after automatic layout:
   <img src="assets/layout-after.png" width="360"/>
 </p>
 
-### Exporting To / Importing From A Text File
+#### Hide and Show
+
+ToDo
+
+#### Highlight
+
+ToDo
+
+### Export and Import
+
+#### Exporting To / Importing From A Text File
 
 The user may persist the current pathway onto the disk and import it back later on. Pathway content is organized as follows in a tab-delimited text file:
 ```
@@ -195,7 +213,7 @@ PTEN-PIK3CA	PTEN	PIK3CA	INHIBITS
 
 Here the first line contains the pathway title followed by a single empty line. Then comes a description of the pathway, again followed by a single empty line. After that comes nodes with properties name, ID, type, parent ID, x, and y positions, where parent ID and location information are optional. This is succeeded with a single empty line, followed by edges with properties ID, source ID, target ID, and type.
 
-### Exporting As Image
+#### Exporting As Image
 
 The user may export the current pathway as a static image (JPG and PNG) or in scalable vector graphics (SVG).
 
