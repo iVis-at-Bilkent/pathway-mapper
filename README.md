@@ -10,6 +10,7 @@ Bahceci et al. (2017) "[PathwayMapper: a collaborative visual web editor for can
 
 #### Feedback
 Send any feedback and error reports to at pathwaymapper@gmail.com.
+
 ## Software
 
 PathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).
@@ -94,7 +95,7 @@ After tool runs, all of your changes on src folder will be reflected to tool tha
 
 Please note that the app runs on the port 3000 by default. To change the port follow the same steps in previous section.
 
-### Sample TCGA Pathways
+## Sample TCGA Pathways
 
 A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) studies and those resulting from TCGA PanCanAtlas Project are available under Network > TCGA menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
 <p align="center">
@@ -103,7 +104,7 @@ A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) stud
 
 The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
 
-### Adding Genes and Interactions
+## Adding Genes and Interactions
 
 PathwayMapper allows creation of following node types:
 - Gene
@@ -126,30 +127,30 @@ Below is a screenshot showing a sample pathway constructed with PathwayMapper:
   <img src="assets/sample-pathway.png" width="320"/>
 </p>
 
-#### Validating Gene Symbols
+### Validating Gene Symbols
 
 Gene symbols may be checked for validity using [cBioPortal's web service](http://www.cbioportal.org/beta/api/swagger-ui.html#!/Genes/getAllGenesUsingGET). Below is a screenshot showing genes with invalid labels in red borders:
 <p align="center">
   <img src="assets/sample-invalid-genes.png" width="500"/>
 </p>
 
-#### Inspecting Gene Properties
+### Inspecting Gene Properties
 
 Assuming a gene symbol is valid, you may inspect its properties from [EntrezGene]() by simply double-clicking on that gene to pop-up an inspector window and pressing the button "Entrez Gene":
 <p align="center">
   <img src="assets/sample-EntrezGene-properties.png" width="320"/>
 </p>
 
-#### Associating PubMed IDs with Interactions
+### Associating PubMed IDs with Interactions
 
 One can associate any number of PubMed IDs with an interaction by simply double-clicking on that interaction and entering the PubMed IDs. These IDs have hyperlinks to the associated PubMed web page:
 <p align="center">
   <img src="assets/sample-PubMed-IDs.png" width="340"/>
 </p>
 
-### Editing Pathways
+## Editing Pathways
 
-#### Editing and Aligning Nodes
+### Editing and Aligning Nodes
 
 ToDo
 
@@ -165,11 +166,11 @@ After alignment:
   <img src="assets/align-after.png" width="300"/>
 </p>
 
-#### Editing and Reconnecting Interactions
+### Editing and Reconnecting Interactions
 
 ToDo
 
-#### Performing Automatic Layout
+### Performing Automatic Layout
 
 At any point, the user may want to rearrange the layout of the pathway. By default, automatic layout is performed incrementally, starting with the current positions of nodes. If you'd rather perform a static layout from scratch, you may check the Incremental option under Layout > Layout Properties.
 
@@ -183,17 +184,17 @@ The same pathway after automatic layout:
   <img src="assets/layout-after.png" width="360"/>
 </p>
 
-#### Hide and Show
+### Hide and Show
 
 ToDo
 
-#### Highlight
+### Highlight
 
 ToDo
 
-### Export and Import
+## Export and Import
 
-#### Exporting To / Importing From A Text File
+### Exporting To / Importing From A Text File
 
 The user may persist the current pathway onto the disk and import it back later on. Pathway content is organized as follows in a tab-delimited text file:
 ```
@@ -213,11 +214,11 @@ PTEN-PIK3CA	PTEN	PIK3CA	INHIBITS
 
 Here the first line contains the pathway title followed by a single empty line. Then comes a description of the pathway, again followed by a single empty line. After that comes nodes with properties name, ID, type, parent ID, x, and y positions, where parent ID and location information are optional. This is succeeded with a single empty line, followed by edges with properties ID, source ID, target ID, and type.
 
-#### Exporting As Image
+### Exporting As Image
 
 The user may export the current pathway as a static image (JPG and PNG) or in scalable vector graphics (SVG).
 
-### Viewing Experiment Data
+## Viewing Experiment Data
 
 At any point during pathway editing, the user may upload and overlay an associated experimental data set from a text file.
 
@@ -246,7 +247,7 @@ The user may also fetch alteration frequencies available on cBioPortal database 
   <img src="assets/sample-from-cbioportal.png" width="350"/>
 </p>
 
-### Collaborative Editing
+## Collaborative Editing
 
 Should you choose "Collaborative" on the welcome page, you will be first prompted for Google account authentication since the shared data model will be stored in a shared document at Google Drive folder of the user. Then your editing session will be given a unique ID and you will have the option of sharing the URL containing this ID with desired person(s) and construct / edit a pathways in real time with support for concurrent modifications and built-in conflict resolution.
 
