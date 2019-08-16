@@ -122,6 +122,8 @@ and following interaction types:
 
 To create a node, drag and drop it from the Node Palette. Similarly, to create an interaction, first select an interaction type from the Interaction Palette. Then, click on the green circle on top of the source node and drag it to the target node.
 
+To add a node inside a compound node, you may directly drag it from the palette to the parent compound node. Alternatively, you may select the node(s) and then right click on the compound to which you'd like to add the node and choose Add Selected Into This.
+
 Below is a screenshot showing a sample pathway constructed with PathwayMapper:
 <p align="center">
   <img src="assets/sample-pathway.png" width="320"/>
@@ -152,7 +154,9 @@ One can associate any number of PubMed IDs with an interaction by simply double-
 
 ### Editing and Aligning Nodes
 
-ToDo
+Node locations may be adjusted manually by clicking on / selecting and dragging them. Multiple nodes may be selected by either using Shift + click or by Shift and box selection.
+
+Nodes may be resized manually using the resize handles that appear on the edge of the node borders upon selection. Alternatively, the visual cue that appear toward the lower right corner of a node may be clicked to resize it to content (label and experiment data). All nodes may be simulatenously resized to their content via Edit > Resize Nodes to Content.
 
 Alignment guidelines help us align nodes manually in a vertical or horizontal manner. Alternatively, one may select two or more nodes and align using View > Align Selected menu item. Alignment is performed with respect to the firstly selected node.
 
@@ -168,7 +172,9 @@ After alignment:
 
 ### Editing and Reconnecting Interactions
 
-ToDo
+Interactions may be routed through additional bend points. To introduce a new bendpoint, first select the interaction by clicking on it, and then click and drag at a location where you'd like to introduce a bendpoint. Bendpoints may be moved by clicking on them and drag them. In order to remove a bendpoint, move it to a location where it becomes almost unnecessary (it falls onto a straight line).
+
+One may also reconnect an interaction through its reconnection handles that appear when the edge is selected. Simply click on the reconnection handle close to the source / target that you'd like to change and drag it onto the new source / target.
 
 ### Performing Automatic Layout
 
@@ -186,11 +192,19 @@ The same pathway after automatic layout:
 
 ### Hide and Show
 
-ToDo
+Certain parts of a pathway may be temporarily removed by selecting and choosing View > Hide Selected Nodes. Nodes hidden in this way may be collectively brought back into the view using View > Show All Nodes.
 
 ### Highlight
 
-ToDo
+Nodes and interactions may be highlighted to draw attention to certain paths or sub-pathways by simply selecting them and applying Highlight > Highlight Selected. 
+
+One may use Highlight > Identify Invalid Genes to highlight all genes with symbols that are not valid. 
+
+All such highlights can be removed at once by issuing Highlight > Remove All Highlights.
+
+### Undo / Redo
+
+All editing operations explained earlier may be undone and redone if needed using Edit > Undo or Redo. Undo, however, is not available in Collaborative mode (see below).
 
 ## Export and Import
 
