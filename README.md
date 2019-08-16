@@ -2,11 +2,11 @@
 
 PathwayMapper is a web based pathway curation tool for interactive creation, editing, and sharing of cancer pathways. The tool supports remote users to collaborate and concurrently modify pathways using [ShareDB](https://github.com/share/sharedb) with built-in conflict resolution implemented as a [ReactJS](https://reactjs.org/) component.
 <p align="center">
-  <img src="assets/sample-screenshot.png" width="440"/>
+  <img src="assets/sample-screenshot.png" width="600"/>
 </p>
 
 #### How to Cite Usage
-[Bahceci et al. (2017) "PathwayMapper: a collaborative visual web editor for cancer pathways and genomic data", Bioinformatics](https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btx149).
+Bahceci et al. (2017) "[PathwayMapper: a collaborative visual web editor for cancer pathways and genomic data](https://doi.org/10.1093/bioinformatics/btx149)", Bioinformatics.
 
 #### Feedback
 Send any feedback and error reports to at pathwaymapper@gmail.com.
@@ -14,7 +14,7 @@ Send any feedback and error reports to at pathwaymapper@gmail.com.
 
 PathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).
 
-It uses the libraries [Cytoscape.js](http://js.cytoscape.org), node.js, and backbone.js, and [cBioPortal API](http://www.cbioportal.org/api-legacy/swagger-ui.html). 
+It uses many third party libraries mainly including [Cytoscape.js](http://js.cytoscape.org) and many of its extensions, React, Node.js, and Backbone.js, and [cBioPortal API](http://www.cbioportal.org/api-legacy/swagger-ui.html). For a complete list, please refer to [this file](package.json).
 
 A sample deployment can be found [here](http://pathwaymapper.org).
 
@@ -239,6 +239,6 @@ Any changes made by any person working on the pathway with the same URL will be 
 
   * [Ziya Erkoc](https://github.com/Rgtemze), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and Konnor C. La, [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [The Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
 
-### Alumni
+#### Alumni
 
   * [Kaan Sancak](https://github.com/kaansancak), [Leonard Dervishi](https://github.com/leonarddrv), and [Istemi Bahceci](https://github.com/istemi-bahceci)
