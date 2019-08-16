@@ -2,7 +2,7 @@
 
 PathwayMapper is a web based pathway curation tool for interactive creation, editing, and sharing of cancer pathways. The tool supports remote users to collaborate and concurrently modify pathways using [ShareDB](https://github.com/share/sharedb) with built-in conflict resolution implemented as a [ReactJS](https://reactjs.org/) component.
 <p align="center">
-  <img src="public/assets/sample-screenshot.png" width="440"/>
+  <img src="assets/sample-screenshot.png" width="440"/>
 </p>
 
 #### How to Cite Usage
@@ -114,35 +114,35 @@ To create a node, drag and drop it from the Node Palette. Similarly, to create a
 
 Below is a screenshot showing a sample pathway constructed with PathwayMapper:
 <p align="center">
-  <img src="public/assets/sample-pathway.png" width="320"/>
+  <img src="assets/sample-pathway.png" width="320"/>
 </p>
 
 #### Validating Gene Symbols
 
 Gene symbols may be checked for validity using [cBioPortal's web service](http://www.cbioportal.org/beta/api/swagger-ui.html#!/Genes/getAllGenesUsingGET). Below is a screenshot showing genes with invalid labels in red borders:
 <p align="center">
-  <img src="public/assets/sample-invalid-genes.png" width="500"/>
+  <img src="assets/sample-invalid-genes.png" width="500"/>
 </p>
 
 #### Inspecting Gene Properties
 
 Assuming a gene symbol is valid, you may inspect its properties from [EntrezGene]() by simply double-clicking on that gene to pop-up an inspector window and pressing the button "Entrez Gene":
 <p align="center">
-  <img src="public/assets/sample-EntrezGene-properties.png" width="320"/>
+  <img src="assets/sample-EntrezGene-properties.png" width="320"/>
 </p>
 
 #### Associating PubMed IDs with Interactions
 
 One can associate any number of PubMed IDs with an interaction by simply double-clicking on that interaction and entering the PubMed IDs. These IDs have hyperlinks to the associated PubMed web page:
 <p align="center">
-  <img src="public/assets/sample-PubMed-IDs.png" width="340"/>
+  <img src="assets/sample-PubMed-IDs.png" width="340"/>
 </p>
 
 ### Sample TCGA Pathways
 
 A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) studies and those resulting from TCGA PanCanAtlas Project are available under Network > TCGA menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
 <p align="center">
-  <img src="public/assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="440"/>
+  <img src="assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="440"/>
 </p>
 
 The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
@@ -153,12 +153,12 @@ Alignment guidelines help us align nodes manually in a vertical or horizontal ma
 
 Before vertical center alignment of four nodes with respect to the firstly selected gene KRAS:
 <p align="center">
-  <img src="public/assets/align-before.png" width="300"/>
+  <img src="assets/align-before.png" width="300"/>
 </p>
 
 After alignment:
 <p align="center">
-  <img src="public/assets/align-after.png" width="300"/>
+  <img src="assets/align-after.png" width="300"/>
 </p>
 
 ### Performing Automatic Layout
@@ -167,12 +167,12 @@ At any point, the user may want to rearrange the layout of the pathway. By defau
 
 A pathway randomly laid out:
 <p align="center">
-  <img src="public/assets/layout-before.png" width="360"/>
+  <img src="assets/layout-before.png" width="360"/>
 </p>
 
 The same pathway after automatic layout:
 <p align="center">
-  <img src="public/assets/layout-after.png" width="360"/>
+  <img src="assets/layout-after.png" width="360"/>
 </p>
 
 ### Exporting To / Importing From A Text File
@@ -215,17 +215,17 @@ Here positive value signify activation percentage and are shown with a white-red
 
 Below is a screenshot showing sample experiment data overlaid on our sample data:
 <p align="center">
-  <img src="public/assets/sample-data.png" width="400"/>
+  <img src="assets/sample-data.png" width="400"/>
 </p>
 
 When the user unchecks the experiment data for "lung" through Alteration % > Data View Settings (first of the set of three), we get:
 <p align="center">
-  <img src="public/assets/sample-data-no-lung.png" width="400"/>
+  <img src="assets/sample-data-no-lung.png" width="400"/>
 </p>
 
 The user may also fetch alteration frequencies available on cBioPortal database through Alteration % > Load from cBioPortal... dialog. The dialog will let the user select a cancer study followed by data type(s) available for that studey in the database, and overlay the related data set(s) on the pathway in addition to any currently available data set.
 <p align="center">
-  <img src="public/assets/sample-from-cbioportal.png" width="350"/>
+  <img src="assets/sample-from-cbioportal.png" width="350"/>
 </p>
 
 ### Collaborative Editing
@@ -233,7 +233,7 @@ The user may also fetch alteration frequencies available on cBioPortal database 
 Should you choose "Collaborative" on the welcome page, you will be first prompted for Google account authentication since the shared data model will be stored in a shared document at Google Drive folder of the user. Then your editing session will be given a unique ID and you will have the option of sharing the URL containing this ID with desired person(s) and construct / edit a pathways in real time with support for concurrent modifications and built-in conflict resolution.
 
 Any changes made by any person working on the pathway with the same URL will be shared / reflected to other people currently viweing / editing the same pathway. Below is a short video illustrating collaborative usage: 
-<a href="https://www.youtube.com/watch?v=pKITXqbDyOc&feature=youtu.be" target="_blank"><p align="center"><img src="public/assets/collaboration-with-PM.png" width="460" title="Click to watch video"/></p></a>
+<a href="https://www.youtube.com/watch?v=pKITXqbDyOc&feature=youtu.be" target="_blank"><p align="center"><img src="assets/collaboration-with-PM.png" width="460" title="Click to watch video"/></p></a>
 
 ## Team
 
@@ -241,4 +241,4 @@ Any changes made by any person working on the pathway with the same URL will be 
 
 ### Alumni
 
-  * [Istemi Bahceci](https://github.com/istemi-bahceci), [Leonard Dervishi](https://github.com/leonarddrv), [Kaan Sancak](https://github.com/kaansancak)
+  * [Kaan Sancak](https://github.com/kaansancak), [Leonard Dervishi](https://github.com/leonarddrv), and [Istemi Bahceci](https://github.com/istemi-bahceci)
