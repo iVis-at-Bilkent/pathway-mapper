@@ -58,9 +58,6 @@ const DEFAULT_PORT = 3000;
 #### Running an instance on Heroku (free)
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-#### Running an instance on Heroku (free)
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
 #### Running Tool in Development Mode
 Running the tool in development mode does not require any changes.
 
