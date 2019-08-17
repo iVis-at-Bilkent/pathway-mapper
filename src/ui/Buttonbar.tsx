@@ -142,8 +142,8 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
 
         
         return (
-            <Navbar style={{backgroundColor: "#eff0f2" }} className="pathway-toolbar">
-                <Nav style={{marginTop: "8px"}}>
+            <Navbar style={{backgroundColor: "#eff0f2", minHeight: "36px" }} className="pathway-toolbar">
+                <Nav>
                     <ButtonToolbar className="toolbar pathway-toolbar">
                         {   allFunctions.map((functions) =>
                         <ButtonGroup>
@@ -157,7 +157,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                         }
                     </ButtonToolbar>
                 </Nav>
-                <Nav pullRight style={{marginTop: "8px"}} className="toolbar">
+                <Nav pullRight style={{marginTop: "0", marginBottom: "0"}} className="toolbar">
                     <ButtonGroup id="searchGeneToolbar">
                         <FormGroup>
                             <FormGroup className="has-feedback">
