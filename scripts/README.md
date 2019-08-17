@@ -1,0 +1,1 @@
+These scripts are used to compile all of the txt files in the samples folder into a json file.
