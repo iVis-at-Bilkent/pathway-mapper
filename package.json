@@ -15,7 +15,7 @@
     "type": "git",
     "url": ""
   },
-  "license": "MIT",
+  "license": "GNU AGPL",
   "engines": {
     "yarn": "1.13.0"
   },

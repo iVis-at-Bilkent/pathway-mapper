@@ -36,23 +36,23 @@ Firstly, clone PathwayMapper to your local machine, and navigate to the local re
 ```
 git clone https://github.com/iVis-at-Bilkent/pathway-mapper.git
 cd patway-mapper
-npm install
+yarn install
 ```
 
 - Running the tool
 ```
-npm start
+yarn start
 ```
 
 
 Please note that the app runs on port 3000 by default. To change the port, set the port environment variable before running npm start:
 ```
 export PORT=3000
-npm start
+yarn start
 ```
-Windows users need to change the associated variable in app.js file:
+Windows users need to change the associated variable in server.js file:
 ```
-var DEFAULT_PORT=3000
+const DEFAULT_PORT = 3000;
 ```
 
 #### Running an instance on Heroku (free)
@@ -61,35 +61,16 @@ var DEFAULT_PORT=3000
 #### Running an instance on Heroku (free)
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-#### Running Tool in Developement Mode
-In order to run a local instance of the tool in developement mode, please follow the steps below:
+#### Running Tool in Development Mode
+Running the tool in development mode does not require any changes.
 
-Firstly navigate to PathwayMapper repository. In index.html file uncomment the line with base.css and comment the line with base.min.css:
-```
-  <!--For debugging-->
-  <!--<link rel="stylesheet" href="bin/base.css" charset="utf-8">-->
-  <link rel="stylesheet" href="bin/base.min.css" charset="utf-8">
-```
-
-Similarly do the same for base.js and base.min.js file:
-```
-<!--For debugging-->
-<!--<script src="bin/base.js"></script>-->
-<script src="bin/base.min.js"></script>
-```
-
-Some additional npm dependencies are needed in developement mode:
+Just make sure that after you made your changes, execute the below command to start build process:
 
 ```
-sudo npm install nodemon -g
-sudo npm install browserify -g
-sudo npm install node-sass -g
+yarn build
 ```
 
-After that run the tool with the following command:
-```
-sudo npm run debug-build
-```
+Then, it can be run using `yarn start`.
 
 After tool runs, all of your changes on src folder will be reflected to tool that runs without need of re-deploying it. 
 
