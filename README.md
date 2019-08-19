@@ -33,7 +33,7 @@ Firstly, clone PathwayMapper to your local machine, and navigate to the local re
 - Installation
 ```
 git clone https://github.com/iVis-at-Bilkent/pathway-mapper.git
-cd patway-mapper
+cd pathway-mapper
 yarn install
 ```
 
@@ -41,7 +41,6 @@ yarn install
 ```
 yarn start
 ```
-
 
 Please note that the app runs on port 3000 by default. To change the port, set the port environment variable before running npm start:
 ```
