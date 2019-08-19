@@ -15,8 +15,6 @@ Send any feedback and error reports to at pathwaymapper@gmail.com.
 
 PathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).
 
-It uses many third party libraries mainly including [Cytoscape.js](http://js.cytoscape.org) and many of its extensions, React, Node.js, and Backbone.js, and [cBioPortal API](http://www.cbioportal.org/api-legacy/swagger-ui.html). For a complete list, please refer to [this file](package.json).
-
 A sample deployment can be found [here](http://pathwaymapper.org).
 
 <!---
@@ -245,6 +243,20 @@ Should you choose "Collaborative" on the welcome page, you will be first prompte
 
 Any changes made by any person working on the pathway with the same URL will be shared / reflected to other people currently viweing / editing the same pathway. Below is a short video illustrating collaborative usage: 
 <a href="https://www.youtube.com/watch?v=pKITXqbDyOc&feature=youtu.be" target="_blank"><p align="center"><img src="assets/collaboration-with-PM.png" width="460" title="Click to watch video"/></p></a>
+
+## Credits
+
+PathwayMapper uses many third party libraries mainly including [Cytoscape.js](http://js.cytoscape.org) and many of its extensions, [React](https://reactjs.org/), [Node.js](https://nodejs.org/), and [Backbone.js](http://backbonejs.org), and [cBioPortal API](http://www.cbioportal.org/api-legacy/swagger-ui.html) licensed under BSD-2-Clause, BSD-3-Clause, ISC, Apache-2.0 or MIT. For a complete list, please refer to [this file](package.json).
+
+Icons made by [Freepik](http://www.freepik.com), 
+[Daniel Bruce](http://www.flaticon.com/authors/daniel-bruce), 
+[TutsPlus](http://www.flaticon.com/authors/tutsplus),
+[Robin Kylander](http://www.flaticon.com/authors/robin-kylander),
+[Catalin Fertu](http://www.flaticon.com/authors/catalin-fertu),
+[Yannick](http://www.flaticon.com/authors/yannick),
+[Icon Works](http://www.flaticon.com/authors/icon-works),
+[Flaticon](http://www.flaticon.com) and licensed with 
+[Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0/)
 
 ## Team
 
