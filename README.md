@@ -67,8 +67,6 @@ yarn build
 
 Then, it can be run using `yarn start`.
 
-After tool runs, all of your changes on src folder will be reflected to tool that runs without need of re-deploying it. 
-
 Please note that the app runs on the port 3000 by default. To change the port follow the same steps in previous section.
 
 ## Sample TCGA Pathways
