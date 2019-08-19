@@ -39,7 +39,7 @@ export default class AboutModal extends React.Component<IAboutModalProps, {}> {
                   <img src={require("../images/about/i-vis.png")} alt="" height="25px"/>
                 </div>
                 <div className="aboutImageContent">
-                  <img src={require("../images/about/mskcc.png")} alt="" height="30px"/>
+                  <img src={require("../images/about/mskcc.png")} alt="" height="34px"/>
                 </div>
                 <div className="adressText">
                   <p>i-Vis information Visualization Lab</p>
