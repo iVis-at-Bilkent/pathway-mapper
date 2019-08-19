@@ -98,7 +98,7 @@ and following interaction types:
 
 To create a node, drag and drop it from the Node Palette. Similarly, to create an interaction, first select an interaction type from the Interaction Palette. Then, click on the green circle on top of the source node and drag it to the target node.
 
-To add a node inside a compound node, you may directly drag it from the palette to the parent compound node. Alternatively, you may select the node(s) and then right click on the compound to which you'd like to add the node and choose Add Selected Into This.
+To add a node inside a compound node, you may directly drag it from the palette onto the parent compound node. Alternatively, you may select the node(s) and then right click on the compound to which you'd like to add the node and choose Add Selected Into This.
 
 Below is a screenshot showing a sample pathway constructed with PathwayMapper:
 <p align="center">
@@ -107,7 +107,7 @@ Below is a screenshot showing a sample pathway constructed with PathwayMapper:
 
 ### Validating Gene Symbols
 
-Gene symbols may be checked for validity using [cBioPortal's web service](http://www.cbioportal.org/beta/api/swagger-ui.html#!/Genes/getAllGenesUsingGET). Below is a screenshot showing genes with invalid labels in red borders:
+Gene symbols may be checked for validity using [cBioPortal's web service](https://www.cbioportal.org/api/genes/fetch). Below is a screenshot showing genes with invalid labels in red borders:
 <p align="center">
   <img src="assets/sample-invalid-genes.png" width="500"/>
 </p>
@@ -246,7 +246,7 @@ Any changes made by any person working on the pathway with the same URL will be 
 
 ## Credits
 
-PathwayMapper uses many third party libraries mainly including [Cytoscape.js](http://js.cytoscape.org) and many of its extensions, [React](https://reactjs.org/), [Node.js](https://nodejs.org/), and [Backbone.js](http://backbonejs.org), and [cBioPortal API](http://www.cbioportal.org/api-legacy/swagger-ui.html) licensed under BSD-2-Clause, BSD-3-Clause, ISC, Apache-2.0 or MIT. For a complete list, please refer to [this file](package.json).
+PathwayMapper uses many third party libraries mainly including [Cytoscape.js](http://js.cytoscape.org) and many of its extensions, [React](https://reactjs.org/), [Node.js](https://nodejs.org/), and [Backbone.js](http://backbonejs.org), and [cBioPortal API](https://www.cbioportal.org/webAPI) licensed under BSD-2-Clause, BSD-3-Clause, ISC, Apache-2.0 or MIT. For a complete list, please refer to [this file](package.json).
 
 Icons made by [Freepik](http://www.freepik.com), 
 [Daniel Bruce](http://www.flaticon.com/authors/daniel-bruce), 
