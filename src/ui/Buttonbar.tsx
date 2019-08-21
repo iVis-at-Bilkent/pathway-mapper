@@ -142,9 +142,9 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
 
         
         return (
-            <Navbar style={{backgroundColor: "#eff0f2", minHeight: "36px" }} className="pathway-toolbar">
+            <Navbar style={{backgroundColor: "#eff0f2", minHeight: "36px"}} className="pathway-toolbar">
                 <Nav>
-                    <ButtonToolbar className="toolbar pathway-toolbar">
+                    <ButtonToolbar style={{paddingBottom: 0, paddingTop: "7px" }} className="toolbar pathway-toolbar">
                         {   allFunctions.map((functions) =>
                         <ButtonGroup>
                             { functions.map((svg: ISVGFunction) => 

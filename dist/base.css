@@ -1459,4 +1459,8 @@ width: 550px !important;
 .pathwayMapper .cytoscape-navigator-wrapper {
 transform: scale(0.86);
 }
+
+.pathwayMapper .pathway-toolbar.navbar{
+    border-radius: 6px;
+}
 /*# sourceMappingURL=base.css.map*/
