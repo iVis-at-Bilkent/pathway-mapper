@@ -15,8 +15,6 @@ Send any feedback and error reports to at pathwaymapper@gmail.com.
 
 PathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).
 
-It uses many third party libraries mainly including [Cytoscape.js](http://js.cytoscape.org) and many of its extensions, React, Node.js, and Backbone.js, and [cBioPortal API](http://www.cbioportal.org/api-legacy/swagger-ui.html). For a complete list, please refer to [this file](package.json).
-
 A sample deployment can be found [here](http://pathwaymapper.org).
 
 <!---
@@ -35,7 +33,7 @@ Firstly, clone PathwayMapper to your local machine, and navigate to the local re
 - Installation
 ```
 git clone https://github.com/iVis-at-Bilkent/pathway-mapper.git
-cd patway-mapper
+cd pathway-mapper
 yarn install
 ```
 
@@ -43,7 +41,6 @@ yarn install
 ```
 yarn start
 ```
-
 
 Please note that the app runs on port 3000 by default. To change the port, set the port environment variable before running npm start:
 ```
@@ -68,8 +65,6 @@ yarn build
 ```
 
 Then, it can be run using `yarn start`.
-
-After tool runs, all of your changes on src folder will be reflected to tool that runs without need of re-deploying it. 
 
 Please note that the app runs on the port 3000 by default. To change the port follow the same steps in previous section.
 
@@ -100,7 +95,7 @@ and following interaction types:
 
 To create a node, drag and drop it from the Node Palette. Similarly, to create an interaction, first select an interaction type from the Interaction Palette. Then, click on the green circle on top of the source node and drag it to the target node.
 
-To add a node inside a compound node, you may directly drag it from the palette to the parent compound node. Alternatively, you may select the node(s) and then right click on the compound to which you'd like to add the node and choose Add Selected Into This.
+To add a node inside a compound node, you may directly drag it from the palette onto the parent compound node. Alternatively, you may select the node(s) and then right click on the compound to which you'd like to add the node and choose Add Selected Into This.
 
 Below is a screenshot showing a sample pathway constructed with PathwayMapper:
 <p align="center">
@@ -109,7 +104,7 @@ Below is a screenshot showing a sample pathway constructed with PathwayMapper:
 
 ### Validating Gene Symbols
 
-Gene symbols may be checked for validity using [cBioPortal's web service](http://www.cbioportal.org/beta/api/swagger-ui.html#!/Genes/getAllGenesUsingGET). Below is a screenshot showing genes with invalid labels in red borders:
+Gene symbols may be checked for validity using [cBioPortal's web service](https://www.cbioportal.org/api/genes/fetch). Below is a screenshot showing genes with invalid labels in red borders:
 <p align="center">
   <img src="assets/sample-invalid-genes.png" width="500"/>
 </p>
@@ -245,6 +240,20 @@ Should you choose "Collaborative" on the welcome page, you will be first prompte
 
 Any changes made by any person working on the pathway with the same URL will be shared / reflected to other people currently viweing / editing the same pathway. Below is a short video illustrating collaborative usage: 
 <a href="https://www.youtube.com/watch?v=pKITXqbDyOc&feature=youtu.be" target="_blank"><p align="center"><img src="assets/collaboration-with-PM.png" width="460" title="Click to watch video"/></p></a>
+
+## Credits
+
+PathwayMapper uses many third party libraries mainly including [Cytoscape.js](http://js.cytoscape.org) and many of its extensions, [React](https://reactjs.org/), [Node.js](https://nodejs.org/), and [Backbone.js](http://backbonejs.org), and [cBioPortal API](https://www.cbioportal.org/webAPI) licensed under BSD-2-Clause, BSD-3-Clause, ISC, Apache-2.0 or MIT. For a complete list, please refer to [this file](package.json).
+
+Icons made by [Freepik](http://www.freepik.com), 
+[Daniel Bruce](http://www.flaticon.com/authors/daniel-bruce), 
+[TutsPlus](http://www.flaticon.com/authors/tutsplus),
+[Robin Kylander](http://www.flaticon.com/authors/robin-kylander),
+[Catalin Fertu](http://www.flaticon.com/authors/catalin-fertu),
+[Yannick](http://www.flaticon.com/authors/yannick),
+[Icon Works](http://www.flaticon.com/authors/icon-works),
+[Flaticon](http://www.flaticon.com) and licensed with 
+[Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0/)
 
 ## Team
 

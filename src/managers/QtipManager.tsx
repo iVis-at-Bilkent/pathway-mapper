@@ -146,46 +146,16 @@ export default class QtipManager{
 
     if (ele.data().type === "GENE")
     {
-      var entrezGeneButton = $('<div class="row centerText geneDetails"><button nodeid="' + ele.id() + '" type="button" class="btn btn-default">Entrez Gene</button></div>');
+      var entrezGeneButton = $('<div class="row centerText geneDetails"><button nodeid="' + ele.id() + '" type="button" class="btn btn-default">My Cancer Genome</button></div>');
       entrezGeneButton.find('button').on('click', function(event)
       {
         event.preventDefault();
         var nodeID = $(this).attr('nodeid');
         var nodeSymbol = self.cy.$('#'+nodeID)[0]._private.data['name'];
         var parent = $(this).parent();
-        parent.empty().append('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>');
+        window.open('https://www.mycancergenome.org/content/gene/' + nodeSymbol);
 
-        var formData = new FormData();
-        formData.append('query', nodeSymbol);
 
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function ()
-        {
-          if(request.readyState === XMLHttpRequest.DONE)
-          {
-            if (request.status === 200)
-            {
-              var jsonData = JSON.parse(request.responseText);
-              console.log("HEre json data");
-              if (jsonData.count > 0)
-              {
-                console.log(jsonData.geneInfo[0]);
-                //var backboneView = new BackboneView({model: jsonData.geneInfo[0]}).render().html();
-                //parent.empty().append(backboneView);
-              }
-              else
-              {
-                parent.empty().append('There is no extra information for this gene');
-              }
-            }
-            else
-            {
-              parent.empty().append('An error occured while retrieving the data');
-            }
-          }
-        };
-        request.open("POST", "/getBioGeneData");
-        request.send(formData);
       });
       wrapper.append(entrezGeneButton);
     }
