@@ -72,7 +72,7 @@ Please note that the app runs on the port 3000 by default. To change the port fo
 
 A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) studies and those resulting from TCGA PanCanAtlas Project are available under Network > TCGA menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:
 <p align="center">
-  <img src="assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="440"/>
+  <img src="assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="480"/>
 </p>
 
 The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
@@ -99,28 +99,28 @@ To add a node inside a compound node, you may directly drag it from the palette 
 
 Below is a screenshot showing a sample pathway constructed with PathwayMapper:
 <p align="center">
-  <img src="assets/sample-pathway.png" width="320"/>
+  <img src="assets/sample-pathway.png" width="380"/>
 </p>
 
 ### Validating Gene Symbols
 
 Gene symbols may be checked for validity using [cBioPortal's web service](https://www.cbioportal.org/api/genes/fetch). Below is a screenshot showing genes with invalid labels in red borders:
 <p align="center">
-  <img src="assets/sample-invalid-genes.png" width="500"/>
+  <img src="assets/sample-invalid-genes.png" width="640"/>
 </p>
 
 ### Inspecting Gene Properties
 
 Assuming a gene symbol is valid, you may inspect its properties from [MyCancerGenome](https://www.mycancergenome.org/) by simply double-clicking on that gene and pressing the button "MyCancerGenome". This will display the associated gene page in a new browser tab:
 <p align="center">
-  <img src="assets/sample-MyCancerGenome-properties.png" width="320"/>
+  <img src="assets/sample-MyCancerGenome-properties.png" width="540"/>
 </p>
 
 ### Associating PubMed IDs with Interactions
 
 One can associate any number of PubMed IDs with an interaction by simply double-clicking on that interaction and entering the PubMed IDs. These IDs have hyperlinks to the associated PubMed web page:
 <p align="center">
-  <img src="assets/sample-PubMed-IDs.png" width="340"/>
+  <img src="assets/sample-PubMed-IDs.png" width="420"/>
 </p>
 
 ## Editing Pathways
@@ -135,12 +135,12 @@ Alignment guidelines help us align nodes manually in a vertical or horizontal ma
 
 Before vertical center alignment of four nodes with respect to the firstly selected gene KRAS:
 <p align="center">
-  <img src="assets/align-before.png" width="300"/>
+  <img src="assets/align-before.png" width="360"/>
 </p>
 
 After alignment:
 <p align="center">
-  <img src="assets/align-after.png" width="300"/>
+  <img src="assets/align-after.png" width="360"/>
 </p>
 
 ### Editing and Reconnecting Interactions
@@ -155,12 +155,12 @@ At any point, the user may want to rearrange the layout of the pathway. By defau
 
 A pathway randomly laid out:
 <p align="center">
-  <img src="assets/layout-before.png" width="360"/>
+  <img src="assets/layout-before.png" width="400"/>
 </p>
 
 The same pathway after automatic layout:
 <p align="center">
-  <img src="assets/layout-after.png" width="360"/>
+  <img src="assets/layout-after.png" width="400"/>
 </p>
 
 ### Hide and Show
