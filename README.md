@@ -111,9 +111,9 @@ Gene symbols may be checked for validity using [cBioPortal's web service](https:
 
 ### Inspecting Gene Properties
 
-Assuming a gene symbol is valid, you may inspect its properties from [EntrezGene]() by simply double-clicking on that gene to pop-up an inspector window and pressing the button "Entrez Gene":
+Assuming a gene symbol is valid, you may inspect its properties from [MyCancerGenome](https://www.mycancergenome.org/) by simply double-clicking on that gene and pressing the button "MyCancerGenome". This will display the associated gene page in a new browser tab:
 <p align="center">
-  <img src="assets/sample-EntrezGene-properties.png" width="320"/>
+  <img src="assets/sample-MyCancerGenome-properties.png" width="320"/>
 </p>
 
 ### Associating PubMed IDs with Interactions
