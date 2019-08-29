@@ -15,7 +15,7 @@ import CBioPortalAccessor from "../utils/CBioPortalAccessor";
 import SaveLoadUtility from "../utils/SaveLoadUtility";
 import pathways from "../data/pathways.json";
 // @ts-ignore
-import resizeCue from '../images/resizeCue.svg';
+import resizeCue from '../../node_modules/cytoscape-node-resize/resizeCue.svg';
 // @ts-ignore
 import geneImg from "../images/nodes/gene.svg";
 // @ts-ignore
