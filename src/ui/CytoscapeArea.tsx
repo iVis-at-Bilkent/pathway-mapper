@@ -435,7 +435,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       boundingRectangleLineDash: [4, 8], // line dash of bounding rectangle
       boundingRectangleLineColor: "ffc90e",
       boundingRectangleLineWidth: 1.5,
-      zIndex: 1,
+      zIndex: 999,
 
       moveSelectedNodesOnKeyEvents: function () {
           return true;

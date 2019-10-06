@@ -31,6 +31,8 @@ export default class GridSettings extends React.Component<IGridSettingsProps, {}
 
     private defaultSettings = GridOptionsManager.defaultGridGuideOptions;
 
+    @observable
+    private enabledType: EGridType;
     constructor(props: IGridSettingsProps){
         super(props);
         this.gridSize = this.defaultSettings.gridSpacing;
@@ -38,19 +40,21 @@ export default class GridSettings extends React.Component<IGridSettingsProps, {}
     }
 
     setEnabledType(newType: EGridType){
-        if(newType === this.props.pathwayActions.enabledType){
-            this.props.pathwayActions.enabledType = EGridType.NONE;
+        if(newType === this.enabledType){
+            this.enabledType = EGridType.NONE;
             return;
         }
 
-        this.props.pathwayActions.enabledType = newType;
+        this.enabledType = newType;
     }
 
     render(){
 
-
         return(
-            <Modal dialogClassName="gridModal" show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.GRID);}}>
+            <Modal dialogClassName="gridModal" show={this.props.isModalShown} onShow={() => {this.enabledType = this.props.pathwayActions.enabledType;}}
+                onHide={() => {
+                    this.props.handleClose(EModalType.GRID);
+                }}>
                 <Modal.Header closeButton>
                     <Modal.Title><h4>Grid Settings</h4></Modal.Title>
                 </Modal.Header>
@@ -62,7 +66,7 @@ export default class GridSettings extends React.Component<IGridSettingsProps, {}
                         </Col>
 
                         <Col sm={4}>
-                            <Checkbox checked={this.props.pathwayActions.enabledType === EGridType.GRID} 
+                            <Checkbox checked={this.enabledType === EGridType.GRID} 
                             onChange={() => {this.setEnabledType(EGridType.GRID);}}></Checkbox>
                         </Col>
                     </InputGroup>
@@ -72,7 +76,7 @@ export default class GridSettings extends React.Component<IGridSettingsProps, {}
                         </Col>
 
                         <Col sm={4}>
-                            <Checkbox checked={this.props.pathwayActions.enabledType === EGridType.GUIDE} 
+                            <Checkbox checked={this.enabledType === EGridType.GUIDE} 
                             onChange={() => {this.setEnabledType(EGridType.GUIDE);}}></Checkbox>
                         </Col>
                     </InputGroup>
@@ -100,6 +104,7 @@ export default class GridSettings extends React.Component<IGridSettingsProps, {}
 
                 <Modal.Footer>
                     <Button onClick={() => {
+                        this.props.pathwayActions.enabledType = this.enabledType;
                         this.props.pathwayActions.adjustGridSettings(this.gridSize, this.guideColor);
                         if(this.props.pathwayActions.enabledType === EGridType.GRID){
                             this.props.pathwayActions.toggleGrid(true);
