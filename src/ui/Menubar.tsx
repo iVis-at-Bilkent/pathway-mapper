@@ -40,9 +40,6 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
 
         return(
             <Navbar className="pathway-navbar">
-
-
-              
               <Nav>
                 <NavDropdown eventKey={1} title="Network" id="basic-nav-network">
                   <MenuItem eventKey={1.1} onClick={this.props.pathwayActions.newPathway}>New</MenuItem>
