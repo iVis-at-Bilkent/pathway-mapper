@@ -73,6 +73,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   private portalAccessor: CBioPortalAccessor;
   private isMountedFirst = true;
   private eh: any;
+  private lastSelectedEdge: any;
 
 
   constructor (props: PathwayMapperType) {
@@ -712,8 +713,12 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       this.editor.resizeElements(node);
     });
 
+    this.cy.on('select', 'edge', (e: any) => {
+      this.lastSelectedEdge = e.target;
+    });
+
     this.cy.on('bendPointMovement', () => {
-      this.editor.updateEdgeBendPoints(this.cy.elements(":selected").first());
+      this.editor.updateEdgeBendPoints(this.lastSelectedEdge);
     });
 
     this.cy.on('noderesize.moveend', () => {

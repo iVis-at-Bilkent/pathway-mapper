@@ -878,7 +878,7 @@ export default class ShareDBManager {
     updateEdgeBendPoints(edgeID, bendPointsArray) {
 
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
-
+        
         if (edgeMap.hasOwnProperty(edgeID)) {
             var tmpEdge = edgeMap[edgeID];
             tmpEdge.bendPoint = bendPointsArray;

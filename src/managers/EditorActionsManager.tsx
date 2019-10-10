@@ -699,7 +699,7 @@ export default class EditorActionsManager{
             }
             // edge.data("bendPointPositions", bendPointsArray);
             // edgeEditing.initBendPoints(edge);
-
+            
             this.shareDBManager.updateEdgeBendPoints(edge.id(), bendPointsArray);
         }
     }
