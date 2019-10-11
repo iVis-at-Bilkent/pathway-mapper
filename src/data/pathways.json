@@ -76,8 +76,8 @@
 "g_eFQ6zG2Hu-\tWWAQi_-h1FbJ\tUdMq7kedz9FO\tACTIVATES",
 "T1GuzceK1uZK\tqU2DuUfoz_fU\tyE8mFlUU0AcJ\tBINDS"
 ],
-"BLCA-2014-RTK/RAS/PI(3)K-pathway": [
-"BLCA-2014-RTK/RAS/PI(3)K-pathway",
+"BLCA-2014-RTK-RAS-PI(3)K-pathway": [
+"BLCA-2014-RTK-RAS-PI(3)K-pathway",
 "",
 "",
 "",
@@ -116,8 +116,8 @@
 "uN421vA1qaeA\tVyT8z_EcpexB\tt8b0oOIypis0\tACTIVATES",
 "ZTgU7FgfqZmN\tVyT8z_EcpexB\t1PYLl_CZpjUH\tACTIVATES"
 ],
-"BLCA-2014-TP53/RB-pathway": [
-"BLCA-2014-TP53/RB-pathway",
+"BLCA-2014-TP53-RB-pathway": [
+"BLCA-2014-TP53-RB-pathway",
 "",
 "",
 "",
@@ -175,8 +175,8 @@
 "OyM7Rh_ueTR2\tTQqdq6ZHdybO\tglg_i-QQdz9z\tINHIBITS",
 "fcvz9ztueiRb\tTQqdq6ZHdybO\t9ZypvHQTebqG\tACTIVATES"
 ],
-"BRCA-2012-RTK/RAS/PI(3)K-pathway": [
-"BRCA-2012-RTK/RAS/PI(3)K-pathway",
+"BRCA-2012-RTK-RAS-PI(3)K-pathway": [
+"BRCA-2012-RTK-RAS-PI(3)K-pathway",
 "",
 "",
 "",
@@ -273,8 +273,8 @@
 "jDEpTZhK3Y9X\tb7YoPaEx3Y88\tyazwmMvz3Y8y\tACTIVATES\t",
 "_gVnliZV3Y9a\txPwjUPwi3Y86\tmIL53nP63Y83\tINHIBITS\t"
 ],
-"COADREAD-2012-RTK/RAS/PI(3)K-pathway": [
-"COADREAD-2012-RTK/RAS/PI(3)K-pathway",
+"COADREAD-2012-RTK-RAS-PI(3)K-pathway": [
+"COADREAD-2012-RTK-RAS-PI(3)K-pathway",
 "",
 "",
 "",
@@ -512,8 +512,8 @@
 "6NO_fL3nO3r4\tSBGkYw2NOhMr\t0cQitpJLOoEG\tINHIBITS",
 "1pimX-ZiO6F6\t0cQitpJLOoEG\t0kD7D3DGOtD1\tINHIBITS"
 ],
-"GBM-2008-RTK/RAS/PI(3)K-pathway": [
-"GBM-2008-RTK/RAS/PI(3)K-pathway",
+"GBM-2008-RTK-RAS-PI(3)K-pathway": [
+"GBM-2008-RTK-RAS-PI(3)K-pathway",
 "",
 "",
 "",
@@ -592,8 +592,8 @@
 "JZERPNMdnWL9\tnFMLgWuEmv0Q\tszeVZ7Elmxvu\tINHIBITS",
 "n7Nithx-B2zB\tv1zGJhukB2ym\tWvJWw5HPm0Ab\tINHIBITS"
 ],
-"GBM-2013-RTK/RAS/PI(3)K-pathway": [
-"GBM-2013-RTK/RAS/PI(3)K-pathway",
+"GBM-2013-RTK-RAS-PI(3)K-pathway": [
+"GBM-2013-RTK-RAS-PI(3)K-pathway",
 "",
 "",
 "",
@@ -784,8 +784,8 @@
 "cPEAdB0SFfMR\tgt4I0Om0FTv6\tfVzq-7uHFVEN\tACTIVATES",
 "H-KG07b7Fd8r\tZsX3OXk3FSsm\tgt4I0Om0FTv6\tINHIBITS"
 ],
-"HNSC-2015-RTK/RAS/PI(3)K-pathway": [
-"HNSC-2015-RTK/RAS/PI(3)K-pathway",
+"HNSC-2015-RTK-RAS-PI(3)K-pathway": [
+"HNSC-2015-RTK-RAS-PI(3)K-pathway",
 "",
 "",
 "",
@@ -814,8 +814,8 @@
 "GnyxNL7aCqke\tYgFgrMTKCakc\tCh4RV-nlCR-8\tACTIVATES",
 "rrzkeHNUGQDo\tM33a4yWMGH-j\tNZQP-jwUGJDJ\tACTIVATES"
 ],
-"KIRC-2013-RTK/RAS/PI(3)K-pathway": [
-"KIRC-2013-RTK/RAS/PI(3)K-pathway",
+"KIRC-2013-RTK-RAS-PI(3)K-pathway": [
+"KIRC-2013-RTK-RAS-PI(3)K-pathway",
 "",
 "",
 "",
@@ -927,8 +927,8 @@
 "ASasYVxW65_T\tax7M8UNp6gH0\t3OAnmFLj6kBV\tINHIBITS",
 "5XC9ZlAR67EJ\t3OAnmFLj6kBV\tqQRuLibB6k26\tINHIBITS"
 ],
-"LUAD-2014-RTK/RAS/PI(3)K-pathway": [
-"LUAD-2014-RTK/RAS/PI(3)K-pathway",
+"LUAD-2014-RTK-RAS-PI(3)K-pathway": [
+"LUAD-2014-RTK-RAS-PI(3)K-pathway",
 "",
 "",
 "",
@@ -1036,8 +1036,8 @@
 "CT9Gtmm5Rqtm\t74W2ldwARhHq\tb31Gx6nxRij2\tINHIBITS",
 "HHBAbZS1Rto5\tlReeCCfNRhiB\tb31Gx6nxRij2\tINHIBITS"
 ],
-"LUSC-2012-RTK/RAS/PI(3)K-pathway": [
-"LUSC-2012-RTK/RAS/PI(3)K-Pathway",
+"LUSC-2012-RTK-RAS-PI(3)K-pathway": [
+"LUSC-2012-RTK-RAS-PI(3)K-Pathway",
 "",
 "",
 "",
@@ -1237,8 +1237,8 @@
 "osh5OcaxTA2q\tHPXERf3USgjx\txiGB_3VdSfd3\tINHIBITS",
 "AivX6u8YTCYD\tZ64sAxBCSrsH\txiGB_3VdSfd3\tINHIBITS"
 ],
-"OV-2011-RTK/RAS/PI(3)K-pathway": [
-"OV-2011-RTK/RAS/PI(3)K-pathway",
+"OV-2011-RTK-RAS-PI(3)K-pathway": [
+"OV-2011-RTK-RAS-PI(3)K-pathway",
 "",
 "",
 "",
@@ -1415,8 +1415,8 @@
 "8YJTZK-INn2c\t4dCj0PbWLn10\t-c29Xam0NfMu\tACTIVATES",
 "MdvHv-NFNoui\t4dCj0PbWLn10\tX7mpJiW8Lodu\tACTIVATES"
 ],
-"SKCM-2015-RTK/RAS/PI(3)K-pathway": [
-"SKCM-2015-RTK/RAS/PI(3)K-pathway",
+"SKCM-2015-RTK-RAS-PI(3)K-pathway": [
+"SKCM-2015-RTK-RAS-PI(3)K-pathway",
 "",
 "",
 "",
@@ -1468,8 +1468,8 @@
 "N3sY9gBuLVHA\tGBRktWHeLBFQ\tTc8UdIhSLCIT\tACTIVATES",
 "2r21RRvbLR21\thml0YQ9_K8tc\t-VggHhz9K-1w\tINHIBITS"
 ],
-"STAD-2014-RTK/RAS/PI(3)K-pathway": [
-"STAD-2014-RTK/RAS/PI(3)K-pathway",
+"STAD-2014-RTK-RAS-PI(3)K-pathway": [
+"STAD-2014-RTK-RAS-PI(3)K-pathway",
 "",
 "",
 "",
@@ -1618,8 +1618,8 @@
 "vNvONKmFfyHj\tYvaYsZcufyHH\tc4Ad6ZYBfyGx\tACTIVATES\t",
 "25K5WaLwfyHX\tc4Ad6ZYBfyGx\tJvx4WzdtfyGk\tACTIVATES\t"
 ],
-"UCEC-2013-RTK/RAS/PI(3)K-pathway": [
-"UCEC-2013-RTK/RAS/PI(3)K-pathway",
+"UCEC-2013-RTK-RAS-PI(3)K-pathway": [
+"UCEC-2013-RTK-RAS-PI(3)K-pathway",
 "",
 "",
 "",

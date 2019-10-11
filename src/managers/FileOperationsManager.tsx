@@ -89,8 +89,6 @@ export default class FileOperationsManager{
     saveGraph(isSIFNX: boolean, editor: EditorActionsManager)
     {
         const pathwayData = this.pathwayInfo;
-        console.log(editor.cy.nodes());
-        console.log("---")
         const returnString = (isSIFNX) ? SaveLoadUtility.exportAsSIFNX(pathwayData, editor.cy.json()):
                                        SaveLoadUtility.exportGraph(pathwayData, editor.cy, editor.edgeEditing, editor.cy.json());
         const blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
