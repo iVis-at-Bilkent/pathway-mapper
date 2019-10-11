@@ -75,7 +75,7 @@ A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) stud
   <img src="assets/GBM-2013-RTK-RAS-PI(3)K-pathway.png" width="480"/>
 </p>
 
-The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt" target="_blank">http://pathwaymapper.org/?filename=GBM-2013-RTK-RAS-PI(3)K-pathway.txt</a>.
+The same pathway can be opened up in PathwayMapper with URL <a href="http://pathwaymapper.org/?pathwayName=GBM-2013-RTK-RAS-PI(3)K-pathway" target="_blank">http://pathwaymapper.org/?pathwayName=GBM-2013-RTK-RAS-PI(3)K-pathway</a>, where pathwayName is the title of the sample pathway in PathwayMapper.
 
 ## Adding Genes and Interactions
 
