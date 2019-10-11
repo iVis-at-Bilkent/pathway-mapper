@@ -5,8 +5,8 @@
     "logo": "http://www.cs.bilkent.edu.tr/~ivis/images/ivis-logo-long.png",
     "keywords": ["pathway", "editor", "cancer", "genomics"],
     "buildpacks": [
-        {
-            "url": "https://github.com/heroku/heroku-buildpack-nodejs#v91"
-        }
+      {
+        "url": "https://github.com/heroku/heroku-buildpack-nodejs#v91"
+      }
     ]
-}
+  }
