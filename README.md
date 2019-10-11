@@ -243,7 +243,7 @@ Any changes made by any person working on the pathway with the same URL will be 
 
 ## Credits
 
-PathwayMapper uses many third party libraries mainly including [Cytoscape.js](http://js.cytoscape.org) and many of its extensions, [React](https://reactjs.org/), [Node.js](https://nodejs.org/), and [Backbone.js](http://backbonejs.org), and [cBioPortal API](https://www.cbioportal.org/webAPI) licensed under BSD-2-Clause, BSD-3-Clause, ISC, Apache-2.0 or MIT. For a complete list, please refer to [this file](package.json).
+PathwayMapper uses many third party libraries mainly including [Cytoscape.js](http://js.cytoscape.org) and many of its extensions, [React](https://reactjs.org/), [Node.js](https://nodejs.org/), and [cBioPortal API](https://www.cbioportal.org/webAPI) licensed under BSD-2-Clause, BSD-3-Clause, ISC, Apache-2.0 or MIT. For a complete list, please refer to [this file](package.json).
 
 Icons made by [Freepik](http://www.freepik.com), 
 [Daniel Bruce](http://www.flaticon.com/authors/daniel-bruce), 
