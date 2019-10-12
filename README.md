@@ -5,6 +5,9 @@ PathwayMapper is a web based pathway curation tool for interactive creation, edi
   <img src="assets/sample-screenshot.png" width="600"/>
 </p>
 
+Below is a video tutorial on basics of PathwayMapper:
+<a href="https://youtu.be/3O73NwN0oO4" target="_blank"><p align="center"><img src="assets/basics-of-PM.jpg" width="340" title="Click to watch video"/></p></a>
+
 #### How to Cite Usage
 Bahceci et al. (2017) "[PathwayMapper: a collaborative visual web editor for cancer pathways and genomic data](https://doi.org/10.1093/bioinformatics/btx149)", Bioinformatics.
 
