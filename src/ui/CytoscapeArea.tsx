@@ -610,7 +610,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   initCyHandlers(){
     var that = this;
 
-    var tappedBefore: number;
+    var tappedBefore: any;
     var tappedTimeout: number;
     this.cy.on('tap', function (event: any) {
       var tappedNow = event.target;
@@ -625,6 +625,10 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
         tappedTimeout = setTimeout(function () {
           tappedBefore = -1;
         },                         300);
+
+        if(tappedNow && tappedNow.isNode && tappedNow.isNode()){
+          $(".qtip").remove();
+        }
         tappedBefore = tappedNow;
       }
     });
@@ -657,10 +661,10 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       if (eventIsDirect) {
           $(".qtip").remove();
           that.qtipManager.addQtipToElements(e.target);
-          // var api = this.qtip('api');
-          // if (api) {
-          //     api.show();
-          // }
+          /*var api = this.qtip('api');
+          if (api) {
+              api.show();
+          }*/
       }
     });
 
