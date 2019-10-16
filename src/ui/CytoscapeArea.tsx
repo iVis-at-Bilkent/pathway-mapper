@@ -629,43 +629,39 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
         if(tappedNow && tappedNow.isNode && tappedNow.isNode()){
           $(".qtip").remove();
         }
+        if(tappedNow && tappedNow.isEdge && tappedNow.isEdge()){
+          $(".qtip").remove();
+        }
         tappedBefore = tappedNow;
       }
     });
 
     this.cy.on('doubleTap', 'node',  function (e: any) {
 
-      // if cBioPortal ignore
-      if(that.props.isCbioPortal) return;
+       // if cBioPortal ignore
+       if(that.props.isCbioPortal) return;
 
-      const eventIsDirect = (e.target === this);
-
-      if (eventIsDirect) {
-        //Remove qtips
-        $(".qtip").remove();
-        that.qtipManager.addQtipToElements(e.target);
-        var api = this.qtip('api');
-        if (api) {
-            api.show();
-        }
-      }
-    });
-
-    this.cy.on('doubleTap', 'edge', function (e: any) {
-
-      // if cBioPortal ignore
-      if(that.props.isCbioPortal) return;
-      
-      const eventIsDirect = (e.target === this);
-
-      if (eventIsDirect) {
-          $(".qtip").remove();
-          that.qtipManager.addQtipToElements(e.target);
-          /*var api = this.qtip('api');
-          if (api) {
-              api.show();
-          }*/
-      }
+       const eventIsDirect = (e.target === this);
+ 
+       if (eventIsDirect) {       
+         $(".qtip").remove();
+         that.qtipManager.addQtipToElements(e.target);        
+         e.target.trigger("showqtipevent");
+       }
+     });
+ 
+     this.cy.on('doubleTap', 'edge', function (e: any) {
+ 
+       // if cBioPortal ignore
+       if(that.props.isCbioPortal) return;
+       
+       const eventIsDirect = (e.target === this);
+ 
+       if (eventIsDirect) {
+           $(".qtip").remove();
+           that.qtipManager.addQtipToElements(e.target);         
+           e.target.trigger("showqtipevent");
+       }
     });
 
     this.cy.on('select', 'node', (e: any) => {
