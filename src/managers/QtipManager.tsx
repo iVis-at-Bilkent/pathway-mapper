@@ -192,7 +192,10 @@ export default class QtipManager{
             {
               classes: 'qtip-tipsy qtip-rounded',
               width: 400
-            }
+            } ,
+            show:{
+              event :"showqtipevent"
+            } 
           };
 
       }
@@ -219,7 +222,10 @@ export default class QtipManager{
             {
               classes: 'qtip-tipsy qtip-rounded',
               width: 400
-            }
+            } ,
+            show:{
+              event :"showqtipevent"
+            } 
           };
       }
       ele.qtip(qTipOpts);

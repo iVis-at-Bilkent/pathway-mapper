@@ -5197,10 +5197,9 @@ cytoscape-panzoom@~2.5.2:
   dependencies:
     jquery "^1.4 || ^2.0 || ^3.0"
 
-cytoscape-qtip@^2.7.1:
+cytoscape-qtip@iVis-at-Bilkent/cytoscape.js-qtip#master:
   version "2.7.1"
-  resolved "https://registry.yarnpkg.com/cytoscape-qtip/-/cytoscape-qtip-2.7.1.tgz#8ed1f689c125d9d741a16e78a8355e4c224f14f2"
-  integrity sha1-jtH2icEl2ddBoW54qDVeTCJPFPI=
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-qtip/tar.gz/38959658a3cac45c0b377387b06ba353570c86de"
   dependencies:
     jquery "^2.0 || ^1.10.0"
     qtip2 "^3.0 || ^2.2.0"

@@ -1,1 +1,1 @@
-web: export PORT=${PORT} && yarn start
+web: export PORT=${PORT} && npm start
