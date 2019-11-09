@@ -435,13 +435,13 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           }
           { isCBioPortal &&
           <Row style={{marginBottom: "6px"}}>
-            <Col xs={2} style={{}}>
+            <Col xs={3} style={{}}>
               <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}
                 genes={this.props.genes} handleOpen={this.handleOpen} queryParameter={this.props.queryParameter}
                 oncoPrintTab={this.props.oncoPrintTab} validGenes={this.props.validGenes}
                 toast={this.props.toast} pathwayGenes={Object.keys(this.pathwayGeneMap[this.selectedPathway])}/>
             </Col>
-            <Col xs={7} style={{paddingLeft: "0px", marginTop: "17px", textAlign: "right", paddingRight: "35px"}}>
+            <Col xs={6} style={{paddingLeft: "0px", marginTop: "17px", textAlign: "right", paddingRight: "35px"}}>
               {this.selectedPathway}
             </Col>
           </Row>
