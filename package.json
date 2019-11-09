@@ -1,6 +1,6 @@
 {
   "name": "react-pathway-mapper",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "description": "",
   "keywords": [],
   "main": "dist/react-pathway-mapper.es5.js",
@@ -13,7 +13,7 @@
   "author": "i-Vis at Bilkent <ivisatbilkent@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/iVis-at-Bilkent/pathway-mapper"
   },
   "license": "GNU AGPL",
   "engines": {
