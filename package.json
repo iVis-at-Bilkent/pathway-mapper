@@ -1,5 +1,5 @@
 {
-  "name": "react-pathway-mapper",
+  "name": "pathway-mapper",
   "version": "2.0.0",
   "description": "",
   "keywords": [],
@@ -34,7 +34,6 @@
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "precommit": "lint-staged",
-    "prepare": "yarn build",
     "travis-deploy-once": "travis-deploy-once"
   },
   "lint-staged": {
