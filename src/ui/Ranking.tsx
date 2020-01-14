@@ -76,7 +76,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
               </div>*/}
 
             { this.props.tableComponent &&
-            <this.props.tableComponent data={this.bestPathways.map((data: any) => ({name: data.pathwayName, score: data.score, genes: data.genesMatched}))} selectedPathway={this.selectedPathway} changePathway={this.onPathwayClick}/>
+            <this.props.tableComponent data={this.bestPathways.map((data: any) => ({name: data.pathwayName, score: data.score, genes: data.genesMatched}))} selectedPathway={""} changePathway={this.onPathwayClick}/>
             }
             <div className="info-entry" style={{marginTop: "10px"}}>
 
