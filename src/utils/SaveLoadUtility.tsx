@@ -221,8 +221,8 @@ export default class SaveLoadUtility{
       var parentID = lineData[3];
       var posX = (lineData.length > 4) ? lineData[4] : "0";
       var posY = (lineData.length > 5) ? lineData[5] : "0";
-      var nodeW = (lineData.length > 7) ? lineData[6] : "150";
-      var nodeH = (lineData.length > 7) ? lineData[7] : "52";
+      var nodeW = (lineData.length > 7) ? lineData[6] : (nodeType === 'PROCESS') ? (nodeName.length * 6 + 24) : "150";
+      var nodeH = (lineData.length > 7) ? lineData[7] : (nodeType === 'PROCESS') ? "24" : "52";
 
       if(nodeName === " " || nodeName === ""){
         console.log("Here empty");

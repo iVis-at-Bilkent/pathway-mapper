@@ -1871,7 +1871,7 @@ export default class EditorActionsManager{
                     let newWidth = 150;
                     let newHeight = 52;
                     if (ele.data('name') != "") {
-                        var labelLength = ele.style('label').length * 10 + 6;
+                        var labelLength = ele.style('label').length * 6 + 24;
                         newWidth = labelLength;
                         newHeight = 24;
                     }
