@@ -17,7 +17,7 @@
   },
   "license": "GNU AGPL",
   "engines": {
-    "yarn": "1.13.0"
+    "yarn": "1.21.1"
   },
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
