@@ -36,7 +36,7 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
                 </Modal.Header>
                 <Modal.Body>
                 <p className="leftText">
-                    PathwayMapper shows you your genes of interest with the alteration frequencies of the chosen study overlaid on a TCGA pathway. All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with highest ranking with the default ranking options but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.                <br/>
+                    PathwayMapper shows you your genes of interest with the alteration frequencies of selected types of the chosen study overlaid on a TCGA pathway using a white to red color scale (the more frequently altered a gene is, the more red it's shown). All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with highest ranking with the default ranking options but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.                <br/>
                     <br/>
                     To search for a particular pathway of your interest, use the search field on top of the pathway table.
                     <br/>
