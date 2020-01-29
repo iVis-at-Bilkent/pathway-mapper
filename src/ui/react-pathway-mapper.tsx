@@ -197,7 +197,11 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.alterationData[PathwayMapper.CBIO_PROFILE_NAME] = {};
     cBioAlterationData.forEach((geneAltData: ICBioData) => {
       const perc = (geneAltData.altered / geneAltData.sequenced) * 100;
-      this.alterationData[PathwayMapper.CBIO_PROFILE_NAME][geneAltData.gene] = ((Object.is(perc, NaN) ? 0.0 : perc));
+      
+      // NaN value is replaced with -101 since NaN value leads to some runtime exceptions (such as with toFixed() function),
+      // hence it is represented as -101. It will be recognized in the genomic data svg creation to show N/P instead of
+      // a percentage. -101 is chosen because this percentage is impossible to get.
+      this.alterationData[PathwayMapper.CBIO_PROFILE_NAME][geneAltData.gene] = ((Object.is(perc, NaN) ? -101 : perc));
     });
   }
 
