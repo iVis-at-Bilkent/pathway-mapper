@@ -11145,11 +11145,6 @@ nerf-dart@^1.0.0:
   resolved "https://registry.yarnpkg.com/nerf-dart/-/nerf-dart-1.0.0.tgz#e6dab7febf5ad816ea81cf5c629c5a0ebde72c1a"
   integrity sha1-5tq3/r9a2Bbqgc9cYpxaDr3nLBo=
 
-net@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/net/-/net-1.0.2.tgz#d1757ec9a7fb2371d83cf4755ce3e27e10829388"
-  integrity sha1-0XV+yaf7I3HYPPR1XOPifhCCk4g=
-
 next-tick@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
@@ -13668,14 +13663,6 @@ raw-body@2.4.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-raw-loader@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/raw-loader/-/raw-loader-3.0.0.tgz#9a660dc9cfbfb8324eede3ea3511454d2a5d0389"
-  integrity sha512-FsELYliOpX5HdPdxa7PzTmEc5OTchmLUs/r4f8oLDGCYE+xC2FjVbDXzdyLcBrdlDnvkx1x5wzphixcWpxJG5w==
-  dependencies:
-    loader-utils "^1.1.0"
-    schema-utils "^1.0.0"
-
 rc@^1.0.1, rc@^1.1.6, rc@^1.2.7, rc@^1.2.8:
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/rc/-/rc-1.2.8.tgz#cd924bf5200a075b83c188cd6b9e211b7fc0d3ed"
@@ -15033,7 +15020,7 @@ sharedb-mongo@latest:
     mongodb "^2.1.2"
     sharedb "^1.0.0-beta"
 
-sharedb@^1.0.0-beta, sharedb@latest:
+sharedb@^1.0.0-beta:
   version "1.0.0-beta.23"
   resolved "https://registry.yarnpkg.com/sharedb/-/sharedb-1.0.0-beta.23.tgz#494d60e1d38edcb02b660dff047f79d5f6da6f2e"
   integrity sha512-Kb2AhiiUNnHNqA4Ls9F3xcUn3hz577k0LxIwalKaFbptCDW6A5eGM1XLihXRAi+M4UV3KEbpB/0fG4vhQHkB4g==
@@ -15043,6 +15030,17 @@ sharedb@^1.0.0-beta, sharedb@latest:
     deep-is "^0.1.3"
     hat "0.0.3"
     make-error "^1.1.1"
+    ot-json0 "^1.0.1"
+
+sharedb@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/sharedb/-/sharedb-1.1.0.tgz#89c1a23823c8ac36f1a3a3359fcf46efc4411ff1"
+  integrity sha512-0ZuWogy4VFe7PghoqoJw+zLMhKn6lHPE3OSJEeka3FDS2zUTebdMz5qABBKalBslFE/+fR9fIz+sDGJ3RiHGYQ==
+  dependencies:
+    arraydiff "^0.1.1"
+    async "^1.4.2"
+    fast-deep-equal "^2.0.1"
+    hat "0.0.3"
     ot-json0 "^1.0.1"
 
 shebang-command@^1.2.0:
@@ -17225,6 +17223,11 @@ webpack-manifest-plugin@2.0.4:
     fs-extra "^7.0.0"
     lodash ">=3.5 <5"
     tapable "^1.0.0"
+
+webpack-node-externals@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/webpack-node-externals/-/webpack-node-externals-1.7.2.tgz#6e1ee79ac67c070402ba700ef033a9b8d52ac4e3"
+  integrity sha512-ajerHZ+BJKeCLviLUUmnyd5B4RavLF76uv3cs6KNuO8W+HuQaEs0y0L7o40NQxdPy5w0pcv8Ew7yPUAQG0UdCg==
 
 webpack-sources@^1.0.1, webpack-sources@^1.1.0, webpack-sources@^1.3.0:
   version "1.3.0"

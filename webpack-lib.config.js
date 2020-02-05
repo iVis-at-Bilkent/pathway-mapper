@@ -1,6 +1,7 @@
 const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const nodeExternals = require('webpack-node-externals');
 
 const root = path.resolve(__dirname);
 const src = path.join(root, 'src');
@@ -8,6 +9,9 @@ const modules = path.join(root, 'node_modules');
 
 
 module.exports = {
+  optimization: {
+    minimize: false
+  },
   devtool: 'source-map',
   entry: "./src/ui/react-pathway-mapper.tsx",
   output: {
@@ -19,6 +23,17 @@ module.exports = {
   node: {
     fs: 'empty'
   },
+  externals: [
+    nodeExternals({
+      // TODO a workaround for problematic imports, ideally these should not be included in the bundle
+      whitelist: [
+        'cytoscape-edge-editing',
+        'cytoscape-context-menus',
+        'cytoscape-node-resize',
+        'cytoscape-view-utilities'
+      ]
+    })
+  ],
   resolve: {
     extensions: [
       '.js',
