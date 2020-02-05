@@ -27,12 +27,11 @@ interface IToolbarProps {
   selectedPathway: string;
   alterationData: IAlterationData;
   handleOpen: (modalId: number) => void;
-  queryParameter: any;
-  oncoPrintTab: string;
   genes: any[];
   validGenes: any;
   toast: any;
   pathwayGenes: string[];
+  onAddGenes: (selectedGenes: string[]) => void;
 }
 
 @observer
@@ -77,7 +76,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
             if(invalidGenes.length === 0){
 
               if(this.selectedGenes.length > 0){
-                this.onAddGenes();
+                this.props.onAddGenes(this.selectedGenes);
               }
             } else {
               this.props.toast("Following gene symbols are invalid or already in gene list: " + invalidGenes.join(", "), {autoClose: false, position: "bottom-left"});
@@ -91,7 +90,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
             });
             
             if(this.selectedGenes.length > 0){
-              this.onAddGenes();
+              this.props.onAddGenes(this.selectedGenes);
             }
           }}/>
           
@@ -100,13 +99,5 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Help" data-place="right" data-effect="solid" src={aboutImage} onClick={() => {console.log("Here");this.props.handleOpen(EModalType.CHELP);}}/>
           
     </div>);
-  }
-  @autobind
-  private onAddGenes() {
-      // add genes and go back to oncoprint tab
-      
-      (window as any).routingStore.updateRoute({
-          [this.props.queryParameter]: `${(window as any).routingStore.query[this.props.queryParameter]}\n${this.selectedGenes.join(" ")}`
-      },                                       `results/${this.props.oncoPrintTab}`);
   }
 }

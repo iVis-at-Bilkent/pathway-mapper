@@ -3,14 +3,11 @@ import EditorActionsManager from "../managers/EditorActionsManager";
 import FileOperationsManager from '../managers/FileOperationsManager';
 import PathwayActions from '../utils/PathwayActions';
 import CBioPortalAccessor from '../utils/CBioPortalAccessor';
-import "../css/pmv1.css";
-import "../css/pmv2.css";
-import "cytoscape-panzoom/cytoscape.js-panzoom.css";
-import "cytoscape-navigator/cytoscape.js-navigator.css";
-import 'react-toastify/dist/ReactToastify.css';
-import '../css/qtip.css';
 import ViewOperationsManager from '../managers/ViewOperationsManager';
 import GridOptionsManager from '../managers/GridOptionsManager';
+import "../css/pmv1.css";
+import "../css/pmv2.css";
+import '../css/qtip.css';
 interface IPathwayMapperProps {
     isCBioPortal: boolean;
     genes: any[];
@@ -18,8 +15,7 @@ interface IPathwayMapperProps {
     cBioAlterationData?: ICBioData[];
     pathwayName?: string;
     alterationData?: IAlterationData;
-    queryParameter?: any;
-    oncoPrintTab?: string;
+    onAddGenes?: (selectedGenes: string[]) => void;
     changePathwayHandler?: Function;
     addGenomicDataHandler?: (addGenomicData: (alterationData: ICBioData[]) => void) => void;
     tableComponent?: any;
