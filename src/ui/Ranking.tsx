@@ -27,6 +27,9 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     @observable
     isExpanded: boolean;
 
+    @observable
+    pageNo: number;
+
     readonly COUNT_PERC_EXPLANATION = "Whether we should favor the number of genes of interest matching the ones in a pathway or the percentage of such genes in that pathway. For instance, suppose genes of interest are A, B, and C, and the pathway contains genes B, C, D, and E. When we consider count, the score is 2 (for the two genes that match). However, when we consider percentage the score will be 50% as 2 of the 4 genes in the pathway are among genes of interest.";
     readonly ALTERATION_EXPLANATION = "When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and %50 for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (0.2+0.3)/4=%12.5 for match count and percentage, respectively.";
     
@@ -37,16 +40,21 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
         this.isAlterationEnabled = 0;
         this.dropDownTitle = "Match count";
         this.isExpanded = false;
+	this.pageNo = 0;
         this.setBestPathwayMethod(0);
-        console.log("Pathway Algos");
+	this.selectedPathway = this.bestPathways[0].pathwayName;
+	console.log("Pathway Algos");
         console.log(this.props.bestPathwaysAlgos);
+	console.log("Hereeeeeee1");
     }
 
     @autobind
     setBestPathwayMethod(i: number){
         this.bestPathways = this.props.bestPathwaysAlgos[i];
-        this.selectedPathway = this.bestPathways[0].pathwayName;
-        this.props.pathwayActions.changePathway(this.selectedPathway);
+        //this.selectedPathway = this.bestPathways[0].pathwayName;
+        //this.props.pathwayActions.changePathway(this.selectedPathway);
+	this.pageNo = 1;
+	console.log("Not changing the pathway");
     }
 
     @autobind
@@ -76,7 +84,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
               </div>*/}
 
             { this.props.tableComponent &&
-            <this.props.tableComponent data={this.bestPathways.map((data: any) => ({name: data.pathwayName, score: data.score, genes: data.genesMatched}))} selectedPathway={this.selectedPathway} changePathway={this.onPathwayClick}/>
+		this.props.tableComponent(this.bestPathways.map((data: any) => ({name: data.pathwayName, score: data.score, genes: data.genesMatched})),this.selectedPathway,this.onPathwayClick, this.pageNo)
             }
             <div className="info-entry" style={{marginTop: "10px"}}>
 

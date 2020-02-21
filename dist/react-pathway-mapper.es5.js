@@ -12448,18 +12448,23 @@ function (_super) {
     _this.isAlterationEnabled = 0;
     _this.dropDownTitle = "Match count";
     _this.isExpanded = false;
+    _this.pageNo = 0;
 
     _this.setBestPathwayMethod(0);
 
+    _this.selectedPathway = _this.bestPathways[0].pathwayName;
     console.log("Pathway Algos");
     console.log(_this.props.bestPathwaysAlgos);
+    console.log("Hereeeeeee1");
     return _this;
   }
 
   Ranking.prototype.setBestPathwayMethod = function (i) {
-    this.bestPathways = this.props.bestPathwaysAlgos[i];
-    this.selectedPathway = this.bestPathways[0].pathwayName;
-    this.props.pathwayActions.changePathway(this.selectedPathway);
+    this.bestPathways = this.props.bestPathwaysAlgos[i]; //this.selectedPathway = this.bestPathways[0].pathwayName;
+    //this.props.pathwayActions.changePathway(this.selectedPathway);
+
+    this.pageNo = 1;
+    console.log("Not changing the pathway");
   };
 
   Ranking.prototype.onPathwayClick = function (pathway) {
@@ -12479,17 +12484,13 @@ function (_super) {
     var lengthThreshold = 13;
     return external_react_default.a.createElement("div", {
       id: "ranking-bar"
-    }, this.props.tableComponent && external_react_default.a.createElement(this.props.tableComponent, {
-      data: this.bestPathways.map(function (data) {
-        return {
-          name: data.pathwayName,
-          score: data.score,
-          genes: data.genesMatched
-        };
-      }),
-      selectedPathway: this.selectedPathway,
-      changePathway: this.onPathwayClick
-    }), external_react_default.a.createElement("div", {
+    }, this.props.tableComponent && this.props.tableComponent(this.bestPathways.map(function (data) {
+      return {
+        name: data.pathwayName,
+        score: data.score,
+        genes: data.genesMatched
+      };
+    }), this.selectedPathway, this.onPathwayClick, this.pageNo), external_react_default.a.createElement("div", {
       className: "info-entry",
       style: {
         marginTop: "10px"
@@ -12568,6 +12569,8 @@ function (_super) {
   Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "selectedPathway", void 0);
 
   Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "isExpanded", void 0);
+
+  Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "pageNo", void 0);
 
   Ranking_decorate([external_autobind_decorator_default.a], Ranking.prototype, "setBestPathwayMethod", null);
 
