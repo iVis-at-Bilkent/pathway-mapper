@@ -16,9 +16,9 @@ interface IPathwayMapperProps {
     pathwayName?: string;
     alterationData?: IAlterationData;
     onAddGenes?: (selectedGenes: string[]) => void;
-    changePathwayHandler?: Function;
+    changePathwayHandler?: (pathwayGenes: string[]) => void;
     addGenomicDataHandler?: (addGenomicData: (alterationData: ICBioData[]) => void) => void;
-    tableComponent?: any;
+    tableComponent?: (data: IPathwayMapperTable[], selectedPathway: string, onPathwaySelect: (pathway: string) => void) => JSX.Element;
     validGenes?: any;
     toast: any;
 }
@@ -62,8 +62,8 @@ export interface IDataTypeMetaData {
 }
 export interface IPathwayMapperTable {
     name: string;
-    score: string;
-    genes: string;
+    score: number;
+    genes: string[];
 }
 export default class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     static readonly CBIO_PROFILE_NAME = "cBioPortal_data";
