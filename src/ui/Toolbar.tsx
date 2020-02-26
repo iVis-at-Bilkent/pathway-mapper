@@ -65,7 +65,14 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
             this.selectedGenes = this.props.pathwayActions.getSelectedNodes()
                                                           .filter((node: any) => node.data().type === "GENE")
                                                           .map((node: any) => node.data().name as string);
+	    const noneGeneList = this.props.pathwayActions.getSelectedNodes()
+                                                          .filter((node: any) => node.data().type !== "GENE")
+                                                          .map((node: any) => node.data().name as string);
             const invalidGenes: string[] = [];
+
+            if(noneGeneList.length > 0){
+                this.props.toast("Selection contains nodes that are not genes", {autoClose: false, position: "bottom-left", className: "smallToast"});
+            }
 
             this.selectedGenes.forEach((gene: string) => {
               if(!this.props.validGenes.hasOwnProperty(gene)){
@@ -75,7 +82,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
             if(invalidGenes.length === 0){
 
-              if(this.selectedGenes.length > 0){
+              if(this.selectedGenes.length > 0 && noneGeneList.length === 0){
                 this.props.onAddGenes(this.selectedGenes);
               }
             } else {

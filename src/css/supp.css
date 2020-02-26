@@ -175,3 +175,7 @@ transform: scale(0.86);
 .pathwayMapper .pathway-toolbar.navbar{
     border-radius: 6px;
 }
+
+.pathwayMapper .smallToast {
+    width: 325px;
+}
