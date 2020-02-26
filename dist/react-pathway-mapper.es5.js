@@ -6030,7 +6030,22 @@ function (_super) {
         }).map(function (node) {
           return node.data().name;
         });
+
+        var noneGeneList = _this.props.pathwayActions.getSelectedNodes().filter(function (node) {
+          return node.data().type !== "GENE";
+        }).map(function (node) {
+          return node.data().name;
+        });
+
         var invalidGenes = [];
+
+        if (noneGeneList.length > 0) {
+          _this.props.toast("Selection contains nodes that are not genes", {
+            autoClose: false,
+            position: "bottom-left",
+            className: "smallToast"
+          });
+        }
 
         _this.selectedGenes.forEach(function (gene) {
           if (!_this.props.validGenes.hasOwnProperty(gene)) {
@@ -6039,7 +6054,7 @@ function (_super) {
         });
 
         if (invalidGenes.length === 0) {
-          if (_this.selectedGenes.length > 0) {
+          if (_this.selectedGenes.length > 0 && noneGeneList.length === 0) {
             _this.props.onAddGenes(_this.selectedGenes);
           }
         } else {
