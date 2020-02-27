@@ -2,7 +2,6 @@ import EditorActionsManager from "../managers/EditorActionsManager";
 import _ from "underscore";
 
 import {toast} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export default class CBioPortalAccessor{
   static readonly CNA_GAIN = 2;

@@ -36,15 +36,13 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
                 </Modal.Header>
                 <Modal.Body>
                 <p className="leftText">
-                    PathwayMapper shows you your genes of interest with the alteration frequencies of the chosen study overlaid on a TCGA pathway. All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with highest ranking with the default ranking options but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.                <br/>
-                    <br/>
-                    To search for a particular pathway of your interest, use the search field on top of the pathway table.
+                    PathwayMapper shows you your genes of interest with the alteration frequencies of selected genetic profiles of the chosen study overlaid on a TCGA pathway using a white to red color scale (the more frequently altered a gene is, the more red it's shown). All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with highest ranking with the default ranking options but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.                
                     <br/>
                     <br/>
-                    To switch to another pathway, click on the button in associated row of the pathway table.
+                    Refer to the documentation <a href="https://github.com/iVis-at-Bilkent/pathway-mapper">here</a> for the notation used.
                     <br/>
                     <br/>
-                    Ranking criteria might be changed by changing the options at the bottom of the table.  
+                    To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in associated row of the pathway table. Ranking criteria might be changed by changing the options at the bottom of the table.  
                     <br/>
                     <br/>
                     The buttons on top of the pathway are:

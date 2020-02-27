@@ -272,13 +272,14 @@ export default class GenomicDataOverlayManager {
         const isNegativePercent = percent < 0
         let _percent = Math.abs(percent)
         // Handle special cases here !
-        _percent = _percent < 0.5 ? 2 : _percent
-        _percent = _percent === 1 ? 2 : _percent
+
+        _percent = _percent > 0 && _percent < 0.5 ? 0.5 : _percent
+        // _percent = _percent === 1 ? 2 : _percent
         // Here we are using non linear regression
         // Fitting points of (0,0), (25,140), (50,220), (100, 255)
-        const percentColor = 255 - (-7.118 + 53.9765 * Math.log(_percent))
+        const percentColor = 255 - (-7.118 + 53.9765 * Math.log(_percent + 0.8))
 
-        if (percent === 0) {
+        if (_percent === 0 || percent == -101) {
           colorString = 'rgb(255,255,255)'
         } else if (isNegativePercent) {
           colorString =
@@ -310,7 +311,7 @@ export default class GenomicDataOverlayManager {
         // Text Part
         const textPercent =
           percent < 0.5 && percent > 0 ? '<0.5' : Number(percent).toFixed(1)
-        const text = textPercent + '%'
+        const text = percent == -101 ? 'N/P' : textPercent + '%'
         const fontSize = 14
         const textLength = text.length
         const xOffset = w / 2 - textLength * 4

@@ -1,6 +1,3 @@
-import { configure } from 'mobx';
-configure({ isolateGlobalState: true });
-
 import React, { Component } from 'react';
 import Toolbar from "../ui/Toolbar";
 import CytoscapeArea from "./CytoscapeArea";
@@ -16,13 +13,6 @@ import Menubar from './Menubar';
 import PathwayActions from '../utils/PathwayActions';
 import CBioPortalAccessor from '../utils/CBioPortalAccessor';
 import SaveLoadUtility from '../utils/SaveLoadUtility';
-import "../css/pmv1.css";
-import "../css/pmv2.css";
-import "cytoscape-panzoom/cytoscape.js-panzoom.css";
-import "cytoscape-navigator/cytoscape.js-navigator.css";
-import 'react-toastify/dist/ReactToastify.css';
-import '../css/qtip.css';
-import Loader from 'react-loader-spinner';
 import Sidebar from './Sidebar';
 import StudyModal from '../modals/StudyModal';
 import Buttonbar from "./Buttonbar";
@@ -39,6 +29,11 @@ import QuickHelpModal from '../modals/QuickHelpModal';
 import LayoutProperties from '../modals/LayoutProperties';
 import ConfirmationModal from '../modals/ConfirmationModal';
 import CBioHelpModal from '../modals/CBioHelpModal';
+
+import "../css/pmv1.css";
+import "../css/pmv2.css";
+import '../css/qtip.css';
+
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
 
@@ -50,11 +45,10 @@ interface IPathwayMapperProps{
   cBioAlterationData?: ICBioData[];
   pathwayName? : string;
   alterationData?: IAlterationData;
-  queryParameter?: any;
-  oncoPrintTab?: string;
-  changePathwayHandler?: Function;
+  onAddGenes?: (selectedGenes: string[]) => void;
+  changePathwayHandler?: (pathwayGenes: string[]) => void;
   addGenomicDataHandler?: (addGenomicData: (alterationData: ICBioData[]) => void) => void;
-  tableComponent?: any;
+  tableComponent?: (data: IPathwayMapperTable[], selectedPathway: string, onPathwaySelect: (pathway: string) => void) => JSX.Element;
   validGenes?: any;
   toast: any;
 }
@@ -102,8 +96,8 @@ export interface IDataTypeMetaData{
 
 export interface IPathwayMapperTable{
   name: string;
-  score: string;
-  genes: string;
+  score: number;
+  genes: string[];
 }
 
 @observer
@@ -196,7 +190,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     // Transform cBioDataAlteration into AlterationData
     this.alterationData[PathwayMapper.CBIO_PROFILE_NAME] = {};
     cBioAlterationData.forEach((geneAltData: ICBioData) => {
-      this.alterationData[PathwayMapper.CBIO_PROFILE_NAME][geneAltData.gene] = (geneAltData.altered / geneAltData.sequenced) * 100;
+      const perc = (geneAltData.altered / geneAltData.sequenced) * 100;
+      
+      // NaN value is replaced with -101 since NaN value leads to some runtime exceptions (such as with toFixed() function),
+      // hence it is represented as -101. It will be recognized in the genomic data svg creation to show N/P instead of
+      // a percentage. -101 is chosen because this percentage is impossible to get.
+      this.alterationData[PathwayMapper.CBIO_PROFILE_NAME][geneAltData.gene] = ((Object.is(perc, NaN) ? -101 : perc));
     });
   }
 
@@ -436,10 +435,17 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           { isCBioPortal &&
           <Row style={{marginBottom: "6px"}}>
             <Col xs={3} style={{}}>
-              <Toolbar pathwayActions={this.pathwayActions} selectedPathway={this.selectedPathway} alterationData={this.alterationData}
-                genes={this.props.genes} handleOpen={this.handleOpen} queryParameter={this.props.queryParameter}
-                oncoPrintTab={this.props.oncoPrintTab} validGenes={this.props.validGenes}
-                toast={this.props.toast} pathwayGenes={Object.keys(this.pathwayGeneMap[this.selectedPathway])}/>
+              <Toolbar
+                pathwayActions={this.pathwayActions}
+                selectedPathway={this.selectedPathway}
+                alterationData={this.alterationData}
+                genes={this.props.genes}
+                handleOpen={this.handleOpen}
+                validGenes={this.props.validGenes}
+                toast={this.props.toast}
+                pathwayGenes={Object.keys(this.pathwayGeneMap[this.selectedPathway])}
+                onAddGenes={this.props.onAddGenes}
+              />
             </Col>
             <Col xs={6} style={{paddingLeft: "0px", marginTop: "17px", textAlign: "right", paddingRight: "35px"}}>
               {this.selectedPathway}

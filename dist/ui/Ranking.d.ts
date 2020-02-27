@@ -1,9 +1,10 @@
 import React from 'react';
 import PathwayActions from '../utils/PathwayActions.js';
+import { IPathwayMapperTable } from "./react-pathway-mapper";
 interface IRankingProps {
     pathwayActions: PathwayActions;
     bestPathwaysAlgos: any[][];
-    tableComponent: any;
+    tableComponent: (data: IPathwayMapperTable[], selectedPathway: string, onPathwaySelect: (pathway: string) => void) => JSX.Element;
 }
 export default class Ranking extends React.Component<IRankingProps, {}> {
     bestPathways: any[];
@@ -18,6 +19,7 @@ export default class Ranking extends React.Component<IRankingProps, {}> {
     setBestPathwayMethod(i: number): void;
     onPathwayClick(pathway: string): void;
     onApplyClick(): void;
+    componentDidMount(): void;
     render(): JSX.Element;
 }
 export {};

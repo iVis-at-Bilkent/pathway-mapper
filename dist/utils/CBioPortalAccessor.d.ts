@@ -1,5 +1,4 @@
 import EditorActionsManager from "../managers/EditorActionsManager";
-import 'react-toastify/dist/ReactToastify.css';
 export default class CBioPortalAccessor {
     static readonly CNA_GAIN = 2;
     static readonly GET_ALL_CANCER_STUDIES_URL = "https://www.cbioportal.org/webservice.do?cmd=getCancerStudies";

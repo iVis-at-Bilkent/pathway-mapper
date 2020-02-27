@@ -4,10 +4,12 @@ import {action, computed, observable} from "mobx";
 import autobind from "autobind-decorator";
 import {Table, DropdownButton,MenuItem, Checkbox, Button, Label} from "react-bootstrap";
 import PathwayActions from '../utils/PathwayActions.js';
+import {IPathwayMapperTable} from "./react-pathway-mapper";
+
 interface IRankingProps{
     pathwayActions: PathwayActions;
     bestPathwaysAlgos: any[][];
-    tableComponent: any;
+    tableComponent: (data: IPathwayMapperTable[], selectedPathway: string, onPathwaySelect: (pathway: string) => void) => JSX.Element;
 }
 
 
@@ -38,15 +40,14 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
         this.dropDownTitle = "Match count";
         this.isExpanded = false;
         this.setBestPathwayMethod(0);
-        console.log("Pathway Algos");
-        console.log(this.props.bestPathwaysAlgos);
+	    this.selectedPathway = this.bestPathways[0].pathwayName;
     }
 
     @autobind
     setBestPathwayMethod(i: number){
         this.bestPathways = this.props.bestPathwaysAlgos[i];
-        this.selectedPathway = this.bestPathways[0].pathwayName;
-        this.props.pathwayActions.changePathway(this.selectedPathway);
+        //this.selectedPathway = this.bestPathways[0].pathwayName;
+        //this.props.pathwayActions.changePathway(this.selectedPathway);
     }
 
     @autobind
@@ -63,6 +64,10 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     }
 
 
+    componentDidMount(): void {
+        this.props.pathwayActions.changePathway(this.selectedPathway);
+    }
+
     render(){
         const lengthThreshold = 13;
 
@@ -76,7 +81,10 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
               </div>*/}
 
             { this.props.tableComponent &&
-            <this.props.tableComponent data={this.bestPathways.map((data: any) => ({name: data.pathwayName, score: data.score, genes: data.genesMatched}))} selectedPathway={this.selectedPathway} changePathway={this.onPathwayClick}/>
+            this.props.tableComponent(
+                this.bestPathways.map((data: any) => ({name: data.pathwayName, score: data.score, genes: data.genesMatched})),
+                this.selectedPathway,
+                this.onPathwayClick)
             }
             <div className="info-entry" style={{marginTop: "10px"}}>
 

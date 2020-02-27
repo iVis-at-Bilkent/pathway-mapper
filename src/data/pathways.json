@@ -1037,7 +1037,7 @@
 "HHBAbZS1Rto5\tlReeCCfNRhiB\tb31Gx6nxRij2\tINHIBITS"
 ],
 "LUSC-2012-RTK-RAS-PI(3)K-pathway": [
-"LUSC-2012-RTK-RAS-PI(3)K-Pathway",
+"LUSC-2012-RTK-RAS-PI(3)K-pathway",
 "",
 "",
 "",
@@ -1600,7 +1600,7 @@
 "RPS6KA3\tIu0kJKKGfyGM\tGENE\t-1\t597\t328",
 "MDM2\tqv-3H9tXfyGZ\tGENE\tlK7pvMYZfyGU\t149\t127",
 "Senescence, apoptosis\tIkv91AlOfyG-\tPROCESS\t-1\t325\t448",
-"undefined\tlK7pvMYZfyGU\tFAMILY\t-1\t234\t127",
+"\tlK7pvMYZfyGU\tFAMILY\t-1\t234\t127",
 "TP53\tES5FXiJLfyGu\tGENE\t-1\t233\t328",
 "Oncogenic stress\tHZxSxJBmfyHE\tPROCESS\t-1\t333\t222",
 "ATM\tc4Ad6ZYBfyGx\tGENE\t-1\t597\t130",
