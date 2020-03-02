@@ -6250,7 +6250,7 @@ function () {
     //Reset SVG
     this.resetSVG();
     this.svg.setAttribute('version', '1.1');
-    this.svg.setAttribute('xmlns', "http://www.w3.org/2000/svg"); //Set viewport of output SVG
+    this.svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg'); //Set viewport of output SVG
 
     var cyBounds = this.editor.cy.extent();
     this.svg.setAttribute('viewBox', cyBounds.x1 + ' ' + cyBounds.y1 + ' ' + cyBounds.w + ' ' + cyBounds.h);
@@ -12514,9 +12514,10 @@ function (_super) {
       className: "info-title"
     }, external_react_default.a.createElement("b", {
       style: {
-        display: "inline-block"
+        display: "inline-block",
+        marginLeft: "5px"
       }
-    }, ' ', "Ranking options")), external_react_default.a.createElement("div", {
+    }, "Ranking options")), external_react_default.a.createElement("div", {
       className: "indent",
       style: {
         marginTop: "10px"
