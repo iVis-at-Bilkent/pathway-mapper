@@ -41,6 +41,8 @@ export default class SVGExporter {
   exportGraph(nodes, edges) {
     //Reset SVG
     this.resetSVG()
+    this.svg.setAttribute('version', '1.1')
+    this.svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
     //Set viewport of output SVG
     var cyBounds = this.editor.cy.extent()
     this.svg.setAttribute(

@@ -6040,7 +6040,7 @@ function (_super) {
         var invalidGenes = [];
 
         if (noneGeneList.length > 0) {
-          _this.props.toast("Selection contains nodes that are not genes", {
+          _this.props.toast("Selection contains following nodes that are not genes: " + noneGeneList.join(', '), {
             autoClose: false,
             position: "bottom-left",
             className: "smallToast"
@@ -6248,7 +6248,9 @@ function () {
 
   SVGExporter.prototype.exportGraph = function (nodes, edges) {
     //Reset SVG
-    this.resetSVG(); //Set viewport of output SVG
+    this.resetSVG();
+    this.svg.setAttribute('version', '1.1');
+    this.svg.setAttribute('xmlns', "http://www.w3.org/2000/svg"); //Set viewport of output SVG
 
     var cyBounds = this.editor.cy.extent();
     this.svg.setAttribute('viewBox', cyBounds.x1 + ' ' + cyBounds.y1 + ' ' + cyBounds.w + ' ' + cyBounds.h);
@@ -12514,7 +12516,7 @@ function (_super) {
       style: {
         display: "inline-block"
       }
-    }, "\u00A0Ranking options")), external_react_default.a.createElement("div", {
+    }, ' ', "Ranking options")), external_react_default.a.createElement("div", {
       className: "indent",
       style: {
         marginTop: "10px"
@@ -12545,7 +12547,7 @@ function (_super) {
 
         _this.onApplyClick();
       }
-    }, "Match percentage")), "\u00A0", external_react_default.a.createElement("div", {
+    }, "Match percentage")), ' ', external_react_default.a.createElement("div", {
       "data-tip": this.COUNT_PERC_EXPLANATION,
       "data-border": "true",
       "data-type": "light",
@@ -12564,7 +12566,7 @@ function (_super) {
         marginTop: "18px",
         bottom: "4px"
       }
-    }, "Consider alteration frequency\u00A0", external_react_default.a.createElement("span", {
+    }, "Consider alteration frequency", ' ', external_react_default.a.createElement("span", {
       "data-tip": this.ALTERATION_EXPLANATION,
       "data-border": "true",
       "data-type": "light",
