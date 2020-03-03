@@ -1,6 +1,6 @@
 {
   "name": "pathway-mapper",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "description": "",
   "keywords": [],
   "main": "dist/react-pathway-mapper.es5.js",
