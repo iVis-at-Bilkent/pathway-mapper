@@ -77,7 +77,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
               {/*
             <div className="info-title table-title">
-                <b style={{marginLeft: "2px"}}>{' '}Pathways</b>
+                <b style={{marginLeft: "2px"}}>&nbsp;Pathways</b>
               </div>*/}
 
             { this.props.tableComponent &&
@@ -91,8 +91,8 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
                 {
                 <div id="criteria-title" className="info-title">
-                    <b style={{display: "inline-block", marginLeft: "5px"}}>
-                        Ranking options
+                    <b style={{display: "inline-block"}}>
+                        &nbsp;Ranking options
                     </b>
                 </div>
                 }
@@ -105,12 +105,12 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                         <MenuItem style={{fontSize: "13px"}} onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match count"; this.onApplyClick();} }>Match count</MenuItem>
                         <MenuItem style={{fontSize: "13px"}} onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match percentage"; this.onApplyClick();}}>Match percentage</MenuItem>
                     </DropdownButton>  
-                    {' '} 
+                    &nbsp; 
                     <div data-tip={this.COUNT_PERC_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
 
                     <Checkbox id="alterationCheckBox" onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1; this.onApplyClick();}}
                             style={{fontSize: "13px", marginTop: "18px", bottom: "4px"}}>
-                        Consider alteration frequency{' '}            
+                        Consider alteration frequency&nbsp;            
                         <span data-tip={this.ALTERATION_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></span>
                     </Checkbox>
                 </div>
