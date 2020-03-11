@@ -71,7 +71,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
             const invalidGenes: string[] = [];
 
             if(noneGeneList.length > 0){
-                this.props.toast("Selection contains following nodes that are not genes: " + noneGeneList.join(', '), {autoClose: false, position: "bottom-left", className: "smallToast"});
+                this.props.toast("Selection contains nodes that are not genes: " + noneGeneList.join(', '), {autoClose: false, position: "bottom-left", className: "smallToast"});
             }
 
             this.selectedGenes.forEach((gene: string) => {

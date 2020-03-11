@@ -6040,7 +6040,7 @@ function (_super) {
         var invalidGenes = [];
 
         if (noneGeneList.length > 0) {
-          _this.props.toast("Selection contains following nodes that are not genes: " + noneGeneList.join(', '), {
+          _this.props.toast("Selection contains nodes that are not genes: " + noneGeneList.join(', '), {
             autoClose: false,
             position: "bottom-left",
             className: "smallToast"
