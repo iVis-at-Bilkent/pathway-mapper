@@ -5,7 +5,7 @@ PathwayMapper is a web based pathway curation tool for interactive creation, edi
   <img src="assets/sample-screenshot.png" width="600"/>
 </p>
 
-A special, viewer edition of PathwayMapper was built for use in cBioPortal ([example](https://www.cbioportal.org/results/pathways?Action=Submit&Z_SCORE_THRESHOLD=1.0&cancer_study_id=gbm_tcga_pub&cancer_study_list=gbm_tcga_pub&case_set_id=gbm_tcga_pub_sequenced&gene_list=TP53%20MDM2%20MDM4&gene_set_choice=user-defined_list&genetic_profile_ids_PROFILE_COPY_NUMBER_ALTERATION=gbm_tcga_pub_cna_rae&genetic_profile_ids_PROFILE_MUTATION_EXTENDED=gbm_tcga_pub_mutations)).
+A special, viewer edition of PathwayMapper was built for use in cBioPortal ([example](https://www.cbioportal.org/results/pathways?Action=Submit&Z_SCORE_THRESHOLD=1.0&cancer_study_id=gbm_tcga_pub&cancer_study_list=gbm_tcga_pub&case_set_id=gbm_tcga_pub_sequenced&gene_list=TP53%20MDM2%20MDM4&gene_set_choice=user-defined_list&genetic_profile_ids_PROFILE_COPY_NUMBER_ALTERATION=gbm_tcga_pub_cna_rae&genetic_profile_ids_PROFILE_MUTATION_EXTENDED=gbm_tcga_pub_mutations), [tutorial](https://www.cbioportal.org/tutorials)).
 <p align="center">
   <img src="assets/sample-screenshot-cBioPortal.png" width="600"/>
 </p>
