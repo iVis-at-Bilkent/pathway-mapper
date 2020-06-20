@@ -29,7 +29,7 @@ interface IToolbarProps {
   handleOpen: (modalId: number) => void;
   genes: any[];
   validGenes: any;
-  toast: any;
+  showMessage: (message: string) => void;
   pathwayGenes: string[];
   onAddGenes: (selectedGenes: string[]) => void;
 }
@@ -69,9 +69,9 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
                                                           .filter((node: any) => node.data().type !== "GENE")
                                                           .map((node: any) => node.data().name as string);
             const invalidGenes: string[] = [];
-
+	    let message = "";
             if(noneGeneList.length > 0){
-                this.props.toast("Selection contains nodes that are not genes: " + noneGeneList.join(', '), {autoClose: false, position: "bottom-left", className: "smallToast"});
+                message += "Selection contains nodes that are not genes: " + noneGeneList.join(', ') + ". ";
             }
 
             this.selectedGenes.forEach((gene: string) => {
@@ -86,8 +86,12 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
                 this.props.onAddGenes(this.selectedGenes);
               }
             } else {
-              this.props.toast("Following gene symbols are invalid or already in gene list: " + invalidGenes.join(", "), {autoClose: false, position: "bottom-left"});
+	      message += "Following gene symbols are invalid or already in gene list: " + invalidGenes.join(", ") + ".";
             }
+
+	    if(message.length > 0) {
+	       this.props.showMessage(message);
+	    }
             }}/>
             
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Add all valid genes to query" data-place="right" data-effect="solid" src={addAllImage} onClick={() => {

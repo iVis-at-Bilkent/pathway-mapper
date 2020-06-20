@@ -51,6 +51,7 @@ interface IPathwayMapperProps{
   tableComponent?: (data: IPathwayMapperTable[], selectedPathway: string, onPathwaySelect: (pathway: string) => void) => JSX.Element;
   validGenes?: any;
   toast: any;
+  showMessage: (message: string) => void;
 }
 
 export interface ICBioData{
@@ -442,7 +443,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
                 genes={this.props.genes}
                 handleOpen={this.handleOpen}
                 validGenes={this.props.validGenes}
-                toast={this.props.toast}
+                showMessage={this.props.showMessage}
                 pathwayGenes={Object.keys(this.pathwayGeneMap[this.selectedPathway])}
                 onAddGenes={this.props.onAddGenes}
               />

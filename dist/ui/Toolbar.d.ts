@@ -8,7 +8,7 @@ interface IToolbarProps {
     handleOpen: (modalId: number) => void;
     genes: any[];
     validGenes: any;
-    toast: any;
+    showMessage: (message: string) => void;
     pathwayGenes: string[];
     onAddGenes: (selectedGenes: string[]) => void;
 }
