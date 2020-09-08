@@ -5,6 +5,7 @@ interface IRankingProps {
     pathwayActions: PathwayActions;
     bestPathwaysAlgos: any[][];
     tableComponent: (data: IPathwayMapperTable[], selectedPathway: string, onPathwaySelect: (pathway: string) => void) => JSX.Element;
+    patientView?: boolean;
 }
 export default class Ranking extends React.Component<IRankingProps, {}> {
     bestPathways: any[];

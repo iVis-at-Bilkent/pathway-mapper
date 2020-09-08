@@ -13,10 +13,14 @@ const addSelImage = require("../images/toolbar/add-selected.svg");
 const addAllImage = require("../images/toolbar/add-all.svg");
 // @ts-ignore
 import openImage from "../images/toolbar/edit.svg";
+// @ts-ignore
+import patientImage from "../images/toolbar/PatientViewHelp.png";
+
 
 interface ICBioHelpModalProps{
     isModalShown: boolean;
     handleClose: (modalId: EModalType) => void;
+    patientView ?: boolean;
 }
 
 export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
@@ -24,17 +28,19 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
 
     constructor(props: ICBioHelpModalProps){
         super(props);
+        console.log("CBioModal", this.props.patientView)
     }
 
     render(){
 
-
-        return(
+        console.log("CBioModal", this.props.patientView);
+        return( 
             <Modal id="cBioHelpModal" className="pathwayMapper" show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.CHELP)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>PathwayMapper cBioPortal Edition 2.0</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                {(!this.props.patientView &&
+                <Modal.Body> 
                 <p className="leftText">
                     PathwayMapper shows you your genes of interest with the alteration frequencies of selected genetic profiles of the chosen study overlaid on a TCGA pathway using a white to red color scale (the more frequently altered a gene is, the more red it's shown). All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with highest ranking with the default ranking options but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.                
                     <br/>
@@ -42,12 +48,11 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
                     Refer to the documentation <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">here</a> for the notation used.
                     <br/>
                     <br/>
-                    To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in associated row of the pathway table. Ranking criteria might be changed by changing the options at the bottom of the table.  
+                    To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table. Ranking criteria might be changed by changing the options at the bottom of the table.  
                     <br/>
                     <br/>
                     The buttons on top of the pathway are:
                     <ul>
-
                         <table cellPadding={5}>
                             <tr>
                                 <td><img height="22px" width="22px" src={savePNGImage}/></td> <td>Save as PNG</td>
@@ -70,8 +75,38 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
                         </table>
                     </ul>
                 </p>
-                </Modal.Body>
-
+                </Modal.Body> )
+    },
+       {(this.props.patientView &&
+       <Modal.Body> 
+       <p className="leftText">
+       PathwayMapper shows you your genes of interest with the mutation types, copy number alterations and fusions of selected genetic profiles of the chosen study overlaid on a TCGA pathway using the OncoPrint color scheme. All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with the highest number of genes of interest matching the ones in a pathway but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.                
+           <br/>
+           <br/>
+           Refer to the documentation <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">here</a> for the notation used.
+           <br/>
+           <br/>
+           To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.
+           <br/>
+           <br/>
+           The buttons on top of the pathway are:
+           <ul>
+               <table cellPadding={5}>
+                   <tr>
+                       <td><img height="22px" width="22px" src={savePNGImage}/></td> <td>Save as PNG</td>
+                   </tr>
+                   <tr>
+                       <td><img height="22px" width="22px" src={saveSVGImage}/></td> <td>Save as SVG</td>
+                   </tr>
+                   <tr>
+                       <td><img height="22px" width="22px" src={layoutImage}/></td> <td>Perform layout: Layout is recalculated taking current node positions into account</td>
+                   </tr>
+               </table>
+           </ul>
+           <img src={patientImage}/>
+       </p>
+       </Modal.Body>
+       )}
             </Modal>
 
         );

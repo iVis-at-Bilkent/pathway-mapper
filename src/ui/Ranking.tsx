@@ -10,6 +10,7 @@ interface IRankingProps{
     pathwayActions: PathwayActions;
     bestPathwaysAlgos: any[][];
     tableComponent: (data: IPathwayMapperTable[], selectedPathway: string, onPathwaySelect: (pathway: string) => void) => JSX.Element;
+    patientView ?: boolean;
 }
 
 
@@ -86,6 +87,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                 this.selectedPathway,
                 this.onPathwayClick)
             }
+            {(!this.props.patientView &&
             <div className="info-entry" style={{marginTop: "10px"}}>
 
 
@@ -115,8 +117,11 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                     </Checkbox>
                 </div>
             </div>
+              )}
           </div>
+        
         );
+       
     }
 
     

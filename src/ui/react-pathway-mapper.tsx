@@ -53,7 +53,7 @@ interface IPathwayMapperProps{
   toast: any;
   showMessage: (message: string) => void;
   //These two variables are used for PatientView
-  view ?: string;
+  patientView ?: boolean;
   //alterationColor ?: any[];
 }
 
@@ -167,7 +167,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       // If cBioPortal mode is 'on' it is very likely to have cBioALterationData
       // but to be on the safe side below assertion is made.
       if(this.props.cBioAlterationData ){
-        if( this.props.view === "patient"){
+        if( this.props.patientView){
           //PatientView PathwayMapper has a different functionality
           //Alteration types are overlayed instead of alterationpercentage
           this.calculatePatientData(this.props.cBioAlterationData);
@@ -452,7 +452,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   render() {
   const isCBioPortal = this.props.isCBioPortal;     
 
-  const cytoComp = <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative}
+  const cytoComp = <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative} 
   setActiveEdge={this.setActiveEdge} editorHandler={this.editorHandler} 
   selectedPathway={this.selectedPathway} pathwayHandler={this.pathwayHandler} 
   handleOpen={this.handleOpen}/>;
@@ -484,6 +484,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
                 showMessage={this.props.showMessage}
                 pathwayGenes={Object.keys(this.pathwayGeneMap[this.selectedPathway])}
                 onAddGenes={this.props.onAddGenes}
+                patientView = {this.props.patientView}
               />
             </Col>
             <Col xs={6} style={{paddingLeft: "0px", marginTop: "17px", textAlign: "right", paddingRight: "35px"}}>
@@ -508,9 +509,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
               : (cytoComp)
             }
             {
-            (isCBioPortal && 
+            (isCBioPortal &&
             <Col xs={3} style={{paddingLeft: "0px"}}>
-              <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} tableComponent={this.props.tableComponent}/>
+              <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} tableComponent={this.props.tableComponent} patientView={this.props.patientView}/>
             </Col>)
             }
           </div>
@@ -531,7 +532,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
             <QuickHelpModal isModalShown={this.isModalShown[EModalType.HELP]} handleClose={this.handleClose}/>
             <LayoutProperties isModalShown={this.isModalShown[EModalType.LAYOUT]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <ConfirmationModal isModalShown={this.isModalShown[EModalType.CONFIRMATION]} handleClose={this.handleClose} />
-            <CBioHelpModal isModalShown={this.isModalShown[EModalType.CHELP]} handleClose={this.handleClose}/>
+            <CBioHelpModal isModalShown={this.isModalShown[EModalType.CHELP]} handleClose={this.handleClose} patientView ={this.props.patientView}/>
             <AboutModal isModalShown={this.isModalShown[EModalType.ABOUT]} handleClose={this.handleClose}/>
           </div>)
           }
@@ -603,7 +604,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.pathwayActions.editorHandler(editor, eh, undoRedoManager, this.viewOperationsManager, this.gridOptionsManager);
     
     if(this.props.isCBioPortal){
-      if(this.props.view ==="patient"){
+      if(this.props.patientView){
         console.log("inside editor handler for patient")
         this.editor.addPortalGenomicData(this.patientData, this.editor.getEmptyGroupID());
       }

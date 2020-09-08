@@ -478,7 +478,7 @@ export default class GenomicDataOverlayManager {
   showPatientData(data) {
     const self = this
 
-    const genomicDataBoxCount = 12 //this.countVisibleGenomicDataByType(); //CHANGE
+    const genomicDataBoxCount = 3 //this.countVisibleGenomicDataByType(); //CHANGE
     if (genomicDataBoxCount < 1) {
       // Hide all genomic data and return
       this.hideGenomicData()

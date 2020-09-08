@@ -36,4 +36,8 @@ export default class GenomicDataOverlayManager {
     parseGenomicData(genomicData: any, groupID: any): void;
     registerObserver(observer: any): void;
     notifyObservers(): void;
+    getAlterationCountForPatient(geneData: any): number;
+    showPatientData(data: any): void;
+    getOncoprintColors(selectedGene: any): any;
+    generateSVGForPatientNode(ele: any, patientData: any): any;
 }

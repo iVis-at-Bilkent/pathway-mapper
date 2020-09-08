@@ -32,6 +32,7 @@ interface IToolbarProps {
   showMessage: (message: string) => void;
   pathwayGenes: string[];
   onAddGenes: (selectedGenes: string[]) => void;
+  patientView ?: boolean;
 }
 
 @observer
@@ -60,7 +61,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Save as SVG" data-place="right" data-effect="solid" src={saveSVGImage} onClick={() => {this.props.pathwayActions.saveAs("SVG");}}/>
 
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Perform layout" data-place="right" data-effect="solid" src={layoutImage} onClick={this.props.pathwayActions.performLayout} />              
-
+          {(!this.props.patientView && [
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Add selected genes to query" data-place="right" data-effect="solid" src={addSelImage} onClick={() => {
             this.selectedGenes = this.props.pathwayActions.getSelectedNodes()
                                                           .filter((node: any) => node.data().type === "GENE")
@@ -93,7 +94,8 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 	       this.props.showMessage(message);
 	    }
             }}/>
-            
+            ,
+        
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Add all valid genes to query" data-place="right" data-effect="solid" src={addAllImage} onClick={() => {
 
             this.selectedGenes = this.props.pathwayGenes.filter((gene: string) => {
@@ -103,11 +105,12 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
             if(this.selectedGenes.length > 0){
               this.props.onAddGenes(this.selectedGenes);
             }
-          }}/>
-          
+          }}/>,
+      
+
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Edit pathway" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://pathwaymapper.org/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
-          
-          <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Help" data-place="right" data-effect="solid" src={aboutImage} onClick={() => {console.log("Here");this.props.handleOpen(EModalType.CHELP);}}/>
+          ])}
+          <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Help" data-place="right" data-effect="solid" src={aboutImage} onClick={() => {console.log("Here");this.props.handleOpen(EModalType.CHELP); }}/>
           
     </div>);
   }

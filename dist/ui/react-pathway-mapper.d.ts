@@ -22,6 +22,7 @@ interface IPathwayMapperProps {
     validGenes?: any;
     toast: any;
     showMessage: (message: string) => void;
+    patientView?: boolean;
 }
 export interface ICBioData {
     altered: number;
@@ -76,6 +77,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     isModalShown: boolean[];
     portalAcessor: CBioPortalAccessor;
     alterationData: IAlterationData;
+    patientData: any[][];
     pathwayGeneMap: {
         [key: string]: {
             [key: string]: string;
@@ -89,6 +91,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     gridOptionsManager: GridOptionsManager;
     constructor(props: IPathwayMapperProps);
     calculateAlterationData(cBioAlterationData: ICBioData[]): void;
+    calculatePatientData(cBioAlterationData: ICBioData[]): void;
     getGeneStudyMap(studyGeneMap: any): any;
     getAlterationAveragePerGene(genomicDataMap: any): any;
     /**
