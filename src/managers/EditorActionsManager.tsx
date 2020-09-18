@@ -84,6 +84,7 @@ export default class EditorActionsManager{
         removeBendMenuItemTitle: "Remove Bend Point",
     
         handleReconnectEdge: this.reconnectEdge.bind(this),
+        enableMultipleAnchorRemovalOption: true,
         };
         
         this.edgeEditing = this.cy.edgeEditing(edgeEditingOptions);
@@ -166,7 +167,7 @@ export default class EditorActionsManager{
     {
         if (this.isCollaborative)
             this.shareDBManager.changeNodePositionsShareDB(selectedNodes);
-        //resize-node extension already deals for the movement in local mode
+        //node-editing extension already deals for the movement in local mode
     };
 
     /*
@@ -680,27 +681,29 @@ export default class EditorActionsManager{
         }
     }
 
-    updateEdgeBendPoints(edge: any)
+    updateEdgeAnchorPoints(edge: any)
     {
         if (this.isCollaborative)
         {
-            var numberOfBendPoints = 0;
-            if (this.edgeEditing.getSegmentPoints(edge) !== undefined)
-                numberOfBendPoints = this.edgeEditing.getSegmentPoints(edge).length/2;
-            var bendPointsArray = [];
-            for (var j = 0; j < numberOfBendPoints; j++)
+            var numberOfAnchorPoints = 0;
+            var anchors = this.edgeEditing.getAnchorsAsArray(edge);
+            if (anchors !== undefined)
+                numberOfAnchorPoints = anchors.length / 2;
+            var anchorPointsArray = [];
+            for (var j = 0; j < numberOfAnchorPoints; j++)
             {
-                bendPointsArray.push(
+                anchorPointsArray.push(
                     {
-                        x: this.edgeEditing.getSegmentPoints(edge)[2*j],
-                        y: this.edgeEditing.getSegmentPoints(edge)[2*j+1]
+                        x: anchors[2*j],
+                        y: anchors[2*j+1]
                     }
                 );
             }
+            // should be conditional assignment here
             // edge.data("bendPointPositions", bendPointsArray);
-            // edgeEditing.initBendPoints(edge);
+            // edgeEditing.initAnchorPoints(edge);
             
-            this.shareDBManager.updateEdgeBendPoints(edge.id(), bendPointsArray);
+            this.shareDBManager.updateEdgeAnchorPoints(edge.id(), anchorPointsArray);
         }
     }
 
@@ -1134,7 +1137,7 @@ export default class EditorActionsManager{
         this.cy.add(nodeList);
         this.cy.add(edgeList);
 
-        this.edgeEditing.initBendPoints(this.cy.edges());
+        this.edgeEditing.initAnchorPoints(this.cy.edges());
 
         this.cy.nodes().updateCompoundBounds();
     }
@@ -1152,7 +1155,7 @@ export default class EditorActionsManager{
                 bendPointPositions: edge.bendPoint
             };
         this.addNewEdgetoCy(edgeData);
-        this.edgeEditing.initBendPoints(this.cy.getElementById( edge.id ));
+        this.edgeEditing.initAnchorPoints(this.cy.getElementById( edge.id ));
     };
 
     reconnectEdge(sourceID: string, targetID: string, edgeData: any) {
@@ -1549,7 +1552,7 @@ export default class EditorActionsManager{
             //Local usage file load
             this.loadFileCy(nodes,edges);
         }
-        this.cy.edgeEditing('get').initBendPoints(this.cy.edges());
+        this.cy.edgeEditing('get').initAnchorPoints(this.cy.edges());
         this.fitGraph();
     };
 
@@ -1638,7 +1641,7 @@ export default class EditorActionsManager{
                 this.undoHighlightInvalidGenes(cyEle);
             }
             //Refresh grapples when the node being changed from another collaborator is selected in current window
-            // this.cy.nodeResize('get').refreshGrapples();
+            // this.cy.nodeEditing('get').refreshGrapples();
         }
         else if(cyEle.isEdge())
         {
@@ -1659,13 +1662,13 @@ export default class EditorActionsManager{
                 };
                 cyEle.move(location);
                 //make sure that bend points are same
-                this.updateEdgeBendPoints(cyEle);
+                this.updateEdgeAnchorPoints(cyEle);
             }
             else {
                 cyEle.data('bendPointPositions', bendPoint);
                 if (numberOfBendPositions !== undefined && numberOfBendPositions > 0)
-                    this.edgeEditing.deleteSelectedBendPoint(cyEle,0);
-                this.edgeEditing.initBendPoints(cyEle);
+                    this.edgeEditing.deleteSelectedAnchor(cyEle,0);
+                this.edgeEditing.initAnchorPoints(cyEle);
             }
         }
     };
@@ -1918,7 +1921,7 @@ export default class EditorActionsManager{
 
             ur.do("batch", actions);
         }
-        this.cy.nodeResize('get').refreshGrapples();
+        this.cy.nodeEditing('get').refreshGrapples();
     };
 
 

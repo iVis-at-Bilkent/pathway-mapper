@@ -296,10 +296,12 @@ export default class ShareDBManager {
         for (const key of Object.keys(edgeMap)) {
             var tmpEdge = edgeMap[key];
 
-            if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined || tmpEdge.bendPoint == undefined) {
+            if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined || 
+                tmpEdge.anchorPoints == undefined || tmpEdge.edgeCurveType == undefined) {
                 var pubmedIDs = (tmpEdge.pubmedIDs == undefined) ? [] : tmpEdge.pubmedID;
                 var edgeLabel = (tmpEdge.name == undefined) ? "" : tmpEdge.name;
-                var bendPoint = (tmpEdge.bendPoint == undefined) ? [] : tmpEdge.bendPoint;
+                var anchorPoints = (tmpEdge.anchorPoints == undefined) ? [] : tmpEdge.anchorPoints;
+                var edgeCurveType = (tmpEdge.edgeCurveType == undefined) ? "bezier" : tmpEdge.edgeCurveType;
 
                 var param = {
                     type: tmpEdge.type,
@@ -308,7 +310,8 @@ export default class ShareDBManager {
                     target: tmpEdge.target,
                     pubmedID: pubmedIDs,
                     name: edgeLabel,
-                    bendPoint: bendPoint
+                    anchorPoints: anchorPoints,
+                    edgeCurveType: edgeCurveType
                 };
 
                 var newEdge: any = self.edgeInitializer(param);
@@ -659,7 +662,8 @@ export default class ShareDBManager {
             target: edgeData.target,
             pubmedIDs: edgeData.pubmedIDs,
             name: edgeData.name,
-            bendPoint: edgeData.bendPoint
+            anchorPoints: edgeData.anchorPoints,
+
         };
 
         //Ensures new edge is compatible with the other edge
@@ -875,13 +879,13 @@ export default class ShareDBManager {
         }
     };
 
-    updateEdgeBendPoints(edgeID, bendPointsArray) {
+    updateEdgeAnchorPoints(edgeID, anchorPointsArray) {
 
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
         
         if (edgeMap.hasOwnProperty(edgeID)) {
             var tmpEdge = edgeMap[edgeID];
-            tmpEdge.bendPoint = bendPointsArray;
+            tmpEdge.anchorPoints = anchorPointsArray;
             this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
         }
         else {
@@ -1222,6 +1226,8 @@ export default class ShareDBManager {
         edge.target = params.target || "undefined";
         edge.name = params.name || "";
         edge.isHighlighted = params.isHighlighted || false;
+        edge.anchorPoints = params.anchorPoints;
+        edge.edgeCurveType = params.edgeCurveType;
 
         if (params.pubmedIDs) {
             if (edge.pubmedIDs == undefined) {
@@ -1234,14 +1240,14 @@ export default class ShareDBManager {
             edge.pubmedIDs = [];
         }
 
-        if (params.bendPoint) {
-            if (edge.bendPoint == undefined) {
-                edge.bendPoint = [];
+        if (params.anchorPoints) {
+            if (edge.anchorPoints == undefined) {
+                edge.anchorPoints = [];
             }
-            edge.bendPoint.push(params.bendPoint);
+            edge.anchorPoints.push(params.anchorPoints);
         }
         else {
-            edge.bendPoint = [];
+            edge.anchorPoints = [];
         }
         return edge;
     };

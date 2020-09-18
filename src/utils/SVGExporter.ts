@@ -135,15 +135,15 @@ export default class SVGExporter {
       targetRectangle.height += this.COMPOUND_MARGIN
     }
 
-    var numberOfBendPoints = 0
-    if (this.edgeEditing.getSegmentPoints(edge) !== undefined)
-      numberOfBendPoints = this.edgeEditing.getSegmentPoints(edge).length / 2
+    var numberOfAnchorPoints = 0
+    var anchors = this.edgeEditing.getAnchorsAsArray(edge)
+    if (anchors !== undefined) numberOfAnchorPoints = anchors.length / 2
 
     var clipPoints
-    if (numberOfBendPoints > 0) {
+    if (numberOfAnchorPoints > 0) {
       var lastBendPoint = {
-        x: this.edgeEditing.getSegmentPoints(edge)[2 * numberOfBendPoints - 2],
-        y: this.edgeEditing.getSegmentPoints(edge)[2 * numberOfBendPoints - 1],
+        x: anchors[2 * numberOfAnchorPoints - 2],
+        y: anchors[2 * numberOfAnchorPoints - 1],
         height: 0,
         width: 0
       }
@@ -241,11 +241,12 @@ export default class SVGExporter {
     }
 
     //Draw edge lines here !
-    if (numberOfBendPoints > 0) {
+    if (numberOfAnchorPoints > 0) {
       //Calculate initial clipping point of source node with the segment from first bend point
+      var anchors = this.edgeEditing.getAnchorsAsArray(edge)
       var firstBendPoint = {
-        x: this.edgeEditing.getSegmentPoints(edge)[0],
-        y: this.edgeEditing.getSegmentPoints(edge)[1],
+        x: anchors[0],
+        y: anchors[1],
         height: 0,
         width: 0
       }
@@ -254,15 +255,16 @@ export default class SVGExporter {
         firstBendPoint
       )
 
-      //Create a copy array of edgeEditing.getSegmentPoints(edge) which contain all the bending points
+      // Create a copy array of edgeEditing.getAnchorsAsArray(edge) which contain all the bending points
       // including source and target clipping point. The first elements of the array are source's x and y positions
       // and the last ones are target's x and y positions
       var points = [
         initialClipPoint.sourceClipPoints.x,
         initialClipPoint.sourceClipPoints.y
       ]
-      for (var i = 0; i < numberOfBendPoints * 2; i++) {
-        points.push(this.edgeEditing.getSegmentPoints(edge)[i])
+      var anchors = this.edgeEditing.getAnchorsAsArray(edge)
+      for (var i = 0; i < numberOfAnchorPoints * 2; i++) {
+        points.push(anchors[i])
       }
       points.push(clipPoints.targetClipPoints.x)
       points.push(clipPoints.targetClipPoints.y)
