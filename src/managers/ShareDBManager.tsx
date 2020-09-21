@@ -297,11 +297,11 @@ export default class ShareDBManager {
             var tmpEdge = edgeMap[key];
 
             if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined || 
-                tmpEdge.anchorPoints == undefined || tmpEdge.edgeCurveType == undefined) {
+                tmpEdge.anchorPoints == undefined || tmpEdge.edgeCurveStyle == undefined) {
                 var pubmedIDs = (tmpEdge.pubmedIDs == undefined) ? [] : tmpEdge.pubmedID;
                 var edgeLabel = (tmpEdge.name == undefined) ? "" : tmpEdge.name;
                 var anchorPoints = (tmpEdge.anchorPoints == undefined) ? [] : tmpEdge.anchorPoints;
-                var edgeCurveType = (tmpEdge.edgeCurveType == undefined) ? "bezier" : tmpEdge.edgeCurveType;
+                var edgeCurveStyle = (tmpEdge.edgeCurveStyle == undefined) ? "bezier" : tmpEdge.edgeCurveStyle;
 
                 var param = {
                     type: tmpEdge.type,
@@ -311,7 +311,7 @@ export default class ShareDBManager {
                     pubmedID: pubmedIDs,
                     name: edgeLabel,
                     anchorPoints: anchorPoints,
-                    edgeCurveType: edgeCurveType
+                    edgeCurveStyle: edgeCurveStyle
                 };
 
                 var newEdge: any = self.edgeInitializer(param);
@@ -879,13 +879,14 @@ export default class ShareDBManager {
         }
     };
 
-    updateEdgeAnchorPoints(edgeID, anchorPointsArray) {
+    updateEdgeAnchorPoints(edgeID, anchorPointsArray, edgeCurveStyle) {
 
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
         
         if (edgeMap.hasOwnProperty(edgeID)) {
             var tmpEdge = edgeMap[edgeID];
             tmpEdge.anchorPoints = anchorPointsArray;
+            tmpEdge.edgeCurveStyle = edgeCurveStyle;
             this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
         }
         else {
@@ -1074,9 +1075,24 @@ export default class ShareDBManager {
             console.log(edge);
             edge.data.source = oldIdNewIdMap[edge.data.source];
             edge.data.target = oldIdNewIdMap[edge.data.target];
+            
+            var edgeCurveStyle = "bezier";
+            if (edge.data.bendPointPositions && edge.data.bendPointPositions.length > 0) {
+                edge.data['anchorPoints'] = edge.data['bendPointPositions'];
+                delete edge.data['bendPointPositions'];
+                edgeCurveStyle = "segments";
+            }
+            else if (edge.data.controlPointPositions && edge.data.controlPointPositions.length > 0) {
+                edge.data['anchorPoints'] = edge.data['controlPointPositions'];
+                delete edge.data['controlPointPositions'];
+                edgeCurveStyle = "unbundled-bezier";
+            }
+            
             var params = edge.data;
+            params.edgeCurveStyle = edgeCurveStyle;
             var newEdgeID = self.getCustomObjId();
             params.id = newEdgeID;
+            
             var newEdge = self.edgeInitializer(params);
             self.insertShareDBObject(self.EDGEMAP_NAME, newEdgeID, newEdge);
         }
@@ -1226,8 +1242,8 @@ export default class ShareDBManager {
         edge.target = params.target || "undefined";
         edge.name = params.name || "";
         edge.isHighlighted = params.isHighlighted || false;
-        edge.anchorPoints = params.anchorPoints;
-        edge.edgeCurveType = params.edgeCurveType;
+        edge.anchorPoints = params.anchorPoints || [];
+        edge.edgeCurveStyle = params.edgeCurveStyle || "bezier";
 
         if (params.pubmedIDs) {
             if (edge.pubmedIDs == undefined) {
@@ -1244,7 +1260,7 @@ export default class ShareDBManager {
             if (edge.anchorPoints == undefined) {
                 edge.anchorPoints = [];
             }
-            edge.anchorPoints.push(params.anchorPoints);
+            edge.anchorPoints = params.anchorPoints;
         }
         else {
             edge.anchorPoints = [];
