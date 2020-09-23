@@ -86,6 +86,7 @@
     "file-saver": "^2.0.2",
     "jquery-ui-dist": "^1.12.1",
     "konva": "^1.6.3",
+    "oncoprintjs": "4.2.3",
     "react-loader-spinner": "^2.3.0",
     "react-scrollbar": "^0.5.6",
     "react-table": "^6.10.0",

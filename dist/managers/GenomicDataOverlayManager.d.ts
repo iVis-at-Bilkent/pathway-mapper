@@ -40,4 +40,7 @@ export default class GenomicDataOverlayManager {
     showPatientData(data: any): void;
     getOncoprintColors(selectedGene: any): any;
     generateSVGForPatientNode(ele: any, patientData: any): any;
+    generateOncoprintForPatientNode(ele: any, patientData: any): SVGSVGElement | {
+        outerHTML: string;
+    };
 }

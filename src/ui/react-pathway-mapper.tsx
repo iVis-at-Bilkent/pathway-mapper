@@ -17,6 +17,7 @@ import Sidebar from './Sidebar';
 import StudyModal from '../modals/StudyModal';
 import Buttonbar from "./Buttonbar";
 import ProfilesModal from '../modals/ProfilesModal';
+import { IGeneticAlterationRuleSetParams } from 'oncoprintjs';
 
 import {toast, ToastContainer} from 'react-toastify';
 import AboutModal from '../modals/AboutModal';
@@ -63,6 +64,8 @@ export interface ICBioData{
   gene: string;
   percentAltered: string​;
   sequenced: number;
+  geneticTrackData?: any[]; // TODO GeneticTrackDatum[]: this is currently a private type within cbioportal repo
+  geneticTrackRuleSetParams?: IGeneticAlterationRuleSetParams;
 }
 export enum EModalType{
   STUDY,
@@ -236,8 +239,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
       this.alterationData[PathwayMapper.CBIO_PROFILE_NAME][geneAltData.gene] = ((Object.is(perc, NaN) ? -101 : perc));
 
-     this.patientData[geneAltData.gene][geneAltData.percentAltered] = ((Object.is(perc, NaN) ? -101 : perc));
-     
+      this.patientData[geneAltData.gene][geneAltData.percentAltered] = ((Object.is(perc, NaN) ? -101 : perc));
+      this.patientData[geneAltData.gene]["geneticTrackData"] = geneAltData.geneticTrackData;
+      this.patientData[geneAltData.gene]["geneticTrackRuleSetParams"] = geneAltData.geneticTrackRuleSetParams;
     });
 
   }
