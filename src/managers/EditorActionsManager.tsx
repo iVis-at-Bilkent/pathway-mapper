@@ -71,7 +71,7 @@ export default class EditorActionsManager{
             return ele.data('bendPointPositions');
         },
         // whether to initilize bend points on creation of this extension automatically
-        initAnchorsAutomatically: true,
+        initBendPointsAutomatically: true,
         // whether the bend editing operations are undoable (requires cytoscape-undo-redo.js)
         undoable: true,
         // the size of bend shape is obtained by multipling width of edge with this parameter
@@ -82,9 +82,8 @@ export default class EditorActionsManager{
         addBendMenuItemTitle: "Add Bend Point",
         // title of remove bend point menu item (User may need to adjust width of menu items according to length of this option)
         removeBendMenuItemTitle: "Remove Bend Point",
-        // if not collab mode the extension handles the change of source and target
-        handleReconnectEdge: this.isCollaborative ? this.reconnectEdge.bind(this) : undefined,
-        // enable option to remove all bend/control points
+    
+        handleReconnectEdge: this.reconnectEdge.bind(this),
         enableMultipleAnchorRemovalOption: true,
         };
         
@@ -686,7 +685,6 @@ export default class EditorActionsManager{
     {
         if (this.isCollaborative)
         {
-            var edgeCurveStyle = edge.css('curve-style');
             var numberOfAnchorPoints = 0;
             var anchors = this.edgeEditing.getAnchorsAsArray(edge);
             if (anchors !== undefined)
@@ -701,10 +699,11 @@ export default class EditorActionsManager{
                     }
                 );
             }
+            // should be conditional assignment here
             // edge.data("bendPointPositions", bendPointsArray);
             // edgeEditing.initAnchorPoints(edge);
             
-            this.shareDBManager.updateEdgeAnchorPoints(edge.id(), anchorPointsArray, edgeCurveStyle);
+            this.shareDBManager.updateEdgeAnchorPoints(edge.id(), anchorPointsArray);
         }
     }
 
@@ -1117,25 +1116,19 @@ export default class EditorActionsManager{
             if(!(edge.source in nodeMap && edge.target in nodeMap))
                 continue
 
-            var tmpData = {
-                id: edgeID,
-                type: edge.type,
-                source: edge.source,
-                target: edge.target,
-                pubmedIDs: edge.pubmedIDs,
-                name: edge.name,
-            }
-            if (edge.edgeCurveStyle == "unbundled-bezier") {
-              tmpData['controlPointPositions'] = edge.anchorPoints;
-            }
-            else {
-              tmpData['bendPointPositions'] = edge.anchorPoints;
-            }
-
             var edgeData =
                 {
                     group: 'edges',
-                    data: tmpData
+                    data:
+                        {
+                            id: edgeID,
+                            type: edge.type,
+                            source: edge.source,
+                            target: edge.target,
+                            pubmedIDs: edge.pubmedIDs,
+                            name: edge.name,
+                            bendPointPositions: edge.bendPoint
+                        }
                 };
 
             edgeList.push(edgeData);
@@ -1158,14 +1151,9 @@ export default class EditorActionsManager{
                 source: edge.source,
                 target: edge.target,
                 pubmedIDs: edge.pubmedIDs,
-                name: edge.name
+                name: edge.name,
+                bendPointPositions: edge.bendPoint
             };
-        if (edge.edgeCurveStyle == "unbundled-bezier") {
-          edgeData['controlPointPositions'] = edge.anchorPoints;
-        }
-        else {
-          edgeData['bendPointPositions'] = edge.anchorPoints;
-        }
         this.addNewEdgetoCy(edgeData);
         this.edgeEditing.initAnchorPoints(this.cy.getElementById( edge.id ));
     };
@@ -1661,7 +1649,10 @@ export default class EditorActionsManager{
             cyEle.data('pubmedIDs', pubmedArray);
             this.updateHighlight(cyEle, ele.isHighlighted);
 
-            var anchorPoints = ele.anchorPoints;
+            var bendPoint = ele.bendPoint;
+            var numberOfBendPositions = cyEle.data('bendPointPositions').length; // Holds the number of bend positions in data before being updated
+
+
 
             //If edge is reconnected
             if ( ele.source !== cyEle.source().id() || ele.target !== cyEle.target().id()){
@@ -1674,17 +1665,9 @@ export default class EditorActionsManager{
                 this.updateEdgeAnchorPoints(cyEle);
             }
             else {
-                if (ele.edgeCurveStyle == "bezier") {
-                    cyEle.data('controlPointPositions', []);
-                    cyEle.data('bendPointPositions', []);
-                }
-                else if (ele.edgeCurveStyle == "unbundled-bezier") {
-                    cyEle.data('controlPointPositions', anchorPoints);
-                }
-                else {
-                    cyEle.data('bendPointPositions', anchorPoints);
-                }
-                
+                cyEle.data('bendPointPositions', bendPoint);
+                if (numberOfBendPositions !== undefined && numberOfBendPositions > 0)
+                    this.edgeEditing.deleteSelectedAnchor(cyEle,0);
                 this.edgeEditing.initAnchorPoints(cyEle);
             }
         }
