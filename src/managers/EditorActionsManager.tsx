@@ -701,7 +701,7 @@ export default class EditorActionsManager{
                     }
                 );
             }
-            // edge.data("bendPointPositions", anchorPointsArray);
+            // edge.data("bendPointPositions", bendPointsArray);
             // edgeEditing.initAnchorPoints(edge);
             
             this.shareDBManager.updateEdgeAnchorPoints(edge.id(), anchorPointsArray, edgeCurveStyle);
@@ -1670,7 +1670,7 @@ export default class EditorActionsManager{
                     target: ele.target
                 };
                 cyEle.move(location);
-                //make sure that anchor points are same
+                //make sure that bend points are same
                 this.updateEdgeAnchorPoints(cyEle);
             }
             else {

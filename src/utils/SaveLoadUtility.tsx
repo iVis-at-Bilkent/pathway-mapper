@@ -278,11 +278,11 @@ export default class SaveLoadUtility{
       var edgeCurveStyle = (lineData.length > 7) ? lineData[7] : '';
       var anchorPointPositions = [];
       if (anchorPoints) {
-        var anchorPair = anchorPoints.split(')'); //The last element of anchorPair array is ""
-        for (var j = 0; j < anchorPair.length - 1; j++) {
-          var separatorIndex = anchorPair[j].indexOf(";");
-          var x = anchorPair[j].substring(1, separatorIndex);
-          var y = anchorPair[j].substring(separatorIndex + 1, anchorPair[j].length);
+        var bendPair = anchorPoints.split(')'); //The last element of bendPair array is ""
+        for (var j = 0; j < bendPair.length - 1; j++) {
+          var separatorIndex = bendPair[j].indexOf(";");
+          var x = bendPair[j].substring(1, separatorIndex);
+          var y = bendPair[j].substring(separatorIndex + 1, bendPair[j].length);
           anchorPointPositions.push({x: parseFloat(x), y: parseFloat(y)});
         }
       }
