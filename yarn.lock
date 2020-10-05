@@ -5148,18 +5148,20 @@ cyclist@~0.2.2:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-0.2.2.tgz#1b33792e11e914a2fd6d6ed6447464444e5fa640"
   integrity sha1-GzN5LhHpFKL9bW7WRHRkRE5fpkA=
 
-"cytoscape-context-menus@github:iVis-at-Bilkent/cytoscape.js-context-menus#unstable":
-  version "3.1.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-context-menus/tar.gz/72e5edc0d4e495d5571d2bcc68399f78a97b1465"
+cytoscape-context-menus@^3.0:
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/cytoscape-context-menus/-/cytoscape-context-menus-3.0.7.tgz#834963f3b115f1ff460e346b5be1e2f626ca2583"
+  integrity sha512-YS6mXFolAbEq9roprvgJdMbsTaZP97+Q6ReHqRCkO1weOqVlEoUgSNBiT7x2nLQsYWfEnfWEkF1vdWeTVvXd3A==
 
 cytoscape-cose-bilkent@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/cytoscape-cose-bilkent/-/cytoscape-cose-bilkent-4.0.0.tgz#5f0afbe5c55a7a026442b756ca388ce77c262967"
   integrity sha1-Xwr75cVaegJkQrdWyjiM53wmKWc=
 
-"cytoscape-edge-editing@github:iVis-at-Bilkent/cytoscape.js-edge-editing#unstable":
-  version "3.0.2"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-edge-editing/tar.gz/4dfdd01627f234f9b857144f37f704019db695a7"
+cytoscape-edge-editing@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/cytoscape-edge-editing/-/cytoscape-edge-editing-2.0.0.tgz#5718fe079abba15b290f6efd58f261329b2829a1"
+  integrity sha512-4rMJRVbkRYERnYKpYDRMJN6jnCmzdMu5d1VqaWHPm5ut58Qdimrq8Q21NyOM1YlyTyyYS7Xu0udYqDKUOP4dkw==
 
 cytoscape-edgehandles@^3.5.1:
   version "3.5.1"
@@ -5169,9 +5171,10 @@ cytoscape-edgehandles@^3.5.1:
     lodash.memoize "^4.1.2"
     lodash.throttle "^4.1.1"
 
-"cytoscape-grid-guide@github:iVis-at-Bilkent/cytoscape.js-grid-guide#unstable":
-  version "2.3.2"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-grid-guide/tar.gz/44a4ca30244c36deaad3a52b1d3ed41036403226"
+cytoscape-grid-guide@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/cytoscape-grid-guide/-/cytoscape-grid-guide-2.2.1.tgz#91891c926405e4c15763184e9b873e912ce3e5ce"
+  integrity sha512-zJFImEcvd6ubHBlKdAQwmP5qOvYg2u2brwbvadSc9fM2N7WDcYol6d/wKvsLm+g+ixgIhglKKC2X1yEGvQiPeA==
   dependencies:
     functional-red-black-tree "^1.0.1"
 
@@ -5182,9 +5185,10 @@ cytoscape-navigator@^1.3.3:
   dependencies:
     jquery "^2.0.0 || ^1.4.0"
 
-"cytoscape-node-editing@github:iVis-at-Bilkent/cytoscape.js-node-editing#unstable":
+cytoscape-node-resize@^3.2.0:
   version "3.2.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-node-editing/tar.gz/e4228e876249c379fb416b6c8fa14c14acfe29f1"
+  resolved "https://registry.yarnpkg.com/cytoscape-node-resize/-/cytoscape-node-resize-3.2.0.tgz#600ae94db0d472b7391b25894c02336e9ad21c62"
+  integrity sha512-9n90VdKA4xmNuf7GbzfaQ6t9gWlOdtlwKnKpNY3v1G4xJ6xH0Yi0iOk8Vhk4t+Y3ecl7rgVsFV4d0u6b+g3q7A==
 
 cytoscape-panzoom@~2.5.2:
   version "2.5.3"
@@ -5200,15 +5204,17 @@ cytoscape-qtip@iVis-at-Bilkent/cytoscape.js-qtip#master:
     jquery "^2.0 || ^1.10.0"
     qtip2 "^3.0 || ^2.2.0"
 
-"cytoscape-undo-redo@github:iVis-at-Bilkent/cytoscape.js-undo-redo#unstable":
+cytoscape-undo-redo@^1.3.2:
   version "1.3.2"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-undo-redo/tar.gz/335bab28027df8a67e348e17516d21aa94cc3ddb"
+  resolved "https://registry.yarnpkg.com/cytoscape-undo-redo/-/cytoscape-undo-redo-1.3.2.tgz#81ea1c8ae1f5bccb9a9d2249afa0e4f5c3c0c631"
+  integrity sha512-RnJI0uWc19gyWx/qWY2Q/vg159MR32dpXHk+QmQih2buLoC7fxYRBPSPgNGUkF8QIxSmkavQEic1ARQO7GBTtg==
 
-"cytoscape-view-utilities@github:iVis-at-Bilkent/cytoscape.js-view-utilities#unstable":
-  version "4.1.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-view-utilities/tar.gz/d3d0fae2211d5fc0881ae39a11442014f9731ad2"
+cytoscape-view-utilities@^2.0.6:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/cytoscape-view-utilities/-/cytoscape-view-utilities-2.2.0.tgz#36d182c5fd0f87a8e1dc15c79fdbe52884efee72"
+  integrity sha512-QFmHZYU+XE4xnp+2Nr027Fwmi7QpPaqosKRr9VSBKRemJxdIyMXnIcqNh2rs+aMhm4nwoBYFSEtuFSvQIap4XA==
   dependencies:
-    geometric "^2.2.3"
+    mousetrap "^1.6.0"
 
 cytoscape@^3.8.2:
   version "3.8.2"
@@ -7136,11 +7142,6 @@ gentle-fs@^2.0.0, gentle-fs@^2.0.1:
     path-is-inside "^1.0.2"
     read-cmd-shim "^1.0.1"
     slide "^1.1.6"
-
-geometric@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/geometric/-/geometric-2.2.3.tgz#0fc53d406bb32de424c4e5cf4706f3319b17e945"
-  integrity sha512-tU+kVsl15x9m/30k4+Vh7Sfi797tMY0x//VVpTd0ZQ/+d8lonhHcCBTJDMmbx+IZiNQod9nHI1lzcAXVyvnhtA==
 
 get-caller-file@^1.0.1:
   version "1.0.3"
@@ -9881,10 +9882,10 @@ kleur@^2.0.1:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-2.0.2.tgz#b704f4944d95e255d038f0cb05fb8a602c55a300"
   integrity sha512-77XF9iTllATmG9lSlIv0qdQ2BQ/h9t0bJllHlbvsQ0zUWfU7Yi0S8L5JXzPZgkefIiajLmBJJ4BsMJmqcf7oxQ==
 
-konva@^7.0.3:
-  version "7.1.3"
-  resolved "https://registry.yarnpkg.com/konva/-/konva-7.1.3.tgz#425d26da3debbd973bafeda59979e02ff671af9d"
-  integrity sha512-yYL6Ie6bEwxIvmWxRdoeUW4lSiAKvM2yg++Z4qx6vuiLgtICJFX1i5LwUeMIN9Z5RSLbJ4h7wG+6kMtAxL+ltg==
+konva@^1.6.3:
+  version "1.7.6"
+  resolved "https://registry.yarnpkg.com/konva/-/konva-1.7.6.tgz#7aceef1058b04127077c8f44653556b35b1133e6"
+  integrity sha512-TPYwJi3z3eK94N/eoPfYs8JXBcwrY8uC3GhllsKLCOXkdIpg51+M1ZCIM6sQtlmknRZOy1GGlCendzXajCj+fQ==
 
 last-call-webpack-plugin@^3.0.0:
   version "3.0.0"
@@ -11018,6 +11019,11 @@ mongodb@^2.1.2:
     es6-promise "3.2.1"
     mongodb-core "2.1.20"
     readable-stream "2.2.7"
+
+mousetrap@^1.6.0:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/mousetrap/-/mousetrap-1.6.3.tgz#80fee49665fd478bccf072c9d46bdf1bfed3558a"
+  integrity sha512-bd+nzwhhs9ifsUrC2tWaSgm24/oo2c83zaRyZQF06hYA6sANfsXHtnZ19AbbbDXCDzeH5nZBSQ4NvCjgD62tJA==
 
 move-concurrently@^1.0.1:
   version "1.0.1"

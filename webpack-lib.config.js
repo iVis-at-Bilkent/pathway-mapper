@@ -29,7 +29,7 @@ module.exports = {
       whitelist: [
         'cytoscape-edge-editing',
         'cytoscape-context-menus',
-        'cytoscape-node-editing',
+        'cytoscape-node-resize',
         'cytoscape-view-utilities'
       ]
     })
