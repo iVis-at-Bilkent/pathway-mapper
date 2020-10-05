@@ -12443,7 +12443,7 @@ function (_super) {
           tappedBefore = -1;
         }, 300);
 
-        if (tappedNow && tappedNow.isNode && tappedNow.isNode() && !this.props.patientView) {
+        if (tappedNow && tappedNow.isNode && tappedNow.isNode()) {
           external_jquery_default()(".qtip").remove();
         }
 
@@ -15405,7 +15405,7 @@ function (_super) {
     }, "PathwayMapper shows you your genes of interest with the alteration frequencies of selected genetic profiles of the chosen study overlaid on a TCGA pathway using a white to red color scale (the more frequently altered a gene is, the more red it's shown). All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with highest ranking with the default ranking options but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Refer to the documentation ", external_react_default.a.createElement("a", {
       href: "https://github.com/iVis-at-Bilkent/pathway-mapper",
       target: "_blank"
-    }, "here"), " for the notation used.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in associated row of the pathway table. Ranking criteria might be changed by changing the options at the bottom of the table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "The buttons on top of the pathway are:", external_react_default.a.createElement("ul", null, external_react_default.a.createElement("table", {
+    }, "here"), " for the notation used.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table. Ranking criteria might be changed by changing the options at the bottom of the table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "The buttons on top of the pathway are:", external_react_default.a.createElement("ul", null, external_react_default.a.createElement("table", {
       cellPadding: 5
     }, external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
       height: "22px",
@@ -15912,7 +15912,6 @@ function (_super) {
       profiles: this.profiles,
       isCbioPortal: this.props.isCBioPortal,
       isCollaborative: this.props.isCollaborative,
-      patientView: this.props.patientView,
       setActiveEdge: this.setActiveEdge,
       editorHandler: this.editorHandler,
       selectedPathway: this.selectedPathway,

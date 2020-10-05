@@ -9,7 +9,6 @@ declare type PathwayMapperType = {
     profiles: IProfileMetaData[];
     pathwayHandler: (pathwayName: string) => void;
     handleOpen: (modalId: EModalType) => void;
-    patientView?: boolean;
 };
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}> {
     private cy;
