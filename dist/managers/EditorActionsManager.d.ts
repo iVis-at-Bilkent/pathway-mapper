@@ -65,7 +65,7 @@ export default class EditorActionsManager {
     groupGenomicData(cancerNames: any[], groupID: string): void;
     addPubmedIDs(edge: any, pubmedIDs: number[]): void;
     removePubmedID(edge: any, pubmedIDs: number[]): void;
-    updateEdgeAnchorPoints(edge: any): void;
+    updateEdgeBendPoints(edge: any): void;
     pushSelectedNodeStack(ele: any): void;
     removeElementFromSelectedNodeStack(ele: any): void;
     clearSelectedNodeStack(): void;

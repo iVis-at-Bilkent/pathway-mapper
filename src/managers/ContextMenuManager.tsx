@@ -23,7 +23,7 @@ export default class ContextMenuManager {
   init() {
     const classRef = this;
 
-    const ctxMenus = this.cy.contextMenus('get');
+    const ctxMenus = this.cy.contextMenus();
 
     let menuItems = [
       {
@@ -37,7 +37,7 @@ export default class ContextMenuManager {
             classRef.editor.removeElement(selectedEles);
         },
         disabled: false, // Whether the item will be created as disabled
-        hasTrailingDivider: false, // Whether the item will have a trailing divider
+        hasTrailingDivider: true, // Whether the item will have a trailing divider
       },
       {
           id: 'hideSelected', // ID of menu item
@@ -49,7 +49,7 @@ export default class ContextMenuManager {
               classRef.editor.hideSelectedNodes();
           },
           disabled: false, // Whether the item will be created as disabled
-          hasTrailingDivider: false, // Whether the item will have a trailing divider
+          hasTrailingDivider: true, // Whether the item will have a trailing divider
       },
       {
           id: 'loadFromCBioPortal', // ID of menu item
@@ -61,7 +61,7 @@ export default class ContextMenuManager {
             this.handleOpen(EModalType.STUDY);
           },
           disabled: false, // Whether the item will be created as disabled
-          hasTrailingDivider: false, // Whether the item will have a trailing divider
+          hasTrailingDivider: true, // Whether the item will have a trailing divider
       },
       //Context menu items when clicking on nodes/compounds
       {
@@ -77,7 +77,7 @@ export default class ContextMenuManager {
           classRef.editor.removeElement(selectedElements);
         },
         disabled: false, // Whether the item will be created as disabled
-        hasTrailingDivider: false, // Whether the item will have a trailing divider
+        hasTrailingDivider: true, // Whether the item will have a trailing divider
         coreAsWell: false // Whether core instance have this item on cxttap
       },
       {
@@ -148,7 +148,7 @@ export default class ContextMenuManager {
 
         },
         disabled: false, // Whether the item will be created as disabled
-        hasTrailingDivider: false, // Whether the item will have a trailing divider
+        hasTrailingDivider: true, // Whether the item will have a trailing divider
         coreAsWell: false // Whether core instance have this item on cxttap
       },
       {
@@ -183,7 +183,7 @@ export default class ContextMenuManager {
           selectedNodes.unselect();
         },
         disabled: false, // Whether the item will be created as disabled
-        hasTrailingDivider: false, // Whether the item will have a trailing divider
+        hasTrailingDivider: true, // Whether the item will have a trailing divider
         coreAsWell: false // Whether core instance have this item on cxttap
       },
       {
@@ -196,7 +196,7 @@ export default class ContextMenuManager {
             this.editor.performLayout();
           },
           disabled: false, // Whether the item will be created as disabled
-          hasTrailingDivider: false, // Whether the item will have a trailing divider
+          hasTrailingDivider: true, // Whether the item will have a trailing divider
       }
 
     ];
@@ -212,7 +212,7 @@ export default class ContextMenuManager {
               this.undoRedoManager.undo();
           },
           disabled: false, // Whether the item will be created as disabled
-          hasTrailingDivider: false, // Whether the item will have a trailing divider
+          hasTrailingDivider: true, // Whether the item will have a trailing divider
       },
       {
           id: 'redoAction', // ID of menu item
@@ -224,7 +224,7 @@ export default class ContextMenuManager {
             this.undoRedoManager.redo();
           },
           disabled: false, // Whether the item will be created as disabled
-          hasTrailingDivider: false, // Whether the item will have a trailing divider
+          hasTrailingDivider: true, // Whether the item will have a trailing divider
       }
     ];
 
