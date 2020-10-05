@@ -52,9 +52,10 @@ interface IPathwayMapperProps{
   validGenes?: any;
   toast: any;
   showMessage: (message: string) => void;
-  //These two variables are used for PatientView
+  //variable are used for PatientView 
   patientView ?: boolean;
-  //alterationColor ?: any[];
+  //ResultsView Banner
+  messageBanner ?: () => JSX.Element;
 }
 
 export interface ICBioData{
@@ -487,7 +488,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
                 patientView = {this.props.patientView}
               />
             </Col>
-            <Col xs={6} style={{paddingLeft: "0px", marginTop: "17px", textAlign: "right", paddingRight: "35px"}}>
+            <Col xs={3} style={{}}>{this.props.messageBanner()}</Col>
+            <Col xs={3} style={{paddingLeft: "0px", marginTop: "17px", textAlign: "right", paddingRight: "35px"}}>
               {this.selectedPathway}
             </Col>
           </Row>
