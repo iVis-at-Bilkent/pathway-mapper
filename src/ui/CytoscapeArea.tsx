@@ -15,7 +15,7 @@ import CBioPortalAccessor from "../utils/CBioPortalAccessor";
 import SaveLoadUtility from "../utils/SaveLoadUtility";
 import pathways from "../data/pathways.json";
 // @ts-ignore
-import resizeCue from '../../node_modules/cytoscape-node-resize/resizeCue.svg';
+import resizeCue from '../../node_modules/cytoscape-node-editing/resizeCue.svg';
 // @ts-ignore
 import geneImg from "../images/nodes/gene.svg";
 // @ts-ignore
@@ -31,7 +31,7 @@ import { IProfileMetaData, IPathwayData, EModalType } from './react-pathway-mapp
 const edgeHandles = require('cytoscape-edgehandles');
 const edgeEditing = require('cytoscape-edge-editing');
 const regCose = require('cytoscape-cose-bilkent');
-const nodeResize = require('cytoscape-node-resize');
+const nodeEditing = require('cytoscape-node-editing');
 const undoRedo = require('cytoscape-undo-redo');
 const panzoom = require('cytoscape-panzoom');
 const styleSheet = require('../utils/GraphStyleSheet.tsx');
@@ -238,12 +238,12 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       console.log(err);
     }
     try { 
-      nodeResize(cytoscape, $, konva); // register extension
+      nodeEditing(cytoscape, $, konva); // register extension
     } catch(err){
       console.log(err);
     }
     try { 
-      edgeEditing(cytoscape, $); // register extension
+      edgeEditing(cytoscape, $, konva); // register extension
     } catch(err){
       console.log(err);
     }
@@ -425,7 +425,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.props.editorHandler(this.editor, this.eh, this.undoRedoManager);
 
     if(!this.isCbioPortal)
-    this.cy.nodeResize({
+    this.cy.nodeEditing({
       padding: 5, // spacing between node and grapples/rectangle
       undoable: true, // and if cy.undoRedo exists
 
@@ -437,11 +437,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       boundingRectangleLineColor: "ffc90e",
       boundingRectangleLineWidth: 1.5,
       zIndex: 999,
-
-      moveSelectedNodesOnKeyEvents: function () {
-          return true;
-      },
-
       minWidth: function (node) {
           var data = node.data("resizeMinWidth");
           return data ? data : 15;
@@ -704,7 +699,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     //     this.cy.forceRender();
     // });
 
-    this.cy.on("noderesize.resizeend", (_e: any, _type: any, node: any) => {
+    this.cy.on("nodeediting.resizeend", (_e: any, _type: any, node: any) => {
       
       //Updates 'data' properties from 'style'
       node.data('w', node.width());
@@ -718,10 +713,10 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     });
 
     this.cy.on('bendPointMovement', () => {
-      this.editor.updateEdgeBendPoints(this.lastSelectedEdge);
+      this.editor.updateEdgeAnchorPoints(this.lastSelectedEdge);
     });
 
-    this.cy.on('noderesize.moveend', () => {
+    this.cy.on('nodeediting.moveend', () => {
       this.editor.changeNodePositionsByArrows(this.cy.nodes(":selected"));
     });
 
