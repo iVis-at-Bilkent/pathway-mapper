@@ -6833,7 +6833,6 @@ function () {
 
 
     if (data['PatientView'] == 1) {
-      console.log('patient data', this.genomicDataMap);
       this.showPatientData(data);
     } else {
       this.showGenomicData();
@@ -6997,10 +6996,10 @@ function () {
       // Hide all genomic data and return
       this.hideGenomicData();
       return;
-    }
+    } //console.log('Inside showGenomicData')
+    //console.log(this.cy)
 
-    console.log('Inside showGenomicData');
-    console.log(this.cy);
+
     this.cy.style().selector('node[type="GENE"]') // It used to change the width of nodes only locally
     .style('width', function (ele) {
       return _this.getRequiredWidthForGenomicData(genomicDataBoxCount);
@@ -7244,7 +7243,6 @@ function () {
         svgText.setAttribute('font-size', fontSize + ''); //first 4 letters of the alterationTypes are used
 
         svgText.innerHTML = text.substring(0, 4);
-        console.log('Mutation', text);
         parentSVG.appendChild(overlayRect);
         parentSVG.appendChild(svgText);
       } else {
@@ -15622,8 +15620,6 @@ function (_super) {
     const profile6 = {profileId: "study3_mutations", studyId: "study3", enabled: true};
     this.profiles.push(profile1, profile2, profile3, profile4, profile5, profile6);
     */
-    //console.log("Profiles");
-    //console.log(this.profiles);
   }
 
   PathwayMapper_1 = PathwayMapper;
@@ -15743,8 +15739,7 @@ function (_super) {
 
           if (geneType === "GENE") {
             geneCount++;
-          } //console.log(geneType);
-
+          }
         }
 
         if (rankingMode === 0) {
@@ -15766,8 +15761,6 @@ function (_super) {
         }
       }
     }
-
-    console.log("Best Pathways");
 
     while (maxHeap.size() > 0) {
       var top_1 = maxHeap.extractMax();
@@ -15796,19 +15789,16 @@ function (_super) {
       if (gene.data.type === "GENE") geneHash[gene.data.name] = gene.data.type;
     }
 
-    this.pathwayGeneMap[pathwayData.title] = geneHash; // console.log(this.pathwayGeneMap);
+    this.pathwayGeneMap[pathwayData.title] = geneHash;
   };
 
   PathwayMapper.prototype.extractAllGenes = function () {
-    console.log("EXTRACT ALL GENES");
-
     for (var pathwayName in pathways) {
       if (pathways.hasOwnProperty(pathwayName)) {
         var pathwayData = utils_SaveLoadUtility.parseGraph(pathways[pathwayName], true);
         this.includePathway(pathwayData);
       }
-    } // console.log(this.pathwayGeneMap);
-
+    }
   };
 
   PathwayMapper.prototype.loadRedirectedPortalData = function () {
@@ -15827,9 +15817,7 @@ function (_super) {
     });
     redirectedProfiles.forEach(function (redirectedProfile) {
       _this.profiles.push(redirectedProfile);
-    }); //console.log("Here");
-    //console.log(this.props.alterationData);
-
+    });
     this.editor.addPortalGenomicData(this.props.alterationData, this.editor.getEmptyGroupID());
   };
 
@@ -15838,8 +15826,7 @@ function (_super) {
       var profileEnabledMap = {};
       this.profiles.forEach(function (profile) {
         profileEnabledMap[profile.profileId] = profile.enabled;
-      }); //console.log(profileEnabledMap);
-
+      });
       return profileEnabledMap;
     },
     enumerable: true,
@@ -15877,9 +15864,7 @@ function (_super) {
         studyId: selectedStudyData[0],
         profileId: dataTypes[dataType].profile,
         enabled: true
-      }); // console.log("this.pathwayGeneMap");
-      // console.log(this.pathwayGeneMap);
-
+      });
       this.portalAcessor.getProfileData({
         caseSetId: selectedStudyData[0],
         geneticProfileId: dataTypes[dataType].profile,
@@ -15951,7 +15936,10 @@ function (_super) {
       onAddGenes: this.props.onAddGenes,
       patientView: this.props.patientView
     })), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      xs: 6,
+      xs: 3,
+      style: {}
+    }, this.props.messageBanner()), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+      xs: 3,
       style: {
         paddingLeft: "0px",
         marginTop: "17px",
@@ -16099,7 +16087,6 @@ function (_super) {
   };
 
   PathwayMapper.prototype.editorHandler = function (editor, eh, undoRedoManager) {
-    console.log("EDITOR HANDLER");
     this.editor = editor;
     this.gridOptionsManager = new managers_GridOptionsManager(this.editor.cy);
     this.viewOperationsManager = new managers_ViewOperationsManager(this.editor, this.editor.cy);
@@ -16107,7 +16094,6 @@ function (_super) {
 
     if (this.props.isCBioPortal) {
       if (this.props.patientView) {
-        console.log("inside editor handler for patient");
         this.editor.addPortalGenomicData(this.patientData, this.editor.getEmptyGroupID());
       } else {
         this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());

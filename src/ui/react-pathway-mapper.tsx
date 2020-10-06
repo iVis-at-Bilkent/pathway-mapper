@@ -52,9 +52,10 @@ interface IPathwayMapperProps{
   validGenes?: any;
   toast: any;
   showMessage: (message: string) => void;
-  //These two variables are used for PatientView
+  //PatientView variable
   patientView ?: boolean;
-  //alterationColor ?: any[];
+  //messageBanner
+  messageBanner : () => JSX.Element;
 }
 
 export interface ICBioData{
@@ -197,8 +198,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     const profile6 = {profileId: "study3_mutations", studyId: "study3", enabled: true};
     this.profiles.push(profile1, profile2, profile3, profile4, profile5, profile6);
     */
-    //console.log("Profiles");
-    //console.log(this.profiles);
+
   }
 
   calculateAlterationData(cBioAlterationData: ICBioData[]){
@@ -312,7 +312,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
               if(geneType === "GENE"){
                 geneCount++;
               }
-              //console.log(geneType);
             }
 
             if(rankingMode === 0){
@@ -327,7 +326,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
         }
     }
-    console.log("Best Pathways");
     while(maxHeap.size() > 0){
         const top = maxHeap.extractMax();
         const pathwayName = top.getValue().pathwayName;
@@ -354,11 +352,9 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
     this.pathwayGeneMap[pathwayData.title] = geneHash;
 
-   // console.log(this.pathwayGeneMap);
   }
 
   extractAllGenes(){
-    console.log("EXTRACT ALL GENES");
       for(const pathwayName in pathways){
           if(pathways.hasOwnProperty(pathwayName)){
 
@@ -367,7 +363,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           }
       }
      
-     // console.log(this.pathwayGeneMap);
     }
 
 
@@ -381,15 +376,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     redirectedProfiles.forEach((redirectedProfile) => {
       this.profiles.push(redirectedProfile);
     });
-    //console.log("Here");
-    //console.log(this.props.alterationData);
     this.editor.addPortalGenomicData(this.props.alterationData, this.editor.getEmptyGroupID());
   }
 
   @computed get profileEnabledMap(){
     const profileEnabledMap = {};
     this.profiles.forEach((profile: IProfileMetaData) => {profileEnabledMap[profile.profileId] = profile.enabled;});
-    //console.log(profileEnabledMap);
     return profileEnabledMap;
   }
 
@@ -422,8 +414,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
 
         this.profiles.push({studyId: selectedStudyData[0], profileId: dataTypes[dataType].profile, enabled: true});
-       // console.log("this.pathwayGeneMap");
-       // console.log(this.pathwayGeneMap);
         this.portalAcessor.getProfileData({
             caseSetId: selectedStudyData[0],
             geneticProfileId: dataTypes[dataType].profile,
@@ -487,7 +477,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
                 patientView = {this.props.patientView}
               />
             </Col>
-            <Col xs={6} style={{paddingLeft: "0px", marginTop: "17px", textAlign: "right", paddingRight: "35px"}}>
+            <Col xs={3} style={{}}>{this.props.messageBanner()}</Col>
+            <Col xs={3} style={{paddingLeft: "0px", marginTop: "17px", textAlign: "right", paddingRight: "35px"}}>
               {this.selectedPathway}
             </Col>
           </Row>
@@ -596,16 +587,14 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   @autobind
   editorHandler(editor, eh, undoRedoManager){
-    console.log("EDITOR HANDLER")
-    this.editor = editor;
 
+    this.editor = editor;
     this.gridOptionsManager = new GridOptionsManager(this.editor.cy);
     this.viewOperationsManager = new ViewOperationsManager(this.editor, this.editor.cy);
     this.pathwayActions.editorHandler(editor, eh, undoRedoManager, this.viewOperationsManager, this.gridOptionsManager);
     
     if(this.props.isCBioPortal){
       if(this.props.patientView){
-        console.log("inside editor handler for patient")
         this.editor.addPortalGenomicData(this.patientData, this.editor.getEmptyGroupID());
       }
       else{
@@ -627,6 +616,4 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           .filter(gene => (!this.alterationData[PathwayMapper.CBIO_PROFILE_NAME].hasOwnProperty(gene)))
         );
   }
-
-  
 }

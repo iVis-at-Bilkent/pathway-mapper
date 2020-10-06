@@ -92,7 +92,6 @@ export default class GenomicDataOverlayManager {
     }
     //This parameter is used as flag for PatientView PathwayMapper Functions
     if (data['PatientView'] == 1) {
-      console.log('patient data', this.genomicDataMap)
       this.showPatientData(data)
     } else {
       this.showGenomicData()
@@ -371,8 +370,8 @@ export default class GenomicDataOverlayManager {
       return
     }
 
-    console.log('Inside showGenomicData')
-    console.log(this.cy)
+    //console.log('Inside showGenomicData')
+    //console.log(this.cy)
 
     this.cy
       .style()
@@ -661,7 +660,6 @@ export default class GenomicDataOverlayManager {
 
         //first 4 letters of the alterationTypes are used
         svgText.innerHTML = text.substring(0, 4)
-        console.log('Mutation', text)
         parentSVG.appendChild(overlayRect)
         parentSVG.appendChild(svgText)
       } else {
