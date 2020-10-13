@@ -1,4 +1,5 @@
 import { Console } from 'console'
+import { GeneticAlterationRuleSet, shapeToSvg } from 'oncoprintjs'
 
 export default class GenomicDataOverlayManager {
   public genomicDataMap: {}
@@ -87,7 +88,9 @@ export default class GenomicDataOverlayManager {
 
         this.genomicDataMap[geneSymbol][cancerStudy] = data[cancerStudy][
           geneSymbol
-        ].toFixed(2)
+        ].toFixed
+          ? data[cancerStudy][geneSymbol].toFixed(2)
+          : data[cancerStudy][geneSymbol]
       }
     }
     //This parameter is used as flag for PatientView PathwayMapper Functions
@@ -477,7 +480,10 @@ export default class GenomicDataOverlayManager {
   showPatientData(data) {
     const self = this
 
-    const genomicDataBoxCount = 3 //this.countVisibleGenomicDataByType(); //CHANGE
+    // const genomicDataBoxCount = 3 //this.countVisibleGenomicDataByType(); //CHANGE
+    const genomicDataBoxCount = data.geneticTrackData
+      ? data.geneticTrackData.length
+      : 3
     if (genomicDataBoxCount < 1) {
       // Hide all genomic data and return
       this.hideGenomicData()
@@ -504,7 +510,8 @@ export default class GenomicDataOverlayManager {
       })
       .style('background-image', function(ele) {
         const x = encodeURIComponent(
-          self.generateSVGForPatientNode(ele, data).outerHTML
+          // self.generateSVGForPatientNode(ele, data).outerHTML
+          self.generateOncoprintForPatientNode(ele, data).outerHTML
         )
         if (x === 'undefined') {
           return 'none'
@@ -669,5 +676,57 @@ export default class GenomicDataOverlayManager {
     }
 
     return svg
+  }
+
+  generateOncoprintForPatientNode(ele, patientData) {
+    // const dataURI = 'data:image/svg+xml;utf8,'
+    // nodeLabel refers to the nodeLabels in the overlay data
+    const nodeLabel = ele.data('name')
+    const genomicData = patientData[nodeLabel]
+
+    const svgNameSpace = 'http://www.w3.org/2000/svg'
+    const svgElement = document.createElementNS(svgNameSpace, 'svg')
+
+    if (!genomicData) {
+      return { outerHTML: '' }
+    }
+
+    const ruleset = new GeneticAlterationRuleSet(
+      genomicData.geneticTrackRuleSetParams
+    )
+    const cellWidth = 6
+    const cellPadding = 3
+    const cellHeight = 23
+    const cellVerticalPadding = 8
+
+    const shapesPerDatum = ruleset.apply(
+      genomicData.geneticTrackData,
+      cellWidth,
+      cellHeight
+    )
+
+    shapesPerDatum.forEach((shapes, index) => {
+      const offsetX = index * (cellWidth + cellPadding) // width + padding
+      const offsetY = cellVerticalPadding
+      const g = document.createElementNS(svgNameSpace, 'g')
+      shapes.forEach(shape =>
+        g.appendChild(shapeToSvg(shape, offsetX, offsetY))
+      )
+      svgElement.appendChild(g)
+    })
+
+    // It seems this should be set according to the node size !
+    svgElement.setAttribute(
+      'width',
+      ((cellWidth + cellPadding) * shapesPerDatum.length).toString()
+    )
+    svgElement.setAttribute(
+      'height',
+      (cellHeight + cellVerticalPadding).toString()
+    )
+    // This is important you need to include this to succesfully render in cytoscape.js!
+    svgElement.setAttribute('xmlns', svgNameSpace)
+
+    return svgElement
   }
 }

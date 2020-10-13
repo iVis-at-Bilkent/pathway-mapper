@@ -3,6 +3,7 @@ import EditorActionsManager from "../managers/EditorActionsManager";
 import FileOperationsManager from '../managers/FileOperationsManager';
 import PathwayActions from '../utils/PathwayActions';
 import CBioPortalAccessor from '../utils/CBioPortalAccessor';
+import { IGeneticAlterationRuleSetParams } from 'oncoprintjs';
 import ViewOperationsManager from '../managers/ViewOperationsManager';
 import GridOptionsManager from '../managers/GridOptionsManager';
 import "../css/pmv1.css";
@@ -30,6 +31,8 @@ export interface ICBioData {
     gene: string;
     percentAltered: string;
     sequenced: number;
+    geneticTrackData?: any[];
+    geneticTrackRuleSetParams?: IGeneticAlterationRuleSetParams;
 }
 export declare enum EModalType {
     STUDY = 0,
