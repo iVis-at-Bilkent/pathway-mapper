@@ -103,7 +103,7 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
                    </tr>
                </table>
            </ul>
-           <img src={patientImage}/>
+           <img style={{paddingLeft: "40px"}} height= "78%" width="78%" src={patientImage} />
        </p>
        </Modal.Body>
        )}
