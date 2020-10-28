@@ -86,6 +86,11 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
            Refer to the documentation <a href="https://github.com/iVis-at-Bilkent/pathway-mapper" target="_blank">here</a> for the notation used.
            <br/>
            <br/>
+           Genetic alteration legend:
+           <br/>
+           <img style={{paddingLeft: "40px"}} height= "78%" width="78%" src={patientImage} />
+           <br/>
+           <br/>
            To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.
            <br/>
            <br/>
@@ -103,7 +108,6 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
                    </tr>
                </table>
            </ul>
-           <img style={{paddingLeft: "40px"}} height= "78%" width="78%" src={patientImage} />
        </p>
        </Modal.Body>
        )}

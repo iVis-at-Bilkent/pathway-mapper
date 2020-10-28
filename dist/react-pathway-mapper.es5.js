@@ -15485,7 +15485,14 @@ function (_super) {
     }, "PathwayMapper shows you your genes of interest with the mutation types, copy number alterations and fusions of selected genetic profiles of the chosen study overlaid on a TCGA pathway using the OncoPrint color scheme. All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with the highest number of genes of interest matching the ones in a pathway but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Refer to the documentation ", external_react_default.a.createElement("a", {
       href: "https://github.com/iVis-at-Bilkent/pathway-mapper",
       target: "_blank"
-    }, "here"), " for the notation used.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "The buttons on top of the pathway are:", external_react_default.a.createElement("ul", null, external_react_default.a.createElement("table", {
+    }, "here"), " for the notation used.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Genetic Alteration Legend:", external_react_default.a.createElement("br", null), external_react_default.a.createElement("img", {
+      style: {
+        paddingLeft: "40px"
+      },
+      height: "78%",
+      width: "78%",
+      src: PatientViewHelp_default.a
+    }), external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "The buttons on top of the pathway are:", external_react_default.a.createElement("ul", null, external_react_default.a.createElement("table", {
       cellPadding: 5
     }, external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
       height: "22px",
@@ -15499,14 +15506,7 @@ function (_super) {
       height: "22px",
       width: "22px",
       src: layout_cose_default.a
-    })), " ", external_react_default.a.createElement("td", null, "Perform layout: Layout is recalculated taking current node positions into account")))), external_react_default.a.createElement("img", {
-      style: {
-        paddingLeft: "40px"
-      },
-      height: "78%",
-      width: "78%",
-      src: PatientViewHelp_default.a
-    }))));
+    })), " ", external_react_default.a.createElement("td", null, "Perform layout: Layout is recalculated taking current node positions into account")))))));
   };
 
   return CBioHelpModal;
