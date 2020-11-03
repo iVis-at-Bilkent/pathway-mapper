@@ -43,4 +43,6 @@ export default class GenomicDataOverlayManager {
     generateOncoprintForPatientNode(ele: any, patientData: any): SVGSVGElement | {
         outerHTML: string;
     };
+    getCNADisplayString(alterationTypeKey: number): string;
+    generateHTMLContentForNodeTooltip(ele: any, patientData: any): "" | JQuery<HTMLElement>;
 }

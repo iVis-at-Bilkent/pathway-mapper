@@ -1,5 +1,6 @@
 import { Console } from 'console'
 import { GeneticAlterationRuleSet, shapeToSvg } from 'oncoprintjs'
+import $ from 'jquery'
 
 export default class GenomicDataOverlayManager {
   public genomicDataMap: {}
@@ -520,7 +521,33 @@ export default class GenomicDataOverlayManager {
         return dataURI
       })
       .update()
+
+      this.cy.on('mouseover', 'node', function(event) {
+        var node = event.target || event.cyTarget
+        const nodeLabel = node.data('name')
+        if (!data[nodeLabel]) {
+          return
+        }
+        node.qtip({
+          content: {
+            text: function() {
+              return self.generateHTMLContentForNodeTooltip(node, data)
+            }
+          },
+          style: {
+            classes: 'qtip-light qtip-rounded'
+          },
+          show: {
+            event: "showqtipevent"
+          },
+          hide: {
+            event: 'mouseout'
+          }
+        }, event);
+        node.trigger("showqtipevent") 
+      })
   }
+
   //Every mutation type has a unique color coded. This method is used to retrieve the colors
   getOncoprintColors(selectedGene) {
     const oncoprintColors = {
@@ -728,5 +755,59 @@ export default class GenomicDataOverlayManager {
     svgElement.setAttribute('xmlns', svgNameSpace)
 
     return svgElement
+  }
+
+  // Mapping of alteration type keys to strings
+  // See: https://github.com/cBioPortal/cbioportal-frontend/blob/442e108208846255feb1ed5b309218cd44927fb9/src/shared/components/oncoprint/TooltipUtils.ts#L599    
+  getCNADisplayString(alterationTypeKey: number) {
+    const disp_cna: { [integerCN: string]: string } = {
+      '-2': 'HOMODELETED',
+      '-1': 'HETLOSS',
+      '1': 'GAIN',
+      '2': 'AMPLIFIED',
+    }
+    return disp_cna[alterationTypeKey]
+  }
+
+  generateHTMLContentForNodeTooltip(ele, patientData) {
+
+    const nodeLabel = ele.data('name')
+    if (!patientData[nodeLabel]) {
+      return ''
+    }
+    const data = patientData[nodeLabel]
+
+    var wrapper = $('<div style="max-height: 100px; overflow:auto"></div>')
+
+    data.geneticTrackData.forEach(sample => {
+      var sampleWrapper = $('<div style="margin-bottom: 10px"></div>')
+
+      const sampleId = sample.data[0].sampleId;
+      var sampleIdHTML = "<b>" + sampleId + "</b>" + "<br>"
+    
+      const geneSymbol = sample.data[0].gene.hugoGeneSymbol
+
+      var mutationInfoHTML = ''
+      if (sample.disp_mut) {
+        const proteinChange = sample.data[0].proteinChange;
+        mutationInfoHTML += "Mutation: " + "<b>" + geneSymbol + 
+                          "</b>" + " " + "<b>" + proteinChange + "</b>" + "<br>"
+      }
+
+      var cnaLabel: string;
+      var cnaInfoHTML = '';
+      if (sample.disp_cna) {
+        const cnaLabelKey = sample.data[0].alteration;
+        cnaLabel = this.getCNADisplayString(cnaLabelKey);
+        cnaInfoHTML += "CNA: " + "<b>" + geneSymbol + 
+                      "</b>" + " " + "<b>" + cnaLabel + "</b>" + '<br>'
+      }
+      sampleWrapper.append($('<div>' + sampleIdHTML 
+                            + mutationInfoHTML + cnaInfoHTML 
+                            + '</div>'))
+      wrapper.append(sampleWrapper)
+    });
+
+    return wrapper
   }
 }

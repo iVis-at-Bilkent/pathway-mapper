@@ -6692,6 +6692,7 @@ var external_oncoprintjs_ = __webpack_require__(22);
 // CONCATENATED MODULE: ./src/managers/GenomicDataOverlayManager.ts
 
 
+
 var GenomicDataOverlayManager_GenomicDataOverlayManager =
 /** @class */
 function () {
@@ -7144,6 +7145,32 @@ function () {
       var dataURI = 'data:image/svg+xml;utf8,' + x;
       return dataURI;
     }).update();
+    this.cy.on('mouseover', 'node', function (event) {
+      var node = event.target || event.cyTarget;
+      var nodeLabel = node.data('name');
+
+      if (!data[nodeLabel]) {
+        return;
+      }
+
+      node.qtip({
+        content: {
+          text: function () {
+            return self.generateHTMLContentForNodeTooltip(node, data);
+          }
+        },
+        style: {
+          classes: 'qtip-light qtip-rounded'
+        },
+        show: {
+          event: "showqtipevent"
+        },
+        hide: {
+          event: 'mouseout'
+        }
+      }, event);
+      node.trigger("showqtipevent");
+    });
   }; //Every mutation type has a unique color coded. This method is used to retrieve the colors
 
 
@@ -7303,6 +7330,56 @@ function () {
 
     svgElement.setAttribute('xmlns', svgNameSpace);
     return svgElement;
+  }; // Mapping of alteration type keys to strings
+  // See: https://github.com/cBioPortal/cbioportal-frontend/blob/442e108208846255feb1ed5b309218cd44927fb9/src/shared/components/oncoprint/TooltipUtils.ts#L599    
+
+
+  GenomicDataOverlayManager.prototype.getCNADisplayString = function (alterationTypeKey) {
+    var disp_cna = {
+      '-2': 'HOMODELETED',
+      '-1': 'HETLOSS',
+      '1': 'GAIN',
+      '2': 'AMPLIFIED'
+    };
+    return disp_cna[alterationTypeKey];
+  };
+
+  GenomicDataOverlayManager.prototype.generateHTMLContentForNodeTooltip = function (ele, patientData) {
+    var _this = this;
+
+    var nodeLabel = ele.data('name');
+
+    if (!patientData[nodeLabel]) {
+      return '';
+    }
+
+    var data = patientData[nodeLabel];
+    var wrapper = external_jquery_default()('<div style="max-height: 100px; overflow:auto"></div>');
+    data.geneticTrackData.forEach(function (sample) {
+      var sampleWrapper = external_jquery_default()('<div style="margin-bottom: 10px"></div>');
+      var sampleId = sample.data[0].sampleId;
+      var sampleIdHTML = "<b>" + sampleId + "</b>" + "<br>";
+      var geneSymbol = sample.data[0].gene.hugoGeneSymbol;
+      var mutationInfoHTML = '';
+
+      if (sample.disp_mut) {
+        var proteinChange = sample.data[0].proteinChange;
+        mutationInfoHTML += "Mutation: " + "<b>" + geneSymbol + "</b>" + " " + "<b>" + proteinChange + "</b>" + "<br>";
+      }
+
+      var cnaLabel;
+      var cnaInfoHTML = '';
+
+      if (sample.disp_cna) {
+        var cnaLabelKey = sample.data[0].alteration;
+        cnaLabel = _this.getCNADisplayString(cnaLabelKey);
+        cnaInfoHTML += "CNA: " + "<b>" + geneSymbol + "</b>" + " " + "<b>" + cnaLabel + "</b>" + '<br>';
+      }
+
+      sampleWrapper.append(external_jquery_default()('<div>' + sampleIdHTML + mutationInfoHTML + cnaInfoHTML + '</div>'));
+      wrapper.append(sampleWrapper);
+    });
+    return wrapper;
   };
 
   return GenomicDataOverlayManager;
@@ -15485,7 +15562,7 @@ function (_super) {
     }, "PathwayMapper shows you your genes of interest with the mutation types, copy number alterations and fusions of selected genetic profiles of the chosen study overlaid on a TCGA pathway using the OncoPrint color scheme. All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with the highest number of genes of interest matching the ones in a pathway but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Refer to the documentation ", external_react_default.a.createElement("a", {
       href: "https://github.com/iVis-at-Bilkent/pathway-mapper",
       target: "_blank"
-    }, "here"), " for the notation used.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Genetic Alteration Legend:", external_react_default.a.createElement("br", null), external_react_default.a.createElement("img", {
+    }, "here"), " for the notation used.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Genetic alteration legend:", external_react_default.a.createElement("br", null), external_react_default.a.createElement("img", {
       style: {
         paddingLeft: "40px"
       },
