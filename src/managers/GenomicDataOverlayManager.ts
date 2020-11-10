@@ -769,45 +769,139 @@ export default class GenomicDataOverlayManager {
     return disp_cna[alterationTypeKey]
   }
 
+  generateSvgIconForSample(iconColor: string, iconText: string) {
+    
+    var html = '<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">' + 
+    '<g transform="translate(6,6)">' +
+    	'<circle r="6" fill="' + iconColor + '" fill-opacity="1"></circle>' +
+    '</g>' +
+    '<g transform="translate(6,5.5)">' +
+      '<text y="4" text-anchor="middle" font-size="10" fill="white" style="cursor: default;">' +
+      iconText +'</text>' +
+    '</g>' +'</svg>'
+
+    return html;
+  }
+
   generateHTMLContentForNodeTooltip(ele, patientData) {
 
-    const nodeLabel = ele.data('name')
-    if (!patientData[nodeLabel]) {
-      return ''
-    }
+    const tooltipMaxHeight = '150px';
+    const tooltipMaxWidth = '150px'
+    const marginBetweenSamples = '10px';
+    const sampleIconColorMap = patientData.sampleColors
+    const sampleIndexMap = patientData.sampleIndex
+
+    const nodeLabel = ele.data('name')  
     const data = patientData[nodeLabel]
 
-    var wrapper = $('<div style="max-height: 100px; overflow:auto"></div>')
+    // Outer wrapper for the entire tooltip
+    var wrapper = $('<div></div>')
+    wrapper.css({
+      'max-width' : tooltipMaxWidth,
+      'max-height': tooltipMaxHeight,
+      'word-wrap' : 'break-word',
+      'overflow-y': 'auto'
+    })
 
-    data.geneticTrackData.forEach(sample => {
-      var sampleWrapper = $('<div style="margin-bottom: 10px"></div>')
+    data.geneticTrackData.forEach((sample, sampleIndex) => {
+      
+      const sampleId = sample.sample
+      const iconColor = sampleIconColorMap[sampleId];
+      const iconText = (sampleIndexMap[sampleId] + 1).toString();
+      const sampleIconSvgHTML = this.generateSvgIconForSample(iconColor, iconText);
 
-      const sampleId = sample.data[0].sampleId;
-      var sampleIdHTML = "<b>" + sampleId + "</b>" + "<br>"
-    
-      const geneSymbol = sample.data[0].gene.hugoGeneSymbol
+      const margin = sampleIndex > 0 ? marginBetweenSamples : '0px'
 
-      var mutationInfoHTML = ''
-      if (sample.disp_mut) {
-        const proteinChange = sample.data[0].proteinChange;
-        mutationInfoHTML += "Mutation: " + "<b>" + geneSymbol + 
-                          "</b>" + " " + "<b>" + proteinChange + "</b>" + "<br>"
-      }
+      // Inner wrapper for a single sample
+      var sampleWrapper = $('<div></div>')
+      sampleWrapper.css({
+        'margin-top': margin
+      })
+      
+      const sampleData = sample.data
+      var mutationInfo = []
+      var cnaInfo = []
+      var fusionInfo = []
+      sampleData.forEach(data => {
+        const geneSymbol = data.gene.hugoGeneSymbol
 
-      var cnaLabel: string;
-      var cnaInfoHTML = '';
-      if (sample.disp_cna) {
-        const cnaLabelKey = sample.data[0].alteration;
-        cnaLabel = this.getCNADisplayString(cnaLabelKey);
-        cnaInfoHTML += "CNA: " + "<b>" + geneSymbol + 
-                      "</b>" + " " + "<b>" + cnaLabel + "</b>" + '<br>'
-      }
-      sampleWrapper.append($('<div>' + sampleIdHTML 
+        if (sample.disp_mut && data.proteinChange && data.mutationType !== 'Fusion') {
+          const proteinChange = data.proteinChange
+          mutationInfo.push({
+            gene: geneSymbol,
+            proteinChange: proteinChange
+          })
+        }
+
+        if (sample.disp_cna && data.alteration) {
+          const cnaLabelKey = data.alteration
+          const cnaLabel = this.getCNADisplayString(cnaLabelKey)
+          cnaInfo.push({
+            gene: geneSymbol,
+            cnaLabel: cnaLabel
+          })
+        }
+
+        if (sample.disp_fusion && data.proteinChange && data.mutationType === 'Fusion') {
+          const proteinChange = data.proteinChange
+          fusionInfo.push({
+            gene: geneSymbol,
+            proteinChange: proteinChange
+          })
+        }
+
+      });
+
+      // Prepare HTML for tooltip
+      var mutationInfoHTML = mutationInfo.length > 0 ? 'Mutation: ' : ''
+      var cnaInfoHTML = cnaInfo.length > 0 ? 'CNA: ': ''
+      var fusionInfoHTML = fusionInfo.length > 0 ? 'Fusion: ' : ''
+
+      mutationInfo.forEach((mutation, index) => {
+        console.log(mutation)
+        mutationInfoHTML += "<b>" + mutation.gene + " " 
+                            + mutation.proteinChange + "</b>"
+        console.log(mutationInfoHTML)
+        if (index !== mutationInfo.length - 1) {
+          mutationInfoHTML += ", "
+        }
+        else {
+          mutationInfoHTML += "<br>"
+        }
+      })
+
+      cnaInfo.forEach((cna, index) => {
+        console.log(cna)
+        cnaInfoHTML += "<b>" + cna.gene + " " + cna.cnaLabel + "</b>"
+        console.log(cnaInfoHTML)
+        if (index !== cnaInfo.length - 1) {
+          cnaInfoHTML += ", "
+        }
+        else {
+          cnaInfoHTML += "<br>"
+        }
+      })
+
+      fusionInfo.forEach((fusion, index) => {
+        console.log(fusion)
+        fusionInfoHTML += "<b>" + fusion.gene + " " + fusion.proteinChange + "</b>"
+        console.log(fusionInfoHTML)
+        if (index !== fusionInfo.length - 1) {
+          fusionInfoHTML += ", "
+        }
+        else {
+          fusionInfoHTML += "<br>"
+        }
+      })
+      const sampleIdHTML = "<b> " + sampleId + "</b>" + "<br>"
+      sampleWrapper.append($('<div>' + sampleIconSvgHTML + sampleIdHTML 
                             + mutationInfoHTML + cnaInfoHTML 
+                            + fusionInfoHTML +
                             + '</div>'))
       wrapper.append(sampleWrapper)
     });
 
     return wrapper
   }
+
 }

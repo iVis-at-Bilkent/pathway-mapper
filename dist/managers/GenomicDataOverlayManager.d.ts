@@ -44,5 +44,6 @@ export default class GenomicDataOverlayManager {
         outerHTML: string;
     };
     getCNADisplayString(alterationTypeKey: number): string;
-    generateHTMLContentForNodeTooltip(ele: any, patientData: any): "" | JQuery<HTMLElement>;
+    generateSvgIconForSample(iconColor: string, iconText: string): string;
+    generateHTMLContentForNodeTooltip(ele: any, patientData: any): JQuery<HTMLElement>;
 }

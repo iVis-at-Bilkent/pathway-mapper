@@ -14,6 +14,7 @@ interface IPathwayMapperProps {
     genes: any[];
     isCollaborative?: boolean;
     cBioAlterationData?: ICBioData[];
+    sampleIconData?: ISampleIconData;
     pathwayName?: string;
     alterationData?: IAlterationData;
     onAddGenes?: (selectedGenes: string[]) => void;
@@ -33,6 +34,14 @@ export interface ICBioData {
     sequenced: number;
     geneticTrackData?: any[];
     geneticTrackRuleSetParams?: IGeneticAlterationRuleSetParams;
+}
+export interface ISampleIconData {
+    sampleIndex: {
+        [s: string]: number;
+    };
+    sampleColors: {
+        [s: string]: string;
+    };
 }
 export declare enum EModalType {
     STUDY = 0,
@@ -96,6 +105,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     constructor(props: IPathwayMapperProps);
     calculateAlterationData(cBioAlterationData: ICBioData[]): void;
     calculatePatientData(cBioAlterationData: ICBioData[]): void;
+    addSampleIconData(sampleIconData: any): void;
     getGeneStudyMap(studyGeneMap: any): any;
     getAlterationAveragePerGene(genomicDataMap: any): any;
     /**

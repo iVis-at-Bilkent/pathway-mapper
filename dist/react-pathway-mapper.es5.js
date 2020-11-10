@@ -7344,39 +7344,115 @@ function () {
     return disp_cna[alterationTypeKey];
   };
 
+  GenomicDataOverlayManager.prototype.generateSvgIconForSample = function (iconColor, iconText) {
+    var html = '<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">' + '<g transform="translate(6,6)">' + '<circle r="6" fill="' + iconColor + '" fill-opacity="1"></circle>' + '</g>' + '<g transform="translate(6,5.5)">' + '<text y="4" text-anchor="middle" font-size="10" fill="white" style="cursor: default;">' + iconText + '</text>' + '</g>' + '</svg>';
+    return html;
+  };
+
   GenomicDataOverlayManager.prototype.generateHTMLContentForNodeTooltip = function (ele, patientData) {
     var _this = this;
 
+    var tooltipMaxHeight = '150px';
+    var tooltipMaxWidth = '150px';
+    var marginBetweenSamples = '10px';
+    var sampleIconColorMap = patientData.sampleColors;
+    var sampleIndexMap = patientData.sampleIndex;
     var nodeLabel = ele.data('name');
+    var data = patientData[nodeLabel]; // Outer wrapper for the entire tooltip
 
-    if (!patientData[nodeLabel]) {
-      return '';
-    }
+    var wrapper = external_jquery_default()('<div></div>');
+    wrapper.css({
+      'max-width': tooltipMaxWidth,
+      'max-height': tooltipMaxHeight,
+      'word-wrap': 'break-word',
+      'overflow-y': 'auto'
+    });
+    data.geneticTrackData.forEach(function (sample, sampleIndex) {
+      var sampleId = sample.sample;
+      var iconColor = sampleIconColorMap[sampleId];
+      var iconText = (sampleIndexMap[sampleId] + 1).toString();
 
-    var data = patientData[nodeLabel];
-    var wrapper = external_jquery_default()('<div style="max-height: 100px; overflow:auto"></div>');
-    data.geneticTrackData.forEach(function (sample) {
-      var sampleWrapper = external_jquery_default()('<div style="margin-bottom: 10px"></div>');
-      var sampleId = sample.data[0].sampleId;
-      var sampleIdHTML = "<b>" + sampleId + "</b>" + "<br>";
-      var geneSymbol = sample.data[0].gene.hugoGeneSymbol;
-      var mutationInfoHTML = '';
+      var sampleIconSvgHTML = _this.generateSvgIconForSample(iconColor, iconText);
 
-      if (sample.disp_mut) {
-        var proteinChange = sample.data[0].proteinChange;
-        mutationInfoHTML += "Mutation: " + "<b>" + geneSymbol + "</b>" + " " + "<b>" + proteinChange + "</b>" + "<br>";
-      }
+      var margin = sampleIndex > 0 ? marginBetweenSamples : '0px'; // Inner wrapper for a single sample
 
-      var cnaLabel;
-      var cnaInfoHTML = '';
+      var sampleWrapper = external_jquery_default()('<div></div>');
+      sampleWrapper.css({
+        'margin-top': margin
+      });
+      var sampleData = sample.data;
+      var mutationInfo = [];
+      var cnaInfo = [];
+      var fusionInfo = [];
+      sampleData.forEach(function (data) {
+        var geneSymbol = data.gene.hugoGeneSymbol;
 
-      if (sample.disp_cna) {
-        var cnaLabelKey = sample.data[0].alteration;
-        cnaLabel = _this.getCNADisplayString(cnaLabelKey);
-        cnaInfoHTML += "CNA: " + "<b>" + geneSymbol + "</b>" + " " + "<b>" + cnaLabel + "</b>" + '<br>';
-      }
+        if (sample.disp_mut && data.proteinChange && data.mutationType !== 'Fusion') {
+          var proteinChange = data.proteinChange;
+          mutationInfo.push({
+            gene: geneSymbol,
+            proteinChange: proteinChange
+          });
+        }
 
-      sampleWrapper.append(external_jquery_default()('<div>' + sampleIdHTML + mutationInfoHTML + cnaInfoHTML + '</div>'));
+        if (sample.disp_cna && data.alteration) {
+          var cnaLabelKey = data.alteration;
+
+          var cnaLabel = _this.getCNADisplayString(cnaLabelKey);
+
+          cnaInfo.push({
+            gene: geneSymbol,
+            cnaLabel: cnaLabel
+          });
+        }
+
+        if (sample.disp_fusion && data.proteinChange && data.mutationType === 'Fusion') {
+          var proteinChange = data.proteinChange;
+          fusionInfo.push({
+            gene: geneSymbol,
+            proteinChange: proteinChange
+          });
+        }
+      }); // Prepare HTML for tooltip
+
+      var mutationInfoHTML = mutationInfo.length > 0 ? 'Mutation: ' : '';
+      var cnaInfoHTML = cnaInfo.length > 0 ? 'CNA: ' : '';
+      var fusionInfoHTML = fusionInfo.length > 0 ? 'Fusion: ' : '';
+      mutationInfo.forEach(function (mutation, index) {
+        console.log(mutation);
+        mutationInfoHTML += "<b>" + mutation.gene + " " + mutation.proteinChange + "</b>";
+        console.log(mutationInfoHTML);
+
+        if (index !== mutationInfo.length - 1) {
+          mutationInfoHTML += ", ";
+        } else {
+          mutationInfoHTML += "<br>";
+        }
+      });
+      cnaInfo.forEach(function (cna, index) {
+        console.log(cna);
+        cnaInfoHTML += "<b>" + cna.gene + " " + cna.cnaLabel + "</b>";
+        console.log(cnaInfoHTML);
+
+        if (index !== cnaInfo.length - 1) {
+          cnaInfoHTML += ", ";
+        } else {
+          cnaInfoHTML += "<br>";
+        }
+      });
+      fusionInfo.forEach(function (fusion, index) {
+        console.log(fusion);
+        fusionInfoHTML += "<b>" + fusion.gene + " " + fusion.proteinChange + "</b>";
+        console.log(fusionInfoHTML);
+
+        if (index !== fusionInfo.length - 1) {
+          fusionInfoHTML += ", ";
+        } else {
+          fusionInfoHTML += "<br>";
+        }
+      });
+      var sampleIdHTML = "<b> " + sampleId + "</b>" + "<br>";
+      sampleWrapper.append(external_jquery_default()('<div>' + sampleIconSvgHTML + sampleIdHTML + mutationInfoHTML + cnaInfoHTML + fusionInfoHTML + +'</div>'));
       wrapper.append(sampleWrapper);
     });
     return wrapper;
@@ -15720,6 +15796,8 @@ function (_super) {
           //PatientView PathwayMapper has a different functionality
           //Alteration types are overlayed instead of alterationpercentage
           _this.calculatePatientData(_this.props.cBioAlterationData);
+
+          _this.addSampleIconData(_this.props.sampleIconData);
         } else {
           _this.calculateAlterationData(_this.props.cBioAlterationData);
         }
@@ -15795,6 +15873,13 @@ function (_super) {
       _this.patientData[geneAltData.gene]["geneticTrackData"] = geneAltData.geneticTrackData;
       _this.patientData[geneAltData.gene]["geneticTrackRuleSetParams"] = geneAltData.geneticTrackRuleSetParams;
     });
+  };
+
+  PathwayMapper.prototype.addSampleIconData = function (sampleIconData) {
+    if (sampleIconData) {
+      this.patientData["sampleColors"] = sampleIconData.sampleColors;
+      this.patientData["sampleIndex"] = sampleIconData.sampleIndex;
+    }
   };
 
   PathwayMapper.prototype.getGeneStudyMap = function (studyGeneMap) {

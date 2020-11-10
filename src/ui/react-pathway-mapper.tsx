@@ -44,6 +44,7 @@ interface IPathwayMapperProps{
   genes: any[];
   isCollaborative?: boolean;
   cBioAlterationData?: ICBioData[];
+  sampleIconData?: ISampleIconData,
   pathwayName? : string;
   alterationData?: IAlterationData;
   onAddGenes?: (selectedGenes: string[]) => void;
@@ -67,6 +68,12 @@ export interface ICBioData{
   geneticTrackData?: any[]; // TODO GeneticTrackDatum[]: this is currently a private type within cbioportal repo
   geneticTrackRuleSetParams?: IGeneticAlterationRuleSetParams;
 }
+
+export interface ISampleIconData {
+  sampleIndex: { [s: string]: number },
+  sampleColors: { [s: string]: string }
+}
+
 export enum EModalType{
   STUDY,
   CONFIRMATION,
@@ -175,6 +182,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           //PatientView PathwayMapper has a different functionality
           //Alteration types are overlayed instead of alterationpercentage
           this.calculatePatientData(this.props.cBioAlterationData);
+          this.addSampleIconData(this.props.sampleIconData);
         }
         else{
           this.calculateAlterationData(this.props.cBioAlterationData);
@@ -245,6 +253,14 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     });
 
   }
+
+  addSampleIconData(sampleIconData: any) {
+    if (sampleIconData) {
+      this.patientData["sampleColors"] = sampleIconData.sampleColors;
+      this.patientData["sampleIndex"] = sampleIconData.sampleIndex;
+    }
+  }
+
   getGeneStudyMap(studyGeneMap: any){
     
     const genomicDataMap: any = {};
