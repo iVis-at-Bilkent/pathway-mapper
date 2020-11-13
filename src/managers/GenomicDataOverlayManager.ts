@@ -785,8 +785,8 @@ export default class GenomicDataOverlayManager {
 
   generateHTMLContentForNodeTooltip(ele, patientData) {
 
-    const tooltipMaxHeight = '150px';
-    const tooltipMaxWidth = '150px'
+    const tooltipMaxHeight = '200px';
+    const tooltipMaxWidth = '200px'
     const marginBetweenSamples = '10px';
     const sampleIconColorMap = patientData.sampleColors
     const sampleIndexMap = patientData.sampleIndex
@@ -851,17 +851,14 @@ export default class GenomicDataOverlayManager {
         }
 
       });
-
       // Prepare HTML for tooltip
       var mutationInfoHTML = mutationInfo.length > 0 ? 'Mutation: ' : ''
       var cnaInfoHTML = cnaInfo.length > 0 ? 'CNA: ': ''
       var fusionInfoHTML = fusionInfo.length > 0 ? 'Fusion: ' : ''
 
       mutationInfo.forEach((mutation, index) => {
-        console.log(mutation)
         mutationInfoHTML += "<b>" + mutation.gene + " " 
                             + mutation.proteinChange + "</b>"
-        console.log(mutationInfoHTML)
         if (index !== mutationInfo.length - 1) {
           mutationInfoHTML += ", "
         }
@@ -871,9 +868,7 @@ export default class GenomicDataOverlayManager {
       })
 
       cnaInfo.forEach((cna, index) => {
-        console.log(cna)
         cnaInfoHTML += "<b>" + cna.gene + " " + cna.cnaLabel + "</b>"
-        console.log(cnaInfoHTML)
         if (index !== cnaInfo.length - 1) {
           cnaInfoHTML += ", "
         }
@@ -883,9 +878,7 @@ export default class GenomicDataOverlayManager {
       })
 
       fusionInfo.forEach((fusion, index) => {
-        console.log(fusion)
         fusionInfoHTML += "<b>" + fusion.gene + " " + fusion.proteinChange + "</b>"
-        console.log(fusionInfoHTML)
         if (index !== fusionInfo.length - 1) {
           fusionInfoHTML += ", "
         }

@@ -7352,8 +7352,8 @@ function () {
   GenomicDataOverlayManager.prototype.generateHTMLContentForNodeTooltip = function (ele, patientData) {
     var _this = this;
 
-    var tooltipMaxHeight = '150px';
-    var tooltipMaxWidth = '150px';
+    var tooltipMaxHeight = '200px';
+    var tooltipMaxWidth = '200px';
     var marginBetweenSamples = '10px';
     var sampleIconColorMap = patientData.sampleColors;
     var sampleIndexMap = patientData.sampleIndex;
@@ -7419,9 +7419,7 @@ function () {
       var cnaInfoHTML = cnaInfo.length > 0 ? 'CNA: ' : '';
       var fusionInfoHTML = fusionInfo.length > 0 ? 'Fusion: ' : '';
       mutationInfo.forEach(function (mutation, index) {
-        console.log(mutation);
         mutationInfoHTML += "<b>" + mutation.gene + " " + mutation.proteinChange + "</b>";
-        console.log(mutationInfoHTML);
 
         if (index !== mutationInfo.length - 1) {
           mutationInfoHTML += ", ";
@@ -7430,9 +7428,7 @@ function () {
         }
       });
       cnaInfo.forEach(function (cna, index) {
-        console.log(cna);
         cnaInfoHTML += "<b>" + cna.gene + " " + cna.cnaLabel + "</b>";
-        console.log(cnaInfoHTML);
 
         if (index !== cnaInfo.length - 1) {
           cnaInfoHTML += ", ";
@@ -7441,9 +7437,7 @@ function () {
         }
       });
       fusionInfo.forEach(function (fusion, index) {
-        console.log(fusion);
         fusionInfoHTML += "<b>" + fusion.gene + " " + fusion.proteinChange + "</b>";
-        console.log(fusionInfoHTML);
 
         if (index !== fusionInfo.length - 1) {
           fusionInfoHTML += ", ";
