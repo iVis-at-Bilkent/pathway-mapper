@@ -7145,7 +7145,7 @@ function () {
       var dataURI = 'data:image/svg+xml;utf8,' + x;
       return dataURI;
     }).update();
-    this.cy.on('mouseover', 'node', function (event) {
+    this.cy.on('mouseover', 'node[type="GENE"]', function (event) {
       var node = event.target || event.cyTarget;
       var nodeLabel = node.data('name');
 

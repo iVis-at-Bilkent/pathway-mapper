@@ -522,7 +522,7 @@ export default class GenomicDataOverlayManager {
       })
       .update()
 
-      this.cy.on('mouseover', 'node', function(event) {
+      this.cy.on('mouseover', 'node[type="GENE"]', function(event) {
         var node = event.target || event.cyTarget
         const nodeLabel = node.data('name')
         if (!data[nodeLabel]) {
