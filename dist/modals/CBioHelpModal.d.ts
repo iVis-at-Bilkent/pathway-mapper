@@ -7,6 +7,7 @@ interface ICBioHelpModalProps {
 }
 export default class CBioHelpModal extends React.Component<ICBioHelpModalProps> {
     constructor(props: ICBioHelpModalProps);
+    generateOncoprintLegend(): SVGSVGElement;
     render(): JSX.Element;
 }
 export {};

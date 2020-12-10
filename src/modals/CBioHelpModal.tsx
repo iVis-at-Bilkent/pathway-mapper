@@ -1,6 +1,8 @@
 import React from 'react';
 import { EModalType } from '../ui/react-pathway-mapper';
 import {Modal} from 'react-bootstrap';
+import {shapeToSvg} from 'oncoprintjs';
+import $ from 'jquery';
 // @ts-ignore
 import layoutImage from "../images/toolbar/layout-cose.svg";
 // @ts-ignore
@@ -23,6 +25,259 @@ interface ICBioHelpModalProps{
     patientView ?: boolean;
 }
 
+// https://github.com/cBioPortal/cbioportal-frontend/blob/29a93c5e992ca1affd3d027355015164ae3602bd/src/shared/lib/Colors.ts
+const CNA_COLOR_AMP = '#ff0000';
+const CNA_COLOR_GAIN = '#ffb6c1';
+const CNA_COLOR_HETLOSS = '#8fd8d8';
+const CNA_COLOR_HOMDEL = '#0000ff';
+const DEFAULT_GREY = '#bebebe';
+const MRNA_COLOR_HIGH = '#ff9999';
+const MRNA_COLOR_LOW = '#6699cc';
+const MUT_COLOR_MISSENSE = '#008000';
+const MUT_COLOR_MISSENSE_PASSENGER = '#53D400';
+const MUT_COLOR_INFRAME = '#993404';
+const MUT_COLOR_INFRAME_PASSENGER = '#a68028';
+const MUT_COLOR_TRUNC = '#000000';
+const MUT_COLOR_TRUNC_PASSENGER = '#708090';
+const MUT_COLOR_FUSION = '#8B00C9';
+const MUT_COLOR_PROMOTER = '#00B7CE';
+const MUT_COLOR_OTHER = '#cf58bc';
+const MUT_COLOR_GERMLINE = '#FFFFFF';
+const PROT_COLOR_HIGH = '#ff3df8';
+const PROT_COLOR_LOW = '#00E1FF';
+
+// always used shape
+const defaultShape = {
+    type: 'rectangle',
+    fill: DEFAULT_GREY,
+    x: 0,
+    y: 0,
+    width: 6,
+    height: 20,
+    stroke: 'rgba(0,0,0,0)',
+    'stroke-width': 0
+};
+
+const labels = [
+    'No alterations',
+    'Amplification (putative driver)',
+    'Amplification (unknown significance)',
+    'Gain (putative driver)',
+    'Gain (unknown significance)',
+    'Deep Deletion (putative driver)',
+    'Deep Deletion (unknown significance)',
+    'Shallow Deletion (putative driver)',
+    'Shallow Deletion (unknown significance)',
+    'mRNA High',
+    'mRNA Low',
+    'Protein High',
+    'Protein Low',
+    'Fusion',
+    'Germline Mutation',
+    'Missense Mutation (putative driver)',
+    'Missense Mutation (unknown significance)',
+    'Other Mutation',
+    'Promoter Mutation',
+    'Truncating Mutation (putative driver)',
+    'Truncating Mutation (unknown significance)',
+    'Inframe Mutation (putative driver)',
+    'Inframe Mutation (unknown significance)'
+];
+
+// conditional shapes
+var shapeBank = [
+    {
+        type: 'rectangle',
+        fill: DEFAULT_GREY,
+        x: 0,
+        y: 0,
+        width: 6,
+        height: 20,
+        stroke: 'rgba(0,0,0,0)',
+        'stroke-width': 0
+    },
+    {
+        type: 'rectangle',
+        fill: CNA_COLOR_AMP,
+        x: 0,
+        y: 0,
+        width: 6,
+        height: 20
+    },
+    {
+        type: 'rectangle',
+        fill: CNA_COLOR_AMP,
+        x: 0,
+        y: 0,
+        width: 6,
+        height: 20
+    },
+    {
+        type: 'rectangle',
+        fill: CNA_COLOR_GAIN,
+        x: 0,
+        y: 0,
+        width: 6,
+        height: 20
+    },
+    {
+        type: 'rectangle',
+        fill: CNA_COLOR_GAIN,
+        x: 0,
+        y: 0,
+        width: 6,
+        height: 20
+    },
+    {
+        type: 'rectangle',
+        fill: CNA_COLOR_HOMDEL,
+        x: 0,
+        y: 0,
+        width: 6,
+        height: 20
+    },
+    {
+        type: 'rectangle',
+        fill: CNA_COLOR_HOMDEL,
+        x: 0,
+        y: 0,
+        width: 6,
+        height: 20
+    },
+    {
+        type: 'rectangle',
+        fill: CNA_COLOR_HETLOSS,
+        x: 0,
+        y: 0,
+        width: 6,
+        height: 20
+    },
+    {
+        type: 'rectangle',
+        fill: CNA_COLOR_HETLOSS,
+        x: 0,
+        y: 0,
+        width: 6,
+        height: 20
+    },
+    {
+        type: 'rectangle',
+        fill: 'rgba(0, 0, 0, 0)',
+        stroke: MRNA_COLOR_HIGH,
+        'stroke-width': 2,
+        x: 0,
+        y: 0,
+        width: 6,
+        height: 20
+    },
+    {
+        type: 'rectangle',
+        fill: 'rgba(0, 0, 0, 0)',
+        stroke: MRNA_COLOR_LOW,
+        'stroke-width': 2,
+        x: 0,
+        y: 0,
+        width: 6,
+        height: 20
+    },
+    {
+        type: 'rectangle',
+        fill: PROT_COLOR_HIGH,
+        x: 0,
+        y: 0,
+        width: 6,
+        height: 4
+    },
+    {
+        type: 'rectangle',
+        fill: PROT_COLOR_LOW,
+        x: 0,
+        y: 16,
+        width: 6,
+        height: 4
+    },
+    {
+        type: 'rectangle',
+        fill: MUT_COLOR_FUSION,
+        x: 0,
+        y: 4,
+        width: 6,
+        height: 12
+    },
+    {
+        type: 'rectangle',
+        fill: MUT_COLOR_GERMLINE,
+        x: 0,
+        y: 8.75,
+        width: 6,
+        height: 1.6
+    },
+    {
+        type: 'rectangle',
+        fill: MUT_COLOR_MISSENSE,
+        x: 0,
+        y: 6.66,
+        width: 6,
+        height: 6.66
+    },
+    {
+        type: 'rectangle',
+        fill: MUT_COLOR_MISSENSE_PASSENGER,
+        x: 0,
+        y: 6.66,
+        width: 6,
+        height: 6.66
+    },
+    {
+        type: 'rectangle',
+        fill: MUT_COLOR_OTHER,
+        x: 0,
+        y: 6.66,
+        width: 6,
+        height: 6.66
+    },
+    {
+        type: 'rectangle',
+        fill: MUT_COLOR_PROMOTER,
+        x: 0,
+        y: 6.66,
+        width: 6,
+        height: 6.66
+    },
+    {
+        type: 'rectangle',
+        fill: MUT_COLOR_TRUNC,
+        x: 0,
+        y: 6.66,
+        width: 6,
+        height: 6.66
+    },
+    {
+        type: 'rectangle',
+        fill: MUT_COLOR_TRUNC_PASSENGER,
+        x: 0,
+        y: 6.66,
+        width: 6,
+        height: 6.66
+    },
+    {
+        type: 'rectangle',
+        fill: MUT_COLOR_INFRAME,
+        x: 0,
+        y: 6.66,
+        width: 6,
+        height: 6.66
+    },
+    {
+        type: 'rectangle',
+        fill: MUT_COLOR_INFRAME_PASSENGER,
+        x: 0,
+        y: 6.66,
+        width: 6,
+        height: 6.66
+    },
+];
+
 export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
 
 
@@ -31,11 +286,59 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
         console.log("CBioModal", this.props.patientView)
     }
 
+    generateOncoprintLegend() {
+        const svgNameSpace = 'http://www.w3.org/2000/svg'
+        const svgElement = document.createElementNS(svgNameSpace, 'svg')
+
+        const legendEleWidth = 280
+    
+        const cellWidth = 6
+        const cellPadding = 30
+        const cellHeight = 23
+        const cellVerticalPadding = 15
+        const cellMarginRight = cellWidth + 3
+
+        shapeBank.forEach((shape, index) => {
+            const offsetX = (index % 3) * (legendEleWidth)
+            const textOffsetX = offsetX + cellMarginRight
+            const offsetY = Math.floor(index / 3) * (cellHeight + cellVerticalPadding)
+            const textOffsetY = offsetY + 15
+            const g = document.createElementNS(svgNameSpace, 'g')
+            if (!shape["stroke"]) {
+                shape["stroke"] = 'rgba(0,0,0,0)';
+                shape["stroke-width"] = 0;
+            }
+            g.appendChild(shapeToSvg(defaultShape, offsetX, offsetY))
+            g.appendChild(shapeToSvg(shape, offsetX, offsetY))
+            
+            const text = document.createElementNS(svgNameSpace, 'text');
+            text.setAttributeNS(null, 'x', textOffsetX.toString());
+            text.setAttributeNS(null, 'y', textOffsetY.toString());
+            text.setAttributeNS(null, 'font-size', '12');
+            text.setAttributeNS(null, 'font-family', 'Arial');
+            var textNode = document.createTextNode(labels[index]);
+            text.appendChild(textNode)
+
+            g.appendChild(text);
+            svgElement.appendChild(g)
+        });
+
+        svgElement.setAttribute(
+            'width', '885')
+        svgElement.setAttribute(
+            'height','325')
+        svgElement.style.paddingTop = '20px'
+        // This is important you need to include this to succesfully render in cytoscape.js!
+        svgElement.setAttribute('xmlns', svgNameSpace)
+    
+        return svgElement
+    }
+
     render(){
 
         console.log("CBioModal", this.props.patientView);
         return( 
-            <Modal id="cBioHelpModal" className="pathwayMapper" show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.CHELP)}}>
+            <Modal bsSize="lg" id="cBioHelpModal" className="pathwayMapper" show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.CHELP)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>PathwayMapper cBioPortal Edition 2.0</Modal.Title>
                 </Modal.Header>
@@ -88,7 +391,8 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
            <br/>
            Genetic alteration legend:
            <br/>
-           <img style={{paddingLeft: "40px"}} height= "78%" width="78%" src={patientImage} />
+           <div className="container" style={{paddingLeft: '45px'}} dangerouslySetInnerHTML={{__html: this.generateOncoprintLegend().outerHTML}}>
+           </div>
            <br/>
            <br/>
            To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.
