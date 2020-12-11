@@ -15806,7 +15806,7 @@ function (_super) {
       g.appendChild(text);
       svgElement.appendChild(g);
     });
-    svgElement.setAttribute('width', '885');
+    svgElement.setAttribute('width', '840');
     svgElement.setAttribute('height', '325');
     svgElement.style.paddingTop = '20px'; // This is important you need to include this to succesfully render in cytoscape.js!
 
@@ -15872,7 +15872,7 @@ function (_super) {
       dangerouslySetInnerHTML: {
         __html: this.generateOncoprintLegend().outerHTML
       }
-    }), external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "The buttons on top of the pathway are:", external_react_default.a.createElement("ul", null, external_react_default.a.createElement("table", {
+    }), "To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "The buttons on top of the pathway are:", external_react_default.a.createElement("ul", null, external_react_default.a.createElement("table", {
       cellPadding: 5
     }, external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
       height: "22px",
@@ -16382,7 +16382,7 @@ function (_super) {
       pathwayGenes: Object.keys(this.pathwayGeneMap[this.selectedPathway]),
       onAddGenes: this.props.onAddGenes,
       patientView: this.props.patientView
-    })), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+    })), this.props.messageBanner && external_react_default.a.createElement(external_react_bootstrap_["Col"], {
       xs: 3,
       style: {}
     }, this.props.messageBanner()), external_react_default.a.createElement(external_react_bootstrap_["Col"], {

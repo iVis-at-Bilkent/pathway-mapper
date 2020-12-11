@@ -25,7 +25,7 @@ interface IPathwayMapperProps {
     toast: any;
     showMessage: (message: string) => void;
     patientView?: boolean;
-    messageBanner: () => JSX.Element;
+    messageBanner?: () => JSX.Element;
 }
 export interface ICBioData {
     altered: number;

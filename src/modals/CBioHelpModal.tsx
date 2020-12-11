@@ -324,7 +324,7 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
         });
 
         svgElement.setAttribute(
-            'width', '885')
+            'width', '840')
         svgElement.setAttribute(
             'height','325')
         svgElement.style.paddingTop = '20px'
@@ -393,8 +393,6 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
            <br/>
            <div className="container" style={{paddingLeft: '45px'}} dangerouslySetInnerHTML={{__html: this.generateOncoprintLegend().outerHTML}}>
            </div>
-           <br/>
-           <br/>
            To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.
            <br/>
            <br/>
