@@ -59,19 +59,8 @@ const defaultShape = {
 };
 
 const labels = [
-    'No alterations',
-    'Amplification (putative driver)',
-    'Amplification (unknown significance)',
-    'Gain (putative driver)',
-    'Gain (unknown significance)',
-    'Deep Deletion (putative driver)',
-    'Deep Deletion (unknown significance)',
-    'Shallow Deletion (putative driver)',
-    'Shallow Deletion (unknown significance)',
-    'mRNA High',
-    'mRNA Low',
-    'Protein High',
-    'Protein Low',
+    'Amplification',
+    'Deep Deletion',
     'Fusion',
     'Germline Mutation',
     'Missense Mutation (putative driver)',
@@ -88,41 +77,7 @@ const labels = [
 var shapeBank = [
     {
         type: 'rectangle',
-        fill: DEFAULT_GREY,
-        x: 0,
-        y: 0,
-        width: 6,
-        height: 20,
-        stroke: 'rgba(0,0,0,0)',
-        'stroke-width': 0
-    },
-    {
-        type: 'rectangle',
         fill: CNA_COLOR_AMP,
-        x: 0,
-        y: 0,
-        width: 6,
-        height: 20
-    },
-    {
-        type: 'rectangle',
-        fill: CNA_COLOR_AMP,
-        x: 0,
-        y: 0,
-        width: 6,
-        height: 20
-    },
-    {
-        type: 'rectangle',
-        fill: CNA_COLOR_GAIN,
-        x: 0,
-        y: 0,
-        width: 6,
-        height: 20
-    },
-    {
-        type: 'rectangle',
-        fill: CNA_COLOR_GAIN,
         x: 0,
         y: 0,
         width: 6,
@@ -135,66 +90,6 @@ var shapeBank = [
         y: 0,
         width: 6,
         height: 20
-    },
-    {
-        type: 'rectangle',
-        fill: CNA_COLOR_HOMDEL,
-        x: 0,
-        y: 0,
-        width: 6,
-        height: 20
-    },
-    {
-        type: 'rectangle',
-        fill: CNA_COLOR_HETLOSS,
-        x: 0,
-        y: 0,
-        width: 6,
-        height: 20
-    },
-    {
-        type: 'rectangle',
-        fill: CNA_COLOR_HETLOSS,
-        x: 0,
-        y: 0,
-        width: 6,
-        height: 20
-    },
-    {
-        type: 'rectangle',
-        fill: 'rgba(0, 0, 0, 0)',
-        stroke: MRNA_COLOR_HIGH,
-        'stroke-width': 2,
-        x: 0,
-        y: 0,
-        width: 6,
-        height: 20
-    },
-    {
-        type: 'rectangle',
-        fill: 'rgba(0, 0, 0, 0)',
-        stroke: MRNA_COLOR_LOW,
-        'stroke-width': 2,
-        x: 0,
-        y: 0,
-        width: 6,
-        height: 20
-    },
-    {
-        type: 'rectangle',
-        fill: PROT_COLOR_HIGH,
-        x: 0,
-        y: 0,
-        width: 6,
-        height: 4
-    },
-    {
-        type: 'rectangle',
-        fill: PROT_COLOR_LOW,
-        x: 0,
-        y: 16,
-        width: 6,
-        height: 4
     },
     {
         type: 'rectangle',
@@ -293,7 +188,6 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
         const legendEleWidth = 280
     
         const cellWidth = 6
-        const cellPadding = 30
         const cellHeight = 23
         const cellVerticalPadding = 15
         const cellMarginRight = cellWidth + 3
@@ -326,7 +220,7 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
         svgElement.setAttribute(
             'width', '840')
         svgElement.setAttribute(
-            'height','325')
+            'height','175')
         svgElement.style.paddingTop = '20px'
         // This is important you need to include this to succesfully render in cytoscape.js!
         svgElement.setAttribute('xmlns', svgNameSpace)
@@ -391,7 +285,7 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
            <br/>
            Genetic alteration legend:
            <br/>
-           <div className="container" style={{paddingLeft: '45px'}} dangerouslySetInnerHTML={{__html: this.generateOncoprintLegend().outerHTML}}>
+           <div className="container" style={{paddingLeft: '45px', width: 'fit-content'}} dangerouslySetInnerHTML={{__html: this.generateOncoprintLegend().outerHTML}}>
            </div>
            To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.
            <br/>

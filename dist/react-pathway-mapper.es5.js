@@ -15590,41 +15590,11 @@ var defaultShape = {
   stroke: 'rgba(0,0,0,0)',
   'stroke-width': 0
 };
-var labels = ['No alterations', 'Amplification (putative driver)', 'Amplification (unknown significance)', 'Gain (putative driver)', 'Gain (unknown significance)', 'Deep Deletion (putative driver)', 'Deep Deletion (unknown significance)', 'Shallow Deletion (putative driver)', 'Shallow Deletion (unknown significance)', 'mRNA High', 'mRNA Low', 'Protein High', 'Protein Low', 'Fusion', 'Germline Mutation', 'Missense Mutation (putative driver)', 'Missense Mutation (unknown significance)', 'Other Mutation', 'Promoter Mutation', 'Truncating Mutation (putative driver)', 'Truncating Mutation (unknown significance)', 'Inframe Mutation (putative driver)', 'Inframe Mutation (unknown significance)']; // conditional shapes
+var labels = ['Amplification', 'Deep Deletion', 'Fusion', 'Germline Mutation', 'Missense Mutation (putative driver)', 'Missense Mutation (unknown significance)', 'Other Mutation', 'Promoter Mutation', 'Truncating Mutation (putative driver)', 'Truncating Mutation (unknown significance)', 'Inframe Mutation (putative driver)', 'Inframe Mutation (unknown significance)']; // conditional shapes
 
 var shapeBank = [{
   type: 'rectangle',
-  fill: DEFAULT_GREY,
-  x: 0,
-  y: 0,
-  width: 6,
-  height: 20,
-  stroke: 'rgba(0,0,0,0)',
-  'stroke-width': 0
-}, {
-  type: 'rectangle',
   fill: CNA_COLOR_AMP,
-  x: 0,
-  y: 0,
-  width: 6,
-  height: 20
-}, {
-  type: 'rectangle',
-  fill: CNA_COLOR_AMP,
-  x: 0,
-  y: 0,
-  width: 6,
-  height: 20
-}, {
-  type: 'rectangle',
-  fill: CNA_COLOR_GAIN,
-  x: 0,
-  y: 0,
-  width: 6,
-  height: 20
-}, {
-  type: 'rectangle',
-  fill: CNA_COLOR_GAIN,
   x: 0,
   y: 0,
   width: 6,
@@ -15636,59 +15606,6 @@ var shapeBank = [{
   y: 0,
   width: 6,
   height: 20
-}, {
-  type: 'rectangle',
-  fill: CNA_COLOR_HOMDEL,
-  x: 0,
-  y: 0,
-  width: 6,
-  height: 20
-}, {
-  type: 'rectangle',
-  fill: CNA_COLOR_HETLOSS,
-  x: 0,
-  y: 0,
-  width: 6,
-  height: 20
-}, {
-  type: 'rectangle',
-  fill: CNA_COLOR_HETLOSS,
-  x: 0,
-  y: 0,
-  width: 6,
-  height: 20
-}, {
-  type: 'rectangle',
-  fill: 'rgba(0, 0, 0, 0)',
-  stroke: MRNA_COLOR_HIGH,
-  'stroke-width': 2,
-  x: 0,
-  y: 0,
-  width: 6,
-  height: 20
-}, {
-  type: 'rectangle',
-  fill: 'rgba(0, 0, 0, 0)',
-  stroke: MRNA_COLOR_LOW,
-  'stroke-width': 2,
-  x: 0,
-  y: 0,
-  width: 6,
-  height: 20
-}, {
-  type: 'rectangle',
-  fill: PROT_COLOR_HIGH,
-  x: 0,
-  y: 0,
-  width: 6,
-  height: 4
-}, {
-  type: 'rectangle',
-  fill: PROT_COLOR_LOW,
-  x: 0,
-  y: 16,
-  width: 6,
-  height: 4
 }, {
   type: 'rectangle',
   fill: MUT_COLOR_FUSION,
@@ -15778,7 +15695,6 @@ function (_super) {
     var svgElement = document.createElementNS(svgNameSpace, 'svg');
     var legendEleWidth = 280;
     var cellWidth = 6;
-    var cellPadding = 30;
     var cellHeight = 23;
     var cellVerticalPadding = 15;
     var cellMarginRight = cellWidth + 3;
@@ -15807,7 +15723,7 @@ function (_super) {
       svgElement.appendChild(g);
     });
     svgElement.setAttribute('width', '840');
-    svgElement.setAttribute('height', '325');
+    svgElement.setAttribute('height', '170');
     svgElement.style.paddingTop = '20px'; // This is important you need to include this to succesfully render in cytoscape.js!
 
     svgElement.setAttribute('xmlns', svgNameSpace);
@@ -15867,7 +15783,8 @@ function (_super) {
     }, "here"), " for the notation used.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Genetic alteration legend:", external_react_default.a.createElement("br", null), external_react_default.a.createElement("div", {
       className: "container",
       style: {
-        paddingLeft: '45px'
+        paddingLeft: '45px',
+        width: 'fit-content'
       },
       dangerouslySetInnerHTML: {
         __html: this.generateOncoprintLegend().outerHTML
