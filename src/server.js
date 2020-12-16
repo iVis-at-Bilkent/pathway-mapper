@@ -23,7 +23,7 @@ app.post('/getBioGeneData', multerInstance.array(), biogeneDataHandler);
 const ShareDB = require('sharedb');
 const WebSocketJSONStream = require('websocket-json-stream');
 const WebSocket = require('ws');
-const db = require('sharedb-mongo')('mongodb://pathwaymapper:1234abc@ds111072.mlab.com:11072/pathwaymapper');
+const db = require('sharedb-mongo')('mongodb://pathwaymapper:1234abc@pathwaymapper-shard-00-00.pez3l.mongodb.net:27017,pathwaymapper-shard-00-01.pez3l.mongodb.net:27017,pathwaymapper-shard-00-02.pez3l.mongodb.net:27017/pathwaymapper?ssl=true&replicaSet=atlas-g5vfe2-shard-0&authSource=admin&retryWrites=true&w=majority');
 const backend = new ShareDB({db});
 
 // Connect any incoming WebSocket connection to ShareDB
