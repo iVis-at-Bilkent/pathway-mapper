@@ -15723,7 +15723,7 @@ function (_super) {
       svgElement.appendChild(g);
     });
     svgElement.setAttribute('width', '840');
-    svgElement.setAttribute('height', '170');
+    svgElement.setAttribute('height', '175');
     svgElement.style.paddingTop = '20px'; // This is important you need to include this to succesfully render in cytoscape.js!
 
     svgElement.setAttribute('xmlns', svgNameSpace);
@@ -16287,7 +16287,11 @@ function (_super) {
       }
     }, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
       xs: 3,
-      style: {}
+      style: {
+        width: 'auto',
+        paddingRight: '0px',
+        marginBottom: '5px'
+      }
     }, external_react_default.a.createElement(ui_Toolbar, {
       pathwayActions: this.pathwayActions,
       selectedPathway: this.selectedPathway,
@@ -16300,15 +16304,18 @@ function (_super) {
       onAddGenes: this.props.onAddGenes,
       patientView: this.props.patientView
     })), this.props.messageBanner && external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      xs: 3,
-      style: {}
+      xs: 4,
+      style: {
+        maxHeight: '32px',
+        paddingRight: '0px'
+      }
     }, this.props.messageBanner()), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
       xs: 3,
       style: {
         paddingLeft: "0px",
-        marginTop: "17px",
+        marginTop: "12px",
         textAlign: "right",
-        paddingRight: "35px"
+        paddingRight: "40px"
       }
     }, this.selectedPathway)), external_react_default.a.createElement("div", {
       className: isCBioPortal ? "row" : "mainContentWrapper"
