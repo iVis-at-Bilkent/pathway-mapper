@@ -5986,7 +5986,10 @@ function (_super) {
       return gene.hugoGeneSymbol;
     }).join("+");
     return external_react_default.a.createElement("div", {
-      id: "toolbar"
+      id: "toolbar",
+      style: {
+        marginLeft: '0px'
+      }
     }, external_react_default.a.createElement("img", {
       height: "22px",
       width: "22px",
@@ -16286,9 +16289,8 @@ function (_super) {
         marginBottom: "6px"
       }
     }, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      xs: 3,
+      xs: 2,
       style: {
-        width: 'auto',
         paddingRight: '0px',
         marginBottom: '5px'
       }
@@ -16303,19 +16305,25 @@ function (_super) {
       pathwayGenes: Object.keys(this.pathwayGeneMap[this.selectedPathway]),
       onAddGenes: this.props.onAddGenes,
       patientView: this.props.patientView
-    })), this.props.messageBanner && external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+    })), this.props.messageBanner ? external_react_default.a.createElement(external_react_bootstrap_["Col"], {
       xs: 4,
       style: {
         maxHeight: '32px',
         paddingRight: '0px'
       }
-    }, this.props.messageBanner()), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+    }, this.props.messageBanner()) : external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+      xs: 4,
+      style: {
+        maxHeight: '32px',
+        paddingRight: '0px'
+      }
+    }), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
       xs: 3,
       style: {
         paddingLeft: "0px",
         marginTop: "12px",
         textAlign: "right",
-        paddingRight: "40px"
+        paddingRight: "25px"
       }
     }, this.selectedPathway)), external_react_default.a.createElement("div", {
       className: isCBioPortal ? "row" : "mainContentWrapper"

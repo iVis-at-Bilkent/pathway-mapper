@@ -482,7 +482,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           }
           { isCBioPortal &&
           <Row style={{marginBottom: "6px"}}>
-            <Col xs={3} style={{width: 'auto', paddingRight: '0px', marginBottom: '5px'}}>
+            <Col xs={2} style={{paddingRight: '0px', marginBottom: '5px'}}>
               <Toolbar
                 pathwayActions={this.pathwayActions}
                 selectedPathway={this.selectedPathway}
@@ -496,10 +496,12 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
                 patientView = {this.props.patientView}
               />
             </Col>
-            {this.props.messageBanner && 
+            {this.props.messageBanner ?
             <Col xs={4} style={{maxHeight: '32px', paddingRight: '0px'}}>{this.props.messageBanner()}</Col>
+            :
+            <Col xs={4} style={{maxHeight: '32px', paddingRight: '0px'}}></Col>
             }
-            <Col xs={3} style={{paddingLeft: "0px", marginTop: "12px", textAlign: "right", paddingRight: "40px"}}>
+            <Col xs={3} style={{paddingLeft: "0px", marginTop: "12px", textAlign: "right", paddingRight: "25px"}}>
               {this.selectedPathway}
             </Col>
           </Row>

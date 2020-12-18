@@ -55,7 +55,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
       const studyQuery = "q=" + JSON.stringify(this.props.alterationData) + "&g=" + this.props.genes.map(gene => gene.hugoGeneSymbol).join("+");
       return (
-      <div id="toolbar">
+      <div id="toolbar" style={{marginLeft: '0px'}}>
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Save as PNG" data-place="right" data-effect="solid" src={savePNGImage} onClick={() => {this.props.pathwayActions.saveAs("PNG");}}/>
 
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Save as SVG" data-place="right" data-effect="solid" src={saveSVGImage} onClick={() => {this.props.pathwayActions.saveAs("SVG");}}/>
