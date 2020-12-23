@@ -15736,7 +15736,7 @@ function (_super) {
   CBioHelpModal.prototype.render = function () {
     var _this = this;
 
-    console.log("CBioModal", this.props.patientView);
+    var legendPadding = '45px';
     return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
       bsSize: "lg",
       id: "cBioHelpModal",
@@ -15786,13 +15786,17 @@ function (_super) {
     }, "here"), " for the notation used.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Genetic alteration legend:", external_react_default.a.createElement("br", null), external_react_default.a.createElement("div", {
       className: "container",
       style: {
-        paddingLeft: '45px',
+        paddingLeft: legendPadding,
         width: 'fit-content'
       },
       dangerouslySetInnerHTML: {
         __html: this.generateOncoprintLegend().outerHTML
       }
-    }), "To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "The buttons on top of the pathway are:", external_react_default.a.createElement("ul", null, external_react_default.a.createElement("table", {
+    }), external_react_default.a.createElement("p", {
+      style: {
+        paddingLeft: legendPadding
+      }
+    }, "Putative driver and unknown significance annotations are based on data from OncoKB and CancerHotspots.org."), external_react_default.a.createElement("br", null), "To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "The buttons on top of the pathway are:", external_react_default.a.createElement("ul", null, external_react_default.a.createElement("table", {
       cellPadding: 5
     }, external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
       height: "22px",

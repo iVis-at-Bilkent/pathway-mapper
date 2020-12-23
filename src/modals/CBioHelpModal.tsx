@@ -230,7 +230,8 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
 
     render(){
 
-        console.log("CBioModal", this.props.patientView);
+        const legendPadding = '45px';
+
         return( 
             <Modal bsSize="lg" id="cBioHelpModal" className="pathwayMapper" show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.CHELP)}}>
                 <Modal.Header closeButton>
@@ -285,8 +286,10 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
            <br/>
            Genetic alteration legend:
            <br/>
-           <div className="container" style={{paddingLeft: '45px', width: 'fit-content'}} dangerouslySetInnerHTML={{__html: this.generateOncoprintLegend().outerHTML}}>
+           <div className="container" style={{paddingLeft: legendPadding, width: 'fit-content'}} dangerouslySetInnerHTML={{__html: this.generateOncoprintLegend().outerHTML}}>
            </div>
+           <p style={{paddingLeft: legendPadding}}>Putative driver and unknown significance annotations are based on data from OncoKB and CancerHotspots.org.</p>
+           <br/>
            To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.
            <br/>
            <br/>
