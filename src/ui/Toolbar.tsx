@@ -3,7 +3,7 @@ import {Row, Col, Image} from "react-bootstrap";
 import autobind from "autobind-decorator";
 import EditorActionsManager from "../managers/EditorActionsManager";
 import {observer} from "mobx-react";
-import {observable} from "mobx";
+import {makeObservable, observable} from "mobx";
 import PathwayActions from '../utils/PathwayActions';
 // @ts-ignore
 import layoutImage from "../images/toolbar/layout-cose.svg";
@@ -46,6 +46,8 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
     private editor: EditorActionsManager;
     constructor(props: IToolbarProps){
       super(props);
+      makeObservable(this);
+
       this.selectedGenes = [];
     }
 

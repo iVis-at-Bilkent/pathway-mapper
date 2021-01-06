@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator'
-import { observable, computed } from 'mobx'
+import { observable, computed, makeObservable } from 'mobx'
 import EditorActionsManager from '../managers/EditorActionsManager'
 import FileOperationsManager, {
   IPathwayInfo
@@ -54,6 +54,8 @@ export default class PathwayActions {
     this.isCBioPortal = isCBioPortal
     this.isCollaborative = isCollaborative
     this.enabledType = EGridType.NONE
+
+    makeObservable(this);
   }
 
   emphasiseQueryGenes(queryGenes: string[]) {

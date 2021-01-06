@@ -107,13 +107,13 @@ module.exports = require("jquery");
 /* 3 */
 /***/ (function(module, exports) {
 
-module.exports = require("autobind-decorator");
+module.exports = require("mobx");
 
 /***/ }),
 /* 4 */
 /***/ (function(module, exports) {
 
-module.exports = require("mobx");
+module.exports = require("autobind-decorator");
 
 /***/ }),
 /* 5 */
@@ -5894,7 +5894,7 @@ var external_react_default = /*#__PURE__*/__webpack_require__.n(external_react_)
 var external_mobx_react_ = __webpack_require__(5);
 
 // EXTERNAL MODULE: external "mobx"
-var external_mobx_ = __webpack_require__(4);
+var external_mobx_ = __webpack_require__(3);
 
 // EXTERNAL MODULE: ./src/images/toolbar/layout-cose.svg
 var layout_cose = __webpack_require__(8);
@@ -5920,7 +5920,7 @@ var __extends = undefined && undefined.__extends || function () {
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -5975,150 +5975,168 @@ function (_super) {
   function Toolbar(props) {
     var _this = _super.call(this, props) || this;
 
+    Object.defineProperty(_this, "selectedGenes", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "editor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object(external_mobx_["makeObservable"])(_this);
     _this.selectedGenes = [];
     return _this;
   }
 
-  Toolbar.prototype.render = function () {
-    var _this = this;
+  Object.defineProperty(Toolbar.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-    var studyQuery = "q=" + JSON.stringify(this.props.alterationData) + "&g=" + this.props.genes.map(function (gene) {
-      return gene.hugoGeneSymbol;
-    }).join("+");
-    return external_react_default.a.createElement("div", {
-      id: "toolbar",
-      style: {
-        marginLeft: '0px'
-      }
-    }, external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      "data-border": "true",
-      "data-type": "light",
-      "data-tip": "Save as PNG",
-      "data-place": "right",
-      "data-effect": "solid",
-      src: save_png_default.a,
-      onClick: function () {
-        _this.props.pathwayActions.saveAs("PNG");
-      }
-    }), external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      "data-border": "true",
-      "data-type": "light",
-      "data-tip": "Save as SVG",
-      "data-place": "right",
-      "data-effect": "solid",
-      src: save_svg_default.a,
-      onClick: function () {
-        _this.props.pathwayActions.saveAs("SVG");
-      }
-    }), external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      "data-border": "true",
-      "data-type": "light",
-      "data-tip": "Perform layout",
-      "data-place": "right",
-      "data-effect": "solid",
-      src: layout_cose_default.a,
-      onClick: this.props.pathwayActions.performLayout
-    }), !this.props.patientView && [external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      "data-border": "true",
-      "data-type": "light",
-      "data-tip": "Add selected genes to query",
-      "data-place": "right",
-      "data-effect": "solid",
-      src: addSelImage,
-      onClick: function () {
-        _this.selectedGenes = _this.props.pathwayActions.getSelectedNodes().filter(function (node) {
-          return node.data().type === "GENE";
-        }).map(function (node) {
-          return node.data().name;
-        });
-
-        var noneGeneList = _this.props.pathwayActions.getSelectedNodes().filter(function (node) {
-          return node.data().type !== "GENE";
-        }).map(function (node) {
-          return node.data().name;
-        });
-
-        var invalidGenes = [];
-        var message = "";
-
-        if (noneGeneList.length > 0) {
-          message += "Selection contains nodes that are not genes: " + noneGeneList.join(', ') + ". ";
+      var studyQuery = "q=" + JSON.stringify(this.props.alterationData) + "&g=" + this.props.genes.map(function (gene) {
+        return gene.hugoGeneSymbol;
+      }).join("+");
+      return external_react_default.a.createElement("div", {
+        id: "toolbar",
+        style: {
+          marginLeft: '0px'
         }
+      }, external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        "data-border": "true",
+        "data-type": "light",
+        "data-tip": "Save as PNG",
+        "data-place": "right",
+        "data-effect": "solid",
+        src: save_png_default.a,
+        onClick: function () {
+          _this.props.pathwayActions.saveAs("PNG");
+        }
+      }), external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        "data-border": "true",
+        "data-type": "light",
+        "data-tip": "Save as SVG",
+        "data-place": "right",
+        "data-effect": "solid",
+        src: save_svg_default.a,
+        onClick: function () {
+          _this.props.pathwayActions.saveAs("SVG");
+        }
+      }), external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        "data-border": "true",
+        "data-type": "light",
+        "data-tip": "Perform layout",
+        "data-place": "right",
+        "data-effect": "solid",
+        src: layout_cose_default.a,
+        onClick: this.props.pathwayActions.performLayout
+      }), !this.props.patientView && [external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        "data-border": "true",
+        "data-type": "light",
+        "data-tip": "Add selected genes to query",
+        "data-place": "right",
+        "data-effect": "solid",
+        src: addSelImage,
+        onClick: function () {
+          _this.selectedGenes = _this.props.pathwayActions.getSelectedNodes().filter(function (node) {
+            return node.data().type === "GENE";
+          }).map(function (node) {
+            return node.data().name;
+          });
 
-        _this.selectedGenes.forEach(function (gene) {
-          if (!_this.props.validGenes.hasOwnProperty(gene)) {
-            invalidGenes.push(gene);
+          var noneGeneList = _this.props.pathwayActions.getSelectedNodes().filter(function (node) {
+            return node.data().type !== "GENE";
+          }).map(function (node) {
+            return node.data().name;
+          });
+
+          var invalidGenes = [];
+          var message = "";
+
+          if (noneGeneList.length > 0) {
+            message += "Selection contains nodes that are not genes: " + noneGeneList.join(', ') + ". ";
           }
-        });
 
-        if (invalidGenes.length === 0) {
-          if (_this.selectedGenes.length > 0 && noneGeneList.length === 0) {
+          _this.selectedGenes.forEach(function (gene) {
+            if (!_this.props.validGenes.hasOwnProperty(gene)) {
+              invalidGenes.push(gene);
+            }
+          });
+
+          if (invalidGenes.length === 0) {
+            if (_this.selectedGenes.length > 0 && noneGeneList.length === 0) {
+              _this.props.onAddGenes(_this.selectedGenes);
+            }
+          } else {
+            message += "Following gene symbols are invalid or already in gene list: " + invalidGenes.join(", ") + ".";
+          }
+
+          if (message.length > 0) {
+            _this.props.showMessage(message);
+          }
+        }
+      }), external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        "data-border": "true",
+        "data-type": "light",
+        "data-tip": "Add all valid genes to query",
+        "data-place": "right",
+        "data-effect": "solid",
+        src: addAllImage,
+        onClick: function () {
+          _this.selectedGenes = _this.props.pathwayGenes.filter(function (gene) {
+            return _this.props.validGenes.hasOwnProperty(gene);
+          });
+
+          if (_this.selectedGenes.length > 0) {
             _this.props.onAddGenes(_this.selectedGenes);
           }
-        } else {
-          message += "Following gene symbols are invalid or already in gene list: " + invalidGenes.join(", ") + ".";
         }
+      }), external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        "data-border": "true",
+        "data-type": "light",
+        "data-tip": "Edit pathway",
+        "data-place": "right",
+        "data-effect": "solid",
+        src: edit_default.a,
+        onClick: function () {
+          {
+            window.open("http://pathwaymapper.org/?pathwayName=" + _this.props.selectedPathway + "&" + studyQuery);
+          }
+        }
+      })], external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        "data-border": "true",
+        "data-type": "light",
+        "data-tip": "Help",
+        "data-place": "right",
+        "data-effect": "solid",
+        src: aboutImage,
+        onClick: function () {
+          console.log("Here");
 
-        if (message.length > 0) {
-          _this.props.showMessage(message);
+          _this.props.handleOpen(EModalType.CHELP);
         }
-      }
-    }), external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      "data-border": "true",
-      "data-type": "light",
-      "data-tip": "Add all valid genes to query",
-      "data-place": "right",
-      "data-effect": "solid",
-      src: addAllImage,
-      onClick: function () {
-        _this.selectedGenes = _this.props.pathwayGenes.filter(function (gene) {
-          return _this.props.validGenes.hasOwnProperty(gene);
-        });
-
-        if (_this.selectedGenes.length > 0) {
-          _this.props.onAddGenes(_this.selectedGenes);
-        }
-      }
-    }), external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      "data-border": "true",
-      "data-type": "light",
-      "data-tip": "Edit pathway",
-      "data-place": "right",
-      "data-effect": "solid",
-      src: edit_default.a,
-      onClick: function () {
-        {
-          window.open("http://pathwaymapper.org/?pathwayName=" + _this.props.selectedPathway + "&" + studyQuery);
-        }
-      }
-    })], external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      "data-border": "true",
-      "data-type": "light",
-      "data-tip": "Help",
-      "data-place": "right",
-      "data-effect": "solid",
-      src: aboutImage,
-      onClick: function () {
-        console.log("Here");
-
-        _this.props.handleOpen(EModalType.CHELP);
-      }
-    }));
-  };
+      }));
+    }
+  });
 
   __decorate([external_mobx_["observable"]], Toolbar.prototype, "selectedGenes", void 0);
 
@@ -6138,7 +6156,7 @@ var external_jquery_ = __webpack_require__(2);
 var external_jquery_default = /*#__PURE__*/__webpack_require__.n(external_jquery_);
 
 // EXTERNAL MODULE: external "autobind-decorator"
-var external_autobind_decorator_ = __webpack_require__(3);
+var external_autobind_decorator_ = __webpack_require__(4);
 var external_autobind_decorator_default = /*#__PURE__*/__webpack_require__.n(external_autobind_decorator_);
 
 // CONCATENATED MODULE: ./src/utils/GraphUtilities.tsx
@@ -6150,31 +6168,35 @@ var GraphUtilities =
 function () {
   function GraphUtilities() {}
 
-  GraphUtilities.prototype.createGraphHierarchy = function (nodes) {
-    //Some arrays and maps for creating graph hierarchy
-    var tree = [];
-    var mappedArr = {}; // First map the nodes of the array to an object -> create a hash table.
+  Object.defineProperty(GraphUtilities.prototype, "createGraphHierarchy", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes) {
+      //Some arrays and maps for creating graph hierarchy
+      var tree = [];
+      var mappedArr = {}; // First map the nodes of the array to an object -> create a hash table.
 
-    for (var i = 0, len = nodes.length; i < len; i++) {
-      var arrElem = nodes[i];
-      mappedArr[arrElem.id()] = arrElem;
-      mappedArr[arrElem.id()].childNodes = [];
+      for (var i = 0, len = nodes.length; i < len; i++) {
+        var arrElem = nodes[i];
+        mappedArr[arrElem.id()] = arrElem;
+        mappedArr[arrElem.id()].childNodes = [];
+      }
+
+      for (var id in mappedArr) {
+        var mappedElem = mappedArr[id]; // If the element is not at the root level, add it to its parent array of children.
+
+        if (mappedElem.parent().length > 0) {
+          mappedArr[mappedElem.parent().id()].childNodes.push(mappedElem);
+        } // If the element is at the root level, add it to first level elements array.
+        else {
+            tree.push(mappedElem);
+          }
+      }
+
+      return tree;
     }
-
-    for (var id in mappedArr) {
-      var mappedElem = mappedArr[id]; // If the element is not at the root level, add it to its parent array of children.
-
-      if (mappedElem.parent().length > 0) {
-        mappedArr[mappedElem.parent().id()].childNodes.push(mappedElem);
-      } // If the element is at the root level, add it to first level elements array.
-      else {
-          tree.push(mappedElem);
-        }
-    }
-
-    return tree;
-  };
-
+  });
   ;
   /*
    * Creates graph hierarchy from given flat list of nodes list, nodes list is assumed to have parent-child
@@ -6188,31 +6210,35 @@ function () {
    *
    * */
 
-  GraphUtilities.prototype.createGraphHierarchyRealTime = function (nodes) {
-    //Some arrays and maps for creating graph hierarchy
-    var tree = [];
-    var mappedArr = {}; // First map the nodes of the array to an object -> create a hash table.
+  Object.defineProperty(GraphUtilities.prototype, "createGraphHierarchyRealTime", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes) {
+      //Some arrays and maps for creating graph hierarchy
+      var tree = [];
+      var mappedArr = {}; // First map the nodes of the array to an object -> create a hash table.
 
-    for (var i = 0, len = nodes.length; i < len; i++) {
-      var arrElem = nodes[i];
-      mappedArr[arrElem.data.id] = arrElem;
-      mappedArr[arrElem.data.id].children = [];
+      for (var i = 0, len = nodes.length; i < len; i++) {
+        var arrElem = nodes[i];
+        mappedArr[arrElem.data.id] = arrElem;
+        mappedArr[arrElem.data.id].children = [];
+      }
+
+      for (var id in mappedArr) {
+        var mappedElem = mappedArr[id]; // If the element is not at the root level, add it to its parent array of children.
+
+        if (mappedElem.data.parent != -1) {
+          mappedArr[mappedElem.data.parent].children.push(mappedElem);
+        } // If the element is at the root level, add it to first level elements array.
+        else {
+            tree.push(mappedElem);
+          }
+      }
+
+      return tree;
     }
-
-    for (var id in mappedArr) {
-      var mappedElem = mappedArr[id]; // If the element is not at the root level, add it to its parent array of children.
-
-      if (mappedElem.data.parent != -1) {
-        mappedArr[mappedElem.data.parent].children.push(mappedElem);
-      } // If the element is at the root level, add it to first level elements array.
-      else {
-          tree.push(mappedElem);
-        }
-    }
-
-    return tree;
-  };
-
+  });
   ;
   return GraphUtilities;
 }();
@@ -6225,206 +6251,345 @@ var SVGExporter_SVGExporter =
 /** @class */
 function () {
   function SVGExporter(edgeEditing, editor) {
-    this.SVGNameSpace = 'http://www.w3.org/2000/svg';
-    this.svg = document.createElementNS(this.SVGNameSpace, 'svg');
-    this.NODE_FILL_COLOR = 'rgb(255,255,255)';
-    this.FAMILY_FILL_COLOR = 'rgb(255,255,255)';
-    this.FAMILY_STROKE_COLOR = 'rgb(204,204,204)';
-    this.NODE_STROKE_COLOR = 'rgb(0,0,0)';
-    this.COMPARTMENT_STROKE_WIDTH = 2;
-    this.NODE_STROKE_WIDTH = 1;
-    this.NODE_OPACITY = 0.5;
-    this.ROUNDING_FACTOR = 6;
-    this.GENOMICDATA_LABEL_Y_OFFSET = -15;
-    this.EDGE_WIDTH = 1;
-    this.T_WIDTH = 2;
-    this.T_HEIGHT = 8;
-    this.T_ARROW_HEAD_OFFSET = 2;
-    this.TRIANGLE_ARROW_HEAD_HEIGHT = 8;
-    this.TRIANGLE_ARROW_HEAD_WIDTH = 8;
-    this.DASH_PARAMETERS = '5, 3';
-    this.COMPOUND_MARGIN = 8;
-    this.NODE_FONT_SIZE = 14;
+    Object.defineProperty(this, "SVGNameSpace", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'http://www.w3.org/2000/svg'
+    });
+    Object.defineProperty(this, "svg", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: document.createElementNS(this.SVGNameSpace, 'svg')
+    });
+    Object.defineProperty(this, "NODE_FILL_COLOR", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'rgb(255,255,255)'
+    });
+    Object.defineProperty(this, "FAMILY_FILL_COLOR", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'rgb(255,255,255)'
+    });
+    Object.defineProperty(this, "FAMILY_STROKE_COLOR", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'rgb(204,204,204)'
+    });
+    Object.defineProperty(this, "NODE_STROKE_COLOR", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'rgb(0,0,0)'
+    });
+    Object.defineProperty(this, "COMPARTMENT_STROKE_WIDTH", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 2
+    });
+    Object.defineProperty(this, "NODE_STROKE_WIDTH", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 1
+    });
+    Object.defineProperty(this, "NODE_OPACITY", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 0.5
+    });
+    Object.defineProperty(this, "ROUNDING_FACTOR", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 6
+    });
+    Object.defineProperty(this, "GENOMICDATA_LABEL_Y_OFFSET", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: -15
+    });
+    Object.defineProperty(this, "EDGE_WIDTH", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 1
+    });
+    Object.defineProperty(this, "T_WIDTH", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 2
+    });
+    Object.defineProperty(this, "T_HEIGHT", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 8
+    });
+    Object.defineProperty(this, "T_ARROW_HEAD_OFFSET", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 2
+    });
+    Object.defineProperty(this, "TRIANGLE_ARROW_HEAD_HEIGHT", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 8
+    });
+    Object.defineProperty(this, "TRIANGLE_ARROW_HEAD_WIDTH", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 8
+    });
+    Object.defineProperty(this, "DASH_PARAMETERS", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: '5, 3'
+    });
+    Object.defineProperty(this, "COMPOUND_MARGIN", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 8
+    });
+    Object.defineProperty(this, "NODE_FONT_SIZE", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 14
+    });
+    Object.defineProperty(this, "edgeEditing", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "editor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
     this.edgeEditing = edgeEditing;
     this.editor = editor;
   }
 
-  SVGExporter.prototype.resetSVG = function () {
-    this.svg = document.createElementNS(this.SVGNameSpace, 'svg');
-  };
+  Object.defineProperty(SVGExporter.prototype, "resetSVG", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.svg = document.createElementNS(this.SVGNameSpace, 'svg');
+    }
+  });
+  Object.defineProperty(SVGExporter.prototype, "exportGraph", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes, edges) {
+      //Reset SVG
+      this.resetSVG();
+      this.svg.setAttribute('version', '1.1');
+      this.svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg'); //Set viewport of output SVG
 
-  SVGExporter.prototype.exportGraph = function (nodes, edges) {
-    //Reset SVG
-    this.resetSVG();
-    this.svg.setAttribute('version', '1.1');
-    this.svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg'); //Set viewport of output SVG
+      var cyBounds = this.editor.cy.extent();
+      this.svg.setAttribute('viewBox', cyBounds.x1 + ' ' + cyBounds.y1 + ' ' + cyBounds.w + ' ' + cyBounds.h);
+      var that = this;
+      var nodeMap = {};
+      var nodeTree = new utils_GraphUtilities().createGraphHierarchy(nodes);
 
-    var cyBounds = this.editor.cy.extent();
-    this.svg.setAttribute('viewBox', cyBounds.x1 + ' ' + cyBounds.y1 + ' ' + cyBounds.w + ' ' + cyBounds.h);
-    var that = this;
-    var nodeMap = {};
-    var nodeTree = new utils_GraphUtilities().createGraphHierarchy(nodes);
+      var traverseFunction = function (node) {
+        //Create SVG for current node
+        nodeMap[node.id()] = node;
+        var genomicDataSVG = that.editor.getGenomicDataSVG(node).children;
+        that.svg.appendChild(that.createRect(node));
+        var labelOffset = genomicDataSVG && genomicDataSVG.length > 0 ? that.GENOMICDATA_LABEL_Y_OFFSET : 0;
+        that.svg.appendChild(that.createText(node, labelOffset)); //Append Genomic Data SVG here
 
-    var traverseFunction = function (node) {
-      //Create SVG for current node
-      nodeMap[node.id()] = node;
-      var genomicDataSVG = that.editor.getGenomicDataSVG(node).children;
-      that.svg.appendChild(that.createRect(node));
-      var labelOffset = genomicDataSVG && genomicDataSVG.length > 0 ? that.GENOMICDATA_LABEL_Y_OFFSET : 0;
-      that.svg.appendChild(that.createText(node, labelOffset)); //Append Genomic Data SVG here
+        if (genomicDataSVG) {
+          while (genomicDataSVG.length > 0) {
+            var elemSVG = genomicDataSVG[0];
+            var nodePosition = node.position();
+            var svgX = elemSVG.getAttribute('x');
+            var svgY = elemSVG.getAttribute('y');
+            elemSVG.setAttribute('x', nodePosition.x - node.width() / 2 + parseFloat(svgX));
+            elemSVG.setAttribute('y', nodePosition.y - node.height() / 2 + parseFloat(svgY));
+            that.svg.appendChild(elemSVG);
+          }
+        } //Traverse children
 
-      if (genomicDataSVG) {
-        while (genomicDataSVG.length > 0) {
-          var elemSVG = genomicDataSVG[0];
-          var nodePosition = node.position();
-          var svgX = elemSVG.getAttribute('x');
-          var svgY = elemSVG.getAttribute('y');
-          elemSVG.setAttribute('x', nodePosition.x - node.width() / 2 + parseFloat(svgX));
-          elemSVG.setAttribute('y', nodePosition.y - node.height() / 2 + parseFloat(svgY));
-          that.svg.appendChild(elemSVG);
+
+        if (node.childNodes) {
+          for (var i in node.childNodes) {
+            traverseFunction(node.childNodes[i]);
+          }
         }
-      } //Traverse children
+      }; //Traverse node hierarchy
 
 
-      if (node.childNodes) {
-        for (var i in node.childNodes) {
-          traverseFunction(node.childNodes[i]);
-        }
+      for (var i in nodeTree) {
+        var rootLevelNode = nodeTree[i];
+        traverseFunction(rootLevelNode);
       }
-    }; //Traverse node hierarchy
 
-
-    for (var i in nodeTree) {
-      var rootLevelNode = nodeTree[i];
-      traverseFunction(rootLevelNode);
+      edges.forEach(function (edge) {
+        var source = nodeMap[edge.source().id()];
+        var target = nodeMap[edge.target().id()];
+        that.drawEdge(edge, source, target);
+      });
+      return this.svg.outerHTML;
     }
+  });
+  Object.defineProperty(SVGExporter.prototype, "drawEdge", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edge, source, target) {
+      var edgeType = edge.data().type;
+      var sourceRectangle = {
+        x: source.position().x,
+        y: source.position().y,
+        width: source.width(),
+        height: source.height()
+      };
+      var targetRectangle = {
+        x: target.position().x,
+        y: target.position().y,
+        width: target.width(),
+        height: target.height()
+      }; //If source or target node is compound node adjust their width and height according to compound margins
 
-    edges.forEach(function (edge) {
-      var source = nodeMap[edge.source().id()];
-      var target = nodeMap[edge.target().id()];
-      that.drawEdge(edge, source, target);
-    });
-    return this.svg.outerHTML;
-  };
+      if (source.isParent()) {
+        sourceRectangle.width += this.COMPOUND_MARGIN;
+        sourceRectangle.height += this.COMPOUND_MARGIN;
+      }
 
-  SVGExporter.prototype.drawEdge = function (edge, source, target) {
-    var edgeType = edge.data().type;
-    var sourceRectangle = {
-      x: source.position().x,
-      y: source.position().y,
-      width: source.width(),
-      height: source.height()
-    };
-    var targetRectangle = {
-      x: target.position().x,
-      y: target.position().y,
-      width: target.width(),
-      height: target.height()
-    }; //If source or target node is compound node adjust their width and height according to compound margins
+      if (target.isParent()) {
+        targetRectangle.width += this.COMPOUND_MARGIN;
+        targetRectangle.height += this.COMPOUND_MARGIN;
+      }
 
-    if (source.isParent()) {
-      sourceRectangle.width += this.COMPOUND_MARGIN;
-      sourceRectangle.height += this.COMPOUND_MARGIN;
-    }
+      var numberOfBendPoints = 0;
+      if (this.edgeEditing.getSegmentPoints(edge) !== undefined) numberOfBendPoints = this.edgeEditing.getSegmentPoints(edge).length / 2;
+      var clipPoints;
 
-    if (target.isParent()) {
-      targetRectangle.width += this.COMPOUND_MARGIN;
-      targetRectangle.height += this.COMPOUND_MARGIN;
-    }
+      if (numberOfBendPoints > 0) {
+        var lastBendPoint = {
+          x: this.edgeEditing.getSegmentPoints(edge)[2 * numberOfBendPoints - 2],
+          y: this.edgeEditing.getSegmentPoints(edge)[2 * numberOfBendPoints - 1],
+          height: 0,
+          width: 0
+        }; //Calculate clipping point of target node with the segment from last bend point by Cohen Sutherland algorithm
 
-    var numberOfBendPoints = 0;
-    if (this.edgeEditing.getSegmentPoints(edge) !== undefined) numberOfBendPoints = this.edgeEditing.getSegmentPoints(edge).length / 2;
-    var clipPoints;
-
-    if (numberOfBendPoints > 0) {
-      var lastBendPoint = {
-        x: this.edgeEditing.getSegmentPoints(edge)[2 * numberOfBendPoints - 2],
-        y: this.edgeEditing.getSegmentPoints(edge)[2 * numberOfBendPoints - 1],
-        height: 0,
-        width: 0
-      }; //Calculate clipping point of target node with the segment from last bend point by Cohen Sutherland algorithm
-
-      clipPoints = this.findClippingPoints(lastBendPoint, targetRectangle);
-    } else {
-      //Calculate clipping points of both source and target nodes by Cohen Sutherland algorithm
-      clipPoints = this.findClippingPoints(sourceRectangle, targetRectangle);
-    } //Calculate unit vector pointing from source clipping coordinates to target clipping coordinates
+        clipPoints = this.findClippingPoints(lastBendPoint, targetRectangle);
+      } else {
+        //Calculate clipping points of both source and target nodes by Cohen Sutherland algorithm
+        clipPoints = this.findClippingPoints(sourceRectangle, targetRectangle);
+      } //Calculate unit vector pointing from source clipping coordinates to target clipping coordinates
 
 
-    var unitV = this.unitVector({
-      x: clipPoints.targetClipPoints.x - clipPoints.sourceClipPoints.x,
-      y: clipPoints.targetClipPoints.y - clipPoints.sourceClipPoints.y
-    });
-    var inverseUnitV = this.scale(unitV, -1);
-    var targetX = clipPoints.targetClipPoints.x;
-    var targetY = clipPoints.targetClipPoints.y; //Draw Triangle arrow head
+      var unitV = this.unitVector({
+        x: clipPoints.targetClipPoints.x - clipPoints.sourceClipPoints.x,
+        y: clipPoints.targetClipPoints.y - clipPoints.sourceClipPoints.y
+      });
+      var inverseUnitV = this.scale(unitV, -1);
+      var targetX = clipPoints.targetClipPoints.x;
+      var targetY = clipPoints.targetClipPoints.y; //Draw Triangle arrow head
 
-    if (edgeType == 'ACTIVATES' || edgeType == 'INDUCES') {
-      targetX = clipPoints.targetClipPoints.x + this.TRIANGLE_ARROW_HEAD_HEIGHT * inverseUnitV.x;
-      targetY = clipPoints.targetClipPoints.y + this.TRIANGLE_ARROW_HEAD_HEIGHT * inverseUnitV.y;
-      var point1Vector = this.rotateVector(unitV, Math.PI / 2);
-      var point2Vector = this.rotateVector(unitV, -Math.PI / 2);
-      point1Vector = this.scale(point1Vector, this.TRIANGLE_ARROW_HEAD_WIDTH / 2);
-      point2Vector = this.scale(point2Vector, this.TRIANGLE_ARROW_HEAD_WIDTH / 2);
-      var point1X = targetX + point1Vector.x;
-      var point1Y = targetY + point1Vector.y;
-      var point2X = targetX + point2Vector.x;
-      var point2Y = targetY + point2Vector.y;
-      var polySVG = document.createElementNS(this.SVGNameSpace, 'polygon');
-      polySVG.setAttribute('points', point1X + ',' + point1Y + ',' + point2X + ',' + point2Y + ',' + clipPoints.targetClipPoints.x + ',' + clipPoints.targetClipPoints.y);
-      this.svg.appendChild(polySVG);
-    } //Draw T type arrow head
-    else if (edgeType === 'INHIBITS' || edgeType === 'REPRESSES') {
-        targetX = clipPoints.targetClipPoints.x + this.T_ARROW_HEAD_OFFSET * inverseUnitV.x;
-        targetY = clipPoints.targetClipPoints.y + this.T_ARROW_HEAD_OFFSET * inverseUnitV.y; //Calculate T shape points
-
+      if (edgeType == 'ACTIVATES' || edgeType == 'INDUCES') {
+        targetX = clipPoints.targetClipPoints.x + this.TRIANGLE_ARROW_HEAD_HEIGHT * inverseUnitV.x;
+        targetY = clipPoints.targetClipPoints.y + this.TRIANGLE_ARROW_HEAD_HEIGHT * inverseUnitV.y;
         var point1Vector = this.rotateVector(unitV, Math.PI / 2);
         var point2Vector = this.rotateVector(unitV, -Math.PI / 2);
-        point1Vector = this.scale(point1Vector, this.T_HEIGHT / 2);
-        point2Vector = this.scale(point2Vector, this.T_HEIGHT / 2);
+        point1Vector = this.scale(point1Vector, this.TRIANGLE_ARROW_HEAD_WIDTH / 2);
+        point2Vector = this.scale(point2Vector, this.TRIANGLE_ARROW_HEAD_WIDTH / 2);
         var point1X = targetX + point1Vector.x;
         var point1Y = targetY + point1Vector.y;
         var point2X = targetX + point2Vector.x;
-        var point2Y = targetY + point2Vector.y; //Draw edge arrow line here !
+        var point2Y = targetY + point2Vector.y;
+        var polySVG = document.createElementNS(this.SVGNameSpace, 'polygon');
+        polySVG.setAttribute('points', point1X + ',' + point1Y + ',' + point2X + ',' + point2Y + ',' + clipPoints.targetClipPoints.x + ',' + clipPoints.targetClipPoints.y);
+        this.svg.appendChild(polySVG);
+      } //Draw T type arrow head
+      else if (edgeType === 'INHIBITS' || edgeType === 'REPRESSES') {
+          targetX = clipPoints.targetClipPoints.x + this.T_ARROW_HEAD_OFFSET * inverseUnitV.x;
+          targetY = clipPoints.targetClipPoints.y + this.T_ARROW_HEAD_OFFSET * inverseUnitV.y; //Calculate T shape points
 
+          var point1Vector = this.rotateVector(unitV, Math.PI / 2);
+          var point2Vector = this.rotateVector(unitV, -Math.PI / 2);
+          point1Vector = this.scale(point1Vector, this.T_HEIGHT / 2);
+          point2Vector = this.scale(point2Vector, this.T_HEIGHT / 2);
+          var point1X = targetX + point1Vector.x;
+          var point1Y = targetY + point1Vector.y;
+          var point2X = targetX + point2Vector.x;
+          var point2Y = targetY + point2Vector.y; //Draw edge arrow line here !
+
+          var lineSVG = document.createElementNS(this.SVGNameSpace, 'line');
+          lineSVG.setAttribute('x1', point1X);
+          lineSVG.setAttribute('y1', point1Y);
+          lineSVG.setAttribute('x2', point2X);
+          lineSVG.setAttribute('y2', point2Y);
+          lineSVG.setAttribute('stroke-width', this.T_WIDTH + '');
+          lineSVG.setAttribute('stroke', 'black');
+          this.svg.appendChild(lineSVG);
+        } //Draw edge lines here !
+
+
+      if (numberOfBendPoints > 0) {
+        //Calculate initial clipping point of source node with the segment from first bend point
+        var firstBendPoint = {
+          x: this.edgeEditing.getSegmentPoints(edge)[0],
+          y: this.edgeEditing.getSegmentPoints(edge)[1],
+          height: 0,
+          width: 0
+        };
+        var initialClipPoint = this.findClippingPoints(sourceRectangle, firstBendPoint); //Create a copy array of edgeEditing.getSegmentPoints(edge) which contain all the bending points
+        // including source and target clipping point. The first elements of the array are source's x and y positions
+        // and the last ones are target's x and y positions
+
+        var points = [initialClipPoint.sourceClipPoints.x, initialClipPoint.sourceClipPoints.y];
+
+        for (var i = 0; i < numberOfBendPoints * 2; i++) {
+          points.push(this.edgeEditing.getSegmentPoints(edge)[i]);
+        }
+
+        points.push(clipPoints.targetClipPoints.x);
+        points.push(clipPoints.targetClipPoints.y);
+
+        for (var i = 0; i < points.length - 2; i += 2) {
+          var lineSVG = document.createElementNS(this.SVGNameSpace, 'line');
+          lineSVG.setAttribute('x1', points[i]);
+          lineSVG.setAttribute('y1', points[i + 1]);
+          lineSVG.setAttribute('x2', points[i + 2]);
+          lineSVG.setAttribute('y2', points[i + 3]);
+          lineSVG.setAttribute('stroke-width', this.EDGE_WIDTH + '');
+          lineSVG.setAttribute('stroke', 'black'); //Draw dashed if induces or represses interaction
+
+          if (edgeType == 'INDUCES' || edgeType == 'REPRESSES') {
+            lineSVG.setAttribute('stroke-dasharray', this.DASH_PARAMETERS);
+          }
+
+          this.svg.appendChild(lineSVG);
+        }
+      } else {
         var lineSVG = document.createElementNS(this.SVGNameSpace, 'line');
-        lineSVG.setAttribute('x1', point1X);
-        lineSVG.setAttribute('y1', point1Y);
-        lineSVG.setAttribute('x2', point2X);
-        lineSVG.setAttribute('y2', point2Y);
-        lineSVG.setAttribute('stroke-width', this.T_WIDTH + '');
-        lineSVG.setAttribute('stroke', 'black');
-        this.svg.appendChild(lineSVG);
-      } //Draw edge lines here !
-
-
-    if (numberOfBendPoints > 0) {
-      //Calculate initial clipping point of source node with the segment from first bend point
-      var firstBendPoint = {
-        x: this.edgeEditing.getSegmentPoints(edge)[0],
-        y: this.edgeEditing.getSegmentPoints(edge)[1],
-        height: 0,
-        width: 0
-      };
-      var initialClipPoint = this.findClippingPoints(sourceRectangle, firstBendPoint); //Create a copy array of edgeEditing.getSegmentPoints(edge) which contain all the bending points
-      // including source and target clipping point. The first elements of the array are source's x and y positions
-      // and the last ones are target's x and y positions
-
-      var points = [initialClipPoint.sourceClipPoints.x, initialClipPoint.sourceClipPoints.y];
-
-      for (var i = 0; i < numberOfBendPoints * 2; i++) {
-        points.push(this.edgeEditing.getSegmentPoints(edge)[i]);
-      }
-
-      points.push(clipPoints.targetClipPoints.x);
-      points.push(clipPoints.targetClipPoints.y);
-
-      for (var i = 0; i < points.length - 2; i += 2) {
-        var lineSVG = document.createElementNS(this.SVGNameSpace, 'line');
-        lineSVG.setAttribute('x1', points[i]);
-        lineSVG.setAttribute('y1', points[i + 1]);
-        lineSVG.setAttribute('x2', points[i + 2]);
-        lineSVG.setAttribute('y2', points[i + 3]);
+        lineSVG.setAttribute('x1', clipPoints.sourceClipPoints.x);
+        lineSVG.setAttribute('y1', clipPoints.sourceClipPoints.y);
+        lineSVG.setAttribute('x2', targetX);
+        lineSVG.setAttribute('y2', targetY);
         lineSVG.setAttribute('stroke-width', this.EDGE_WIDTH + '');
         lineSVG.setAttribute('stroke', 'black'); //Draw dashed if induces or represses interaction
 
@@ -6434,251 +6599,272 @@ function () {
 
         this.svg.appendChild(lineSVG);
       }
-    } else {
-      var lineSVG = document.createElementNS(this.SVGNameSpace, 'line');
-      lineSVG.setAttribute('x1', clipPoints.sourceClipPoints.x);
-      lineSVG.setAttribute('y1', clipPoints.sourceClipPoints.y);
-      lineSVG.setAttribute('x2', targetX);
-      lineSVG.setAttribute('y2', targetY);
-      lineSVG.setAttribute('stroke-width', this.EDGE_WIDTH + '');
-      lineSVG.setAttribute('stroke', 'black'); //Draw dashed if induces or represses interaction
-
-      if (edgeType == 'INDUCES' || edgeType == 'REPRESSES') {
-        lineSVG.setAttribute('stroke-dasharray', this.DASH_PARAMETERS);
-      }
-
-      this.svg.appendChild(lineSVG);
     }
-  };
+  });
   /**
    *
    * **/
 
-
-  SVGExporter.prototype.findClippingPoints = function (sourceRectangle, targetRectangle) {
-    var sourceAABB = {
-      xMin: sourceRectangle.x - sourceRectangle.width / 2,
-      xMax: sourceRectangle.x + sourceRectangle.width / 2,
-      yMin: sourceRectangle.y - sourceRectangle.height / 2,
-      yMax: sourceRectangle.y + sourceRectangle.height / 2
-    };
-    var targetAABB = {
-      xMin: targetRectangle.x - targetRectangle.width / 2,
-      xMax: targetRectangle.x + targetRectangle.width / 2,
-      yMin: targetRectangle.y - targetRectangle.height / 2,
-      yMax: targetRectangle.y + targetRectangle.height / 2
-    };
-    var line1 = {
-      x1: sourceRectangle.x,
-      y1: sourceRectangle.y,
-      x2: targetRectangle.x,
-      y2: targetRectangle.y
-    };
-    var line2 = {
-      x1: targetRectangle.x,
-      y1: targetRectangle.y,
-      x2: sourceRectangle.x,
-      y2: sourceRectangle.y
-    };
-    var returnObj = {
-      sourceClipPoints: this.clipLine(line1, sourceAABB),
-      targetClipPoints: this.clipLine(line2, targetAABB)
-    };
-    return returnObj;
-  };
-
-  SVGExporter.prototype.createRect = function (node) {
-    var nodeRectangle = document.createElementNS(this.SVGNameSpace, 'rect');
-    var nodePosition = node.position();
-
-    if (node.isParent()) {
-      nodeRectangle.setAttribute('x', nodePosition.x - node.width() / 2 - this.COMPOUND_MARGIN / 2 + '');
-      nodeRectangle.setAttribute('y', nodePosition.y - node.height() / 2 - this.COMPOUND_MARGIN / 2 + '');
-      nodeRectangle.setAttribute('width', node.width() + this.COMPOUND_MARGIN);
-      nodeRectangle.setAttribute('height', node.height() + this.COMPOUND_MARGIN);
-    } else {
-      nodeRectangle.setAttribute('x', nodePosition.x - node.width() / 2 + '');
-      nodeRectangle.setAttribute('y', nodePosition.y - node.height() / 2 + '');
-      nodeRectangle.setAttribute('width', node.width());
-      nodeRectangle.setAttribute('height', node.height());
+  Object.defineProperty(SVGExporter.prototype, "findClippingPoints", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (sourceRectangle, targetRectangle) {
+      var sourceAABB = {
+        xMin: sourceRectangle.x - sourceRectangle.width / 2,
+        xMax: sourceRectangle.x + sourceRectangle.width / 2,
+        yMin: sourceRectangle.y - sourceRectangle.height / 2,
+        yMax: sourceRectangle.y + sourceRectangle.height / 2
+      };
+      var targetAABB = {
+        xMin: targetRectangle.x - targetRectangle.width / 2,
+        xMax: targetRectangle.x + targetRectangle.width / 2,
+        yMin: targetRectangle.y - targetRectangle.height / 2,
+        yMax: targetRectangle.y + targetRectangle.height / 2
+      };
+      var line1 = {
+        x1: sourceRectangle.x,
+        y1: sourceRectangle.y,
+        x2: targetRectangle.x,
+        y2: targetRectangle.y
+      };
+      var line2 = {
+        x1: targetRectangle.x,
+        y1: targetRectangle.y,
+        x2: sourceRectangle.x,
+        y2: sourceRectangle.y
+      };
+      var returnObj = {
+        sourceClipPoints: this.clipLine(line1, sourceAABB),
+        targetClipPoints: this.clipLine(line2, targetAABB)
+      };
+      return returnObj;
     }
+  });
+  Object.defineProperty(SVGExporter.prototype, "createRect", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (node) {
+      var nodeRectangle = document.createElementNS(this.SVGNameSpace, 'rect');
+      var nodePosition = node.position();
 
-    nodeRectangle = this.createStyleForNodes(node, nodeRectangle);
-    return nodeRectangle;
-  };
+      if (node.isParent()) {
+        nodeRectangle.setAttribute('x', nodePosition.x - node.width() / 2 - this.COMPOUND_MARGIN / 2 + '');
+        nodeRectangle.setAttribute('y', nodePosition.y - node.height() / 2 - this.COMPOUND_MARGIN / 2 + '');
+        nodeRectangle.setAttribute('width', node.width() + this.COMPOUND_MARGIN);
+        nodeRectangle.setAttribute('height', node.height() + this.COMPOUND_MARGIN);
+      } else {
+        nodeRectangle.setAttribute('x', nodePosition.x - node.width() / 2 + '');
+        nodeRectangle.setAttribute('y', nodePosition.y - node.height() / 2 + '');
+        nodeRectangle.setAttribute('width', node.width());
+        nodeRectangle.setAttribute('height', node.height());
+      }
 
-  SVGExporter.prototype.createText = function (node, genomicDataOffset) {
-    var verticalTextOffset = 5;
-    var nodePosition = node.position();
-    var svgText = document.createElementNS(this.SVGNameSpace, 'text');
-
-    if (node.isParent()) {
-      verticalTextOffset = 20;
-      svgText.setAttribute('x', nodePosition.x);
-      svgText.setAttribute('y', nodePosition.y + node.height() / 2 + verticalTextOffset);
-    } else {
-      svgText.setAttribute('x', nodePosition.x);
-      svgText.setAttribute('y', nodePosition.y + verticalTextOffset + genomicDataOffset);
+      nodeRectangle = this.createStyleForNodes(node, nodeRectangle);
+      return nodeRectangle;
     }
+  });
+  Object.defineProperty(SVGExporter.prototype, "createText", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (node, genomicDataOffset) {
+      var verticalTextOffset = 5;
+      var nodePosition = node.position();
+      var svgText = document.createElementNS(this.SVGNameSpace, 'text');
 
-    svgText.setAttribute('font-family', 'Arial');
-    svgText.setAttribute('text-anchor', 'middle');
-    svgText.setAttribute('font-size', this.NODE_FONT_SIZE + '');
-    svgText.innerHTML = node.data().name;
-    return svgText;
-  };
+      if (node.isParent()) {
+        verticalTextOffset = 20;
+        svgText.setAttribute('x', nodePosition.x);
+        svgText.setAttribute('y', nodePosition.y + node.height() / 2 + verticalTextOffset);
+      } else {
+        svgText.setAttribute('x', nodePosition.x);
+        svgText.setAttribute('y', nodePosition.y + verticalTextOffset + genomicDataOffset);
+      }
 
-  SVGExporter.prototype.createStyleForNodes = function (node, nodeRectangle) {
-    var nodeType = node.data().type;
-    var strokeWidth = this.NODE_STROKE_WIDTH;
-    var strokeColor = this.NODE_STROKE_COLOR;
-    var fillColor = this.NODE_FILL_COLOR;
-    var opacity = this.NODE_OPACITY;
-    var strokeOpacity = 1;
-
-    if (nodeType == 'GENE' || nodeType == 'COMPARTMENT') {
-      nodeRectangle.setAttribute('rx', this.ROUNDING_FACTOR);
-      nodeRectangle.setAttribute('ry', this.ROUNDING_FACTOR);
-      if (nodeType == 'COMPARTMENT') strokeWidth = this.COMPARTMENT_STROKE_WIDTH;
+      svgText.setAttribute('font-family', 'Arial');
+      svgText.setAttribute('text-anchor', 'middle');
+      svgText.setAttribute('font-size', this.NODE_FONT_SIZE + '');
+      svgText.innerHTML = node.data().name;
+      return svgText;
     }
+  });
+  Object.defineProperty(SVGExporter.prototype, "createStyleForNodes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (node, nodeRectangle) {
+      var nodeType = node.data().type;
+      var strokeWidth = this.NODE_STROKE_WIDTH;
+      var strokeColor = this.NODE_STROKE_COLOR;
+      var fillColor = this.NODE_FILL_COLOR;
+      var opacity = this.NODE_OPACITY;
+      var strokeOpacity = 1;
 
-    if (nodeType == 'PROCESS') {
-      opacity = 0;
-      strokeOpacity = 0;
+      if (nodeType == 'GENE' || nodeType == 'COMPARTMENT') {
+        nodeRectangle.setAttribute('rx', this.ROUNDING_FACTOR);
+        nodeRectangle.setAttribute('ry', this.ROUNDING_FACTOR);
+        if (nodeType == 'COMPARTMENT') strokeWidth = this.COMPARTMENT_STROKE_WIDTH;
+      }
+
+      if (nodeType == 'PROCESS') {
+        opacity = 0;
+        strokeOpacity = 0;
+      }
+
+      if (nodeType == 'FAMILY') {
+        fillColor = this.FAMILY_FILL_COLOR;
+        strokeColor = this.FAMILY_STROKE_COLOR;
+      }
+
+      var styleString = 'stroke-width:' + strokeWidth + ';' + 'stroke:' + strokeColor + ';' + 'fill-opacity:' + opacity + ';' + 'fill:' + fillColor + ';' + 'stroke-opacity:' + strokeOpacity + ';';
+      nodeRectangle.setAttribute('style', styleString);
+      return nodeRectangle;
     }
-
-    if (nodeType == 'FAMILY') {
-      fillColor = this.FAMILY_FILL_COLOR;
-      strokeColor = this.FAMILY_STROKE_COLOR;
-    }
-
-    var styleString = 'stroke-width:' + strokeWidth + ';' + 'stroke:' + strokeColor + ';' + 'fill-opacity:' + opacity + ';' + 'fill:' + fillColor + ';' + 'stroke-opacity:' + strokeOpacity + ';';
-    nodeRectangle.setAttribute('style', styleString);
-    return nodeRectangle;
-  };
+  });
   /**
    * Cohen Sutherland Line Clipping algorithm implementation
    * **/
 
+  Object.defineProperty(SVGExporter.prototype, "clipLine", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (line, rectangle) {
+      //Clipping regions encoded with different integers !
+      var INSIDE = 0;
+      var LEFT = 1;
+      var RIGHT = 2;
+      var BOTTOM = 4;
+      var TOP = 8;
+      /*
+       *  Get outcode of given point compared to the rectangle
+       * */
 
-  SVGExporter.prototype.clipLine = function (line, rectangle) {
-    //Clipping regions encoded with different integers !
-    var INSIDE = 0;
-    var LEFT = 1;
-    var RIGHT = 2;
-    var BOTTOM = 4;
-    var TOP = 8;
-    /*
-     *  Get outcode of given point compared to the rectangle
-     * */
+      function getOutCode(point, rectangle) {
+        var outcode = INSIDE;
+        if (point.x < rectangle.xMin) outcode = outcode | LEFT;else if (point.x > rectangle.xMax) outcode = outcode | RIGHT;
+        if (point.y < rectangle.yMin) outcode = outcode | TOP;else if (point.y > rectangle.yMax) outcode = outcode | BOTTOM;
+        return outcode;
+      }
 
-    function getOutCode(point, rectangle) {
-      var outcode = INSIDE;
-      if (point.x < rectangle.xMin) outcode = outcode | LEFT;else if (point.x > rectangle.xMax) outcode = outcode | RIGHT;
-      if (point.y < rectangle.yMin) outcode = outcode | TOP;else if (point.y > rectangle.yMax) outcode = outcode | BOTTOM;
-      return outcode;
-    }
+      var outcode0 = getOutCode({
+        x: line.x1,
+        y: line.y1
+      }, rectangle);
+      var outcode1 = getOutCode({
+        x: line.x2,
+        y: line.y2
+      }, rectangle);
+      var slope = (line.y2 - line.y1) / (line.x2 - line.x1);
+      var returnCoords = {
+        x: line.x1,
+        y: line.y1,
+        slope: slope
+      }; //Main clipping loop
 
-    var outcode0 = getOutCode({
-      x: line.x1,
-      y: line.y1
-    }, rectangle);
-    var outcode1 = getOutCode({
-      x: line.x2,
-      y: line.y2
-    }, rectangle);
-    var slope = (line.y2 - line.y1) / (line.x2 - line.x1);
-    var returnCoords = {
-      x: line.x1,
-      y: line.y1,
-      slope: slope
-    }; //Main clipping loop
+      var accept = false;
 
-    var accept = false;
-
-    while (true) {
-      // Bitwise OR is 0. Trivially accept and get out of loop
-      if (!(outcode0 | outcode1)) {
-        accept = true;
-        break;
-      } // Bitwise AND is not 0. Trivially reject and get out of loop
-      else if (outcode0 & outcode1) {
+      while (true) {
+        // Bitwise OR is 0. Trivially accept and get out of loop
+        if (!(outcode0 | outcode1)) {
+          accept = true;
           break;
-        } else {
-          var outCode = outcode0 ? outcode0 : outcode1;
-
-          if (outCode & TOP) {
-            returnCoords.x = line.x1 + (rectangle.yMin - line.y1) / slope;
-            returnCoords.y = rectangle.yMin;
-          } else if (outCode & BOTTOM) {
-            returnCoords.x = line.x1 + (rectangle.yMax - line.y1) / slope;
-            returnCoords.y = rectangle.yMax;
-          } else if (outCode & RIGHT) {
-            returnCoords.x = rectangle.xMax;
-            returnCoords.y = line.y1 + slope * (rectangle.xMax - line.x1);
-          } else if (outCode & LEFT) {
-            returnCoords.x = rectangle.xMin;
-            returnCoords.y = line.y1 + slope * (rectangle.xMin - line.x1);
-          } // Now we move outside point to intersection point to clip
-          // and get ready for next pass.
-
-
-          if (outCode == outcode0) {
-            outcode0 = getOutCode({
-              x: returnCoords.x,
-              y: returnCoords.y
-            }, rectangle);
+        } // Bitwise AND is not 0. Trivially reject and get out of loop
+        else if (outcode0 & outcode1) {
+            break;
           } else {
-            outcode1 = getOutCode({
-              x: returnCoords.x,
-              y: returnCoords.y
-            }, rectangle);
-          }
-        }
-    }
+            var outCode = outcode0 ? outcode0 : outcode1;
 
-    return returnCoords;
-  };
+            if (outCode & TOP) {
+              returnCoords.x = line.x1 + (rectangle.yMin - line.y1) / slope;
+              returnCoords.y = rectangle.yMin;
+            } else if (outCode & BOTTOM) {
+              returnCoords.x = line.x1 + (rectangle.yMax - line.y1) / slope;
+              returnCoords.y = rectangle.yMax;
+            } else if (outCode & RIGHT) {
+              returnCoords.x = rectangle.xMax;
+              returnCoords.y = line.y1 + slope * (rectangle.xMax - line.x1);
+            } else if (outCode & LEFT) {
+              returnCoords.x = rectangle.xMin;
+              returnCoords.y = line.y1 + slope * (rectangle.xMin - line.x1);
+            } // Now we move outside point to intersection point to clip
+            // and get ready for next pass.
+
+
+            if (outCode == outcode0) {
+              outcode0 = getOutCode({
+                x: returnCoords.x,
+                y: returnCoords.y
+              }, rectangle);
+            } else {
+              outcode1 = getOutCode({
+                x: returnCoords.x,
+                y: returnCoords.y
+              }, rectangle);
+            }
+          }
+      }
+
+      return returnCoords;
+    }
+  });
   /**
    * Utility vector functions
    * */
 
-
-  SVGExporter.prototype.dotProduct = function (v1, v2) {
-    var newX = v1.x * v2.x;
-    var newY = v1.y * v2.y;
-    return {
-      x: newX,
-      y: newY
-    };
-  };
-
-  SVGExporter.prototype.unitVector = function (v) {
-    var inverseLength = 1 / Math.sqrt(v.x * v.x + v.y * v.y);
-    return {
-      x: v.x * inverseLength,
-      y: v.y * inverseLength
-    };
-  };
-
-  SVGExporter.prototype.rotateVector = function (v, radians) {
-    var newX = v.x * Math.cos(radians) - v.y * Math.sin(radians);
-    var newY = v.x * Math.sin(radians) + v.y * Math.cos(radians);
-    return {
-      x: newX,
-      y: newY
-    };
-  };
-
-  SVGExporter.prototype.scale = function (v, scalar) {
-    var newX = v.x * scalar;
-    var newY = v.y * scalar;
-    return {
-      x: newX,
-      y: newY
-    };
-  };
-
+  Object.defineProperty(SVGExporter.prototype, "dotProduct", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (v1, v2) {
+      var newX = v1.x * v2.x;
+      var newY = v1.y * v2.y;
+      return {
+        x: newX,
+        y: newY
+      };
+    }
+  });
+  Object.defineProperty(SVGExporter.prototype, "unitVector", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (v) {
+      var inverseLength = 1 / Math.sqrt(v.x * v.x + v.y * v.y);
+      return {
+        x: v.x * inverseLength,
+        y: v.y * inverseLength
+      };
+    }
+  });
+  Object.defineProperty(SVGExporter.prototype, "rotateVector", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (v, radians) {
+      var newX = v.x * Math.cos(radians) - v.y * Math.sin(radians);
+      var newY = v.x * Math.sin(radians) + v.y * Math.cos(radians);
+      return {
+        x: newX,
+        y: newY
+      };
+    }
+  });
+  Object.defineProperty(SVGExporter.prototype, "scale", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (v, scalar) {
+      var newX = v.x * scalar;
+      var newY = v.y * scalar;
+      return {
+        x: newX,
+        y: newY
+      };
+    }
+  });
   return SVGExporter;
 }();
 
@@ -6694,75 +6880,139 @@ var GenomicDataOverlayManager_GenomicDataOverlayManager =
 /** @class */
 function () {
   function GenomicDataOverlayManager(cy) {
-    this.clearAllGenomicData = function () {
-      this.genomicDataMap = {};
-      this.visibleGenomicDataMapByType = {};
-      this.groupedGenomicDataMap = {};
-      this.groupedGenomicDataCount = 0;
-    };
+    Object.defineProperty(this, "genomicDataMap", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "visibleGenomicDataMapByType", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "groupedGenomicDataCount", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "groupedGenomicDataMap", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "DEFAULT_VISIBLE_GENOMIC_DATA_COUNT", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "MAX_VISIBLE_GENOMIC_DATA_COUNT", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "observers", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "cy", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "clearAllGenomicData", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: function () {
+        this.genomicDataMap = {};
+        this.visibleGenomicDataMapByType = {};
+        this.groupedGenomicDataMap = {};
+        this.groupedGenomicDataCount = 0;
+      }
+    });
+    Object.defineProperty(this, "prepareGenomicDataShareDB", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: function (genomicData) {
+        var genomicDataMap = {};
+        var cancerTypes = [];
+        var visibleGenomicDataMapByType = {}; // By lines
 
-    this.prepareGenomicDataShareDB = function (genomicData) {
-      var genomicDataMap = {};
-      var cancerTypes = [];
-      var visibleGenomicDataMapByType = {}; // By lines
+        var lines = genomicData.split('\n'); // First line is meta data !
 
-      var lines = genomicData.split('\n'); // First line is meta data !
+        var metaLineColumns = lines[0].split('\t'); // Parse cancer types
 
-      var metaLineColumns = lines[0].split('\t'); // Parse cancer types
+        for (var i = 1; i < metaLineColumns.length; i++) {
+          cancerTypes.push(metaLineColumns[i]); // Update initially visible genomic data boxes !
 
-      for (var i = 1; i < metaLineColumns.length; i++) {
-        cancerTypes.push(metaLineColumns[i]); // Update initially visible genomic data boxes !
+          if (i - 1 < this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT) {
+            visibleGenomicDataMapByType[cancerTypes[i - 1]] = true;
+          } else {
+            visibleGenomicDataMapByType[cancerTypes[i - 1]] = false;
+          }
+        } // parse genomic data
 
-        if (i - 1 < this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT) {
-          visibleGenomicDataMapByType[cancerTypes[i - 1]] = true;
-        } else {
-          visibleGenomicDataMapByType[cancerTypes[i - 1]] = false;
+
+        for (var i = 1; i < lines.length; i++) {
+          // EOF check
+          if (lines[i].length === 0) {
+            break;
+          } // Split each line by tab and parse genomic data content
+
+
+          var lineContent = lines[i].split('\t');
+          var geneSymbol = lineContent[0]; // If current gene entry is not  in genomic data map create new hashmap entry
+
+          if (!(geneSymbol in genomicDataMap)) {
+            genomicDataMap[geneSymbol] = {};
+          } // Add each entry of genomic data
+
+
+          for (var j = 1; j < lineContent.length; j++) {
+            genomicDataMap[geneSymbol][cancerTypes[j - 1]] = lineContent[j];
+          }
         }
-      } // parse genomic data
 
-
-      for (var i = 1; i < lines.length; i++) {
-        // EOF check
-        if (lines[i].length === 0) {
-          break;
-        } // Split each line by tab and parse genomic data content
-
-
-        var lineContent = lines[i].split('\t');
-        var geneSymbol = lineContent[0]; // If current gene entry is not  in genomic data map create new hashmap entry
-
-        if (!(geneSymbol in genomicDataMap)) {
-          genomicDataMap[geneSymbol] = {};
-        } // Add each entry of genomic data
-
-
-        for (var j = 1; j < lineContent.length; j++) {
-          genomicDataMap[geneSymbol][cancerTypes[j - 1]] = lineContent[j];
+        var returnObj = {
+          genomicDataMap: genomicDataMap,
+          visibilityMap: visibleGenomicDataMapByType
+        };
+        return returnObj;
+      }
+    });
+    Object.defineProperty(this, "updateGenomicDataVisibility", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: function (_key, isVisible) {
+        if (_key in this.visibleGenomicDataMapByType) {
+          this.visibleGenomicDataMapByType[_key] = isVisible;
         }
       }
-
-      var returnObj = {
-        genomicDataMap: genomicDataMap,
-        visibilityMap: visibleGenomicDataMapByType
-      };
-      return returnObj;
-    };
-
-    this.updateGenomicDataVisibility = function (_key, isVisible) {
-      if (_key in this.visibleGenomicDataMapByType) {
-        this.visibleGenomicDataMapByType[_key] = isVisible;
+    });
+    Object.defineProperty(this, "hideGenomicData", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: function () {
+        this.cy.style().selector('node[type="GENE"]').style('text-margin-y', 0).style('width', function (ele) {
+          return 150;
+        }).style('background-image', function (ele) {
+          var dataURI = 'data:image/svg+xml;utf8,';
+          return dataURI;
+        }).update();
       }
-    };
-
-    this.hideGenomicData = function () {
-      this.cy.style().selector('node[type="GENE"]').style('text-margin-y', 0).style('width', function (ele) {
-        return 150;
-      }).style('background-image', function (ele) {
-        var dataURI = 'data:image/svg+xml;utf8,';
-        return dataURI;
-      }).update();
-    };
-
+    });
     this.cy = cy;
     this.genomicDataMap = {};
     this.visibleGenomicDataMapByType = {};
@@ -6774,681 +7024,785 @@ function () {
     this.observers = [];
   }
 
-  GenomicDataOverlayManager.prototype.getEmptyGroupID = function () {
-    var oldCount = this.groupedGenomicDataCount;
-    this.groupedGenomicDataCount++;
-    return oldCount;
-  };
-
-  GenomicDataOverlayManager.prototype.addGenomicDataLocally = function (genomicData, groupID) {
-    this.parseGenomicData(genomicData, groupID);
-    this.showGenomicData();
-    this.notifyObservers();
-  };
-
-  GenomicDataOverlayManager.prototype.preparePortalGenomicDataShareDB = function (genomicData) {
-    var geneMap = {};
-    var visMap = {};
-
-    for (var cancerKey in genomicData) {
-      for (var geneSymbol in genomicData[cancerKey]) {
-        geneMap[geneSymbol] = {};
-        geneMap[geneSymbol][cancerKey] = genomicData[cancerKey][geneSymbol];
-      }
-
-      visMap[cancerKey] = true;
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "getEmptyGroupID", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var oldCount = this.groupedGenomicDataCount;
+      this.groupedGenomicDataCount++;
+      return oldCount;
     }
-
-    return {
-      genomicDataMap: geneMap,
-      visibilityMap: visMap
-    };
-  };
-
-  GenomicDataOverlayManager.prototype.addGenomicData = function (data) {
-    this.genomicDataMap = data;
-  };
-
-  GenomicDataOverlayManager.prototype.removeGenomicVisData = function () {
-    this.visibleGenomicDataMapByType = {};
-  };
-
-  GenomicDataOverlayManager.prototype.addGenomicDataWithGeneSymbol = function (geneSymbol, data) {
-    this.genomicDataMap[geneSymbol] = data;
-  };
-
-  GenomicDataOverlayManager.prototype.addGenomicGroupData = function (groupID, data) {
-    this.groupedGenomicDataMap[groupID] = data;
-  };
-
-  GenomicDataOverlayManager.prototype.addPortalGenomicData = function (data, groupID) {
-    for (var _i = 0, _a = Object.keys(data); _i < _a.length; _i++) {
-      var cancerStudy = _a[_i];
-      this.visibleGenomicDataMapByType[cancerStudy] = true; // Group current cancer study according to the groupID
-
-      if (this.groupedGenomicDataMap[groupID] === undefined) {
-        this.groupedGenomicDataMap[groupID] = [];
-      }
-
-      this.groupedGenomicDataMap[groupID].push(cancerStudy);
-      var cancerData = data[cancerStudy];
-
-      for (var _b = 0, _c = Object.keys(cancerData); _b < _c.length; _b++) {
-        var geneSymbol = _c[_b];
-        if (this.genomicDataMap[geneSymbol] === undefined) this.genomicDataMap[geneSymbol] = {};
-        this.genomicDataMap[geneSymbol][cancerStudy] = data[cancerStudy][geneSymbol].toFixed ? data[cancerStudy][geneSymbol].toFixed(2) : data[cancerStudy][geneSymbol];
-      }
-    } //This parameter is used as flag for PatientView PathwayMapper Functions
-
-
-    if (data['PatientView'] == 1) {
-      this.showPatientData(data);
-    } else {
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "addGenomicDataLocally", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (genomicData, groupID) {
+      this.parseGenomicData(genomicData, groupID);
       this.showGenomicData();
+      this.notifyObservers();
     }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "preparePortalGenomicDataShareDB", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (genomicData) {
+      var geneMap = {};
+      var visMap = {};
 
-    this.notifyObservers();
-  };
-
-  GenomicDataOverlayManager.prototype.removeGenomicData = function () {
-    this.genomicDataMap = {};
-  };
-
-  GenomicDataOverlayManager.prototype.removeGenomicDataWithGeneSymbol = function (geneSymbol) {
-    this.genomicDataMap[geneSymbol] = {};
-  };
-
-  GenomicDataOverlayManager.prototype.addGenomicVisData = function (key, data) {
-    this.visibleGenomicDataMapByType[key] = data;
-  };
-
-  GenomicDataOverlayManager.prototype.countVisibleGenomicDataByType = function () {
-    // Count the genomic data that will be displayed on nodes' body
-    var genomicDataBoxCount = 0;
-
-    for (var cancerType in this.visibleGenomicDataMapByType) {
-      if (this.visibleGenomicDataMapByType[cancerType]) {
-        genomicDataBoxCount++;
-      }
-    }
-
-    return genomicDataBoxCount;
-  };
-
-  GenomicDataOverlayManager.prototype.generateSVGForNode = function (ele) {
-    var genomicDataBoxCount = this.countVisibleGenomicDataByType(); // Experimental data overlay part !
-
-    var dataURI = 'data:image/svg+xml;utf8,';
-    var svgNameSpace = 'http://www.w3.org/2000/svg';
-    var nodeLabel = ele.data('name'); // If there is no genomic data for this node return !
-
-    if (!(nodeLabel in this.genomicDataMap)) {
-      return dataURI;
-    }
-
-    var eleBBox = ele.boundingBox();
-    var reqWidth = this.getRequiredWidthForGenomicData(genomicDataBoxCount);
-    var overlayRecBoxW = reqWidth - 10;
-    var overlayRecBoxH = 25;
-    var svg = document.createElementNS(svgNameSpace, 'svg'); // It seems this should be set according to the node size !
-
-    svg.setAttribute('width', reqWidth);
-    svg.setAttribute('height', eleBBox.h); // This is important you need to include this to succesfully render in cytoscape.js!
-
-    svg.setAttribute('xmlns', svgNameSpace); // Overlay Data Rect
-
-    var overLayRectBBox = {
-      w: overlayRecBoxW,
-      h: overlayRecBoxH,
-      x: reqWidth / 2 - overlayRecBoxW / 2,
-      y: eleBBox.h / 2 + overlayRecBoxH / 2 - 18
-    };
-    var genomicFrequencyData = this.genomicDataMap[nodeLabel];
-    var maxGenomicDataBoxCount =
-    /*(genomicDataBoxCount > 3) ? 3:*/
-    genomicDataBoxCount;
-    var genomicBoxCounter = 0;
-
-    for (var i in this.groupedGenomicDataMap) {
-      for (var j in this.groupedGenomicDataMap[i]) {
-        var cancerType = this.groupedGenomicDataMap[i][j];
-
-        if (!this.visibleGenomicDataMapByType[cancerType]) {
-          continue;
+      for (var cancerKey in genomicData) {
+        for (var geneSymbol in genomicData[cancerKey]) {
+          geneMap[geneSymbol] = {};
+          geneMap[geneSymbol][cancerKey] = genomicData[cancerKey][geneSymbol];
         }
 
-        if (genomicFrequencyData[cancerType] !== undefined) {
-          genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.h, genomicFrequencyData[cancerType], svg);
-        } else {
-          genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.h, null, svg);
+        visMap[cancerKey] = true;
+      }
+
+      return {
+        genomicDataMap: geneMap,
+        visibilityMap: visMap
+      };
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "addGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (data) {
+      this.genomicDataMap = data;
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "removeGenomicVisData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.visibleGenomicDataMapByType = {};
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "addGenomicDataWithGeneSymbol", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (geneSymbol, data) {
+      this.genomicDataMap[geneSymbol] = data;
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "addGenomicGroupData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (groupID, data) {
+      this.groupedGenomicDataMap[groupID] = data;
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "addPortalGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (data, groupID) {
+      for (var _i = 0, _a = Object.keys(data); _i < _a.length; _i++) {
+        var cancerStudy = _a[_i];
+        this.visibleGenomicDataMapByType[cancerStudy] = true; // Group current cancer study according to the groupID
+
+        if (this.groupedGenomicDataMap[groupID] === undefined) {
+          this.groupedGenomicDataMap[groupID] = [];
         }
 
-        genomicBoxCounter++;
-      }
-    }
+        this.groupedGenomicDataMap[groupID].push(cancerStudy);
+        var cancerData = data[cancerStudy];
 
-    function genomicDataRectangleGenerator(x, y, w, h, percent, parentSVG) {
-      var colorString = '';
-
-      if (percent) {
-        var isNegativePercent = percent < 0;
-
-        var _percent = Math.abs(percent); // Handle special cases here !
+        for (var _b = 0, _c = Object.keys(cancerData); _b < _c.length; _b++) {
+          var geneSymbol = _c[_b];
+          if (this.genomicDataMap[geneSymbol] === undefined) this.genomicDataMap[geneSymbol] = {};
+          this.genomicDataMap[geneSymbol][cancerStudy] = data[cancerStudy][geneSymbol].toFixed ? data[cancerStudy][geneSymbol].toFixed(2) : data[cancerStudy][geneSymbol];
+        }
+      } //This parameter is used as flag for PatientView PathwayMapper Functions
 
 
-        _percent = _percent > 0 && _percent < 0.5 ? 0.5 : _percent; // _percent = _percent === 1 ? 2 : _percent
-        // Here we are using non linear regression
-        // Fitting points of (0,0), (25,140), (50,220), (100, 255)
-
-        var percentColor = 255 - (-7.118 + 53.9765 * Math.log(_percent + 0.8));
-
-        if (_percent === 0 || percent == -101) {
-          colorString = 'rgb(255,255,255)';
-        } else if (isNegativePercent) {
-          colorString = 'rgb(' + Math.round(percentColor) + ',' + Math.round(percentColor) + ',255)';
-          percent = percent.substring(1);
-        } else {
-          colorString = 'rgb(255,' + Math.round(percentColor) + ',' + Math.round(percentColor) + ')';
-        } // Rectangle Part
-
-
-        var overlayRect = document.createElementNS(svgNameSpace, 'rect');
-        overlayRect.setAttribute('x', x);
-        overlayRect.setAttribute('y', y);
-        overlayRect.setAttribute('width', w);
-        overlayRect.setAttribute('height', h);
-        overlayRect.setAttribute('style', 'stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:' + colorString + ';'); // Text Part
-
-        var textPercent = percent < 0.5 && percent > 0 ? '<0.5' : Number(percent).toFixed(1);
-        var text = percent == -101 ? 'N/P' : textPercent + '%';
-        var fontSize = 14;
-        var textLength = text.length;
-        var xOffset = w / 2 - textLength * 4;
-        var yOffset = fontSize / 3;
-        var svgText = document.createElementNS(svgNameSpace, 'text');
-        svgText.setAttribute('x', x + xOffset);
-        svgText.setAttribute('y', y + h / 2 + yOffset);
-        svgText.setAttribute('font-family', 'Arial');
-        svgText.setAttribute('font-size', fontSize + '');
-        svgText.innerHTML = text;
-        parentSVG.appendChild(overlayRect);
-        parentSVG.appendChild(svgText);
+      if (data['PatientView'] == 1) {
+        this.showPatientData(data);
       } else {
-        colorString = 'rgb(210,210,210)'; // Rectangle Part
-
-        var overlayRect = document.createElementNS(svgNameSpace, 'rect');
-        overlayRect.setAttribute('x', x);
-        overlayRect.setAttribute('y', y);
-        overlayRect.setAttribute('width', w);
-        overlayRect.setAttribute('height', h);
-        overlayRect.setAttribute('style', 'stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:' + colorString + ';');
-        parentSVG.appendChild(overlayRect);
+        this.showGenomicData();
       }
+
+      this.notifyObservers();
     }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "removeGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.genomicDataMap = {};
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "removeGenomicDataWithGeneSymbol", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (geneSymbol) {
+      this.genomicDataMap[geneSymbol] = {};
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "addGenomicVisData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (key, data) {
+      this.visibleGenomicDataMapByType[key] = data;
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "countVisibleGenomicDataByType", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      // Count the genomic data that will be displayed on nodes' body
+      var genomicDataBoxCount = 0;
 
-    return svg;
-  }; // Just an utility function to calculate required width for genes for genomic data !
+      for (var cancerType in this.visibleGenomicDataMapByType) {
+        if (this.visibleGenomicDataMapByType[cancerType]) {
+          genomicDataBoxCount++;
+        }
+      }
 
+      return genomicDataBoxCount;
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "generateSVGForNode", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele) {
+      var genomicDataBoxCount = this.countVisibleGenomicDataByType(); // Experimental data overlay part !
 
-  GenomicDataOverlayManager.prototype.getRequiredWidthForGenomicData = function (genomicDataBoxCount) {
-    var term = genomicDataBoxCount > 3 ? genomicDataBoxCount - 3 : 0;
-    return 150 + term * 35;
-  };
-
-  GenomicDataOverlayManager.prototype.showGenomicData = function () {
-    var _this = this;
-
-    var self = this;
-    var genomicDataBoxCount = this.countVisibleGenomicDataByType();
-
-    if (genomicDataBoxCount < 1) {
-      // Hide all genomic data and return
-      this.hideGenomicData();
-      return;
-    } //console.log('Inside showGenomicData')
-    //console.log(this.cy)
-
-
-    this.cy.style().selector('node[type="GENE"]') // It used to change the width of nodes only locally
-    .style('width', function (ele) {
-      return _this.getRequiredWidthForGenomicData(genomicDataBoxCount);
-    }).style('text-margin-y', function (ele) {
+      var dataURI = 'data:image/svg+xml;utf8,';
+      var svgNameSpace = 'http://www.w3.org/2000/svg';
       var nodeLabel = ele.data('name'); // If there is no genomic data for this node return !
 
-      if (!(nodeLabel in self.genomicDataMap)) {
-        return 0;
-      } // Else shift label in Y axis
-
-
-      return -15;
-    }).style('background-image', function (ele) {
-      var x = encodeURIComponent(self.generateSVGForNode(ele).outerHTML);
-
-      if (x === 'undefined') {
-        return 'none';
+      if (!(nodeLabel in this.genomicDataMap)) {
+        return dataURI;
       }
 
-      var dataURI = 'data:image/svg+xml;utf8,' + x;
-      return dataURI;
-    }).update();
-  };
+      var eleBBox = ele.boundingBox();
+      var reqWidth = this.getRequiredWidthForGenomicData(genomicDataBoxCount);
+      var overlayRecBoxW = reqWidth - 10;
+      var overlayRecBoxH = 25;
+      var svg = document.createElementNS(svgNameSpace, 'svg'); // It seems this should be set according to the node size !
 
-  GenomicDataOverlayManager.prototype.parseGenomicData = function (genomicData, groupID) {
-    this.genomicDataMap = this.genomicDataMap || {};
-    this.visibleGenomicDataMapByType = this.visibleGenomicDataMapByType || {};
-    this.groupedGenomicDataMap = this.groupedGenomicDataMap || {};
-    var cancerTypes = []; // By lines
+      svg.setAttribute('width', reqWidth);
+      svg.setAttribute('height', eleBBox.h); // This is important you need to include this to succesfully render in cytoscape.js!
 
-    var lines = genomicData.split('\n'); // First line is meta data !
+      svg.setAttribute('xmlns', svgNameSpace); // Overlay Data Rect
 
-    var metaLineColumns = lines[0].split('\t'); // Parse cancer types
+      var overLayRectBBox = {
+        w: overlayRecBoxW,
+        h: overlayRecBoxH,
+        x: reqWidth / 2 - overlayRecBoxW / 2,
+        y: eleBBox.h / 2 + overlayRecBoxH / 2 - 18
+      };
+      var genomicFrequencyData = this.genomicDataMap[nodeLabel];
+      var maxGenomicDataBoxCount =
+      /*(genomicDataBoxCount > 3) ? 3:*/
+      genomicDataBoxCount;
+      var genomicBoxCounter = 0;
 
-    for (var i = 1; i < metaLineColumns.length; i++) {
-      cancerTypes.push(metaLineColumns[i]); // Update initially visible genomic data boxes !
+      for (var i in this.groupedGenomicDataMap) {
+        for (var j in this.groupedGenomicDataMap[i]) {
+          var cancerType = this.groupedGenomicDataMap[i][j];
 
-      if (i - 1 < this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT) {
-        this.visibleGenomicDataMapByType[cancerTypes[i - 1]] = true;
-      } else {
-        this.visibleGenomicDataMapByType[cancerTypes[i - 1]] = false;
+          if (!this.visibleGenomicDataMapByType[cancerType]) {
+            continue;
+          }
+
+          if (genomicFrequencyData[cancerType] !== undefined) {
+            genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.h, genomicFrequencyData[cancerType], svg);
+          } else {
+            genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.h, null, svg);
+          }
+
+          genomicBoxCounter++;
+        }
       }
 
-      if (this.groupedGenomicDataMap[groupID] === undefined) {
-        this.groupedGenomicDataMap[groupID] = [];
+      function genomicDataRectangleGenerator(x, y, w, h, percent, parentSVG) {
+        var colorString = '';
+
+        if (percent) {
+          var isNegativePercent = percent < 0;
+
+          var _percent = Math.abs(percent); // Handle special cases here !
+
+
+          _percent = _percent > 0 && _percent < 0.5 ? 0.5 : _percent; // _percent = _percent === 1 ? 2 : _percent
+          // Here we are using non linear regression
+          // Fitting points of (0,0), (25,140), (50,220), (100, 255)
+
+          var percentColor = 255 - (-7.118 + 53.9765 * Math.log(_percent + 0.8));
+
+          if (_percent === 0 || percent == -101) {
+            colorString = 'rgb(255,255,255)';
+          } else if (isNegativePercent) {
+            colorString = 'rgb(' + Math.round(percentColor) + ',' + Math.round(percentColor) + ',255)';
+            percent = percent.substring(1);
+          } else {
+            colorString = 'rgb(255,' + Math.round(percentColor) + ',' + Math.round(percentColor) + ')';
+          } // Rectangle Part
+
+
+          var overlayRect = document.createElementNS(svgNameSpace, 'rect');
+          overlayRect.setAttribute('x', x);
+          overlayRect.setAttribute('y', y);
+          overlayRect.setAttribute('width', w);
+          overlayRect.setAttribute('height', h);
+          overlayRect.setAttribute('style', 'stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:' + colorString + ';'); // Text Part
+
+          var textPercent = percent < 0.5 && percent > 0 ? '<0.5' : Number(percent).toFixed(1);
+          var text = percent == -101 ? 'N/P' : textPercent + '%';
+          var fontSize = 14;
+          var textLength = text.length;
+          var xOffset = w / 2 - textLength * 4;
+          var yOffset = fontSize / 3;
+          var svgText = document.createElementNS(svgNameSpace, 'text');
+          svgText.setAttribute('x', x + xOffset);
+          svgText.setAttribute('y', y + h / 2 + yOffset);
+          svgText.setAttribute('font-family', 'Arial');
+          svgText.setAttribute('font-size', fontSize + '');
+          svgText.innerHTML = text;
+          parentSVG.appendChild(overlayRect);
+          parentSVG.appendChild(svgText);
+        } else {
+          colorString = 'rgb(210,210,210)'; // Rectangle Part
+
+          var overlayRect = document.createElementNS(svgNameSpace, 'rect');
+          overlayRect.setAttribute('x', x);
+          overlayRect.setAttribute('y', y);
+          overlayRect.setAttribute('width', w);
+          overlayRect.setAttribute('height', h);
+          overlayRect.setAttribute('style', 'stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:' + colorString + ';');
+          parentSVG.appendChild(overlayRect);
+        }
       }
 
-      this.groupedGenomicDataMap[groupID].push(cancerTypes[i - 1]);
-    } // parse genomic data
+      return svg;
+    }
+  }); // Just an utility function to calculate required width for genes for genomic data !
+
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "getRequiredWidthForGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (genomicDataBoxCount) {
+      var term = genomicDataBoxCount > 3 ? genomicDataBoxCount - 3 : 0;
+      return 150 + term * 35;
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "showGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
+
+      var self = this;
+      var genomicDataBoxCount = this.countVisibleGenomicDataByType();
+
+      if (genomicDataBoxCount < 1) {
+        // Hide all genomic data and return
+        this.hideGenomicData();
+        return;
+      } //console.log('Inside showGenomicData')
+      //console.log(this.cy)
 
 
-    for (var i = 1; i < lines.length; i++) {
-      // EOF check
-      if (lines[i].length === 0) {
-        break;
-      } // Split each line by tab and parse genomic data content
+      this.cy.style().selector('node[type="GENE"]') // It used to change the width of nodes only locally
+      .style('width', function (ele) {
+        return _this.getRequiredWidthForGenomicData(genomicDataBoxCount);
+      }).style('text-margin-y', function (ele) {
+        var nodeLabel = ele.data('name'); // If there is no genomic data for this node return !
+
+        if (!(nodeLabel in self.genomicDataMap)) {
+          return 0;
+        } // Else shift label in Y axis
 
 
-      var lineContent = lines[i].split('\t');
-      var geneSymbol = lineContent[0]; // If current gene entry is not  in genomic data map create new map
+        return -15;
+      }).style('background-image', function (ele) {
+        var x = encodeURIComponent(self.generateSVGForNode(ele).outerHTML);
 
-      if (!(geneSymbol in this.genomicDataMap)) {
-        this.genomicDataMap[geneSymbol] = {};
-      } // Add each entry of genomic data
+        if (x === 'undefined') {
+          return 'none';
+        }
+
+        var dataURI = 'data:image/svg+xml;utf8,' + x;
+        return dataURI;
+      }).update();
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "parseGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (genomicData, groupID) {
+      this.genomicDataMap = this.genomicDataMap || {};
+      this.visibleGenomicDataMapByType = this.visibleGenomicDataMapByType || {};
+      this.groupedGenomicDataMap = this.groupedGenomicDataMap || {};
+      var cancerTypes = []; // By lines
+
+      var lines = genomicData.split('\n'); // First line is meta data !
+
+      var metaLineColumns = lines[0].split('\t'); // Parse cancer types
+
+      for (var i = 1; i < metaLineColumns.length; i++) {
+        cancerTypes.push(metaLineColumns[i]); // Update initially visible genomic data boxes !
+
+        if (i - 1 < this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT) {
+          this.visibleGenomicDataMapByType[cancerTypes[i - 1]] = true;
+        } else {
+          this.visibleGenomicDataMapByType[cancerTypes[i - 1]] = false;
+        }
+
+        if (this.groupedGenomicDataMap[groupID] === undefined) {
+          this.groupedGenomicDataMap[groupID] = [];
+        }
+
+        this.groupedGenomicDataMap[groupID].push(cancerTypes[i - 1]);
+      } // parse genomic data
 
 
-      for (var j = 1; j < lineContent.length; j++) {
-        this.genomicDataMap[geneSymbol][cancerTypes[j - 1]] = lineContent[j];
+      for (var i = 1; i < lines.length; i++) {
+        // EOF check
+        if (lines[i].length === 0) {
+          break;
+        } // Split each line by tab and parse genomic data content
+
+
+        var lineContent = lines[i].split('\t');
+        var geneSymbol = lineContent[0]; // If current gene entry is not  in genomic data map create new map
+
+        if (!(geneSymbol in this.genomicDataMap)) {
+          this.genomicDataMap[geneSymbol] = {};
+        } // Add each entry of genomic data
+
+
+        for (var j = 1; j < lineContent.length; j++) {
+          this.genomicDataMap[geneSymbol][cancerTypes[j - 1]] = lineContent[j];
+        }
       }
     }
-  }; // Simple observer-observable pattern for views!!!!!
+  }); // Simple observer-observable pattern for views!!!!!
 
-
-  GenomicDataOverlayManager.prototype.registerObserver = function (observer) {
-    this.observers.push(observer);
-  };
-
-  GenomicDataOverlayManager.prototype.notifyObservers = function () {
-    for (var _i = 0, _a = this.observers; _i < _a.length; _i++) {
-      var observer = _a[_i];
-      observer.notify();
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "registerObserver", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (observer) {
+      this.observers.push(observer);
     }
-  }; //This method is needed to calculate the alteration Types for each gene
-
-
-  GenomicDataOverlayManager.prototype.getAlterationCountForPatient = function (geneData) {
-    var count = 0;
-
-    for (var altType in geneData) {
-      count++;
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "notifyObservers", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      for (var _i = 0, _a = this.observers; _i < _a.length; _i++) {
+        var observer = _a[_i];
+        observer.notify();
+      }
     }
+  }); //This method is needed to calculate the alteration Types for each gene
 
-    return count;
-  }; //These methods are created to be used in CbioPortal PatientView they are not used
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "getAlterationCountForPatient", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (geneData) {
+      var count = 0;
+
+      for (var altType in geneData) {
+        count++;
+      }
+
+      return count;
+    }
+  }); //These methods are created to be used in CbioPortal PatientView they are not used
   //in ResultView Page or PathwayMapper Editor
 
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "showPatientData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (data) {
+      var _this = this;
 
-  GenomicDataOverlayManager.prototype.showPatientData = function (data) {
-    var _this = this;
+      var self = this; // const genomicDataBoxCount = 3 //this.countVisibleGenomicDataByType(); //CHANGE
 
-    var self = this; // const genomicDataBoxCount = 3 //this.countVisibleGenomicDataByType(); //CHANGE
+      var genomicDataBoxCount = data.geneticTrackData ? data.geneticTrackData.length : 3;
 
-    var genomicDataBoxCount = data.geneticTrackData ? data.geneticTrackData.length : 3;
-
-    if (genomicDataBoxCount < 1) {
-      // Hide all genomic data and return
-      this.hideGenomicData();
-      return;
-    }
-
-    this.cy.style().selector('node[type="GENE"]') // It used to change the width of nodes only locally
-    .style('width', function (ele) {
-      return _this.getRequiredWidthForGenomicData(genomicDataBoxCount);
-    }).style('text-margin-y', function (ele) {
-      var nodeLabel = ele.data('name'); // If there is no genomic data for this node return !
-
-      if (!(nodeLabel in data)) {
-        return 0;
-      } // Else shift label in Y axis
-
-
-      return -15;
-    }).style('background-image', function (ele) {
-      var x = encodeURIComponent( // self.generateSVGForPatientNode(ele, data).outerHTML
-      self.generateOncoprintForPatientNode(ele, data).outerHTML);
-
-      if (x === 'undefined') {
-        return 'none';
-      }
-
-      var dataURI = 'data:image/svg+xml;utf8,' + x;
-      return dataURI;
-    }).update();
-    this.cy.on('mouseover', 'node[type="GENE"]', function (event) {
-      var node = event.target || event.cyTarget;
-      var nodeLabel = node.data('name');
-
-      if (!data[nodeLabel]) {
+      if (genomicDataBoxCount < 1) {
+        // Hide all genomic data and return
+        this.hideGenomicData();
         return;
       }
 
-      node.qtip({
-        content: {
-          text: function () {
-            return self.generateHTMLContentForNodeTooltip(node, data);
+      this.cy.style().selector('node[type="GENE"]') // It used to change the width of nodes only locally
+      .style('width', function (ele) {
+        return _this.getRequiredWidthForGenomicData(genomicDataBoxCount);
+      }).style('text-margin-y', function (ele) {
+        var nodeLabel = ele.data('name'); // If there is no genomic data for this node return !
+
+        if (!(nodeLabel in data)) {
+          return 0;
+        } // Else shift label in Y axis
+
+
+        return -15;
+      }).style('background-image', function (ele) {
+        var x = encodeURIComponent( // self.generateSVGForPatientNode(ele, data).outerHTML
+        self.generateOncoprintForPatientNode(ele, data).outerHTML);
+
+        if (x === 'undefined') {
+          return 'none';
+        }
+
+        var dataURI = 'data:image/svg+xml;utf8,' + x;
+        return dataURI;
+      }).update();
+      this.cy.on('mouseover', 'node[type="GENE"]', function (event) {
+        var node = event.target || event.cyTarget;
+        var nodeLabel = node.data('name');
+
+        if (!data[nodeLabel]) {
+          return;
+        }
+
+        node.qtip({
+          content: {
+            text: function () {
+              return self.generateHTMLContentForNodeTooltip(node, data);
+            }
+          },
+          style: {
+            classes: 'qtip-light qtip-rounded'
+          },
+          show: {
+            event: "showqtipevent"
+          },
+          hide: {
+            event: 'mouseout'
           }
-        },
-        style: {
-          classes: 'qtip-light qtip-rounded'
-        },
-        show: {
-          event: "showqtipevent"
-        },
-        hide: {
-          event: 'mouseout'
-        }
-      }, event);
-      node.trigger("showqtipevent");
-    });
-  }; //Every mutation type has a unique color coded. This method is used to retrieve the colors
-
-
-  GenomicDataOverlayManager.prototype.getOncoprintColors = function (selectedGene) {
-    var oncoprintColors = {
-      Missense_Mutation: 'rgb(0,128,0)',
-      inframe: '#993404',
-      truncating: '#000000',
-      Fusion: 'rgb(139,0,201)',
-      AMP: 'rgb(255,0,0)',
-      gain: '#ffb6c1',
-      heatloss: '#8fd8d8',
-      homdel: 'rgb(0,0,255)',
-      DeepDel: 'rgb(0,0,255)',
-      "5'Flank": 'rgb(207,88,188)',
-      in_frame_del: 'rgb(166,128,40)'
-    };
-
-    if (oncoprintColors[selectedGene] !== undefined) {
-      return oncoprintColors[selectedGene];
-    } else {
-      //Types are not on the list corresponds to black
-      return 'rgb(0,0,0)';
-    }
-  };
-
-  GenomicDataOverlayManager.prototype.generateSVGForPatientNode = function (ele, patientData) {
-    //Here we should use the parameter patientData when calculating the expressions
-    var genomicDataBoxCount = this.countVisibleGenomicDataByType(); // Experimental data overlay part !
-
-    var dataURI = 'data:image/svg+xml;utf8,';
-    var svgNameSpace = 'http://www.w3.org/2000/svg'; //nodeLabel refers to the nodeLabels in the overlay data
-
-    var nodeLabel = ele.data('name'); // If there is no genomic data for this node return !
-
-    if (!(nodeLabel in patientData)) {
-      return dataURI;
-    } //this parameter refers to the count of alteration types for each gene
-
-
-    var alterationBoxCount = this.getAlterationCountForPatient(patientData[nodeLabel]);
-    var eleBBox = ele.boundingBox();
-    var svg = document.createElementNS(svgNameSpace, 'svg'); //this parameter is set to 12 since there are 12 different possiblities for types
-
-    var term = alterationBoxCount > 12 ? alterationBoxCount - 12 : 0;
-    var reqWidth = 150 + term * 35;
-    var overlayRecBoxW = reqWidth - 10;
-    var overlayRecBoxH = 25; // It seems this should be set according to the node size !
-
-    svg.setAttribute('width', reqWidth);
-    svg.setAttribute('height', eleBBox.h); // This is important you need to include this to succesfully render in cytoscape.js!
-
-    svg.setAttribute('xmlns', svgNameSpace); // Overlay Data Rect
-
-    var overLayRectBBox = {
-      w: overlayRecBoxW,
-      h: overlayRecBoxH,
-      x: reqWidth / 2 - overlayRecBoxW / 2,
-      y: eleBBox.h / 2 + overlayRecBoxH / 2 - 18
-    };
-    var genomicBoxCounter = 0; //required width is calculated for each gene since box count is different for each gene
-
-    for (var j in patientData[nodeLabel]) {
-      var genomicAlterationData = patientData[nodeLabel];
-      var alterationType = j;
-
-      if (!this.visibleGenomicDataMapByType[nodeLabel]) {
-        continue;
-      } //get the color string corresponding to the alterationType
-
-
-      var colorString = this.getOncoprintColors(alterationType);
-
-      if (genomicAlterationData[alterationType] !== undefined) {
-        genomicDataRectangleGeneratorPatient(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / alterationBoxCount, overLayRectBBox.y, overLayRectBBox.w / alterationBoxCount, overLayRectBBox.h, 100, svg, alterationType, colorString);
-      } else {
-        genomicDataRectangleGeneratorPatient(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / alterationBoxCount, overLayRectBBox.y, overLayRectBBox.w / alterationBoxCount, overLayRectBBox.h, null, svg, '', null);
-      }
-
-      genomicBoxCounter++;
-    } //This function differs from genomicRectangleGenerator. genomicDataRectangleGeneratorPatient
-    //has an extra parameter text. In patient view alterationTypes of genes are displayed instead of
-    //alteration percentage. Hence a text is sent to this method which is alterationType
-
-
-    function genomicDataRectangleGeneratorPatient(x, y, w, h, percent, parentSVG, text, colorString) {
-      if (percent) {
-        var isNegativePercent = percent < 0; // Rectangle Part
-
-        var overlayRect = document.createElementNS(svgNameSpace, 'rect');
-        overlayRect.setAttribute('x', x);
-        overlayRect.setAttribute('y', y);
-        overlayRect.setAttribute('width', w);
-        overlayRect.setAttribute('height', h);
-        overlayRect.setAttribute('style', 'stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:' + colorString + ';'); // Text Part
-
-        var fontSize = 14;
-        var textLength = 4;
-        var xOffset = w / 2 - textLength * 4;
-        var yOffset = fontSize / 3;
-        var svgText = document.createElementNS(svgNameSpace, 'text');
-
-        if (colorString === 'rgb(0,0,0)') {
-          svgText.setAttribute('fill', 'white');
-        }
-
-        svgText.setAttribute('x', x + xOffset);
-        svgText.setAttribute('y', y + h / 2 + yOffset);
-        svgText.setAttribute('font-family', 'Arial');
-        svgText.setAttribute('font-size', fontSize + ''); //first 4 letters of the alterationTypes are used
-
-        svgText.innerHTML = text.substring(0, 4);
-        parentSVG.appendChild(overlayRect);
-        parentSVG.appendChild(svgText);
-      } else {
-        //Normally
-        colorString = 'rgb(210,210,210)';
-      }
-    }
-
-    return svg;
-  };
-
-  GenomicDataOverlayManager.prototype.generateOncoprintForPatientNode = function (ele, patientData) {
-    // const dataURI = 'data:image/svg+xml;utf8,'
-    // nodeLabel refers to the nodeLabels in the overlay data
-    var nodeLabel = ele.data('name');
-    var genomicData = patientData[nodeLabel];
-    var svgNameSpace = 'http://www.w3.org/2000/svg';
-    var svgElement = document.createElementNS(svgNameSpace, 'svg');
-
-    if (!genomicData) {
-      return {
-        outerHTML: ''
-      };
-    }
-
-    var ruleset = new external_oncoprintjs_["GeneticAlterationRuleSet"](genomicData.geneticTrackRuleSetParams);
-    var cellWidth = 6;
-    var cellPadding = 3;
-    var cellHeight = 23;
-    var cellVerticalPadding = 8;
-    var shapesPerDatum = ruleset.apply(genomicData.geneticTrackData, cellWidth, cellHeight);
-    shapesPerDatum.forEach(function (shapes, index) {
-      var offsetX = index * (cellWidth + cellPadding); // width + padding
-
-      var offsetY = cellVerticalPadding;
-      var g = document.createElementNS(svgNameSpace, 'g');
-      shapes.forEach(function (shape) {
-        return g.appendChild(Object(external_oncoprintjs_["shapeToSvg"])(shape, offsetX, offsetY));
+        }, event);
+        node.trigger("showqtipevent");
       });
-      svgElement.appendChild(g);
-    }); // It seems this should be set according to the node size !
+    }
+  }); //Every mutation type has a unique color coded. This method is used to retrieve the colors
 
-    svgElement.setAttribute('width', ((cellWidth + cellPadding) * shapesPerDatum.length).toString());
-    svgElement.setAttribute('height', (cellHeight + cellVerticalPadding).toString()); // This is important you need to include this to succesfully render in cytoscape.js!
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "getOncoprintColors", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (selectedGene) {
+      var oncoprintColors = {
+        Missense_Mutation: 'rgb(0,128,0)',
+        inframe: '#993404',
+        truncating: '#000000',
+        Fusion: 'rgb(139,0,201)',
+        AMP: 'rgb(255,0,0)',
+        gain: '#ffb6c1',
+        heatloss: '#8fd8d8',
+        homdel: 'rgb(0,0,255)',
+        DeepDel: 'rgb(0,0,255)',
+        "5'Flank": 'rgb(207,88,188)',
+        in_frame_del: 'rgb(166,128,40)'
+      };
 
-    svgElement.setAttribute('xmlns', svgNameSpace);
-    return svgElement;
-  }; // Mapping of alteration type keys to strings
+      if (oncoprintColors[selectedGene] !== undefined) {
+        return oncoprintColors[selectedGene];
+      } else {
+        //Types are not on the list corresponds to black
+        return 'rgb(0,0,0)';
+      }
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "generateSVGForPatientNode", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele, patientData) {
+      //Here we should use the parameter patientData when calculating the expressions
+      var genomicDataBoxCount = this.countVisibleGenomicDataByType(); // Experimental data overlay part !
+
+      var dataURI = 'data:image/svg+xml;utf8,';
+      var svgNameSpace = 'http://www.w3.org/2000/svg'; //nodeLabel refers to the nodeLabels in the overlay data
+
+      var nodeLabel = ele.data('name'); // If there is no genomic data for this node return !
+
+      if (!(nodeLabel in patientData)) {
+        return dataURI;
+      } //this parameter refers to the count of alteration types for each gene
+
+
+      var alterationBoxCount = this.getAlterationCountForPatient(patientData[nodeLabel]);
+      var eleBBox = ele.boundingBox();
+      var svg = document.createElementNS(svgNameSpace, 'svg'); //this parameter is set to 12 since there are 12 different possiblities for types
+
+      var term = alterationBoxCount > 12 ? alterationBoxCount - 12 : 0;
+      var reqWidth = 150 + term * 35;
+      var overlayRecBoxW = reqWidth - 10;
+      var overlayRecBoxH = 25; // It seems this should be set according to the node size !
+
+      svg.setAttribute('width', reqWidth);
+      svg.setAttribute('height', eleBBox.h); // This is important you need to include this to succesfully render in cytoscape.js!
+
+      svg.setAttribute('xmlns', svgNameSpace); // Overlay Data Rect
+
+      var overLayRectBBox = {
+        w: overlayRecBoxW,
+        h: overlayRecBoxH,
+        x: reqWidth / 2 - overlayRecBoxW / 2,
+        y: eleBBox.h / 2 + overlayRecBoxH / 2 - 18
+      };
+      var genomicBoxCounter = 0; //required width is calculated for each gene since box count is different for each gene
+
+      for (var j in patientData[nodeLabel]) {
+        var genomicAlterationData = patientData[nodeLabel];
+        var alterationType = j;
+
+        if (!this.visibleGenomicDataMapByType[nodeLabel]) {
+          continue;
+        } //get the color string corresponding to the alterationType
+
+
+        var colorString = this.getOncoprintColors(alterationType);
+
+        if (genomicAlterationData[alterationType] !== undefined) {
+          genomicDataRectangleGeneratorPatient(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / alterationBoxCount, overLayRectBBox.y, overLayRectBBox.w / alterationBoxCount, overLayRectBBox.h, 100, svg, alterationType, colorString);
+        } else {
+          genomicDataRectangleGeneratorPatient(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / alterationBoxCount, overLayRectBBox.y, overLayRectBBox.w / alterationBoxCount, overLayRectBBox.h, null, svg, '', null);
+        }
+
+        genomicBoxCounter++;
+      } //This function differs from genomicRectangleGenerator. genomicDataRectangleGeneratorPatient
+      //has an extra parameter text. In patient view alterationTypes of genes are displayed instead of
+      //alteration percentage. Hence a text is sent to this method which is alterationType
+
+
+      function genomicDataRectangleGeneratorPatient(x, y, w, h, percent, parentSVG, text, colorString) {
+        if (percent) {
+          var isNegativePercent = percent < 0; // Rectangle Part
+
+          var overlayRect = document.createElementNS(svgNameSpace, 'rect');
+          overlayRect.setAttribute('x', x);
+          overlayRect.setAttribute('y', y);
+          overlayRect.setAttribute('width', w);
+          overlayRect.setAttribute('height', h);
+          overlayRect.setAttribute('style', 'stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:' + colorString + ';'); // Text Part
+
+          var fontSize = 14;
+          var textLength = 4;
+          var xOffset = w / 2 - textLength * 4;
+          var yOffset = fontSize / 3;
+          var svgText = document.createElementNS(svgNameSpace, 'text');
+
+          if (colorString === 'rgb(0,0,0)') {
+            svgText.setAttribute('fill', 'white');
+          }
+
+          svgText.setAttribute('x', x + xOffset);
+          svgText.setAttribute('y', y + h / 2 + yOffset);
+          svgText.setAttribute('font-family', 'Arial');
+          svgText.setAttribute('font-size', fontSize + ''); //first 4 letters of the alterationTypes are used
+
+          svgText.innerHTML = text.substring(0, 4);
+          parentSVG.appendChild(overlayRect);
+          parentSVG.appendChild(svgText);
+        } else {
+          //Normally
+          colorString = 'rgb(210,210,210)';
+        }
+      }
+
+      return svg;
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "generateOncoprintForPatientNode", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele, patientData) {
+      // const dataURI = 'data:image/svg+xml;utf8,'
+      // nodeLabel refers to the nodeLabels in the overlay data
+      var nodeLabel = ele.data('name');
+      var genomicData = patientData[nodeLabel];
+      var svgNameSpace = 'http://www.w3.org/2000/svg';
+      var svgElement = document.createElementNS(svgNameSpace, 'svg');
+
+      if (!genomicData) {
+        return {
+          outerHTML: ''
+        };
+      }
+
+      var ruleset = new external_oncoprintjs_["GeneticAlterationRuleSet"](genomicData.geneticTrackRuleSetParams);
+      var cellWidth = 6;
+      var cellPadding = 3;
+      var cellHeight = 23;
+      var cellVerticalPadding = 8;
+      var shapesPerDatum = ruleset.apply(genomicData.geneticTrackData, cellWidth, cellHeight);
+      shapesPerDatum.forEach(function (shapes, index) {
+        var offsetX = index * (cellWidth + cellPadding); // width + padding
+
+        var offsetY = cellVerticalPadding;
+        var g = document.createElementNS(svgNameSpace, 'g');
+        shapes.forEach(function (shape) {
+          return g.appendChild(Object(external_oncoprintjs_["shapeToSvg"])(shape, offsetX, offsetY));
+        });
+        svgElement.appendChild(g);
+      }); // It seems this should be set according to the node size !
+
+      svgElement.setAttribute('width', ((cellWidth + cellPadding) * shapesPerDatum.length).toString());
+      svgElement.setAttribute('height', (cellHeight + cellVerticalPadding).toString()); // This is important you need to include this to succesfully render in cytoscape.js!
+
+      svgElement.setAttribute('xmlns', svgNameSpace);
+      return svgElement;
+    }
+  }); // Mapping of alteration type keys to strings
   // See: https://github.com/cBioPortal/cbioportal-frontend/blob/442e108208846255feb1ed5b309218cd44927fb9/src/shared/components/oncoprint/TooltipUtils.ts#L599    
 
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "getCNADisplayString", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (alterationTypeKey) {
+      var disp_cna = {
+        '-2': 'HOMODELETED',
+        '-1': 'HETLOSS',
+        '1': 'GAIN',
+        '2': 'AMPLIFIED'
+      };
+      return disp_cna[alterationTypeKey];
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "generateSvgIconForSample", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (iconColor, iconText) {
+      var html = '<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">' + '<g transform="translate(6,6)">' + '<circle r="6" fill="' + iconColor + '" fill-opacity="1"></circle>' + '</g>' + '<g transform="translate(6,5.5)">' + '<text y="4" text-anchor="middle" font-size="10" fill="white" style="cursor: default;">' + iconText + '</text>' + '</g>' + '</svg>';
+      return html;
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "generateHTMLContentForNodeTooltip", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele, patientData) {
+      var _this = this;
 
-  GenomicDataOverlayManager.prototype.getCNADisplayString = function (alterationTypeKey) {
-    var disp_cna = {
-      '-2': 'HOMODELETED',
-      '-1': 'HETLOSS',
-      '1': 'GAIN',
-      '2': 'AMPLIFIED'
-    };
-    return disp_cna[alterationTypeKey];
-  };
+      var tooltipMaxHeight = '200px';
+      var tooltipMaxWidth = '200px';
+      var marginBetweenSamples = '10px';
+      var sampleIconColorMap = patientData.sampleColors;
+      var sampleIndexMap = patientData.sampleIndex;
+      var nodeLabel = ele.data('name');
+      var data = patientData[nodeLabel]; // Outer wrapper for the entire tooltip
 
-  GenomicDataOverlayManager.prototype.generateSvgIconForSample = function (iconColor, iconText) {
-    var html = '<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">' + '<g transform="translate(6,6)">' + '<circle r="6" fill="' + iconColor + '" fill-opacity="1"></circle>' + '</g>' + '<g transform="translate(6,5.5)">' + '<text y="4" text-anchor="middle" font-size="10" fill="white" style="cursor: default;">' + iconText + '</text>' + '</g>' + '</svg>';
-    return html;
-  };
-
-  GenomicDataOverlayManager.prototype.generateHTMLContentForNodeTooltip = function (ele, patientData) {
-    var _this = this;
-
-    var tooltipMaxHeight = '200px';
-    var tooltipMaxWidth = '200px';
-    var marginBetweenSamples = '10px';
-    var sampleIconColorMap = patientData.sampleColors;
-    var sampleIndexMap = patientData.sampleIndex;
-    var nodeLabel = ele.data('name');
-    var data = patientData[nodeLabel]; // Outer wrapper for the entire tooltip
-
-    var wrapper = external_jquery_default()('<div></div>');
-    wrapper.css({
-      'max-width': tooltipMaxWidth,
-      'max-height': tooltipMaxHeight,
-      'word-wrap': 'break-word',
-      'overflow-y': 'auto'
-    });
-    data.geneticTrackData.forEach(function (sample, sampleIndex) {
-      var sampleId = sample.sample;
-      var iconColor = sampleIconColorMap[sampleId];
-      var iconText = (sampleIndexMap[sampleId] + 1).toString();
-
-      var sampleIconSvgHTML = _this.generateSvgIconForSample(iconColor, iconText);
-
-      var margin = sampleIndex > 0 ? marginBetweenSamples : '0px'; // Inner wrapper for a single sample
-
-      var sampleWrapper = external_jquery_default()('<div></div>');
-      sampleWrapper.css({
-        'margin-top': margin
+      var wrapper = external_jquery_default()('<div></div>');
+      wrapper.css({
+        'max-width': tooltipMaxWidth,
+        'max-height': tooltipMaxHeight,
+        'word-wrap': 'break-word',
+        'overflow-y': 'auto'
       });
-      var sampleData = sample.data;
-      var mutationInfo = [];
-      var cnaInfo = [];
-      var fusionInfo = [];
-      sampleData.forEach(function (data) {
-        var geneSymbol = data.gene.hugoGeneSymbol;
+      data.geneticTrackData.forEach(function (sample, sampleIndex) {
+        var sampleId = sample.sample;
+        var iconColor = sampleIconColorMap[sampleId];
+        var iconText = (sampleIndexMap[sampleId] + 1).toString();
 
-        if (sample.disp_mut && data.proteinChange && data.mutationType !== 'Fusion') {
-          var proteinChange = data.proteinChange;
-          mutationInfo.push({
-            gene: geneSymbol,
-            proteinChange: proteinChange
-          });
-        }
+        var sampleIconSvgHTML = _this.generateSvgIconForSample(iconColor, iconText);
 
-        if (sample.disp_cna && data.alteration) {
-          var cnaLabelKey = data.alteration;
+        var margin = sampleIndex > 0 ? marginBetweenSamples : '0px'; // Inner wrapper for a single sample
 
-          var cnaLabel = _this.getCNADisplayString(cnaLabelKey);
+        var sampleWrapper = external_jquery_default()('<div></div>');
+        sampleWrapper.css({
+          'margin-top': margin
+        });
+        var sampleData = sample.data;
+        var mutationInfo = [];
+        var cnaInfo = [];
+        var fusionInfo = [];
+        sampleData.forEach(function (data) {
+          var geneSymbol = data.gene.hugoGeneSymbol;
 
-          cnaInfo.push({
-            gene: geneSymbol,
-            cnaLabel: cnaLabel
-          });
-        }
+          if (sample.disp_mut && data.proteinChange && data.mutationType !== 'Fusion') {
+            var proteinChange = data.proteinChange;
+            mutationInfo.push({
+              gene: geneSymbol,
+              proteinChange: proteinChange
+            });
+          }
 
-        if (sample.disp_fusion && data.proteinChange && data.mutationType === 'Fusion') {
-          var proteinChange = data.proteinChange;
-          fusionInfo.push({
-            gene: geneSymbol,
-            proteinChange: proteinChange
-          });
-        }
-      }); // Prepare HTML for tooltip
+          if (sample.disp_cna && data.alteration) {
+            var cnaLabelKey = data.alteration;
 
-      var mutationInfoHTML = mutationInfo.length > 0 ? 'Mutation: ' : '';
-      var cnaInfoHTML = cnaInfo.length > 0 ? 'CNA: ' : '';
-      var fusionInfoHTML = fusionInfo.length > 0 ? 'Fusion: ' : '';
-      mutationInfo.forEach(function (mutation, index) {
-        mutationInfoHTML += "<b>" + mutation.gene + " " + mutation.proteinChange + "</b>";
+            var cnaLabel = _this.getCNADisplayString(cnaLabelKey);
 
-        if (index !== mutationInfo.length - 1) {
-          mutationInfoHTML += ", ";
-        } else {
-          mutationInfoHTML += "<br>";
-        }
+            cnaInfo.push({
+              gene: geneSymbol,
+              cnaLabel: cnaLabel
+            });
+          }
+
+          if (sample.disp_fusion && data.proteinChange && data.mutationType === 'Fusion') {
+            var proteinChange = data.proteinChange;
+            fusionInfo.push({
+              gene: geneSymbol,
+              proteinChange: proteinChange
+            });
+          }
+        }); // Prepare HTML for tooltip
+
+        var mutationInfoHTML = mutationInfo.length > 0 ? 'Mutation: ' : '';
+        var cnaInfoHTML = cnaInfo.length > 0 ? 'CNA: ' : '';
+        var fusionInfoHTML = fusionInfo.length > 0 ? 'Fusion: ' : '';
+        mutationInfo.forEach(function (mutation, index) {
+          mutationInfoHTML += "<b>" + mutation.gene + " " + mutation.proteinChange + "</b>";
+
+          if (index !== mutationInfo.length - 1) {
+            mutationInfoHTML += ", ";
+          } else {
+            mutationInfoHTML += "<br>";
+          }
+        });
+        cnaInfo.forEach(function (cna, index) {
+          cnaInfoHTML += "<b>" + cna.gene + " " + cna.cnaLabel + "</b>";
+
+          if (index !== cnaInfo.length - 1) {
+            cnaInfoHTML += ", ";
+          } else {
+            cnaInfoHTML += "<br>";
+          }
+        });
+        fusionInfo.forEach(function (fusion, index) {
+          fusionInfoHTML += "<b>" + fusion.gene + " " + fusion.proteinChange + "</b>";
+
+          if (index !== fusionInfo.length - 1) {
+            fusionInfoHTML += ", ";
+          } else {
+            fusionInfoHTML += "<br>";
+          }
+        });
+        var sampleIdHTML = "<b> " + sampleId + "</b>" + "<br>";
+        sampleWrapper.append(external_jquery_default()('<div>' + sampleIconSvgHTML + sampleIdHTML + mutationInfoHTML + cnaInfoHTML + fusionInfoHTML + +'</div>'));
+        wrapper.append(sampleWrapper);
       });
-      cnaInfo.forEach(function (cna, index) {
-        cnaInfoHTML += "<b>" + cna.gene + " " + cna.cnaLabel + "</b>";
-
-        if (index !== cnaInfo.length - 1) {
-          cnaInfoHTML += ", ";
-        } else {
-          cnaInfoHTML += "<br>";
-        }
-      });
-      fusionInfo.forEach(function (fusion, index) {
-        fusionInfoHTML += "<b>" + fusion.gene + " " + fusion.proteinChange + "</b>";
-
-        if (index !== fusionInfo.length - 1) {
-          fusionInfoHTML += ", ";
-        } else {
-          fusionInfoHTML += "<br>";
-        }
-      });
-      var sampleIdHTML = "<b> " + sampleId + "</b>" + "<br>";
-      sampleWrapper.append(external_jquery_default()('<div>' + sampleIconSvgHTML + sampleIdHTML + mutationInfoHTML + cnaInfoHTML + fusionInfoHTML + +'</div>'));
-      wrapper.append(sampleWrapper);
-    });
-    return wrapper;
-  };
-
+      return wrapper;
+    }
+  });
   return GenomicDataOverlayManager;
 }();
 
@@ -7468,7 +7822,7 @@ var LayoutProperties_extends = undefined && undefined.__extends || function () {
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -7509,198 +7863,206 @@ function (_super) {
   function LayoutProperties(props) {
     var _this = _super.call(this, props) || this;
 
+    Object(external_mobx_["makeObservable"])(_this);
     LayoutProperties_1.layoutProperties = external_lodash_default.a.clone(managers_EditorActionsManager.defaultLayoutProperties);
     console.log(LayoutProperties_1.layoutProperties);
     return _this;
   }
 
   LayoutProperties_1 = LayoutProperties;
+  Object.defineProperty(LayoutProperties.prototype, "updateLayoutProperties", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (property, val) {
+      LayoutProperties_1.layoutProperties[property] = val;
+    }
+  });
+  Object.defineProperty(LayoutProperties.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-  LayoutProperties.prototype.updateLayoutProperties = function (property, val) {
-    LayoutProperties_1.layoutProperties[property] = val;
-  };
+      return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
+        id: "layoutPropertiesDiv",
+        show: this.props.isModalShown,
+        onHide: function () {
+          _this.props.handleClose(EModalType.LAYOUT);
+        }
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
+        closeButton: true
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h3", null, "Layout Properties"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, {
+        id: "layoutPropsForm",
+        className: "leftText"
+      }, external_react_default.a.createElement(external_react_bootstrap_["Form"], null, external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        className: "control-label",
+        sm: 4
+      }, "Node Repulsion:"), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        value: LayoutProperties_1.layoutProperties.nodeRepulsion + "",
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.nodeRepulsion = Number(e.target.value);
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Ideal Edge Length:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        value: LayoutProperties_1.layoutProperties.idealEdgeLength + "",
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.idealEdgeLength = Number(e.target.value);
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Edge Elasticity:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        value: LayoutProperties_1.layoutProperties.edgeElasticity + "",
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.edgeElasticity = e.target.value;
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Nesting Factor:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        value: LayoutProperties_1.layoutProperties.nestingFactor + "",
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.nestingFactor = e.target.value;
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Gravity:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        value: LayoutProperties_1.layoutProperties.gravity + "",
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.gravity = e.target.value;
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Gravity Range:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        value: LayoutProperties_1.layoutProperties.gravityRange + "",
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.gravityRange = e.target.value;
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Compound Gravity:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        value: LayoutProperties_1.layoutProperties.gravityCompound + "",
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.gravityCompound = e.target.value;
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Compound Gravity Range:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        value: LayoutProperties_1.layoutProperties.gravityRangeCompound + "",
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.gravityRangeCompound = e.target.value;
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Number of Iterations:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        value: LayoutProperties_1.layoutProperties.numIter + "",
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.numIter = e.target.value;
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Tiling Vertical Padding:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        value: LayoutProperties_1.layoutProperties.tilingPaddingVertical + "",
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.tilingPaddingVertical = e.target.value;
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Tiling Horizontal Padding:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        value: LayoutProperties_1.layoutProperties.tilingPaddingHorizontal + "",
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.tilingPaddingHorizontal = e.target.value;
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Tile Disconnected:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
+        className: "layProps",
+        checked: LayoutProperties_1.layoutProperties.tile,
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.tile = !LayoutProperties_1.layoutProperties.tile;
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        className: "control-label",
+        sm: 4
+      }, "Animate:"), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
+        className: "layProps",
+        checked: LayoutProperties_1.layoutProperties.animate,
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.animate = !LayoutProperties_1.layoutProperties.animate;
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Incremental:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
+        className: "layProps",
+        checked: !LayoutProperties_1.layoutProperties.randomize,
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.randomize = !LayoutProperties_1.layoutProperties.randomize;
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Incremental Cooling Factor:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        value: LayoutProperties_1.layoutProperties.initialEnergyOnIncremental + "",
+        onChange: function (e) {
+          LayoutProperties_1.layoutProperties.initialEnergyOnIncremental = e.target.value;
+        }
+      }))))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Footer, null, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
+        onClick: function () {
+          _this.props.pathwayActions.setLayoutProperties(LayoutProperties_1.layoutProperties);
 
-  LayoutProperties.prototype.render = function () {
-    var _this = this;
+          _this.props.handleClose(EModalType.LAYOUT);
+        }
+      }, "Save"), external_react_default.a.createElement(external_react_bootstrap_["Button"], {
+        onClick: function () {
+          LayoutProperties_1.layoutProperties = external_lodash_default.a.clone(managers_EditorActionsManager.defaultLayoutProperties);
 
-    return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
-      id: "layoutPropertiesDiv",
-      show: this.props.isModalShown,
-      onHide: function () {
-        _this.props.handleClose(EModalType.LAYOUT);
-      }
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
-      closeButton: true
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h3", null, "Layout Properties"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, {
-      id: "layoutPropsForm",
-      className: "leftText"
-    }, external_react_default.a.createElement(external_react_bootstrap_["Form"], null, external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      className: "control-label",
-      sm: 4
-    }, "Node Repulsion:"), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      value: LayoutProperties_1.layoutProperties.nodeRepulsion + "",
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.nodeRepulsion = Number(e.target.value);
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Ideal Edge Length:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      value: LayoutProperties_1.layoutProperties.idealEdgeLength + "",
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.idealEdgeLength = Number(e.target.value);
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Edge Elasticity:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      value: LayoutProperties_1.layoutProperties.edgeElasticity + "",
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.edgeElasticity = e.target.value;
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Nesting Factor:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      value: LayoutProperties_1.layoutProperties.nestingFactor + "",
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.nestingFactor = e.target.value;
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Gravity:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      value: LayoutProperties_1.layoutProperties.gravity + "",
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.gravity = e.target.value;
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Gravity Range:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      value: LayoutProperties_1.layoutProperties.gravityRange + "",
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.gravityRange = e.target.value;
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Compound Gravity:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      value: LayoutProperties_1.layoutProperties.gravityCompound + "",
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.gravityCompound = e.target.value;
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Compound Gravity Range:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      value: LayoutProperties_1.layoutProperties.gravityRangeCompound + "",
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.gravityRangeCompound = e.target.value;
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Number of Iterations:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      value: LayoutProperties_1.layoutProperties.numIter + "",
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.numIter = e.target.value;
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Tiling Vertical Padding:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      value: LayoutProperties_1.layoutProperties.tilingPaddingVertical + "",
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.tilingPaddingVertical = e.target.value;
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Tiling Horizontal Padding:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      value: LayoutProperties_1.layoutProperties.tilingPaddingHorizontal + "",
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.tilingPaddingHorizontal = e.target.value;
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Tile Disconnected:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
-      className: "layProps",
-      checked: LayoutProperties_1.layoutProperties.tile,
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.tile = !LayoutProperties_1.layoutProperties.tile;
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      className: "control-label",
-      sm: 4
-    }, "Animate:"), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
-      className: "layProps",
-      checked: LayoutProperties_1.layoutProperties.animate,
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.animate = !LayoutProperties_1.layoutProperties.animate;
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Incremental:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
-      className: "layProps",
-      checked: !LayoutProperties_1.layoutProperties.randomize,
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.randomize = !LayoutProperties_1.layoutProperties.randomize;
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Incremental Cooling Factor:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      value: LayoutProperties_1.layoutProperties.initialEnergyOnIncremental + "",
-      onChange: function (e) {
-        LayoutProperties_1.layoutProperties.initialEnergyOnIncremental = e.target.value;
-      }
-    }))))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Footer, null, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
-      onClick: function () {
-        _this.props.pathwayActions.setLayoutProperties(LayoutProperties_1.layoutProperties);
-
-        _this.props.handleClose(EModalType.LAYOUT);
-      }
-    }, "Save"), external_react_default.a.createElement(external_react_bootstrap_["Button"], {
-      onClick: function () {
-        LayoutProperties_1.layoutProperties = external_lodash_default.a.clone(managers_EditorActionsManager.defaultLayoutProperties);
-
-        _this.props.pathwayActions.setLayoutProperties(LayoutProperties_1.layoutProperties);
-      }
-    }, "Default")));
-  };
-
+          _this.props.pathwayActions.setLayoutProperties(LayoutProperties_1.layoutProperties);
+        }
+      }, "Default")));
+    }
+  });
   var LayoutProperties_1;
 
   LayoutProperties_decorate([external_mobx_["observable"]], LayoutProperties, "layoutProperties", void 0);
@@ -7730,7 +8092,98 @@ var EditorActionsManager_EditorActionsManager =
 /** @class */
 function () {
   function EditorActionsManager(isCollaborative, shareDBManager, cyInst, isCBioPortal, undoRedoManager, portalAccessor, profiles) {
-    // Set cy instance and set real time manager reference if collaborative mode
+    Object.defineProperty(this, "cy", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "genomicDataOverlayManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "edgeEditing", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "selectedNodeStack", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "layoutProperties", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "FIT_CONSTANT", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "observers", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "svgExporter", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "undoRedoManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "isCbioPortal", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "isCollaborative", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "shareDBManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "portalAccessor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "profiles", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "modifyPathwayGeneMap", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    }); // Set cy instance and set real time manager reference if collaborative mode
+
+    Object(external_mobx_["makeObservable"])(this);
     this.cy = cyInst;
     this.isCollaborative = isCollaborative;
     this.isCbioPortal = isCBioPortal;
@@ -7782,664 +8235,886 @@ function () {
   }
 
   ;
-
-  EditorActionsManager.prototype.handleChangePositionByAlignment = function (movedNodeArr) {
-    if (this.isCollaborative) this.shareDBManager.changeElementsPositionByAlignment(movedNodeArr);else this.undoRedoManager.do("changePositions", movedNodeArr);
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "handleChangePositionByAlignment", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (movedNodeArr) {
+      if (this.isCollaborative) this.shareDBManager.changeElementsPositionByAlignment(movedNodeArr);else this.undoRedoManager.do("changePositions", movedNodeArr);
+    }
+  });
   ;
   /*
    * Undo redo for changing positions of nodes via programatically (node.position)
    * **/
 
-  EditorActionsManager.prototype.doChangePosition = function (movedNodes) {
-    var newMovedNodes = [];
+  Object.defineProperty(EditorActionsManager.prototype, "doChangePosition", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (movedNodes) {
+      var newMovedNodes = [];
 
-    for (var i = 0; i < movedNodes.length; i++) {
-      var currentNodePosition = {
-        x: movedNodes[i].node.position().x,
-        y: movedNodes[i].node.position().y
-      };
-      newMovedNodes.push({
-        node: movedNodes[i].node,
-        oldPosition: currentNodePosition,
-        nextPosition: movedNodes[i].nextPosition
-      });
-      movedNodes[i].node.position(movedNodes[i].nextPosition);
+      for (var i = 0; i < movedNodes.length; i++) {
+        var currentNodePosition = {
+          x: movedNodes[i].node.position().x,
+          y: movedNodes[i].node.position().y
+        };
+        newMovedNodes.push({
+          node: movedNodes[i].node,
+          oldPosition: currentNodePosition,
+          nextPosition: movedNodes[i].nextPosition
+        });
+        movedNodes[i].node.position(movedNodes[i].nextPosition);
+      }
+
+      return newMovedNodes;
     }
-
-    return newMovedNodes;
-  };
-
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "undoChangePosition", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (movedNodes) {
+      var newMovedNodes = [];
 
-  EditorActionsManager.prototype.undoChangePosition = function (movedNodes) {
-    var newMovedNodes = [];
+      for (var i = 0; i < movedNodes.length; i++) {
+        var currentNodePosition = {
+          x: movedNodes[i].node.position().x,
+          y: movedNodes[i].node.position().y
+        };
+        newMovedNodes.push({
+          node: movedNodes[i].node,
+          oldPosition: movedNodes[i].oldPosition,
+          nextPosition: currentNodePosition
+        });
+        movedNodes[i].node.position(movedNodes[i].oldPosition);
+      }
 
-    for (var i = 0; i < movedNodes.length; i++) {
-      var currentNodePosition = {
-        x: movedNodes[i].node.position().x,
-        y: movedNodes[i].node.position().y
-      };
-      newMovedNodes.push({
-        node: movedNodes[i].node,
-        oldPosition: movedNodes[i].oldPosition,
-        nextPosition: currentNodePosition
-      });
-      movedNodes[i].node.position(movedNodes[i].oldPosition);
+      return newMovedNodes;
     }
-
-    return newMovedNodes;
-  };
-
+  });
   ;
-
-  EditorActionsManager.prototype.changeNodePositionsByArrows = function (selectedNodes) {
-    if (this.isCollaborative) this.shareDBManager.changeNodePositionsShareDB(selectedNodes); //resize-node extension already deals for the movement in local mode
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "changeNodePositionsByArrows", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (selectedNodes) {
+      if (this.isCollaborative) this.shareDBManager.changeNodePositionsShareDB(selectedNodes); //resize-node extension already deals for the movement in local mode
+    }
+  });
   ;
   /*
    * Undo redo for changing size of nodes
    * **/
 
-  EditorActionsManager.prototype.doChangeNodeSize = function (args) {
-    args.ele.data('w', args.newWidth);
-    args.ele.data('h', args.newHeight);
-    args.ele.style('width', args.newWidth);
-    args.ele.style('height', args.newHeight);
-    return args;
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "doChangeNodeSize", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      args.ele.data('w', args.newWidth);
+      args.ele.data('h', args.newHeight);
+      args.ele.style('width', args.newWidth);
+      args.ele.style('height', args.newHeight);
+      return args;
+    }
+  });
   ;
-
-  EditorActionsManager.prototype.undoChangeNodeSize = function (args) {
-    args.ele.data('w', args.oldWidth);
-    args.ele.data('h', args.oldHeight);
-    args.ele.style('width', args.oldWidth);
-    args.ele.style('height', args.oldHeight);
-    return args;
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "undoChangeNodeSize", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      args.ele.data('w', args.oldWidth);
+      args.ele.data('h', args.oldHeight);
+      args.ele.style('width', args.oldWidth);
+      args.ele.style('height', args.oldHeight);
+      return args;
+    }
+  });
   ;
   /*
    * Undo redo for changing size of compounds
    * **/
 
-  EditorActionsManager.prototype.doChangeCompoundSize = function (args) {
-    args.ele.style('min-width', args.newMinWidth);
-    args.ele.style('min-width-bias-left', args.newMinWidthBiasLeft);
-    args.ele.style('min-width-bias-right', args.newMinWidthBiasRight);
-    args.ele.style('min-height', args.newMinHeight);
-    args.ele.style('min-height-bias-top', args.newMinHeightBiasTop);
-    args.ele.style('min-height-bias-bottom', args.newMinHeightBiasBottom);
-    return args;
-  };
-
-  ;
-
-  EditorActionsManager.prototype.undoChangeCompoundSize = function (args) {
-    if (args.oldMinWidth == undefined) {
-      args.ele.style('min-width', 0);
-      args.ele.style('min-width-bias-left', 0);
-      args.ele.style('min-width-bias-right', 0);
-    } else {
-      args.ele.style('min-width', args.oldMinWidth);
-      args.ele.style('min-width-bias-left', args.oldMinWidthBiasLeft);
-      args.ele.style('min-width-bias-right', args.oldMinWidthBiasRight);
+  Object.defineProperty(EditorActionsManager.prototype, "doChangeCompoundSize", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      args.ele.style('min-width', args.newMinWidth);
+      args.ele.style('min-width-bias-left', args.newMinWidthBiasLeft);
+      args.ele.style('min-width-bias-right', args.newMinWidthBiasRight);
+      args.ele.style('min-height', args.newMinHeight);
+      args.ele.style('min-height-bias-top', args.newMinHeightBiasTop);
+      args.ele.style('min-height-bias-bottom', args.newMinHeightBiasBottom);
+      return args;
     }
-
-    if (args.oldMinHeight == undefined) {
-      args.ele.style('min-height', 0);
-      args.ele.style('min-height-bias-top', 0);
-      args.ele.style('min-height-bias-bottom', 0);
-    } else {
-      args.ele.style('min-height', args.oldMinHeight);
-      args.ele.style('min-height-bias-top', args.oldMinHeightBiasTop);
-      args.ele.style('min-height-bias-bottom', args.oldMinHeightBiasBottom);
-    }
-
-    return args;
-  };
-
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "undoChangeCompoundSize", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      if (args.oldMinWidth == undefined) {
+        args.ele.style('min-width', 0);
+        args.ele.style('min-width-bias-left', 0);
+        args.ele.style('min-width-bias-right', 0);
+      } else {
+        args.ele.style('min-width', args.oldMinWidth);
+        args.ele.style('min-width-bias-left', args.oldMinWidthBiasLeft);
+        args.ele.style('min-width-bias-right', args.oldMinWidthBiasRight);
+      }
 
-  EditorActionsManager.prototype.changeName = function (ele, newName) {
-    if (this.isCollaborative) {
-      this.shareDBManager.changeName(ele, newName);
-    } else {
-      this.changeNameCy(ele, newName);
+      if (args.oldMinHeight == undefined) {
+        args.ele.style('min-height', 0);
+        args.ele.style('min-height-bias-top', 0);
+        args.ele.style('min-height-bias-bottom', 0);
+      } else {
+        args.ele.style('min-height', args.oldMinHeight);
+        args.ele.style('min-height-bias-top', args.oldMinHeightBiasTop);
+        args.ele.style('min-height-bias-bottom', args.oldMinHeightBiasBottom);
+      }
+
+      return args;
     }
-  };
-
+  });
   ;
-
-  EditorActionsManager.prototype.changeNameCy = function (ele, newName) {
-    var currentName = ele.data('name');
-    var args = {
-      ele: ele,
-      oldName: currentName,
-      newName: newName
-    };
-    this.undoRedoManager.do('changeName', args);
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "changeName", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele, newName) {
+      if (this.isCollaborative) {
+        this.shareDBManager.changeName(ele, newName);
+      } else {
+        this.changeNameCy(ele, newName);
+      }
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "changeNameCy", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele, newName) {
+      var currentName = ele.data('name');
+      var args = {
+        ele: ele,
+        oldName: currentName,
+        newName: newName
+      };
+      this.undoRedoManager.do('changeName', args);
+    }
+  });
   ;
   /*
    * Undo redo for changing name of nodes
    * **/
 
-  EditorActionsManager.prototype.doChangename = function (args) {
-    var currentName = args.ele.data('name');
-    var newArgs = {
-      ele: args.ele,
-      newName: args.newName,
-      oldName: currentName
-    };
-    args.ele.data('name', args.newName);
-    args.ele.css('content', args.newName);
-    return newArgs;
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "doChangename", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      var currentName = args.ele.data('name');
+      var newArgs = {
+        ele: args.ele,
+        newName: args.newName,
+        oldName: currentName
+      };
+      args.ele.data('name', args.newName);
+      args.ele.css('content', args.newName);
+      return newArgs;
+    }
+  });
   ;
-
-  EditorActionsManager.prototype.undoChangeName = function (args) {
-    var currentName = args.ele.data('name');
-    var newArgs = {
-      ele: args.ele,
-      newName: args.newName,
-      oldName: currentName
-    };
-    args.ele.data('name', args.oldName);
-    args.ele.css('content', args.oldName);
-    return newArgs;
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "undoChangeName", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      var currentName = args.ele.data('name');
+      var newArgs = {
+        ele: args.ele,
+        newName: args.newName,
+        oldName: currentName
+      };
+      args.ele.data('name', args.oldName);
+      args.ele.css('content', args.oldName);
+      return newArgs;
+    }
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "hideSelectedNodes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      //Hides the selected elements
+      var sel = this.cy.nodes(":selected");
+      var nodesToHide = sel;
+      var b = true; //Hides the parents if they have no children
 
-  EditorActionsManager.prototype.hideSelectedNodes = function () {
-    //Hides the selected elements
-    var sel = this.cy.nodes(":selected");
-    var nodesToHide = sel;
-    var b = true; //Hides the parents if they have no children
-
-    sel.parent().each(function (parent) {
-      b = true;
-      parent.children().each(function (ch) {
-        if (!ch.selected()) {
-          if (ch.visible()) b = false;
-        }
+      sel.parent().each(function (parent) {
+        b = true;
+        parent.children().each(function (ch) {
+          if (!ch.selected()) {
+            if (ch.visible()) b = false;
+          }
+        });
+        if (b) nodesToHide = nodesToHide.add(parent);
       });
-      if (b) nodesToHide = nodesToHide.add(parent);
-    });
-    this.cy.elements(":selected").unselect();
-    if (this.isCollaborative) this.shareDBManager.changeVisibility(nodesToHide, true);else this.undoRedoManager.do('hideNode', nodesToHide);
-  };
-
+      this.cy.elements(":selected").unselect();
+      if (this.isCollaborative) this.shareDBManager.changeVisibility(nodesToHide, true);else this.undoRedoManager.do('hideNode', nodesToHide);
+    }
+  });
   ;
   /*
    * Undo redo for hiding nodes
    * **/
 
-  EditorActionsManager.prototype.doHide = function (args) {
-    args.hide();
-    return args;
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "doHide", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      args.hide();
+      return args;
+    }
+  });
   ;
-
-  EditorActionsManager.prototype.undoHide = function (args) {
-    args.show();
-    return args;
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "undoHide", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      args.show();
+      return args;
+    }
+  });
   ;
-
-  EditorActionsManager.prototype.showAllNodes = function () {
-    var hid = this.cy.nodes(":hidden");
-    if (this.isCollaborative) this.shareDBManager.changeVisibility(hid, false);else this.undoRedoManager.do('showAllNodes', hid);
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "showAllNodes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var hid = this.cy.nodes(":hidden");
+      if (this.isCollaborative) this.shareDBManager.changeVisibility(hid, false);else this.undoRedoManager.do('showAllNodes', hid);
+    }
+  });
   ;
   /*
    * Undo redo for showing all nodes
    * **/
 
-  EditorActionsManager.prototype.doShow = function (args) {
-    args.show();
-    return args;
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "doShow", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      args.show();
+      return args;
+    }
+  });
   ;
-
-  EditorActionsManager.prototype.undoShow = function (args) {
-    args.hide();
-    return args;
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "undoShow", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      args.hide();
+      return args;
+    }
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "highlightElementsInitially", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (invalidHighlightedGenesIDs, invalidGenesIDs, highlightedGenesIDs, highlightedEdgesIDs, hiddenGenesIDs) {
+      for (var i in invalidHighlightedGenesIDs) {
+        this.cy.$('#' + invalidHighlightedGenesIDs[i]).addClass('invalidGeneHighlight');
+      }
 
-  EditorActionsManager.prototype.highlightElementsInitially = function (invalidHighlightedGenesIDs, invalidGenesIDs, highlightedGenesIDs, highlightedEdgesIDs, hiddenGenesIDs) {
-    for (var i in invalidHighlightedGenesIDs) {
-      this.cy.$('#' + invalidHighlightedGenesIDs[i]).addClass('invalidGeneHighlight');
+      for (var i in invalidGenesIDs) {
+        this.cy.$('#' + invalidGenesIDs[i]).addClass('invalidGene');
+      }
+
+      for (var i in highlightedGenesIDs) {
+        this.cy.$('#' + highlightedGenesIDs[i]).addClass('highlightedNode');
+      }
+
+      for (var i in highlightedEdgesIDs) {
+        this.cy.$('#' + highlightedEdgesIDs[i]).addClass('highlightedEdge');
+      }
+
+      for (var i in hiddenGenesIDs) {
+        this.cy.$('#' + hiddenGenesIDs[i]).hide();
+      }
     }
-
-    for (var i in invalidGenesIDs) {
-      this.cy.$('#' + invalidGenesIDs[i]).addClass('invalidGene');
-    }
-
-    for (var i in highlightedGenesIDs) {
-      this.cy.$('#' + highlightedGenesIDs[i]).addClass('highlightedNode');
-    }
-
-    for (var i in highlightedEdgesIDs) {
-      this.cy.$('#' + highlightedEdgesIDs[i]).addClass('highlightedEdge');
-    }
-
-    for (var i in hiddenGenesIDs) {
-      this.cy.$('#' + hiddenGenesIDs[i]).hide();
-    }
-  };
-
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "validateGenes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var geneSymbols = this.getGeneSymbols();
+      this.portalAccessor.validateGenes(geneSymbols, this);
+    }
+  }); //Get all gene symbols
 
-  EditorActionsManager.prototype.validateGenes = function () {
-    var geneSymbols = this.getGeneSymbols();
-    this.portalAccessor.validateGenes(geneSymbols, this);
-  }; //Get all gene symbols
-
-
-  EditorActionsManager.prototype.getGeneSymbols = function () {
-    var geneSymbols = [];
-    this.cy.nodes().forEach(function (gene) {
-      if (gene.data().type === "GENE") geneSymbols.push(gene.data().name);
-    });
-    return geneSymbols;
-  };
-
-  EditorActionsManager.prototype.highlightInvalidGenes = function (validGeneSymbols) {
-    if (this.isCollaborative) {
-      var invalidGenes = [];
+  Object.defineProperty(EditorActionsManager.prototype, "getGeneSymbols", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var geneSymbols = [];
       this.cy.nodes().forEach(function (gene) {
-        if (gene.data().type === "GENE") {
-          var geneName = gene.data().name;
-          if (validGeneSymbols.indexOf(geneName) < 0) invalidGenes.push(gene.id());
-        }
+        if (gene.data().type === "GENE") geneSymbols.push(gene.data().name);
       });
-      this.shareDBManager.changeHighlightInvalidGenes(invalidGenes, true); // TODO: Amendment by Ziya
-
-      /*
-      if (invalidGenes.length > 0)
-          this.notificationManager.createNotification("Invalid genes are highlighted","fail");
-      else
-          this.notificationManager.createNotification("All gene symbols are valid","success");*/
-    } else {
-      var highlightedGenes = this.cy.collection();
-      this.cy.nodes().forEach(function (gene) {
-        if (gene.data().type === "GENE") {
-          var geneName = gene.data().name;
-          if (validGeneSymbols.indexOf(geneName) < 0) highlightedGenes = highlightedGenes.add(gene);
-        }
-      }); // TODO: Amendment by Ziya
-
-      /*
-                  if (highlightedGenes.size() > 0)
-                      this.notificationManager.createNotification("Invalid genes are highlighted","fail");
-                  else
-                      this.notificationManager.createNotification("All gene symbols are valid","success");*/
-
-      var nodesToAddInvalidHighlight = this.cy.collection();
-      highlightedGenes.forEach(function (ele) {
-        if (!ele.hasClass('invalidGeneHighlight') && !ele.hasClass('invalidGene')) nodesToAddInvalidHighlight = nodesToAddInvalidHighlight.union(ele);
-      });
-      this.undoRedoManager.do('highlightInvalidGenes', nodesToAddInvalidHighlight);
+      return geneSymbols;
     }
-  };
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "highlightInvalidGenes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (validGeneSymbols) {
+      if (this.isCollaborative) {
+        var invalidGenes = [];
+        this.cy.nodes().forEach(function (gene) {
+          if (gene.data().type === "GENE") {
+            var geneName = gene.data().name;
+            if (validGeneSymbols.indexOf(geneName) < 0) invalidGenes.push(gene.id());
+          }
+        });
+        this.shareDBManager.changeHighlightInvalidGenes(invalidGenes, true); // TODO: Amendment by Ziya
 
-  EditorActionsManager.prototype.removeInvalidGeneHighlights = function (actions) {
-    if (this.isCollaborative) {
-      var geneIDs = [];
-      this.cy.nodes().forEach(function (gene) {
-        if (gene.data().type === "GENE") {
-          if (gene.hasClass('invalidGeneHighlight') || gene.hasClass('invalidGene')) geneIDs.push(gene.id());
-        }
-      });
-      this.shareDBManager.changeHighlightInvalidGenes(geneIDs, false);
-    } else {
-      var nodesToRemoveInvalidHighlight = this.cy.collection();
-      this.cy.nodes().forEach(function (ele) {
-        if (ele.hasClass('invalidGeneHighlight') || ele.hasClass('invalidGene')) nodesToRemoveInvalidHighlight = nodesToRemoveInvalidHighlight.union(ele);
-      });
-      actions.push({
-        name: "removeHighlightInvalidGenes",
-        param: nodesToRemoveInvalidHighlight
-      }); // this.undoRedoManager.do('removeHighlightInvalidGenes', nodesToRemoveInvalidHighlight);
+        /*
+        if (invalidGenes.length > 0)
+            this.notificationManager.createNotification("Invalid genes are highlighted","fail");
+        else
+            this.notificationManager.createNotification("All gene symbols are valid","success");*/
+      } else {
+        var highlightedGenes = this.cy.collection();
+        this.cy.nodes().forEach(function (gene) {
+          if (gene.data().type === "GENE") {
+            var geneName = gene.data().name;
+            if (validGeneSymbols.indexOf(geneName) < 0) highlightedGenes = highlightedGenes.add(gene);
+          }
+        }); // TODO: Amendment by Ziya
+
+        /*
+                    if (highlightedGenes.size() > 0)
+                        this.notificationManager.createNotification("Invalid genes are highlighted","fail");
+                    else
+                        this.notificationManager.createNotification("All gene symbols are valid","success");*/
+
+        var nodesToAddInvalidHighlight = this.cy.collection();
+        highlightedGenes.forEach(function (ele) {
+          if (!ele.hasClass('invalidGeneHighlight') && !ele.hasClass('invalidGene')) nodesToAddInvalidHighlight = nodesToAddInvalidHighlight.union(ele);
+        });
+        this.undoRedoManager.do('highlightInvalidGenes', nodesToAddInvalidHighlight);
+      }
     }
-  };
-
-  EditorActionsManager.prototype.doHighlightInvalidGenes = function (args) {
-    args.each(function (n) {
-      if (n.hasClass('highlightedNode')) {
-        n.removeClass('highlightedNode');
-        n.addClass("invalidGeneHighlight");
-      } else n.addClass("invalidGene");
-    });
-    return args;
-  };
-
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "removeInvalidGeneHighlights", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (actions) {
+      if (this.isCollaborative) {
+        var geneIDs = [];
+        this.cy.nodes().forEach(function (gene) {
+          if (gene.data().type === "GENE") {
+            if (gene.hasClass('invalidGeneHighlight') || gene.hasClass('invalidGene')) geneIDs.push(gene.id());
+          }
+        });
+        this.shareDBManager.changeHighlightInvalidGenes(geneIDs, false);
+      } else {
+        var nodesToRemoveInvalidHighlight = this.cy.collection();
+        this.cy.nodes().forEach(function (ele) {
+          if (ele.hasClass('invalidGeneHighlight') || ele.hasClass('invalidGene')) nodesToRemoveInvalidHighlight = nodesToRemoveInvalidHighlight.union(ele);
+        });
+        actions.push({
+          name: "removeHighlightInvalidGenes",
+          param: nodesToRemoveInvalidHighlight
+        }); // this.undoRedoManager.do('removeHighlightInvalidGenes', nodesToRemoveInvalidHighlight);
+      }
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "doHighlightInvalidGenes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      args.each(function (n) {
+        if (n.hasClass('highlightedNode')) {
+          n.removeClass('highlightedNode');
+          n.addClass("invalidGeneHighlight");
+        } else n.addClass("invalidGene");
+      });
+      return args;
+    }
+  });
   ;
-
-  EditorActionsManager.prototype.undoHighlightInvalidGenes = function (args) {
-    args.each(function (n) {
-      if (n.hasClass('invalidGeneHighlight')) {
-        n.removeClass('invalidGeneHighlight');
-        n.addClass("highlightedNode");
-      } else n.removeClass("invalidGene");
-    });
-    return args;
-  };
-
-  EditorActionsManager.prototype.highlightSelected = function () {
-    var sel = this.cy.elements(":selected");
-    sel.unselect();
-    var elementsToHighlight = this.cy.collection();
-    sel.forEach(function (ele) {
-      if (!ele.hasClass('invalidGeneHighlight') && !ele.hasClass('highlightedNode') && !ele.hasClass('highlightedEdge')) elementsToHighlight = elementsToHighlight.union(ele);
-    });
-    if (this.isCollaborative) this.shareDBManager.changeHighlight(elementsToHighlight, true);else this.undoRedoManager.do('highlightOthers', elementsToHighlight);
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "undoHighlightInvalidGenes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      args.each(function (n) {
+        if (n.hasClass('invalidGeneHighlight')) {
+          n.removeClass('invalidGeneHighlight');
+          n.addClass("highlightedNode");
+        } else n.removeClass("invalidGene");
+      });
+      return args;
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "highlightSelected", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var sel = this.cy.elements(":selected");
+      sel.unselect();
+      var elementsToHighlight = this.cy.collection();
+      sel.forEach(function (ele) {
+        if (!ele.hasClass('invalidGeneHighlight') && !ele.hasClass('highlightedNode') && !ele.hasClass('highlightedEdge')) elementsToHighlight = elementsToHighlight.union(ele);
+      });
+      if (this.isCollaborative) this.shareDBManager.changeHighlight(elementsToHighlight, true);else this.undoRedoManager.do('highlightOthers', elementsToHighlight);
+    }
+  });
   ;
-
-  EditorActionsManager.prototype.highlightNeighbors = function () {
-    var sel = this.cy.elements(":selected");
-    var neighbors = sel.neighborhood();
-    neighbors = neighbors.union(sel);
-    neighbors.unselect();
-    var elementsToHighlight = this.cy.collection();
-    neighbors.forEach(function (ele) {
-      if (!ele.hasClass('invalidGeneHighlight') && !ele.hasClass('highlightedNode') && !ele.hasClass('highlightedEdge')) elementsToHighlight = elementsToHighlight.union(ele);
-    });
-    if (this.isCollaborative) this.shareDBManager.changeHighlight(elementsToHighlight, true);else this.undoRedoManager.do('highlightOthers', elementsToHighlight);
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "highlightNeighbors", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var sel = this.cy.elements(":selected");
+      var neighbors = sel.neighborhood();
+      neighbors = neighbors.union(sel);
+      neighbors.unselect();
+      var elementsToHighlight = this.cy.collection();
+      neighbors.forEach(function (ele) {
+        if (!ele.hasClass('invalidGeneHighlight') && !ele.hasClass('highlightedNode') && !ele.hasClass('highlightedEdge')) elementsToHighlight = elementsToHighlight.union(ele);
+      });
+      if (this.isCollaborative) this.shareDBManager.changeHighlight(elementsToHighlight, true);else this.undoRedoManager.do('highlightOthers', elementsToHighlight);
+    }
+  });
   ;
-
-  EditorActionsManager.prototype.highlightBySearch = function (args) {
-    if (this.isCollaborative) this.shareDBManager.changeHighlight(args, true);else this.undoRedoManager.do('highlightOthers', args);
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "highlightBySearch", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      if (this.isCollaborative) this.shareDBManager.changeHighlight(args, true);else this.undoRedoManager.do('highlightOthers', args);
+    }
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "removeOtherHighlight", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (actions) {
+      var nodesToRemoveHighlight = this.cy.collection(); //TODO cytoscape selectors may provide more handy functionality instead of iterating over !
 
-  EditorActionsManager.prototype.removeOtherHighlight = function (actions) {
-    var nodesToRemoveHighlight = this.cy.collection(); //TODO cytoscape selectors may provide more handy functionality instead of iterating over !
-
-    this.cy.elements().forEach(function (ele) {
-      if (ele.hasClass('highlightedNode') || ele.hasClass('highlightedEdge') || ele.hasClass('invalidGeneHighlight')) nodesToRemoveHighlight = nodesToRemoveHighlight.add(ele);
-    });
-    if (this.isCollaborative) this.shareDBManager.changeHighlight(nodesToRemoveHighlight, false);else actions.push({
-      name: "removeOtherHighlight",
-      param: nodesToRemoveHighlight
-    }); // this.undoRedoManager.do('removeOtherHighlight', nodesToRemoveHighlight);
-  };
-
+      this.cy.elements().forEach(function (ele) {
+        if (ele.hasClass('highlightedNode') || ele.hasClass('highlightedEdge') || ele.hasClass('invalidGeneHighlight')) nodesToRemoveHighlight = nodesToRemoveHighlight.add(ele);
+      });
+      if (this.isCollaborative) this.shareDBManager.changeHighlight(nodesToRemoveHighlight, false);else actions.push({
+        name: "removeOtherHighlight",
+        param: nodesToRemoveHighlight
+      }); // this.undoRedoManager.do('removeOtherHighlight', nodesToRemoveHighlight);
+    }
+  });
   ;
   /*
    * Undo redo for highlighting of nodes
    * **/
 
-  EditorActionsManager.prototype.doHighlight = function (args) {
-    args.each(function (n) {
-      if (n.isEdge()) n.addClass("highlightedEdge");else {
-        if (n.hasClass('invalidGene')) {
-          n.removeClass("invalidGene");
-          n.addClass("invalidGeneHighlight");
-        } else n.addClass("highlightedNode");
-      }
-    });
-    return args;
-  };
-
-  ;
-
-  EditorActionsManager.prototype.undoHighlight = function (args) {
-    args.each(function (n) {
-      if (n.isEdge()) n.removeClass("highlightedEdge");else {
-        if (n.hasClass('invalidGeneHighlight')) {
-          n.removeClass("invalidGeneHighlight");
-          n.addClass("invalidGene");
-        } else n.removeClass("highlightedNode");
-      }
-    });
-    return args;
-  };
-
-  ;
-
-  EditorActionsManager.prototype.removeAllHighlight = function () {
-    var actions = [];
-    this.removeInvalidGeneHighlights(actions);
-    this.removeOtherHighlight(actions);
-    this.cy.undoRedo().do("batch", actions);
-  };
-
-  ;
-
-  EditorActionsManager.prototype.postLayout = function () {
-    if (this.isCollaborative) {
-      //Previously this.cy.nodes() was sent as an argument in moveElements function but it caused a problem when
-      // the compound node was moved before the child nodes
-      var movedNodes = this.cy.collection();
-      var parentNodes = this.cy.collection();
-      this.cy.nodes().forEach(function (node) {
-        if (!node.isParent()) movedNodes = movedNodes.add(node);else parentNodes = parentNodes.add(node);
+  Object.defineProperty(EditorActionsManager.prototype, "doHighlight", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      args.each(function (n) {
+        if (n.isEdge()) n.addClass("highlightedEdge");else {
+          if (n.hasClass('invalidGene')) {
+            n.removeClass("invalidGene");
+            n.addClass("invalidGeneHighlight");
+          } else n.addClass("highlightedNode");
+        }
       });
-      this.moveElements(movedNodes);
-      this.moveElements(parentNodes);
-      var newState = {
-        zoomLevel: this.cy.zoom(),
-        panLevel: this.cy.pan()
-      };
-      this.updateGlobalOptions(newState);
+      return args;
     }
-  };
-
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "undoHighlight", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (args) {
+      args.each(function (n) {
+        if (n.isEdge()) n.removeClass("highlightedEdge");else {
+          if (n.hasClass('invalidGeneHighlight')) {
+            n.removeClass("invalidGeneHighlight");
+            n.addClass("invalidGene");
+          } else n.removeClass("highlightedNode");
+        }
+      });
+      return args;
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "removeAllHighlight", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var actions = [];
+      this.removeInvalidGeneHighlights(actions);
+      this.removeOtherHighlight(actions);
+      this.cy.undoRedo().do("batch", actions);
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "postLayout", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      if (this.isCollaborative) {
+        //Previously this.cy.nodes() was sent as an argument in moveElements function but it caused a problem when
+        // the compound node was moved before the child nodes
+        var movedNodes = this.cy.collection();
+        var parentNodes = this.cy.collection();
+        this.cy.nodes().forEach(function (node) {
+          if (!node.isParent()) movedNodes = movedNodes.add(node);else parentNodes = parentNodes.add(node);
+        });
+        this.moveElements(movedNodes);
+        this.moveElements(parentNodes);
+        var newState = {
+          zoomLevel: this.cy.zoom(),
+          panLevel: this.cy.pan()
+        };
+        this.updateGlobalOptions(newState);
+      }
+    }
+  });
   ;
   /*
   * Gets the first empty index from the list in cloud model
   * **/
 
-  EditorActionsManager.prototype.getEmptyGroupID = function () {
-    if (this.isCollaborative) return this.shareDBManager.getEmptyGroupID();else return this.genomicDataOverlayManager.getEmptyGroupID();
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "getEmptyGroupID", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      if (this.isCollaborative) return this.shareDBManager.getEmptyGroupID();else return this.genomicDataOverlayManager.getEmptyGroupID();
+    }
+  });
   ;
   /*
    * Gets the first empty index from the list in cloud model
    * **/
 
-  EditorActionsManager.prototype.groupGenomicData = function (cancerNames, groupID) {
-    return this.shareDBManager.groupGenomicData(cancerNames, groupID);
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "groupGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (cancerNames, groupID) {
+      return this.shareDBManager.groupGenomicData(cancerNames, groupID);
+    }
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "addPubmedIDs", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edge, pubmedIDs) {
+      if (this.isCollaborative) {
+        console.log(edge, pubmedIDs);
+        this.shareDBManager.addPubmedIDs(edge.id(), pubmedIDs);
+      } else {
+        var pubmedArray = edge.data('pubmedIDs');
 
-  EditorActionsManager.prototype.addPubmedIDs = function (edge, pubmedIDs) {
-    if (this.isCollaborative) {
-      console.log(edge, pubmedIDs);
-      this.shareDBManager.addPubmedIDs(edge.id(), pubmedIDs);
-    } else {
-      var pubmedArray = edge.data('pubmedIDs');
-
-      var validPubmedIDs = _.filter(pubmedIDs, function (id) {
-        return !isNaN(id);
-      });
-
-      pubmedArray.push.apply(pubmedArray, validPubmedIDs);
-      edge.data('pubmedIDs', _.uniq(pubmedArray));
-    }
-  };
-
-  EditorActionsManager.prototype.removePubmedID = function (edge, pubmedIDs) {
-    if (this.isCollaborative) {
-      this.shareDBManager.removePubmedID(edge.id(), pubmedIDs);
-    } else {
-      var pubmedArray = edge.data('pubmedIDs');
-      edge.data('pubmedIDs', _.difference(pubmedArray, pubmedIDs));
-    }
-  };
-
-  EditorActionsManager.prototype.updateEdgeBendPoints = function (edge) {
-    if (this.isCollaborative) {
-      var numberOfBendPoints = 0;
-      if (this.edgeEditing.getSegmentPoints(edge) !== undefined) numberOfBendPoints = this.edgeEditing.getSegmentPoints(edge).length / 2;
-      var bendPointsArray = [];
-
-      for (var j = 0; j < numberOfBendPoints; j++) {
-        bendPointsArray.push({
-          x: this.edgeEditing.getSegmentPoints(edge)[2 * j],
-          y: this.edgeEditing.getSegmentPoints(edge)[2 * j + 1]
+        var validPubmedIDs = _.filter(pubmedIDs, function (id) {
+          return !isNaN(id);
         });
-      } // edge.data("bendPointPositions", bendPointsArray);
-      // edgeEditing.initBendPoints(edge);
 
-
-      this.shareDBManager.updateEdgeBendPoints(edge.id(), bendPointsArray);
-    }
-  }; //Related to order the nodes according to the selection of user
-
-
-  EditorActionsManager.prototype.pushSelectedNodeStack = function (ele) {
-    this.selectedNodeStack[ele.id()] = ele;
-  };
-
-  EditorActionsManager.prototype.removeElementFromSelectedNodeStack = function (ele) {
-    var nodeID = ele.id();
-    if (nodeID in this.selectedNodeStack) delete this.selectedNodeStack[ele.id()];
-  };
-
-  EditorActionsManager.prototype.clearSelectedNodeStack = function () {
-    this.selectedNodeStack = {};
-  };
-
-  EditorActionsManager.prototype.exportSVG = function () {
-    return this.svgExporter.exportGraph(this.cy.nodes(), this.cy.edges());
-  }; //Simple observer-observable pattern for views!!!!!
-
-
-  EditorActionsManager.prototype.registerObserver = function (observer) {
-    this.observers.push(observer);
-  };
-
-  ;
-
-  EditorActionsManager.prototype.notifyObservers = function () {
-    for (var i in this.observers) {
-      var observer = this.observers[i];
-      observer.notify();
-    }
-  };
-
-  ;
-
-  EditorActionsManager.prototype.registerGenomicDataObserver = function (observer) {
-    this.genomicDataOverlayManager.registerObserver(observer);
-  };
-
-  EditorActionsManager.prototype.updateGenomicDataVisibility = function (dataMap) {
-    if (this.isCollaborative) {
-      //TODO compound OP
-      // this.shareDBManager.clearGenomicVisData();
-      this.shareDBManager.addGenomicVisibilityData(dataMap);
-    } else {
-      for (var _key in dataMap) {
-        this.genomicDataOverlayManager.updateGenomicDataVisibility(_key, dataMap[_key]);
+        pubmedArray.push.apply(pubmedArray, validPubmedIDs);
+        edge.data('pubmedIDs', _.uniq(pubmedArray));
       }
-
-      this.genomicDataOverlayManager.showGenomicData();
     }
-  }; //Global options related functions, zoom etc..
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "removePubmedID", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edge, pubmedIDs) {
+      if (this.isCollaborative) {
+        this.shareDBManager.removePubmedID(edge.id(), pubmedIDs);
+      } else {
+        var pubmedArray = edge.data('pubmedIDs');
+        edge.data('pubmedIDs', _.difference(pubmedArray, pubmedIDs));
+      }
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "updateEdgeBendPoints", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edge) {
+      if (this.isCollaborative) {
+        var numberOfBendPoints = 0;
+        if (this.edgeEditing.getSegmentPoints(edge) !== undefined) numberOfBendPoints = this.edgeEditing.getSegmentPoints(edge).length / 2;
+        var bendPointsArray = [];
+
+        for (var j = 0; j < numberOfBendPoints; j++) {
+          bendPointsArray.push({
+            x: this.edgeEditing.getSegmentPoints(edge)[2 * j],
+            y: this.edgeEditing.getSegmentPoints(edge)[2 * j + 1]
+          });
+        } // edge.data("bendPointPositions", bendPointsArray);
+        // edgeEditing.initBendPoints(edge);
 
 
-  EditorActionsManager.prototype.getGlobalOptions = function () {
-    return {
-      zoomLevel: this.cy.zoom(),
-      panLevel: this.cy.pan()
-    };
-  };
+        this.shareDBManager.updateEdgeBendPoints(edge.id(), bendPointsArray);
+      }
+    }
+  }); //Related to order the nodes according to the selection of user
 
-  EditorActionsManager.prototype.changeGlobalOptions = function (op) {
-    var globalOptions = op.li;
-    this.cy.zoom(globalOptions.zoomLevel);
-    this.cy.pan(globalOptions.panLevel);
-  };
+  Object.defineProperty(EditorActionsManager.prototype, "pushSelectedNodeStack", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele) {
+      this.selectedNodeStack[ele.id()] = ele;
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "removeElementFromSelectedNodeStack", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele) {
+      var nodeID = ele.id();
+      if (nodeID in this.selectedNodeStack) delete this.selectedNodeStack[ele.id()];
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "clearSelectedNodeStack", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.selectedNodeStack = {};
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "exportSVG", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      return this.svgExporter.exportGraph(this.cy.nodes(), this.cy.edges());
+    }
+  }); //Simple observer-observable pattern for views!!!!!
 
-  EditorActionsManager.prototype.updateGlobalOptions = function (newOptions) {
-    if (this.isCollaborative) this.shareDBManager.updateGlobalOptions(newOptions);
-  }; //Layout properties related functions
+  Object.defineProperty(EditorActionsManager.prototype, "registerObserver", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (observer) {
+      this.observers.push(observer);
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "notifyObservers", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      for (var i in this.observers) {
+        var observer = this.observers[i];
+        observer.notify();
+      }
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "registerGenomicDataObserver", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (observer) {
+      this.genomicDataOverlayManager.registerObserver(observer);
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "updateGenomicDataVisibility", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (dataMap) {
+      if (this.isCollaborative) {
+        //TODO compound OP
+        // this.shareDBManager.clearGenomicVisData();
+        this.shareDBManager.addGenomicVisibilityData(dataMap);
+      } else {
+        for (var _key in dataMap) {
+          this.genomicDataOverlayManager.updateGenomicDataVisibility(_key, dataMap[_key]);
+        }
 
+        this.genomicDataOverlayManager.showGenomicData();
+      }
+    }
+  }); //Global options related functions, zoom etc..
 
-  EditorActionsManager.prototype.saveLayoutProperties = function (newLayoutProps) {
-    if (this.isCollaborative) {
-      // Call a real time function that updated real time object and
-      // its callback (updateLayoutPropertiesCallback) will handle sync of this object
-      // across collaborators
-      this.shareDBManager.updateLayoutProperties(newLayoutProps);
-    } else {
+  Object.defineProperty(EditorActionsManager.prototype, "getGlobalOptions", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      return {
+        zoomLevel: this.cy.zoom(),
+        panLevel: this.cy.pan()
+      };
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "changeGlobalOptions", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (op) {
+      var globalOptions = op.li;
+      this.cy.zoom(globalOptions.zoomLevel);
+      this.cy.pan(globalOptions.panLevel);
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "updateGlobalOptions", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (newOptions) {
+      if (this.isCollaborative) this.shareDBManager.updateGlobalOptions(newOptions);
+    }
+  }); //Layout properties related functions
+
+  Object.defineProperty(EditorActionsManager.prototype, "saveLayoutProperties", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (newLayoutProps) {
+      if (this.isCollaborative) {
+        // Call a real time function that updated real time object and
+        // its callback (updateLayoutPropertiesCallback) will handle sync of this object
+        // across collaborators
+        this.shareDBManager.updateLayoutProperties(newLayoutProps);
+      } else {
+        this.layoutProperties = _.clone(newLayoutProps);
+      }
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "updateLayoutPropertiesCallback", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (op) {
+      var newLayoutProps = op.li;
       this.layoutProperties = _.clone(newLayoutProps);
+      modals_LayoutProperties.layoutProperties = _.clone(this.layoutProperties); //Notify observers to reflect changes on colalborative object to the views
+
+      this.notifyObservers();
     }
-  };
-
+  });
   ;
-
-  EditorActionsManager.prototype.updateLayoutPropertiesCallback = function (op) {
-    var newLayoutProps = op.li;
-    this.layoutProperties = _.clone(newLayoutProps);
-    modals_LayoutProperties.layoutProperties = _.clone(this.layoutProperties); //Notify observers to reflect changes on colalborative object to the views
-
-    this.notifyObservers();
-  };
-
-  ;
-
-  EditorActionsManager.prototype.performLayout = function () {
-    this.undoRedoManager.do("layout", {
-      options: this.layoutProperties,
-      eles: null,
-      zoom: this.cy.zoom(),
-      pan: this.cy.pan()
-    });
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "performLayout", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.undoRedoManager.do("layout", {
+        options: this.layoutProperties,
+        eles: null,
+        zoom: this.cy.zoom(),
+        pan: this.cy.pan()
+      });
+    }
+  });
   ; //Node Related Functions
 
-  EditorActionsManager.prototype.addNode = function (nodeData, posData) {
-    if (this.isCollaborative) {
-      console.log("Add node to DB");
-      this.addNewNodeToShareDB(nodeData, posData);
-    } else {
-      this.addNodetoCy(nodeData, posData);
+  Object.defineProperty(EditorActionsManager.prototype, "addNode", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodeData, posData) {
+      if (this.isCollaborative) {
+        console.log("Add node to DB");
+        this.addNewNodeToShareDB(nodeData, posData);
+      } else {
+        this.addNodetoCy(nodeData, posData);
+      }
     }
-  };
-
+  });
   ;
-
-  EditorActionsManager.prototype.addNodes = function (nodes) {
-    for (var i in nodes) {
-      this.addNode(nodes[i].data, nodes[i].position);
+  Object.defineProperty(EditorActionsManager.prototype, "addNodes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes) {
+      for (var i in nodes) {
+        this.addNode(nodes[i].data, nodes[i].position);
+      }
     }
-  };
-
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "addNodesCy", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes) {
+      console.log("From EAM/addNodesCy");
+      console.log(nodes);
+      var nodeArr = [];
 
-  EditorActionsManager.prototype.addNodesCy = function (nodes) {
-    console.log("From EAM/addNodesCy");
-    console.log(nodes);
-    var nodeArr = [];
+      for (var i in nodes) {
+        var nodeData = nodes[i].data;
+        var posData = nodes[i].position;
+        var newNode = {
+          group: "nodes",
+          data: nodeData,
+          position: {}
+        };
 
-    for (var i in nodes) {
-      var nodeData = nodes[i].data;
-      var posData = nodes[i].position;
+        if (nodeData.parent === undefined) {
+          delete newNode.data.parent;
+        }
+
+        if (posData) {
+          newNode.position = {
+            x: posData.x,
+            y: posData.y
+          };
+        }
+
+        nodeArr[i] = newNode;
+      }
+
+      this.cy.add(nodeArr);
+      this.cy.nodes().updateCompoundBounds();
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "addNodetoCy", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodeData, posData) {
       var newNode = {
         group: "nodes",
         data: nodeData,
@@ -8455,967 +9130,1099 @@ function () {
           x: posData.x,
           y: posData.y
         };
-      }
-
-      nodeArr[i] = newNode;
-    }
-
-    this.cy.add(nodeArr);
-    this.cy.nodes().updateCompoundBounds();
-  };
-
-  ;
-
-  EditorActionsManager.prototype.addNodetoCy = function (nodeData, posData) {
-    var newNode = {
-      group: "nodes",
-      data: nodeData,
-      position: {}
-    };
-
-    if (nodeData.parent === undefined) {
-      delete newNode.data.parent;
-    }
-
-    if (posData) {
-      newNode.position = {
-        x: posData.x,
-        y: posData.y
-      };
-    } //his.cy.add(newNode);
+      } //his.cy.add(newNode);
 
 
-    this.cy.nodes().updateCompoundBounds();
-    this.undoRedoManager.do("add", newNode); //Width was not properly updated only by changing data property
-
-    var thatEle = this.cy.getElementById(nodeData.id);
-    thatEle.style('width', thatEle.data('w'));
-  };
-
-  ;
-
-  EditorActionsManager.prototype.shareDBNodeAddRemoveEventCallBack = function (op) {
-    console.log("shareDBNodeAddRemoveEventCallBack");
-    console.log(op); //Get real time node object and sync it to node addition or removal
-
-    var isRemove = Object.keys(op)[1] === 'od';
-    var node = op.oi || op.od; //Removal Operation
-
-    if (isRemove) {
-      var nodeID = op.p[1]; //Remove element from existing graph
-
-      var cyEle = this.cy.$("#" + nodeID);
-      this.removeElementCy(cyEle);
       this.cy.nodes().updateCompoundBounds();
-    } //Addition Operation
-    else {
-        this.addNewNodeLocally(node);
-      }
-  };
+      this.undoRedoManager.do("add", newNode); //Width was not properly updated only by changing data property
 
-  ;
-
-  EditorActionsManager.prototype.addNewNodeLocally = function (realtimeNode) {
-    var nodeData = {
-      id: realtimeNode.id,
-      type: realtimeNode.type,
-      name: realtimeNode.name,
-      parent: realtimeNode.parent,
-      w: realtimeNode.w,
-      h: realtimeNode.h
-    };
-
-    if (realtimeNode.x != "undefined" && realtimeNode.y != "undefined") {
-      this.addNodetoCy(nodeData, {
-        x: realtimeNode.x,
-        y: realtimeNode.y
-      });
-    } else {
-      // TODO: Amendment by Ziya
-      this.addNodetoCy(nodeData, null);
+      var thatEle = this.cy.getElementById(nodeData.id);
+      thatEle.style('width', thatEle.data('w'));
     }
-
-    this.cy.nodes().updateCompoundBounds();
-  };
-
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "shareDBNodeAddRemoveEventCallBack", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (op) {
+      console.log("shareDBNodeAddRemoveEventCallBack");
+      console.log(op); //Get real time node object and sync it to node addition or removal
 
-  EditorActionsManager.prototype.addNewNodeToShareDB = function (nodeData, posData) {
-    this.shareDBManager.addNewNode(nodeData, posData);
-  };
+      var isRemove = Object.keys(op)[1] === 'od';
+      var node = op.oi || op.od; //Removal Operation
 
+      if (isRemove) {
+        var nodeID = op.p[1]; //Remove element from existing graph
+
+        var cyEle = this.cy.$("#" + nodeID);
+        this.removeElementCy(cyEle);
+        this.cy.nodes().updateCompoundBounds();
+      } //Addition Operation
+      else {
+          this.addNewNodeLocally(node);
+        }
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "addNewNodeLocally", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (realtimeNode) {
+      var nodeData = {
+        id: realtimeNode.id,
+        type: realtimeNode.type,
+        name: realtimeNode.name,
+        parent: realtimeNode.parent,
+        w: realtimeNode.w,
+        h: realtimeNode.h
+      };
+
+      if (realtimeNode.x != "undefined" && realtimeNode.y != "undefined") {
+        this.addNodetoCy(nodeData, {
+          x: realtimeNode.x,
+          y: realtimeNode.y
+        });
+      } else {
+        // TODO: Amendment by Ziya
+        this.addNodetoCy(nodeData, null);
+      }
+
+      this.cy.nodes().updateCompoundBounds();
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "addNewNodeToShareDB", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodeData, posData) {
+      this.shareDBManager.addNewNode(nodeData, posData);
+    }
+  });
   ; //Edge related functions
 
-  EditorActionsManager.prototype.addEdge = function (edgeData) {
-    if (this.isCollaborative) {
-      this.addNewEdgeShareDB(edgeData);
-    } else {
-      this.addNewEdgetoCy(edgeData);
+  Object.defineProperty(EditorActionsManager.prototype, "addEdge", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edgeData) {
+      if (this.isCollaborative) {
+        this.addNewEdgeShareDB(edgeData);
+      } else {
+        this.addNewEdgetoCy(edgeData);
+      }
     }
-  };
-
+  });
   ;
-
-  EditorActionsManager.prototype.addEdges = function (edges) {
-    for (var i in edges) {
-      this.addEdge(edges[i].data);
+  Object.defineProperty(EditorActionsManager.prototype, "addEdges", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edges) {
+      for (var i in edges) {
+        this.addEdge(edges[i].data);
+      }
     }
-  };
-
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "addEdgesCy", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edges) {
+      var newEdges = [];
 
-  EditorActionsManager.prototype.addEdgesCy = function (edges) {
-    var newEdges = [];
+      for (var i in edges) {
+        var newEdge = {
+          group: "edges",
+          data: edges[i].data
+        };
+        newEdges.push(newEdge);
+      }
 
-    for (var i in edges) {
+      console.log("From addEdgesCy");
+      this.cy.add(newEdges);
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "addNewEdgeShareDB", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edgeData) {
+      this.shareDBManager.addNewEdge(edgeData);
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "addNewEdgetoCy", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edgeData) {
       var newEdge = {
         group: "edges",
-        data: edges[i].data
+        data: edgeData
       };
-      newEdges.push(newEdge);
+      this.undoRedoManager.do("add", newEdge);
     }
-
-    console.log("From addEdgesCy");
-    this.cy.add(newEdges);
-  };
-
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "shareDBEdgeAddRemoveEventCallBack", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (op) {
+      //Get real time node object and sync it to node addition or removal
+      var isRemove = Object.keys(op)[1] === 'od';
+      var edge = op.oi || op.od; //Removal Operation
 
-  EditorActionsManager.prototype.addNewEdgeShareDB = function (edgeData) {
-    this.shareDBManager.addNewEdge(edgeData);
-  };
+      if (isRemove) {
+        var edgeID = op.p[1]; //Remove element from existing graph
 
-  ;
-
-  EditorActionsManager.prototype.addNewEdgetoCy = function (edgeData) {
-    var newEdge = {
-      group: "edges",
-      data: edgeData
-    };
-    this.undoRedoManager.do("add", newEdge);
-  };
-
-  ;
-
-  EditorActionsManager.prototype.shareDBEdgeAddRemoveEventCallBack = function (op) {
-    //Get real time node object and sync it to node addition or removal
-    var isRemove = Object.keys(op)[1] === 'od';
-    var edge = op.oi || op.od; //Removal Operation
-
-    if (isRemove) {
-      var edgeID = op.p[1]; //Remove element from existing graph
-
-      var cyEle = this.cy.$("#" + edgeID);
-      this.removeElementCy(cyEle);
-    } //Addition Operation
-    else {
-        this.addNewEdgeLocally(edge);
-      }
-  };
-
-  ;
-
-  EditorActionsManager.prototype.addNewElementsLocally = function (realTimeNodeArray, realTimeEdgeArray) {
-    var nodeList = [];
-    var nodeMap = {};
-
-    for (var i in realTimeNodeArray) {
-      var realTimeNode = realTimeNodeArray[i];
-      var nodeID = realTimeNode.id; //Added for backward compatibility when width was not defined
-
-      var nodeWidth = realTimeNode.w == undefined ? 150 : realTimeNode.w;
-      var nodeHeight = realTimeNode.h == undefined ? 52 : realTimeNode.h;
-      var compoundMinWidth = realTimeNode.minWidth == undefined ? 0 : realTimeNode.minWidth;
-      var compoundMinWidthBiasLeft = realTimeNode.minWidthBiasLeft == undefined ? 0 : realTimeNode.minWidthBiasLeft;
-      var compoundMinWidthBiasRight = realTimeNode.minWidthBiasRight == undefined ? 0 : realTimeNode.minWidthBiasRight;
-      var compoundMinHeight = realTimeNode.minHeight == undefined ? 0 : realTimeNode.minHeight;
-      var compoundMinHeightBiasTop = realTimeNode.minHeightBiasTop == undefined ? 0 : realTimeNode.minHeightBiasTop;
-      var compoundMinHeightBiasBottom = realTimeNode.minHeightBiasBottom == undefined ? 0 : realTimeNode.minHeightBiasBottom;
-      var nodeData = {
-        group: 'nodes',
-        // TODO: Amendment by Ziya
-        position: {},
-        data: {
-          id: nodeID,
-          type: realTimeNode.type,
-          name: realTimeNode.name,
-          parent: realTimeNode.parent,
-          w: nodeWidth,
-          h: nodeHeight
-        },
-        style: {
-          'width': nodeWidth,
-          'height': nodeHeight,
-          'min-width': compoundMinWidth,
-          'min-width-bias-left': compoundMinWidthBiasLeft,
-          'min-width-bias-right': compoundMinWidthBiasRight,
-          'min-height': compoundMinHeight,
-          'min-height-bias-top': compoundMinHeightBiasTop,
-          'min-height-bias-bottom': compoundMinHeightBiasBottom
+        var cyEle = this.cy.$("#" + edgeID);
+        this.removeElementCy(cyEle);
+      } //Addition Operation
+      else {
+          this.addNewEdgeLocally(edge);
         }
-      };
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "addNewElementsLocally", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (realTimeNodeArray, realTimeEdgeArray) {
+      var nodeList = [];
+      var nodeMap = {};
 
-      if (nodeData.data.parent === undefined) {
-        delete nodeData.data.parent;
-      }
+      for (var i in realTimeNodeArray) {
+        var realTimeNode = realTimeNodeArray[i];
+        var nodeID = realTimeNode.id; //Added for backward compatibility when width was not defined
 
-      if (realTimeNode.x && realTimeNode.y) {
-        nodeData.position = {
-          x: realTimeNode.x,
-          y: realTimeNode.y
+        var nodeWidth = realTimeNode.w == undefined ? 150 : realTimeNode.w;
+        var nodeHeight = realTimeNode.h == undefined ? 52 : realTimeNode.h;
+        var compoundMinWidth = realTimeNode.minWidth == undefined ? 0 : realTimeNode.minWidth;
+        var compoundMinWidthBiasLeft = realTimeNode.minWidthBiasLeft == undefined ? 0 : realTimeNode.minWidthBiasLeft;
+        var compoundMinWidthBiasRight = realTimeNode.minWidthBiasRight == undefined ? 0 : realTimeNode.minWidthBiasRight;
+        var compoundMinHeight = realTimeNode.minHeight == undefined ? 0 : realTimeNode.minHeight;
+        var compoundMinHeightBiasTop = realTimeNode.minHeightBiasTop == undefined ? 0 : realTimeNode.minHeightBiasTop;
+        var compoundMinHeightBiasBottom = realTimeNode.minHeightBiasBottom == undefined ? 0 : realTimeNode.minHeightBiasBottom;
+        var nodeData = {
+          group: 'nodes',
+          // TODO: Amendment by Ziya
+          position: {},
+          data: {
+            id: nodeID,
+            type: realTimeNode.type,
+            name: realTimeNode.name,
+            parent: realTimeNode.parent,
+            w: nodeWidth,
+            h: nodeHeight
+          },
+          style: {
+            'width': nodeWidth,
+            'height': nodeHeight,
+            'min-width': compoundMinWidth,
+            'min-width-bias-left': compoundMinWidthBiasLeft,
+            'min-width-bias-right': compoundMinWidthBiasRight,
+            'min-height': compoundMinHeight,
+            'min-height-bias-top': compoundMinHeightBiasTop,
+            'min-height-bias-bottom': compoundMinHeightBiasBottom
+          }
         };
+
+        if (nodeData.data.parent === undefined) {
+          delete nodeData.data.parent;
+        }
+
+        if (realTimeNode.x && realTimeNode.y) {
+          nodeData.position = {
+            x: realTimeNode.x,
+            y: realTimeNode.y
+          };
+        }
+
+        nodeMap[nodeID] = nodeData;
+        nodeList.push(nodeData);
       }
 
-      nodeMap[nodeID] = nodeData;
-      nodeList.push(nodeData);
+      var edgeList = [];
+
+      for (var i in realTimeEdgeArray) {
+        var edge = realTimeEdgeArray[i];
+        var edgeID = edge.id; //If source and and target is somehow lost in remote model do not create this edge
+
+        if (!(edge.source in nodeMap && edge.target in nodeMap)) continue;
+        var edgeData = {
+          group: 'edges',
+          data: {
+            id: edgeID,
+            type: edge.type,
+            source: edge.source,
+            target: edge.target,
+            pubmedIDs: edge.pubmedIDs,
+            name: edge.name,
+            bendPointPositions: edge.bendPoint
+          }
+        };
+        edgeList.push(edgeData);
+      }
+
+      this.cy.add(nodeList);
+      this.cy.add(edgeList);
+      this.edgeEditing.initBendPoints(this.cy.edges());
+      this.cy.nodes().updateCompoundBounds();
     }
-
-    var edgeList = [];
-
-    for (var i in realTimeEdgeArray) {
-      var edge = realTimeEdgeArray[i];
-      var edgeID = edge.id; //If source and and target is somehow lost in remote model do not create this edge
-
-      if (!(edge.source in nodeMap && edge.target in nodeMap)) continue;
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "addNewEdgeLocally", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edge) {
       var edgeData = {
-        group: 'edges',
-        data: {
-          id: edgeID,
-          type: edge.type,
-          source: edge.source,
-          target: edge.target,
-          pubmedIDs: edge.pubmedIDs,
-          name: edge.name,
-          bendPointPositions: edge.bendPoint
-        }
+        id: edge.id,
+        type: edge.type,
+        source: edge.source,
+        target: edge.target,
+        pubmedIDs: edge.pubmedIDs,
+        name: edge.name,
+        bendPointPositions: edge.bendPoint
       };
-      edgeList.push(edgeData);
+      this.addNewEdgetoCy(edgeData);
+      this.edgeEditing.initBendPoints(this.cy.getElementById(edge.id));
     }
-
-    this.cy.add(nodeList);
-    this.cy.add(edgeList);
-    this.edgeEditing.initBendPoints(this.cy.edges());
-    this.cy.nodes().updateCompoundBounds();
-  };
-
-  EditorActionsManager.prototype.addNewEdgeLocally = function (edge) {
-    var edgeData = {
-      id: edge.id,
-      type: edge.type,
-      source: edge.source,
-      target: edge.target,
-      pubmedIDs: edge.pubmedIDs,
-      name: edge.name,
-      bendPointPositions: edge.bendPoint
-    };
-    this.addNewEdgetoCy(edgeData);
-    this.edgeEditing.initBendPoints(this.cy.getElementById(edge.id));
-  };
-
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "reconnectEdge", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (sourceID, targetID, edgeData) {
+      if (this.isCollaborative) {
+        var edge = this.cy.getElementById(edgeData.id);
+        this.reconnectEdgeInShareDB(sourceID, targetID, edgeData);
+      } else {
+        var location = {
+          source: sourceID,
+          target: targetID
+        };
+        var edge = this.cy.getElementById(edgeData.id);
+        edge.move(location);
+      }
 
-  EditorActionsManager.prototype.reconnectEdge = function (sourceID, targetID, edgeData) {
-    if (this.isCollaborative) {
-      var edge = this.cy.getElementById(edgeData.id);
-      this.reconnectEdgeInShareDB(sourceID, targetID, edgeData);
-    } else {
-      var location = {
-        source: sourceID,
-        target: targetID
-      };
-      var edge = this.cy.getElementById(edgeData.id);
-      edge.move(location);
+      return this.cy.getElementById(edgeData.id);
     }
-
-    return this.cy.getElementById(edgeData.id);
-  };
-
+  });
   ;
-
-  EditorActionsManager.prototype.reconnectEdgeInShareDB = function (sourceID, targetID, edgeData) {
-    this.shareDBManager.reconnectEdge(sourceID, targetID, edgeData);
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "reconnectEdgeInShareDB", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (sourceID, targetID, edgeData) {
+      this.shareDBManager.reconnectEdge(sourceID, targetID, edgeData);
+    }
+  });
   ; //Removal functions
 
-  EditorActionsManager.prototype.removeElement = function (ele) {
-    if (this.isCollaborative) {
-      this.removeElementsFromShareDB(ele);
-    } else {
-      this.removeElementsCy(ele);
+  Object.defineProperty(EditorActionsManager.prototype, "removeElement", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele) {
+      if (this.isCollaborative) {
+        this.removeElementsFromShareDB(ele);
+      } else {
+        this.removeElementsCy(ele);
+      }
     }
-  };
-
+  });
   ;
-
-  EditorActionsManager.prototype.removeElementCy = function (ele) {
-    this.undoRedoManager.do("remove", ele);
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "removeElementCy", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele) {
+      this.undoRedoManager.do("remove", ele);
+    }
+  });
   ;
-
-  EditorActionsManager.prototype.removeElementsCy = function (ele) {
-    this.undoRedoManager.do("remove", ele);
-  };
-
+  Object.defineProperty(EditorActionsManager.prototype, "removeElementsCy", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele) {
+      this.undoRedoManager.do("remove", ele);
+    }
+  });
   ;
-
-  EditorActionsManager.prototype.removeElementsFromShareDB = function (eles) {
-    var self = this;
-    eles.forEach(function (ele) {
-      self.shareDBManager.removeElement(ele.id());
-    });
-  };
-
-  ;
-
-  EditorActionsManager.prototype.removeElementFromShareDB = function (ele) {
-    this.shareDBManager.removeElement(ele.id());
-  };
-
-  ;
-
-  EditorActionsManager.prototype.changeParents = function (eles, newParentId) {
-    if (this.isCollaborative) {
-      this.changeParentShareDB(eles, newParentId);
-    } else {
-      var parentData = newParentId ? newParentId : null; // Old manual way to change parents in local mode
-      //this.changeParentCy(eles, newParentId);
-      //Save element's previous width & height in dim array
-
-      var dim_1 = [];
-      var id_1 = [];
+  Object.defineProperty(EditorActionsManager.prototype, "removeElementsFromShareDB", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (eles) {
+      var self = this;
       eles.forEach(function (ele) {
-        var parameters = {
-          id: ele.id(),
-          width: ele.style("width"),
-          height: ele.style("height")
+        self.shareDBManager.removeElement(ele.id());
+      });
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "removeElementFromShareDB", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele) {
+      this.shareDBManager.removeElement(ele.id());
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "changeParents", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (eles, newParentId) {
+      if (this.isCollaborative) {
+        this.changeParentShareDB(eles, newParentId);
+      } else {
+        var parentData = newParentId ? newParentId : null; // Old manual way to change parents in local mode
+        //this.changeParentCy(eles, newParentId);
+        //Save element's previous width & height in dim array
+
+        var dim_1 = [];
+        var id_1 = [];
+        eles.forEach(function (ele) {
+          var parameters = {
+            id: ele.id(),
+            width: ele.style("width"),
+            height: ele.style("height")
+          };
+          dim_1.push(parameters);
+          id_1.push(ele.id());
+        });
+        console.log(parentData);
+        var parentElem = this.cy.getElementById(parentData);
+        var param = {
+          firstTime: true,
+          parentData: parentData,
+          nodes: eles,
+          posDiffX: !parentData ? 0 : parentElem.position('x') - eles[0].position('x'),
+          posDiffY: !parentData ? 0 : parentElem.position('y') - eles[0].position('y')
         };
-        dim_1.push(parameters);
-        id_1.push(ele.id());
-      });
-      console.log(parentData);
-      var parentElem = this.cy.getElementById(parentData);
-      var param = {
-        firstTime: true,
-        parentData: parentData,
-        nodes: eles,
-        posDiffX: !parentData ? 0 : parentElem.position('x') - eles[0].position('x'),
-        posDiffY: !parentData ? 0 : parentElem.position('y') - eles[0].position('y')
-      };
-      this.undoRedoManager.do('changeParent', param);
-      console.log(this.undoRedoManager.getUndoStack()); //The elements after change parent operation are different so we find them by using the saved ids
-      // and add them to the collection
+        this.undoRedoManager.do('changeParent', param);
+        console.log(this.undoRedoManager.getUndoStack()); //The elements after change parent operation are different so we find them by using the saved ids
+        // and add them to the collection
 
-      var collection = this.cy.collection();
+        var collection = this.cy.collection();
 
-      for (var i in id_1) {
-        var elementById = this.cy.getElementById(id_1[i]);
-        collection = collection.add(elementById);
-      }
-
-      console.log(collection); //Set their previous size to the new elements in the collection
-
-      collection.forEach(function (ele, i) {
-        if (ele.id() == dim_1[i].id) ele.style("width", dim_1[i].width);
-        ele.style("height", dim_1[i].height);
-      });
-    }
-  };
-
-  ;
-
-  EditorActionsManager.prototype.changeParentShareDB = function (eles, newParentId) {
-    var classRef = this;
-
-    function getTopLevelParents(eles) {
-      var tpMostNodes = classRef.cy.collection();
-      var parentMap = {}; //Get all parents
-
-      eles.forEach(function (node) {
-        if (node.isParent()) parentMap[node.id()] = node;
-      }); //Get all parents
-
-      eles.forEach(function (node) {
-        var nodeParent = node.parent();
-        if (parentMap[nodeParent.id()] === undefined) tpMostNodes = tpMostNodes.union(node);
-      });
-      return tpMostNodes;
-    }
-
-    var NodeObj =
-    /** @class */
-    function () {
-      function NodeObj(nodeObj) {
-        this.nodeRef = nodeObj;
-        this.children = [];
-      }
-
-      return NodeObj;
-    }();
-
-    var connectedEdges = eles.connectedEdges(); // Traverses given elements and constructs subgraph relations
-    // creates a nested structure into rootnodeObj
-
-    function traverseNodes(eles, rootNodeObj) {
-      eles.forEach(function (ele) {
-        connectedEdges = connectedEdges.union(ele.connectedEdges());
-
-        if (ele.isParent()) {
-          rootNodeObj.children.push(new NodeObj(ele));
-          var lengthOfChildrenArray = rootNodeObj.children.length;
-          traverseNodes(ele.children(), rootNodeObj.children[lengthOfChildrenArray - 1]);
-        } else {
-          rootNodeObj.children.push(new NodeObj(ele));
+        for (var i in id_1) {
+          var elementById = this.cy.getElementById(id_1[i]);
+          collection = collection.add(elementById);
         }
-      });
-    } //Create new collection
 
+        console.log(collection); //Set their previous size to the new elements in the collection
 
-    var topMostNodes = getTopLevelParents(eles);
-    var rootNodeR = new NodeObj(null);
-    traverseNodes(topMostNodes, rootNodeR);
-    this.shareDBManager.changeParent(rootNodeR, newParentId, connectedEdges);
-  };
-
-  ;
-
-  EditorActionsManager.prototype.changeParentCy = function (eles, newParentId) {
-    var lockedNodes = {};
-    var self = this;
-
-    function removeNodes(nodes) {
-      //Get removed edges first
-      var removedEles = nodes.connectedEdges().remove();
-      var children = nodes.children();
-
-      if (children != null && children.length > 0) {
-        children.forEach(function (childNode) {
-          lockedNodes[childNode.id()] = true;
+        collection.forEach(function (ele, i) {
+          if (ele.id() == dim_1[i].id) ele.style("width", dim_1[i].width);
+          ele.style("height", dim_1[i].height);
         });
-        removedEles = removedEles.union(removeNodes(children));
+      }
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "changeParentShareDB", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (eles, newParentId) {
+      var classRef = this;
+
+      function getTopLevelParents(eles) {
+        var tpMostNodes = classRef.cy.collection();
+        var parentMap = {}; //Get all parents
+
+        eles.forEach(function (node) {
+          if (node.isParent()) parentMap[node.id()] = node;
+        }); //Get all parents
+
+        eles.forEach(function (node) {
+          var nodeParent = node.parent();
+          if (parentMap[nodeParent.id()] === undefined) tpMostNodes = tpMostNodes.union(node);
+        });
+        return tpMostNodes;
       }
 
-      removedEles = removedEles.union(nodes.remove());
+      var NodeObj =
+      /** @class */
+      function () {
+        function NodeObj(nodeObj) {
+          Object.defineProperty(this, "nodeRef", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+          });
+          Object.defineProperty(this, "children", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+          });
+          this.nodeRef = nodeObj;
+          this.children = [];
+        }
+
+        return NodeObj;
+      }();
+
+      var connectedEdges = eles.connectedEdges(); // Traverses given elements and constructs subgraph relations
+      // creates a nested structure into rootnodeObj
+
+      function traverseNodes(eles, rootNodeObj) {
+        eles.forEach(function (ele) {
+          connectedEdges = connectedEdges.union(ele.connectedEdges());
+
+          if (ele.isParent()) {
+            rootNodeObj.children.push(new NodeObj(ele));
+            var lengthOfChildrenArray = rootNodeObj.children.length;
+            traverseNodes(ele.children(), rootNodeObj.children[lengthOfChildrenArray - 1]);
+          } else {
+            rootNodeObj.children.push(new NodeObj(ele));
+          }
+        });
+      } //Create new collection
+
+
+      var topMostNodes = getTopLevelParents(eles);
+      var rootNodeR = new NodeObj(null);
+      traverseNodes(topMostNodes, rootNodeR);
+      this.shareDBManager.changeParent(rootNodeR, newParentId, connectedEdges);
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "changeParentCy", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (eles, newParentId) {
+      var lockedNodes = {};
+      var self = this;
+
+      function removeNodes(nodes) {
+        //Get removed edges first
+        var removedEles = nodes.connectedEdges().remove();
+        var children = nodes.children();
+
+        if (children != null && children.length > 0) {
+          children.forEach(function (childNode) {
+            lockedNodes[childNode.id()] = true;
+          });
+          removedEles = removedEles.union(removeNodes(children));
+        }
+
+        removedEles = removedEles.union(nodes.remove());
+        self.cy.nodes().updateCompoundBounds();
+        return removedEles;
+      }
+
+      var removedEles = removeNodes(eles);
+      this.undoRedoManager.do("remove", removedEles);
+
+      for (var i = 0; i < removedEles.length; i++) {
+        var removedNode = removedEles[i]; //Just alter the parent id of corresponding nodes !
+
+        if (removedNode.isEdge() || lockedNodes[removedNode.id()]) {
+          continue;
+        }
+
+        removedNode._private.data.parent = newParentId;
+
+        if (removedNode._private.parent) {
+          delete removedNode._private.parent;
+        }
+      }
+
+      self.cy.add(removedEles);
+      this.undoRedoManager.do("add", removedEles);
       self.cy.nodes().updateCompoundBounds();
-      return removedEles;
     }
-
-    var removedEles = removeNodes(eles);
-    this.undoRedoManager.do("remove", removedEles);
-
-    for (var i = 0; i < removedEles.length; i++) {
-      var removedNode = removedEles[i]; //Just alter the parent id of corresponding nodes !
-
-      if (removedNode.isEdge() || lockedNodes[removedNode.id()]) {
-        continue;
-      }
-
-      removedNode._private.data.parent = newParentId;
-
-      if (removedNode._private.parent) {
-        delete removedNode._private.parent;
-      }
-    }
-
-    self.cy.add(removedEles);
-    this.undoRedoManager.do("add", removedEles);
-    self.cy.nodes().updateCompoundBounds();
-  };
-
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "moveElements", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (eles) {
+      var classRef = this; //Sync movement to real time api
 
-  EditorActionsManager.prototype.moveElements = function (eles) {
-    var classRef = this; //Sync movement to real time api
-
-    if (this.isCollaborative) {
-      eles.forEach(function (ele) {
-        classRef.shareDBManager.moveElement(ele);
-      });
-    }
-  };
-
-  ;
-
-  EditorActionsManager.prototype.resizeElements = function (ele) {
-    if (this.isCollaborative) {
-      if (!ele.isParent()) {
-        var previousWidth = ele.width();
-        var previousHeight = ele.height(); //Sync movement to real time api
-
-        this.shareDBManager.resizeElement(ele, previousWidth, previousHeight);
-      } else {
-        var minWidth = ele.style('min-width');
-        var minWidthBiasLeft = ele.style('min-width-bias-left');
-        var minWidthBiasRight = ele.style('min-width-bias-right');
-        var minHeight = ele.style('min-height');
-        var minHeightBiasTop = ele.style('min-height-bias-top');
-        var minHeightBiasBottom = ele.style('min-height-bias-bottom'); //Sync movement to real time api
-
-        this.shareDBManager.resizeCompound(ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom);
-      }
-    }
-  };
-
-  ;
-
-  EditorActionsManager.prototype.mergeGraph = function (nodes, edges) {
-    if (this.isCollaborative) {
-      //Collaborative usage
-      this.shareDBManager.mergeGraph(nodes, edges);
-    } else {
-      //Local usage file load
-      this.mergeGraphCy(nodes, edges);
-    }
-
-    this.fitGraph();
-  };
-
-  ;
-
-  EditorActionsManager.prototype.mergeGraphCy = function (nodes, edges) {
-    //Define arrays and maps
-    var nodesToBeAdded = [];
-    var edgesToBeAdded = [];
-    var nodeMap = {}; //Iterate over nodes and find nodes that does not exist in current graph by looking their name
-
-    for (var index in nodes) {
-      var ele = nodes[index];
-      nodeMap[ele.data.id] = ele;
-
-      if (this.cy.filter('node[name = "' + ele.data.name + '"]').length <= 0) {
-        delete ele.data.id; //TODO need to update parent ?
-
-        nodesToBeAdded.push(ele);
-      }
-    }
-
-    this.cy.add(nodesToBeAdded); //Iterate over all edges
-
-    for (var index in edges) {
-      //Get corresponding source and target node in merge file
-      var ele = edges[index];
-      var sourceNode = nodeMap[ele.data.source];
-      var targetNode = nodeMap[ele.data.target]; //Check if there are nodes with same name in current graph
-
-      var cySourceNode = this.cy.nodes('[name="' + sourceNode.data.name + '"]');
-      var targetNode = this.cy.nodes('[name="' + targetNode.data.name + '"]');
-
-      if (cySourceNode.length > 0) {
-        ele.data.source = cySourceNode.id();
-      }
-
-      if (targetNode.length > 0) {
-        ele.data.target = targetNode.id();
-      }
-
-      if (targetNode.length < 0 && cySourceNode.length < 0) {
-        continue;
-      }
-
-      var edgesBtw = this.cy.filter('edge[source = "' + cySourceNode.id() + '"][target = "' + targetNode.id() + '"]'); //We assume there could be one edge between source and target node with same type
-
-      var isFound = false;
-      edgesBtw.forEach(function (edge) {
-        if (edge.data().type == ele.data.type) {
-          isFound = true;
-          return false;
-        } //TODO: AMENDMENT by Ziya
-
-
-        return true;
-      });
-
-      if (!isFound) {
-        delete ele.data.id;
-        edgesToBeAdded.push(ele);
-      }
-    }
-
-    this.cy.add(edgesToBeAdded);
-  };
-
-  ;
-
-  EditorActionsManager.prototype.fitGraph = function () {
-    if (this.isCollaborative) {
-      this.cy.fit(this.FIT_CONSTANT);
-      var newState = {
-        zoomLevel: this.cy.zoom(),
-        panLevel: this.cy.pan()
-      };
-      this.updateGlobalOptions(newState);
-    } else {
-      this.cy.fit(this.FIT_CONSTANT);
-    }
-  };
-
-  EditorActionsManager.prototype.loadFile = function (nodes, edges) {
-    if (this.isCollaborative) {
-      //Real time load graph
-      console.log("Real time load graph");
-      this.loadfileShareDB(nodes, edges);
-    } else {
-      //Local usage file load
-      this.loadFileCy(nodes, edges);
-    }
-
-    this.cy.edgeEditing('get').initBendPoints(this.cy.edges());
-    this.fitGraph();
-  };
-
-  ;
-
-  EditorActionsManager.prototype.loadFileCy = function (nodes, edges) {
-    //Remove all elements
-    this.removeElementCy(this.cy.elements());
-    this.addNodesCy(nodes);
-    this.addEdgesCy(edges);
-  };
-
-  ;
-
-  EditorActionsManager.prototype.loadfileShareDB = function (nodes, edges) {
-    this.shareDBManager.loadGraph(nodes, edges);
-  };
-
-  ;
-
-  EditorActionsManager.prototype.removeAllElements = function () {
-    if (this.isCollaborative) {
-      this.shareDBManager.removeAllElements();
-    } else {
-      this.cy.remove(this.cy.elements());
-    }
-  };
-
-  ;
-
-  EditorActionsManager.prototype.updateHighlight = function (ele, isHighlighted) {
-    if (isHighlighted) this.undoRedoManager.do('highlightOthers', ele);else this.undoRedoManager.do('removeOtherHighlight', ele);
-  };
-
-  ;
-
-  EditorActionsManager.prototype.updateVisibility = function (ele, isHidden) {
-    if (isHidden) ele.hide();else ele.show();
-  };
-
-  ;
-
-  EditorActionsManager.prototype.updateElementCallback = function (op) {
-    var ele = op.oi;
-    var eleID = ele.id;
-    var cyEle = this.cy.$("#" + eleID);
-    this.changeNameCy(cyEle, ele.name);
-
-    if (cyEle.isNode()) {
-      //Width and height of simple nodes and compounds is changed differently
-      if (cyEle.isParent()) {
-        cyEle.style("min-width", ele.minWidth);
-        cyEle.style("min-width-bias-left", ele.minWidthBiasLeft);
-        cyEle.style("min-width-bias-right", ele.minWidthBiasRight);
-        cyEle.style("min-height", ele.minHeight);
-        cyEle.style("min-height-bias-top", ele.minHeightBiasTop);
-        cyEle.style("min-height-bias-bottom", ele.minHeightBiasBottom);
-      } else {
-        cyEle.data.w = ele.w;
-        cyEle.data.h = ele.h;
-        cyEle.style("width", ele.w);
-        cyEle.style("height", ele.h); //Position is changed only for simple nodes because the
-        //position of compounds is defined by simple nodes' position
-
-        cyEle.position({
-          x: ele.x,
-          y: ele.y
+      if (this.isCollaborative) {
+        eles.forEach(function (ele) {
+          classRef.shareDBManager.moveElement(ele);
         });
       }
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "resizeElements", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele) {
+      if (this.isCollaborative) {
+        if (!ele.isParent()) {
+          var previousWidth = ele.width();
+          var previousHeight = ele.height(); //Sync movement to real time api
 
-      this.updateVisibility(cyEle, ele.isHidden);
-      this.updateHighlight(cyEle, ele.isHighlighted);
+          this.shareDBManager.resizeElement(ele, previousWidth, previousHeight);
+        } else {
+          var minWidth = ele.style('min-width');
+          var minWidthBiasLeft = ele.style('min-width-bias-left');
+          var minWidthBiasRight = ele.style('min-width-bias-right');
+          var minHeight = ele.style('min-height');
+          var minHeightBiasTop = ele.style('min-height-bias-top');
+          var minHeightBiasBottom = ele.style('min-height-bias-bottom'); //Sync movement to real time api
 
-      if (ele.isInvalidGene) {
-        this.doHighlightInvalidGenes(cyEle);
-      } else {
-        this.undoHighlightInvalidGenes(cyEle);
-      } //Refresh grapples when the node being changed from another collaborator is selected in current window
-      // this.cy.nodeResize('get').refreshGrapples();
-
-    } else if (cyEle.isEdge()) {
-      var pubmedArray = ele.pubmedIDs;
-      cyEle.data('pubmedIDs', pubmedArray);
-      this.updateHighlight(cyEle, ele.isHighlighted);
-      var bendPoint = ele.bendPoint;
-      var numberOfBendPositions = cyEle.data('bendPointPositions').length; // Holds the number of bend positions in data before being updated
-      //If edge is reconnected
-
-      if (ele.source !== cyEle.source().id() || ele.target !== cyEle.target().id()) {
-        var location = {
-          source: ele.source,
-          target: ele.target
-        };
-        cyEle.move(location); //make sure that bend points are same
-
-        this.updateEdgeBendPoints(cyEle);
-      } else {
-        cyEle.data('bendPointPositions', bendPoint);
-        if (numberOfBendPositions !== undefined && numberOfBendPositions > 0) this.edgeEditing.deleteSelectedBendPoint(cyEle, 0);
-        this.edgeEditing.initBendPoints(cyEle);
+          this.shareDBManager.resizeCompound(ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom);
+        }
       }
     }
-  };
-
+  });
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "mergeGraph", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes, edges) {
+      if (this.isCollaborative) {
+        //Collaborative usage
+        this.shareDBManager.mergeGraph(nodes, edges);
+      } else {
+        //Local usage file load
+        this.mergeGraphCy(nodes, edges);
+      }
 
-  EditorActionsManager.prototype.getGenomicDataSVG = function (node) {
-    // @ts-ignore
-    return this.genomicDataOverlayManager.generateSVGForNode(node);
-  };
+      this.fitGraph();
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "mergeGraphCy", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes, edges) {
+      //Define arrays and maps
+      var nodesToBeAdded = [];
+      var edgesToBeAdded = [];
+      var nodeMap = {}; //Iterate over nodes and find nodes that does not exist in current graph by looking their name
 
-  EditorActionsManager.prototype.removeGenomicData = function () {
-    if (this.isCollaborative) {
-      this.shareDBManager.clearGenomicData();
-    } else {
-      // TODO wrap this in afunction in genomic data overlay manager
-      this.genomicDataOverlayManager.clearAllGenomicData();
-      this.genomicDataOverlayManager.hideGenomicData();
+      for (var index in nodes) {
+        var ele = nodes[index];
+        nodeMap[ele.data.id] = ele;
+
+        if (this.cy.filter('node[name = "' + ele.data.name + '"]').length <= 0) {
+          delete ele.data.id; //TODO need to update parent ?
+
+          nodesToBeAdded.push(ele);
+        }
+      }
+
+      this.cy.add(nodesToBeAdded); //Iterate over all edges
+
+      for (var index in edges) {
+        //Get corresponding source and target node in merge file
+        var ele = edges[index];
+        var sourceNode = nodeMap[ele.data.source];
+        var targetNode = nodeMap[ele.data.target]; //Check if there are nodes with same name in current graph
+
+        var cySourceNode = this.cy.nodes('[name="' + sourceNode.data.name + '"]');
+        var targetNode = this.cy.nodes('[name="' + targetNode.data.name + '"]');
+
+        if (cySourceNode.length > 0) {
+          ele.data.source = cySourceNode.id();
+        }
+
+        if (targetNode.length > 0) {
+          ele.data.target = targetNode.id();
+        }
+
+        if (targetNode.length < 0 && cySourceNode.length < 0) {
+          continue;
+        }
+
+        var edgesBtw = this.cy.filter('edge[source = "' + cySourceNode.id() + '"][target = "' + targetNode.id() + '"]'); //We assume there could be one edge between source and target node with same type
+
+        var isFound = false;
+        edgesBtw.forEach(function (edge) {
+          if (edge.data().type == ele.data.type) {
+            isFound = true;
+            return false;
+          } //TODO: AMENDMENT by Ziya
+
+
+          return true;
+        });
+
+        if (!isFound) {
+          delete ele.data.id;
+          edgesToBeAdded.push(ele);
+        }
+      }
+
+      this.cy.add(edgesToBeAdded);
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "fitGraph", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      if (this.isCollaborative) {
+        this.cy.fit(this.FIT_CONSTANT);
+        var newState = {
+          zoomLevel: this.cy.zoom(),
+          panLevel: this.cy.pan()
+        };
+        this.updateGlobalOptions(newState);
+      } else {
+        this.cy.fit(this.FIT_CONSTANT);
+      }
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "loadFile", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes, edges) {
+      if (this.isCollaborative) {
+        //Real time load graph
+        console.log("Real time load graph");
+        this.loadfileShareDB(nodes, edges);
+      } else {
+        //Local usage file load
+        this.loadFileCy(nodes, edges);
+      }
+
+      this.cy.edgeEditing('get').initBendPoints(this.cy.edges());
+      this.fitGraph();
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "loadFileCy", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes, edges) {
+      //Remove all elements
+      this.removeElementCy(this.cy.elements());
+      this.addNodesCy(nodes);
+      this.addEdgesCy(edges);
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "loadfileShareDB", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes, edges) {
+      this.shareDBManager.loadGraph(nodes, edges);
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "removeAllElements", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      if (this.isCollaborative) {
+        this.shareDBManager.removeAllElements();
+      } else {
+        this.cy.remove(this.cy.elements());
+      }
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "updateHighlight", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele, isHighlighted) {
+      if (isHighlighted) this.undoRedoManager.do('highlightOthers', ele);else this.undoRedoManager.do('removeOtherHighlight', ele);
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "updateVisibility", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele, isHidden) {
+      if (isHidden) ele.hide();else ele.show();
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "updateElementCallback", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (op) {
+      var ele = op.oi;
+      var eleID = ele.id;
+      var cyEle = this.cy.$("#" + eleID);
+      this.changeNameCy(cyEle, ele.name);
+
+      if (cyEle.isNode()) {
+        //Width and height of simple nodes and compounds is changed differently
+        if (cyEle.isParent()) {
+          cyEle.style("min-width", ele.minWidth);
+          cyEle.style("min-width-bias-left", ele.minWidthBiasLeft);
+          cyEle.style("min-width-bias-right", ele.minWidthBiasRight);
+          cyEle.style("min-height", ele.minHeight);
+          cyEle.style("min-height-bias-top", ele.minHeightBiasTop);
+          cyEle.style("min-height-bias-bottom", ele.minHeightBiasBottom);
+        } else {
+          cyEle.data.w = ele.w;
+          cyEle.data.h = ele.h;
+          cyEle.style("width", ele.w);
+          cyEle.style("height", ele.h); //Position is changed only for simple nodes because the
+          //position of compounds is defined by simple nodes' position
+
+          cyEle.position({
+            x: ele.x,
+            y: ele.y
+          });
+        }
+
+        this.updateVisibility(cyEle, ele.isHidden);
+        this.updateHighlight(cyEle, ele.isHighlighted);
+
+        if (ele.isInvalidGene) {
+          this.doHighlightInvalidGenes(cyEle);
+        } else {
+          this.undoHighlightInvalidGenes(cyEle);
+        } //Refresh grapples when the node being changed from another collaborator is selected in current window
+        // this.cy.nodeResize('get').refreshGrapples();
+
+      } else if (cyEle.isEdge()) {
+        var pubmedArray = ele.pubmedIDs;
+        cyEle.data('pubmedIDs', pubmedArray);
+        this.updateHighlight(cyEle, ele.isHighlighted);
+        var bendPoint = ele.bendPoint;
+        var numberOfBendPositions = cyEle.data('bendPointPositions').length; // Holds the number of bend positions in data before being updated
+        //If edge is reconnected
+
+        if (ele.source !== cyEle.source().id() || ele.target !== cyEle.target().id()) {
+          var location = {
+            source: ele.source,
+            target: ele.target
+          };
+          cyEle.move(location); //make sure that bend points are same
+
+          this.updateEdgeBendPoints(cyEle);
+        } else {
+          cyEle.data('bendPointPositions', bendPoint);
+          if (numberOfBendPositions !== undefined && numberOfBendPositions > 0) this.edgeEditing.deleteSelectedBendPoint(cyEle, 0);
+          this.edgeEditing.initBendPoints(cyEle);
+        }
+      }
+    }
+  });
+  ;
+  Object.defineProperty(EditorActionsManager.prototype, "getGenomicDataSVG", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (node) {
+      // @ts-ignore
+      return this.genomicDataOverlayManager.generateSVGForNode(node);
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "removeGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      if (this.isCollaborative) {
+        this.shareDBManager.clearGenomicData();
+      } else {
+        // TODO wrap this in afunction in genomic data overlay manager
+        this.genomicDataOverlayManager.clearAllGenomicData();
+        this.genomicDataOverlayManager.hideGenomicData();
+        this.genomicDataOverlayManager.notifyObservers();
+      }
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "addGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (genomicData) {
+      var groupID = this.getEmptyGroupID();
+      console.log("genomicData");
+      console.log(genomicData);
+
+      if (this.isCollaborative) {
+        var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataShareDB(genomicData);
+        this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
+        this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap), groupID);
+        this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
+      } else {
+        this.genomicDataOverlayManager.addGenomicDataLocally(genomicData, groupID);
+      }
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "adjustVisibilityShareDB", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (profileId, isEnabled) {
+      var targetProfileIndex = this.profiles.map(function (profile) {
+        return profile.profileId;
+      }).indexOf(profileId);
+      this.profiles[targetProfileIndex].enabled = isEnabled;
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "addToProfiles", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (profileId) {
+      // Check if this profile already exists
+      if (this.profiles.map(function (profile) {
+        return profile.profileId;
+      }).includes(profileId)) {
+        return;
+      }
+
+      this.profiles.push({
+        profileId: profileId,
+        enabled: true
+      });
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "addPortalGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (genomicData, groupID) {
+      if (this.isCollaborative) {
+        var parsedGenomicData = this.genomicDataOverlayManager.preparePortalGenomicDataShareDB(genomicData);
+        this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
+        this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap), groupID);
+        this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
+      } else {
+        this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
+      }
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "shareDBGenomicDataHandler", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (op) {
+      var isRemove = Object.keys(op)[1] === 'od';
+      var newData = op.oi;
+      var geneSymbol = op.p[1];
+
+      if (!isRemove) {
+        this.genomicDataOverlayManager.addGenomicDataWithGeneSymbol(geneSymbol, newData);
+      } // Removal
+      else {
+          this.genomicDataOverlayManager.removeGenomicDataWithGeneSymbol(geneSymbol);
+        }
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "shareDBGenomicDataGroupChangeHandler", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (op) {
+      var _this = this;
+
+      var isRemove = Object.keys(op)[1] === 'od';
+      var data = op.oi;
+      var key = op.p[1]; // Addition
+
+      if (!isRemove) {
+        this.genomicDataOverlayManager.addGenomicGroupData(key, data);
+        console.log("key");
+        console.log(key);
+        console.log(data);
+
+        if (data.length !== 1) {
+          console.log("Grouped genomic data expected to be of length 1");
+        }
+
+        data.forEach(function (profileId) {
+          _this.addToProfiles(profileId);
+        });
+      } // //Removal
+      // else
+      // {
+      //
+      // }
+
+
+      this.genomicDataOverlayManager.showGenomicData();
       this.genomicDataOverlayManager.notifyObservers();
     }
-  };
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "shareDBGenomicDataVisibilityHandler", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (op) {
+      var data = op.oi;
+      var key = op.p[1];
+      var isRemove = Object.keys(op)[1] === 'od'; // Addition
 
-  EditorActionsManager.prototype.addGenomicData = function (genomicData) {
-    var groupID = this.getEmptyGroupID();
-    console.log("genomicData");
-    console.log(genomicData);
-
-    if (this.isCollaborative) {
-      var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataShareDB(genomicData);
-      this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
-      this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap), groupID);
-      this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
-    } else {
-      this.genomicDataOverlayManager.addGenomicDataLocally(genomicData, groupID);
-    }
-  };
-
-  EditorActionsManager.prototype.adjustVisibilityShareDB = function (profileId, isEnabled) {
-    var targetProfileIndex = this.profiles.map(function (profile) {
-      return profile.profileId;
-    }).indexOf(profileId);
-    this.profiles[targetProfileIndex].enabled = isEnabled;
-  };
-
-  EditorActionsManager.prototype.addToProfiles = function (profileId) {
-    // Check if this profile already exists
-    if (this.profiles.map(function (profile) {
-      return profile.profileId;
-    }).includes(profileId)) {
-      return;
-    }
-
-    this.profiles.push({
-      profileId: profileId,
-      enabled: true
-    });
-  };
-
-  EditorActionsManager.prototype.addPortalGenomicData = function (genomicData, groupID) {
-    if (this.isCollaborative) {
-      var parsedGenomicData = this.genomicDataOverlayManager.preparePortalGenomicDataShareDB(genomicData);
-      this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
-      this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap), groupID);
-      this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
-    } else {
-      this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
-    }
-  };
-
-  EditorActionsManager.prototype.shareDBGenomicDataHandler = function (op) {
-    var isRemove = Object.keys(op)[1] === 'od';
-    var newData = op.oi;
-    var geneSymbol = op.p[1];
-
-    if (!isRemove) {
-      this.genomicDataOverlayManager.addGenomicDataWithGeneSymbol(geneSymbol, newData);
-    } // Removal
-    else {
-        this.genomicDataOverlayManager.removeGenomicDataWithGeneSymbol(geneSymbol);
-      }
-  };
-
-  EditorActionsManager.prototype.shareDBGenomicDataGroupChangeHandler = function (op) {
-    var _this = this;
-
-    var isRemove = Object.keys(op)[1] === 'od';
-    var data = op.oi;
-    var key = op.p[1]; // Addition
-
-    if (!isRemove) {
-      this.genomicDataOverlayManager.addGenomicGroupData(key, data);
-      console.log("key");
-      console.log(key);
-      console.log(data);
-
-      if (data.length !== 1) {
-        console.log("Grouped genomic data expected to be of length 1");
-      }
-
-      data.forEach(function (profileId) {
-        _this.addToProfiles(profileId);
-      });
-    } // //Removal
-    // else
-    // {
-    //
-    // }
-
-
-    this.genomicDataOverlayManager.showGenomicData();
-    this.genomicDataOverlayManager.notifyObservers();
-  };
-
-  EditorActionsManager.prototype.shareDBGenomicDataVisibilityHandler = function (op) {
-    var data = op.oi;
-    var key = op.p[1];
-    var isRemove = Object.keys(op)[1] === 'od'; // Addition
-
-    if (!isRemove) {
-      this.genomicDataOverlayManager.addGenomicVisData(key, data);
-      this.adjustVisibilityShareDB(key, data);
-    } // Removal
-    else {
-        console.log("Removal from vis handler");
-        this.genomicDataOverlayManager.removeGenomicVisData();
-        this.profiles.length = 0;
-      }
-
-    this.genomicDataOverlayManager.showGenomicData();
-    this.genomicDataOverlayManager.notifyObservers();
-  };
-
-  EditorActionsManager.prototype.resizeNodesToContent = function (nodes) {
-    if (this.isCollaborative) {
-      var visibleNumberOfData_1 = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
-      var labelWithData_1 = 148 + (visibleNumberOfData_1 - 3) * 36;
-      var rt_1 = this.shareDBManager;
-      nodes.forEach(function (ele) {
-        if (!ele.isParent()) {
-          var newWidth = 150;
-          var newHeight = 52;
-
-          if (ele.data('name') != "") {
-            var labelLength = ele.style('label').length * 10 + 6;
-            newWidth = labelLength;
-            newHeight = 24;
-          }
-
-          if (visibleNumberOfData_1 > 0) {
-            newHeight = 52;
-
-            if (visibleNumberOfData_1 < 4) {
-              if (150 > newWidth) newWidth = 150;
-            } else {
-              if (labelWithData_1 > newWidth) newWidth = labelWithData_1;
-            }
-          }
-
-          rt_1.setSizeOfElement(ele, newWidth, newHeight);
-        } else {
-          //Set the minWidth, minHeight and other properties of compound to 0
-          rt_1.resizeCompound(ele, 0, 0, 0, 0, 0, 0);
+      if (!isRemove) {
+        this.genomicDataOverlayManager.addGenomicVisData(key, data);
+        this.adjustVisibilityShareDB(key, data);
+      } // Removal
+      else {
+          console.log("Removal from vis handler");
+          this.genomicDataOverlayManager.removeGenomicVisData();
+          this.profiles.length = 0;
         }
-      });
-    } else {
-      var ur = this.cy.undoRedo();
-      var actions_1 = [];
-      var visibleNumberOfData_2 = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
-      var labelWithData_2 = 150 + (visibleNumberOfData_2 - 3) * 36;
-      nodes.forEach(function (ele) {
-        if (!ele.isParent()) {
-          var newWidth = 150;
-          var newHeight = 52;
 
-          if (ele.data('name') != "") {
-            var labelLength = ele.style('label').length * 6 + 24;
-            newWidth = labelLength;
-            newHeight = 24;
-          }
-
-          if (visibleNumberOfData_2 > 0) {
-            newHeight = 52;
-
-            if (visibleNumberOfData_2 < 4) {
-              if (150 > newWidth) newWidth = 150;
-            } else {
-              if (labelWithData_2 > newWidth) newWidth = labelWithData_2;
-            }
-          }
-
-          var args = {
-            ele: ele,
-            oldWidth: ele.width(),
-            newWidth: newWidth,
-            oldHeight: ele.height(),
-            newHeight: newHeight
-          };
-          actions_1.push({
-            name: "changeNodeSize",
-            param: args
-          });
-        } else {
-          var args = {
-            ele: ele,
-            oldMinWidth: ele.style("min-width"),
-            newMinWidth: 0,
-            oldMinWidthBiasLeft: ele.style("min-width-bias-left"),
-            newMinWidthBiasLeft: 0,
-            oldMinWidthBiasRight: ele.style("min-width-bias-right"),
-            newMinWidthBiasRight: 0,
-            oldMinHeight: ele.style("min-height"),
-            newMinHeight: 0,
-            oldMinHeightBiasTop: ele.style("min-height-bias-top"),
-            newMinHeightBiasTop: 0,
-            oldMinHeightBiasBottom: ele.style("min-height-bias-bottom"),
-            newMinHeightBiasBottom: 0
-          };
-          actions_1.push({
-            name: "changeCompoundSize",
-            param: args
-          });
-        }
-      });
-      ur.do("batch", actions_1);
+      this.genomicDataOverlayManager.showGenomicData();
+      this.genomicDataOverlayManager.notifyObservers();
     }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "resizeNodesToContent", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes) {
+      if (this.isCollaborative) {
+        var visibleNumberOfData_1 = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
+        var labelWithData_1 = 148 + (visibleNumberOfData_1 - 3) * 36;
+        var rt_1 = this.shareDBManager;
+        nodes.forEach(function (ele) {
+          if (!ele.isParent()) {
+            var newWidth = 150;
+            var newHeight = 52;
 
-    this.cy.nodeResize('get').refreshGrapples();
-  };
+            if (ele.data('name') != "") {
+              var labelLength = ele.style('label').length * 10 + 6;
+              newWidth = labelLength;
+              newHeight = 24;
+            }
 
+            if (visibleNumberOfData_1 > 0) {
+              newHeight = 52;
+
+              if (visibleNumberOfData_1 < 4) {
+                if (150 > newWidth) newWidth = 150;
+              } else {
+                if (labelWithData_1 > newWidth) newWidth = labelWithData_1;
+              }
+            }
+
+            rt_1.setSizeOfElement(ele, newWidth, newHeight);
+          } else {
+            //Set the minWidth, minHeight and other properties of compound to 0
+            rt_1.resizeCompound(ele, 0, 0, 0, 0, 0, 0);
+          }
+        });
+      } else {
+        var ur = this.cy.undoRedo();
+        var actions_1 = [];
+        var visibleNumberOfData_2 = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
+        var labelWithData_2 = 150 + (visibleNumberOfData_2 - 3) * 36;
+        nodes.forEach(function (ele) {
+          if (!ele.isParent()) {
+            var newWidth = 150;
+            var newHeight = 52;
+
+            if (ele.data('name') != "") {
+              var labelLength = ele.style('label').length * 6 + 24;
+              newWidth = labelLength;
+              newHeight = 24;
+            }
+
+            if (visibleNumberOfData_2 > 0) {
+              newHeight = 52;
+
+              if (visibleNumberOfData_2 < 4) {
+                if (150 > newWidth) newWidth = 150;
+              } else {
+                if (labelWithData_2 > newWidth) newWidth = labelWithData_2;
+              }
+            }
+
+            var args = {
+              ele: ele,
+              oldWidth: ele.width(),
+              newWidth: newWidth,
+              oldHeight: ele.height(),
+              newHeight: newHeight
+            };
+            actions_1.push({
+              name: "changeNodeSize",
+              param: args
+            });
+          } else {
+            var args = {
+              ele: ele,
+              oldMinWidth: ele.style("min-width"),
+              newMinWidth: 0,
+              oldMinWidthBiasLeft: ele.style("min-width-bias-left"),
+              newMinWidthBiasLeft: 0,
+              oldMinWidthBiasRight: ele.style("min-width-bias-right"),
+              newMinWidthBiasRight: 0,
+              oldMinHeight: ele.style("min-height"),
+              newMinHeight: 0,
+              oldMinHeightBiasTop: ele.style("min-height-bias-top"),
+              newMinHeightBiasTop: 0,
+              oldMinHeightBiasBottom: ele.style("min-height-bias-bottom"),
+              newMinHeightBiasBottom: 0
+            };
+            actions_1.push({
+              name: "changeCompoundSize",
+              param: args
+            });
+          }
+        });
+        ur.do("batch", actions_1);
+      }
+
+      this.cy.nodeResize('get').refreshGrapples();
+    }
+  });
   ;
-  EditorActionsManager.defaultLayoutProperties = {
-    name: 'cose-bilkent',
-    nodeRepulsion: 4500,
-    idealEdgeLength: 50,
-    edgeElasticity: 0.45,
-    nestingFactor: 0.1,
-    gravity: 0.25,
-    numIter: 2500,
-    tile: true,
-    animate: true,
-    randomize: false,
-    gravityRangeCompound: 1.5,
-    // Gravity force (constant) for compounds
-    gravityCompound: 1.0,
-    // Gravity range (constant)
-    gravityRange: 3.8,
-    // Amount of vertical space to put between degree zero nodes during tiling (can also be a function)
-    tilingPaddingVertical: 10,
-    // Amount of horizontal space to put between degree zero nodes during tiling (can also be a function)
-    tilingPaddingHorizontal: 10,
-    // Initial cooling factor for incremental layout
-    initialEnergyOnIncremental: 0.5,
-    animationDuration: 2000,
-    animationEasing: 'cubic-bezier(0.17,0.72,0.41,0.98)'
-  };
+  Object.defineProperty(EditorActionsManager, "defaultLayoutProperties", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: {
+      name: 'cose-bilkent',
+      nodeRepulsion: 4500,
+      idealEdgeLength: 50,
+      edgeElasticity: 0.45,
+      nestingFactor: 0.1,
+      gravity: 0.25,
+      numIter: 2500,
+      tile: true,
+      animate: true,
+      randomize: false,
+      gravityRangeCompound: 1.5,
+      // Gravity force (constant) for compounds
+      gravityCompound: 1.0,
+      // Gravity range (constant)
+      gravityRange: 3.8,
+      // Amount of vertical space to put between degree zero nodes during tiling (can also be a function)
+      tilingPaddingVertical: 10,
+      // Amount of horizontal space to put between degree zero nodes during tiling (can also be a function)
+      tilingPaddingHorizontal: 10,
+      // Initial cooling factor for incremental layout
+      initialEnergyOnIncremental: 0.5,
+      animationDuration: 2000,
+      animationEasing: 'cubic-bezier(0.17,0.72,0.41,0.98)'
+    }
+  });
 
   EditorActionsManager_decorate([external_mobx_["observable"]], EditorActionsManager.prototype, "profiles", void 0);
 
@@ -9435,6 +10242,24 @@ var DragDropNodeAddPlugin_DragDropNodeAddPlugin =
 /** @class */
 function () {
   function DragDropNodeAddPlugin(editor, cy, pathwayHandler) {
+    Object.defineProperty(this, "pathwayHandler", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "cy", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "editor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
     this.editor = editor;
     this.cy = cy;
     this.pathwayHandler = pathwayHandler;
@@ -9442,166 +10267,170 @@ function () {
   } //TODO JQUERY IS IGNORED
 
 
-  DragDropNodeAddPlugin.prototype.initNodeAdd = function () {
-    var nodeAddClass = this;
-    var defaults = {
-      height: 30,
-      width: 30,
-      padding: 5,
-      backgroundColorDiv: '#fbfbfb',
-      borderColorDiv: '#fff',
-      borderWidthDiv: '0px',
-      borderRadiusDiv: '5px',
-      icon: '',
-      nodeParams: function () {
-        // return element object to be passed to cy.add() for adding node
-        return {};
-      }
-    };
-    var self = this; // @ts-ignore
+  Object.defineProperty(DragDropNodeAddPlugin.prototype, "initNodeAdd", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var nodeAddClass = this;
+      var defaults = {
+        height: 30,
+        width: 30,
+        padding: 5,
+        backgroundColorDiv: '#fbfbfb',
+        borderColorDiv: '#fff',
+        borderWidthDiv: '0px',
+        borderRadiusDiv: '5px',
+        icon: '',
+        nodeParams: function () {
+          // return element object to be passed to cy.add() for adding node
+          return {};
+        }
+      };
+      var self = this; // @ts-ignore
 
-    external_jquery_default.a.fn.cytoscapeNodeadd = function (params) {
-      var options = external_jquery_default.a.extend(true, {}, defaults, params);
-      var fn = params;
-      var functions = {
-        destroy: function () {
-          var $this = external_jquery_default()(this);
-          $this.find(".ui-cytoscape-nodeadd").remove();
-        },
-        init: function () {
-          return external_jquery_default()(this).each(function () {
-            var components = options.components;
+      external_jquery_default.a.fn.cytoscapeNodeadd = function (params) {
+        var options = external_jquery_default.a.extend(true, {}, defaults, params);
+        var fn = params;
+        var functions = {
+          destroy: function () {
+            var $this = external_jquery_default()(this);
+            $this.find(".ui-cytoscape-nodeadd").remove();
+          },
+          init: function () {
+            return external_jquery_default()(this).each(function () {
+              var components = options.components;
 
-            for (var _i = 0, components_1 = components; _i < components_1.length; _i++) {
-              var component = components_1[_i];
-              var dragContainer = component.container; //var explanationText = component.explanationText;
+              for (var _i = 0, components_1 = components; _i < components_1.length; _i++) {
+                var component = components_1[_i];
+                var dragContainer = component.container; //var explanationText = component.explanationText;
 
-              var $nodeadd = external_jquery_default()('<div class="ui-cytoscape-nodeadd"></div>');
-              dragContainer.append($nodeadd);
-              var $nodeDragHandle = external_jquery_default()('<div class="ui-cytoscape-nodeadd-nodediv"> \
+                var $nodeadd = external_jquery_default()('<div class="ui-cytoscape-nodeadd"></div>');
+                dragContainer.append($nodeadd);
+                var $nodeDragHandle = external_jquery_default()('<div class="ui-cytoscape-nodeadd-nodediv"> \
                                                 <span id="ui-cytoscape-nodeadd-icon" class="draggable" nodeType="' + component.nodeType + '">\
                                                   <img src="' + component.icon + '"</img>\
                                                 </span>\
                                               </div>');
-              $nodeadd.append($nodeDragHandle);
-              $nodeDragHandle.bind("mousedown", function (e) {
-                e.stopPropagation(); // don't trigger dragging of nodeadd
+                $nodeadd.append($nodeDragHandle);
+                $nodeDragHandle.bind("mousedown", function (e) {
+                  e.stopPropagation(); // don't trigger dragging of nodeadd
 
-                e.preventDefault(); // don't cause text selection
-              }); //Setup UI
+                  e.preventDefault(); // don't cause text selection
+                }); //Setup UI
 
-              dragContainer.find(".ui-cytoscape-nodeadd-nodediv").css({
-                background: options.backgroundColorDiv,
-                border: options.borderWidthDiv + ' solid ' + options.borderColorDiv,
-                'border-radius': options.borderRadiusDiv
-              }); //Init Draggable
+                dragContainer.find(".ui-cytoscape-nodeadd-nodediv").css({
+                  background: options.backgroundColorDiv,
+                  border: options.borderWidthDiv + ' solid ' + options.borderColorDiv,
+                  'border-radius': options.borderRadiusDiv
+                }); //Init Draggable
 
-              dragContainer.find("#ui-cytoscape-nodeadd-icon").draggable({
-                helper: "clone",
-                cursor: "pointer"
-              });
-            } // @ts-ignore TODO: AMENDMENT ATTENTION
-
-
-            var $container = external_jquery_default()(this); //Init Droppable
-            // @ts-ignore TODO: Droppable is ignored
-
-            $container.droppable({
-              activeClass: "ui-state-highlight",
-              // accept: "#ui-cytoscape-nodeadd-icon",
-              drop: function (event, ui) {
-                $container.removeClass("ui-state-highlight");
-                var currentOffset = $container.offset();
-                var relX = event.pageX - currentOffset.left;
-                var relY = event.pageY - currentOffset.top;
-                var nodeType = external_jquery_default()(ui.helper).attr('nodeType').toUpperCase();
-                var cy = nodeAddClass.cy; //Hold a map for parents and candidate parent nodes for this addition
-
-                var nodeMap = {};
-                var parentMap = {}; //Loop through nodes for hit testing about drag position on canvas
-
-                cy.nodes().forEach(function (node) {
-                  var nodeBbox = node.renderedBoundingBox(); //Rectangle point test
-
-                  if (relX <= nodeBbox.x2 && relX >= nodeBbox.x1 && relY <= nodeBbox.y2 && relY >= nodeBbox.y1 && node.data().type != 'GENE') {
-                    //If node has a children put an entry to the parentMap
-                    if (node.children().length > 0) {
-                      parentMap[node.id()] = true;
-                    } //If parent of this node is already added to the node map remove it, since our candidate is in deeper level !
+                dragContainer.find("#ui-cytoscape-nodeadd-icon").draggable({
+                  helper: "clone",
+                  cursor: "pointer"
+                });
+              } // @ts-ignore TODO: AMENDMENT ATTENTION
 
 
-                    if (parentMap[node._private.data.parent]) {
-                      delete nodeMap[node._private.data.parent];
-                    } //Add an entry to node map
+              var $container = external_jquery_default()(this); //Init Droppable
+              // @ts-ignore TODO: Droppable is ignored
+
+              $container.droppable({
+                activeClass: "ui-state-highlight",
+                // accept: "#ui-cytoscape-nodeadd-icon",
+                drop: function (event, ui) {
+                  $container.removeClass("ui-state-highlight");
+                  var currentOffset = $container.offset();
+                  var relX = event.pageX - currentOffset.left;
+                  var relY = event.pageY - currentOffset.top;
+                  var nodeType = external_jquery_default()(ui.helper).attr('nodeType').toUpperCase();
+                  var cy = nodeAddClass.cy; //Hold a map for parents and candidate parent nodes for this addition
+
+                  var nodeMap = {};
+                  var parentMap = {}; //Loop through nodes for hit testing about drag position on canvas
+
+                  cy.nodes().forEach(function (node) {
+                    var nodeBbox = node.renderedBoundingBox(); //Rectangle point test
+
+                    if (relX <= nodeBbox.x2 && relX >= nodeBbox.x1 && relY <= nodeBbox.y2 && relY >= nodeBbox.y1 && node.data().type != 'GENE') {
+                      //If node has a children put an entry to the parentMap
+                      if (node.children().length > 0) {
+                        parentMap[node.id()] = true;
+                      } //If parent of this node is already added to the node map remove it, since our candidate is in deeper level !
 
 
-                    nodeMap[node.id()] = node;
-                  }
-                }); //Check if any parent found, if so set parent field
+                      if (parentMap[node._private.data.parent]) {
+                        delete nodeMap[node._private.data.parent];
+                      } //Add an entry to node map
 
-                var parent = nodeMap[Object.keys(nodeMap)[0]];
-                var nodeData = {
-                  w: "0",
-                  h: "100",
-                  parent: 0,
-                  type: nodeType,
-                  name: 'New ' + external_jquery_default()(ui.helper).attr('nodeType')
-                };
 
-                if (parent) {
-                  if (parent.data().type == "FAMILY" || parent.data().type == "COMPLEX") {
-                    if (nodeType != "COMPARTMENT" && nodeType != "PROCESS") {
+                      nodeMap[node.id()] = node;
+                    }
+                  }); //Check if any parent found, if so set parent field
+
+                  var parent = nodeMap[Object.keys(nodeMap)[0]];
+                  var nodeData = {
+                    w: "0",
+                    h: "100",
+                    parent: 0,
+                    type: nodeType,
+                    name: 'New ' + external_jquery_default()(ui.helper).attr('nodeType')
+                  };
+
+                  if (parent) {
+                    if (parent.data().type == "FAMILY" || parent.data().type == "COMPLEX") {
+                      if (nodeType != "COMPARTMENT" && nodeType != "PROCESS") {
+                        nodeData.parent = parent.id();
+                      }
+                    } else {
                       nodeData.parent = parent.id();
                     }
-                  } else {
-                    nodeData.parent = parent.id();
-                  }
-                } //TODO one place access to these
+                  } //TODO one place access to these
 
 
-                nodeData.w = "150";
-                nodeData.h = "52"; //Adjust position according to the zoom level and pan !
-                //To set rendered position !!!
-                //TODO refactor this !
+                  nodeData.w = "150";
+                  nodeData.h = "52"; //Adjust position according to the zoom level and pan !
+                  //To set rendered position !!!
+                  //TODO refactor this !
 
-                relX = relX / cy.zoom() + cy.extent().x1;
-                relY = relY / cy.zoom() + cy.extent().y1;
-                nodeAddClass.editor.addNode(nodeData, {
-                  x: relX,
-                  y: relY
-                });
-                self.pathwayHandler("Additional Pathway");
-              }
+                  relX = relX / cy.zoom() + cy.extent().x1;
+                  relY = relY / cy.zoom() + cy.extent().y1;
+                  nodeAddClass.editor.addNode(nodeData, {
+                    x: relX,
+                    y: relY
+                  });
+                  self.pathwayHandler("Additional Pathway");
+                }
+              });
             });
-          });
+          }
+        };
+
+        if (functions[fn]) {
+          return functions[fn].apply(this, Array.prototype.slice.call(arguments, 1));
+        } else if (typeof fn == 'object' || !fn) {
+          return functions.init.apply(this, arguments);
+        } else {
+          external_jquery_default.a.error("No such function `" + fn + "` for jquery.cytoscapenodeadd");
         }
-      };
 
-      if (functions[fn]) {
-        return functions[fn].apply(this, Array.prototype.slice.call(arguments, 1));
-      } else if (typeof fn == 'object' || !fn) {
-        return functions.init.apply(this, arguments);
-      } else {
-        external_jquery_default.a.error("No such function `" + fn + "` for jquery.cytoscapenodeadd");
+        return external_jquery_default()(this);
+      }; // @ts-ignore
+
+
+      external_jquery_default.a.fn.cynodeadd = external_jquery_default.a.fn.cytoscapeNodeadd;
+
+      try {
+        /* Adding as an extension to the core functionality of cytoscape.js*/
+        external_cytoscape_default()('core', 'nodeadd', function (options) {
+          // @ts-ignore
+          external_jquery_default()(this.container()).cytoscapeNodeadd(options);
+        });
+      } catch (err) {
+        console.log(err);
       }
-
-      return external_jquery_default()(this);
-    }; // @ts-ignore
-
-
-    external_jquery_default.a.fn.cynodeadd = external_jquery_default.a.fn.cytoscapeNodeadd;
-
-    try {
-      /* Adding as an extension to the core functionality of cytoscape.js*/
-      external_cytoscape_default()('core', 'nodeadd', function (options) {
-        // @ts-ignore
-        external_jquery_default()(this.container()).cytoscapeNodeadd(options);
-      });
-    } catch (err) {
-      console.log(err);
     }
-  };
-
+  });
   return DragDropNodeAddPlugin;
 }();
 
@@ -9613,6 +10442,42 @@ var ContextMenuManager_ContextMenuManager =
 /** @class */
 function () {
   function ContextMenuManager(cy, editor, isCBioPortal, handleOpen, undoRedoManager, isCollaborative) {
+    Object.defineProperty(this, "cy", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "editor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "isCBioPortal", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "handleOpen", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "undoRedoManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "isCollaborative", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
     this.cy = cy;
     this.editor = editor;
     this.isCBioPortal = isCBioPortal;
@@ -9622,216 +10487,224 @@ function () {
     this.init();
   }
 
-  ContextMenuManager.prototype.init = function () {
-    var _this = this;
+  Object.defineProperty(ContextMenuManager.prototype, "init", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-    var classRef = this;
-    var ctxMenus = this.cy.contextMenus();
-    var menuItems = [{
-      id: 'deleteSelected',
-      content: 'Delete Selected',
-      // Filters the elements to have this menu item on cxttap
-      // If the selector is not truthy no elements will have this menu item on cxttap
-      coreAsWell: true,
-      onClickFunction: function (event) {
-        var selectedEles = _this.cy.elements(':selected');
+      var classRef = this;
+      var ctxMenus = this.cy.contextMenus();
+      var menuItems = [{
+        id: 'deleteSelected',
+        content: 'Delete Selected',
+        // Filters the elements to have this menu item on cxttap
+        // If the selector is not truthy no elements will have this menu item on cxttap
+        coreAsWell: true,
+        onClickFunction: function (event) {
+          var selectedEles = _this.cy.elements(':selected');
 
-        classRef.editor.removeElement(selectedEles);
-      },
-      disabled: false,
-      hasTrailingDivider: true
-    }, {
-      id: 'hideSelected',
-      content: 'Hide Selected',
-      // Filters the elements to have this menu item on cxttap
-      // If the selector is not truthy no elements will have this menu item on cxttap
-      coreAsWell: true,
-      onClickFunction: function (event) {
-        classRef.editor.hideSelectedNodes();
-      },
-      disabled: false,
-      hasTrailingDivider: true
-    }, {
-      id: 'loadFromCBioPortal',
-      content: 'Load From cBioPortal...',
-      // Filters the elements to have this menu item on cxttap
-      // If the selector is not truthy no elements will have this menu item on cxttap
-      coreAsWell: true,
-      onClickFunction: function (event) {
-        _this.handleOpen(EModalType.STUDY);
-      },
-      disabled: false,
-      hasTrailingDivider: true
-    }, //Context menu items when clicking on nodes/compounds
-    {
-      id: 'remove',
-      content: 'Delete',
-      // Filters the elements to have this menu item on cxttap
-      // If the selector is not truthy no elements will have this menu item on cxttap
-      selector: 'node, edge',
-      onClickFunction: function (event) {
-        var ele = event.target; // The function to be executed on click
+          classRef.editor.removeElement(selectedEles);
+        },
+        disabled: false,
+        hasTrailingDivider: true
+      }, {
+        id: 'hideSelected',
+        content: 'Hide Selected',
+        // Filters the elements to have this menu item on cxttap
+        // If the selector is not truthy no elements will have this menu item on cxttap
+        coreAsWell: true,
+        onClickFunction: function (event) {
+          classRef.editor.hideSelectedNodes();
+        },
+        disabled: false,
+        hasTrailingDivider: true
+      }, {
+        id: 'loadFromCBioPortal',
+        content: 'Load From cBioPortal...',
+        // Filters the elements to have this menu item on cxttap
+        // If the selector is not truthy no elements will have this menu item on cxttap
+        coreAsWell: true,
+        onClickFunction: function (event) {
+          _this.handleOpen(EModalType.STUDY);
+        },
+        disabled: false,
+        hasTrailingDivider: true
+      }, //Context menu items when clicking on nodes/compounds
+      {
+        id: 'remove',
+        content: 'Delete',
+        // Filters the elements to have this menu item on cxttap
+        // If the selector is not truthy no elements will have this menu item on cxttap
+        selector: 'node, edge',
+        onClickFunction: function (event) {
+          var ele = event.target; // The function to be executed on click
 
-        var selectedElements = classRef.cy.nodes(':selected').union(ele);
-        classRef.editor.removeElement(selectedElements);
-      },
-      disabled: false,
-      hasTrailingDivider: true,
-      coreAsWell: false // Whether core instance have this item on cxttap
+          var selectedElements = classRef.cy.nodes(':selected').union(ele);
+          classRef.editor.removeElement(selectedElements);
+        },
+        disabled: false,
+        hasTrailingDivider: true,
+        coreAsWell: false // Whether core instance have this item on cxttap
 
-    }, {
-      id: 'addSelected',
-      content: 'Add Selected Into This',
-      // Filters the elements to have this menu item on cxttap
-      // If the selector is not truthy no elements will have this menu item on cxttap
-      selector: 'node',
-      onClickFunction: function (event) {
-        var ele = event.target;
-        var selectedNodes = classRef.cy.nodes(':selected');
-        var containerType = ele.data('type');
-        var validNodes = classRef.cy.collection(); //Do nothing if node is GENE
+      }, {
+        id: 'addSelected',
+        content: 'Add Selected Into This',
+        // Filters the elements to have this menu item on cxttap
+        // If the selector is not truthy no elements will have this menu item on cxttap
+        selector: 'node',
+        onClickFunction: function (event) {
+          var ele = event.target;
+          var selectedNodes = classRef.cy.nodes(':selected');
+          var containerType = ele.data('type');
+          var validNodes = classRef.cy.collection(); //Do nothing if node is GENE
 
-        if (ele._private.data['type'] === 'GENE' || selectedNodes.size() < 1) {
-          return;
-        } //Prevent actions like adding root node to children & addition to itself
-        else {
-            var notValid = false;
-            selectedNodes.forEach(function (tmpNode, i) {
-              if (ele.id() == tmpNode.id()) {
-                notValid = true;
-                return false;
-              }
-
-              if (tmpNode.isParent()) {
-                notValid = classRef.isChildren(tmpNode, ele);
-
-                if (notValid) {
+          if (ele._private.data['type'] === 'GENE' || selectedNodes.size() < 1) {
+            return;
+          } //Prevent actions like adding root node to children & addition to itself
+          else {
+              var notValid = false;
+              selectedNodes.forEach(function (tmpNode, i) {
+                if (ele.id() == tmpNode.id()) {
+                  notValid = true;
                   return false;
                 }
+
+                if (tmpNode.isParent()) {
+                  notValid = classRef.isChildren(tmpNode, ele);
+
+                  if (notValid) {
+                    return false;
+                  }
+                }
+
+                return true;
+              });
+
+              if (notValid) {
+                return;
               }
-
-              return true;
-            });
-
-            if (notValid) {
-              return;
             }
-          }
 
-        selectedNodes.forEach(function (tmpNode, i) {
-          if (containerType == "FAMILY" || containerType == "COMPLEX") {
-            if (tmpNode.data('type') != "COMPARTMENT" && tmpNode.data('type') != "PROCESS") {
+          selectedNodes.forEach(function (tmpNode, i) {
+            if (containerType == "FAMILY" || containerType == "COMPLEX") {
+              if (tmpNode.data('type') != "COMPARTMENT" && tmpNode.data('type') != "PROCESS") {
+                validNodes = validNodes.add(tmpNode);
+              }
+            } else {
               validNodes = validNodes.add(tmpNode);
             }
-          } else {
-            validNodes = validNodes.add(tmpNode);
-          }
-        });
-        var compId = ele.id();
-        classRef.editor.changeParents(validNodes, compId); //Unselecting nodes to remove them from selectedNodeStack
+          });
+          var compId = ele.id();
+          classRef.editor.changeParents(validNodes, compId); //Unselecting nodes to remove them from selectedNodeStack
 
-        selectedNodes.unselect();
-      },
-      disabled: false,
-      hasTrailingDivider: true,
-      coreAsWell: false // Whether core instance have this item on cxttap
+          selectedNodes.unselect();
+        },
+        disabled: false,
+        hasTrailingDivider: true,
+        coreAsWell: false // Whether core instance have this item on cxttap
 
-    }, {
-      id: 'removeSelected',
-      content: 'Remove Selected From Parent',
-      // Filters the elements to have this menu item on cxttap
-      // If the selector is not truthy no elements will have this menu item on cxttap
-      selector: 'node',
-      onClickFunction: function (event) {
-        var ele = event.target;
-        var selectedNodes = classRef.cy.nodes(':selected');
-        var notValid = false;
-        selectedNodes.forEach(function (tmpNode, i) {
-          if (tmpNode.isParent()) {
-            notValid = classRef.isChildren(tmpNode, ele);
+      }, {
+        id: 'removeSelected',
+        content: 'Remove Selected From Parent',
+        // Filters the elements to have this menu item on cxttap
+        // If the selector is not truthy no elements will have this menu item on cxttap
+        selector: 'node',
+        onClickFunction: function (event) {
+          var ele = event.target;
+          var selectedNodes = classRef.cy.nodes(':selected');
+          var notValid = false;
+          selectedNodes.forEach(function (tmpNode, i) {
+            if (tmpNode.isParent()) {
+              notValid = classRef.isChildren(tmpNode, ele);
 
-            if (notValid) {
-              return false;
+              if (notValid) {
+                return false;
+              }
             }
+
+            return true;
+          });
+
+          if (notValid) {
+            return;
           }
 
-          return true;
-        });
+          classRef.editor.changeParents(selectedNodes, null); //Unselecting nodes to remove them from selectedNodeStack
 
-        if (notValid) {
-          return;
-        }
+          selectedNodes.unselect();
+        },
+        disabled: false,
+        hasTrailingDivider: true,
+        coreAsWell: false // Whether core instance have this item on cxttap
 
-        classRef.editor.changeParents(selectedNodes, null); //Unselecting nodes to remove them from selectedNodeStack
+      }, {
+        id: 'performLayout',
+        content: 'Perform Layout',
+        // Filters the elements to have this menu item on cxttap
+        // If the selector is not truthy no elements will have this menu item on cxttap
+        coreAsWell: true,
+        onClickFunction: function (event) {
+          _this.editor.performLayout();
+        },
+        disabled: false,
+        hasTrailingDivider: true
+      }];
+      var nonCollabItems = [//Context menu items when clicking on blank space
+      {
+        id: 'undoAction',
+        content: 'Undo',
+        // Filters the elements to have this menu item on cxttap
+        // If the selector is not truthy no elements will have this menu item on cxttap
+        coreAsWell: true,
+        onClickFunction: function (event) {
+          _this.undoRedoManager.undo();
+        },
+        disabled: false,
+        hasTrailingDivider: true
+      }, {
+        id: 'redoAction',
+        content: 'Redo',
+        // Filters the elements to have this menu item on cxttap
+        // If the selector is not truthy no elements will have this menu item on cxttap
+        coreAsWell: true,
+        onClickFunction: function (event) {
+          _this.undoRedoManager.redo();
+        },
+        disabled: false,
+        hasTrailingDivider: true
+      }];
 
-        selectedNodes.unselect();
-      },
-      disabled: false,
-      hasTrailingDivider: true,
-      coreAsWell: false // Whether core instance have this item on cxttap
+      if (!this.isCollaborative) {
+        menuItems = menuItems.concat(nonCollabItems);
+      }
 
-    }, {
-      id: 'performLayout',
-      content: 'Perform Layout',
-      // Filters the elements to have this menu item on cxttap
-      // If the selector is not truthy no elements will have this menu item on cxttap
-      coreAsWell: true,
-      onClickFunction: function (event) {
-        _this.editor.performLayout();
-      },
-      disabled: false,
-      hasTrailingDivider: true
-    }];
-    var nonCollabItems = [//Context menu items when clicking on blank space
-    {
-      id: 'undoAction',
-      content: 'Undo',
-      // Filters the elements to have this menu item on cxttap
-      // If the selector is not truthy no elements will have this menu item on cxttap
-      coreAsWell: true,
-      onClickFunction: function (event) {
-        _this.undoRedoManager.undo();
-      },
-      disabled: false,
-      hasTrailingDivider: true
-    }, {
-      id: 'redoAction',
-      content: 'Redo',
-      // Filters the elements to have this menu item on cxttap
-      // If the selector is not truthy no elements will have this menu item on cxttap
-      coreAsWell: true,
-      onClickFunction: function (event) {
-        _this.undoRedoManager.redo();
-      },
-      disabled: false,
-      hasTrailingDivider: true
-    }];
-
-    if (!this.isCollaborative) {
-      menuItems = menuItems.concat(nonCollabItems);
+      ctxMenus.appendMenuItems(menuItems);
     }
-
-    ctxMenus.appendMenuItems(menuItems);
-  }; //TODO ??????
+  }); //TODO ??????
   //window.edgeAddingMode = false;
   //TODO better move this to another class
   //Utility function to check whether query node is children of given node
 
+  Object.defineProperty(ContextMenuManager.prototype, "isChildren", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (node, queryNode) {
+      var parent = queryNode.parent()[0];
 
-  ContextMenuManager.prototype.isChildren = function (node, queryNode) {
-    var parent = queryNode.parent()[0];
+      while (parent) {
+        if (parent.id() == node.id()) {
+          return true;
+        }
 
-    while (parent) {
-      if (parent.id() == node.id()) {
-        return true;
+        parent = parent.parent()[0];
       }
 
-      parent = parent.parent()[0];
+      return false;
     }
-
-    return false;
-  };
-
+  });
   return ContextMenuManager;
 }();
 
@@ -9843,193 +10716,221 @@ var QtipManager_QtipManager =
 /** @class */
 function () {
   function QtipManager(cy, editor) {
+    Object.defineProperty(this, "cy", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "editor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
     this.cy = cy;
     this.editor = editor;
   }
 
-  QtipManager.prototype.generateEdgeQtipContentHTML = function (edge) {
-    var self = this;
-    var textInput = external_jquery_default()('<div class="col-xs-6 inputCol"><input type="text" class="form-control" edgeid="' + edge.id() + '"value=""></div>');
-    var pubmedIDList = external_jquery_default()('<div class="pubmedIDList"></div>');
-    var pubmedURL = 'https://www.ncbi.nlm.nih.gov/pubmed/';
-    var pubmedData = edge.data('pubmedIDs');
-    console.log("edge.data('pubmedIDs')");
-    console.log(edge.data('pubmedIDs'));
-    var edgeLabelInput = external_jquery_default()('<div class="col-xs-6 inputCol"><input type="text" class="form-control" edgeid="' + edge.id() + '"value="' + edge.data('name') + '"></div>');
+  Object.defineProperty(QtipManager.prototype, "generateEdgeQtipContentHTML", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edge) {
+      var self = this;
+      var textInput = external_jquery_default()('<div class="col-xs-6 inputCol"><input type="text" class="form-control" edgeid="' + edge.id() + '"value=""></div>');
+      var pubmedIDList = external_jquery_default()('<div class="pubmedIDList"></div>');
+      var pubmedURL = 'https://www.ncbi.nlm.nih.gov/pubmed/';
+      var pubmedData = edge.data('pubmedIDs');
+      console.log("edge.data('pubmedIDs')");
+      console.log(edge.data('pubmedIDs'));
+      var edgeLabelInput = external_jquery_default()('<div class="col-xs-6 inputCol"><input type="text" class="form-control" edgeid="' + edge.id() + '"value="' + edge.data('name') + '"></div>');
 
-    function generatePubmedLinks(argData, isInitialDisplay) {
-      console.log(argData);
-      console.log(self.cy.edges());
+      function generatePubmedLinks(argData, isInitialDisplay) {
+        console.log(argData);
+        console.log(self.cy.edges());
 
-      for (var key in argData) {
-        if (!argData.hasOwnProperty(key)) {
-          continue;
-        }
-
-        var pubmedID = argData[key];
-        if (isNaN(pubmedID)) continue;
-        var pubmedIDRemoveButton = external_jquery_default()("<i edgeID='" + edge.id() + "' class='fa fa-times qtipRemovePmedID' aria-hidden='true'></i>");
-        pubmedIDRemoveButton.on('click', function (event) {
-          external_jquery_default()(event.target).parent().remove();
-          var edge = self.cy.$('#' + external_jquery_default()(event.target).attr('edgeId'));
-          var pubmedId = [external_jquery_default()(event.target).parent().find('a').text()];
-          self.editor.removePubmedID(edge, pubmedId);
-
-          if (external_jquery_default()('.pubmedIDList').children().length < 3) {
-            external_jquery_default()('.pubmedIDList').children().remove();
+        for (var key in argData) {
+          if (!argData.hasOwnProperty(key)) {
+            continue;
           }
-        });
-        var pubmedContent = external_jquery_default()("<div>\
+
+          var pubmedID = argData[key];
+          if (isNaN(pubmedID)) continue;
+          var pubmedIDRemoveButton = external_jquery_default()("<i edgeID='" + edge.id() + "' class='fa fa-times qtipRemovePmedID' aria-hidden='true'></i>");
+          pubmedIDRemoveButton.on('click', function (event) {
+            external_jquery_default()(event.target).parent().remove();
+            var edge = self.cy.$('#' + external_jquery_default()(event.target).attr('edgeId'));
+            var pubmedId = [external_jquery_default()(event.target).parent().find('a').text()];
+            self.editor.removePubmedID(edge, pubmedId);
+
+            if (external_jquery_default()('.pubmedIDList').children().length < 3) {
+              external_jquery_default()('.pubmedIDList').children().remove();
+            }
+          });
+          var pubmedContent = external_jquery_default()("<div>\
                               <label>\
                                 <a target='_blank' href=" + pubmedURL + pubmedID + ">" + +pubmedID + "</a>" + "</label>\
                               </div>");
-        pubmedContent.first().append(pubmedIDRemoveButton);
-        pubmedIDList.append(pubmedContent);
+          pubmedContent.first().append(pubmedIDRemoveButton);
+          pubmedIDList.append(pubmedContent);
+        }
       }
-    }
 
-    function generatePubmedLinksHeader() {
-      pubmedIDList.append(external_jquery_default()('<hr/>'));
-      pubmedIDList.append(external_jquery_default()('<label class="col-xs-12 pubmedIDLabel">Pubmed IDs</label>'));
-    }
+      function generatePubmedLinksHeader() {
+        pubmedIDList.append(external_jquery_default()('<hr/>'));
+        pubmedIDList.append(external_jquery_default()('<label class="col-xs-12 pubmedIDLabel">Pubmed IDs</label>'));
+      }
 
-    if (pubmedData.length > 0) {
-      generatePubmedLinksHeader();
-      generatePubmedLinks(pubmedData, true);
-    }
-
-    textInput.change(function () {
-      var edgeID = external_jquery_default()(this).find('input').attr('edgeid');
-      var val = external_jquery_default()(this).find('input').val();
-      var pumbedIDs = val.split(';');
-      external_jquery_default()(this).find('input').val("");
-
-      if (external_jquery_default()('.pubmedIDList').children().length === 0) {
+      if (pubmedData.length > 0) {
         generatePubmedLinksHeader();
+        generatePubmedLinks(pubmedData, true);
       }
 
-      self.editor.addPubmedIDs(edge, pumbedIDs);
-      generatePubmedLinks(pumbedIDs, false);
-    });
-    edgeLabelInput.change(function () {
-      var edgeID = external_jquery_default()(this).find('input').attr('edgeid');
-      var cyEdge = self.cy.$('#' + edgeID)[0];
-      var newName = external_jquery_default()(this).find('input').val();
-      external_jquery_default()(this).find('input').val(""); //TODO call associated Editor Actions Manager function
+      textInput.change(function () {
+        var edgeID = external_jquery_default()(this).find('input').attr('edgeid');
+        var val = external_jquery_default()(this).find('input').val();
+        var pumbedIDs = val.split(';');
+        external_jquery_default()(this).find('input').val("");
 
-      self.editor.changeName(cyEdge, newName);
-    });
-    var wrapper = external_jquery_default()('<div></div>');
-    var pubmedRow = external_jquery_default()('<div class="row">\
+        if (external_jquery_default()('.pubmedIDList').children().length === 0) {
+          generatePubmedLinksHeader();
+        }
+
+        self.editor.addPubmedIDs(edge, pumbedIDs);
+        generatePubmedLinks(pumbedIDs, false);
+      });
+      edgeLabelInput.change(function () {
+        var edgeID = external_jquery_default()(this).find('input').attr('edgeid');
+        var cyEdge = self.cy.$('#' + edgeID)[0];
+        var newName = external_jquery_default()(this).find('input').val();
+        external_jquery_default()(this).find('input').val(""); //TODO call associated Editor Actions Manager function
+
+        self.editor.changeName(cyEdge, newName);
+      });
+      var wrapper = external_jquery_default()('<div></div>');
+      var pubmedRow = external_jquery_default()('<div class="row">\
                  <div class="col-xs-6 qtipLabel">Add  PubmedID(s):</div>\
               </div>');
-    pubmedRow.append(textInput);
-    var labelRow = external_jquery_default()('<div class="row">\
+      pubmedRow.append(textInput);
+      var labelRow = external_jquery_default()('<div class="row">\
                <div class="col-xs-6 qtipLabel">Label:</div>\
             </div>');
-    labelRow.append(edgeLabelInput);
-    wrapper.append(labelRow);
-    wrapper.append('<hr/>');
-    pubmedRow.append(textInput);
-    wrapper.append(pubmedRow);
-    wrapper.append(pubmedIDList);
-    return wrapper;
-  };
-
-  QtipManager.prototype.generateNodeQtipContentHTML = function (ele) {
-    var self = this;
-    var nodeData = ele.data();
-    var textInput = external_jquery_default()('<div class="col-xs-8 inputCol"><input type="text" class="form-control" nodeid="' + ele.id() + '" value="' + nodeData.name + '"></div>');
-    textInput.change(function () {
-      var nodeID = external_jquery_default()(this).find('input').attr('nodeid');
-      var cyNode = self.cy.$('#' + nodeID)[0];
-      var newName = external_jquery_default()(this).find('input').val();
-      self.editor.changeName(cyNode, newName);
-    });
-    var wrapper = external_jquery_default()('<div></div>');
-    var row = external_jquery_default()('<div class="row">\
+      labelRow.append(edgeLabelInput);
+      wrapper.append(labelRow);
+      wrapper.append('<hr/>');
+      pubmedRow.append(textInput);
+      wrapper.append(pubmedRow);
+      wrapper.append(pubmedIDList);
+      return wrapper;
+    }
+  });
+  Object.defineProperty(QtipManager.prototype, "generateNodeQtipContentHTML", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele) {
+      var self = this;
+      var nodeData = ele.data();
+      var textInput = external_jquery_default()('<div class="col-xs-8 inputCol"><input type="text" class="form-control" nodeid="' + ele.id() + '" value="' + nodeData.name + '"></div>');
+      textInput.change(function () {
+        var nodeID = external_jquery_default()(this).find('input').attr('nodeid');
+        var cyNode = self.cy.$('#' + nodeID)[0];
+        var newName = external_jquery_default()(this).find('input').val();
+        self.editor.changeName(cyNode, newName);
+      });
+      var wrapper = external_jquery_default()('<div></div>');
+      var row = external_jquery_default()('<div class="row">\
                  <div class="col-xs-4 qtipLabel">Name:</div>\
               </div>');
-    row.append(textInput);
-    wrapper.append(row);
+      row.append(textInput);
+      wrapper.append(row);
 
-    if (ele.data().type === "GENE") {
-      var entrezGeneButton = external_jquery_default()('<div class="row centerText geneDetails"><button nodeid="' + ele.id() + '" type="button" class="btn btn-default">My Cancer Genome</button></div>');
-      entrezGeneButton.find('button').on('click', function (event) {
-        event.preventDefault();
-        var nodeID = external_jquery_default()(this).attr('nodeid');
+      if (ele.data().type === "GENE") {
+        var entrezGeneButton = external_jquery_default()('<div class="row centerText geneDetails"><button nodeid="' + ele.id() + '" type="button" class="btn btn-default">My Cancer Genome</button></div>');
+        entrezGeneButton.find('button').on('click', function (event) {
+          event.preventDefault();
+          var nodeID = external_jquery_default()(this).attr('nodeid');
 
-        var nodeSymbol = self.cy.$('#' + nodeID)[0]._private.data['name'];
+          var nodeSymbol = self.cy.$('#' + nodeID)[0]._private.data['name'];
 
-        var parent = external_jquery_default()(this).parent();
-        window.open('https://www.mycancergenome.org/content/gene/' + nodeSymbol);
-      });
-      wrapper.append(entrezGeneButton);
-    }
-
-    return wrapper;
-  };
-
-  QtipManager.prototype.addQtipToElements = function (eles) {
-    var self = this;
-    eles.forEach(function (ele, i) {
-      var qTipOpts = {};
-
-      if (ele.isNode()) {
-        qTipOpts = {
-          content: {
-            text: function () {
-              return self.generateNodeQtipContentHTML(this);
-            },
-            title: function () {
-              return ele.data().type.toUpperCase() + ' DETAILS';
-            }
-          },
-          position: {
-            my: 'top center',
-            at: 'bottom center'
-          },
-          style: {
-            classes: 'qtip-tipsy qtip-rounded',
-            width: 400
-          },
-          show: {
-            event: "showqtipevent"
-          }
-        };
-      } else if (ele.isEdge()) {
-        qTipOpts = {
-          content: {
-            text: function () {
-              return self.generateEdgeQtipContentHTML(this);
-            },
-            title: function () {
-              return 'INTERACTION DETAILS';
-            }
-          },
-          position: {
-            my: 'top center',
-            at: 'bottom center'
-          },
-          style: {
-            classes: 'qtip-tipsy qtip-rounded',
-            width: 400
-          },
-          show: {
-            event: "showqtipevent"
-          }
-        };
+          var parent = external_jquery_default()(this).parent();
+          window.open('https://www.mycancergenome.org/content/gene/' + nodeSymbol);
+        });
+        wrapper.append(entrezGeneButton);
       }
 
-      ele.qtip(qTipOpts);
-    });
-  }; //Utility Functions
+      return wrapper;
+    }
+  });
+  Object.defineProperty(QtipManager.prototype, "addQtipToElements", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (eles) {
+      var self = this;
+      eles.forEach(function (ele, i) {
+        var qTipOpts = {};
 
+        if (ele.isNode()) {
+          qTipOpts = {
+            content: {
+              text: function () {
+                return self.generateNodeQtipContentHTML(this);
+              },
+              title: function () {
+                return ele.data().type.toUpperCase() + ' DETAILS';
+              }
+            },
+            position: {
+              my: 'top center',
+              at: 'bottom center'
+            },
+            style: {
+              classes: 'qtip-tipsy qtip-rounded',
+              width: 400
+            },
+            show: {
+              event: "showqtipevent"
+            }
+          };
+        } else if (ele.isEdge()) {
+          qTipOpts = {
+            content: {
+              text: function () {
+                return self.generateEdgeQtipContentHTML(this);
+              },
+              title: function () {
+                return 'INTERACTION DETAILS';
+              }
+            },
+            position: {
+              my: 'top center',
+              at: 'bottom center'
+            },
+            style: {
+              classes: 'qtip-tipsy qtip-rounded',
+              width: 400
+            },
+            show: {
+              event: "showqtipevent"
+            }
+          };
+        }
 
-  QtipManager.prototype.capitalizeFirstLetter = function (string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
+        ele.qtip(qTipOpts);
+      });
+    }
+  }); //Utility Functions
 
+  Object.defineProperty(QtipManager.prototype, "capitalizeFirstLetter", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+  });
   return QtipManager;
 }();
 
@@ -10049,92 +10950,174 @@ var ShareDBManager_ShareDBManager =
 /** @class */
 function () {
   function ShareDBManager(postFileLoadCallback) {
-    this.NODEMAP_NAME = 'nodes';
-    this.EDGEMAP_NAME = 'edges';
-    this.LAYOUT_PROPS_NAME = 'layoutProperties';
-    this.GLOBAL_OPTS_NAME = 'globalOptions'; //For storing genomic data information per gene
+    Object.defineProperty(this, "NODEMAP_NAME", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'nodes'
+    });
+    Object.defineProperty(this, "EDGEMAP_NAME", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'edges'
+    });
+    Object.defineProperty(this, "LAYOUT_PROPS_NAME", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'layoutProperties'
+    });
+    Object.defineProperty(this, "GLOBAL_OPTS_NAME", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'globalOptions'
+    }); //For storing genomic data information per gene
 
-    this.GENOMIC_DATA_MAP_NAME = 'genomicDataMap'; //For storing visibility information of genomic data according to the cancer type
+    Object.defineProperty(this, "GENOMIC_DATA_MAP_NAME", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'genomicDataMap'
+    }); //For storing visibility information of genomic data according to the cancer type
 
-    this.VISIBLE_GENOMIC_DATA_MAP_NAME = 'visibleGenomicDataMapByType';
-    this.GENOMIC_DATA_GROUP_NAME = 'genomicDataGroupList';
-    this.GENOMIC_DATA_GROUP_COUNT = 'genomicDataGroupCount';
+    Object.defineProperty(this, "VISIBLE_GENOMIC_DATA_MAP_NAME", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'visibleGenomicDataMapByType'
+    });
+    Object.defineProperty(this, "GENOMIC_DATA_GROUP_NAME", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'genomicDataGroupList'
+    });
+    Object.defineProperty(this, "GENOMIC_DATA_GROUP_COUNT", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'genomicDataGroupCount'
+    });
+    Object.defineProperty(this, "graphUtilities", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "doc", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "postFileLoad", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "editor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "reconnectEdge", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: function (sourceID, targetID, edgeData) {
+        var edgeMap = this.doc.data[this.EDGEMAP_NAME];
+        var edge = edgeMap[edgeData.id];
+        var edgeID = edge.id;
+        edge.source = sourceID;
+        edge.target = targetID;
 
-    this.reconnectEdge = function (sourceID, targetID, edgeData) {
-      var edgeMap = this.doc.data[this.EDGEMAP_NAME];
-      var edge = edgeMap[edgeData.id];
-      var edgeID = edge.id;
-      edge.source = sourceID;
-      edge.target = targetID;
-
-      if (edgeMap.hasOwnProperty(edgeID)) {
-        this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, edge);
-      } else {
-        throw new Error('Element does not exist in Real Time');
+        if (edgeMap.hasOwnProperty(edgeID)) {
+          this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, edge);
+        } else {
+          throw new Error('Element does not exist in Real Time');
+        }
       }
-    }; //Doc data maps names and keys
-
+    }); //Doc data maps names and keys
 
     this.postFileLoad = postFileLoadCallback;
     this.graphUtilities = new utils_GraphUtilities();
   }
 
   ;
+  Object.defineProperty(ShareDBManager.prototype, "getDoc", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      return this.doc;
+    }
+  });
+  Object.defineProperty(ShareDBManager.prototype, "setEditor", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (editor) {
+      this.editor = editor;
+    }
+  }); //Applies any given sharDB opeation to shared document and notifies other clients
 
-  ShareDBManager.prototype.getDoc = function () {
-    return this.doc;
-  };
-
-  ShareDBManager.prototype.setEditor = function (editor) {
-    this.editor = editor;
-  }; //Applies any given sharDB opeation to shared document and notifies other clients
-
-
-  ShareDBManager.prototype.applyShareDBOperation = function (op) {
-    this.doc.submitOp(op, this.shareDBError);
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "applyShareDBOperation", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (op) {
+      this.doc.submitOp(op, this.shareDBError);
+    }
+  });
   ; //Clears genomic data in shared document and notifies other clients
 
-  ShareDBManager.prototype.clearShareDBGenomicData = function () {
-    var ops = [];
-    var genomicMap = this.doc.data[this.GENOMIC_DATA_MAP_NAME];
-    var visMap = this.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
-    var genomicDataGroupMap = this.doc.data[this.GENOMIC_DATA_GROUP_NAME];
-    var genomicDataGroupCount = this.doc.data[this.GENOMIC_DATA_GROUP_COUNT]; //Reset all genomic maps
+  Object.defineProperty(ShareDBManager.prototype, "clearShareDBGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var ops = [];
+      var genomicMap = this.doc.data[this.GENOMIC_DATA_MAP_NAME];
+      var visMap = this.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
+      var genomicDataGroupMap = this.doc.data[this.GENOMIC_DATA_GROUP_NAME];
+      var genomicDataGroupCount = this.doc.data[this.GENOMIC_DATA_GROUP_COUNT]; //Reset all genomic maps
 
-    for (var _i = 0, _a = Object.keys(genomicMap); _i < _a.length; _i++) {
-      var key = _a[_i];
+      for (var _i = 0, _a = Object.keys(genomicMap); _i < _a.length; _i++) {
+        var key = _a[_i];
+        ops.push({
+          p: [this.GENOMIC_DATA_GROUP_NAME, key],
+          od: genomicMap[key]
+        });
+      }
+
+      for (var _b = 0, _c = Object.keys(visMap); _b < _c.length; _b++) {
+        var key = _c[_b];
+        ops.push({
+          p: [this.VISIBLE_GENOMIC_DATA_MAP_NAME, key],
+          od: visMap[key]
+        });
+      }
+
+      for (var _d = 0, _e = Object.keys(genomicDataGroupMap); _d < _e.length; _d++) {
+        var key = _e[_d];
+        ops.push({
+          p: [this.GENOMIC_DATA_GROUP_NAME, key],
+          od: genomicDataGroupMap[key]
+        });
+      } //Reset genomic data group count to 0
+
+
       ops.push({
-        p: [this.GENOMIC_DATA_GROUP_NAME, key],
-        od: genomicMap[key]
+        p: [this.GENOMIC_DATA_GROUP_COUNT],
+        na: -genomicDataGroupCount
       });
+      this.doc.submitOp(ops, this.shareDBError);
     }
-
-    for (var _b = 0, _c = Object.keys(visMap); _b < _c.length; _b++) {
-      var key = _c[_b];
-      ops.push({
-        p: [this.VISIBLE_GENOMIC_DATA_MAP_NAME, key],
-        od: visMap[key]
-      });
-    }
-
-    for (var _d = 0, _e = Object.keys(genomicDataGroupMap); _d < _e.length; _d++) {
-      var key = _e[_d];
-      ops.push({
-        p: [this.GENOMIC_DATA_GROUP_NAME, key],
-        od: genomicDataGroupMap[key]
-      });
-    } //Reset genomic data group count to 0
-
-
-    ops.push({
-      p: [this.GENOMIC_DATA_GROUP_COUNT],
-      na: -genomicDataGroupCount
-    });
-    this.doc.submitOp(ops, this.shareDBError);
-  };
-
+  });
   ;
   /*
    * Updates shared document object
@@ -10144,14 +11127,18 @@ function () {
    *
    */
 
-  ShareDBManager.prototype.updateShareDBObject = function (mapName, objectKey, object) {
-    this.doc.submitOp([{
-      p: [mapName, objectKey],
-      od: this.doc.data[mapName][objectKey],
-      oi: object
-    }], this.shareDBError);
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "updateShareDBObject", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (mapName, objectKey, object) {
+      this.doc.submitOp([{
+        p: [mapName, objectKey],
+        od: this.doc.data[mapName][objectKey],
+        oi: object
+      }], this.shareDBError);
+    }
+  });
   ;
   /*
    * Inserts a new shared document object
@@ -10161,16 +11148,20 @@ function () {
    *
   */
 
-  ShareDBManager.prototype.insertShareDBObject = function (mapName, objectKey, object) {
-    this.doc.submitOp([{
-      p: [mapName, objectKey],
-      oi: object
-    }], this.shareDBError);
-    console.log("this.doc");
-    console.log(this.doc);
-    console.log(mapName, objectKey, object);
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "insertShareDBObject", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (mapName, objectKey, object) {
+      this.doc.submitOp([{
+        p: [mapName, objectKey],
+        oi: object
+      }], this.shareDBError);
+      console.log("this.doc");
+      console.log(this.doc);
+      console.log(mapName, objectKey, object);
+    }
+  });
   ;
   /*
    * Deletes a shared document object
@@ -10179,31 +11170,43 @@ function () {
    *
   */
 
-  ShareDBManager.prototype.deleteShareDBObject = function (mapName, objectKey) {
-    this.doc.submitOp([{
-      p: [mapName, objectKey],
-      od: this.doc.data[mapName][objectKey]
-    }], this.shareDBError);
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "deleteShareDBObject", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (mapName, objectKey) {
+      this.doc.submitOp([{
+        p: [mapName, objectKey],
+        od: this.doc.data[mapName][objectKey]
+      }], this.shareDBError);
+    }
+  });
   ; //Initializes layout properties of the shared document
 
-  ShareDBManager.prototype.initializeShareDBLayoutProperties = function () {
-    this.doc.submitOp([{
-      p: [this.LAYOUT_PROPS_NAME, 0],
-      li: [this.editor.layoutProperties]
-    }], this.shareDBError);
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "initializeShareDBLayoutProperties", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.doc.submitOp([{
+        p: [this.LAYOUT_PROPS_NAME, 0],
+        li: [this.editor.layoutProperties]
+      }], this.shareDBError);
+    }
+  });
   ; //Initializes global options of the shared document
 
-  ShareDBManager.prototype.initializeShareDBGlobalOptions = function () {
-    this.doc.submitOp([{
-      p: [this.GLOBAL_OPTS_NAME, 0],
-      li: [this.editor.getGlobalOptions()]
-    }], this.shareDBError);
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "initializeShareDBGlobalOptions", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.doc.submitOp([{
+        p: [this.GLOBAL_OPTS_NAME, 0],
+        li: [this.editor.getGlobalOptions()]
+      }], this.shareDBError);
+    }
+  });
   ;
   /*
    * Updates layout properties of the shared document and notifies other clients
@@ -10211,14 +11214,18 @@ function () {
    *
   */
 
-  ShareDBManager.prototype.updateShareDBLayoutProperties = function (object) {
-    this.doc.submitOp([{
-      p: [this.LAYOUT_PROPS_NAME, 0],
-      ld: this.doc.data[this.LAYOUT_PROPS_NAME][0],
-      li: object
-    }], this.shareDBError);
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "updateShareDBLayoutProperties", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (object) {
+      this.doc.submitOp([{
+        p: [this.LAYOUT_PROPS_NAME, 0],
+        ld: this.doc.data[this.LAYOUT_PROPS_NAME][0],
+        li: object
+      }], this.shareDBError);
+    }
+  });
   ;
   /*
    * Updates global options of the shared document and notifies other clients
@@ -10226,105 +11233,127 @@ function () {
    *
   */
 
-  ShareDBManager.prototype.updateShareDBGlobalOptions = function (object) {
-    this.doc.submitOp([{
-      p: [this.GLOBAL_OPTS_NAME, 0],
-      ld: this.doc.data[this.GLOBAL_OPTS_NAME][0],
-      li: object
-    }], this.shareDBError);
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "updateShareDBGlobalOptions", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (object) {
+      this.doc.submitOp([{
+        p: [this.GLOBAL_OPTS_NAME, 0],
+        ld: this.doc.data[this.GLOBAL_OPTS_NAME][0],
+        li: object
+      }], this.shareDBError);
+    }
+  });
   ; //Increments shared data group count
   //Use this function to increment and keep the group count synchronized
 
-  ShareDBManager.prototype.incrementShareDBGroupCount = function () {
-    this.doc.submitOp([{
-      p: [this.GENOMIC_DATA_GROUP_COUNT],
-      na: 1
-    }], this.shareDBError);
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "incrementShareDBGroupCount", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.doc.submitOp([{
+        p: [this.GENOMIC_DATA_GROUP_COUNT],
+        na: 1
+      }], this.shareDBError);
+    }
+  });
   ; //Checks whether given operation is a replace or add/delete operation
 
-  ShareDBManager.prototype.isShareDBReplaceEvent = function (op) {
-    return op.hasOwnProperty("oi") && op.hasOwnProperty("od") || op.hasOwnProperty("li") && op.hasOwnProperty("ld");
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "isShareDBReplaceEvent", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (op) {
+      return op.hasOwnProperty("oi") && op.hasOwnProperty("od") || op.hasOwnProperty("li") && op.hasOwnProperty("ld");
+    }
+  });
   ;
   /*
    * Gets the initial value of the shared document
    * without this function shared document values cannot be reached
   */
 
-  ShareDBManager.prototype.initializeSharedDBDoc = function () {
-    this.doc.subscribe();
-  };
-
-  ;
-
-  ShareDBManager.prototype.shareDBError = function (err) {
-    if (err) {
-      console.error(err);
+  Object.defineProperty(ShareDBManager.prototype, "initializeSharedDBDoc", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.doc.subscribe();
     }
-  };
-
+  });
   ;
-
-  ShareDBManager.prototype.initShareDB = function () {
-    var _this = this;
-
-    sharedb = __webpack_require__(54);
-    socket = new WebSocket('ws://' + window.location.host);
-    connection = new sharedb.Connection(socket);
-    var self = this;
-    var id = this.getParam('id');
-
-    var loadFileCallback = function () {
-      self.onFileLoaded();
-    }; //Creates new shared db document and initializes values
-
-
-    var createNewDocument = function () {
-      var new_id = self.getCustomObjId();
-      var data = {
-        nodes: {},
-        edges: {},
-        layoutProperties: [_this.editor.layoutProperties],
-        globalOptions: [_this.editor.getGlobalOptions()],
-        genomicDataMap: {},
-        visibleGenomicDataMapByType: {},
-        genomicDataGroupList: {},
-        genomicDataGroupCount: 0
-      };
-      window.history.pushState(null, null, '?id=' + new_id);
-      self.doc = connection.get('cy', new_id);
-      self.doc.create(data, loadFileCallback);
-    }; //Check if id exists in parameters
-    //If exists open the shared document
-
-
-    if (id) {
-      // Check any document exists with given id
-      this.doc = connection.get('cy', id);
-      this.doc.fetch(function (err) {
-        if (err) throw err;
-
-        if (self.doc.type === null) {
-          createNewDocument();
-          return;
-        }
-
-        self.doc.subscribe(loadFileCallback);
-      });
-    } else {
-      //Create new shared document
-      createNewDocument();
+  Object.defineProperty(ShareDBManager.prototype, "shareDBError", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (err) {
+      if (err) {
+        console.error(err);
+      }
     }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "initShareDB", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-    console.log("this.doc");
-    console.log(this.doc);
-  };
+      sharedb = __webpack_require__(54);
+      socket = new WebSocket('ws://' + window.location.host);
+      connection = new sharedb.Connection(socket);
+      var self = this;
+      var id = this.getParam('id');
 
+      var loadFileCallback = function () {
+        self.onFileLoaded();
+      }; //Creates new shared db document and initializes values
+
+
+      var createNewDocument = function () {
+        var new_id = self.getCustomObjId();
+        var data = {
+          nodes: {},
+          edges: {},
+          layoutProperties: [_this.editor.layoutProperties],
+          globalOptions: [_this.editor.getGlobalOptions()],
+          genomicDataMap: {},
+          visibleGenomicDataMapByType: {},
+          genomicDataGroupList: {},
+          genomicDataGroupCount: 0
+        };
+        window.history.pushState(null, null, '?id=' + new_id);
+        self.doc = connection.get('cy', new_id);
+        self.doc.create(data, loadFileCallback);
+      }; //Check if id exists in parameters
+      //If exists open the shared document
+
+
+      if (id) {
+        // Check any document exists with given id
+        this.doc = connection.get('cy', id);
+        this.doc.fetch(function (err) {
+          if (err) throw err;
+
+          if (self.doc.type === null) {
+            createNewDocument();
+            return;
+          }
+
+          self.doc.subscribe(loadFileCallback);
+        });
+      } else {
+        //Create new shared document
+        createNewDocument();
+      }
+
+      console.log("this.doc");
+      console.log(this.doc);
+    }
+  });
   ;
   /*
    * After a file has been initialized and loaded, we can access the
@@ -10332,277 +11361,293 @@ function () {
    *
   */
 
-  ShareDBManager.prototype.onFileLoaded = function () {
-    this.initializeSharedDBDoc();
-    this.syncInitialSharedDocData();
-    this.initSharedDocEventHandlers();
-    this.postFileLoad();
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "onFileLoaded", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.initializeSharedDBDoc();
+      this.syncInitialSharedDocData();
+      this.initSharedDocEventHandlers();
+      this.postFileLoad();
+    }
+  });
   ;
   /*
    * Synchronizes initial data in the shared document to
    * client's application.
    */
 
-  ShareDBManager.prototype.syncInitialSharedDocData = function () {
-    var _this = this;
+  Object.defineProperty(ShareDBManager.prototype, "syncInitialSharedDocData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-    var self = this;
-    var nodeMap = self.doc.data[this.NODEMAP_NAME];
-    var edgeMap = self.doc.data[this.EDGEMAP_NAME];
-    var shareDBLayoutProperties = self.doc.data[this.LAYOUT_PROPS_NAME][0];
-    var globalOptions = self.doc.data[this.GLOBAL_OPTS_NAME][0];
-    var genomicDataMap = self.doc.data[this.GENOMIC_DATA_MAP_NAME];
-    var visDataMap = self.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
-    var groupedGenomicDataMap = self.doc.data[this.GENOMIC_DATA_GROUP_NAME];
-    var groupedGenomicDataCount = self.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
-    var invalidGenes = [];
-    var highlightedGenes = [];
-    var invalidHighlightedGenes = [];
-    var hiddenGenes = [];
+      var self = this;
+      var nodeMap = self.doc.data[this.NODEMAP_NAME];
+      var edgeMap = self.doc.data[this.EDGEMAP_NAME];
+      var shareDBLayoutProperties = self.doc.data[this.LAYOUT_PROPS_NAME][0];
+      var globalOptions = self.doc.data[this.GLOBAL_OPTS_NAME][0];
+      var genomicDataMap = self.doc.data[this.GENOMIC_DATA_MAP_NAME];
+      var visDataMap = self.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
+      var groupedGenomicDataMap = self.doc.data[this.GENOMIC_DATA_GROUP_NAME];
+      var groupedGenomicDataCount = self.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
+      var invalidGenes = [];
+      var highlightedGenes = [];
+      var invalidHighlightedGenes = [];
+      var hiddenGenes = [];
 
-    for (var _i = 0, _a = Object.keys(nodeMap); _i < _a.length; _i++) {
-      var key = _a[_i];
-      var tmpNode = nodeMap[key];
-      var tmpNodeId = tmpNode.id;
+      for (var _i = 0, _a = Object.keys(nodeMap); _i < _a.length; _i++) {
+        var key = _a[_i];
+        var tmpNode = nodeMap[key];
+        var tmpNodeId = tmpNode.id;
 
-      if (tmpNode.isInvalidGene && tmpNode.isHighlighted) {
-        invalidHighlightedGenes.push(tmpNodeId);
-      } else if (tmpNode.isInvalidGene) {
-        invalidGenes.push(tmpNodeId);
-      } else if (tmpNode.isHighlighted) {
-        highlightedGenes.push(tmpNodeId);
+        if (tmpNode.isInvalidGene && tmpNode.isHighlighted) {
+          invalidHighlightedGenes.push(tmpNodeId);
+        } else if (tmpNode.isInvalidGene) {
+          invalidGenes.push(tmpNodeId);
+        } else if (tmpNode.isHighlighted) {
+          highlightedGenes.push(tmpNodeId);
+        }
+
+        if (tmpNode.isHidden) {
+          hiddenGenes.push(tmpNodeId);
+        }
       }
 
-      if (tmpNode.isHidden) {
-        hiddenGenes.push(tmpNodeId);
-      }
-    }
+      var highlightedEdges = [];
 
-    var highlightedEdges = [];
+      for (var _b = 0, _c = Object.keys(edgeMap); _b < _c.length; _b++) {
+        var key = _c[_b];
+        var tmpEdge = edgeMap[key];
+        var tmpEdgeId = tmpEdge.id;
 
-    for (var _b = 0, _c = Object.keys(edgeMap); _b < _c.length; _b++) {
-      var key = _c[_b];
-      var tmpEdge = edgeMap[key];
-      var tmpEdgeId = tmpEdge.id;
-
-      if (tmpEdge.isHighlighted) {
-        highlightedEdges.push(tmpEdgeId);
-      }
-    } //TODO Workaround for legacy pathways
-    // Workaround for backward compatibility of legacy pathways
-    // Addition of pubmed id field on server if legacy collaborative
-    // pathways does not have !
+        if (tmpEdge.isHighlighted) {
+          highlightedEdges.push(tmpEdgeId);
+        }
+      } //TODO Workaround for legacy pathways
+      // Workaround for backward compatibility of legacy pathways
+      // Addition of pubmed id field on server if legacy collaborative
+      // pathways does not have !
 
 
-    for (var _d = 0, _e = Object.keys(edgeMap); _d < _e.length; _d++) {
-      var key = _e[_d];
-      var tmpEdge = edgeMap[key];
+      for (var _d = 0, _e = Object.keys(edgeMap); _d < _e.length; _d++) {
+        var key = _e[_d];
+        var tmpEdge = edgeMap[key];
 
-      if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined || tmpEdge.bendPoint == undefined) {
-        var pubmedIDs = tmpEdge.pubmedIDs == undefined ? [] : tmpEdge.pubmedID;
-        var edgeLabel = tmpEdge.name == undefined ? "" : tmpEdge.name;
-        var bendPoint = tmpEdge.bendPoint == undefined ? [] : tmpEdge.bendPoint;
-        var param = {
-          type: tmpEdge.type,
-          source: tmpEdge.source,
-          id: self.getCustomObjId(),
-          target: tmpEdge.target,
-          pubmedID: pubmedIDs,
-          name: edgeLabel,
-          bendPoint: bendPoint
-        };
-        var newEdge = self.edgeInitializer(param);
-        var tmpEdgeID = tmpEdge.id;
-        var newEdgeID = newEdge.id;
-        var ops = [{
-          p: [self.EDGEMAP_NAME, tmpEdgeID],
-          od: tmpEdge
-        }, {
-          p: [self.EDGEMAP_NAME, newEdgeID],
-          oi: newEdge
-        }];
-        self.applyShareDBOperation(ops);
-      }
-    } //Add real time nodes to local graph
-
-
-    this.editor.addNewElementsLocally(nodeMap, edgeMap); //Adds different type of highlight to nodes and hides if their property is hidden
-
-    this.editor.highlightElementsInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes, highlightedEdges, hiddenGenes); //Update layout properties & global options!!
-
-    this.editor.updateLayoutPropertiesCallback({
-      li: shareDBLayoutProperties
-    });
-    this.editor.changeGlobalOptions({
-      li: globalOptions
-    }); //Sync already available genomic data !
-
-    if (!groupedGenomicDataMap) {
-      self.insertShareDBObject(self.GENOMIC_DATA_MAP_NAME, '0', []);
-
-      for (var _f = 0, _g = Object.keys(visDataMap); _f < _g.length; _f++) {
-        var key = _g[_f];
-
-        var currentMap = external_underscore_default.a.clone(groupedGenomicDataMap['0']); // currentMap.push(visibilityMapKeys[key]);
+        if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined || tmpEdge.bendPoint == undefined) {
+          var pubmedIDs = tmpEdge.pubmedIDs == undefined ? [] : tmpEdge.pubmedID;
+          var edgeLabel = tmpEdge.name == undefined ? "" : tmpEdge.name;
+          var bendPoint = tmpEdge.bendPoint == undefined ? [] : tmpEdge.bendPoint;
+          var param = {
+            type: tmpEdge.type,
+            source: tmpEdge.source,
+            id: self.getCustomObjId(),
+            target: tmpEdge.target,
+            pubmedID: pubmedIDs,
+            name: edgeLabel,
+            bendPoint: bendPoint
+          };
+          var newEdge = self.edgeInitializer(param);
+          var tmpEdgeID = tmpEdge.id;
+          var newEdgeID = newEdge.id;
+          var ops = [{
+            p: [self.EDGEMAP_NAME, tmpEdgeID],
+            od: tmpEdge
+          }, {
+            p: [self.EDGEMAP_NAME, newEdgeID],
+            oi: newEdge
+          }];
+          self.applyShareDBOperation(ops);
+        }
+      } //Add real time nodes to local graph
 
 
-        self.updateShareDBObject(self.GENOMIC_DATA_MAP_NAME, '0', currentMap);
-      }
-    }
+      this.editor.addNewElementsLocally(nodeMap, edgeMap); //Adds different type of highlight to nodes and hides if their property is hidden
 
-    if (!groupedGenomicDataCount) {
-      var count = self.doc.data[self.GENOMIC_DATA_GROUP_COUNT];
-      var op = [{
-        p: [self.GENOMIC_DATA_GROUP_COUNT],
-        na: -count
-      }];
-      self.applyShareDBOperation(op);
-      groupedGenomicDataCount = self.doc.data[self.GENOMIC_DATA_GROUP_COUNT];
-    }
+      this.editor.highlightElementsInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes, highlightedEdges, hiddenGenes); //Update layout properties & global options!!
 
-    for (var _h = 0, _j = Object.keys(genomicDataMap); _h < _j.length; _h++) {
-      var key_g = _j[_h];
-      this.editor.genomicDataOverlayManager.genomicDataMap[key_g] = genomicDataMap[key_g];
-    }
-
-    console.log("visDataMap");
-    console.log(visDataMap);
-
-    for (var _k = 0, _l = Object.keys(groupedGenomicDataMap); _k < _l.length; _k++) {
-      var key_g = _l[_k];
-      this.editor.genomicDataOverlayManager.groupedGenomicDataMap[key_g] = groupedGenomicDataMap[key_g];
-      var data = groupedGenomicDataMap[key_g];
-
-      if (data.length !== 1) {
-        console.log("Grouped genomic data expected to be of length 1 (from sync)");
-      }
-
-      data.forEach(function (profileId) {
-        _this.editor.addToProfiles(profileId);
+      this.editor.updateLayoutPropertiesCallback({
+        li: shareDBLayoutProperties
       });
+      this.editor.changeGlobalOptions({
+        li: globalOptions
+      }); //Sync already available genomic data !
+
+      if (!groupedGenomicDataMap) {
+        self.insertShareDBObject(self.GENOMIC_DATA_MAP_NAME, '0', []);
+
+        for (var _f = 0, _g = Object.keys(visDataMap); _f < _g.length; _f++) {
+          var key = _g[_f];
+
+          var currentMap = external_underscore_default.a.clone(groupedGenomicDataMap['0']); // currentMap.push(visibilityMapKeys[key]);
+
+
+          self.updateShareDBObject(self.GENOMIC_DATA_MAP_NAME, '0', currentMap);
+        }
+      }
+
+      if (!groupedGenomicDataCount) {
+        var count = self.doc.data[self.GENOMIC_DATA_GROUP_COUNT];
+        var op = [{
+          p: [self.GENOMIC_DATA_GROUP_COUNT],
+          na: -count
+        }];
+        self.applyShareDBOperation(op);
+        groupedGenomicDataCount = self.doc.data[self.GENOMIC_DATA_GROUP_COUNT];
+      }
+
+      for (var _h = 0, _j = Object.keys(genomicDataMap); _h < _j.length; _h++) {
+        var key_g = _j[_h];
+        this.editor.genomicDataOverlayManager.genomicDataMap[key_g] = genomicDataMap[key_g];
+      }
+
+      console.log("visDataMap");
+      console.log(visDataMap);
+
+      for (var _k = 0, _l = Object.keys(groupedGenomicDataMap); _k < _l.length; _k++) {
+        var key_g = _l[_k];
+        this.editor.genomicDataOverlayManager.groupedGenomicDataMap[key_g] = groupedGenomicDataMap[key_g];
+        var data = groupedGenomicDataMap[key_g];
+
+        if (data.length !== 1) {
+          console.log("Grouped genomic data expected to be of length 1 (from sync)");
+        }
+
+        data.forEach(function (profileId) {
+          _this.editor.addToProfiles(profileId);
+        });
+      }
+
+      for (var _m = 0, _o = Object.keys(visDataMap); _m < _o.length; _m++) {
+        var key_g = _o[_m];
+        this.editor.genomicDataOverlayManager.visibleGenomicDataMapByType[key_g] = visDataMap[key_g];
+        this.editor.adjustVisibilityShareDB(key_g, visDataMap[key_g]);
+      } //Does not seem necessary for not but just for sake of completeness
+
+
+      this.editor.genomicDataOverlayManager.groupedGenomicDataCount = groupedGenomicDataCount;
+      this.editor.genomicDataOverlayManager.showGenomicData();
+      this.editor.genomicDataOverlayManager.notifyObservers();
+      this.editor.cy.fit(50);
     }
-
-    for (var _m = 0, _o = Object.keys(visDataMap); _m < _o.length; _m++) {
-      var key_g = _o[_m];
-      this.editor.genomicDataOverlayManager.visibleGenomicDataMapByType[key_g] = visDataMap[key_g];
-      this.editor.adjustVisibilityShareDB(key_g, visDataMap[key_g]);
-    } //Does not seem necessary for not but just for sake of completeness
-
-
-    this.editor.genomicDataOverlayManager.groupedGenomicDataCount = groupedGenomicDataCount;
-    this.editor.genomicDataOverlayManager.showGenomicData();
-    this.editor.genomicDataOverlayManager.notifyObservers();
-    this.editor.cy.fit(50);
-  };
-
+  });
   ;
   /*
    * Initialize event listeners for any operation coming from shareDB
    *
    */
 
-  ShareDBManager.prototype.initSharedDocEventHandlers = function () {
-    var self = this; //Setup event handlers for maps
+  Object.defineProperty(ShareDBManager.prototype, "initSharedDocEventHandlers", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var self = this; //Setup event handlers for maps
 
-    var nodeAddRemoveHandler = function (op) {
-      self.editor.shareDBNodeAddRemoveEventCallBack(op);
-    };
+      var nodeAddRemoveHandler = function (op) {
+        self.editor.shareDBNodeAddRemoveEventCallBack(op);
+      };
 
-    var edgeAddRemoveHandler = function (op) {
-      self.editor.shareDBEdgeAddRemoveEventCallBack(op);
-    };
+      var edgeAddRemoveHandler = function (op) {
+        self.editor.shareDBEdgeAddRemoveEventCallBack(op);
+      };
 
-    var genomicDataAddRemoveHandler = function (op) {
-      self.editor.shareDBGenomicDataHandler(op);
-    };
+      var genomicDataAddRemoveHandler = function (op) {
+        self.editor.shareDBGenomicDataHandler(op);
+      };
 
-    var genomicDataVisibilityChangeHandler = function (op) {
-      self.editor.shareDBGenomicDataVisibilityHandler(op);
-      self.checkShareDBGenomicData();
-    };
+      var genomicDataVisibilityChangeHandler = function (op) {
+        self.editor.shareDBGenomicDataVisibilityHandler(op);
+        self.checkShareDBGenomicData();
+      };
 
-    var genomicDataGroupChangeHandler = function (op) {
-      self.editor.shareDBGenomicDataGroupChangeHandler(op);
-    };
+      var genomicDataGroupChangeHandler = function (op) {
+        self.editor.shareDBGenomicDataGroupChangeHandler(op);
+      };
 
-    var updateElementHandler = function (op) {
-      self.editor.updateElementCallback(op);
-    };
+      var updateElementHandler = function (op) {
+        self.editor.updateElementCallback(op);
+      };
 
-    var updateLayoutPropsHandler = function (op) {
-      self.editor.updateLayoutPropertiesCallback(op);
-    };
+      var updateLayoutPropsHandler = function (op) {
+        self.editor.updateLayoutPropertiesCallback(op);
+      };
 
-    var updateGlobalOptionsHandler = function (op) {
-      self.editor.changeGlobalOptions(op);
-    }; //Event listeners for maps
+      var updateGlobalOptionsHandler = function (op) {
+        self.editor.changeGlobalOptions(op);
+      }; //Event listeners for maps
 
 
-    this.doc.on('op', function (op, source) {
-      for (var i = 0; i < op.length; i++) {
-        var handleOp = op[i];
-        var path = handleOp.p[0];
-        var isReplaceEvent = self.isShareDBReplaceEvent(handleOp);
+      this.doc.on('op', function (op, source) {
+        for (var i = 0; i < op.length; i++) {
+          var handleOp = op[i];
+          var path = handleOp.p[0];
+          var isReplaceEvent = self.isShareDBReplaceEvent(handleOp);
 
-        if (!isReplaceEvent) {
-          if (path === self.NODEMAP_NAME) {
-            nodeAddRemoveHandler(handleOp);
-          } else if (path === self.EDGEMAP_NAME) {
-            edgeAddRemoveHandler(handleOp);
-          } else if (path === self.GENOMIC_DATA_MAP_NAME) {
-            genomicDataAddRemoveHandler(handleOp);
-          } else if (path === self.VISIBLE_GENOMIC_DATA_MAP_NAME) {
-            genomicDataVisibilityChangeHandler(handleOp);
-          } else if (path === self.GENOMIC_DATA_GROUP_NAME) {
-            genomicDataGroupChangeHandler(handleOp);
-          }
-        } else {
-          //Then it is update event
-          if (path === self.NODEMAP_NAME) {
-            updateElementHandler(handleOp);
-          } else if (path === self.EDGEMAP_NAME) {
-            updateElementHandler(handleOp);
-          } else if (path === self.LAYOUT_PROPS_NAME) {
-            updateLayoutPropsHandler(handleOp);
-          } else if (path === self.GLOBAL_OPTS_NAME) {
-            updateGlobalOptionsHandler(handleOp);
+          if (!isReplaceEvent) {
+            if (path === self.NODEMAP_NAME) {
+              nodeAddRemoveHandler(handleOp);
+            } else if (path === self.EDGEMAP_NAME) {
+              edgeAddRemoveHandler(handleOp);
+            } else if (path === self.GENOMIC_DATA_MAP_NAME) {
+              genomicDataAddRemoveHandler(handleOp);
+            } else if (path === self.VISIBLE_GENOMIC_DATA_MAP_NAME) {
+              genomicDataVisibilityChangeHandler(handleOp);
+            } else if (path === self.GENOMIC_DATA_GROUP_NAME) {
+              genomicDataGroupChangeHandler(handleOp);
+            }
+          } else {
+            //Then it is update event
+            if (path === self.NODEMAP_NAME) {
+              updateElementHandler(handleOp);
+            } else if (path === self.EDGEMAP_NAME) {
+              updateElementHandler(handleOp);
+            } else if (path === self.LAYOUT_PROPS_NAME) {
+              updateLayoutPropsHandler(handleOp);
+            } else if (path === self.GLOBAL_OPTS_NAME) {
+              updateGlobalOptionsHandler(handleOp);
+            }
           }
         }
-      }
-    });
-  };
-
+      });
+    }
+  });
   ;
   /*
    * Make sure that genomic cloud data is syncronized
    */
 
-  ShareDBManager.prototype.checkShareDBGenomicData = function () {
-    var self = this;
-    var genomicDataMap = self.doc.data[this.GENOMIC_DATA_MAP_NAME];
-    var visDataMap = self.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
-    var groupedGenomicDataMap = self.doc.data[this.GENOMIC_DATA_GROUP_NAME];
-    var groupedGenomicDataCount = self.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
+  Object.defineProperty(ShareDBManager.prototype, "checkShareDBGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var self = this;
+      var genomicDataMap = self.doc.data[this.GENOMIC_DATA_MAP_NAME];
+      var visDataMap = self.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
+      var groupedGenomicDataMap = self.doc.data[this.GENOMIC_DATA_GROUP_NAME];
+      var groupedGenomicDataCount = self.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
 
-    for (var key in genomicDataMap) {
-      this.editor.genomicDataOverlayManager.genomicDataMap[key] = genomicDataMap[key];
+      for (var key in genomicDataMap) {
+        this.editor.genomicDataOverlayManager.genomicDataMap[key] = genomicDataMap[key];
+      }
+
+      for (var key in visDataMap) {
+        this.editor.genomicDataOverlayManager.visibleGenomicDataMapByType[key] = visDataMap[key];
+      }
+
+      for (var key in groupedGenomicDataMap) {
+        this.editor.genomicDataOverlayManager.groupedGenomicDataMap[key] = groupedGenomicDataMap[key];
+      }
+
+      this.editor.genomicDataOverlayManager.groupedGenomicDataCount = groupedGenomicDataCount;
+      this.editor.genomicDataOverlayManager.showGenomicData();
+      this.editor.genomicDataOverlayManager.notifyObservers();
     }
-
-    for (var key in visDataMap) {
-      this.editor.genomicDataOverlayManager.visibleGenomicDataMapByType[key] = visDataMap[key];
-    }
-
-    for (var key in groupedGenomicDataMap) {
-      this.editor.genomicDataOverlayManager.groupedGenomicDataMap[key] = groupedGenomicDataMap[key];
-    }
-
-    this.editor.genomicDataOverlayManager.groupedGenomicDataCount = groupedGenomicDataCount;
-    this.editor.genomicDataOverlayManager.showGenomicData();
-    this.editor.genomicDataOverlayManager.notifyObservers();
-  };
-
+  });
   ;
   /*
    * Gets the first empty index from the shared document
@@ -10610,12 +11655,16 @@ function () {
    *
   */
 
-  ShareDBManager.prototype.getEmptyGroupID = function () {
-    var returnCount = this.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
-    this.incrementShareDBGroupCount();
-    return returnCount;
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "getEmptyGroupID", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var returnCount = this.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
+      this.incrementShareDBGroupCount();
+      return returnCount;
+    }
+  });
   ;
   /*
    * Gets the first empty index from the shared document
@@ -10624,584 +11673,579 @@ function () {
    *
   */
 
-  ShareDBManager.prototype.groupGenomicData = function (cancerNames, inGroupId) {
-    var genomicGroupMap = this.doc.data[this.GENOMIC_DATA_GROUP_NAME];
-    var genomicVisMap = this.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
-    var groupID = "" + inGroupId;
-    var currentGroup = [];
-    if (genomicGroupMap.hasOwnProperty(groupID)) currentGroup = external_underscore_default.a.clone(genomicGroupMap[groupID]);
+  Object.defineProperty(ShareDBManager.prototype, "groupGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (cancerNames, inGroupId) {
+      var genomicGroupMap = this.doc.data[this.GENOMIC_DATA_GROUP_NAME];
+      var genomicVisMap = this.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
+      var groupID = "" + inGroupId;
+      var currentGroup = [];
+      if (genomicGroupMap.hasOwnProperty(groupID)) currentGroup = external_underscore_default.a.clone(genomicGroupMap[groupID]);
 
-    for (var i in cancerNames) {
-      if (!genomicVisMap.hasOwnProperty(cancerNames[i])) currentGroup.push(cancerNames[i]);
-    } // If group id already exists change existing object
+      for (var i in cancerNames) {
+        if (!genomicVisMap.hasOwnProperty(cancerNames[i])) currentGroup.push(cancerNames[i]);
+      } // If group id already exists change existing object
 
 
-    if (genomicGroupMap.hasOwnProperty(groupID)) {
-      this.updateShareDBObject(this.GENOMIC_DATA_GROUP_NAME, groupID, currentGroup);
-    } else {
-      //Insert new group
-      this.insertShareDBObject(this.GENOMIC_DATA_GROUP_NAME, groupID, currentGroup);
+      if (genomicGroupMap.hasOwnProperty(groupID)) {
+        this.updateShareDBObject(this.GENOMIC_DATA_GROUP_NAME, groupID, currentGroup);
+      } else {
+        //Insert new group
+        this.insertShareDBObject(this.GENOMIC_DATA_GROUP_NAME, groupID, currentGroup);
+      }
     }
-  };
-
+  });
   ; //Clears genomic data on shared document
 
-  ShareDBManager.prototype.clearGenomicData = function () {
-    this.clearShareDBGenomicData();
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "clearGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.clearShareDBGenomicData();
+    }
+  });
   ;
+  Object.defineProperty(ShareDBManager.prototype, "addGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (geneData) {
+      var genomicMap = this.doc.data[this.GENOMIC_DATA_MAP_NAME]; //Iterate over all genmoic data which is mapped by geneSymbol to list of alteration values
+      //that are also mapped by cancer name and associated value
 
-  ShareDBManager.prototype.addGenomicData = function (geneData) {
-    var genomicMap = this.doc.data[this.GENOMIC_DATA_MAP_NAME]; //Iterate over all genmoic data which is mapped by geneSymbol to list of alteration values
-    //that are also mapped by cancer name and associated value
+      var ops = [];
 
-    var ops = [];
+      for (var geneSymbol in geneData) {
+        var genomicMapEntry = {};
+        if (genomicMap.hasOwnProperty(geneSymbol)) genomicMapEntry = external_underscore_default.a.clone(genomicMap[geneSymbol]);
 
-    for (var geneSymbol in geneData) {
-      var genomicMapEntry = {};
-      if (genomicMap.hasOwnProperty(geneSymbol)) genomicMapEntry = external_underscore_default.a.clone(genomicMap[geneSymbol]);
+        for (var cancerType in geneData[geneSymbol]) {
+          if (!(cancerType in genomicMapEntry)) genomicMapEntry[cancerType] = parseInt(geneData[geneSymbol][cancerType]).toFixed(2);
+        }
 
-      for (var cancerType in geneData[geneSymbol]) {
-        if (!(cancerType in genomicMapEntry)) genomicMapEntry[cancerType] = parseInt(geneData[geneSymbol][cancerType]).toFixed(2);
+        ops.push({
+          p: [this.GENOMIC_DATA_MAP_NAME, geneSymbol],
+          oi: genomicMapEntry
+        });
       }
 
-      ops.push({
-        p: [this.GENOMIC_DATA_MAP_NAME, geneSymbol],
-        oi: genomicMapEntry
-      });
+      this.applyShareDBOperation(ops);
     }
-
-    this.applyShareDBOperation(ops);
-  };
-
+  });
   ;
+  Object.defineProperty(ShareDBManager.prototype, "addGenomicVisibilityData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (visMap) {
+      var ops = [];
 
-  ShareDBManager.prototype.addGenomicVisibilityData = function (visMap) {
-    var ops = [];
-
-    for (var cancerStudy in visMap) {
-      ops.push({
-        p: [this.VISIBLE_GENOMIC_DATA_MAP_NAME, cancerStudy],
-        oi: visMap[cancerStudy]
-      });
-    }
-
-    this.applyShareDBOperation(ops);
-  };
-
-  ;
-
-  ShareDBManager.prototype.changeVisibility = function (nodesToHide, isHidden) {
-    var self = this;
-    var nodeMap = self.doc.data[this.NODEMAP_NAME];
-    nodesToHide.forEach(function (ele) {
-      var nodeID = ele.id();
-
-      if (nodeMap.hasOwnProperty(nodeID)) {
-        var realTimeNode = nodeMap[nodeID];
-        realTimeNode.isHidden = isHidden;
-        self.updateShareDBObject(self.NODEMAP_NAME, nodeID, realTimeNode);
+      for (var cancerStudy in visMap) {
+        ops.push({
+          p: [this.VISIBLE_GENOMIC_DATA_MAP_NAME, cancerStudy],
+          oi: visMap[cancerStudy]
+        });
       }
-    });
-  };
 
+      this.applyShareDBOperation(ops);
+    }
+  });
   ;
+  Object.defineProperty(ShareDBManager.prototype, "changeVisibility", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodesToHide, isHidden) {
+      var self = this;
+      var nodeMap = self.doc.data[this.NODEMAP_NAME];
+      nodesToHide.forEach(function (ele) {
+        var nodeID = ele.id();
 
-  ShareDBManager.prototype.changeHighlight = function (elementsToHighlight, isHighlighted) {
-    var self = this;
-    var nodeMap = self.doc.data[this.NODEMAP_NAME];
-    var edgeMap = self.doc.data[this.EDGEMAP_NAME];
-    elementsToHighlight.forEach(function (ele) {
+        if (nodeMap.hasOwnProperty(nodeID)) {
+          var realTimeNode = nodeMap[nodeID];
+          realTimeNode.isHidden = isHidden;
+          self.updateShareDBObject(self.NODEMAP_NAME, nodeID, realTimeNode);
+        }
+      });
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "changeHighlight", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (elementsToHighlight, isHighlighted) {
+      var self = this;
+      var nodeMap = self.doc.data[this.NODEMAP_NAME];
+      var edgeMap = self.doc.data[this.EDGEMAP_NAME];
+      elementsToHighlight.forEach(function (ele) {
+        var elementID = ele.id();
+
+        if (nodeMap.hasOwnProperty(elementID)) {
+          var realTimeNode = nodeMap[elementID];
+          realTimeNode.isHighlighted = isHighlighted;
+          self.updateShareDBObject(self.NODEMAP_NAME, elementID, realTimeNode);
+        }
+
+        if (edgeMap.hasOwnProperty(elementID)) {
+          var realTimeEdge = edgeMap[elementID];
+          realTimeEdge.isHighlighted = isHighlighted;
+          self.updateShareDBObject(self.EDGEMAP_NAME, elementID, realTimeEdge);
+        }
+      });
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "addNewNode", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodeData, posData) {
+      var realTimeGeneratedID = this.getCustomObjId();
+      var params = {
+        name: nodeData.name,
+        type: nodeData.type,
+        id: realTimeGeneratedID,
+        parent: nodeData.parent,
+        w: nodeData.w,
+        h: nodeData.h,
+        minWidth: nodeData.minWidth,
+        minWidthBiasLeft: nodeData.minWidthBiasLeft,
+        minWidthBiasRight: nodeData.minWidthBiasRight,
+        minHeight: nodeData.minHeight,
+        minHeightBiasTop: nodeData.minHeightBiasTop,
+        minHeightBiasBottom: nodeData.minHeightBiasBottom
+      }; //Ensures new node is compatible with the other nodes
+
+      var newNode = this.nodeInitializer(params);
+
+      if (posData) {
+        newNode.x = posData.x;
+        newNode.y = posData.y;
+      }
+
+      this.insertShareDBObject(this.NODEMAP_NAME, realTimeGeneratedID, newNode);
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "addNewEdge", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edgeData) {
+      var realTimeGeneratedID = this.getCustomObjId();
+      var params = {
+        type: edgeData.type,
+        id: realTimeGeneratedID,
+        source: edgeData.source,
+        target: edgeData.target,
+        pubmedIDs: edgeData.pubmedIDs,
+        name: edgeData.name,
+        bendPoint: edgeData.bendPoint
+      }; //Ensures new edge is compatible with the other edge
+
+      var newEdge = this.edgeInitializer(params);
+      this.insertShareDBObject(this.EDGEMAP_NAME, realTimeGeneratedID, newEdge);
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "removeElement", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (elementID) {
+      var edgeMap = this.doc.data[this.EDGEMAP_NAME];
+      var nodeMap = this.doc.data[this.NODEMAP_NAME];
+
+      if (nodeMap.hasOwnProperty(elementID)) {
+        this.deleteShareDBObject(this.NODEMAP_NAME, elementID);
+      } else if (edgeMap.hasOwnProperty(elementID)) {
+        this.deleteShareDBObject(this.EDGEMAP_NAME, elementID);
+      } else {
+        throw new Error('Element does not exist in Real Time');
+      }
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "moveElement", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele) {
+      var nodeMap = this.doc.data[this.NODEMAP_NAME];
       var elementID = ele.id();
-
-      if (nodeMap.hasOwnProperty(elementID)) {
-        var realTimeNode = nodeMap[elementID];
-        realTimeNode.isHighlighted = isHighlighted;
-        self.updateShareDBObject(self.NODEMAP_NAME, elementID, realTimeNode);
-      }
-
-      if (edgeMap.hasOwnProperty(elementID)) {
-        var realTimeEdge = edgeMap[elementID];
-        realTimeEdge.isHighlighted = isHighlighted;
-        self.updateShareDBObject(self.EDGEMAP_NAME, elementID, realTimeEdge);
-      }
-    });
-  };
-
-  ;
-
-  ShareDBManager.prototype.addNewNode = function (nodeData, posData) {
-    var realTimeGeneratedID = this.getCustomObjId();
-    var params = {
-      name: nodeData.name,
-      type: nodeData.type,
-      id: realTimeGeneratedID,
-      parent: nodeData.parent,
-      w: nodeData.w,
-      h: nodeData.h,
-      minWidth: nodeData.minWidth,
-      minWidthBiasLeft: nodeData.minWidthBiasLeft,
-      minWidthBiasRight: nodeData.minWidthBiasRight,
-      minHeight: nodeData.minHeight,
-      minHeightBiasTop: nodeData.minHeightBiasTop,
-      minHeightBiasBottom: nodeData.minHeightBiasBottom
-    }; //Ensures new node is compatible with the other nodes
-
-    var newNode = this.nodeInitializer(params);
-
-    if (posData) {
-      newNode.x = posData.x;
-      newNode.y = posData.y;
-    }
-
-    this.insertShareDBObject(this.NODEMAP_NAME, realTimeGeneratedID, newNode);
-  };
-
-  ;
-
-  ShareDBManager.prototype.addNewEdge = function (edgeData) {
-    var realTimeGeneratedID = this.getCustomObjId();
-    var params = {
-      type: edgeData.type,
-      id: realTimeGeneratedID,
-      source: edgeData.source,
-      target: edgeData.target,
-      pubmedIDs: edgeData.pubmedIDs,
-      name: edgeData.name,
-      bendPoint: edgeData.bendPoint
-    }; //Ensures new edge is compatible with the other edge
-
-    var newEdge = this.edgeInitializer(params);
-    this.insertShareDBObject(this.EDGEMAP_NAME, realTimeGeneratedID, newEdge);
-  };
-
-  ;
-
-  ShareDBManager.prototype.removeElement = function (elementID) {
-    var edgeMap = this.doc.data[this.EDGEMAP_NAME];
-    var nodeMap = this.doc.data[this.NODEMAP_NAME];
-
-    if (nodeMap.hasOwnProperty(elementID)) {
-      this.deleteShareDBObject(this.NODEMAP_NAME, elementID);
-    } else if (edgeMap.hasOwnProperty(elementID)) {
-      this.deleteShareDBObject(this.EDGEMAP_NAME, elementID);
-    } else {
-      throw new Error('Element does not exist in Real Time');
-    }
-  };
-
-  ;
-
-  ShareDBManager.prototype.moveElement = function (ele) {
-    var nodeMap = this.doc.data[this.NODEMAP_NAME];
-    var elementID = ele.id();
-    var newPos = ele.position();
-
-    if (nodeMap.hasOwnProperty(elementID)) {
-      var tmpNode = nodeMap[elementID];
-      tmpNode.x = newPos.x;
-      tmpNode.y = newPos.y;
-      this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
-    } else {
-      throw new Error('Element does not exist in nodes !!! ');
-    }
-  };
-
-  ; //This function is used for movements of all selected elements wrt alignment selected
-
-  ShareDBManager.prototype.changeElementsPositionByAlignment = function (coll) {
-    var self = this;
-    var nodeMap = self.doc.data[this.NODEMAP_NAME];
-    coll.forEach(function (ele) {
-      var elementID = ele.node.id();
+      var newPos = ele.position();
 
       if (nodeMap.hasOwnProperty(elementID)) {
         var tmpNode = nodeMap[elementID];
-        tmpNode.x = ele.nextPosition.x;
-        tmpNode.y = ele.nextPosition.y;
-        self.updateShareDBObject(self.NODEMAP_NAME, elementID, tmpNode);
-      } else {
-        throw new Error('Element does not exist in nodes !!! ');
-      }
-    });
-  };
-
-  ;
-
-  ShareDBManager.prototype.resizeElement = function (ele, previousWidth, previousHeight) {
-    var nodeMap = this.doc.data[this.NODEMAP_NAME];
-    var elementID = ele.id();
-    var newWidth = ele.width();
-    var newHeight = ele.height();
-    var currentX = ele.position('x');
-    var currentY = ele.position('y');
-
-    if (nodeMap.hasOwnProperty(elementID)) {
-      var tmpNode = nodeMap[elementID];
-      tmpNode.x = currentX + newWidth - previousWidth;
-      tmpNode.y = currentY + newHeight - previousHeight;
-      tmpNode.w = newWidth;
-      tmpNode.h = newHeight;
-      this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
-    } else {
-      throw new Error('Element does not exist in nodes !!! ');
-    }
-  };
-
-  ;
-
-  ShareDBManager.prototype.setSizeOfElement = function (ele, newWidth, newHeight) {
-    var nodeMap = this.doc.data[this.NODEMAP_NAME];
-    var elementID = ele.id();
-
-    if (nodeMap.hasOwnProperty(elementID)) {
-      var tmpNode = nodeMap[elementID];
-      tmpNode.w = newWidth;
-      tmpNode.h = newHeight;
-      this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
-    } else {
-      throw new Error('Element does not exist in nodes !!! ');
-    }
-  };
-
-  ;
-
-  ShareDBManager.prototype.resizeCompound = function (ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom) {
-    var nodeMap = this.doc.data[this.NODEMAP_NAME];
-    var elementID = ele.id();
-    var currentX = ele.position('x');
-    var currentY = ele.position('y');
-
-    if (nodeMap.hasOwnProperty(elementID)) {
-      var tmpNode = nodeMap[elementID];
-      tmpNode.x = currentX;
-      tmpNode.y = currentY;
-      tmpNode.minWidth = minWidth;
-      tmpNode.minWidthBiasLeft = minWidthBiasLeft;
-      tmpNode.minWidthBiasRight = minWidthBiasRight;
-      tmpNode.minHeight = minHeight;
-      tmpNode.minHeightBiasTop = minHeightBiasTop;
-      tmpNode.minHeightBiasBottom = minHeightBiasBottom;
-      this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
-    } else {
-      throw new Error('Element does not exist in nodes !!! ');
-    }
-  };
-
-  ;
-
-  ShareDBManager.prototype.changeNodePositionsShareDB = function (nodes) {
-    var self = this;
-    var nodeMap = self.doc.data[self.NODEMAP_NAME];
-    nodes.forEach(function (ele) {
-      var nodeID = ele.id();
-
-      if (nodeMap.hasOwnProperty(nodeID)) {
-        var realTimeNode = nodeMap[nodeID];
-        realTimeNode.x = ele.position('x');
-        realTimeNode.y = ele.position('y');
-        self.updateShareDBObject(self.NODEMAP_NAME, nodeID, realTimeNode);
-      } else {
-        throw new Error('Element does not exist in nodes !!! ');
-      }
-    });
-  };
-
-  ;
-
-  ShareDBManager.prototype.changeHighlightInvalidGenes = function (nodeIDs, isInvalid) {
-    var nodeMap = this.doc.data[this.NODEMAP_NAME]; //TODO check compound operation inside or outside of for ?
-
-    for (var i in nodeIDs) {
-      var nodeID = nodeIDs[i];
-
-      if (nodeMap.hasOwnProperty(nodeID)) {
-        var collaborativeNode = nodeMap[nodeID];
-        collaborativeNode.isInvalidGene = isInvalid;
-        this.updateShareDBObject(this.NODEMAP_NAME, nodeID, collaborativeNode);
-      }
-    }
-  };
-
-  ;
-
-  ShareDBManager.prototype.addPubmedIDs = function (edgeID, pubmedIDs) {
-    var edgeMap = this.doc.data[this.EDGEMAP_NAME];
-
-    if (edgeMap.hasOwnProperty(edgeID)) {
-      var tmpEdge = edgeMap[edgeID];
-      var nonDuplicateArray = [];
-
-      for (var i = 0; i < pubmedIDs.length; i++) {
-        if (tmpEdge.pubmedIDs.indexOf(pubmedIDs[i]) < 0) {
-          nonDuplicateArray.push(pubmedIDs[i]);
-        }
-      }
-
-      tmpEdge.pubmedIDs = tmpEdge.pubmedIDs.concat(nonDuplicateArray);
-      this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
-    } else {
-      throw new Error('Edge does not exist in real time !!! ');
-    }
-  };
-
-  ;
-
-  ShareDBManager.prototype.removePubmedID = function (edgeID, pubmedIDs) {
-    var edgeMap = this.doc.data[this.EDGEMAP_NAME];
-
-    if (edgeMap.hasOwnProperty(edgeID)) {
-      var tmpEdge = edgeMap[edgeID];
-      var removedIndices = [];
-
-      for (var i = 0; i < pubmedIDs.length; i++) {
-        var tmpID = pubmedIDs[i];
-        var index = tmpEdge.pubmedIDs.indexOf(tmpID);
-
-        if (index >= 0) {
-          removedIndices.push(index);
-        }
-      }
-
-      for (var i = 0; i < removedIndices.length; i++) {
-        tmpEdge.pubmedIDs.remove(removedIndices[i]);
-      }
-
-      this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
-    } else {
-      throw new Error('Edge does not exist in real time !!! ');
-    }
-  };
-
-  ;
-
-  ShareDBManager.prototype.updateEdgeBendPoints = function (edgeID, bendPointsArray) {
-    var edgeMap = this.doc.data[this.EDGEMAP_NAME];
-
-    if (edgeMap.hasOwnProperty(edgeID)) {
-      var tmpEdge = edgeMap[edgeID];
-      tmpEdge.bendPoint = bendPointsArray;
-      this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
-    } else {
-      throw new Error('Edge does not exist in real time !!! ');
-    }
-  };
-
-  ;
-
-  ShareDBManager.prototype.changeName = function (ele, newName) {
-    var nodeMap = this.doc.data[this.NODEMAP_NAME];
-    var edgeMap = this.doc.data[this.EDGEMAP_NAME];
-    var elementID = ele.id();
-
-    if (ele.isNode()) {
-      if (nodeMap.hasOwnProperty(elementID)) {
-        var tmpNode = nodeMap[elementID];
-        tmpNode.name = newName;
+        tmpNode.x = newPos.x;
+        tmpNode.y = newPos.y;
         this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
       } else {
         throw new Error('Element does not exist in nodes !!! ');
       }
-    } else {
-      if (edgeMap.hasOwnProperty(elementID)) {
-        var tmpEdge = edgeMap[elementID];
-        tmpEdge.name = newName;
-        this.updateShareDBObject(this.EDGEMAP_NAME, elementID, tmpEdge);
+    }
+  });
+  ; //This function is used for movements of all selected elements wrt alignment selected
+
+  Object.defineProperty(ShareDBManager.prototype, "changeElementsPositionByAlignment", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (coll) {
+      var self = this;
+      var nodeMap = self.doc.data[this.NODEMAP_NAME];
+      coll.forEach(function (ele) {
+        var elementID = ele.node.id();
+
+        if (nodeMap.hasOwnProperty(elementID)) {
+          var tmpNode = nodeMap[elementID];
+          tmpNode.x = ele.nextPosition.x;
+          tmpNode.y = ele.nextPosition.y;
+          self.updateShareDBObject(self.NODEMAP_NAME, elementID, tmpNode);
+        } else {
+          throw new Error('Element does not exist in nodes !!! ');
+        }
+      });
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "resizeElement", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele, previousWidth, previousHeight) {
+      var nodeMap = this.doc.data[this.NODEMAP_NAME];
+      var elementID = ele.id();
+      var newWidth = ele.width();
+      var newHeight = ele.height();
+      var currentX = ele.position('x');
+      var currentY = ele.position('y');
+
+      if (nodeMap.hasOwnProperty(elementID)) {
+        var tmpNode = nodeMap[elementID];
+        tmpNode.x = currentX + newWidth - previousWidth;
+        tmpNode.y = currentY + newHeight - previousHeight;
+        tmpNode.w = newWidth;
+        tmpNode.h = newHeight;
+        this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
       } else {
-        throw new Error('Element does not exist in edges !!! ');
+        throw new Error('Element does not exist in nodes !!! ');
       }
     }
-  };
-
+  });
   ;
+  Object.defineProperty(ShareDBManager.prototype, "setSizeOfElement", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele, newWidth, newHeight) {
+      var nodeMap = this.doc.data[this.NODEMAP_NAME];
+      var elementID = ele.id();
 
-  ShareDBManager.prototype.changeParent = function (rootNode, newParentId, connectedEdges) {
-    var self = this;
-    var nodeLookupTable = {};
+      if (nodeMap.hasOwnProperty(elementID)) {
+        var tmpNode = nodeMap[elementID];
+        tmpNode.w = newWidth;
+        tmpNode.h = newHeight;
+        this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
+      } else {
+        throw new Error('Element does not exist in nodes !!! ');
+      }
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "resizeCompound", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele, minWidth, minWidthBiasLeft, minWidthBiasRight, minHeight, minHeightBiasTop, minHeightBiasBottom) {
+      var nodeMap = this.doc.data[this.NODEMAP_NAME];
+      var elementID = ele.id();
+      var currentX = ele.position('x');
+      var currentY = ele.position('y');
 
-    function traverseFromRoot(rootNode, parId) {
-      /*
-       remove outermost node,
-       create new real time node with given parentId,
-       pass id of this real time node to children,
-       repeat in a recursive manner
-       after that restore the edges that dissapear by removed nodes
-       during change parent
-       */
-      var refNode = rootNode.nodeRef;
-      var children = rootNode.children;
-      var newParentId = parId;
+      if (nodeMap.hasOwnProperty(elementID)) {
+        var tmpNode = nodeMap[elementID];
+        tmpNode.x = currentX;
+        tmpNode.y = currentY;
+        tmpNode.minWidth = minWidth;
+        tmpNode.minWidthBiasLeft = minWidthBiasLeft;
+        tmpNode.minWidthBiasRight = minWidthBiasRight;
+        tmpNode.minHeight = minHeight;
+        tmpNode.minHeightBiasTop = minHeightBiasTop;
+        tmpNode.minHeightBiasBottom = minHeightBiasBottom;
+        this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
+      } else {
+        throw new Error('Element does not exist in nodes !!! ');
+      }
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "changeNodePositionsShareDB", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes) {
+      var self = this;
+      var nodeMap = self.doc.data[self.NODEMAP_NAME];
+      nodes.forEach(function (ele) {
+        var nodeID = ele.id();
 
-      if (refNode) {
-        var refNodeId = refNode.id();
-        var nodeData = refNode.data();
-        var posData = refNode.position();
-        var currentWidth = refNode.data('w');
-        var currentHeight = refNode.data('h');
-        var newNodeData = {
-          name: nodeData.name,
-          type: nodeData.type,
-          x: posData.x,
-          y: posData.y,
-          w: currentWidth,
-          h: currentHeight,
-          parent: -1
-        };
-
-        if (parId) {
-          newNodeData.parent = parId;
+        if (nodeMap.hasOwnProperty(nodeID)) {
+          var realTimeNode = nodeMap[nodeID];
+          realTimeNode.x = ele.position('x');
+          realTimeNode.y = ele.position('y');
+          self.updateShareDBObject(self.NODEMAP_NAME, nodeID, realTimeNode);
+        } else {
+          throw new Error('Element does not exist in nodes !!! ');
         }
-
-        self.removeElement(refNodeId);
-        var newNode = self.nodeInitializer(newNodeData);
-        var newNodeId = newNode.id;
-        self.insertShareDBObject(self.NODEMAP_NAME, newNodeId, newNode);
-        newParentId = newNodeId;
-        nodeLookupTable[refNodeId] = newNodeId;
-      }
-
-      for (var _i = 0, children_1 = children; _i < children_1.length; _i++) {
-        var childNode = children_1[_i];
-        traverseFromRoot(childNode, newParentId);
-      }
-    } //Begin traversing from given root node
-
-
-    traverseFromRoot(rootNode, newParentId); //Restore edges that dissapear by the change parent operation
-    //TODO compound operations ?
-
-    connectedEdges.forEach(function (edge, index) {
-      var edgeData = edge.data();
-      self.removeElement(edge.id());
-      var newSource = nodeLookupTable[edgeData.source];
-      var newTarget = nodeLookupTable[edgeData.target];
-
-      if (newSource) {
-        edgeData.source = newSource;
-      }
-
-      if (newTarget) {
-        edgeData.target = newTarget;
-      }
-
-      self.addNewEdge(edgeData);
-    });
-  };
-
-  ;
-
-  ShareDBManager.prototype.removeAllElements = function () {
-    var nodeMap = this.doc.data[this.NODEMAP_NAME];
-    var edgeMap = this.doc.data[this.EDGEMAP_NAME];
-    var ops = []; //Remove all real time nodes
-
-    for (var _i = 0, _a = Object.keys(nodeMap); _i < _a.length; _i++) {
-      var key = _a[_i];
-      ops.push({
-        p: [this.NODEMAP_NAME, key],
-        od: nodeMap[key]
-      });
-    } //Remove all real time edges
-
-
-    for (var _b = 0, _c = Object.keys(edgeMap); _b < _c.length; _b++) {
-      var key = _c[_b];
-      ops.push({
-        p: [this.EDGEMAP_NAME, key],
-        od: edgeMap[key]
       });
     }
-
-    this.applyShareDBOperation(ops);
-  };
-
+  });
   ;
+  Object.defineProperty(ShareDBManager.prototype, "changeHighlightInvalidGenes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodeIDs, isInvalid) {
+      var nodeMap = this.doc.data[this.NODEMAP_NAME]; //TODO check compound operation inside or outside of for ?
 
-  ShareDBManager.prototype.loadGraph = function (nodes, edges) {
-    var self = this;
-    this.removeAllElements(); //Function that traverses graph tree recursively.
+      for (var i in nodeIDs) {
+        var nodeID = nodeIDs[i];
 
-    var oldIdNewIdMap = {};
-
-    function traverseTree(node, newParentId) {
-      node.data.x = node.position.x;
-      node.data.y = node.position.y; //Update parent !
-
-      if (newParentId) {
-        var parent = node.data.parent;
-
-        if (parent) {
-          node.data.parent = newParentId;
-        }
-      } //Create new real time node
-
-
-      var newNodeId = self.getCustomObjId();
-      var params = node.data;
-      oldIdNewIdMap[params.id] = newNodeId;
-      var newNode = self.nodeInitializer(params);
-      newNode.id = newNodeId;
-      self.insertShareDBObject(self.NODEMAP_NAME, newNodeId, newNode); //If node has children recursively traverse sub graphs and update parent field of child nodes
-
-      if (node.children.length > 0) {
-        for (var _i = 0, _a = node.children; _i < _a.length; _i++) {
-          var tmpNode = _a[_i];
-          traverseTree(tmpNode, newNodeId);
+        if (nodeMap.hasOwnProperty(nodeID)) {
+          var collaborativeNode = nodeMap[nodeID];
+          collaborativeNode.isInvalidGene = isInvalid;
+          this.updateShareDBObject(this.NODEMAP_NAME, nodeID, collaborativeNode);
         }
       }
-    } //Create graph hierarchy from given list of flat nodes
-
-
-    var tree = this.graphUtilities.createGraphHierarchyRealTime(nodes);
-    console.log(tree); //Traverse from root nodes of tree
-
-    for (var _i = 0, tree_1 = tree; _i < tree_1.length; _i++) {
-      var rootLevelNode = tree_1[_i];
-      traverseTree(rootLevelNode, undefined);
     }
-    /*
-      Create real time edges, update the source and target fields, since new ids will be generated for the nodes in
-      real time
-    */
-
-
-    for (var _a = 0, edges_1 = edges; _a < edges_1.length; _a++) {
-      var edge = edges_1[_a];
-      console.log(edge);
-      edge.data.source = oldIdNewIdMap[edge.data.source];
-      edge.data.target = oldIdNewIdMap[edge.data.target];
-      var params = edge.data;
-      var newEdgeID = self.getCustomObjId();
-      params.id = newEdgeID;
-      var newEdge = self.edgeInitializer(params);
-      self.insertShareDBObject(self.EDGEMAP_NAME, newEdgeID, newEdge);
-    }
-  };
-
+  });
   ;
+  Object.defineProperty(ShareDBManager.prototype, "addPubmedIDs", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edgeID, pubmedIDs) {
+      var edgeMap = this.doc.data[this.EDGEMAP_NAME];
 
-  ShareDBManager.prototype.mergeGraph = function (nodes, edges) {
-    var self = this;
-    var nodeMap = self.doc.data[this.NODEMAP_NAME];
-    var realTimeNodeMap = nodeMap;
-    var realTimeNodeLookupTable = {};
-    var realTimeNodeNameLookupTable = {};
-    var oldIdNewIdMap = {}; //Create lookup table for real time nodes
-    //items are stored in an array in the resulting array of nodeMap.items()
-    // [0] - id, [1] - object
+      if (edgeMap.hasOwnProperty(edgeID)) {
+        var tmpEdge = edgeMap[edgeID];
+        var nonDuplicateArray = [];
 
-    for (var i in realTimeNodeMap) {
-      var nodeMapItem = realTimeNodeMap[i];
-      realTimeNodeLookupTable[nodeMapItem.id] = nodeMapItem;
-      realTimeNodeNameLookupTable[nodeMapItem.name] = nodeMapItem;
-    } //Recursive traverse definition
+        for (var i = 0; i < pubmedIDs.length; i++) {
+          if (tmpEdge.pubmedIDs.indexOf(pubmedIDs[i]) < 0) {
+            nonDuplicateArray.push(pubmedIDs[i]);
+          }
+        }
+
+        tmpEdge.pubmedIDs = tmpEdge.pubmedIDs.concat(nonDuplicateArray);
+        this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
+      } else {
+        throw new Error('Edge does not exist in real time !!! ');
+      }
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "removePubmedID", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edgeID, pubmedIDs) {
+      var edgeMap = this.doc.data[this.EDGEMAP_NAME];
+
+      if (edgeMap.hasOwnProperty(edgeID)) {
+        var tmpEdge = edgeMap[edgeID];
+        var removedIndices = [];
+
+        for (var i = 0; i < pubmedIDs.length; i++) {
+          var tmpID = pubmedIDs[i];
+          var index = tmpEdge.pubmedIDs.indexOf(tmpID);
+
+          if (index >= 0) {
+            removedIndices.push(index);
+          }
+        }
+
+        for (var i = 0; i < removedIndices.length; i++) {
+          tmpEdge.pubmedIDs.remove(removedIndices[i]);
+        }
+
+        this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
+      } else {
+        throw new Error('Edge does not exist in real time !!! ');
+      }
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "updateEdgeBendPoints", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edgeID, bendPointsArray) {
+      var edgeMap = this.doc.data[this.EDGEMAP_NAME];
+
+      if (edgeMap.hasOwnProperty(edgeID)) {
+        var tmpEdge = edgeMap[edgeID];
+        tmpEdge.bendPoint = bendPointsArray;
+        this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
+      } else {
+        throw new Error('Edge does not exist in real time !!! ');
+      }
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "changeName", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele, newName) {
+      var nodeMap = this.doc.data[this.NODEMAP_NAME];
+      var edgeMap = this.doc.data[this.EDGEMAP_NAME];
+      var elementID = ele.id();
+
+      if (ele.isNode()) {
+        if (nodeMap.hasOwnProperty(elementID)) {
+          var tmpNode = nodeMap[elementID];
+          tmpNode.name = newName;
+          this.updateShareDBObject(this.NODEMAP_NAME, elementID, tmpNode);
+        } else {
+          throw new Error('Element does not exist in nodes !!! ');
+        }
+      } else {
+        if (edgeMap.hasOwnProperty(elementID)) {
+          var tmpEdge = edgeMap[elementID];
+          tmpEdge.name = newName;
+          this.updateShareDBObject(this.EDGEMAP_NAME, elementID, tmpEdge);
+        } else {
+          throw new Error('Element does not exist in edges !!! ');
+        }
+      }
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "changeParent", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (rootNode, newParentId, connectedEdges) {
+      var self = this;
+      var nodeLookupTable = {};
+
+      function traverseFromRoot(rootNode, parId) {
+        /*
+         remove outermost node,
+         create new real time node with given parentId,
+         pass id of this real time node to children,
+         repeat in a recursive manner
+         after that restore the edges that dissapear by removed nodes
+         during change parent
+         */
+        var refNode = rootNode.nodeRef;
+        var children = rootNode.children;
+        var newParentId = parId;
+
+        if (refNode) {
+          var refNodeId = refNode.id();
+          var nodeData = refNode.data();
+          var posData = refNode.position();
+          var currentWidth = refNode.data('w');
+          var currentHeight = refNode.data('h');
+          var newNodeData = {
+            name: nodeData.name,
+            type: nodeData.type,
+            x: posData.x,
+            y: posData.y,
+            w: currentWidth,
+            h: currentHeight,
+            parent: -1
+          };
+
+          if (parId) {
+            newNodeData.parent = parId;
+          }
+
+          self.removeElement(refNodeId);
+          var newNode = self.nodeInitializer(newNodeData);
+          var newNodeId = newNode.id;
+          self.insertShareDBObject(self.NODEMAP_NAME, newNodeId, newNode);
+          newParentId = newNodeId;
+          nodeLookupTable[refNodeId] = newNodeId;
+        }
+
+        for (var _i = 0, children_1 = children; _i < children_1.length; _i++) {
+          var childNode = children_1[_i];
+          traverseFromRoot(childNode, newParentId);
+        }
+      } //Begin traversing from given root node
 
 
-    function traverseTree(node, newParentId) {
-      //Search by name !
-      //We have not found a node that exist in the graph, add normally
-      if (!(node.data.name in realTimeNodeNameLookupTable)) {
+      traverseFromRoot(rootNode, newParentId); //Restore edges that dissapear by the change parent operation
+      //TODO compound operations ?
+
+      connectedEdges.forEach(function (edge, index) {
+        var edgeData = edge.data();
+        self.removeElement(edge.id());
+        var newSource = nodeLookupTable[edgeData.source];
+        var newTarget = nodeLookupTable[edgeData.target];
+
+        if (newSource) {
+          edgeData.source = newSource;
+        }
+
+        if (newTarget) {
+          edgeData.target = newTarget;
+        }
+
+        self.addNewEdge(edgeData);
+      });
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "removeAllElements", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var nodeMap = this.doc.data[this.NODEMAP_NAME];
+      var edgeMap = this.doc.data[this.EDGEMAP_NAME];
+      var ops = []; //Remove all real time nodes
+
+      for (var _i = 0, _a = Object.keys(nodeMap); _i < _a.length; _i++) {
+        var key = _a[_i];
+        ops.push({
+          p: [this.NODEMAP_NAME, key],
+          od: nodeMap[key]
+        });
+      } //Remove all real time edges
+
+
+      for (var _b = 0, _c = Object.keys(edgeMap); _b < _c.length; _b++) {
+        var key = _c[_b];
+        ops.push({
+          p: [this.EDGEMAP_NAME, key],
+          od: edgeMap[key]
+        });
+      }
+
+      this.applyShareDBOperation(ops);
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "loadGraph", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes, edges) {
+      var self = this;
+      this.removeAllElements(); //Function that traverses graph tree recursively.
+
+      var oldIdNewIdMap = {};
+
+      function traverseTree(node, newParentId) {
         node.data.x = node.position.x;
         node.data.y = node.position.y; //Update parent !
 
@@ -11215,8 +12259,9 @@ function () {
 
 
         var newNodeId = self.getCustomObjId();
-        oldIdNewIdMap[node.data.id] = newNodeId;
-        var newNode = self.nodeInitializer(node.data);
+        var params = node.data;
+        oldIdNewIdMap[params.id] = newNodeId;
+        var newNode = self.nodeInitializer(params);
         newNode.id = newNodeId;
         self.insertShareDBObject(self.NODEMAP_NAME, newNodeId, newNode); //If node has children recursively traverse sub graphs and update parent field of child nodes
 
@@ -11226,65 +12271,150 @@ function () {
             traverseTree(tmpNode, newNodeId);
           }
         }
-      } // At this point there exists another node in the graph with the same name as 'node'
-      // we need to update parent field of children of this node if any
-      else {
-          var sameNameNode = realTimeNodeNameLookupTable[node.data.name];
-          var sameNodeId = sameNameNode.id;
-          oldIdNewIdMap[node.data.id] = sameNodeId; //If node has children recursively traverse sub graphs and update parent field of child nodes
+      } //Create graph hierarchy from given list of flat nodes
+
+
+      var tree = this.graphUtilities.createGraphHierarchyRealTime(nodes);
+      console.log(tree); //Traverse from root nodes of tree
+
+      for (var _i = 0, tree_1 = tree; _i < tree_1.length; _i++) {
+        var rootLevelNode = tree_1[_i];
+        traverseTree(rootLevelNode, undefined);
+      }
+      /*
+        Create real time edges, update the source and target fields, since new ids will be generated for the nodes in
+        real time
+      */
+
+
+      for (var _a = 0, edges_1 = edges; _a < edges_1.length; _a++) {
+        var edge = edges_1[_a];
+        console.log(edge);
+        edge.data.source = oldIdNewIdMap[edge.data.source];
+        edge.data.target = oldIdNewIdMap[edge.data.target];
+        var params = edge.data;
+        var newEdgeID = self.getCustomObjId();
+        params.id = newEdgeID;
+        var newEdge = self.edgeInitializer(params);
+        self.insertShareDBObject(self.EDGEMAP_NAME, newEdgeID, newEdge);
+      }
+    }
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "mergeGraph", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes, edges) {
+      var self = this;
+      var nodeMap = self.doc.data[this.NODEMAP_NAME];
+      var realTimeNodeMap = nodeMap;
+      var realTimeNodeLookupTable = {};
+      var realTimeNodeNameLookupTable = {};
+      var oldIdNewIdMap = {}; //Create lookup table for real time nodes
+      //items are stored in an array in the resulting array of nodeMap.items()
+      // [0] - id, [1] - object
+
+      for (var i in realTimeNodeMap) {
+        var nodeMapItem = realTimeNodeMap[i];
+        realTimeNodeLookupTable[nodeMapItem.id] = nodeMapItem;
+        realTimeNodeNameLookupTable[nodeMapItem.name] = nodeMapItem;
+      } //Recursive traverse definition
+
+
+      function traverseTree(node, newParentId) {
+        //Search by name !
+        //We have not found a node that exist in the graph, add normally
+        if (!(node.data.name in realTimeNodeNameLookupTable)) {
+          node.data.x = node.position.x;
+          node.data.y = node.position.y; //Update parent !
+
+          if (newParentId) {
+            var parent = node.data.parent;
+
+            if (parent) {
+              node.data.parent = newParentId;
+            }
+          } //Create new real time node
+
+
+          var newNodeId = self.getCustomObjId();
+          oldIdNewIdMap[node.data.id] = newNodeId;
+          var newNode = self.nodeInitializer(node.data);
+          newNode.id = newNodeId;
+          self.insertShareDBObject(self.NODEMAP_NAME, newNodeId, newNode); //If node has children recursively traverse sub graphs and update parent field of child nodes
 
           if (node.children.length > 0) {
-            for (var _b = 0, _c = node.children; _b < _c.length; _b++) {
-              var tmpNode = _c[_b];
-              traverseTree(tmpNode, sameNodeId);
+            for (var _i = 0, _a = node.children; _i < _a.length; _i++) {
+              var tmpNode = _a[_i];
+              traverseTree(tmpNode, newNodeId);
             }
           }
-        }
-    } //Traverse from root nodes of tree
+        } // At this point there exists another node in the graph with the same name as 'node'
+        // we need to update parent field of children of this node if any
+        else {
+            var sameNameNode = realTimeNodeNameLookupTable[node.data.name];
+            var sameNodeId = sameNameNode.id;
+            oldIdNewIdMap[node.data.id] = sameNodeId; //If node has children recursively traverse sub graphs and update parent field of child nodes
+
+            if (node.children.length > 0) {
+              for (var _b = 0, _c = node.children; _b < _c.length; _b++) {
+                var tmpNode = _c[_b];
+                traverseTree(tmpNode, sameNodeId);
+              }
+            }
+          }
+      } //Traverse from root nodes of tree
 
 
-    var tree = this.graphUtilities.createGraphHierarchyRealTime(nodes);
+      var tree = this.graphUtilities.createGraphHierarchyRealTime(nodes);
 
-    for (var _i = 0, tree_2 = tree; _i < tree_2.length; _i++) {
-      var rootLevelNode = tree_2[_i];
-      traverseTree(rootLevelNode, rootLevelNode.data.id);
+      for (var _i = 0, tree_2 = tree; _i < tree_2.length; _i++) {
+        var rootLevelNode = tree_2[_i];
+        traverseTree(rootLevelNode, rootLevelNode.data.id);
+      }
+      /*
+       Create real time edges, update the source and target fields, since new ids will be generated for the nodes in
+       real time
+       */
+
+
+      var ops = [];
+
+      for (var _a = 0, edges_2 = edges; _a < edges_2.length; _a++) {
+        var edge = edges_2[_a];
+        edge.data.source = oldIdNewIdMap[edge.data.source];
+        edge.data.target = oldIdNewIdMap[edge.data.target];
+        var newEdge = self.edgeInitializer(edge.data);
+        var newEdgeID = this.getCustomObjId();
+        newEdge.id = newEdgeID;
+        ops.push({
+          p: [self.EDGEMAP_NAME, newEdgeID],
+          oi: newEdge
+        });
+      }
+
+      self.applyShareDBOperation(ops);
     }
-    /*
-     Create real time edges, update the source and target fields, since new ids will be generated for the nodes in
-     real time
-     */
-
-
-    var ops = [];
-
-    for (var _a = 0, edges_2 = edges; _a < edges_2.length; _a++) {
-      var edge = edges_2[_a];
-      edge.data.source = oldIdNewIdMap[edge.data.source];
-      edge.data.target = oldIdNewIdMap[edge.data.target];
-      var newEdge = self.edgeInitializer(edge.data);
-      var newEdgeID = this.getCustomObjId();
-      newEdge.id = newEdgeID;
-      ops.push({
-        p: [self.EDGEMAP_NAME, newEdgeID],
-        oi: newEdge
-      });
+  });
+  ;
+  Object.defineProperty(ShareDBManager.prototype, "updateLayoutProperties", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (newLayoutProperties) {
+      this.updateShareDBLayoutProperties(newLayoutProperties);
     }
-
-    self.applyShareDBOperation(ops);
-  };
-
+  });
   ;
-
-  ShareDBManager.prototype.updateLayoutProperties = function (newLayoutProperties) {
-    this.updateShareDBLayoutProperties(newLayoutProperties);
-  };
-
-  ;
-
-  ShareDBManager.prototype.updateGlobalOptions = function (newOptions) {
-    this.updateShareDBGlobalOptions(newOptions);
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "updateGlobalOptions", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (newOptions) {
+      this.updateShareDBGlobalOptions(newOptions);
+    }
+  });
   ;
   /*
    * Creates graph hierarchy from given flat list of nodes list, nodes list is assumed to have parent-child
@@ -11298,159 +12428,186 @@ function () {
    *
    * */
 
-  ShareDBManager.prototype.createGraphHierarchy = function (nodes) {
-    //Some arrays and maps for creating graph hierarchy
-    var tree = [];
-    var mappedArr = {}; // First map the nodes of the array to an object -> create a hash table.
+  Object.defineProperty(ShareDBManager.prototype, "createGraphHierarchy", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodes) {
+      //Some arrays and maps for creating graph hierarchy
+      var tree = [];
+      var mappedArr = {}; // First map the nodes of the array to an object -> create a hash table.
 
-    for (var i = 0, len = nodes.length; i < len; i++) {
-      var arrElem = nodes[i];
-      mappedArr[arrElem.data.id] = arrElem;
-      mappedArr[arrElem.data.id].children = [];
+      for (var i = 0, len = nodes.length; i < len; i++) {
+        var arrElem = nodes[i];
+        mappedArr[arrElem.data.id] = arrElem;
+        mappedArr[arrElem.data.id].children = [];
+      }
+
+      for (var _i = 0, _a = Object.keys(mappedArr); _i < _a.length; _i++) {
+        var id = _a[_i];
+        var mappedElem = mappedArr[id]; // If the element is not at the root level, add it to its parent array of children.
+
+        if (mappedElem.data.parent) {
+          mappedArr[mappedElem.data.parent].children.push(mappedElem);
+        } // If the element is at the root level, add it to first level elements array.
+        else {
+            tree.push(mappedElem);
+          }
+      }
+
+      return tree;
     }
-
-    for (var _i = 0, _a = Object.keys(mappedArr); _i < _a.length; _i++) {
-      var id = _a[_i];
-      var mappedElem = mappedArr[id]; // If the element is not at the root level, add it to its parent array of children.
-
-      if (mappedElem.data.parent) {
-        mappedArr[mappedElem.data.parent].children.push(mappedElem);
-      } // If the element is at the root level, add it to first level elements array.
-      else {
-          tree.push(mappedElem);
-        }
-    }
-
-    return tree;
-  };
-
+  });
   ; //Makes sure that edge is compatible with edges in shared document
 
-  ShareDBManager.prototype.edgeInitializer = function (params) {
-    var edge = {};
-    edge.id = params.id || this.getCustomObjId();
-    edge.type = params.type || "undefined";
-    edge.source = params.source || "undefined";
-    edge.target = params.target || "undefined";
-    edge.name = params.name || "";
-    edge.isHighlighted = params.isHighlighted || false;
+  Object.defineProperty(ShareDBManager.prototype, "edgeInitializer", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (params) {
+      var edge = {};
+      edge.id = params.id || this.getCustomObjId();
+      edge.type = params.type || "undefined";
+      edge.source = params.source || "undefined";
+      edge.target = params.target || "undefined";
+      edge.name = params.name || "";
+      edge.isHighlighted = params.isHighlighted || false;
 
-    if (params.pubmedIDs) {
-      if (edge.pubmedIDs == undefined) {
+      if (params.pubmedIDs) {
+        if (edge.pubmedIDs == undefined) {
+          edge.pubmedIDs = [];
+        }
+
+        if (params.pubmedIDs.length > 0) edge.pubmedIDs.push(params.pubmedIDs);
+      } else {
         edge.pubmedIDs = [];
       }
 
-      if (params.pubmedIDs.length > 0) edge.pubmedIDs.push(params.pubmedIDs);
-    } else {
-      edge.pubmedIDs = [];
-    }
+      if (params.bendPoint) {
+        if (edge.bendPoint == undefined) {
+          edge.bendPoint = [];
+        }
 
-    if (params.bendPoint) {
-      if (edge.bendPoint == undefined) {
+        edge.bendPoint.push(params.bendPoint);
+      } else {
         edge.bendPoint = [];
       }
 
-      edge.bendPoint.push(params.bendPoint);
-    } else {
-      edge.bendPoint = [];
+      return edge;
     }
-
-    return edge;
-  };
-
+  });
   ; //Makes sure that node is compatible with nodes in shared document
 
-  ShareDBManager.prototype.nodeInitializer = function (params) {
-    var node = {};
-    node.id = params.id || this.getCustomObjId();
-    node.name = params.name || "undefined";
-    node.type = params.type || "undefined";
-    node.parent = params.parent || "undefined";
-    node.x = params.x || "undefined";
-    node.y = params.y || "undefined";
-    node.w = params.w || "undefined";
-    node.h = params.h || "undefined";
-    node.minWidth = params.minWidth || 0;
-    node.minWidthBiasLeft = params.minWidth || 0;
-    node.minWidthBiasRight = params.minWidth || 0;
-    node.minHeight = params.minWidth || 0;
-    node.minHeightBiasTop = params.minWidth || 0;
-    node.minHeightBiasBottom = params.minWidth || 0;
-    node.isHidden = params.isHidden || false;
-    node.isInvalidGene = params.isInvalidGene || false;
-    node.isHighlighted = params.isHighlighted || false;
-    return node;
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "nodeInitializer", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (params) {
+      var node = {};
+      node.id = params.id || this.getCustomObjId();
+      node.name = params.name || "undefined";
+      node.type = params.type || "undefined";
+      node.parent = params.parent || "undefined";
+      node.x = params.x || "undefined";
+      node.y = params.y || "undefined";
+      node.w = params.w || "undefined";
+      node.h = params.h || "undefined";
+      node.minWidth = params.minWidth || 0;
+      node.minWidthBiasLeft = params.minWidth || 0;
+      node.minWidthBiasRight = params.minWidth || 0;
+      node.minHeight = params.minWidth || 0;
+      node.minHeightBiasTop = params.minWidth || 0;
+      node.minHeightBiasBottom = params.minWidth || 0;
+      node.isHidden = params.isHidden || false;
+      node.isInvalidGene = params.isInvalidGene || false;
+      node.isHighlighted = params.isHighlighted || false;
+      return node;
+    }
+  });
   ; //Makes sure that layout properties is compatible with layout properties in shared document
 
-  ShareDBManager.prototype.layoutPropertiesInitializer = function (params) {
-    var layoutProperties = {};
-    layoutProperties.name = params.name || 'undefined';
-    layoutProperties.nodeRepulsion = params.nodeRepulsion || 'undefined'; // this.nodeOverlap = params.nodeOverlap || 'undefined';
+  Object.defineProperty(ShareDBManager.prototype, "layoutPropertiesInitializer", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (params) {
+      var layoutProperties = {};
+      layoutProperties.name = params.name || 'undefined';
+      layoutProperties.nodeRepulsion = params.nodeRepulsion || 'undefined'; // this.nodeOverlap = params.nodeOverlap || 'undefined';
 
-    layoutProperties.idealEdgeLength = params.idealEdgeLength || 'undefined';
-    layoutProperties.edgeElasticity = params.edgeElasticity || 'undefined';
-    layoutProperties.nestingFactor = params.nestingFactor || 'undefined';
-    layoutProperties.gravity = params.gravity || 'undefined';
-    layoutProperties.numIter = params.numIter || 'undefined';
-    layoutProperties.tile = params.tile || 'undefined';
-    layoutProperties.animate = params.animate || 'undefined';
-    layoutProperties.randomize = params.randomize || false;
-    layoutProperties.gravityRangeCompound = params.gravityRangeCompound || 'undefined';
-    layoutProperties.gravityCompound = params.gravityCompound || 'undefined';
-    layoutProperties.gravityRange = params.gravityRange || 'undefined';
-    layoutProperties.tilingPaddingVertical = params.tilingPaddingVertical || 'undefined';
-    layoutProperties.tilingPaddingHorizontal = params.tilingPaddingHorizontal || 'undefined';
-    layoutProperties.initialEnergyOnIncremental = params.initialEnergyOnIncremental || 'undefined';
-    return layoutProperties;
-  };
-
+      layoutProperties.idealEdgeLength = params.idealEdgeLength || 'undefined';
+      layoutProperties.edgeElasticity = params.edgeElasticity || 'undefined';
+      layoutProperties.nestingFactor = params.nestingFactor || 'undefined';
+      layoutProperties.gravity = params.gravity || 'undefined';
+      layoutProperties.numIter = params.numIter || 'undefined';
+      layoutProperties.tile = params.tile || 'undefined';
+      layoutProperties.animate = params.animate || 'undefined';
+      layoutProperties.randomize = params.randomize || false;
+      layoutProperties.gravityRangeCompound = params.gravityRangeCompound || 'undefined';
+      layoutProperties.gravityCompound = params.gravityCompound || 'undefined';
+      layoutProperties.gravityRange = params.gravityRange || 'undefined';
+      layoutProperties.tilingPaddingVertical = params.tilingPaddingVertical || 'undefined';
+      layoutProperties.tilingPaddingHorizontal = params.tilingPaddingHorizontal || 'undefined';
+      layoutProperties.initialEnergyOnIncremental = params.initialEnergyOnIncremental || 'undefined';
+      return layoutProperties;
+    }
+  });
   ; //Makes sure that global options is compatible with global options in shared document
 
-  ShareDBManager.prototype.globalOptionsInitializer = function (params) {
-    var globalOptions = {};
-    globalOptions.zoomLevel = params.zoomLevel || 'undefined';
-    globalOptions.panLevel = params.panLevel || 'undefined';
-    return globalOptions;
-  };
-
+  Object.defineProperty(ShareDBManager.prototype, "globalOptionsInitializer", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (params) {
+      var globalOptions = {};
+      globalOptions.zoomLevel = params.zoomLevel || 'undefined';
+      globalOptions.panLevel = params.panLevel || 'undefined';
+      return globalOptions;
+    }
+  });
   ; //Create unique ID for elements
 
-  ShareDBManager.prototype.getCustomObjId = function () {
-    // see http://stackoverflow.com/a/8809472
-    // we need to take care of our own IDs because the ones automatically generated by cytoscape (also UUID)
-    // don't comply with xsd:SID type that must not begin with a number
-    // Public Domain/MIT
-    var d = Date.now();
+  Object.defineProperty(ShareDBManager.prototype, "getCustomObjId", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      // see http://stackoverflow.com/a/8809472
+      // we need to take care of our own IDs because the ones automatically generated by cytoscape (also UUID)
+      // don't comply with xsd:SID type that must not begin with a number
+      // Public Domain/MIT
+      var d = Date.now();
 
-    if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
-      d += performance.now(); //use high-precision timer if available
+      if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+        d += performance.now(); //use high-precision timer if available
+      }
+
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c === 'x' ? r : r & 0x3 | 0x8).toString(16);
+      });
     }
-
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      var r = (d + Math.random() * 16) % 16 | 0;
-      d = Math.floor(d / 16);
-      return (c === 'x' ? r : r & 0x3 | 0x8).toString(16);
-    });
-  };
-
+  });
   ;
+  Object.defineProperty(ShareDBManager.prototype, "getParam", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (urlParam) {
+      var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
+      var match = window.location.search.match(regExp);
 
-  ShareDBManager.prototype.getParam = function (urlParam) {
-    var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
-    var match = window.location.search.match(regExp);
+      if (match && match.length) {
+        match = match[0];
+        match = match.replace(urlParam + '=', '').replace('&', '');
+      } else {
+        match = null;
+      }
 
-    if (match && match.length) {
-      match = match[0];
-      match = match.replace(urlParam + '=', '').replace('&', '');
-    } else {
-      match = null;
+      return match;
     }
-
-    return match;
-  };
-
+  });
   ;
   return ShareDBManager;
 }();
@@ -11468,144 +12625,167 @@ var CBioPortalAccessor_CBioPortalAccessor =
 function () {
   function CBioPortalAccessor() {}
 
-  CBioPortalAccessor.prototype.getDataTypes = function () {
-    return [CBioPortalAccessor.MUTATION, CBioPortalAccessor.GENE_EXPRESSION, CBioPortalAccessor.CNA];
-  };
+  Object.defineProperty(CBioPortalAccessor.prototype, "getDataTypes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      return [CBioPortalAccessor.MUTATION, CBioPortalAccessor.GENE_EXPRESSION, CBioPortalAccessor.CNA];
+    }
+  });
   /*
   * Retrieves all cancer studies from cBioPortal
   * **/
 
+  Object.defineProperty(CBioPortalAccessor.prototype, "fetchCancerStudies", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (callbackFunction) {
+      var cancerStudies = {};
+      var request = new XMLHttpRequest();
 
-  CBioPortalAccessor.prototype.fetchCancerStudies = function (callbackFunction) {
-    var cancerStudies = {};
-    var request = new XMLHttpRequest();
+      request.onreadystatechange = function () {
+        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+          // By lines
+          // Match all new line character representations
+          var seperator = /\r?\n|\r/;
+          var lines = request.responseText.split(seperator); // start from first line skip node meta data
 
-    request.onreadystatechange = function () {
-      if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-        // By lines
-        // Match all new line character representations
-        var seperator = /\r?\n|\r/;
-        var lines = request.responseText.split(seperator); // start from first line skip node meta data
+          for (var i = 1; i < lines.length; i++) {
+            if (lines[i].length <= 0) continue;
+            var lineData = lines[i].split('\t');
+            cancerStudies[lineData[0]] = lineData;
+          }
 
-        for (var i = 1; i < lines.length; i++) {
-          if (lines[i].length <= 0) continue;
-          var lineData = lines[i].split('\t');
-          cancerStudies[lineData[0]] = lineData;
+          callbackFunction(cancerStudies);
+        } else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200) {
+          external_react_toastify_["toast"].error("Error retrieving studies");
         }
+      };
 
-        callbackFunction(cancerStudies);
-      } else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200) {
-        external_react_toastify_["toast"].error("Error retrieving studies");
-      }
-    };
-
-    request.open("GET", CBioPortalAccessor.GET_ALL_CANCER_STUDIES_URL);
-    request.send();
-  };
-
+      request.open("GET", CBioPortalAccessor.GET_ALL_CANCER_STUDIES_URL);
+      request.send();
+    }
+  });
   ;
   /*
   * Retrieves all genetic profiles for given cancerStudy from cBioPortal
   * **/
 
-  CBioPortalAccessor.prototype.getSupportedGeneticProfiles = function (cancerStudy, callbackFunction) {
-    var outData = {};
-    var request = new XMLHttpRequest();
-    var self = this;
+  Object.defineProperty(CBioPortalAccessor.prototype, "getSupportedGeneticProfiles", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (cancerStudy, callbackFunction) {
+      var outData = {};
+      var request = new XMLHttpRequest();
+      var self = this;
 
-    request.onreadystatechange = function () {
-      if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-        // By lines
-        // Match all new line character representations
-        var seperator = /\r?\n|\r/;
-        var lines = request.responseText.split(seperator); // start from first line skip node meta data
+      request.onreadystatechange = function () {
+        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+          // By lines
+          // Match all new line character representations
+          var seperator = /\r?\n|\r/;
+          var lines = request.responseText.split(seperator); // start from first line skip node meta data
 
-        for (var i = 1; i < lines.length; i++) {
-          if (lines[i].length <= 0) continue;
-          var lineData = lines[i].split('\t');
-          var cancerProfileName = lineData[0];
+          for (var i = 1; i < lines.length; i++) {
+            if (lines[i].length <= 0) continue;
+            var lineData = lines[i].split('\t');
+            var cancerProfileName = lineData[0];
 
-          if (self.isSupportedCancerProfile(cancerProfileName)) {
-            outData[cancerProfileName] = lineData;
+            if (self.isSupportedCancerProfile(cancerProfileName)) {
+              outData[cancerProfileName] = lineData;
+            }
           }
+
+          callbackFunction(outData);
+        } else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200) {
+          console.error("Error retrieving studies"); // window.notificationManager.createNotification("Error retrieving genetic profiles", "fail")
         }
+      };
 
-        callbackFunction(outData);
-      } else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200) {
-        console.error("Error retrieving studies"); // window.notificationManager.createNotification("Error retrieving genetic profiles", "fail")
-      }
-    };
-
-    request.open("GET", CBioPortalAccessor.GET_GENETIC_PROFILES_URL + cancerStudy);
-    request.send();
-  };
-
-  ;
-
-  CBioPortalAccessor.prototype.isSupportedCancerProfile = function (cancerProfileName) {
-    return cancerProfileName.endsWith(CBioPortalAccessor.MRNA_EXP_STUDY_NAME) || cancerProfileName.endsWith(CBioPortalAccessor.CNA_EXP_STUDY_NAME) || cancerProfileName.endsWith(CBioPortalAccessor.MUTATION_EXP_STUDY_NAME);
-  };
-
-  ;
-
-  CBioPortalAccessor.getDataType = function (cancerProfileName) {
-    if (cancerProfileName.endsWith(this.MRNA_EXP_STUDY_NAME)) {
-      return this.GENE_EXPRESSION;
-    } else if (cancerProfileName.endsWith(this.CNA_EXP_STUDY_NAME)) {
-      return this.CNA;
-    } else if (cancerProfileName.endsWith(this.MUTATION_EXP_STUDY_NAME)) {
-      return this.MUTATION;
+      request.open("GET", CBioPortalAccessor.GET_GENETIC_PROFILES_URL + cancerStudy);
+      request.send();
     }
-
-    return "";
-  };
-
-  CBioPortalAccessor.prototype.calcAlterationPercentages = function (paramLines, geneticProfileId, callbackFunction) {
-    // By lines
-    // Match all new line character representations
-    var seperator = /\r?\n|\r/;
-    var lines = paramLines.split(seperator);
-    var startIndex = 0; //Find starting index of actual data skip commented lines
-
-    for (var i in lines) {
-      if (!lines[i].startsWith('#')) {
-        startIndex = parseInt(i);
-        break;
+  });
+  ;
+  Object.defineProperty(CBioPortalAccessor.prototype, "isSupportedCancerProfile", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (cancerProfileName) {
+      return cancerProfileName.endsWith(CBioPortalAccessor.MRNA_EXP_STUDY_NAME) || cancerProfileName.endsWith(CBioPortalAccessor.CNA_EXP_STUDY_NAME) || cancerProfileName.endsWith(CBioPortalAccessor.MUTATION_EXP_STUDY_NAME);
+    }
+  });
+  ;
+  Object.defineProperty(CBioPortalAccessor, "getDataType", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (cancerProfileName) {
+      if (cancerProfileName.endsWith(this.MRNA_EXP_STUDY_NAME)) {
+        return this.GENE_EXPRESSION;
+      } else if (cancerProfileName.endsWith(this.CNA_EXP_STUDY_NAME)) {
+        return this.CNA;
+      } else if (cancerProfileName.endsWith(this.MUTATION_EXP_STUDY_NAME)) {
+        return this.MUTATION;
       }
-    } //Total number of tumor samples in the response
+
+      return "";
+    }
+  });
+  Object.defineProperty(CBioPortalAccessor.prototype, "calcAlterationPercentages", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (paramLines, geneticProfileId, callbackFunction) {
+      // By lines
+      // Match all new line character representations
+      var seperator = /\r?\n|\r/;
+      var lines = paramLines.split(seperator);
+      var startIndex = 0; //Find starting index of actual data skip commented lines
+
+      for (var i in lines) {
+        if (!lines[i].startsWith('#')) {
+          startIndex = parseInt(i);
+          break;
+        }
+      } //Total number of tumor samples in the response
 
 
-    var tumorSamples = lines[startIndex].split('\t');
-    var numOfTumorSamples = tumorSamples.length - 2;
-    var outData = {};
-    outData[geneticProfileId] = {};
-    var geneticProfileType = CBioPortalAccessor.getDataType(geneticProfileId);
-    console.log("geneticProfileType");
-    console.log(geneticProfileType); // skip meta line and iterate over tumor sample data
+      var tumorSamples = lines[startIndex].split('\t');
+      var numOfTumorSamples = tumorSamples.length - 2;
+      var outData = {};
+      outData[geneticProfileId] = {};
+      var geneticProfileType = CBioPortalAccessor.getDataType(geneticProfileId);
+      console.log("geneticProfileType");
+      console.log(geneticProfileType); // skip meta line and iterate over tumor sample data
 
-    for (var i = startIndex + 1; i < lines.length; i++) {
-      if (lines[i].length <= 0) continue; //Iterate over samples for each gene to calculate profile data
+      for (var i = startIndex + 1; i < lines.length; i++) {
+        if (lines[i].length <= 0) continue; //Iterate over samples for each gene to calculate profile data
 
-      var lineData = lines[i].split('\t');
-      var profileDataAlteration = 0;
+        var lineData = lines[i].split('\t');
+        var profileDataAlteration = 0;
 
-      for (var j = 2; j < lineData.length; j++) {
-        if (lineData[j] !== 'NaN') {
-          if (geneticProfileType === CBioPortalAccessor.MUTATION) profileDataAlteration++;else if (geneticProfileType === CBioPortalAccessor.CNA && (parseInt(lineData[j]) === CBioPortalAccessor.CNA_GAIN || parseInt(lineData[j]) === CBioPortalAccessor.CNA_DELETION)) {
-            profileDataAlteration++;
-          } else if (geneticProfileType === CBioPortalAccessor.GENE_EXPRESSION && (parseFloat(lineData[j]) >= CBioPortalAccessor.Z_SCORE_UPPER_THRESHOLD || parseFloat(lineData[j]) <= CBioPortalAccessor.Z_SCORE_LOWER_THRESHOLD)) {
-            profileDataAlteration++;
-            console.log(parseInt(lineData[j]), parseFloat(lineData[j]), lineData[j]);
+        for (var j = 2; j < lineData.length; j++) {
+          if (lineData[j] !== 'NaN') {
+            if (geneticProfileType === CBioPortalAccessor.MUTATION) profileDataAlteration++;else if (geneticProfileType === CBioPortalAccessor.CNA && (parseInt(lineData[j]) === CBioPortalAccessor.CNA_GAIN || parseInt(lineData[j]) === CBioPortalAccessor.CNA_DELETION)) {
+              profileDataAlteration++;
+            } else if (geneticProfileType === CBioPortalAccessor.GENE_EXPRESSION && (parseFloat(lineData[j]) >= CBioPortalAccessor.Z_SCORE_UPPER_THRESHOLD || parseFloat(lineData[j]) <= CBioPortalAccessor.Z_SCORE_LOWER_THRESHOLD)) {
+              profileDataAlteration++;
+              console.log(parseInt(lineData[j]), parseFloat(lineData[j]), lineData[j]);
+            }
           }
-        }
-      } //
+        } //
 
 
-      outData[geneticProfileId][lineData[1]] = profileDataAlteration / numOfTumorSamples * 100;
+        outData[geneticProfileId][lineData[1]] = profileDataAlteration / numOfTumorSamples * 100;
+      }
+
+      callbackFunction(outData);
     }
-
-    callbackFunction(outData);
-  };
+  });
   /*
   *
   *    Retrieves profile data associated with the parameters below from cBioPortal
@@ -11617,87 +12797,163 @@ function () {
         }
   * */
 
+  Object.defineProperty(CBioPortalAccessor.prototype, "getProfileData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (params, callbackFunction) {
+      //params
+      //caseSetId, geneticProfileId, genes
+      var outData = {};
+      var request = new XMLHttpRequest();
+      var self = this;
 
-  CBioPortalAccessor.prototype.getProfileData = function (params, callbackFunction) {
-    //params
-    //caseSetId, geneticProfileId, genes
-    var outData = {};
-    var request = new XMLHttpRequest();
-    var self = this;
+      request.onreadystatechange = function () {
+        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+          console.log("Query Result");
+          console.log(request.responseText);
+          self.calcAlterationPercentages(request.responseText, params.geneticProfileId, callbackFunction);
+          external_react_toastify_["toast"].success(params.geneticProfileId + " is succesfully loaded from cBioPortal");
+        }
+      }; //Create query URL
 
-    request.onreadystatechange = function () {
-      if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-        console.log("Query Result");
-        console.log(request.responseText);
-        self.calcAlterationPercentages(request.responseText, params.geneticProfileId, callbackFunction);
-        external_react_toastify_["toast"].success(params.geneticProfileId + " is succesfully loaded from cBioPortal");
+
+      var queryURL = CBioPortalAccessor.GET_PROFILE_DATA_URL; //Fetch sequenced case list !!
+
+      queryURL += "&case_set_id=" + params.caseSetId + "_sequenced";
+      queryURL += "&genetic_profile_id=" + params.geneticProfileId;
+      queryURL += "&gene_list=";
+      var isFirst = true;
+
+      for (var _i = 0, _a = params.genes; _i < _a.length; _i++) {
+        var gene = _a[_i];
+
+        if (!isFirst) {
+          queryURL += "+";
+        } else {
+          isFirst = false;
+        }
+
+        queryURL += gene;
       }
-    }; //Create query URL
 
-
-    var queryURL = CBioPortalAccessor.GET_PROFILE_DATA_URL; //Fetch sequenced case list !!
-
-    queryURL += "&case_set_id=" + params.caseSetId + "_sequenced";
-    queryURL += "&genetic_profile_id=" + params.geneticProfileId;
-    queryURL += "&gene_list=";
-    var isFirst = true;
-
-    for (var _i = 0, _a = params.genes; _i < _a.length; _i++) {
-      var gene = _a[_i];
-
-      if (!isFirst) {
-        queryURL += "+";
-      } else {
-        isFirst = false;
-      }
-
-      queryURL += gene;
+      console.log("queryURL");
+      console.log(queryURL);
+      request.open("GET", queryURL);
+      request.send();
     }
-
-    console.log("queryURL");
-    console.log(queryURL);
-    request.open("GET", queryURL);
-    request.send();
-  };
-
+  });
   ;
+  Object.defineProperty(CBioPortalAccessor.prototype, "validateGenes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodeSymbols, editor) {
+      var request = new XMLHttpRequest();
+      var self = this;
 
-  CBioPortalAccessor.prototype.validateGenes = function (nodeSymbols, editor) {
-    var request = new XMLHttpRequest();
-    var self = this;
+      request.onreadystatechange = function () {
+        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+          var validGeneSymbols = JSON.parse(request.responseText);
 
-    request.onreadystatechange = function () {
-      if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-        var validGeneSymbols = JSON.parse(request.responseText);
+          var validGeneArray = external_underscore_default.a.map(validGeneSymbols, function (object) {
+            return object.hugoGeneSymbol;
+          });
 
-        var validGeneArray = external_underscore_default.a.map(validGeneSymbols, function (object) {
-          return object.hugoGeneSymbol;
-        });
+          editor.highlightInvalidGenes(validGeneArray);
+        }
+      };
 
-        editor.highlightInvalidGenes(validGeneArray);
-      }
-    };
-
-    var queryURL = CBioPortalAccessor.VALIDATE_GENES_URL;
-    request.open("POST", queryURL);
-    request.setRequestHeader("Content-type", "application/json");
-    request.send(JSON.stringify(nodeSymbols));
-  };
-
-  CBioPortalAccessor.CNA_GAIN = 2;
-  CBioPortalAccessor.GET_ALL_CANCER_STUDIES_URL = "https://www.cbioportal.org/webservice.do?cmd=getCancerStudies";
-  CBioPortalAccessor.GET_GENETIC_PROFILES_URL = "https://www.cbioportal.org/webservice.do?cmd=getGeneticProfiles&cancer_study_id=";
-  CBioPortalAccessor.GET_PROFILE_DATA_URL = "https://www.cbioportal.org/webservice.do?cmd=getProfileData";
-  CBioPortalAccessor.MRNA_EXP_STUDY_NAME = "_mrna_median_Zscores";
-  CBioPortalAccessor.CNA_EXP_STUDY_NAME = "_gistic";
-  CBioPortalAccessor.VALIDATE_GENES_URL = 'https://www.cbioportal.org/api/genes/fetch?geneIdType=HUGO_GENE_SYMBOL&projection=ID';
-  CBioPortalAccessor.MUTATION_EXP_STUDY_NAME = "_mutations";
-  CBioPortalAccessor.CNA_DELETION = -2;
-  CBioPortalAccessor.Z_SCORE_UPPER_THRESHOLD = 2;
-  CBioPortalAccessor.Z_SCORE_LOWER_THRESHOLD = -2;
-  CBioPortalAccessor.MUTATION = "Mutation";
-  CBioPortalAccessor.GENE_EXPRESSION = "Gene Expression";
-  CBioPortalAccessor.CNA = "Copy Number Alteration";
+      var queryURL = CBioPortalAccessor.VALIDATE_GENES_URL;
+      request.open("POST", queryURL);
+      request.setRequestHeader("Content-type", "application/json");
+      request.send(JSON.stringify(nodeSymbols));
+    }
+  });
+  Object.defineProperty(CBioPortalAccessor, "CNA_GAIN", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: 2
+  });
+  Object.defineProperty(CBioPortalAccessor, "GET_ALL_CANCER_STUDIES_URL", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: "https://www.cbioportal.org/webservice.do?cmd=getCancerStudies"
+  });
+  Object.defineProperty(CBioPortalAccessor, "GET_GENETIC_PROFILES_URL", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: "https://www.cbioportal.org/webservice.do?cmd=getGeneticProfiles&cancer_study_id="
+  });
+  Object.defineProperty(CBioPortalAccessor, "GET_PROFILE_DATA_URL", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: "https://www.cbioportal.org/webservice.do?cmd=getProfileData"
+  });
+  Object.defineProperty(CBioPortalAccessor, "MRNA_EXP_STUDY_NAME", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: "_mrna_median_Zscores"
+  });
+  Object.defineProperty(CBioPortalAccessor, "CNA_EXP_STUDY_NAME", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: "_gistic"
+  });
+  Object.defineProperty(CBioPortalAccessor, "VALIDATE_GENES_URL", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: 'https://www.cbioportal.org/api/genes/fetch?geneIdType=HUGO_GENE_SYMBOL&projection=ID'
+  });
+  Object.defineProperty(CBioPortalAccessor, "MUTATION_EXP_STUDY_NAME", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: "_mutations"
+  });
+  Object.defineProperty(CBioPortalAccessor, "CNA_DELETION", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: -2
+  });
+  Object.defineProperty(CBioPortalAccessor, "Z_SCORE_UPPER_THRESHOLD", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: 2
+  });
+  Object.defineProperty(CBioPortalAccessor, "Z_SCORE_LOWER_THRESHOLD", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: -2
+  });
+  Object.defineProperty(CBioPortalAccessor, "MUTATION", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: "Mutation"
+  });
+  Object.defineProperty(CBioPortalAccessor, "GENE_EXPRESSION", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: "Gene Expression"
+  });
+  Object.defineProperty(CBioPortalAccessor, "CNA", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: "Copy Number Alteration"
+  });
   return CBioPortalAccessor;
 }();
 
@@ -11709,285 +12965,301 @@ function () {
   function SaveLoadUtility() {} //Exports given json graph(based on cy.export()) into a string
 
 
-  SaveLoadUtility.exportGraph = function (pathwayDetails, cy, edgeEditing, graphJSON) {
-    console.log(graphJSON);
-    var returnString = pathwayDetails.pathwayTitle + '\n\n';
-    returnString += pathwayDetails.pathwayDetails + '\n\n'; //Get nodes and edges
+  Object.defineProperty(SaveLoadUtility, "exportGraph", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (pathwayDetails, cy, edgeEditing, graphJSON) {
+      console.log(graphJSON);
+      var returnString = pathwayDetails.pathwayTitle + '\n\n';
+      returnString += pathwayDetails.pathwayDetails + '\n\n'; //Get nodes and edges
 
-    var nodes = graphJSON.elements.nodes; // var edges = pathwayDetails.graphJSON.elements.edges;
+      var nodes = graphJSON.elements.nodes; // var edges = pathwayDetails.graphJSON.elements.edges;
 
-    var edges = cy.edges(); //Prepare Meta Line
+      var edges = cy.edges(); //Prepare Meta Line
 
-    returnString += '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY\tWIDTH\tHEIGHT--' + '\n';
-    console.log("Here");
+      returnString += '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY\tWIDTH\tHEIGHT--' + '\n';
+      console.log("Here");
 
-    if (nodes) {
-      for (var i = 0; i < nodes.length; i++) {
-        console.log("nodes[i]");
-        console.log(nodes[i]);
-        returnString += this.exportNode(nodes[i]);
-      }
-    } //Put a blank line between nodes and edges
-
-
-    returnString += '\n';
-    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\tINTERACTION_PUBMED_ID\tEDGE_NAME\tEDGE_BENDS\n';
-
-    if (edges) {
-      //Write edges
-      for (var i = 0; i < edges.length; i++) {
-        var edgeID = edges[i].data('id');
-        var edgeType = edges[i].data('type');
-        var source = edges[i].data('source');
-        var target = edges[i].data('target');
-        var pubmedIDs = edges[i].data('pubmedIDs');
-        var pubmedString = "";
-        var edgeName = edges[i].data('name') ? edges[i].data('name') : "";
-        var numberOfBendPoints = 0;
-        if (edgeEditing.getSegmentPoints(edges[i]) !== undefined) numberOfBendPoints = edgeEditing.getSegmentPoints(edges[i]).length / 2;
-        var bendPointPositions = "";
-
-        for (var j = 0; j < numberOfBendPoints; j++) {
-          bendPointPositions += "(" + edgeEditing.getSegmentPoints(edges[i])[2 * j] + ";" + edgeEditing.getSegmentPoints(edges[i])[2 * j + 1] + ")";
+      if (nodes) {
+        for (var i = 0; i < nodes.length; i++) {
+          console.log("nodes[i]");
+          console.log(nodes[i]);
+          returnString += this.exportNode(nodes[i]);
         }
+      } //Put a blank line between nodes and edges
 
-        if (pubmedIDs != undefined) {
-          for (var j = 0; j < pubmedIDs.length; j++) {
-            pubmedString += pubmedIDs[j];
-            if (j != pubmedIDs.length - 1) pubmedString += ";";
+
+      returnString += '\n';
+      returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\tINTERACTION_PUBMED_ID\tEDGE_NAME\tEDGE_BENDS\n';
+
+      if (edges) {
+        //Write edges
+        for (var i = 0; i < edges.length; i++) {
+          var edgeID = edges[i].data('id');
+          var edgeType = edges[i].data('type');
+          var source = edges[i].data('source');
+          var target = edges[i].data('target');
+          var pubmedIDs = edges[i].data('pubmedIDs');
+          var pubmedString = "";
+          var edgeName = edges[i].data('name') ? edges[i].data('name') : "";
+          var numberOfBendPoints = 0;
+          if (edgeEditing.getSegmentPoints(edges[i]) !== undefined) numberOfBendPoints = edgeEditing.getSegmentPoints(edges[i]).length / 2;
+          var bendPointPositions = "";
+
+          for (var j = 0; j < numberOfBendPoints; j++) {
+            bendPointPositions += "(" + edgeEditing.getSegmentPoints(edges[i])[2 * j] + ";" + edgeEditing.getSegmentPoints(edges[i])[2 * j + 1] + ")";
           }
-        }
 
-        returnString += edgeID + '\t' + source + '\t' + target + '\t' + edgeType + '\t' + pubmedString + '\t' + edgeName + '\t' + bendPointPositions + '\n';
-      }
-    } //Finally return a string that includes whole graph lovely and peacefully :)
-
-
-    return returnString;
-  };
-
-  SaveLoadUtility.exportAsSIFNX = function (pathwayDetails, graphJSON) {
-    var returnString = ""; //Get nodes and edges
-
-    var nodes = graphJSON.elements.nodes;
-    var edges = graphJSON.elements.edges;
-    var nodeMap = {}; //Put a blank line between nodes and edges
-
-    returnString += '\n';
-    returnString += 'PARTICIPANT\tPARTICIPANT_TYPE\tPARENT_ID\tPOSX\tPOSY\tWIDTH\tHEIGHT' + '\n';
-
-    if (nodes) {
-      for (var i = 0; i < nodes.length; i++) {
-        returnString += this.exportNode(nodes[i]);
-        nodeMap[nodes[i].data.id] = nodes[i];
-      }
-    } //Put a blank line between nodes and edges
-
-
-    returnString += '\n';
-    returnString += 'PARTICIPANT_A\tPARTICIPANT_B\tTYPE\tPUBMED_IDS\n';
-
-    if (edges) {
-      //Write edges
-      for (var i = 0; i < edges.length; i++) {
-        var edgeType = edges[i].data.type;
-        var source = edges[i].data.source;
-        var target = edges[i].data.target;
-        var edgeName = edges[i].data.name;
-        var pubmedIDs = edges[i].data.pubmedIDs;
-        var pubmedString = "";
-
-        if (pubmedIDs != undefined) {
-          for (var j = 0; j < pubmedIDs.length; j++) {
-            pubmedString += pubmedIDs[j];
-            if (j != pubmedIDs.length - 1) pubmedString += ";";
+          if (pubmedIDs != undefined) {
+            for (var j = 0; j < pubmedIDs.length; j++) {
+              pubmedString += pubmedIDs[j];
+              if (j != pubmedIDs.length - 1) pubmedString += ";";
+            }
           }
+
+          returnString += edgeID + '\t' + source + '\t' + target + '\t' + edgeType + '\t' + pubmedString + '\t' + edgeName + '\t' + bendPointPositions + '\n';
         }
-
-        returnString += nodeMap[source].data.name + '\t' + nodeMap[target].data.name + '\t' + edgeType + '\t' + pubmedString + '\t' + edgeName + '\n';
-      }
-    } //Finally return a string that includes whole graph lovely and peacefully :)
+      } //Finally return a string that includes whole graph lovely and peacefully :)
 
 
-    return returnString;
-  };
-
-  SaveLoadUtility.exportNode = function (node) {
-    //Node specific data fields
-    var nodeName = node.data.name;
-    var parentID = node.data.parent;
-    var nodeID = node.data.id;
-    var pos = node.position;
-    var nodeType = node.data.type;
-    var nodeW = node.data.w;
-    var nodeH = node.data.h; //Check if node has a parent, if not set parent id -1
-
-    if (node.data.parent) {
-      parentID = node.data.parent;
-    } else {
-      parentID = -1;
-    } // Write a line for a node
-
-
-    return nodeName + '\t' + nodeID + '\t' + nodeType + '\t' + parentID + '\t' + parseInt(pos.x) + '\t' + parseInt(pos.y) + '\t' + nodeW + '\t' + nodeH + '\n';
-  };
-
-  SaveLoadUtility.parseGraph = function (graph, isArray) {
-    var allEles = [];
-    var nodes = [];
-    var edges = []; // By lines
-    // Match all new line character representations
-
-    var seperator = /\r?\n|\r/;
-    var lines = isArray ? graph : graph.split(seperator);
-    var edgesStartIndex = -1; //console.log(lines);
-
-    var title = lines[0];
-    var description = lines[2]; // In old version description used to expand in multiple lines
-    // graphDataIndex holds the line index where the first --NODE_NAME occurs and is used later to load nodes
-
-    var graphDataIndex = 3;
-    var isFound = false;
-
-    while (graphDataIndex < lines.length) {
-      if (lines[graphDataIndex].includes("--NODE_NAME")) {
-        isFound = true;
-        break;
-      }
-
-      description += "\n" + lines[graphDataIndex];
-      graphDataIndex++;
+      return returnString;
     }
+  });
+  Object.defineProperty(SaveLoadUtility, "exportAsSIFNX", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (pathwayDetails, graphJSON) {
+      var returnString = ""; //Get nodes and edges
 
-    graphDataIndex++; // TODO AMENDMENT
+      var nodes = graphJSON.elements.nodes;
+      var edges = graphJSON.elements.edges;
+      var nodeMap = {}; //Put a blank line between nodes and edges
 
-    if (!isFound) {
-      graphDataIndex = 2;
-    } //TODO Legacy pathways workaround
+      returnString += '\n';
+      returnString += 'PARTICIPANT\tPARTICIPANT_TYPE\tPARENT_ID\tPOSX\tPOSY\tWIDTH\tHEIGHT' + '\n';
 
-
-    if (lines[0].includes("--NODE_NAME")) {
-      graphDataIndex = 1;
-      title = "New Pathway";
-      description = "";
-    } // start from first line skip node meta data
-
-
-    for (var i = graphDataIndex; i < lines.length; i++) {
-      // If we encounter a blank line, that means we need to parse edges from now on !
-      // so skip blank line and edge meta line
-      if (lines[i].length == 0 || lines[i] === "") {
-        edgesStartIndex = i + 2;
-        break;
-      } //Fetch a line for nodes
-
-
-      var lineData = lines[i].split('\t');
-      var nodeName = lineData[0];
-      var nodeID = lineData[1];
-      var nodeType = lineData[2];
-      var parentID = lineData[3];
-      var posX = lineData.length > 4 ? lineData[4] : "0";
-      var posY = lineData.length > 5 ? lineData[5] : "0";
-      var nodeW = lineData.length > 7 ? lineData[6] : nodeType === 'PROCESS' ? nodeName.length * 6 + 24 : "150";
-      var nodeH = lineData.length > 7 ? lineData[7] : nodeType === 'PROCESS' ? "24" : "52";
-
-      if (nodeName === " " || nodeName === "") {
-        console.log("Here empty"); //nodeName = "No Name " + (i + 1);
-      }
-
-      var newNode = {
-        group: 'nodes',
-        data: {
-          id: nodeID,
-          name: nodeName,
-          type: nodeType,
-          w: nodeW,
-          h: nodeH,
-          parent: -1
-        },
-        position: {
-          x: parseInt(posX),
-          y: parseInt(posY)
+      if (nodes) {
+        for (var i = 0; i < nodes.length; i++) {
+          returnString += this.exportNode(nodes[i]);
+          nodeMap[nodes[i].data.id] = nodes[i];
         }
-      };
-
-      if (parentID != '-1') {
-        newNode.data.parent = parentID;
-      }
-
-      nodes.push(newNode);
-    } //console.log(edgesStartIndex);
-    //Read edges
+      } //Put a blank line between nodes and edges
 
 
-    for (var i_1 = edgesStartIndex; i_1 < lines.length; i_1++) {
-      //If we reach EOF we break loop
-      if (lines[i_1].length == 0) {
-        break;
-      }
+      returnString += '\n';
+      returnString += 'PARTICIPANT_A\tPARTICIPANT_B\tTYPE\tPUBMED_IDS\n';
 
-      if (!isArray) console.log(lines);
-      var lineData = lines[i_1].split('\t');
-      var edgeID = lineData[0];
-      var edgeSource = lineData[1];
-      var edgeTarget = lineData[2];
-      var edgeType = lineData[3];
-      var pubmedIDs = lineData.length > 4 ? lineData[4].split(';') : [];
-      var label = lineData.length > 5 ? lineData[5] : '';
-      var bendPoints = lineData.length > 6 ? lineData[6] : '';
-      var bendPointPositions = [];
+      if (edges) {
+        //Write edges
+        for (var i = 0; i < edges.length; i++) {
+          var edgeType = edges[i].data.type;
+          var source = edges[i].data.source;
+          var target = edges[i].data.target;
+          var edgeName = edges[i].data.name;
+          var pubmedIDs = edges[i].data.pubmedIDs;
+          var pubmedString = "";
 
-      if (bendPoints) {
-        var bendPair = bendPoints.split(')'); //The last element of bendPair array is ""
+          if (pubmedIDs != undefined) {
+            for (var j = 0; j < pubmedIDs.length; j++) {
+              pubmedString += pubmedIDs[j];
+              if (j != pubmedIDs.length - 1) pubmedString += ";";
+            }
+          }
 
-        for (var j = 0; j < bendPair.length - 1; j++) {
-          var separatorIndex = bendPair[j].indexOf(";");
-          var x = bendPair[j].substring(1, separatorIndex);
-          var y = bendPair[j].substring(separatorIndex + 1, bendPair[j].length);
-          bendPointPositions.push({
-            x: parseFloat(x),
-            y: parseFloat(y)
-          });
+          returnString += nodeMap[source].data.name + '\t' + nodeMap[target].data.name + '\t' + edgeType + '\t' + pubmedString + '\t' + edgeName + '\n';
         }
+      } //Finally return a string that includes whole graph lovely and peacefully :)
+
+
+      return returnString;
+    }
+  });
+  Object.defineProperty(SaveLoadUtility, "exportNode", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (node) {
+      //Node specific data fields
+      var nodeName = node.data.name;
+      var parentID = node.data.parent;
+      var nodeID = node.data.id;
+      var pos = node.position;
+      var nodeType = node.data.type;
+      var nodeW = node.data.w;
+      var nodeH = node.data.h; //Check if node has a parent, if not set parent id -1
+
+      if (node.data.parent) {
+        parentID = node.data.parent;
+      } else {
+        parentID = -1;
+      } // Write a line for a node
+
+
+      return nodeName + '\t' + nodeID + '\t' + nodeType + '\t' + parentID + '\t' + parseInt(pos.x) + '\t' + parseInt(pos.y) + '\t' + nodeW + '\t' + nodeH + '\n';
+    }
+  });
+  Object.defineProperty(SaveLoadUtility, "parseGraph", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (graph, isArray) {
+      var allEles = [];
+      var nodes = [];
+      var edges = []; // By lines
+      // Match all new line character representations
+
+      var seperator = /\r?\n|\r/;
+      var lines = isArray ? graph : graph.split(seperator);
+      var edgesStartIndex = -1; //console.log(lines);
+
+      var title = lines[0];
+      var description = lines[2]; // In old version description used to expand in multiple lines
+      // graphDataIndex holds the line index where the first --NODE_NAME occurs and is used later to load nodes
+
+      var graphDataIndex = 3;
+      var isFound = false;
+
+      while (graphDataIndex < lines.length) {
+        if (lines[graphDataIndex].includes("--NODE_NAME")) {
+          isFound = true;
+          break;
+        }
+
+        description += "\n" + lines[graphDataIndex];
+        graphDataIndex++;
       }
+
+      graphDataIndex++; // TODO AMENDMENT
+
+      if (!isFound) {
+        graphDataIndex = 2;
+      } //TODO Legacy pathways workaround
+
+
+      if (lines[0].includes("--NODE_NAME")) {
+        graphDataIndex = 1;
+        title = "New Pathway";
+        description = "";
+      } // start from first line skip node meta data
+
+
+      for (var i = graphDataIndex; i < lines.length; i++) {
+        // If we encounter a blank line, that means we need to parse edges from now on !
+        // so skip blank line and edge meta line
+        if (lines[i].length == 0 || lines[i] === "") {
+          edgesStartIndex = i + 2;
+          break;
+        } //Fetch a line for nodes
+
+
+        var lineData = lines[i].split('\t');
+        var nodeName = lineData[0];
+        var nodeID = lineData[1];
+        var nodeType = lineData[2];
+        var parentID = lineData[3];
+        var posX = lineData.length > 4 ? lineData[4] : "0";
+        var posY = lineData.length > 5 ? lineData[5] : "0";
+        var nodeW = lineData.length > 7 ? lineData[6] : nodeType === 'PROCESS' ? nodeName.length * 6 + 24 : "150";
+        var nodeH = lineData.length > 7 ? lineData[7] : nodeType === 'PROCESS' ? "24" : "52";
+
+        if (nodeName === " " || nodeName === "") {
+          console.log("Here empty"); //nodeName = "No Name " + (i + 1);
+        }
+
+        var newNode = {
+          group: 'nodes',
+          data: {
+            id: nodeID,
+            name: nodeName,
+            type: nodeType,
+            w: nodeW,
+            h: nodeH,
+            parent: -1
+          },
+          position: {
+            x: parseInt(posX),
+            y: parseInt(posY)
+          }
+        };
+
+        if (parentID != '-1') {
+          newNode.data.parent = parentID;
+        }
+
+        nodes.push(newNode);
+      } //console.log(edgesStartIndex);
+      //Read edges
+
+
+      for (var i_1 = edgesStartIndex; i_1 < lines.length; i_1++) {
+        //If we reach EOF we break loop
+        if (lines[i_1].length == 0) {
+          break;
+        }
+
+        if (!isArray) console.log(lines);
+        var lineData = lines[i_1].split('\t');
+        var edgeID = lineData[0];
+        var edgeSource = lineData[1];
+        var edgeTarget = lineData[2];
+        var edgeType = lineData[3];
+        var pubmedIDs = lineData.length > 4 ? lineData[4].split(';') : [];
+        var label = lineData.length > 5 ? lineData[5] : '';
+        var bendPoints = lineData.length > 6 ? lineData[6] : '';
+        var bendPointPositions = [];
+
+        if (bendPoints) {
+          var bendPair = bendPoints.split(')'); //The last element of bendPair array is ""
+
+          for (var j = 0; j < bendPair.length - 1; j++) {
+            var separatorIndex = bendPair[j].indexOf(";");
+            var x = bendPair[j].substring(1, separatorIndex);
+            var y = bendPair[j].substring(separatorIndex + 1, bendPair[j].length);
+            bendPointPositions.push({
+              x: parseFloat(x),
+              y: parseFloat(y)
+            });
+          }
+        }
+        /*
+              console.log("From parseGraph");
+              console.log(lineData);
+              console.log(edgeType);*/
+
+
+        var newEdge = {
+          group: 'edges',
+          data: {
+            id: edgeID,
+            type: edgeType,
+            source: edgeSource,
+            target: edgeTarget,
+            pubmedIDs: pubmedIDs,
+            name: label,
+            bendPointPositions: bendPointPositions
+            /*[{x:100,y:100}]*/
+
+          }
+        };
+        edges.push(newEdge);
+      } // edgeEditing.initBendPoints(cy.edges());
+
       /*
-            console.log("From parseGraph");
-            console.log(lineData);
-            console.log(edgeType);*/
+      console.log("Edges and Nodes");
+      console.log(edges)
+      console.log(nodes)*/
 
 
-      var newEdge = {
-        group: 'edges',
-        data: {
-          id: edgeID,
-          type: edgeType,
-          source: edgeSource,
-          target: edgeTarget,
-          pubmedIDs: pubmedIDs,
-          name: label,
-          bendPointPositions: bendPointPositions
-          /*[{x:100,y:100}]*/
-
-        }
+      return {
+        title: title,
+        description: description,
+        nodes: nodes,
+        edges: edges
       };
-      edges.push(newEdge);
-    } // edgeEditing.initBendPoints(cy.edges());
-
-    /*
-    console.log("Edges and Nodes");
-    console.log(edges)
-    console.log(nodes)*/
-
-
-    return {
-      title: title,
-      description: description,
-      nodes: nodes,
-      edges: edges
-    };
-  };
-
+    }
+  });
   return SaveLoadUtility;
 }();
 
@@ -12027,7 +13299,7 @@ var CytoscapeArea_extends = undefined && undefined.__extends || function () {
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -12116,7 +13388,120 @@ function (_super) {
   function CytoscapeArea(props) {
     var _this = _super.call(this, props) || this;
 
-    _this.isMountedFirst = true;
+    Object.defineProperty(_this, "cy", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "cyDiv", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "editor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "edgeAddingMode", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "viewOperationsManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "qtipManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "genomicDataExplorerView", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "pathwayDetailsView", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "viewUtilities", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "isCollaborative", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "isCbioPortal", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "shareDBManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "cxtMenuManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "dragDropNodeAddManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "undoRedoManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "portalAccessor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "isMountedFirst", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: true
+    });
+    Object.defineProperty(_this, "eh", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "lastSelectedEdge", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
     _this.isCollaborative = props.isCollaborative;
     _this.edgeAddingMode = 0;
     _this.isCbioPortal = props.isCbioPortal;
@@ -12125,659 +13510,716 @@ function (_super) {
     // this.createCBioPortalAccessModal();
   }
 
-  CytoscapeArea.prototype.componentWillUpdate = function (nextProps) {
-    console.log("Component will update", nextProps.selectedPathway);
-    this.getPathway(nextProps.selectedPathway);
-  }; // This method only opens pathways that are available in pathway.json. Namely, imported or merged pathways are not opened via this method.
+  Object.defineProperty(CytoscapeArea.prototype, "componentWillUpdate", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nextProps) {
+      console.log("Component will update", nextProps.selectedPathway);
+      this.getPathway(nextProps.selectedPathway);
+    }
+  }); // This method only opens pathways that are available in pathway.json. Namely, imported or merged pathways are not opened via this method.
   // Yet, they individually call parsing method.
 
+  Object.defineProperty(CytoscapeArea.prototype, "getPathway", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (selectedPathway) {
+      if (!selectedPathway || selectedPathway === '') return;
+      var data = pathways[selectedPathway]; // It might be non-existent due to pathway being created using collaborative mode, or pathway loaded elsewhere (import vs.)
 
-  CytoscapeArea.prototype.getPathway = function (selectedPathway) {
-    if (!selectedPathway || selectedPathway === '') return;
-    var data = pathways[selectedPathway]; // It might be non-existent due to pathway being created using collaborative mode, or pathway loaded elsewhere (import vs.)
-
-    if (!data) {
-      return;
-    } // TODO Problematic const data = pathways["../samples/BLCA-2014-RTK-RAS-PI(3)K-pathway.txt"];
+      if (!data) {
+        return;
+      } // TODO Problematic const data = pathways["../samples/BLCA-2014-RTK-RAS-PI(3)K-pathway.txt"];
 
 
-    var parsedGraph = utils_SaveLoadUtility.parseGraph(data, true);
-    var allEles = parsedGraph;
-    this.editor.loadFile(allEles.nodes, allEles.edges);
-  };
-
-  CytoscapeArea.prototype.render = function () {
-    return external_react_default.a.createElement("div", {
-      className: this.props.isCbioPortal ? "" : "cyContainer",
-      style: {
-        border: 0
-      }
-    }, external_react_default.a.createElement("div", {
-      ref: this.cyDivHandler,
-      id: "cy",
-      style: {
-        "border": "3px solid " + (this.isCbioPortal ? "#4389c0" : "#1abc9c"),
-        "height": this.isCbioPortal ? "800px" : "100%",
-        "borderRadius": "6px",
-        marginTop: "0px"
-      }
-    }), external_react_default.a.createElement("div", {
-      className: "cytoscape-navigator-wrapper"
-    }));
-  };
-
-  CytoscapeArea.prototype.componentDidMount = function () {
-    if (this.isMountedFirst) {
-      this.init();
-      this.isMountedFirst = false;
+      var parsedGraph = utils_SaveLoadUtility.parseGraph(data, true);
+      var allEles = parsedGraph;
+      this.editor.loadFile(allEles.nodes, allEles.edges);
     }
-
-    this.getPathway(this.props.selectedPathway);
-  };
-
-  CytoscapeArea.prototype.cyDivHandler = function (div) {
-    this.cyDiv = div;
-  };
-
-  CytoscapeArea.prototype.init = function () {
-    // Create portal accessor
-    this.portalAccessor = new utils_CBioPortalAccessor(); // Initializes cytoscape
-
-    this.initCyJS(); // Initialize cytoscape based handlers here
-
-    this.initCyHandlers();
-    this.initKeyboardHandlers();
-    this.initUndoRedoFunctionality();
-    this.initCBioPortalFunctionalities();
-    this.placePanzoomAndOverlay(); //this.appManager = this;
-  };
-
-  CytoscapeArea.prototype.placePanzoomAndOverlay = function () {
-    //TODO place navigator !!!
-    var offset = 5; // @ts-ignore
-
-    var topCy = external_jquery_default()(this.cyDiv).offset().top; //var bottomCy = $('.cyContainer').offset().bottom;
-    // @ts-ignore
-
-    var leftCy = external_jquery_default()(this.cyDiv).offset().left; //var rightCy = $('.cyContainer').offset().right;
-    // @ts-ignore
-
-    var heightCy = external_jquery_default()(this.cyDiv).outerHeight(); // @ts-ignore
-
-    var widthCy = external_jquery_default()(this.cyDiv).outerWidth();
-    var heightNavigator = external_jquery_default()('.cytoscape-navigator-wrapper').outerHeight();
-    var widthNavigator = external_jquery_default()('.cytoscape-navigator-wrapper').outerWidth();
-    var heightPatwayNavbar = external_jquery_default()('.pathway-navbar').outerHeight();
-    var heightPathwayToolbar = external_jquery_default()('.pathway-toolbar').outerHeight();
-    var widthSideBar = external_jquery_default()('.sideBarWrapper').outerWidth();
-    var widthcBioPortalSideBar = external_jquery_default()('.cBioPortal-sidebar').outerWidth();
-    console.log(widthSideBar, widthCy, leftCy, widthNavigator, offset); //706px 1513.15px
-    //694px 1391.15px
-    //var heightPanzoom = $('.cy-panzoom').outerHeight();
-    //var widthPanzoom = $('.cy-panzoom').outerWidth();
-
-    if (!this.isCbioPortal) {
-      external_jquery_default()('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset + 13);
-      external_jquery_default()('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset + 21 - 0.5 + 0.35); //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
-    } else {
-      external_jquery_default()('.cytoscape-navigator-wrapper').css('bottom', 10.5);
-      external_jquery_default()('.cytoscape-navigator-wrapper').css('right', 0); //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator + widthcBioPortalSideBar + offset - widthSideBar);
-    }
-
-    external_jquery_default()('.cytoscape-navigator-wrapper').css('z-index', 1039); //Relative is used so that its position depends on the below properties
-
-    external_jquery_default()('.cy-panzoom').css('position', 'relative');
-    external_jquery_default()('.cy-panzoom').css('top', 2);
-    external_jquery_default()('.cy-panzoom').css('left', widthCy - 57);
-    external_jquery_default()('.cy-panzoom').css('z-index', 1039); //Makes the width of panzoom container to 0
-
-    external_jquery_default()('.cy-panzoom').css('width', 200);
-  };
-
-  CytoscapeArea.prototype.getPathwayData = function () {
-    return this.pathwayDetailsView.getPathwayData();
-  };
-
-  CytoscapeArea.prototype.initCyJS = function () {
-    var _this = this;
-
-    try {
-      panzoom(external_cytoscape_default.a, external_jquery_default.a); // register extension
-    } catch (err) {
-      console.log(err);
-    } // cxtmenu( cytoscape, $ ); // register extension
-
-
-    try {
-      regCose(external_cytoscape_default.a); // register extension
-    } catch (err) {
-      console.log(err);
-    }
-
-    try {
-      CytoscapeArea_navigator(external_cytoscape_default.a); // register extension
-    } catch (err) {
-      console.log(err);
-    }
-
-    try {
-      grid_guide(external_cytoscape_default.a, external_jquery_default.a); // register extension
-    } catch (err) {
-      console.log(err);
-    }
-
-    try {
-      undoRedo(external_cytoscape_default.a); // register extension
-    } catch (err) {
-      console.log(err);
-    }
-
-    try {
-      contextMenus(external_cytoscape_default.a, external_jquery_default.a); // register extension
-    } catch (err) {
-      console.log(err);
-    }
-
-    try {
-      nodeResize(external_cytoscape_default.a, external_jquery_default.a, konva); // register extension
-    } catch (err) {
-      console.log(err);
-    }
-
-    try {
-      edgeEditing(external_cytoscape_default.a, external_jquery_default.a); // register extension
-    } catch (err) {
-      console.log(err);
-    }
-
-    try {
-      viewUtilities(external_cytoscape_default.a, external_jquery_default.a); // register extension
-    } catch (err) {
-      console.log(err);
-    }
-
-    try {
-      cyqtip(external_cytoscape_default.a, external_jquery_default.a); // register extension
-    } catch (err) {
-      console.log(err);
-    }
-
-    try {
-      edgeHandles(external_cytoscape_default.a, external_jquery_default.a);
-    } catch (err) {
-      console.log(err);
-    }
-
-    this.edgeAddingMode = 0; // var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
-
-    this.cy = external_cytoscape_default()({
-      container: this.cyDiv,
-      boxSelectionEnabled: true,
-      autounselectify: false,
-      wheelSensitivity: 0.1,
-      style: styleSheet,
-      // elements: allEles,
-      textureOnViewport: false,
-      motionBlur: true,
-      layout: {
-        name: 'preset'
-      }
-    });
-    this.undoRedoManager = this.cy.undoRedo();
-    console.log("undoRedoManager" + this.undoRedoManager); // Create Manager Classes
-
-    this.shareDBManager = new managers_ShareDBManager(function () {
-      var dbDoc = _this.shareDBManager.getDoc();
-    });
-    this.editor = new managers_EditorActionsManager(this.isCollaborative, this.shareDBManager, this.cy, this.isCbioPortal, this.undoRedoManager, this.portalAccessor, this.props.profiles);
-    this.shareDBManager.setEditor(this.editor);
-
-    if (this.isCollaborative) {
-      this.shareDBManager.initShareDB();
-    } //@ts-ignore
-
-
-    window.editorActionsManager = this.editor;
-    this.qtipManager = new managers_QtipManager(this.cy, this.editor);
-    this.cxtMenuManager = new managers_ContextMenuManager(this.cy, this.editor, this.isCbioPortal, this.props.handleOpen, this.undoRedoManager, this.props.isCollaborative);
-    this.dragDropNodeAddManager = new utils_DragDropNodeAddPlugin(this.editor, this.cy, this.props.pathwayHandler); // Initialize panzoom
-
-    this.cy.panzoom(panzoomOpts); // Node Add initialization
-
-    this.cy.nodeadd({
-      // Once the explanationText is cast to uppercase they will be node types
-      components: [{
-        container: external_jquery_default()('#simpleNodeDiv'),
-        nodeType: 'Gene',
-        icon: gene_default.a
-      }, {
-        container: external_jquery_default()('#familyNodeDiv'),
-        nodeType: 'Family',
-        icon: family_default.a
-      }, {
-        container: external_jquery_default()('#complexNodeDiv'),
-        nodeType: 'Complex',
-        icon: complex_default.a
-      }, {
-        container: external_jquery_default()('#compartmentNodeDiv'),
-        nodeType: 'Compartment',
-        icon: compartment_default.a
-      }, {
-        container: external_jquery_default()('#processNodeDiv'),
-        nodeType: 'Process',
-        icon: process_default.a
-      }]
-    });
-    var self = this;
-    var edgeHandleDefaults = {
-      preview: true,
-      stackOrder: 4,
-      handleSize: 10,
-      handleColor: '#1abc9c',
-      handleLineType: 'ghost',
-      handleLineWidth: 1,
-      handleNodes: 'node',
-      hoverDelay: 1,
-      cxt: false,
-      enabled: false,
-      toggleOffOnLeave: true,
-      edgeType: function (sourceNode, targetNode) {
-        // can return 'flat' for flat edges between nodes or 'node' for intermediate node between them
-        // returning null/undefined means an edge can't be added between the two nodes
-        return 'flat';
-      },
-      handlePosition: function (node) {
-        return 'middle top'; // sets the position of the handle in the format of "X-AXIS Y-AXIS" such as "left top", "middle top"
-      },
-      loopAllowed: function (node) {
-        // for the specified node, return whether edges from itself to itself are allowed
-        return false;
-      },
-      nodeLoopOffset: -50,
-      nodeParams: function (sourceNode, targetNode) {
-        // for edges between the specified source and target
-        // return element object to be passed to cy.add() for intermediary node
-        return {};
-      },
-      edgeParams: function (sourceNode, targetNode, i) {
-        // for edges between the specified source and target
-        // return element object to be passed to cy.add() for edge
-        // NB: i indicates edge index in case of edgeType: 'node'
-        return {};
-      },
-      start: function (sourceNode) {
-        console.log("Inside start"); // fired when edgehandles interaction starts (drag on handle)
-
-        var type = self.getGlobalEdgeType();
-        console.log("Type");
-        console.log(type); //self.cy.edgehandles('option', 'ghostEdgeType', type);
-      },
-      complete: function (sourceNode, targetNodes, addedEntities) {
-        // @ts-ignore
-        console.log(window.edgeAddingMode); //  // Remove recently added edge !
-        //  // FBI takes this case from now on :O
-        //  // We will take care of addition in our manager :)
-
-        self.cy.remove(addedEntities);
-        console.log(addedEntities);
-        self.editor.addEdge({
-          source: sourceNode.id(),
-          target: targetNodes[0].id(),
-          // @ts-ignore
-          type: self.getGlobalEdgeType(window.edgeAddingMode),
-          pubmedIDs: [],
-          name: ""
-        });
-      },
-      stop: function (sourceNode) {
-        // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
-        //TODO refactor this, so terrible for now
-        //$('.edge-palette a').blur().removeClass('active');
-        self.edgeAddingMode = -1;
-        self.eh.disable();
-        self.eh.hide();
-        self.props.setActiveEdge(-1);
-      }
-    }; //Edge Handles initialization
-
-    console.log("Edge Handles inside Cytoscape ARea");
-    this.eh = this.cy.edgehandles(edgeHandleDefaults);
-    this.eh.disable();
-    this.props.editorHandler(this.editor, this.eh, this.undoRedoManager);
-    if (!this.isCbioPortal) this.cy.nodeResize({
-      padding: 5,
-      undoable: true,
-      grappleSize: 8,
-      grappleColor: "#ffc90e",
-      inactiveGrappleStroke: "inside 1px blue",
-      boundingRectangle: true,
-      boundingRectangleLineDash: [4, 8],
-      boundingRectangleLineColor: "ffc90e",
-      boundingRectangleLineWidth: 1.5,
-      zIndex: 999,
-      moveSelectedNodesOnKeyEvents: function () {
-        return true;
-      },
-      minWidth: function (node) {
-        var data = node.data("resizeMinWidth");
-        return data ? data : 15;
-      },
-      minHeight: function (node) {
-        var data = node.data("resizeMinHeight");
-        return data ? data : 15;
-      },
-      // Getters for some style properties the defaults returns ele.css('property-name')
-      // you are encouraged to override these getters
-      getCompoundMinWidth: function (node) {
-        return node.style('min-width');
-      },
-      getCompoundMinHeight: function (node) {
-        return node.style('min-height');
-      },
-      getCompoundMinWidthBiasRight: function (node) {
-        return node.style('min-width-bias-right');
-      },
-      getCompoundMinWidthBiasLeft: function (node) {
-        return node.style('min-width-bias-left');
-      },
-      getCompoundMinHeightBiasTop: function (node) {
-        return node.style('min-height-bias-top');
-      },
-      getCompoundMinHeightBiasBottom: function (node) {
-        return node.style('min-height-bias-bottom');
-      },
-      isFixedAspectRatioResizeMode: function (node) {
-        return node.is(".fixedAspectRatioResizeMode");
-      },
-      isNoResizeMode: function (node) {
-        return undefined;
-      },
-      // These optional function will be executed to set the width/height of a node in this extension
-      // Using node.css() is not a recommended way (http://js.cytoscape.org/#eles.style) to do this. Therefore, overriding these defaults
-      // so that a data field or something like that will be used to set node dimentions instead of directly calling node.css()
-      // is highly recommended (Of course this will require a proper setting in the stylesheet).
-      setWidth: function (node, width) {
-        node.style('width', width);
-      },
-      setHeight: function (node, height) {
-        node.style('height', height);
-      },
-      setCompoundMinWidth: function (node, minWidth) {
-        node.style('min-width', minWidth);
-      },
-      setCompoundMinHeight: function (node, minHeight) {
-        node.style('min-height', minHeight);
-      },
-      setCompoundMinWidthBiasLeft: function (node, minWidthBiasLeft) {
-        node.style('min-width-bias-left', minWidthBiasLeft);
-      },
-      setCompoundMinWidthBiasRight: function (node, minHeightBiasRight) {
-        node.style('min-width-bias-right', minHeightBiasRight);
-      },
-      setCompoundMinHeightBiasTop: function (node, minHeightBiasTop) {
-        node.style('min-height-bias-top', minHeightBiasTop);
-      },
-      setCompoundMinHeightBiasBottom: function (node, minHeightBiasBottom) {
-        node.style('min-height-bias-bottom', minHeightBiasBottom);
-      },
-      cursors: {
-        // May take any "cursor" css property
-        default: "default",
-        inactive: "not-allowed",
-        nw: "nw-resize",
-        n: "n-resize",
-        ne: "ne-resize",
-        e: "e-resize",
-        se: "se-resize",
-        s: "s-resize",
-        sw: "sw-resize",
-        w: "w-resize"
-      },
-      resizeToContentCueImage: resizeCue_default.a,
-      resizeToContentFunction: this.editor.resizeNodesToContent.bind(this.editor)
-    }); //Navigator for cytoscape js
-
-    var navDefaults = {
-      container: '.cytoscape-navigator-wrapper' // can be a HTML or jQuery element or jQuery selector
-      ,
-      viewLiveFramerate: 0 // set false to update graph pan only on drag end; set 0 to do it instantly; set a number (frames per second) to update not more than N times per second
-      ,
-      thumbnailEventFramerate: 10 // max thumbnail's updates per second triggered by graph updates
-      ,
-      thumbnailLiveFramerate: false // max thumbnail's updates per second. Set false to disable
-      ,
-      dblClickDelay: 200 // milliseconds
-      ,
-      removeCustomContainer: true // destroy the container specified by user on plugin destroy
-      ,
-      rerenderDelay: 100 // ms to throttle rerender updates to the panzoom for performance
-
-    }; //TODO: AMENDMENT declaration removed
-
-    this.cy.navigator(navDefaults); // get navigator instance, nav
-
-    var viewUtilitiesOpts = {
-      node: {
-        highlighted: {
-          'border-width': 2,
-          'border-color': '#bc1142'
-        },
-        unhighlighted: {
-          'opacity': function (ele) {
-            // We return the same opacity because to override the unhibhlighted ele opacity in view-utilities
-            return ele.css('opacity');
-          } // styles for when nodes are unhighlighted.}
-
+  });
+  Object.defineProperty(CytoscapeArea.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      return external_react_default.a.createElement("div", {
+        className: this.props.isCbioPortal ? "" : "cyContainer",
+        style: {
+          border: 0
         }
-      },
-      edge: {
-        highlighted: {},
-        unhighlighted: {
-          'opacity': function (ele) {
-            // We return the same opacity because to override the unhibhlighted ele opacity in view-utilities
-            return ele.css('opacity');
-          } // styles for when edges are unhighlighted.
-
+      }, external_react_default.a.createElement("div", {
+        ref: this.cyDivHandler,
+        id: "cy",
+        style: {
+          "border": "3px solid " + (this.isCbioPortal ? "#4389c0" : "#1abc9c"),
+          "height": this.isCbioPortal ? "800px" : "100%",
+          "borderRadius": "6px",
+          marginTop: "0px"
         }
-      },
-      setVisibilityOnHide: false,
-      setDisplayOnHide: true,
-      neighbor: function () {
-        return false;
-      },
-      neighborSelectTime: 500 //ms, time to taphold to select desired neighbors
-
-    };
-    this.viewUtilities = this.cy.viewUtilities(viewUtilitiesOpts);
-    this.placePanzoomAndOverlay();
-  };
-
-  CytoscapeArea.prototype.getGlobalEdgeType = function () {
-    var type = "NONE"; // @ts-ignore
-
-    if (window.edgeAddingMode === 1) {
-      type = 'ACTIVATES';
-    } // @ts-ignore
-    else if (window.edgeAddingMode === 2) {
-        type = 'INHIBITS';
-      } // @ts-ignore
-      else if (window.edgeAddingMode === 3) {
-          type = 'INDUCES';
-        } // @ts-ignore
-        else if (window.edgeAddingMode === 4) {
-            type = 'REPRESSES';
-          } // @ts-ignore
-          else if (window.edgeAddingMode === 5) {
-              type = 'BINDS';
-            }
-
-    return type;
-  };
-
-  CytoscapeArea.prototype.initCyHandlers = function () {
-    var _this = this;
-
-    var that = this;
-    var tappedBefore;
-    var tappedTimeout;
-    this.cy.on('tap', function (event) {
-      var tappedNow = event.target;
-
-      if (tappedTimeout !== -1 && tappedBefore !== -1) {
-        clearTimeout(tappedTimeout);
+      }), external_react_default.a.createElement("div", {
+        className: "cytoscape-navigator-wrapper"
+      }));
+    }
+  });
+  Object.defineProperty(CytoscapeArea.prototype, "componentDidMount", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      if (this.isMountedFirst) {
+        this.init();
+        this.isMountedFirst = false;
       }
 
-      if (tappedBefore === tappedNow) {
-        tappedNow.trigger('doubleTap');
-        tappedBefore = -1;
+      this.getPathway(this.props.selectedPathway);
+    }
+  });
+  Object.defineProperty(CytoscapeArea.prototype, "cyDivHandler", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (div) {
+      this.cyDiv = div;
+    }
+  });
+  Object.defineProperty(CytoscapeArea.prototype, "init", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      // Create portal accessor
+      this.portalAccessor = new utils_CBioPortalAccessor(); // Initializes cytoscape
+
+      this.initCyJS(); // Initialize cytoscape based handlers here
+
+      this.initCyHandlers();
+      this.initKeyboardHandlers();
+      this.initUndoRedoFunctionality();
+      this.initCBioPortalFunctionalities();
+      this.placePanzoomAndOverlay(); //this.appManager = this;
+    }
+  });
+  Object.defineProperty(CytoscapeArea.prototype, "placePanzoomAndOverlay", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      //TODO place navigator !!!
+      var offset = 5; // @ts-ignore
+
+      var topCy = external_jquery_default()(this.cyDiv).offset().top; //var bottomCy = $('.cyContainer').offset().bottom;
+      // @ts-ignore
+
+      var leftCy = external_jquery_default()(this.cyDiv).offset().left; //var rightCy = $('.cyContainer').offset().right;
+      // @ts-ignore
+
+      var heightCy = external_jquery_default()(this.cyDiv).outerHeight(); // @ts-ignore
+
+      var widthCy = external_jquery_default()(this.cyDiv).outerWidth();
+      var heightNavigator = external_jquery_default()('.cytoscape-navigator-wrapper').outerHeight();
+      var widthNavigator = external_jquery_default()('.cytoscape-navigator-wrapper').outerWidth();
+      var heightPatwayNavbar = external_jquery_default()('.pathway-navbar').outerHeight();
+      var heightPathwayToolbar = external_jquery_default()('.pathway-toolbar').outerHeight();
+      var widthSideBar = external_jquery_default()('.sideBarWrapper').outerWidth();
+      var widthcBioPortalSideBar = external_jquery_default()('.cBioPortal-sidebar').outerWidth();
+      console.log(widthSideBar, widthCy, leftCy, widthNavigator, offset); //706px 1513.15px
+      //694px 1391.15px
+      //var heightPanzoom = $('.cy-panzoom').outerHeight();
+      //var widthPanzoom = $('.cy-panzoom').outerWidth();
+
+      if (!this.isCbioPortal) {
+        external_jquery_default()('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset + 13);
+        external_jquery_default()('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset + 21 - 0.5 + 0.35); //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
       } else {
-        // @ts-ignore TODO AMENDMENTsa
-        tappedTimeout = setTimeout(function () {
-          tappedBefore = -1;
-        }, 300);
-
-        if (tappedNow && tappedNow.isNode && tappedNow.isNode()) {
-          external_jquery_default()(".qtip").remove();
-        }
-
-        if (tappedNow && tappedNow.isEdge && tappedNow.isEdge()) {
-          external_jquery_default()(".qtip").remove();
-        }
-
-        tappedBefore = tappedNow;
+        external_jquery_default()('.cytoscape-navigator-wrapper').css('bottom', 10.5);
+        external_jquery_default()('.cytoscape-navigator-wrapper').css('right', 0); //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator + widthcBioPortalSideBar + offset - widthSideBar);
       }
-    });
-    this.cy.on('doubleTap', 'node', function (e) {
-      // if cBioPortal ignore
-      if (that.props.isCbioPortal) return;
-      var eventIsDirect = e.target === this;
 
-      if (eventIsDirect) {
-        external_jquery_default()(".qtip").remove();
-        that.qtipManager.addQtipToElements(e.target);
-        e.target.trigger("showqtipevent");
+      external_jquery_default()('.cytoscape-navigator-wrapper').css('z-index', 1039); //Relative is used so that its position depends on the below properties
+
+      external_jquery_default()('.cy-panzoom').css('position', 'relative');
+      external_jquery_default()('.cy-panzoom').css('top', 2);
+      external_jquery_default()('.cy-panzoom').css('left', widthCy - 57);
+      external_jquery_default()('.cy-panzoom').css('z-index', 1039); //Makes the width of panzoom container to 0
+
+      external_jquery_default()('.cy-panzoom').css('width', 200);
+    }
+  });
+  Object.defineProperty(CytoscapeArea.prototype, "getPathwayData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      return this.pathwayDetailsView.getPathwayData();
+    }
+  });
+  Object.defineProperty(CytoscapeArea.prototype, "initCyJS", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
+
+      try {
+        panzoom(external_cytoscape_default.a, external_jquery_default.a); // register extension
+      } catch (err) {
+        console.log(err);
+      } // cxtmenu( cytoscape, $ ); // register extension
+
+
+      try {
+        regCose(external_cytoscape_default.a); // register extension
+      } catch (err) {
+        console.log(err);
       }
-    });
-    this.cy.on('doubleTap', 'edge', function (e) {
-      // if cBioPortal ignore
-      if (that.props.isCbioPortal) return;
-      var eventIsDirect = e.target === this;
 
-      if (eventIsDirect) {
-        external_jquery_default()(".qtip").remove();
-        that.qtipManager.addQtipToElements(e.target);
-        e.target.trigger("showqtipevent");
+      try {
+        CytoscapeArea_navigator(external_cytoscape_default.a); // register extension
+      } catch (err) {
+        console.log(err);
       }
-    });
-    this.cy.on('select', 'node', function (e) {
-      _this.editor.pushSelectedNodeStack(e.target);
-    }); // this.cy.on('select', 'edge', function( e )
-    // {
-    //   var eventIsDirect = (e.target === this);
-    //   $(".qtip").remove();
-    //
-    //   if( eventIsDirect ) {
-    //       that.qtipManager.addQtipToElements(e.target);
-    //   }
-    // });
 
-    this.cy.on('unselect', 'node', function (e) {
-      _this.editor.removeElementFromSelectedNodeStack(e.target);
-    });
-    this.cy.on('free', 'node', function (e) {
-      //Collect all nodes with descendants in case of compounds
-      var selectedNodes = _this.cy.nodes(':selected');
+      try {
+        grid_guide(external_cytoscape_default.a, external_jquery_default.a); // register extension
+      } catch (err) {
+        console.log(err);
+      }
 
-      var nodes = e.target;
-      nodes = nodes.union(nodes.descendants());
-      nodes = nodes.union(selectedNodes);
+      try {
+        undoRedo(external_cytoscape_default.a); // register extension
+      } catch (err) {
+        console.log(err);
+      }
 
-      _this.editor.moveElements(nodes);
-    });
-    this.cy.on('layoutstop', function () {
-      _this.editor.postLayout();
-    }); // //TODO fix this when cytoscape is updated !!!
-    // //Due to cytoscape.js bug, only workaround that worked :(
-    // this.cy.on('add', 'node', function(event)
-    // {
-    //     // event.target.select();
-    //     this.cy.style().update();
-    //     this.cy.forceRender();
-    // });
+      try {
+        contextMenus(external_cytoscape_default.a, external_jquery_default.a); // register extension
+      } catch (err) {
+        console.log(err);
+      }
 
-    this.cy.on("noderesize.resizeend", function (_e, _type, node) {
-      //Updates 'data' properties from 'style'
-      node.data('w', node.width());
-      node.data('h', node.height()); //Used for collaborative mode
+      try {
+        nodeResize(external_cytoscape_default.a, external_jquery_default.a, konva); // register extension
+      } catch (err) {
+        console.log(err);
+      }
 
-      _this.editor.resizeElements(node);
-    });
-    this.cy.on('select', 'edge', function (e) {
-      _this.lastSelectedEdge = e.target;
-    });
-    this.cy.on('bendPointMovement', function () {
-      _this.editor.updateEdgeBendPoints(_this.lastSelectedEdge);
-    });
-    this.cy.on('noderesize.moveend', function () {
-      _this.editor.changeNodePositionsByArrows(_this.cy.nodes(":selected"));
-    });
-  };
+      try {
+        edgeEditing(external_cytoscape_default.a, external_jquery_default.a); // register extension
+      } catch (err) {
+        console.log(err);
+      }
 
-  CytoscapeArea.prototype.initKeyboardHandlers = function () {
-    var _this = this;
+      try {
+        viewUtilities(external_cytoscape_default.a, external_jquery_default.a); // register extension
+      } catch (err) {
+        console.log(err);
+      }
 
-    if (!this.isCollaborative && !this.isCbioPortal) {
-      external_jquery_default()(document).keydown(function (e) {
-        if (e.which === 89 && (e.ctrlKey || e.metaKey)) {
-          _this.undoRedoManager.redo();
-        } else if (e.which === 90 && (e.ctrlKey || e.metaKey)) {
-          _this.undoRedoManager.undo();
+      try {
+        cyqtip(external_cytoscape_default.a, external_jquery_default.a); // register extension
+      } catch (err) {
+        console.log(err);
+      }
+
+      try {
+        edgeHandles(external_cytoscape_default.a, external_jquery_default.a);
+      } catch (err) {
+        console.log(err);
+      }
+
+      this.edgeAddingMode = 0; // var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
+
+      this.cy = external_cytoscape_default()({
+        container: this.cyDiv,
+        boxSelectionEnabled: true,
+        autounselectify: false,
+        wheelSensitivity: 0.1,
+        style: styleSheet,
+        // elements: allEles,
+        textureOnViewport: false,
+        motionBlur: true,
+        layout: {
+          name: 'preset'
         }
       });
-    } else {
-      external_jquery_default()('a[role="redo"]').hide();
-      external_jquery_default()('a[role="undo"]').hide();
+      this.undoRedoManager = this.cy.undoRedo();
+      console.log("undoRedoManager" + this.undoRedoManager); // Create Manager Classes
+
+      this.shareDBManager = new managers_ShareDBManager(function () {
+        var dbDoc = _this.shareDBManager.getDoc();
+      });
+      this.editor = new managers_EditorActionsManager(this.isCollaborative, this.shareDBManager, this.cy, this.isCbioPortal, this.undoRedoManager, this.portalAccessor, this.props.profiles);
+      this.shareDBManager.setEditor(this.editor);
+
+      if (this.isCollaborative) {
+        this.shareDBManager.initShareDB();
+      } //@ts-ignore
+
+
+      window.editorActionsManager = this.editor;
+      this.qtipManager = new managers_QtipManager(this.cy, this.editor);
+      this.cxtMenuManager = new managers_ContextMenuManager(this.cy, this.editor, this.isCbioPortal, this.props.handleOpen, this.undoRedoManager, this.props.isCollaborative);
+      this.dragDropNodeAddManager = new utils_DragDropNodeAddPlugin(this.editor, this.cy, this.props.pathwayHandler); // Initialize panzoom
+
+      this.cy.panzoom(panzoomOpts); // Node Add initialization
+
+      this.cy.nodeadd({
+        // Once the explanationText is cast to uppercase they will be node types
+        components: [{
+          container: external_jquery_default()('#simpleNodeDiv'),
+          nodeType: 'Gene',
+          icon: gene_default.a
+        }, {
+          container: external_jquery_default()('#familyNodeDiv'),
+          nodeType: 'Family',
+          icon: family_default.a
+        }, {
+          container: external_jquery_default()('#complexNodeDiv'),
+          nodeType: 'Complex',
+          icon: complex_default.a
+        }, {
+          container: external_jquery_default()('#compartmentNodeDiv'),
+          nodeType: 'Compartment',
+          icon: compartment_default.a
+        }, {
+          container: external_jquery_default()('#processNodeDiv'),
+          nodeType: 'Process',
+          icon: process_default.a
+        }]
+      });
+      var self = this;
+      var edgeHandleDefaults = {
+        preview: true,
+        stackOrder: 4,
+        handleSize: 10,
+        handleColor: '#1abc9c',
+        handleLineType: 'ghost',
+        handleLineWidth: 1,
+        handleNodes: 'node',
+        hoverDelay: 1,
+        cxt: false,
+        enabled: false,
+        toggleOffOnLeave: true,
+        edgeType: function (sourceNode, targetNode) {
+          // can return 'flat' for flat edges between nodes or 'node' for intermediate node between them
+          // returning null/undefined means an edge can't be added between the two nodes
+          return 'flat';
+        },
+        handlePosition: function (node) {
+          return 'middle top'; // sets the position of the handle in the format of "X-AXIS Y-AXIS" such as "left top", "middle top"
+        },
+        loopAllowed: function (node) {
+          // for the specified node, return whether edges from itself to itself are allowed
+          return false;
+        },
+        nodeLoopOffset: -50,
+        nodeParams: function (sourceNode, targetNode) {
+          // for edges between the specified source and target
+          // return element object to be passed to cy.add() for intermediary node
+          return {};
+        },
+        edgeParams: function (sourceNode, targetNode, i) {
+          // for edges between the specified source and target
+          // return element object to be passed to cy.add() for edge
+          // NB: i indicates edge index in case of edgeType: 'node'
+          return {};
+        },
+        start: function (sourceNode) {
+          console.log("Inside start"); // fired when edgehandles interaction starts (drag on handle)
+
+          var type = self.getGlobalEdgeType();
+          console.log("Type");
+          console.log(type); //self.cy.edgehandles('option', 'ghostEdgeType', type);
+        },
+        complete: function (sourceNode, targetNodes, addedEntities) {
+          // @ts-ignore
+          console.log(window.edgeAddingMode); //  // Remove recently added edge !
+          //  // FBI takes this case from now on :O
+          //  // We will take care of addition in our manager :)
+
+          self.cy.remove(addedEntities);
+          console.log(addedEntities);
+          self.editor.addEdge({
+            source: sourceNode.id(),
+            target: targetNodes[0].id(),
+            // @ts-ignore
+            type: self.getGlobalEdgeType(window.edgeAddingMode),
+            pubmedIDs: [],
+            name: ""
+          });
+        },
+        stop: function (sourceNode) {
+          // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
+          //TODO refactor this, so terrible for now
+          //$('.edge-palette a').blur().removeClass('active');
+          self.edgeAddingMode = -1;
+          self.eh.disable();
+          self.eh.hide();
+          self.props.setActiveEdge(-1);
+        }
+      }; //Edge Handles initialization
+
+      console.log("Edge Handles inside Cytoscape ARea");
+      this.eh = this.cy.edgehandles(edgeHandleDefaults);
+      this.eh.disable();
+      this.props.editorHandler(this.editor, this.eh, this.undoRedoManager);
+      if (!this.isCbioPortal) this.cy.nodeResize({
+        padding: 5,
+        undoable: true,
+        grappleSize: 8,
+        grappleColor: "#ffc90e",
+        inactiveGrappleStroke: "inside 1px blue",
+        boundingRectangle: true,
+        boundingRectangleLineDash: [4, 8],
+        boundingRectangleLineColor: "ffc90e",
+        boundingRectangleLineWidth: 1.5,
+        zIndex: 999,
+        moveSelectedNodesOnKeyEvents: function () {
+          return true;
+        },
+        minWidth: function (node) {
+          var data = node.data("resizeMinWidth");
+          return data ? data : 15;
+        },
+        minHeight: function (node) {
+          var data = node.data("resizeMinHeight");
+          return data ? data : 15;
+        },
+        // Getters for some style properties the defaults returns ele.css('property-name')
+        // you are encouraged to override these getters
+        getCompoundMinWidth: function (node) {
+          return node.style('min-width');
+        },
+        getCompoundMinHeight: function (node) {
+          return node.style('min-height');
+        },
+        getCompoundMinWidthBiasRight: function (node) {
+          return node.style('min-width-bias-right');
+        },
+        getCompoundMinWidthBiasLeft: function (node) {
+          return node.style('min-width-bias-left');
+        },
+        getCompoundMinHeightBiasTop: function (node) {
+          return node.style('min-height-bias-top');
+        },
+        getCompoundMinHeightBiasBottom: function (node) {
+          return node.style('min-height-bias-bottom');
+        },
+        isFixedAspectRatioResizeMode: function (node) {
+          return node.is(".fixedAspectRatioResizeMode");
+        },
+        isNoResizeMode: function (node) {
+          return undefined;
+        },
+        // These optional function will be executed to set the width/height of a node in this extension
+        // Using node.css() is not a recommended way (http://js.cytoscape.org/#eles.style) to do this. Therefore, overriding these defaults
+        // so that a data field or something like that will be used to set node dimentions instead of directly calling node.css()
+        // is highly recommended (Of course this will require a proper setting in the stylesheet).
+        setWidth: function (node, width) {
+          node.style('width', width);
+        },
+        setHeight: function (node, height) {
+          node.style('height', height);
+        },
+        setCompoundMinWidth: function (node, minWidth) {
+          node.style('min-width', minWidth);
+        },
+        setCompoundMinHeight: function (node, minHeight) {
+          node.style('min-height', minHeight);
+        },
+        setCompoundMinWidthBiasLeft: function (node, minWidthBiasLeft) {
+          node.style('min-width-bias-left', minWidthBiasLeft);
+        },
+        setCompoundMinWidthBiasRight: function (node, minHeightBiasRight) {
+          node.style('min-width-bias-right', minHeightBiasRight);
+        },
+        setCompoundMinHeightBiasTop: function (node, minHeightBiasTop) {
+          node.style('min-height-bias-top', minHeightBiasTop);
+        },
+        setCompoundMinHeightBiasBottom: function (node, minHeightBiasBottom) {
+          node.style('min-height-bias-bottom', minHeightBiasBottom);
+        },
+        cursors: {
+          // May take any "cursor" css property
+          default: "default",
+          inactive: "not-allowed",
+          nw: "nw-resize",
+          n: "n-resize",
+          ne: "ne-resize",
+          e: "e-resize",
+          se: "se-resize",
+          s: "s-resize",
+          sw: "sw-resize",
+          w: "w-resize"
+        },
+        resizeToContentCueImage: resizeCue_default.a,
+        resizeToContentFunction: this.editor.resizeNodesToContent.bind(this.editor)
+      }); //Navigator for cytoscape js
+
+      var navDefaults = {
+        container: '.cytoscape-navigator-wrapper' // can be a HTML or jQuery element or jQuery selector
+        ,
+        viewLiveFramerate: 0 // set false to update graph pan only on drag end; set 0 to do it instantly; set a number (frames per second) to update not more than N times per second
+        ,
+        thumbnailEventFramerate: 10 // max thumbnail's updates per second triggered by graph updates
+        ,
+        thumbnailLiveFramerate: false // max thumbnail's updates per second. Set false to disable
+        ,
+        dblClickDelay: 200 // milliseconds
+        ,
+        removeCustomContainer: true // destroy the container specified by user on plugin destroy
+        ,
+        rerenderDelay: 100 // ms to throttle rerender updates to the panzoom for performance
+
+      }; //TODO: AMENDMENT declaration removed
+
+      this.cy.navigator(navDefaults); // get navigator instance, nav
+
+      var viewUtilitiesOpts = {
+        node: {
+          highlighted: {
+            'border-width': 2,
+            'border-color': '#bc1142'
+          },
+          unhighlighted: {
+            'opacity': function (ele) {
+              // We return the same opacity because to override the unhibhlighted ele opacity in view-utilities
+              return ele.css('opacity');
+            } // styles for when nodes are unhighlighted.}
+
+          }
+        },
+        edge: {
+          highlighted: {},
+          unhighlighted: {
+            'opacity': function (ele) {
+              // We return the same opacity because to override the unhibhlighted ele opacity in view-utilities
+              return ele.css('opacity');
+            } // styles for when edges are unhighlighted.
+
+          }
+        },
+        setVisibilityOnHide: false,
+        setDisplayOnHide: true,
+        neighbor: function () {
+          return false;
+        },
+        neighborSelectTime: 500 //ms, time to taphold to select desired neighbors
+
+      };
+      this.viewUtilities = this.cy.viewUtilities(viewUtilitiesOpts);
+      this.placePanzoomAndOverlay();
     }
+  });
+  Object.defineProperty(CytoscapeArea.prototype, "getGlobalEdgeType", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var type = "NONE"; // @ts-ignore
 
-    external_jquery_default()(document).keydown(function (e) {
-      if (e.which === 65 && (e.ctrlKey || e.metaKey)) {
-        // @ts-ignore
-        var tn = document.activeElement.tagName;
+      if (window.edgeAddingMode === 1) {
+        type = 'ACTIVATES';
+      } // @ts-ignore
+      else if (window.edgeAddingMode === 2) {
+          type = 'INHIBITS';
+        } // @ts-ignore
+        else if (window.edgeAddingMode === 3) {
+            type = 'INDUCES';
+          } // @ts-ignore
+          else if (window.edgeAddingMode === 4) {
+              type = 'REPRESSES';
+            } // @ts-ignore
+            else if (window.edgeAddingMode === 5) {
+                type = 'BINDS';
+              }
 
-        if (tn != "TEXTAREA" && tn != "INPUT") {
-          e.preventDefault();
+      return type;
+    }
+  });
+  Object.defineProperty(CytoscapeArea.prototype, "initCyHandlers", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-          _this.cy.elements().select();
+      var that = this;
+      var tappedBefore;
+      var tappedTimeout;
+      this.cy.on('tap', function (event) {
+        var tappedNow = event.target;
+
+        if (tappedTimeout !== -1 && tappedBefore !== -1) {
+          clearTimeout(tappedTimeout);
         }
-      } else if (e.which === 8 || e.which === 46) {
-        // @ts-ignore
-        var tn = document.activeElement.tagName;
 
-        if (tn != "TEXTAREA" && tn != "INPUT") {
-          var selectedElements = _this.cy.$(':selected');
+        if (tappedBefore === tappedNow) {
+          tappedNow.trigger('doubleTap');
+          tappedBefore = -1;
+        } else {
+          // @ts-ignore TODO AMENDMENTsa
+          tappedTimeout = setTimeout(function () {
+            tappedBefore = -1;
+          }, 300);
 
-          _this.editor.removeElement(selectedElements);
+          if (tappedNow && tappedNow.isNode && tappedNow.isNode()) {
+            external_jquery_default()(".qtip").remove();
+          }
+
+          if (tappedNow && tappedNow.isEdge && tappedNow.isEdge()) {
+            external_jquery_default()(".qtip").remove();
+          }
+
+          tappedBefore = tappedNow;
         }
+      });
+      this.cy.on('doubleTap', 'node', function (e) {
+        // if cBioPortal ignore
+        if (that.props.isCbioPortal) return;
+        var eventIsDirect = e.target === this;
+
+        if (eventIsDirect) {
+          external_jquery_default()(".qtip").remove();
+          that.qtipManager.addQtipToElements(e.target);
+          e.target.trigger("showqtipevent");
+        }
+      });
+      this.cy.on('doubleTap', 'edge', function (e) {
+        // if cBioPortal ignore
+        if (that.props.isCbioPortal) return;
+        var eventIsDirect = e.target === this;
+
+        if (eventIsDirect) {
+          external_jquery_default()(".qtip").remove();
+          that.qtipManager.addQtipToElements(e.target);
+          e.target.trigger("showqtipevent");
+        }
+      });
+      this.cy.on('select', 'node', function (e) {
+        _this.editor.pushSelectedNodeStack(e.target);
+      }); // this.cy.on('select', 'edge', function( e )
+      // {
+      //   var eventIsDirect = (e.target === this);
+      //   $(".qtip").remove();
+      //
+      //   if( eventIsDirect ) {
+      //       that.qtipManager.addQtipToElements(e.target);
+      //   }
+      // });
+
+      this.cy.on('unselect', 'node', function (e) {
+        _this.editor.removeElementFromSelectedNodeStack(e.target);
+      });
+      this.cy.on('free', 'node', function (e) {
+        //Collect all nodes with descendants in case of compounds
+        var selectedNodes = _this.cy.nodes(':selected');
+
+        var nodes = e.target;
+        nodes = nodes.union(nodes.descendants());
+        nodes = nodes.union(selectedNodes);
+
+        _this.editor.moveElements(nodes);
+      });
+      this.cy.on('layoutstop', function () {
+        _this.editor.postLayout();
+      }); // //TODO fix this when cytoscape is updated !!!
+      // //Due to cytoscape.js bug, only workaround that worked :(
+      // this.cy.on('add', 'node', function(event)
+      // {
+      //     // event.target.select();
+      //     this.cy.style().update();
+      //     this.cy.forceRender();
+      // });
+
+      this.cy.on("noderesize.resizeend", function (_e, _type, node) {
+        //Updates 'data' properties from 'style'
+        node.data('w', node.width());
+        node.data('h', node.height()); //Used for collaborative mode
+
+        _this.editor.resizeElements(node);
+      });
+      this.cy.on('select', 'edge', function (e) {
+        _this.lastSelectedEdge = e.target;
+      });
+      this.cy.on('bendPointMovement', function () {
+        _this.editor.updateEdgeBendPoints(_this.lastSelectedEdge);
+      });
+      this.cy.on('noderesize.moveend', function () {
+        _this.editor.changeNodePositionsByArrows(_this.cy.nodes(":selected"));
+      });
+    }
+  });
+  Object.defineProperty(CytoscapeArea.prototype, "initKeyboardHandlers", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
+
+      if (!this.isCollaborative && !this.isCbioPortal) {
+        external_jquery_default()(document).keydown(function (e) {
+          if (e.which === 89 && (e.ctrlKey || e.metaKey)) {
+            _this.undoRedoManager.redo();
+          } else if (e.which === 90 && (e.ctrlKey || e.metaKey)) {
+            _this.undoRedoManager.undo();
+          }
+        });
+      } else {
+        external_jquery_default()('a[role="redo"]').hide();
+        external_jquery_default()('a[role="undo"]').hide();
       }
-    });
-  };
 
-  CytoscapeArea.prototype.initUndoRedoFunctionality = function () {
-    if (this.isCollaborative || this.isCbioPortal) {
-      external_jquery_default()('[role="undo"]').hide();
-      external_jquery_default()('[role="redo"]').hide();
-      /* TODO: AMENDMENT
-      document.getElementById("localOrCollaborativeToolbar").style.display = "none";
-      */
-    }
-  };
+      external_jquery_default()(document).keydown(function (e) {
+        if (e.which === 65 && (e.ctrlKey || e.metaKey)) {
+          // @ts-ignore
+          var tn = document.activeElement.tagName;
 
-  CytoscapeArea.prototype.initCBioPortalFunctionalities = function () {
-    if (this.isCbioPortal) {
-      var contextMenu = this.cy.contextMenus('get');
-      contextMenu.destroy();
+          if (tn != "TEXTAREA" && tn != "INPUT") {
+            e.preventDefault();
+
+            _this.cy.elements().select();
+          }
+        } else if (e.which === 8 || e.which === 46) {
+          // @ts-ignore
+          var tn = document.activeElement.tagName;
+
+          if (tn != "TEXTAREA" && tn != "INPUT") {
+            var selectedElements = _this.cy.$(':selected');
+
+            _this.editor.removeElement(selectedElements);
+          }
+        }
+      });
     }
-  };
+  });
+  Object.defineProperty(CytoscapeArea.prototype, "initUndoRedoFunctionality", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      if (this.isCollaborative || this.isCbioPortal) {
+        external_jquery_default()('[role="undo"]').hide();
+        external_jquery_default()('[role="redo"]').hide();
+        /* TODO: AMENDMENT
+        document.getElementById("localOrCollaborativeToolbar").style.display = "none";
+        */
+      }
+    }
+  });
+  Object.defineProperty(CytoscapeArea.prototype, "initCBioPortalFunctionalities", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      if (this.isCbioPortal) {
+        var contextMenu = this.cy.contextMenus('get');
+        contextMenu.destroy();
+      }
+    }
+  });
 
   CytoscapeArea_decorate([external_autobind_decorator_default.a], CytoscapeArea.prototype, "cyDivHandler", null);
 
@@ -12794,7 +14236,7 @@ var Ranking_extends = undefined && undefined.__extends || function () {
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -12833,8 +14275,55 @@ function (_super) {
   function Ranking(props) {
     var _this = _super.call(this, props) || this;
 
-    _this.COUNT_PERC_EXPLANATION = "Whether we should favor the number of genes of interest matching the ones in a pathway or the percentage of such genes in that pathway. For instance, suppose genes of interest are A, B, and C, and the pathway contains genes B, C, D, and E. When we consider count, the score is 2 (for the two genes that match). However, when we consider percentage the score will be 50% as 2 of the 4 genes in the pathway are among genes of interest.";
-    _this.ALTERATION_EXPLANATION = "When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and 50% for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (0.2+0.3)/4=12.5% for match count and percentage, respectively.";
+    Object.defineProperty(_this, "bestPathways", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "dropDownTitle", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "selectedPathway", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "isPercentageMatch", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "isAlterationEnabled", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "isExpanded", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "COUNT_PERC_EXPLANATION", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: "Whether we should favor the number of genes of interest matching the ones in a pathway or the percentage of such genes in that pathway. For instance, suppose genes of interest are A, B, and C, and the pathway contains genes B, C, D, and E. When we consider count, the score is 2 (for the two genes that match). However, when we consider percentage the score will be 50% as 2 of the 4 genes in the pathway are among genes of interest."
+    });
+    Object.defineProperty(_this, "ALTERATION_EXPLANATION", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: "When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and 50% for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (0.2+0.3)/4=12.5% for match count and percentage, respectively."
+    });
+    Object(external_mobx_["makeObservable"])(_this);
     _this.isPercentageMatch = 0;
     _this.isAlterationEnabled = 0;
     _this.dropDownTitle = "Match count";
@@ -12846,109 +14335,130 @@ function (_super) {
     return _this;
   }
 
-  Ranking.prototype.setBestPathwayMethod = function (i) {
-    this.bestPathways = this.props.bestPathwaysAlgos[i]; //this.selectedPathway = this.bestPathways[0].pathwayName;
-    //this.props.pathwayActions.changePathway(this.selectedPathway);
-  };
+  Object.defineProperty(Ranking.prototype, "setBestPathwayMethod", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (i) {
+      this.bestPathways = this.props.bestPathwaysAlgos[i]; //this.selectedPathway = this.bestPathways[0].pathwayName;
+      //this.props.pathwayActions.changePathway(this.selectedPathway);
+    }
+  });
+  Object.defineProperty(Ranking.prototype, "onPathwayClick", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (pathway) {
+      // console.log(pathway);
+      this.selectedPathway = pathway;
+      this.props.pathwayActions.changePathway(this.selectedPathway);
+    }
+  });
+  Object.defineProperty(Ranking.prototype, "onApplyClick", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      // Mapping from dropdown + checkbox selection to pathway method.
+      this.setBestPathwayMethod(2 * this.isAlterationEnabled + this.isPercentageMatch);
+    }
+  });
+  Object.defineProperty(Ranking.prototype, "componentDidMount", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.props.pathwayActions.changePathway(this.selectedPathway);
+    }
+  });
+  Object.defineProperty(Ranking.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-  Ranking.prototype.onPathwayClick = function (pathway) {
-    // console.log(pathway);
-    this.selectedPathway = pathway;
-    this.props.pathwayActions.changePathway(this.selectedPathway);
-  };
+      var lengthThreshold = 13;
+      return external_react_default.a.createElement("div", {
+        id: "ranking-bar"
+      }, this.props.tableComponent && this.props.tableComponent(this.bestPathways.map(function (data) {
+        return {
+          name: data.pathwayName,
+          score: data.score,
+          genes: data.genesMatched
+        };
+      }), this.selectedPathway, this.onPathwayClick), !this.props.patientView && external_react_default.a.createElement("div", {
+        className: "info-entry",
+        style: {
+          marginTop: "10px"
+        }
+      }, external_react_default.a.createElement("div", {
+        id: "criteria-title",
+        className: "info-title"
+      }, external_react_default.a.createElement("b", {
+        style: {
+          display: "inline-block"
+        }
+      }, "\u00A0Ranking options")), external_react_default.a.createElement("div", {
+        className: "indent",
+        style: {
+          marginTop: "10px"
+        }
+      }, external_react_default.a.createElement(external_react_bootstrap_["DropdownButton"], {
+        title: this.dropDownTitle,
+        id: "0",
+        style: {
+          fontSize: "13px"
+        }
+      }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        style: {
+          fontSize: "13px"
+        },
+        onClick: function () {
+          _this.isPercentageMatch = 0;
+          _this.dropDownTitle = "Match count";
 
-  Ranking.prototype.onApplyClick = function () {
-    // Mapping from dropdown + checkbox selection to pathway method.
-    this.setBestPathwayMethod(2 * this.isAlterationEnabled + this.isPercentageMatch);
-  };
+          _this.onApplyClick();
+        }
+      }, "Match count"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        style: {
+          fontSize: "13px"
+        },
+        onClick: function () {
+          _this.isPercentageMatch = 1;
+          _this.dropDownTitle = "Match percentage";
 
-  Ranking.prototype.componentDidMount = function () {
-    this.props.pathwayActions.changePathway(this.selectedPathway);
-  };
+          _this.onApplyClick();
+        }
+      }, "Match percentage")), "\u00A0", external_react_default.a.createElement("div", {
+        "data-tip": this.COUNT_PERC_EXPLANATION,
+        "data-border": "true",
+        "data-type": "light",
+        "data-place": "left",
+        "data-effect": "solid",
+        className: "fa fa-question-circle styles-module__infoIcon__zMiog"
+      }), external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
+        id: "alterationCheckBox",
+        onClick: function () {
+          _this.isAlterationEnabled = _this.isAlterationEnabled === 1 ? 0 : 1;
 
-  Ranking.prototype.render = function () {
-    var _this = this;
-
-    var lengthThreshold = 13;
-    return external_react_default.a.createElement("div", {
-      id: "ranking-bar"
-    }, this.props.tableComponent && this.props.tableComponent(this.bestPathways.map(function (data) {
-      return {
-        name: data.pathwayName,
-        score: data.score,
-        genes: data.genesMatched
-      };
-    }), this.selectedPathway, this.onPathwayClick), !this.props.patientView && external_react_default.a.createElement("div", {
-      className: "info-entry",
-      style: {
-        marginTop: "10px"
-      }
-    }, external_react_default.a.createElement("div", {
-      id: "criteria-title",
-      className: "info-title"
-    }, external_react_default.a.createElement("b", {
-      style: {
-        display: "inline-block"
-      }
-    }, "\u00A0Ranking options")), external_react_default.a.createElement("div", {
-      className: "indent",
-      style: {
-        marginTop: "10px"
-      }
-    }, external_react_default.a.createElement(external_react_bootstrap_["DropdownButton"], {
-      title: this.dropDownTitle,
-      id: "0",
-      style: {
-        fontSize: "13px"
-      }
-    }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      style: {
-        fontSize: "13px"
-      },
-      onClick: function () {
-        _this.isPercentageMatch = 0;
-        _this.dropDownTitle = "Match count";
-
-        _this.onApplyClick();
-      }
-    }, "Match count"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      style: {
-        fontSize: "13px"
-      },
-      onClick: function () {
-        _this.isPercentageMatch = 1;
-        _this.dropDownTitle = "Match percentage";
-
-        _this.onApplyClick();
-      }
-    }, "Match percentage")), "\u00A0", external_react_default.a.createElement("div", {
-      "data-tip": this.COUNT_PERC_EXPLANATION,
-      "data-border": "true",
-      "data-type": "light",
-      "data-place": "left",
-      "data-effect": "solid",
-      className: "fa fa-question-circle styles-module__infoIcon__zMiog"
-    }), external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
-      id: "alterationCheckBox",
-      onClick: function () {
-        _this.isAlterationEnabled = _this.isAlterationEnabled === 1 ? 0 : 1;
-
-        _this.onApplyClick();
-      },
-      style: {
-        fontSize: "13px",
-        marginTop: "18px",
-        bottom: "4px"
-      }
-    }, "Consider alteration frequency\u00A0", external_react_default.a.createElement("span", {
-      "data-tip": this.ALTERATION_EXPLANATION,
-      "data-border": "true",
-      "data-type": "light",
-      "data-place": "left",
-      "data-effect": "solid",
-      className: "fa fa-question-circle styles-module__infoIcon__zMiog"
-    })))));
-  };
+          _this.onApplyClick();
+        },
+        style: {
+          fontSize: "13px",
+          marginTop: "18px",
+          bottom: "4px"
+        }
+      }, "Consider alteration frequency\u00A0", external_react_default.a.createElement("span", {
+        "data-tip": this.ALTERATION_EXPLANATION,
+        "data-border": "true",
+        "data-type": "light",
+        "data-place": "left",
+        "data-effect": "solid",
+        className: "fa fa-question-circle styles-module__infoIcon__zMiog"
+      })))));
+    }
+  });
 
   Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "bestPathways", void 0);
 
@@ -12989,6 +14499,13 @@ var FileOperationsManager_FileOperationsManager =
 /** @class */
 function () {
   function FileOperationsManager() {
+    Object.defineProperty(this, "pathwayInfo", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object(external_mobx_["makeObservable"])(this);
     this.pathwayInfo = {
       pathwayTitle: "New Pathway",
       pathwayDetails: "",
@@ -13000,86 +14517,106 @@ function () {
     get: function () {
       return this.pathwayInfo;
     },
-    enumerable: true,
+    enumerable: false,
     configurable: true
   });
-
-  FileOperationsManager.prototype.setPathwayInfo = function (other) {
-    this.pathwayInfo = other;
-  }; // see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
-
-
-  FileOperationsManager.prototype.b64toBlob = function (b64Data, contentType, sliceSize) {
-    if (sliceSize === void 0) {
-      sliceSize = 512;
+  Object.defineProperty(FileOperationsManager.prototype, "setPathwayInfo", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (other) {
+      this.pathwayInfo = other;
     }
+  }); // see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
 
-    contentType = contentType || '';
-    var byteCharacters = atob(b64Data);
-    var byteArrays = [];
-
-    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      var slice = byteCharacters.slice(offset, offset + sliceSize);
-      var byteNumbers = new Array(slice.length);
-
-      for (var i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
+  Object.defineProperty(FileOperationsManager.prototype, "b64toBlob", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (b64Data, contentType, sliceSize) {
+      if (sliceSize === void 0) {
+        sliceSize = 512;
       }
 
-      var byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
+      contentType = contentType || '';
+      var byteCharacters = atob(b64Data);
+      var byteArrays = [];
+
+      for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+        var byteNumbers = new Array(slice.length);
+
+        for (var i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+      }
+
+      var blob = new Blob(byteArrays, {
+        type: contentType
+      });
+      return blob;
     }
-
-    var blob = new Blob(byteArrays, {
-      type: contentType
-    });
-    return blob;
-  };
-
+  });
   ;
+  Object.defineProperty(FileOperationsManager.prototype, "saveAsJPEG", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (cy) {
+      // var fileName = getFileName();
+      var graphData = cy.jpeg(); // this is to remove the beginning of the pngContent: data:img/png;base64,
 
-  FileOperationsManager.prototype.saveAsJPEG = function (cy) {
-    // var fileName = getFileName();
-    var graphData = cy.jpeg(); // this is to remove the beginning of the pngContent: data:img/png;base64,
-
-    var b64data = graphData.substr(graphData.indexOf(",") + 1);
-    var imageData = this.b64toBlob(b64data, "image/jpeg");
-    var blob = new Blob([imageData]);
-    Object(external_file_saver_["saveAs"])(blob, "pathway.jpg");
-  };
-
+      var b64data = graphData.substr(graphData.indexOf(",") + 1);
+      var imageData = this.b64toBlob(b64data, "image/jpeg");
+      var blob = new Blob([imageData]);
+      Object(external_file_saver_["saveAs"])(blob, "pathway.jpg");
+    }
+  });
   ;
+  Object.defineProperty(FileOperationsManager.prototype, "saveAsSVG", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (editor) {
+      var returnString = editor.exportSVG();
+      var fileName = 'pathway.svg';
+      var blob = new Blob([returnString], {
+        type: "text/plain;charset=utf-8"
+      });
+      Object(external_file_saver_["saveAs"])(blob, fileName);
+    }
+  });
+  Object.defineProperty(FileOperationsManager.prototype, "saveAsPNG", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (cy) {
+      // var fileName = getFileName();
+      var graphData = cy.png(); // this is to remove the beginning of the pngContent: data:img/png;base64,
 
-  FileOperationsManager.prototype.saveAsSVG = function (editor) {
-    var returnString = editor.exportSVG();
-    var fileName = 'pathway.svg';
-    var blob = new Blob([returnString], {
-      type: "text/plain;charset=utf-8"
-    });
-    Object(external_file_saver_["saveAs"])(blob, fileName);
-  };
-
-  FileOperationsManager.prototype.saveAsPNG = function (cy) {
-    // var fileName = getFileName();
-    var graphData = cy.png(); // this is to remove the beginning of the pngContent: data:img/png;base64,
-
-    var b64data = graphData.substr(graphData.indexOf(",") + 1);
-    var imageData = this.b64toBlob(b64data, "image/png");
-    var blob = new Blob([imageData]);
-    Object(external_file_saver_["saveAs"])(blob, "pathway.png");
-  };
-
+      var b64data = graphData.substr(graphData.indexOf(",") + 1);
+      var imageData = this.b64toBlob(b64data, "image/png");
+      var blob = new Blob([imageData]);
+      Object(external_file_saver_["saveAs"])(blob, "pathway.png");
+    }
+  });
   ;
-
-  FileOperationsManager.prototype.saveGraph = function (isSIFNX, editor) {
-    var pathwayData = this.pathwayInfo;
-    var returnString = isSIFNX ? utils_SaveLoadUtility.exportAsSIFNX(pathwayData, editor.cy.json()) : utils_SaveLoadUtility.exportGraph(pathwayData, editor.cy, editor.edgeEditing, editor.cy.json());
-    var blob = new Blob([returnString], {
-      type: "text/plain;charset=utf-8"
-    });
-    Object(external_file_saver_["saveAs"])(blob, pathwayData.fileName);
-  };
-
+  Object.defineProperty(FileOperationsManager.prototype, "saveGraph", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (isSIFNX, editor) {
+      var pathwayData = this.pathwayInfo;
+      var returnString = isSIFNX ? utils_SaveLoadUtility.exportAsSIFNX(pathwayData, editor.cy.json()) : utils_SaveLoadUtility.exportGraph(pathwayData, editor.cy, editor.edgeEditing, editor.cy.json());
+      var blob = new Blob([returnString], {
+        type: "text/plain;charset=utf-8"
+      });
+      Object(external_file_saver_["saveAs"])(blob, pathwayData.fileName);
+    }
+  });
   ;
 
   FileOperationsManager_decorate([external_mobx_["observable"]], FileOperationsManager.prototype, "pathwayInfo", void 0);
@@ -13098,7 +14635,7 @@ var ConfirmationModal_extends = undefined && undefined.__extends || function () 
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -13128,29 +14665,33 @@ function (_super) {
     return _super.call(this, props) || this;
   }
 
-  ConfirmationModal.prototype.render = function () {
-    var _this = this;
+  Object.defineProperty(ConfirmationModal.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-    return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
-      show: this.props.isModalShown,
-      onHide: function () {
-        _this.props.handleClose(EModalType.CONFIRMATION);
-      }
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
-      closeButton: true
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h4", null, "Confirmation"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("div", null, "All unsaved changes will be lost. Do you want to continue?")), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Footer, null, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
-      onClick: function () {
-        ConfirmationModal.pendingFunction();
+      return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
+        show: this.props.isModalShown,
+        onHide: function () {
+          _this.props.handleClose(EModalType.CONFIRMATION);
+        }
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
+        closeButton: true
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h4", null, "Confirmation"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("div", null, "All unsaved changes will be lost. Do you want to continue?")), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Footer, null, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
+        onClick: function () {
+          ConfirmationModal.pendingFunction();
 
-        _this.props.handleClose(EModalType.CONFIRMATION);
-      }
-    }, "Yes"), external_react_default.a.createElement(external_react_bootstrap_["Button"], {
-      onClick: function () {
-        _this.props.handleClose(EModalType.CONFIRMATION);
-      }
-    }, "No")));
-  };
-
+          _this.props.handleClose(EModalType.CONFIRMATION);
+        }
+      }, "Yes"), external_react_default.a.createElement(external_react_bootstrap_["Button"], {
+        onClick: function () {
+          _this.props.handleClose(EModalType.CONFIRMATION);
+        }
+      }, "No")));
+    }
+  });
   return ConfirmationModal;
 }(external_react_default.a.Component);
 
@@ -13163,7 +14704,7 @@ var Menubar_extends = undefined && undefined.__extends || function () {
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -13195,298 +14736,302 @@ function (_super) {
     return _super.call(this, props) || this;
   }
 
-  Menubar.prototype.render = function () {
-    var _this = this;
+  Object.defineProperty(Menubar.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-    var nodeTypes = ["Gene", "Family", "Complex", "Compartment", "Process"];
-    var edgeTypes = ["Activates", "Inhibits", "Induces", "Represses", "Binds"];
-    var pathwayDropdownData = {};
+      var nodeTypes = ["Gene", "Family", "Complex", "Compartment", "Process"];
+      var edgeTypes = ["Activates", "Inhibits", "Induces", "Represses", "Binds"];
+      var pathwayDropdownData = {};
 
-    for (var _i = 0, _a = Object.keys(pathways); _i < _a.length; _i++) {
-      var pwName = _a[_i]; // If a pathway name ain't include 'pathway' word then it is under pancanatlas.
+      for (var _i = 0, _a = Object.keys(pathways); _i < _a.length; _i++) {
+        var pwName = _a[_i]; // If a pathway name ain't include 'pathway' word then it is under pancanatlas.
 
-      var isPancanatlas = !pwName.includes('pathway');
-      var dashPos = pwName.indexOf('-');
-      var pwHead = isPancanatlas ? 'PanCanAtlas' : pwName.substring(0, dashPos);
+        var isPancanatlas = !pwName.includes('pathway');
+        var dashPos = pwName.indexOf('-');
+        var pwHead = isPancanatlas ? 'PanCanAtlas' : pwName.substring(0, dashPos);
 
-      if (pwHead in pathwayDropdownData) {
-        pathwayDropdownData[pwHead].push(pwName);
-      } else {
-        pathwayDropdownData[pwHead] = [pwName];
+        if (pwHead in pathwayDropdownData) {
+          pathwayDropdownData[pwHead].push(pwName);
+        } else {
+          pathwayDropdownData[pwHead] = [pwName];
+        }
       }
-    }
 
-    return external_react_default.a.createElement(external_react_bootstrap_["Navbar"], {
-      className: "pathway-navbar"
-    }, external_react_default.a.createElement(external_react_bootstrap_["Nav"], null, external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      eventKey: 1,
-      title: "Network",
-      id: "basic-nav-network"
-    }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: this.props.pathwayActions.newPathway
-    }, "New"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.handleOpen(EModalType.PW_DETAILS);
-      }
-    }, "Properties..."), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.upload();
-      }
-    }, "Import"), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      className: "dropdown-submenu",
-      eventKey: 1,
-      title: "TCGA",
-      id: "basic-nav-TCGA"
-    }, Object.keys(pathwayDropdownData).map(function (pwHead) {
-      return external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-        id: pwHead + "_dropdown",
+      return external_react_default.a.createElement(external_react_bootstrap_["Navbar"], {
+        className: "pathway-navbar"
+      }, external_react_default.a.createElement(external_react_bootstrap_["Nav"], null, external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+        eventKey: 1,
+        title: "Network",
+        id: "basic-nav-network"
+      }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: this.props.pathwayActions.newPathway
+      }, "New"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.handleOpen(EModalType.PW_DETAILS);
+        }
+      }, "Properties..."), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.upload();
+        }
+      }, "Import"), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
         className: "dropdown-submenu",
         eventKey: 1,
-        title: pwHead
-      }, pathwayDropdownData[pwHead].map(function (pwName) {
+        title: "TCGA",
+        id: "basic-nav-TCGA"
+      }, Object.keys(pathwayDropdownData).map(function (pwHead) {
+        return external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+          id: pwHead + "_dropdown",
+          className: "dropdown-submenu",
+          eventKey: 1,
+          title: pwHead
+        }, pathwayDropdownData[pwHead].map(function (pwName) {
+          return external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+            onClick: function () {
+              if (_this.props.pathwayActions.doesCyHaveElements()) {
+                _this.props.handleOpen(EModalType.CONFIRMATION);
+
+                modals_ConfirmationModal.pendingFunction = function () {
+                  _this.props.pathwayActions.changePathway(pwName);
+                };
+              } else {
+                _this.props.pathwayActions.changePathway(pwName);
+              }
+            }
+          }, pwName.split('-').join(" "));
+        }));
+      })), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.merge();
+        }
+      }, "Merge With..."), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.export(false);
+        }
+      }, "Export"), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+        className: "dropdown-submenu",
+        eventKey: 1,
+        title: "Export as",
+        id: "basic-nav-export"
+      }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.saveAs("JPEG");
+        }
+      }, "JPEG"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.saveAs("PNG");
+        }
+      }, "PNG"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.saveAs("SVG");
+        }
+      }, "SVG"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.export(true);
+        }
+      }, "SIFNX"))), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+        eventKey: 2,
+        title: "Edit",
+        id: "basic-nav-edit"
+      }, external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+        id: "add-node-submenu",
+        className: "dropdown-submenu",
+        eventKey: 2.1,
+        title: "Add Node"
+      }, nodeTypes.map(function (nodeType) {
         return external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
           onClick: function () {
-            if (_this.props.pathwayActions.doesCyHaveElements()) {
-              _this.props.handleOpen(EModalType.CONFIRMATION);
-
-              modals_ConfirmationModal.pendingFunction = function () {
-                _this.props.pathwayActions.changePathway(pwName);
-              };
-            } else {
-              _this.props.pathwayActions.changePathway(pwName);
-            }
+            _this.props.pathwayActions.addNode(nodeType);
           }
-        }, pwName.split('-').join(" "));
-      }));
-    })), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.merge();
-      }
-    }, "Merge With..."), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.export(false);
-      }
-    }, "Export"), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      className: "dropdown-submenu",
-      eventKey: 1,
-      title: "Export as",
-      id: "basic-nav-export"
-    }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.saveAs("JPEG");
-      }
-    }, "JPEG"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.saveAs("PNG");
-      }
-    }, "PNG"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.saveAs("SVG");
-      }
-    }, "SVG"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.export(true);
-      }
-    }, "SIFNX"))), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      eventKey: 2,
-      title: "Edit",
-      id: "basic-nav-edit"
-    }, external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      id: "add-node-submenu",
-      className: "dropdown-submenu",
-      eventKey: 2.1,
-      title: "Add Node"
-    }, nodeTypes.map(function (nodeType) {
-      return external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-        onClick: function () {
-          _this.props.pathwayActions.addNode(nodeType);
-        }
-      }, nodeType);
-    })), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      id: "add-edge-submenu",
-      className: "dropdown-submenu",
-      eventKey: 2.1,
-      title: "Add Edge"
-    }, edgeTypes.map(function (nodeType, i) {
-      return external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-        onClick: function () {
-          _this.props.pathwayActions.addEdge(i);
+        }, nodeType);
+      })), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+        id: "add-edge-submenu",
+        className: "dropdown-submenu",
+        eventKey: 2.1,
+        title: "Add Edge"
+      }, edgeTypes.map(function (nodeType, i) {
+        return external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+          onClick: function () {
+            _this.props.pathwayActions.addEdge(i);
 
-          _this.props.setActiveEdge(i);
+            _this.props.setActiveEdge(i);
+          }
+        }, nodeType);
+      })), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.deleteSelected();
         }
-      }, nodeType);
-    })), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.deleteSelected();
-      }
-    }, "Delete Selected"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.resizeToContent();
-      }
-    }, "Resize Nodes to Content"), !this.props.pathwayActions.isCollaborative && [external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.undo();
-      }
-    }, "Undo"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.redo();
-      }
-    }, "Redo")]), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      eventKey: 3,
-      title: "View",
-      id: "basic-nav-view"
-    }, external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      id: "align-view-submenu",
-      className: "dropdown-submenu",
-      eventKey: 2.1,
-      title: "Align Selected"
-    }, external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      id: "align-vertical-submenu",
-      className: "dropdown-submenu",
-      eventKey: 2.1,
-      title: "Vertical"
-    }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.align("vLeft");
-      }
-    }, "Left"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.align("vCen");
-      }
-    }, "Center"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.align("vRight");
-      }
-    }, "Right")), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      id: "align-horizontal-submenu",
-      className: "dropdown-submenu",
-      eventKey: 2.1,
-      title: "Horizontal"
-    }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.align("hTop");
-      }
-    }, "Top"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.align("hMid");
-      }
-    }, "Middle"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.align("hBot");
-      }
-    }, "Bottom"))), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.handleOpen(EModalType.GRID);
-      }
-    }, "Grid..."), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.hideSelected();
-      }
-    }, "Hide Selected Nodes"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 1.1,
-      onClick: function () {
-        _this.props.pathwayActions.showAll();
-      }
-    }, "Show All Nodes")), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      eventKey: 4,
-      title: "Highlight",
-      id: "basic-nav-highlight"
-    }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 4.1,
-      onClick: this.props.pathwayActions.highlightSelected
-    }, "Highlight Selected"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 4.1,
-      onClick: this.props.pathwayActions.highlightNeighbours
-    }, "Highlight Neighbors Of Selected"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 4.1,
-      onClick: this.props.pathwayActions.validateGenes
-    }, "Identify Invalid Genes"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 4.1,
-      onClick: this.props.pathwayActions.removeAllHighlight
-    }, "Remove All Highlights")), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      eventKey: 5,
-      title: "Alteration %",
-      id: "basic-nav-alteration"
-    }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 5.1,
-      onClick: function () {
-        _this.props.pathwayActions.uploadOverlay();
-      }
-    }, "Load From File..."), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 5.1,
-      onClick: this.props.pathwayActions.loadSampleData
-    }, "Load Sample Data"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 5.1,
-      onClick: function () {
-        _this.props.handleOpen(EModalType.STUDY);
-      }
-    }, "Load cBioPortal Data..."), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 5.1,
-      onClick: function () {
-        _this.props.handleOpen(EModalType.PROFILES);
-      }
-    }, "View Settings..."), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 5.1,
-      onClick: this.props.pathwayActions.removeAllData
-    }, "Remove All Data")), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      eventKey: 6,
-      title: "Layout",
-      id: "basic-nav-layout"
-    }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 6.1,
-      onClick: this.props.pathwayActions.performLayout
-    }, "Perform Layout"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 6.1,
-      onClick: function () {
-        _this.props.handleOpen(EModalType.LAYOUT);
-      }
-    }, "Layout Properties...")), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
-      eventKey: 7,
-      title: "Help",
-      id: "basic-nav-help"
-    }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 7.1,
-      onClick: function () {
-        _this.props.handleOpen(EModalType.HELP);
-      }
-    }, "Quick Help"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 7.1,
-      onClick: function () {
-        window.open("https://github.com/iVis-at-Bilkent/pathway-mapper");
-      }
-    }, "How To Use"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-      eventKey: 7.1,
-      onClick: function () {
-        _this.props.handleOpen(EModalType.ABOUT);
-      }
-    }, "About"))), external_react_default.a.createElement(external_react_bootstrap_["Nav"], {
-      pullRight: true
-    }, external_react_default.a.createElement(external_react_bootstrap_["Navbar"].Brand, null, external_react_default.a.createElement("a", {
-      href: "#"
-    }, "PathwayMapper"))));
-  };
-
+      }, "Delete Selected"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.resizeToContent();
+        }
+      }, "Resize Nodes to Content"), !this.props.pathwayActions.isCollaborative && [external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.undo();
+        }
+      }, "Undo"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.redo();
+        }
+      }, "Redo")]), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+        eventKey: 3,
+        title: "View",
+        id: "basic-nav-view"
+      }, external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+        id: "align-view-submenu",
+        className: "dropdown-submenu",
+        eventKey: 2.1,
+        title: "Align Selected"
+      }, external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+        id: "align-vertical-submenu",
+        className: "dropdown-submenu",
+        eventKey: 2.1,
+        title: "Vertical"
+      }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.align("vLeft");
+        }
+      }, "Left"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.align("vCen");
+        }
+      }, "Center"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.align("vRight");
+        }
+      }, "Right")), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+        id: "align-horizontal-submenu",
+        className: "dropdown-submenu",
+        eventKey: 2.1,
+        title: "Horizontal"
+      }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.align("hTop");
+        }
+      }, "Top"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.align("hMid");
+        }
+      }, "Middle"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.align("hBot");
+        }
+      }, "Bottom"))), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.handleOpen(EModalType.GRID);
+        }
+      }, "Grid..."), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.hideSelected();
+        }
+      }, "Hide Selected Nodes"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 1.1,
+        onClick: function () {
+          _this.props.pathwayActions.showAll();
+        }
+      }, "Show All Nodes")), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+        eventKey: 4,
+        title: "Highlight",
+        id: "basic-nav-highlight"
+      }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 4.1,
+        onClick: this.props.pathwayActions.highlightSelected
+      }, "Highlight Selected"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 4.1,
+        onClick: this.props.pathwayActions.highlightNeighbours
+      }, "Highlight Neighbors Of Selected"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 4.1,
+        onClick: this.props.pathwayActions.validateGenes
+      }, "Identify Invalid Genes"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 4.1,
+        onClick: this.props.pathwayActions.removeAllHighlight
+      }, "Remove All Highlights")), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+        eventKey: 5,
+        title: "Alteration %",
+        id: "basic-nav-alteration"
+      }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 5.1,
+        onClick: function () {
+          _this.props.pathwayActions.uploadOverlay();
+        }
+      }, "Load From File..."), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 5.1,
+        onClick: this.props.pathwayActions.loadSampleData
+      }, "Load Sample Data"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 5.1,
+        onClick: function () {
+          _this.props.handleOpen(EModalType.STUDY);
+        }
+      }, "Load cBioPortal Data..."), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 5.1,
+        onClick: function () {
+          _this.props.handleOpen(EModalType.PROFILES);
+        }
+      }, "View Settings..."), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 5.1,
+        onClick: this.props.pathwayActions.removeAllData
+      }, "Remove All Data")), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+        eventKey: 6,
+        title: "Layout",
+        id: "basic-nav-layout"
+      }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 6.1,
+        onClick: this.props.pathwayActions.performLayout
+      }, "Perform Layout"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 6.1,
+        onClick: function () {
+          _this.props.handleOpen(EModalType.LAYOUT);
+        }
+      }, "Layout Properties...")), external_react_default.a.createElement(external_react_bootstrap_["NavDropdown"], {
+        eventKey: 7,
+        title: "Help",
+        id: "basic-nav-help"
+      }, external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 7.1,
+        onClick: function () {
+          _this.props.handleOpen(EModalType.HELP);
+        }
+      }, "Quick Help"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 7.1,
+        onClick: function () {
+          window.open("https://github.com/iVis-at-Bilkent/pathway-mapper");
+        }
+      }, "How To Use"), external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+        eventKey: 7.1,
+        onClick: function () {
+          _this.props.handleOpen(EModalType.ABOUT);
+        }
+      }, "About"))), external_react_default.a.createElement(external_react_bootstrap_["Nav"], {
+        pullRight: true
+      }, external_react_default.a.createElement(external_react_bootstrap_["Navbar"].Brand, null, external_react_default.a.createElement("a", {
+        href: "#"
+      }, "PathwayMapper"))));
+    }
+  });
   return Menubar;
 }(external_react_default.a.Component);
 
@@ -13498,85 +15043,126 @@ var GridOptionsManager_GridOptionsManager =
 /** @class */
 function () {
   function GridOptionsManager(cy) {
+    Object.defineProperty(this, "currentProperties", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "cy", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
     this.cy = cy;
     this.currentProperties = {};
     this.changeParameters(GridOptionsManager.defaultGridGuideOptions);
   }
 
-  GridOptionsManager.prototype.changeParameters = function (params) {
-    this.currentProperties = external_lodash_default.a.clone(params);
-    this.refreshGridOptionsExtension();
-  };
+  Object.defineProperty(GridOptionsManager.prototype, "changeParameters", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (params) {
+      this.currentProperties = external_lodash_default.a.clone(params);
+      this.refreshGridOptionsExtension();
+    }
+  });
+  Object.defineProperty(GridOptionsManager.prototype, "getCurrentOptions", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      return this.currentProperties;
+    }
+  });
+  Object.defineProperty(GridOptionsManager.prototype, "getDefaultOptions", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      return GridOptionsManager.defaultGridGuideOptions;
+    }
+  });
+  Object.defineProperty(GridOptionsManager.prototype, "setSnapToGuidelines", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (state) {
+      this.currentProperties.geometricGuideline = state;
+      this.currentProperties.snapToAlignmentLocationDuringDrag = state;
+      this.currentProperties.distributionGuidelines = state;
+      this.refreshGridOptionsExtension(); //this.appManager.gridOptionsView.changeParameters();
+    }
+  });
+  Object.defineProperty(GridOptionsManager.prototype, "setShowGrid", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (state) {
+      this.currentProperties.drawGrid = state;
+      this.currentProperties.snapToGridDuringDrag = state;
+      this.refreshGridOptionsExtension(); //window.appManager.gridOptionsView.changeParameters();
+    }
+  });
+  Object.defineProperty(GridOptionsManager.prototype, "refreshGridOptionsExtension", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.cy.gridGuide(this.currentProperties);
+    }
+  });
+  Object.defineProperty(GridOptionsManager, "defaultGridGuideOptions", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: {
+      // On/Off Modules
 
-  GridOptionsManager.prototype.getCurrentOptions = function () {
-    return this.currentProperties;
-  };
+      /* From the following four snap options, at most one should be true at a given time */
+      snapToGridOnRelease: false,
+      snapToGridDuringDrag: false,
+      snapToAlignmentLocationOnRelease: false,
+      snapToAlignmentLocationDuringDrag: false,
+      distributionGuidelines: false,
+      geometricGuideline: false,
+      initPosAlignment: false,
+      centerToEdgeAlignment: false,
+      resize: false,
+      parentPadding: false,
+      drawGrid: false,
+      // General
+      gridSpacing: 20,
+      // Draw Grid
+      zoomDash: true,
+      panGrid: true,
+      gridStackOrder: -1,
+      gridColor: '#dedede',
+      lineWidth: 1.0,
+      // Guidelines
+      guidelinesStackOrder: 4,
+      guidelinesTolerance: 5.00,
+      guidelinesStyle: {
+        strokeStyle: "#4286f4",
+        geometricGuidelineRange: 750,
+        range: 500,
+        minDistRange: 10,
+        distGuidelineOffset: 10,
+        horizontalDistColor: "#4286f4",
+        verticalDistColor: "#4286f4",
+        initPosAlignmentColor: "#34495E",
+        lineDash: [6, 8],
+        horizontalDistLine: [0, 0],
+        verticalDistLine: [0, 0],
+        initPosAlignmentLine: [0, 0]
+      },
+      // Parent Padding
+      parentSpacing: -1 // -1 to set paddings of parents to gridSpacing
 
-  GridOptionsManager.prototype.getDefaultOptions = function () {
-    return GridOptionsManager.defaultGridGuideOptions;
-  };
-
-  GridOptionsManager.prototype.setSnapToGuidelines = function (state) {
-    this.currentProperties.geometricGuideline = state;
-    this.currentProperties.snapToAlignmentLocationDuringDrag = state;
-    this.currentProperties.distributionGuidelines = state;
-    this.refreshGridOptionsExtension(); //this.appManager.gridOptionsView.changeParameters();
-  };
-
-  GridOptionsManager.prototype.setShowGrid = function (state) {
-    this.currentProperties.drawGrid = state;
-    this.currentProperties.snapToGridDuringDrag = state;
-    this.refreshGridOptionsExtension(); //window.appManager.gridOptionsView.changeParameters();
-  };
-
-  GridOptionsManager.prototype.refreshGridOptionsExtension = function () {
-    this.cy.gridGuide(this.currentProperties);
-  };
-
-  GridOptionsManager.defaultGridGuideOptions = {
-    // On/Off Modules
-
-    /* From the following four snap options, at most one should be true at a given time */
-    snapToGridOnRelease: false,
-    snapToGridDuringDrag: false,
-    snapToAlignmentLocationOnRelease: false,
-    snapToAlignmentLocationDuringDrag: false,
-    distributionGuidelines: false,
-    geometricGuideline: false,
-    initPosAlignment: false,
-    centerToEdgeAlignment: false,
-    resize: false,
-    parentPadding: false,
-    drawGrid: false,
-    // General
-    gridSpacing: 20,
-    // Draw Grid
-    zoomDash: true,
-    panGrid: true,
-    gridStackOrder: -1,
-    gridColor: '#dedede',
-    lineWidth: 1.0,
-    // Guidelines
-    guidelinesStackOrder: 4,
-    guidelinesTolerance: 5.00,
-    guidelinesStyle: {
-      strokeStyle: "#4286f4",
-      geometricGuidelineRange: 750,
-      range: 500,
-      minDistRange: 10,
-      distGuidelineOffset: 10,
-      horizontalDistColor: "#4286f4",
-      verticalDistColor: "#4286f4",
-      initPosAlignmentColor: "#34495E",
-      lineDash: [6, 8],
-      horizontalDistLine: [0, 0],
-      verticalDistLine: [0, 0],
-      initPosAlignmentLine: [0, 0]
-    },
-    // Parent Padding
-    parentSpacing: -1 // -1 to set paddings of parents to gridSpacing
-
-  };
+    }
+  });
   return GridOptionsManager;
 }();
 
@@ -13589,7 +15175,7 @@ var GridSettings_extends = undefined && undefined.__extends || function () {
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -13636,97 +15222,130 @@ function (_super) {
   function GridSettings(props) {
     var _this = _super.call(this, props) || this;
 
-    _this.defaultSettings = managers_GridOptionsManager.defaultGridGuideOptions;
+    Object.defineProperty(_this, "gridSize", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "guideColor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "defaultSettings", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: managers_GridOptionsManager.defaultGridGuideOptions
+    });
+    Object.defineProperty(_this, "enabledType", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object(external_mobx_["makeObservable"])(_this);
     _this.gridSize = _this.defaultSettings.gridSpacing;
     _this.guideColor = _this.defaultSettings.guidelinesStyle.strokeStyle;
     return _this;
   }
 
-  GridSettings.prototype.setEnabledType = function (newType) {
-    if (newType === this.enabledType) {
-      this.enabledType = EGridType.NONE;
-      return;
+  Object.defineProperty(GridSettings.prototype, "setEnabledType", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (newType) {
+      if (newType === this.enabledType) {
+        this.enabledType = EGridType.NONE;
+        return;
+      }
+
+      this.enabledType = newType;
     }
+  });
+  Object.defineProperty(GridSettings.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-    this.enabledType = newType;
-  };
-
-  GridSettings.prototype.render = function () {
-    var _this = this;
-
-    return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
-      dialogClassName: "gridModal",
-      show: this.props.isModalShown,
-      onShow: function () {
-        _this.enabledType = _this.props.pathwayActions.enabledType;
-      },
-      onHide: function () {
-        _this.props.handleClose(EModalType.GRID);
-      }
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
-      closeButton: true
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h4", null, "Grid Settings"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement(external_react_bootstrap_["Form"], {
-      id: "gripOptionsForm",
-      className: "leftText"
-    }, external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Enable Grids:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
-      checked: this.enabledType === EGridType.GRID,
-      onChange: function () {
-        _this.setEnabledType(EGridType.GRID);
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Enable Guidelines")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
-      checked: this.enabledType === EGridType.GUIDE,
-      onChange: function () {
-        _this.setEnabledType(EGridType.GUIDE);
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Grid Size:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      value: this.gridSize,
-      onChange: function (e) {
-        _this.gridSize = e.target.value;
-      }
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Guideline Color:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 4
-    }, external_react_default.a.createElement("input", {
-      id: "guidelineColor",
-      type: "color",
-      className: "form-control",
-      value: this.guideColor,
-      onChange: function (e) {
-        _this.guideColor = e.target.value;
-      }
-    }))))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Footer, null, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
-      onClick: function () {
-        _this.props.pathwayActions.enabledType = _this.enabledType;
-
-        _this.props.pathwayActions.adjustGridSettings(_this.gridSize, _this.guideColor);
-
-        if (_this.props.pathwayActions.enabledType === EGridType.GRID) {
-          _this.props.pathwayActions.toggleGrid(true);
-        } else if (_this.props.pathwayActions.enabledType === EGridType.GUIDE) {
-          _this.props.pathwayActions.toggleGuide(true);
-        } else {
-          _this.props.pathwayActions.toggleGrid(false); // This will disable both.
-
+      return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
+        dialogClassName: "gridModal",
+        show: this.props.isModalShown,
+        onShow: function () {
+          _this.enabledType = _this.props.pathwayActions.enabledType;
+        },
+        onHide: function () {
+          _this.props.handleClose(EModalType.GRID);
         }
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
+        closeButton: true
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h4", null, "Grid Settings"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement(external_react_bootstrap_["Form"], {
+        id: "gripOptionsForm",
+        className: "leftText"
+      }, external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Enable Grids:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
+        checked: this.enabledType === EGridType.GRID,
+        onChange: function () {
+          _this.setEnabledType(EGridType.GRID);
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Enable Guidelines")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
+        checked: this.enabledType === EGridType.GUIDE,
+        onChange: function () {
+          _this.setEnabledType(EGridType.GUIDE);
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Grid Size:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        value: this.gridSize,
+        onChange: function (e) {
+          _this.gridSize = e.target.value;
+        }
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Guideline Color:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 4
+      }, external_react_default.a.createElement("input", {
+        id: "guidelineColor",
+        type: "color",
+        className: "form-control",
+        value: this.guideColor,
+        onChange: function (e) {
+          _this.guideColor = e.target.value;
+        }
+      }))))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Footer, null, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
+        onClick: function () {
+          _this.props.pathwayActions.enabledType = _this.enabledType;
 
-        _this.props.handleClose(EModalType.GRID);
-      }
-    }, "Save")));
-  };
+          _this.props.pathwayActions.adjustGridSettings(_this.gridSize, _this.guideColor);
+
+          if (_this.props.pathwayActions.enabledType === EGridType.GRID) {
+            _this.props.pathwayActions.toggleGrid(true);
+          } else if (_this.props.pathwayActions.enabledType === EGridType.GUIDE) {
+            _this.props.pathwayActions.toggleGuide(true);
+          } else {
+            _this.props.pathwayActions.toggleGrid(false); // This will disable both.
+
+          }
+
+          _this.props.handleClose(EModalType.GRID);
+        }
+      }, "Save")));
+    }
+  });
 
   GridSettings_decorate([external_mobx_["observable"]], GridSettings.prototype, "gridSize", void 0);
 
@@ -13759,6 +15378,102 @@ var PathwayActions_PathwayActions =
 /** @class */
 function () {
   function PathwayActions(pathwayHandler, profiles, fileManager, handleOpen, isCBioPortal, isCollaborative) {
+    Object.defineProperty(this, "selectedPathway", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "fileManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "editor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "undoRedoManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "pathwayHandler", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "handleOpen", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "eh", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "profiles", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "gridOptionsManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "uploader", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "merger", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "isCBioPortal", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "isCollaborative", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "viewOperationsManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "overlayUploader", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "enabledType", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
     this.pathwayHandler = pathwayHandler;
     this.profiles = profiles;
     this.fileManager = fileManager;
@@ -13766,373 +15481,534 @@ function () {
     this.isCBioPortal = isCBioPortal;
     this.isCollaborative = isCollaborative;
     this.enabledType = EGridType.NONE;
+    Object(external_mobx_["makeObservable"])(this);
   }
 
-  PathwayActions.prototype.emphasiseQueryGenes = function (queryGenes) {
-    if (this.editor) this.editor.cy.nodes().forEach(function (node) {
-      var nodeName = node.data().name;
-      var nodeType = node.data().type;
+  Object.defineProperty(PathwayActions.prototype, "emphasiseQueryGenes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (queryGenes) {
+      if (this.editor) this.editor.cy.nodes().forEach(function (node) {
+        var nodeName = node.data().name;
+        var nodeType = node.data().type;
 
-      if (queryGenes.includes(nodeName) && nodeType === 'GENE') {
-        node.style({
-          'border-width': '4px',
-          'font-weight': 'bold'
-        });
-      }
-    });
-  };
-
-  PathwayActions.prototype.getSelectedNodes = function () {
-    return this.editor.cy.nodes(':selected');
-  };
-
-  PathwayActions.prototype.setLayoutProperties = function (layoutProperties) {
-    this.editor.saveLayoutProperties(layoutProperties);
-  };
-
-  PathwayActions.prototype.doesCyHaveElements = function () {
-    return this.editor.cy.elements().length > 0;
-  };
-
-  PathwayActions.prototype.toggleGrid = function (isEnabled) {
-    this.gridOptionsManager.setSnapToGuidelines(false);
-    this.gridOptionsManager.setShowGrid(isEnabled);
-  };
-
-  PathwayActions.prototype.toggleGuide = function (isEnabled) {
-    this.gridOptionsManager.setSnapToGuidelines(isEnabled);
-    this.gridOptionsManager.setShowGrid(false);
-  };
-
-  PathwayActions.prototype.adjustGridSettings = function (gridSize, color) {
-    this.gridOptionsManager.currentProperties.gridSpacing = gridSize;
-    this.gridOptionsManager.currentProperties.guidelinesStyle.strokeStyle = color;
-    this.gridOptionsManager.currentProperties.guidelinesStyle.horizontalDistColor = color;
-    this.gridOptionsManager.currentProperties.guidelinesStyle.verticalDistColor = color;
-  };
-
-  PathwayActions.prototype.resizeToContent = function () {
-    this.editor.resizeNodesToContent(this.editor.cy.nodes());
-  };
-
-  PathwayActions.prototype.align = function (param) {
-    this.viewOperationsManager.handleNodeAlignment(param);
-  };
-
-  PathwayActions.prototype.onChangeFile = function (e, isMerge) {
-    var file = e.target.files[0];
-    console.log(file);
-    this.processFile(file, isMerge);
-  };
-
-  PathwayActions.prototype.uploadOverlay = function () {
-    this.overlayUploader.click();
-  };
-
-  PathwayActions.prototype.overlayFromText = function (file) {
-    var _this = this; // Create a new FormData object.
-
-
-    var formData = new FormData();
-    formData.append('graphFile', file);
-    var request = new XMLHttpRequest();
-
-    request.onreadystatechange = function () {
-      var _a;
-
-      if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-        console.log('request.responseText');
-        console.log(request.responseText);
-        var linesOfData = request.responseText.split('\n');
-
-        if (linesOfData.length > 0) {
-          var profileIdsFromFile = linesOfData[0].split('\t').slice(1);
-          console.log(profileIdsFromFile);
-
-          (_a = _this.profiles).push.apply(_a, profileIdsFromFile.map(function (id) {
-            return {
-              profileId: id,
-              enabled: true
-            };
-          }));
-        } else {
-          console.log('No valid data');
+        if (queryGenes.includes(nodeName) && nodeType === 'GENE') {
+          node.style({
+            'border-width': '4px',
+            'font-weight': 'bold'
+          });
         }
-
-        _this.editor.addGenomicData(request.responseText);
-      }
-    };
-
-    request.open('POST', '/loadGraph');
-    request.send(formData);
-  };
-
-  PathwayActions.prototype.upload = function () {
-    var _this = this;
-
-    if (this.editor.cy.elements().length > 0) {
-      this.handleOpen(EModalType.CONFIRMATION);
-
-      modals_ConfirmationModal.pendingFunction = function () {
-        _this.uploader.click();
-      };
-    } else {
-      this.uploader.click();
+      });
     }
-  };
+  });
+  Object.defineProperty(PathwayActions.prototype, "getSelectedNodes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      return this.editor.cy.nodes(':selected');
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "setLayoutProperties", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (layoutProperties) {
+      this.editor.saveLayoutProperties(layoutProperties);
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "doesCyHaveElements", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      return this.editor.cy.elements().length > 0;
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "toggleGrid", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (isEnabled) {
+      this.gridOptionsManager.setSnapToGuidelines(false);
+      this.gridOptionsManager.setShowGrid(isEnabled);
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "toggleGuide", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (isEnabled) {
+      this.gridOptionsManager.setSnapToGuidelines(isEnabled);
+      this.gridOptionsManager.setShowGrid(false);
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "adjustGridSettings", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (gridSize, color) {
+      this.gridOptionsManager.currentProperties.gridSpacing = gridSize;
+      this.gridOptionsManager.currentProperties.guidelinesStyle.strokeStyle = color;
+      this.gridOptionsManager.currentProperties.guidelinesStyle.horizontalDistColor = color;
+      this.gridOptionsManager.currentProperties.guidelinesStyle.verticalDistColor = color;
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "resizeToContent", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.editor.resizeNodesToContent(this.editor.cy.nodes());
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "align", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (param) {
+      this.viewOperationsManager.handleNodeAlignment(param);
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "onChangeFile", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (e, isMerge) {
+      var file = e.target.files[0];
+      console.log(file);
+      this.processFile(file, isMerge);
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "uploadOverlay", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.overlayUploader.click();
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "overlayFromText", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (file) {
+      var _this = this; // Create a new FormData object.
 
-  PathwayActions.prototype.merge = function () {
-    this.merger.click();
-  };
 
-  PathwayActions.prototype.setOverlayUploader = function (inputRef) {
-    this.overlayUploader = inputRef;
-  };
+      var formData = new FormData();
+      formData.append('graphFile', file);
+      var request = new XMLHttpRequest();
 
-  PathwayActions.prototype.setUploaders = function (inputRef, isMerge) {
-    if (isMerge) this.merger = inputRef;else this.uploader = inputRef;
-  };
+      request.onreadystatechange = function () {
+        var _a;
 
+        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+          console.log('request.responseText');
+          console.log(request.responseText);
+          var linesOfData = request.responseText.split('\n');
+
+          if (linesOfData.length > 0) {
+            var profileIdsFromFile = linesOfData[0].split('\t').slice(1);
+            console.log(profileIdsFromFile);
+
+            (_a = _this.profiles).push.apply(_a, profileIdsFromFile.map(function (id) {
+              return {
+                profileId: id,
+                enabled: true
+              };
+            }));
+          } else {
+            console.log('No valid data');
+          }
+
+          _this.editor.addGenomicData(request.responseText);
+        }
+      };
+
+      request.open('POST', '/loadGraph');
+      request.send(formData);
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "upload", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
+
+      if (this.editor.cy.elements().length > 0) {
+        this.handleOpen(EModalType.CONFIRMATION);
+
+        modals_ConfirmationModal.pendingFunction = function () {
+          _this.uploader.click();
+        };
+      } else {
+        this.uploader.click();
+      }
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "merge", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.merger.click();
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "setOverlayUploader", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (inputRef) {
+      this.overlayUploader = inputRef;
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "setUploaders", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (inputRef, isMerge) {
+      if (isMerge) this.merger = inputRef;else this.uploader = inputRef;
+    }
+  });
   Object.defineProperty(PathwayActions.prototype, "getPathwayInfo", {
     get: function () {
       return this.fileManager.getPathwayInfo;
     },
-    enumerable: true,
+    enumerable: false,
     configurable: true
   });
-
-  PathwayActions.prototype.setPathwayInfo = function (other) {
-    this.fileManager.setPathwayInfo(other);
-  };
-
-  PathwayActions.prototype.undo = function () {
-    this.undoRedoManager.undo();
-  };
-
-  PathwayActions.prototype.redo = function () {
-    this.undoRedoManager.redo();
-  };
-
-  PathwayActions.prototype.export = function (isSIFNX) {
-    //this.editor.cy.remove('.eh-handle');
-    this.eh.hide();
-    this.fileManager.saveGraph(isSIFNX, this.editor);
-  };
-
-  PathwayActions.prototype.resetUndoStack = function () {
-    this.undoRedoManager.reset();
-  };
-
-  PathwayActions.prototype.newPathway = function () {
-    var _this = this;
-
-    var commitNewPathway = function () {
-      _this.editor.removeAllElements();
-
-      _this.fileManager.setPathwayInfo({
-        pathwayTitle: 'New Pathway',
-        pathwayDetails: '',
-        fileName: 'pathway.txt'
-      }); //this.removeAllData()
-
-
-      _this.resetUndoStack();
-
-      _this.pathwayHandler('Dummy');
-    };
-
-    if (this.editor.cy.elements().length > 0) {
-      this.handleOpen(EModalType.CONFIRMATION);
-      modals_ConfirmationModal.pendingFunction = commitNewPathway;
-    } else {
-      commitNewPathway();
+  Object.defineProperty(PathwayActions.prototype, "setPathwayInfo", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (other) {
+      this.fileManager.setPathwayInfo(other);
     }
-  };
-
-  PathwayActions.prototype.changePathway = function (pathwayName) {
-    this.pathwayHandler(pathwayName);
-
-    if (!this.isCBioPortal) {
-      this.fileManager.setPathwayInfo({
-        pathwayTitle: pathwayName,
-        pathwayDetails: '',
-        fileName: pathwayName + '.txt'
-      }); // At the beginning changePathway is called editor is not ready hence removeData shall not be called
-
-      if (this.editor) {
-        //this.removeAllData()
-        this.resetUndoStack();
-      }
+  });
+  Object.defineProperty(PathwayActions.prototype, "undo", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.undoRedoManager.undo();
     }
-  };
-
-  PathwayActions.prototype.highlightNeighbours = function () {
-    this.editor.highlightNeighbors();
-  };
-
-  PathwayActions.prototype.highlightSelected = function () {
-    this.editor.highlightSelected();
-  };
-
-  PathwayActions.prototype.validateGenes = function () {
-    this.editor.validateGenes();
-  };
-
-  PathwayActions.prototype.showAll = function () {
-    this.editor.showAllNodes();
-  };
-
-  PathwayActions.prototype.hideSelected = function () {
-    this.editor.hideSelectedNodes();
-  };
-
-  PathwayActions.prototype.deleteSelected = function () {
-    var selectedEles = this.editor.cy.elements(':selected');
-    this.editor.removeElement(selectedEles);
-  };
-
-  PathwayActions.prototype.addEdge = function (edgeTypeIndex) {
-    // @ts-ignore
-    window.edgeAddingMode = edgeTypeIndex + 1;
-    console.log('edgeTypeIndex');
-    console.log(edgeTypeIndex);
-
-    if (edgeTypeIndex === -1) {
-      this.eh.disable();
+  });
+  Object.defineProperty(PathwayActions.prototype, "redo", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.undoRedoManager.redo();
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "export", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (isSIFNX) {
+      //this.editor.cy.remove('.eh-handle');
       this.eh.hide();
-      return;
-    } else {
-      // @ts-ignore
-      this.eh.enable();
+      this.fileManager.saveGraph(isSIFNX, this.editor);
     }
-  };
+  });
+  Object.defineProperty(PathwayActions.prototype, "resetUndoStack", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.undoRedoManager.reset();
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "newPathway", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-  PathwayActions.prototype.changeNodeName = function (oldName, newName) {
-    var cyNode = this.editor.cy.$('[name="' + oldName + '"]')[0];
-    console.log(this.editor.cy.$('[name="' + oldName + '"]'));
-    this.editor.changeName(cyNode, newName);
-  };
+      var commitNewPathway = function () {
+        _this.editor.removeAllElements();
 
-  PathwayActions.prototype.addNode = function (nodeType) {
-    var nodeData = {
-      type: nodeType.toUpperCase(),
-      name: 'New ' + nodeType,
-      w: '150',
-      h: '52'
-    };
-    var extent = this.editor.cy.extent();
-    var posData = {
-      x: (extent.x1 + extent.x2) / 2,
-      y: (extent.y1 + extent.y2) / 2
-    };
-    this.editor.addNode(nodeData, posData);
-    this.pathwayHandler('Additional Pathway');
-  };
+        _this.fileManager.setPathwayInfo({
+          pathwayTitle: 'New Pathway',
+          pathwayDetails: '',
+          fileName: 'pathway.txt'
+        }); //this.removeAllData()
 
-  PathwayActions.prototype.searchGene = function (geneName) {
-    var selector = "node[name @*= '" + geneName + "']";
-    var nodesContainingSearchedGene = this.editor.cy.filter(selector);
-    var nodesToSelect = this.editor.cy.collection();
-    nodesContainingSearchedGene.forEach(function (ele, index) {
-      if (!ele.hasClass('highlightedNode') && !ele.hasClass('invalidGeneHighlight')) nodesToSelect = nodesToSelect.union(ele);
-    });
-    this.editor.highlightBySearch(nodesToSelect);
-  };
-
-  PathwayActions.prototype.removeAllData = function () {
-    this.editor.removeGenomicData();
-    this.profiles.length = 0;
-  };
-
-  PathwayActions.prototype.removeAllHighlight = function () {
-    this.editor.removeAllHighlight();
-  };
-
-  PathwayActions.prototype.processFile = function (file, isMerge) {
-    var _this = this; // Create a new FormData object.
-
-
-    var formData = new FormData();
-    formData.append('graphFile', file);
-    var request = new XMLHttpRequest();
-
-    request.onreadystatechange = function () {
-      if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-        var pathwayData = utils_SaveLoadUtility.parseGraph(request.responseText, false);
-        console.log('Process File');
-
-        if (isMerge) {
-          console.log('It is a merge');
-
-          _this.editor.mergeGraph(pathwayData.nodes, pathwayData.edges);
-
-          var graphJSON = _this.editor.cy.json(); //TODO change file name maybe, probabyly  not necessary ?
-          // Pathway nodes and edges are now combination of both previous and new pathway.
-
-
-          pathwayData.nodes = graphJSON.elements.nodes; //this.editor.cy.nodes().map((node) => ({data: node.data()}));
-
-          pathwayData.edges = graphJSON.elements.edges; //this.editor.cy.edges().map((edge) => ({data: edge.data()}));
-
-          pathwayData.title = 'Additional Pathway';
-        } else {
-          _this.editor.loadFile(pathwayData.nodes, pathwayData.edges);
-
-          _this.fileManager.setPathwayInfo({
-            pathwayTitle: pathwayData.title,
-            pathwayDetails: pathwayData.description,
-            fileName: pathwayData.title + '.txt'
-          });
-        }
-
-        _this.pathwayHandler(pathwayData.title + '_imported');
 
         _this.resetUndoStack();
+
+        _this.pathwayHandler('Dummy');
+      };
+
+      if (this.editor.cy.elements().length > 0) {
+        this.handleOpen(EModalType.CONFIRMATION);
+        modals_ConfirmationModal.pendingFunction = commitNewPathway;
       } else {
-        console.error('Process File error: ' + request.status + ', ' + request.responseText);
+        commitNewPathway();
       }
-    };
-
-    request.open('POST', '/loadGraph');
-    request.send(formData);
-  };
-
-  PathwayActions.prototype.saveAs = function (type) {
-    if (type === 'SVG') {
-      this.fileManager.saveAsSVG(this.editor);
-    } else if (type === 'PNG') {
-      this.fileManager.saveAsPNG(this.editor.cy);
-    } else if (type === 'JPEG') {
-      this.fileManager.saveAsJPEG(this.editor.cy);
     }
-  };
+  });
+  Object.defineProperty(PathwayActions.prototype, "changePathway", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (pathwayName) {
+      this.pathwayHandler(pathwayName);
 
-  PathwayActions.prototype.editorHandler = function (editor, eh, undoRedoManager, viewOperationsManager, gridOptionsManager) {
-    this.editor = editor;
-    this.eh = eh;
-    this.undoRedoManager = undoRedoManager;
-    this.viewOperationsManager = viewOperationsManager;
-    this.gridOptionsManager = gridOptionsManager;
-  };
+      if (!this.isCBioPortal) {
+        this.fileManager.setPathwayInfo({
+          pathwayTitle: pathwayName,
+          pathwayDetails: '',
+          fileName: pathwayName + '.txt'
+        }); // At the beginning changePathway is called editor is not ready hence removeData shall not be called
 
-  PathwayActions.prototype.loadSampleData = function () {
-    var data = 'gene\tlung\tovarian\tbreast\ty\n' + 'PTEN\t-7\t-20\t10\t20\n' + 'NF1\t-12\t-4\t30\t20\n' + 'PIK3CA\t18\t40\t-50\t20\n' + 'KRAS\t11\t-5\t0\t20\n' + 'ZIYA\t0\t-2\t0\t20\n' + 'AKT1\t3\t30\t-10\t20\n' + 'AKT2\t6\t-3\t20\t20\n' + 'AKT3\t6\t-3\t20\t20\n' + '\n';
-    this.editor.addGenomicData(data);
-    this.profiles.push({
-      profileId: 'lung',
-      enabled: true
-    }, {
-      profileId: 'ovarian',
-      enabled: true
-    }, {
-      profileId: 'breast',
-      enabled: true
-    });
-  };
+        if (this.editor) {
+          //this.removeAllData()
+          this.resetUndoStack();
+        }
+      }
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "highlightNeighbours", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.editor.highlightNeighbors();
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "highlightSelected", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.editor.highlightSelected();
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "validateGenes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.editor.validateGenes();
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "showAll", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.editor.showAllNodes();
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "hideSelected", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.editor.hideSelectedNodes();
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "deleteSelected", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var selectedEles = this.editor.cy.elements(':selected');
+      this.editor.removeElement(selectedEles);
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "addEdge", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edgeTypeIndex) {
+      // @ts-ignore
+      window.edgeAddingMode = edgeTypeIndex + 1;
+      console.log('edgeTypeIndex');
+      console.log(edgeTypeIndex);
 
-  PathwayActions.prototype.performLayout = function () {
-    this.editor.performLayout();
-  };
+      if (edgeTypeIndex === -1) {
+        this.eh.disable();
+        this.eh.hide();
+        return;
+      } else {
+        // @ts-ignore
+        this.eh.enable();
+      }
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "changeNodeName", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (oldName, newName) {
+      var cyNode = this.editor.cy.$('[name="' + oldName + '"]')[0];
+      console.log(this.editor.cy.$('[name="' + oldName + '"]'));
+      this.editor.changeName(cyNode, newName);
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "addNode", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (nodeType) {
+      var nodeData = {
+        type: nodeType.toUpperCase(),
+        name: 'New ' + nodeType,
+        w: '150',
+        h: '52'
+      };
+      var extent = this.editor.cy.extent();
+      var posData = {
+        x: (extent.x1 + extent.x2) / 2,
+        y: (extent.y1 + extent.y2) / 2
+      };
+      this.editor.addNode(nodeData, posData);
+      this.pathwayHandler('Additional Pathway');
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "searchGene", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (geneName) {
+      var selector = "node[name @*= '" + geneName + "']";
+      var nodesContainingSearchedGene = this.editor.cy.filter(selector);
+      var nodesToSelect = this.editor.cy.collection();
+      nodesContainingSearchedGene.forEach(function (ele, index) {
+        if (!ele.hasClass('highlightedNode') && !ele.hasClass('invalidGeneHighlight')) nodesToSelect = nodesToSelect.union(ele);
+      });
+      this.editor.highlightBySearch(nodesToSelect);
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "removeAllData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.editor.removeGenomicData();
+      this.profiles.length = 0;
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "removeAllHighlight", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.editor.removeAllHighlight();
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "processFile", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (file, isMerge) {
+      var _this = this; // Create a new FormData object.
+
+
+      var formData = new FormData();
+      formData.append('graphFile', file);
+      var request = new XMLHttpRequest();
+
+      request.onreadystatechange = function () {
+        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+          var pathwayData = utils_SaveLoadUtility.parseGraph(request.responseText, false);
+          console.log('Process File');
+
+          if (isMerge) {
+            console.log('It is a merge');
+
+            _this.editor.mergeGraph(pathwayData.nodes, pathwayData.edges);
+
+            var graphJSON = _this.editor.cy.json(); //TODO change file name maybe, probabyly  not necessary ?
+            // Pathway nodes and edges are now combination of both previous and new pathway.
+
+
+            pathwayData.nodes = graphJSON.elements.nodes; //this.editor.cy.nodes().map((node) => ({data: node.data()}));
+
+            pathwayData.edges = graphJSON.elements.edges; //this.editor.cy.edges().map((edge) => ({data: edge.data()}));
+
+            pathwayData.title = 'Additional Pathway';
+          } else {
+            _this.editor.loadFile(pathwayData.nodes, pathwayData.edges);
+
+            _this.fileManager.setPathwayInfo({
+              pathwayTitle: pathwayData.title,
+              pathwayDetails: pathwayData.description,
+              fileName: pathwayData.title + '.txt'
+            });
+          }
+
+          _this.pathwayHandler(pathwayData.title + '_imported');
+
+          _this.resetUndoStack();
+        } else {
+          console.error('Process File error: ' + request.status + ', ' + request.responseText);
+        }
+      };
+
+      request.open('POST', '/loadGraph');
+      request.send(formData);
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "saveAs", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (type) {
+      if (type === 'SVG') {
+        this.fileManager.saveAsSVG(this.editor);
+      } else if (type === 'PNG') {
+        this.fileManager.saveAsPNG(this.editor.cy);
+      } else if (type === 'JPEG') {
+        this.fileManager.saveAsJPEG(this.editor.cy);
+      }
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "editorHandler", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (editor, eh, undoRedoManager, viewOperationsManager, gridOptionsManager) {
+      this.editor = editor;
+      this.eh = eh;
+      this.undoRedoManager = undoRedoManager;
+      this.viewOperationsManager = viewOperationsManager;
+      this.gridOptionsManager = gridOptionsManager;
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "loadSampleData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var data = 'gene\tlung\tovarian\tbreast\ty\n' + 'PTEN\t-7\t-20\t10\t20\n' + 'NF1\t-12\t-4\t30\t20\n' + 'PIK3CA\t18\t40\t-50\t20\n' + 'KRAS\t11\t-5\t0\t20\n' + 'ZIYA\t0\t-2\t0\t20\n' + 'AKT1\t3\t30\t-10\t20\n' + 'AKT2\t6\t-3\t20\t20\n' + 'AKT3\t6\t-3\t20\t20\n' + '\n';
+      this.editor.addGenomicData(data);
+      this.profiles.push({
+        profileId: 'lung',
+        enabled: true
+      }, {
+        profileId: 'ovarian',
+        enabled: true
+      }, {
+        profileId: 'breast',
+        enabled: true
+      });
+    }
+  });
+  Object.defineProperty(PathwayActions.prototype, "performLayout", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.editor.performLayout();
+    }
+  });
 
   PathwayActions_decorate([external_mobx_["observable"]], PathwayActions.prototype, "selectedPathway", void 0);
 
@@ -14239,7 +16115,7 @@ var Sidebar_extends = undefined && undefined.__extends || function () {
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -14300,108 +16176,128 @@ function (_super) {
   function Sidebar(props) {
     var _this = _super.call(this, props) || this;
 
+    Object.defineProperty(_this, "activeEdge", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object(external_mobx_["makeObservable"])(_this);
     _this.activeEdge = -1;
     props.setActiveEdgeHandler(_this.setActiveEdge);
     return _this;
   }
 
-  Sidebar.prototype.addEdge = function (edgeIndex) {
-    if (edgeIndex === this.activeEdge) {
-      this.setActiveEdge(-1);
-      this.props.pathwayActions.addEdge(-1);
-      return;
+  Object.defineProperty(Sidebar.prototype, "addEdge", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edgeIndex) {
+      if (edgeIndex === this.activeEdge) {
+        this.setActiveEdge(-1);
+        this.props.pathwayActions.addEdge(-1);
+        return;
+      }
+
+      this.setActiveEdge(edgeIndex);
+      this.props.pathwayActions.addEdge(edgeIndex);
     }
+  });
+  Object.defineProperty(Sidebar.prototype, "setActiveEdge", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (edgeIndex) {
+      this.activeEdge = edgeIndex;
+    }
+  });
+  Object.defineProperty(Sidebar.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-    this.setActiveEdge(edgeIndex);
-    this.props.pathwayActions.addEdge(edgeIndex);
-  };
-
-  Sidebar.prototype.setActiveEdge = function (edgeIndex) {
-    this.activeEdge = edgeIndex;
-  };
-
-  Sidebar.prototype.render = function () {
-    var _this = this;
-
-    var nodeTypes = ["Gene", "Family", "Complex", "Compartment", "Process"];
-    var edgeTypes = ["Activates", "Inhibits", "Induces", "Represses", "Binds"];
-    var nodeImgs = [gene_default.a, family_default.a, complex_default.a, compartment_default.a, process_default.a];
-    var edgeImgs = [activates_default.a, inhibits_default.a, induces_default.a, represses_default.a, binds_default.a];
-    var nodeIds = ["simpleNodeDiv", "familyNodeDiv", "complexNodeDiv", "compartmentNodeDiv", "processNodeDiv"];
-    return external_react_default.a.createElement("div", {
-      id: "pathway-sidebar",
-      className: "sideBarWrapper"
-    }, external_react_default.a.createElement(external_react_bootstrap_["Panel"], {
-      className: "pnl"
-    }, external_react_default.a.createElement(external_react_bootstrap_["Panel"].Heading, {
-      className: "pnl-header"
-    }, "Network"), external_react_default.a.createElement(external_react_bootstrap_["Panel"].Body, {
-      className: "pnl-body pathwayPanel"
-    }, external_react_default.a.createElement("div", {
-      className: "buttonContainer"
-    }, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
-      onClick: function () {
-        _this.props.handleOpen(EModalType.PW_DETAILS);
-      }
-    }, "Properties")), external_react_default.a.createElement("div", {
-      className: "buttonContainer"
-    }, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
-      onClick: function () {
-        _this.props.pathwayActions.upload();
-      }
-    }, "Import")), external_react_default.a.createElement("div", {
-      className: "buttonContainer"
-    }, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
-      onClick: function () {
-        _this.props.pathwayActions.export(false);
-      }
-    }, "Export")))), external_react_default.a.createElement(external_react_bootstrap_["Panel"], {
-      className: "pnl"
-    }, external_react_default.a.createElement(external_react_bootstrap_["Panel"].Heading, {
-      className: "pnl-header"
-    }, "Node Palette"), external_react_default.a.createElement(external_react_bootstrap_["Panel"].Body, {
-      className: "pnl-body"
-    }, nodeIds.map(function (id) {
+      var nodeTypes = ["Gene", "Family", "Complex", "Compartment", "Process"];
+      var edgeTypes = ["Activates", "Inhibits", "Induces", "Represses", "Binds"];
+      var nodeImgs = [gene_default.a, family_default.a, complex_default.a, compartment_default.a, process_default.a];
+      var edgeImgs = [activates_default.a, inhibits_default.a, induces_default.a, represses_default.a, binds_default.a];
+      var nodeIds = ["simpleNodeDiv", "familyNodeDiv", "complexNodeDiv", "compartmentNodeDiv", "processNodeDiv"];
       return external_react_default.a.createElement("div", {
-        id: id,
-        "data-tip": "Click on this and drag to the location on drawing canvas and release!",
-        "data-effect": "solid",
-        "data-place": "bottom",
-        "data-delay-show": "1000",
-        className: "dragButtonContainer"
-      });
-    }))), external_react_default.a.createElement(external_react_bootstrap_["Panel"], {
-      className: "pnl edgePanel"
-    }, external_react_default.a.createElement(external_react_bootstrap_["Panel"].Heading, {
-      className: "pnl-header"
-    }, "Interaction Palette"), external_react_default.a.createElement(external_react_bootstrap_["Panel"].Body, {
-      className: "pnl-body edgePaletteWrapper"
-    }, external_react_default.a.createElement("div", {
-      className: "list-group edge-palette"
-    }, edgeTypes.map(function (edgeType, i) {
-      return external_react_default.a.createElement("div", {
-        "data-tip": "Click to activate; then, start the interaction from the little circle on the source node!",
-        "data-effect": "solid",
-        "data-place": "bottom",
-        "data-delay-show": "1000"
-      }, external_react_default.a.createElement("a", {
-        style: {
-          marginBottom: "5px"
-        },
-        className: "list-group-item " + (_this.activeEdge === i ? "active" : ""),
+        id: "pathway-sidebar",
+        className: "sideBarWrapper"
+      }, external_react_default.a.createElement(external_react_bootstrap_["Panel"], {
+        className: "pnl"
+      }, external_react_default.a.createElement(external_react_bootstrap_["Panel"].Heading, {
+        className: "pnl-header"
+      }, "Network"), external_react_default.a.createElement(external_react_bootstrap_["Panel"].Body, {
+        className: "pnl-body pathwayPanel"
+      }, external_react_default.a.createElement("div", {
+        className: "buttonContainer"
+      }, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
         onClick: function () {
-          _this.addEdge(i);
-        },
-        href: "#"
-      }, external_react_default.a.createElement("img", {
-        style: {
-          width: "30px"
-        },
-        className: "pull-left",
-        src: edgeImgs[i]
-      }), ' ', edgeType));
-    })))));
-  };
+          _this.props.handleOpen(EModalType.PW_DETAILS);
+        }
+      }, "Properties")), external_react_default.a.createElement("div", {
+        className: "buttonContainer"
+      }, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
+        onClick: function () {
+          _this.props.pathwayActions.upload();
+        }
+      }, "Import")), external_react_default.a.createElement("div", {
+        className: "buttonContainer"
+      }, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
+        onClick: function () {
+          _this.props.pathwayActions.export(false);
+        }
+      }, "Export")))), external_react_default.a.createElement(external_react_bootstrap_["Panel"], {
+        className: "pnl"
+      }, external_react_default.a.createElement(external_react_bootstrap_["Panel"].Heading, {
+        className: "pnl-header"
+      }, "Node Palette"), external_react_default.a.createElement(external_react_bootstrap_["Panel"].Body, {
+        className: "pnl-body"
+      }, nodeIds.map(function (id) {
+        return external_react_default.a.createElement("div", {
+          id: id,
+          "data-tip": "Click on this and drag to the location on drawing canvas and release!",
+          "data-effect": "solid",
+          "data-place": "bottom",
+          "data-delay-show": "1000",
+          className: "dragButtonContainer"
+        });
+      }))), external_react_default.a.createElement(external_react_bootstrap_["Panel"], {
+        className: "pnl edgePanel"
+      }, external_react_default.a.createElement(external_react_bootstrap_["Panel"].Heading, {
+        className: "pnl-header"
+      }, "Interaction Palette"), external_react_default.a.createElement(external_react_bootstrap_["Panel"].Body, {
+        className: "pnl-body edgePaletteWrapper"
+      }, external_react_default.a.createElement("div", {
+        className: "list-group edge-palette"
+      }, edgeTypes.map(function (edgeType, i) {
+        return external_react_default.a.createElement("div", {
+          "data-tip": "Click to activate; then, start the interaction from the little circle on the source node!",
+          "data-effect": "solid",
+          "data-place": "bottom",
+          "data-delay-show": "1000"
+        }, external_react_default.a.createElement("a", {
+          style: {
+            marginBottom: "5px"
+          },
+          className: "list-group-item " + (_this.activeEdge === i ? "active" : ""),
+          onClick: function () {
+            _this.addEdge(i);
+          },
+          href: "#"
+        }, external_react_default.a.createElement("img", {
+          style: {
+            width: "30px"
+          },
+          className: "pull-left",
+          src: edgeImgs[i]
+        }), ' ', edgeType));
+      })))));
+    }
+  });
 
   Sidebar_decorate([external_mobx_["observable"]], Sidebar.prototype, "activeEdge", void 0);
 
@@ -14420,7 +16316,7 @@ var StudyModal_extends = undefined && undefined.__extends || function () {
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -14461,7 +16357,31 @@ function (_super) {
   function StudyModal(props) {
     var _this = _super.call(this, props) || this;
 
-    _this.dataTypes = {};
+    Object.defineProperty(_this, "dataTypes", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: {}
+    });
+    Object.defineProperty(_this, "itemArray", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "selectedStudyData", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "portalAccessor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object(external_mobx_["makeObservable"])(_this);
     _this.selectedStudyData = [];
     _this.portalAccessor = new utils_CBioPortalAccessor();
 
@@ -14470,123 +16390,145 @@ function (_super) {
     return _this;
   }
 
-  StudyModal.prototype.preparePortalAccess = function (studyId) {
-    var _this = this;
+  Object.defineProperty(StudyModal.prototype, "preparePortalAccess", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (studyId) {
+      var _this = this;
 
-    this.portalAccessor.getSupportedGeneticProfiles(studyId, function (data) {
-      _this.disableAllDataTypes(); // Iterate through profiles
+      this.portalAccessor.getSupportedGeneticProfiles(studyId, function (data) {
+        _this.disableAllDataTypes(); // Iterate through profiles
 
 
-      for (var _i = 0, _a = Object.keys(data); _i < _a.length; _i++) {
-        var profile = _a[_i];
-        var type = utils_CBioPortalAccessor.getDataType(profile);
+        for (var _i = 0, _a = Object.keys(data); _i < _a.length; _i++) {
+          var profile = _a[_i];
+          var type = utils_CBioPortalAccessor.getDataType(profile);
 
-        if (type !== "") {
-          _this.dataTypes[type].enabled = true;
-          _this.dataTypes[type].profile = profile;
-        }
-      }
-    });
-  };
-
-  StudyModal.prototype.disableAllDataTypes = function () {
-    for (var _i = 0, _a = Object.keys(this.dataTypes); _i < _a.length; _i++) {
-      var dataType = _a[_i];
-      this.dataTypes[dataType].enabled = false;
-      this.dataTypes[dataType].checked = false;
-      this.dataTypes[dataType].profile = undefined;
-    }
-  };
-
-  StudyModal.prototype.fetchStudy = function () {
-    var _this = this;
-
-    this.itemArray = [];
-    this.portalAccessor.getDataTypes().forEach(function (dataType) {
-      _this.dataTypes[dataType] = {
-        enabled: false,
-        checked: false,
-        profile: undefined
-      };
-    });
-    this.portalAccessor.fetchCancerStudies(function (cancerStudies) {
-      var _loop_1 = function (study) {
-        if (!cancerStudies.hasOwnProperty(study)) {
-          return "continue";
-        }
-
-        var item = external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
-          key: study,
-          onClick: function () {
-            console.log(_this.selectedStudyData);
-            _this.selectedStudyData = cancerStudies[study];
-
-            _this.preparePortalAccess(cancerStudies[study][0]);
+          if (type !== "") {
+            _this.dataTypes[type].enabled = true;
+            _this.dataTypes[type].profile = profile;
           }
-        }, cancerStudies[study][1]);
-
-        _this.itemArray.push(item);
-      };
-
-      for (var study in cancerStudies) {
-        _loop_1(study);
+        }
+      });
+    }
+  });
+  Object.defineProperty(StudyModal.prototype, "disableAllDataTypes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      for (var _i = 0, _a = Object.keys(this.dataTypes); _i < _a.length; _i++) {
+        var dataType = _a[_i];
+        this.dataTypes[dataType].enabled = false;
+        this.dataTypes[dataType].checked = false;
+        this.dataTypes[dataType].profile = undefined;
       }
-    });
-    console.log(this.itemArray);
-  };
+    }
+  });
+  Object.defineProperty(StudyModal.prototype, "fetchStudy", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-  StudyModal.prototype.resetModal = function () {
-    this.disableAllDataTypes();
-    this.selectedStudyData = [];
-  };
+      this.itemArray = [];
+      this.portalAccessor.getDataTypes().forEach(function (dataType) {
+        _this.dataTypes[dataType] = {
+          enabled: false,
+          checked: false,
+          profile: undefined
+        };
+      });
+      this.portalAccessor.fetchCancerStudies(function (cancerStudies) {
+        var _loop_1 = function (study) {
+          if (!cancerStudies.hasOwnProperty(study)) {
+            return "continue";
+          }
 
-  StudyModal.prototype.handleCheckboxClick = function (dataType) {
-    this.dataTypes[dataType].checked = !this.dataTypes[dataType].checked;
-    console.log(this.dataTypes[dataType].checked);
-  };
+          var item = external_react_default.a.createElement(external_react_bootstrap_["MenuItem"], {
+            key: study,
+            onClick: function () {
+              _this.selectedStudyData = cancerStudies[study];
 
-  StudyModal.prototype.render = function () {
-    var _this = this;
+              _this.preparePortalAccess(cancerStudies[study][0]);
+            }
+          }, cancerStudies[study][1]);
 
-    return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
-      id: "cbioPortalModal",
-      show: this.props.isModalShown,
-      onHide: function () {
-        _this.props.handleClose(EModalType.STUDY);
+          _this.itemArray.push(item);
+        };
 
-        _this.resetModal();
-      }
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
-      closeButton: true
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h3", null, "Profile Data from cBioPortal"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("div", {
-      id: "cancerDropDown"
-    }, external_react_default.a.createElement("h4", null, "Select Cancer Study"), external_react_default.a.createElement(external_react_bootstrap_["DropdownButton"], {
-      id: "dropdown-study",
-      title: this.selectedStudyData[1] || "Choose study"
-    }, this.itemArray)), Object.keys(this.dataTypes).map(function (dataType) {
-      return external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
-        key: dataType,
-        disabled: !_this.dataTypes[dataType].enabled,
+        for (var study in cancerStudies) {
+          _loop_1(study);
+        }
+      });
+      console.log(this.itemArray);
+    }
+  });
+  Object.defineProperty(StudyModal.prototype, "resetModal", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.disableAllDataTypes();
+      this.selectedStudyData = [];
+    }
+  });
+  Object.defineProperty(StudyModal.prototype, "handleCheckboxClick", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (dataType) {
+      this.dataTypes[dataType].checked = !this.dataTypes[dataType].checked;
+      console.log(this.dataTypes[dataType].checked);
+    }
+  });
+  Object.defineProperty(StudyModal.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
+
+      return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
+        id: "cbioPortalModal",
+        show: this.props.isModalShown,
+        onHide: function () {
+          _this.props.handleClose(EModalType.STUDY);
+
+          _this.resetModal();
+        }
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
+        closeButton: true
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h3", null, "Profile Data from cBioPortal"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("div", {
+        id: "cancerDropDown"
+      }, external_react_default.a.createElement("h4", null, "Select Cancer Study"), external_react_default.a.createElement(external_react_bootstrap_["DropdownButton"], {
+        id: "dropdown-study",
+        title: this.selectedStudyData[1] || "Choose study"
+      }, this.itemArray)), Object.keys(this.dataTypes).map(function (dataType) {
+        return external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
+          key: dataType,
+          disabled: !_this.dataTypes[dataType].enabled,
+          onClick: function () {
+            _this.handleCheckboxClick(dataType);
+          },
+          checked: _this.dataTypes[dataType].checked
+        }, dataType);
+      }), external_react_default.a.createElement("br", null)), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Footer, null, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
+        bsClass: "success",
         onClick: function () {
-          _this.handleCheckboxClick(dataType);
-        },
-        checked: _this.dataTypes[dataType].checked
-      }, dataType);
-    }), external_react_default.a.createElement("br", null)), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Footer, null, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
-      bsClass: "success",
-      onClick: function () {
-        _this.props.loadFromCBio(_this.dataTypes, _this.selectedStudyData);
+          _this.props.loadFromCBio(_this.dataTypes, _this.selectedStudyData);
 
-        _this.props.handleClose(EModalType.STUDY);
+          _this.props.handleClose(EModalType.STUDY);
 
-        _this.resetModal();
-      }
-    }, "Load Data")));
-  };
+          _this.resetModal();
+        }
+      }, "Load Data")));
+    }
+  });
 
   StudyModal_decorate([external_mobx_["observable"]], StudyModal.prototype, "dataTypes", void 0);
-
-  StudyModal_decorate([external_mobx_["observable"]], StudyModal.prototype, "itemArray", void 0);
 
   StudyModal_decorate([external_mobx_["observable"]], StudyModal.prototype, "selectedStudyData", void 0);
 
@@ -14693,7 +16635,7 @@ var Buttonbar_extends = undefined && undefined.__extends || function () {
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -14777,230 +16719,246 @@ function (_super) {
   function Buttonbar(props) {
     var _this = _super.call(this, props) || this;
 
+    Object.defineProperty(_this, "searchedGene", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object(external_mobx_["makeObservable"])(_this);
     _this.searchedGene = "";
     _this.props.pathwayActions.enabledType = EGridType.NONE;
     return _this;
   }
 
-  Buttonbar.prototype.setEnabledType = function (newType) {
-    if (newType === this.props.pathwayActions.enabledType) {
-      this.props.pathwayActions.enabledType = EGridType.NONE;
-    } else {
-      this.props.pathwayActions.enabledType = newType;
-    } // Enabled type calculated
+  Object.defineProperty(Buttonbar.prototype, "setEnabledType", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (newType) {
+      if (newType === this.props.pathwayActions.enabledType) {
+        this.props.pathwayActions.enabledType = EGridType.NONE;
+      } else {
+        this.props.pathwayActions.enabledType = newType;
+      } // Enabled type calculated
 
 
-    if (this.props.pathwayActions.enabledType === EGridType.GRID) {
-      this.props.pathwayActions.toggleGrid(true);
-    } else if (this.props.pathwayActions.enabledType === EGridType.GUIDE) {
-      this.props.pathwayActions.toggleGuide(true);
-    } else {
-      this.props.pathwayActions.toggleGrid(false); // This will disable both.
-    }
-  };
-
-  Buttonbar.prototype.render = function () {
-    var _this = this;
-
-    var fileFunctions = [{
-      svg: new_default.a,
-      function: this.props.pathwayActions.newPathway,
-      tooltip: "New Pathway"
-    }, {
-      svg: load_default.a,
-      function: this.props.pathwayActions.upload,
-      tooltip: "Import Pathway"
-    }, {
-      svg: save_default.a,
-      function: function () {
-        _this.props.pathwayActions.export(false);
-      },
-      tooltip: "Export Pathway"
-    }];
-    var modFunctions = [{
-      svg: delete_simple_default.a,
-      function: this.props.pathwayActions.deleteSelected,
-      tooltip: "Delete Selected"
-    }];
-
-    if (!this.props.pathwayActions.isCollaborative) {
-      modFunctions.push({
-        svg: undo_default.a,
-        function: function () {
-          _this.props.pathwayActions.undo();
-        },
-        tooltip: "Undo"
-      }, {
-        svg: redo_default.a,
-        function: function () {
-          _this.props.pathwayActions.redo();
-        },
-        tooltip: "Redo"
-      });
-    }
-
-    var alignFunctions = [{
-      svg: align_horizontal_top_default.a,
-      function: function () {
-        _this.props.pathwayActions.align("hTop");
-      },
-      tooltip: "Align Horizontal Top"
-    }, {
-      svg: align_horizontal_middle_default.a,
-      function: function () {
-        _this.props.pathwayActions.align("hMid");
-      },
-      tooltip: "Align Horizontal Middle"
-    }, {
-      svg: align_horizontal_bottom_default.a,
-      function: function () {
-        _this.props.pathwayActions.align("hBot");
-      },
-      tooltip: "Align Horizontal Bottom"
-    }, {
-      svg: align_vertical_left_default.a,
-      function: function () {
-        _this.props.pathwayActions.align("vLeft");
-      },
-      tooltip: "Align Vertical Left"
-    }, {
-      svg: align_vertical_center_default.a,
-      function: function () {
-        _this.props.pathwayActions.align("vCen");
-      },
-      tooltip: "Align Vertical Center"
-    }, {
-      svg: align_vertical_right_default.a,
-      function: function () {
-        _this.props.pathwayActions.align("vRight");
-      },
-      tooltip: "Align Vertical Right"
-    }];
-    var utilFunctions = [{
-      isFocused: this.props.pathwayActions.enabledType === EGridType.GRID,
-      svg: grid_default.a,
-      function: function () {
-        _this.setEnabledType(EGridType.GRID);
-      },
-      tooltip: "Enable Grid: Show and snap to grid"
-    }, {
-      isFocused: this.props.pathwayActions.enabledType === EGridType.GUIDE,
-      svg: guidelines_default.a,
-      function: function () {
-        _this.setEnabledType(EGridType.GUIDE);
-      },
-      tooltip: "Enable Guidelines: Enable and snap to alignment guidelines"
-    }];
-    var visibilityFunctions = [{
-      svg: hide_selected_default.a,
-      function: function () {
-        _this.props.pathwayActions.hideSelected();
-      },
-      tooltip: "Hide Selected"
-    }, {
-      svg: show_all_default.a,
-      function: function () {
-        _this.props.pathwayActions.showAll();
-      },
-      tooltip: "Show All"
-    }];
-    var layoutFunctions = [{
-      svg: layout_cose_default.a,
-      function: function () {
-        _this.props.pathwayActions.performLayout();
-      },
-      tooltip: "Perform Layout"
-    }, {
-      svg: layout_properties_default.a,
-      function: function () {
-        _this.props.handleOpen(EModalType.LAYOUT);
-      },
-      tooltip: "Layout Properties"
-    }];
-    var portalFunctions = [{
-      svg: portal_default.a,
-      function: function () {
-        _this.props.handleOpen(EModalType.STUDY);
-      },
-      tooltip: "Fetch Genomic Data From cBioPortal"
-    }, {
-      svg: settings_default.a,
-      function: function () {
-        _this.props.handleOpen(EModalType.PROFILES);
-      },
-      tooltip: "Genomic Data Visibility Settings"
-    }];
-    var infoFunctions = [{
-      svg: quick_help_default.a,
-      function: function () {
-        _this.props.handleOpen(EModalType.HELP);
-      },
-      tooltip: "Quick Help"
-    }, {
-      svg: about_default.a,
-      function: function () {
-        _this.props.handleOpen(EModalType.ABOUT);
-      },
-      tooltip: "About"
-    }];
-    var allFunctions = [fileFunctions, modFunctions, alignFunctions, utilFunctions, visibilityFunctions, portalFunctions, layoutFunctions, infoFunctions];
-    return external_react_default.a.createElement(external_react_bootstrap_["Navbar"], {
-      style: {
-        backgroundColor: "#eff0f2",
-        minHeight: "36px"
-      },
-      className: "pathway-toolbar"
-    }, external_react_default.a.createElement(external_react_bootstrap_["Nav"], null, external_react_default.a.createElement(external_react_bootstrap_["ButtonToolbar"], {
-      style: {
-        paddingBottom: 0,
-        paddingTop: "7px"
-      },
-      className: "toolbar pathway-toolbar"
-    }, allFunctions.map(function (functions) {
-      return external_react_default.a.createElement(external_react_bootstrap_["ButtonGroup"], null, functions.map(function (svg) {
-        return external_react_default.a.createElement("div", {
-          className: "toolbar-button" + (svg.isFocused ? " toolbar-button-focused" : "")
-        }, external_react_default.a.createElement("img", {
-          height: "22px",
-          width: "22px",
-          src: svg.svg,
-          "data-tip": svg.tooltip,
-          "data-place": "bottom",
-          "data-effect": "solid",
-          onClick: svg.function
-        }));
-      }));
-    }))), external_react_default.a.createElement(external_react_bootstrap_["Nav"], {
-      pullRight: true,
-      style: {
-        marginTop: "0",
-        marginBottom: "0"
-      },
-      className: "toolbar"
-    }, external_react_default.a.createElement(external_react_bootstrap_["ButtonGroup"], {
-      id: "searchGeneToolbar"
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["FormGroup"], {
-      className: "has-feedback"
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      id: "searchGene",
-      type: "text",
-      onChange: function (e) {
-        _this.searchedGene = e.target.value;
-      },
-      placeholder: "Search Genes...",
-      onKeyPress: function (e) {
-        if (e.key !== "Enter") return;
-
-        _this.props.pathwayActions.searchGene(_this.searchedGene);
+      if (this.props.pathwayActions.enabledType === EGridType.GRID) {
+        this.props.pathwayActions.toggleGrid(true);
+      } else if (this.props.pathwayActions.enabledType === EGridType.GUIDE) {
+        this.props.pathwayActions.toggleGuide(true);
+      } else {
+        this.props.pathwayActions.toggleGrid(false); // This will disable both.
       }
-    }), external_react_default.a.createElement(external_react_bootstrap_["Glyphicon"], {
-      className: "form-control-feedback",
-      onClick: function () {
-        _this.props.pathwayActions.searchGene(_this.searchedGene);
-      },
-      glyph: "search"
-    }))))));
-  };
+    }
+  });
+  Object.defineProperty(Buttonbar.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
+
+      var fileFunctions = [{
+        svg: new_default.a,
+        function: this.props.pathwayActions.newPathway,
+        tooltip: "New Pathway"
+      }, {
+        svg: load_default.a,
+        function: this.props.pathwayActions.upload,
+        tooltip: "Import Pathway"
+      }, {
+        svg: save_default.a,
+        function: function () {
+          _this.props.pathwayActions.export(false);
+        },
+        tooltip: "Export Pathway"
+      }];
+      var modFunctions = [{
+        svg: delete_simple_default.a,
+        function: this.props.pathwayActions.deleteSelected,
+        tooltip: "Delete Selected"
+      }];
+
+      if (!this.props.pathwayActions.isCollaborative) {
+        modFunctions.push({
+          svg: undo_default.a,
+          function: function () {
+            _this.props.pathwayActions.undo();
+          },
+          tooltip: "Undo"
+        }, {
+          svg: redo_default.a,
+          function: function () {
+            _this.props.pathwayActions.redo();
+          },
+          tooltip: "Redo"
+        });
+      }
+
+      var alignFunctions = [{
+        svg: align_horizontal_top_default.a,
+        function: function () {
+          _this.props.pathwayActions.align("hTop");
+        },
+        tooltip: "Align Horizontal Top"
+      }, {
+        svg: align_horizontal_middle_default.a,
+        function: function () {
+          _this.props.pathwayActions.align("hMid");
+        },
+        tooltip: "Align Horizontal Middle"
+      }, {
+        svg: align_horizontal_bottom_default.a,
+        function: function () {
+          _this.props.pathwayActions.align("hBot");
+        },
+        tooltip: "Align Horizontal Bottom"
+      }, {
+        svg: align_vertical_left_default.a,
+        function: function () {
+          _this.props.pathwayActions.align("vLeft");
+        },
+        tooltip: "Align Vertical Left"
+      }, {
+        svg: align_vertical_center_default.a,
+        function: function () {
+          _this.props.pathwayActions.align("vCen");
+        },
+        tooltip: "Align Vertical Center"
+      }, {
+        svg: align_vertical_right_default.a,
+        function: function () {
+          _this.props.pathwayActions.align("vRight");
+        },
+        tooltip: "Align Vertical Right"
+      }];
+      var utilFunctions = [{
+        isFocused: this.props.pathwayActions.enabledType === EGridType.GRID,
+        svg: grid_default.a,
+        function: function () {
+          _this.setEnabledType(EGridType.GRID);
+        },
+        tooltip: "Enable Grid: Show and snap to grid"
+      }, {
+        isFocused: this.props.pathwayActions.enabledType === EGridType.GUIDE,
+        svg: guidelines_default.a,
+        function: function () {
+          _this.setEnabledType(EGridType.GUIDE);
+        },
+        tooltip: "Enable Guidelines: Enable and snap to alignment guidelines"
+      }];
+      var visibilityFunctions = [{
+        svg: hide_selected_default.a,
+        function: function () {
+          _this.props.pathwayActions.hideSelected();
+        },
+        tooltip: "Hide Selected"
+      }, {
+        svg: show_all_default.a,
+        function: function () {
+          _this.props.pathwayActions.showAll();
+        },
+        tooltip: "Show All"
+      }];
+      var layoutFunctions = [{
+        svg: layout_cose_default.a,
+        function: function () {
+          _this.props.pathwayActions.performLayout();
+        },
+        tooltip: "Perform Layout"
+      }, {
+        svg: layout_properties_default.a,
+        function: function () {
+          _this.props.handleOpen(EModalType.LAYOUT);
+        },
+        tooltip: "Layout Properties"
+      }];
+      var portalFunctions = [{
+        svg: portal_default.a,
+        function: function () {
+          _this.props.handleOpen(EModalType.STUDY);
+        },
+        tooltip: "Fetch Genomic Data From cBioPortal"
+      }, {
+        svg: settings_default.a,
+        function: function () {
+          _this.props.handleOpen(EModalType.PROFILES);
+        },
+        tooltip: "Genomic Data Visibility Settings"
+      }];
+      var infoFunctions = [{
+        svg: quick_help_default.a,
+        function: function () {
+          _this.props.handleOpen(EModalType.HELP);
+        },
+        tooltip: "Quick Help"
+      }, {
+        svg: about_default.a,
+        function: function () {
+          _this.props.handleOpen(EModalType.ABOUT);
+        },
+        tooltip: "About"
+      }];
+      var allFunctions = [fileFunctions, modFunctions, alignFunctions, utilFunctions, visibilityFunctions, portalFunctions, layoutFunctions, infoFunctions];
+      return external_react_default.a.createElement(external_react_bootstrap_["Navbar"], {
+        style: {
+          backgroundColor: "#eff0f2",
+          minHeight: "36px"
+        },
+        className: "pathway-toolbar"
+      }, external_react_default.a.createElement(external_react_bootstrap_["Nav"], null, external_react_default.a.createElement(external_react_bootstrap_["ButtonToolbar"], {
+        style: {
+          paddingBottom: 0,
+          paddingTop: "7px"
+        },
+        className: "toolbar pathway-toolbar"
+      }, allFunctions.map(function (functions) {
+        return external_react_default.a.createElement(external_react_bootstrap_["ButtonGroup"], null, functions.map(function (svg) {
+          return external_react_default.a.createElement("div", {
+            className: "toolbar-button" + (svg.isFocused ? " toolbar-button-focused" : "")
+          }, external_react_default.a.createElement("img", {
+            height: "22px",
+            width: "22px",
+            src: svg.svg,
+            "data-tip": svg.tooltip,
+            "data-place": "bottom",
+            "data-effect": "solid",
+            onClick: svg.function
+          }));
+        }));
+      }))), external_react_default.a.createElement(external_react_bootstrap_["Nav"], {
+        pullRight: true,
+        style: {
+          marginTop: "0",
+          marginBottom: "0"
+        },
+        className: "toolbar"
+      }, external_react_default.a.createElement(external_react_bootstrap_["ButtonGroup"], {
+        id: "searchGeneToolbar"
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["FormGroup"], {
+        className: "has-feedback"
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        id: "searchGene",
+        type: "text",
+        onChange: function (e) {
+          _this.searchedGene = e.target.value;
+        },
+        placeholder: "Search Genes...",
+        onKeyPress: function (e) {
+          if (e.key !== "Enter") return;
+
+          _this.props.pathwayActions.searchGene(_this.searchedGene);
+        }
+      }), external_react_default.a.createElement(external_react_bootstrap_["Glyphicon"], {
+        className: "form-control-feedback",
+        onClick: function () {
+          _this.props.pathwayActions.searchGene(_this.searchedGene);
+        },
+        glyph: "search"
+      }))))));
+    }
+  });
 
   Buttonbar_decorate([external_mobx_["observable"]], Buttonbar.prototype, "searchedGene", void 0);
 
@@ -15017,7 +16975,7 @@ var ProfilesModal_extends = undefined && undefined.__extends || function () {
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -15054,7 +17012,10 @@ function (_super) {
   ProfilesModal_extends(ProfilesModal, _super);
 
   function ProfilesModal(props) {
-    return _super.call(this, props) || this;
+    var _this = _super.call(this, props) || this;
+
+    Object(external_mobx_["makeObservable"])(_this);
+    return _this;
   }
 
   Object.defineProperty(ProfilesModal.prototype, "profileEnabledMap", {
@@ -15066,43 +17027,47 @@ function (_super) {
       console.log(profileEnabledMap);
       return profileEnabledMap;
     },
-    enumerable: true,
+    enumerable: false,
     configurable: true
   });
+  Object.defineProperty(ProfilesModal.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-  ProfilesModal.prototype.render = function () {
-    var _this = this;
+      var profileLabels = this.props.profiles.map(function (profile, i) {
+        return [external_react_default.a.createElement(external_react_bootstrap_["Label"], {
+          onClick: function () {
+            _this.props.profiles[i].enabled = !_this.props.profiles[i].enabled;
 
-    var profileLabels = this.props.profiles.map(function (profile, i) {
-      return [external_react_default.a.createElement(external_react_bootstrap_["Label"], {
-        onClick: function () {
-          _this.props.profiles[i].enabled = !_this.props.profiles[i].enabled;
-
-          _this.props.editor.updateGenomicDataVisibility(_this.profileEnabledMap);
-        },
-        onMouseEnter: function () {
-          document.body.style.cursor = "pointer";
-        },
-        onMouseLeave: function () {
-          document.body.style.cursor = "default";
-        },
-        style: {
-          fontSize: "85%"
-        },
-        bsStyle: _this.props.profiles[i].enabled ? "primary" : "default"
-      }, profile.profileId), external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null)];
-    });
-    return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
-      show: this.props.isModalShown,
-      onHide: function () {
-        _this.props.handleClose(EModalType.PROFILES);
-      }
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
-      closeButton: true
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h3", null, "Genomic Data Set(s) to Show"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, profileLabels.length > 0 ? profileLabels : external_react_default.a.createElement("h4", {
-      className: "modal-title"
-    }, "There is currently no data to show")));
-  };
+            _this.props.editor.updateGenomicDataVisibility(_this.profileEnabledMap);
+          },
+          onMouseEnter: function () {
+            document.body.style.cursor = "pointer";
+          },
+          onMouseLeave: function () {
+            document.body.style.cursor = "default";
+          },
+          style: {
+            fontSize: "85%"
+          },
+          bsStyle: _this.props.profiles[i].enabled ? "primary" : "default"
+        }, profile.profileId), external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null)];
+      });
+      return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
+        show: this.props.isModalShown,
+        onHide: function () {
+          _this.props.handleClose(EModalType.PROFILES);
+        }
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
+        closeButton: true
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h3", null, "Genomic Data Set(s) to Show"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, profileLabels.length > 0 ? profileLabels : external_react_default.a.createElement("h4", {
+        className: "modal-title"
+      }, "There is currently no data to show")));
+    }
+  });
 
   ProfilesModal_decorate([external_mobx_["computed"]], ProfilesModal.prototype, "profileEnabledMap", null);
 
@@ -15119,7 +17084,7 @@ var AboutModal_extends = undefined && undefined.__extends || function () {
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -15149,39 +17114,43 @@ function (_super) {
     return _super.call(this, props) || this;
   }
 
-  AboutModal.prototype.render = function () {
-    var _this = this;
+  Object.defineProperty(AboutModal.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-    return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
-      show: this.props.isModalShown,
-      onHide: function () {
-        _this.props.handleClose(EModalType.ABOUT);
-      }
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
-      closeButton: true
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h3", null, "About"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("h3", {
-      id: "about-model-header"
-    }, "PathwayMapper 2.0"), external_react_default.a.createElement("div", {
-      className: "aboutImageContent"
-    }, external_react_default.a.createElement("img", {
-      src: __webpack_require__(71),
-      alt: "",
-      height: "25px"
-    })), external_react_default.a.createElement("div", {
-      className: "aboutImageContent"
-    }, external_react_default.a.createElement("img", {
-      src: __webpack_require__(72),
-      alt: "",
-      height: "34px"
-    })), external_react_default.a.createElement("div", {
-      className: "adressText"
-    }, external_react_default.a.createElement("p", null, "i-Vis information Visualization Lab"), external_react_default.a.createElement("p", null, "Bilkent University, Ankara, Turkey")), external_react_default.a.createElement("div", {
-      className: "adressText"
-    }, external_react_default.a.createElement("p", null, "Memorial Sloan-Kettering Cancer Center"), external_react_default.a.createElement("p", null, "New York, USA"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Footer, null, external_react_default.a.createElement("a", {
-      href: "https://github.com/iVis-at-Bilkent/pathway-mapper"
-    }, "https://github.com/iVis-at-Bilkent/pathway-mapper")));
-  };
-
+      return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
+        show: this.props.isModalShown,
+        onHide: function () {
+          _this.props.handleClose(EModalType.ABOUT);
+        }
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
+        closeButton: true
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h3", null, "About"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("h3", {
+        id: "about-model-header"
+      }, "PathwayMapper 2.0"), external_react_default.a.createElement("div", {
+        className: "aboutImageContent"
+      }, external_react_default.a.createElement("img", {
+        src: __webpack_require__(71),
+        alt: "",
+        height: "25px"
+      })), external_react_default.a.createElement("div", {
+        className: "aboutImageContent"
+      }, external_react_default.a.createElement("img", {
+        src: __webpack_require__(72),
+        alt: "",
+        height: "34px"
+      })), external_react_default.a.createElement("div", {
+        className: "adressText"
+      }, external_react_default.a.createElement("p", null, "i-Vis information Visualization Lab"), external_react_default.a.createElement("p", null, "Bilkent University, Ankara, Turkey")), external_react_default.a.createElement("div", {
+        className: "adressText"
+      }, external_react_default.a.createElement("p", null, "Memorial Sloan-Kettering Cancer Center"), external_react_default.a.createElement("p", null, "New York, USA"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Footer, null, external_react_default.a.createElement("a", {
+        href: "https://github.com/iVis-at-Bilkent/pathway-mapper"
+      }, "https://github.com/iVis-at-Bilkent/pathway-mapper")));
+    }
+  });
   return AboutModal;
 }(external_react_default.a.Component);
 
@@ -15198,7 +17167,7 @@ var PathwayDetailsModal_extends = undefined && undefined.__extends || function (
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -15234,72 +17203,84 @@ function (_super) {
   PathwayDetailsModal_extends(PathwayDetailsModal, _super);
 
   function PathwayDetailsModal(props) {
-    return _super.call(this, props) || this;
+    var _this = _super.call(this, props) || this;
+
+    Object.defineProperty(_this, "pathwayInfo", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    return _this;
   }
 
-  PathwayDetailsModal.prototype.render = function () {
-    var _this = this;
+  Object.defineProperty(PathwayDetailsModal.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-    this.pathwayInfo = this.props.pathwayActions.getPathwayInfo;
-    return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
-      id: "pathwayDetailsDiv",
-      show: this.props.isModalShown,
-      onHide: function () {
-        _this.props.handleClose(4);
-      }
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
-      closeButton: true
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h3", null, "Pathway Properties"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement(external_react_bootstrap_["Form"], {
-      id: "pathwayDetailsForm"
-    }, external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      style: {
-        textAlign: "left"
-      },
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "File Name:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      onChange: function (e) {
-        _this.pathwayInfo.fileName = e.target.value;
-      },
-      value: this.pathwayInfo.fileName
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      style: {
-        textAlign: "left"
-      },
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Pathway Title:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
-      type: "text",
-      onChange: function (e) {
-        _this.pathwayInfo.pathwayTitle = e.target.value;
-      },
-      value: this.pathwayInfo.pathwayTitle
-    }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      style: {
-        textAlign: "left"
-      },
-      sm: 4
-    }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Pathway Description:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      sm: 8
-    }, external_react_default.a.createElement("textarea", {
-      className: "form-control",
-      rows: 3,
-      onChange: function (e) {
-        _this.pathwayInfo.pathwayDetails = e.target.value;
-      },
-      value: this.pathwayInfo.pathwayDetails
-    }))))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Footer, null, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
-      onClick: function () {
-        _this.props.pathwayActions.setPathwayInfo(_this.pathwayInfo);
+      this.pathwayInfo = this.props.pathwayActions.getPathwayInfo;
+      return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
+        id: "pathwayDetailsDiv",
+        show: this.props.isModalShown,
+        onHide: function () {
+          _this.props.handleClose(4);
+        }
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
+        closeButton: true
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h3", null, "Pathway Properties"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement(external_react_bootstrap_["Form"], {
+        id: "pathwayDetailsForm"
+      }, external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        style: {
+          textAlign: "left"
+        },
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "File Name:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        onChange: function (e) {
+          _this.pathwayInfo.fileName = e.target.value;
+        },
+        value: this.pathwayInfo.fileName
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        style: {
+          textAlign: "left"
+        },
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Pathway Title:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+        type: "text",
+        onChange: function (e) {
+          _this.pathwayInfo.pathwayTitle = e.target.value;
+        },
+        value: this.pathwayInfo.pathwayTitle
+      }))), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        style: {
+          textAlign: "left"
+        },
+        sm: 4
+      }, external_react_default.a.createElement(external_react_bootstrap_["ControlLabel"], null, "Pathway Description:")), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        sm: 8
+      }, external_react_default.a.createElement("textarea", {
+        className: "form-control",
+        rows: 3,
+        onChange: function (e) {
+          _this.pathwayInfo.pathwayDetails = e.target.value;
+        },
+        value: this.pathwayInfo.pathwayDetails
+      }))))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Footer, null, external_react_default.a.createElement(external_react_bootstrap_["Button"], {
+        onClick: function () {
+          _this.props.pathwayActions.setPathwayInfo(_this.pathwayInfo);
 
-        _this.props.handleClose(EModalType.PW_DETAILS);
-      }
-    }, "Save")));
-  };
-
+          _this.props.handleClose(EModalType.PW_DETAILS);
+        }
+      }, "Save")));
+    }
+  });
   PathwayDetailsModal = PathwayDetailsModal_decorate([external_mobx_react_["observer"]], PathwayDetailsModal);
   return PathwayDetailsModal;
 }(external_react_default.a.Component);
@@ -15310,153 +17291,183 @@ var ViewOperationsManager =
 /** @class */
 function () {
   function ViewOperationsManager(editor, cy) {
+    Object.defineProperty(this, "movedNodes", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "editor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "cy", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
     this.cy = cy;
     this.editor = editor;
     this.movedNodes = [];
   } //TODO use align function from cytoscape.js-grid-guide extension
 
 
-  ViewOperationsManager.prototype.handleNodeAlignment = function (param) {
-    var tmpNodes = this.editor.selectedNodeStack;
-    var nodes = this.cy.collection();
-    var nodeMap = {};
-    this.movedNodes = [];
+  Object.defineProperty(ViewOperationsManager.prototype, "handleNodeAlignment", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (param) {
+      var tmpNodes = this.editor.selectedNodeStack;
+      var nodes = this.cy.collection();
+      var nodeMap = {};
+      this.movedNodes = [];
 
-    for (var key in tmpNodes) {
-      nodes = nodes.add(tmpNodes[key]);
-    }
-
-    nodes.forEach(function (node, index) {
-      if (node.isParent()) {
-        nodeMap[node.id()] = node;
+      for (var key in tmpNodes) {
+        nodes = nodes.add(tmpNodes[key]);
       }
-    });
 
-    if (nodes.length > 0) {
-      var firstSelected = nodes[0];
-      var firstBbox = firstSelected.boundingBox(); //OuterHeight variable added due to miscalculation of boundingBox function in pathwaymapper
-
-      var firstOuterHeight = firstSelected.outerHeight();
-      var self = this;
       nodes.forEach(function (node, index) {
-        if (index == 0) {
-          return;
-        } //If parent of selected node is in selection do nothing !
-
-
-        if (nodeMap[node.parent().id()] == null) {
-          var newPosition = self.calculateNewPosition(param, node, firstBbox, firstOuterHeight); //Recursively traverse leaf nodes
-
-          self.changePosition(node, 0, 0, newPosition);
+        if (node.isParent()) {
+          nodeMap[node.id()] = node;
         }
       });
-      this.editor.handleChangePositionByAlignment(self.movedNodes);
+
+      if (nodes.length > 0) {
+        var firstSelected = nodes[0];
+        var firstBbox = firstSelected.boundingBox(); //OuterHeight variable added due to miscalculation of boundingBox function in pathwaymapper
+
+        var firstOuterHeight = firstSelected.outerHeight();
+        var self = this;
+        nodes.forEach(function (node, index) {
+          if (index == 0) {
+            return;
+          } //If parent of selected node is in selection do nothing !
+
+
+          if (nodeMap[node.parent().id()] == null) {
+            var newPosition = self.calculateNewPosition(param, node, firstBbox, firstOuterHeight); //Recursively traverse leaf nodes
+
+            self.changePosition(node, 0, 0, newPosition);
+          }
+        });
+        this.editor.handleChangePositionByAlignment(self.movedNodes);
+      }
     }
-  };
+  });
   /*
    Determine new position according to the alignment
    node that node.position works on center positions thats why all calculations
    are performed accordingly
    */
 
+  Object.defineProperty(ViewOperationsManager.prototype, "calculateNewPosition", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (param, node, referenceBbox, referenceOuterHeight) {
+      var currentPos = node.position();
+      var currentBbox = node.boundingBox();
+      var newPosition; //This parameter is used to move the compounds less upwards when they contain label
 
-  ViewOperationsManager.prototype.calculateNewPosition = function (param, node, referenceBbox, referenceOuterHeight) {
-    var currentPos = node.position();
-    var currentBbox = node.boundingBox();
-    var newPosition; //This parameter is used to move the compounds less upwards when they contain label
+      var moveParam = node.isParent() ? node.outerHeight() - (currentBbox.h - node.outerHeight()) / 2 - (node.outerHeight() - node.height()) / 2 : node.height(); //This param is used only when the node is parent, for simple nodes is 0
 
-    var moveParam = node.isParent() ? node.outerHeight() - (currentBbox.h - node.outerHeight()) / 2 - (node.outerHeight() - node.height()) / 2 : node.height(); //This param is used only when the node is parent, for simple nodes is 0
+      var labelHeight = node.isParent() ? currentBbox.h - node.outerHeight() : 0;
 
-    var labelHeight = node.isParent() ? currentBbox.h - node.outerHeight() : 0;
-
-    if (param === 'vLeft') {
-      newPosition = {
-        x: referenceBbox.x1 + currentBbox.w / 2,
-        y: currentPos.y
-      };
-    } else if (param === 'vCen') {
-      newPosition = {
-        x: referenceBbox.x1 + referenceBbox.w / 2,
-        y: currentPos.y
-      };
-    } else if (param === 'vRight') {
-      newPosition = {
-        x: referenceBbox.x2 - currentBbox.w / 2,
-        y: currentPos.y
-      };
-    } else if (param === 'hTop') {
-      newPosition = {
-        x: currentPos.x,
-        y: referenceBbox.y1 + currentBbox.h / 2
-      };
-    } //Checks for the case where compounds don't have names (name isn't taken in consideration in that case)
-    else if (param === 'hMid' && node.isParent() && node.data('name') == "") {
+      if (param === 'vLeft') {
         newPosition = {
-          x: currentPos.x,
-          y: referenceBbox.y1 + referenceBbox.h / 2
+          x: referenceBbox.x1 + currentBbox.w / 2,
+          y: currentPos.y
         };
-      } else if (param === 'hMid') {
+      } else if (param === 'vCen') {
+        newPosition = {
+          x: referenceBbox.x1 + referenceBbox.w / 2,
+          y: currentPos.y
+        };
+      } else if (param === 'vRight') {
+        newPosition = {
+          x: referenceBbox.x2 - currentBbox.w / 2,
+          y: currentPos.y
+        };
+      } else if (param === 'hTop') {
         newPosition = {
           x: currentPos.x,
-          y: referenceBbox.y1 + referenceOuterHeight / 2 + labelHeight / 2
+          y: referenceBbox.y1 + currentBbox.h / 2
         };
       } //Checks for the case where compounds don't have names (name isn't taken in consideration in that case)
-      else if (param === 'hBot' && node.isParent() && node.data('name') == "") {
+      else if (param === 'hMid' && node.isParent() && node.data('name') == "") {
           newPosition = {
             x: currentPos.x,
-            y: referenceBbox.y2 - currentBbox.h / 2
+            y: referenceBbox.y1 + referenceBbox.h / 2
           };
-        } else if (param === 'hBot') {
+        } else if (param === 'hMid') {
           newPosition = {
             x: currentPos.x,
-            y: referenceBbox.y1 + referenceOuterHeight - moveParam / 2
+            y: referenceBbox.y1 + referenceOuterHeight / 2 + labelHeight / 2
           };
-        } else {
-          console.log('Error: wrong alignment name ' + param);
-          return;
-        }
+        } //Checks for the case where compounds don't have names (name isn't taken in consideration in that case)
+        else if (param === 'hBot' && node.isParent() && node.data('name') == "") {
+            newPosition = {
+              x: currentPos.x,
+              y: referenceBbox.y2 - currentBbox.h / 2
+            };
+          } else if (param === 'hBot') {
+            newPosition = {
+              x: currentPos.x,
+              y: referenceBbox.y1 + referenceOuterHeight - moveParam / 2
+            };
+          } else {
+            console.log('Error: wrong alignment name ' + param);
+            return;
+          }
 
-    return newPosition;
-  }; //Recursively move leaf nodes
-
-
-  ViewOperationsManager.prototype.changePosition = function (node, dx, dy, newPos) {
-    if (node.isParent()) {
-      var childNodes = node.children();
-      var parentBbox = node.boundingBox();
-      var self = this;
-      childNodes.forEach(function (childNode, index) {
-        var childBbox = childNode.boundingBox();
-
-        var _dx = -(parentBbox.x1 - childBbox.x1) - parentBbox.w / 2 + childBbox.w / 2;
-
-        var _dy = -(parentBbox.y1 - childBbox.y1) - parentBbox.h / 2 + childBbox.h / 2; //If further compound node is found, set position accordingly
-
-
-        if (childNode.isParent()) {
-          self.changePosition(childNode, 0, 0, {
-            x: newPos.x + _dx,
-            y: newPos.y + _dy
-          });
-        } else {
-          self.changePosition(childNode, _dx, _dy, newPos);
-        }
-      });
-    } else {
-      //Move locally and let editor actions manager know a move happened
-      //If in collaborative mode editor actions manager will update collaborative model
-      var position = {
-        x: newPos.x + dx,
-        y: newPos.y + dy
-      };
-      this.movedNodes.push({
-        node: node,
-        nextPosition: position,
-        oldPosition: null
-      });
+      return newPosition;
     }
-  };
+  }); //Recursively move leaf nodes
 
+  Object.defineProperty(ViewOperationsManager.prototype, "changePosition", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (node, dx, dy, newPos) {
+      if (node.isParent()) {
+        var childNodes = node.children();
+        var parentBbox = node.boundingBox();
+        var self = this;
+        childNodes.forEach(function (childNode, index) {
+          var childBbox = childNode.boundingBox();
+
+          var _dx = -(parentBbox.x1 - childBbox.x1) - parentBbox.w / 2 + childBbox.w / 2;
+
+          var _dy = -(parentBbox.y1 - childBbox.y1) - parentBbox.h / 2 + childBbox.h / 2; //If further compound node is found, set position accordingly
+
+
+          if (childNode.isParent()) {
+            self.changePosition(childNode, 0, 0, {
+              x: newPos.x + _dx,
+              y: newPos.y + _dy
+            });
+          } else {
+            self.changePosition(childNode, _dx, _dy, newPos);
+          }
+        });
+      } else {
+        //Move locally and let editor actions manager know a move happened
+        //If in collaborative mode editor actions manager will update collaborative model
+        var position = {
+          x: newPos.x + dx,
+          y: newPos.y + dy
+        };
+        this.movedNodes.push({
+          node: node,
+          nextPosition: position,
+          oldPosition: null
+        });
+      }
+    }
+  });
   return ViewOperationsManager;
 }();
 
@@ -15469,7 +17480,7 @@ var QuickHelpModal_extends = undefined && undefined.__extends || function () {
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -15499,22 +17510,26 @@ function (_super) {
     return _super.call(this, props) || this;
   }
 
-  QuickHelpModal.prototype.render = function () {
-    var _this = this;
+  Object.defineProperty(QuickHelpModal.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-    return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
-      id: "quickHelpModal",
-      show: this.props.isModalShown,
-      onHide: function () {
-        _this.props.handleClose(EModalType.HELP);
-      }
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
-      closeButton: true
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h3", null, "Quick Help"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("ul", {
-      className: "leftText"
-    }, external_react_default.a.createElement("li", null, external_react_default.a.createElement("strong", null, "To add a node:"), " Drag and drop from node palette"), external_react_default.a.createElement("li", null, external_react_default.a.createElement("strong", null, "To add an interaction:"), " Click on interaction type; then click on small circle on source node and release on target node"), external_react_default.a.createElement("li", null, external_react_default.a.createElement("strong", null, "To add a node into a container (family, complex, compartment or process):"), " Drag the node into its container node or select nodes to be contained and right click on container node and choose \"Add Selected Into This\""), external_react_default.a.createElement("li", null, external_react_default.a.createElement("strong", null, "To delete nodes/interactions:"), " Select and perform Edit > Delete Selected"), external_react_default.a.createElement("li", null, external_react_default.a.createElement("strong", null, "To overlay experiment data:"), " Select Alteration % > Load From cBioPortal..."))));
-  };
-
+      return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
+        id: "quickHelpModal",
+        show: this.props.isModalShown,
+        onHide: function () {
+          _this.props.handleClose(EModalType.HELP);
+        }
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
+        closeButton: true
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h3", null, "Quick Help"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("ul", {
+        className: "leftText"
+      }, external_react_default.a.createElement("li", null, external_react_default.a.createElement("strong", null, "To add a node:"), " Drag and drop from node palette"), external_react_default.a.createElement("li", null, external_react_default.a.createElement("strong", null, "To add an interaction:"), " Click on interaction type; then click on small circle on source node and release on target node"), external_react_default.a.createElement("li", null, external_react_default.a.createElement("strong", null, "To add a node into a container (family, complex, compartment or process):"), " Drag the node into its container node or select nodes to be contained and right click on container node and choose \"Add Selected Into This\""), external_react_default.a.createElement("li", null, external_react_default.a.createElement("strong", null, "To delete nodes/interactions:"), " Select and perform Edit > Delete Selected"), external_react_default.a.createElement("li", null, external_react_default.a.createElement("strong", null, "To overlay experiment data:"), " Select Alteration % > Load From cBioPortal..."))));
+    }
+  });
   return QuickHelpModal;
 }(external_react_default.a.Component);
 
@@ -15527,7 +17542,7 @@ var CBioHelpModal_extends = undefined && undefined.__extends || function () {
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -15693,126 +17708,134 @@ function (_super) {
     return _this;
   }
 
-  CBioHelpModal.prototype.generateOncoprintLegend = function () {
-    var svgNameSpace = 'http://www.w3.org/2000/svg';
-    var svgElement = document.createElementNS(svgNameSpace, 'svg');
-    var legendEleWidth = 280;
-    var cellWidth = 6;
-    var cellHeight = 23;
-    var cellVerticalPadding = 15;
-    var cellMarginRight = cellWidth + 3;
-    shapeBank.forEach(function (shape, index) {
-      var offsetX = index % 3 * legendEleWidth;
-      var textOffsetX = offsetX + cellMarginRight;
-      var offsetY = Math.floor(index / 3) * (cellHeight + cellVerticalPadding);
-      var textOffsetY = offsetY + 15;
-      var g = document.createElementNS(svgNameSpace, 'g');
+  Object.defineProperty(CBioHelpModal.prototype, "generateOncoprintLegend", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var svgNameSpace = 'http://www.w3.org/2000/svg';
+      var svgElement = document.createElementNS(svgNameSpace, 'svg');
+      var legendEleWidth = 280;
+      var cellWidth = 6;
+      var cellHeight = 23;
+      var cellVerticalPadding = 15;
+      var cellMarginRight = cellWidth + 3;
+      shapeBank.forEach(function (shape, index) {
+        var offsetX = index % 3 * legendEleWidth;
+        var textOffsetX = offsetX + cellMarginRight;
+        var offsetY = Math.floor(index / 3) * (cellHeight + cellVerticalPadding);
+        var textOffsetY = offsetY + 15;
+        var g = document.createElementNS(svgNameSpace, 'g');
 
-      if (!shape["stroke"]) {
-        shape["stroke"] = 'rgba(0,0,0,0)';
-        shape["stroke-width"] = 0;
-      }
+        if (!shape["stroke"]) {
+          shape["stroke"] = 'rgba(0,0,0,0)';
+          shape["stroke-width"] = 0;
+        }
 
-      g.appendChild(Object(external_oncoprintjs_["shapeToSvg"])(defaultShape, offsetX, offsetY));
-      g.appendChild(Object(external_oncoprintjs_["shapeToSvg"])(shape, offsetX, offsetY));
-      var text = document.createElementNS(svgNameSpace, 'text');
-      text.setAttributeNS(null, 'x', textOffsetX.toString());
-      text.setAttributeNS(null, 'y', textOffsetY.toString());
-      text.setAttributeNS(null, 'font-size', '12');
-      text.setAttributeNS(null, 'font-family', 'Arial');
-      var textNode = document.createTextNode(labels[index]);
-      text.appendChild(textNode);
-      g.appendChild(text);
-      svgElement.appendChild(g);
-    });
-    svgElement.setAttribute('width', '840');
-    svgElement.setAttribute('height', '175');
-    svgElement.style.paddingTop = '20px'; // This is important you need to include this to succesfully render in cytoscape.js!
+        g.appendChild(Object(external_oncoprintjs_["shapeToSvg"])(defaultShape, offsetX, offsetY));
+        g.appendChild(Object(external_oncoprintjs_["shapeToSvg"])(shape, offsetX, offsetY));
+        var text = document.createElementNS(svgNameSpace, 'text');
+        text.setAttributeNS(null, 'x', textOffsetX.toString());
+        text.setAttributeNS(null, 'y', textOffsetY.toString());
+        text.setAttributeNS(null, 'font-size', '12');
+        text.setAttributeNS(null, 'font-family', 'Arial');
+        var textNode = document.createTextNode(labels[index]);
+        text.appendChild(textNode);
+        g.appendChild(text);
+        svgElement.appendChild(g);
+      });
+      svgElement.setAttribute('width', '840');
+      svgElement.setAttribute('height', '175');
+      svgElement.style.paddingTop = '20px'; // This is important you need to include this to succesfully render in cytoscape.js!
 
-    svgElement.setAttribute('xmlns', svgNameSpace);
-    return svgElement;
-  };
+      svgElement.setAttribute('xmlns', svgNameSpace);
+      return svgElement;
+    }
+  });
+  Object.defineProperty(CBioHelpModal.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-  CBioHelpModal.prototype.render = function () {
-    var _this = this;
-
-    var legendPadding = '45px';
-    return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
-      bsSize: "lg",
-      id: "cBioHelpModal",
-      className: "pathwayMapper",
-      show: this.props.isModalShown,
-      onHide: function () {
-        _this.props.handleClose(EModalType.CHELP);
-      }
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
-      closeButton: true
-    }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, "PathwayMapper cBioPortal Edition 2.0")), !this.props.patientView && external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("p", {
-      className: "leftText"
-    }, "PathwayMapper shows you your genes of interest with the alteration frequencies of selected genetic profiles of the chosen study overlaid on a TCGA pathway using a white to red color scale (the more frequently altered a gene is, the more red it's shown). All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with highest ranking with the default ranking options but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Refer to the documentation ", external_react_default.a.createElement("a", {
-      href: "https://github.com/iVis-at-Bilkent/pathway-mapper",
-      target: "_blank"
-    }, "here"), " for the notation used.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table. Ranking criteria might be changed by changing the options at the bottom of the table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "The buttons on top of the pathway are:", external_react_default.a.createElement("ul", null, external_react_default.a.createElement("table", {
-      cellPadding: 5
-    }, external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      src: save_png_default.a
-    })), " ", external_react_default.a.createElement("td", null, "Save as PNG")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      src: save_svg_default.a
-    })), " ", external_react_default.a.createElement("td", null, "Save as SVG")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      src: layout_cose_default.a
-    })), " ", external_react_default.a.createElement("td", null, "Perform layout: Layout is recalculated taking current node positions into account")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      src: CBioHelpModal_addSelImage
-    })), " ", external_react_default.a.createElement("td", null, "Add selected genes to query: You may select additional genes from the pathway by left clicking (Shift + left click to add more genes)")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      src: CBioHelpModal_addAllImage
-    })), " ", external_react_default.a.createElement("td", null, "Add all valid genes to query: All valid gene symbols will be added to the query; others will be ignored")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      src: edit_default.a
-    })), " ", external_react_default.a.createElement("td", null, "Edit pathway: Edit both the topology and the geometry of the current pathway with the full blown PathwayMapper editor")))))), ",", this.props.patientView && external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("p", {
-      className: "leftText"
-    }, "PathwayMapper shows you your genes of interest with the mutation types, copy number alterations and fusions of selected genetic profiles of the chosen study overlaid on a TCGA pathway using the OncoPrint color scheme. All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with the highest number of genes of interest matching the ones in a pathway but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Refer to the documentation ", external_react_default.a.createElement("a", {
-      href: "https://github.com/iVis-at-Bilkent/pathway-mapper",
-      target: "_blank"
-    }, "here"), " for the notation used.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Genetic alteration legend:", external_react_default.a.createElement("br", null), external_react_default.a.createElement("div", {
-      className: "container",
-      style: {
-        paddingLeft: legendPadding,
-        width: 'fit-content'
-      },
-      dangerouslySetInnerHTML: {
-        __html: this.generateOncoprintLegend().outerHTML
-      }
-    }), external_react_default.a.createElement("p", {
-      style: {
-        paddingLeft: legendPadding
-      }
-    }, "Putative driver and unknown significance annotations are based on data from OncoKB and CancerHotspots.org."), external_react_default.a.createElement("br", null), "To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "The buttons on top of the pathway are:", external_react_default.a.createElement("ul", null, external_react_default.a.createElement("table", {
-      cellPadding: 5
-    }, external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      src: save_png_default.a
-    })), " ", external_react_default.a.createElement("td", null, "Save as PNG")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      src: save_svg_default.a
-    })), " ", external_react_default.a.createElement("td", null, "Save as SVG")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
-      height: "22px",
-      width: "22px",
-      src: layout_cose_default.a
-    })), " ", external_react_default.a.createElement("td", null, "Perform layout: Layout is recalculated taking current node positions into account")))))));
-  };
-
+      var legendPadding = '45px';
+      return external_react_default.a.createElement(external_react_bootstrap_["Modal"], {
+        bsSize: "lg",
+        id: "cBioHelpModal",
+        className: "pathwayMapper",
+        show: this.props.isModalShown,
+        onHide: function () {
+          _this.props.handleClose(EModalType.CHELP);
+        }
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
+        closeButton: true
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, "PathwayMapper cBioPortal Edition 2.0")), !this.props.patientView && external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("p", {
+        className: "leftText"
+      }, "PathwayMapper shows you your genes of interest with the alteration frequencies of selected genetic profiles of the chosen study overlaid on a TCGA pathway using a white to red color scale (the more frequently altered a gene is, the more red it's shown). All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with highest ranking with the default ranking options but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Refer to the documentation ", external_react_default.a.createElement("a", {
+        href: "https://github.com/iVis-at-Bilkent/pathway-mapper",
+        target: "_blank"
+      }, "here"), " for the notation used.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table. Ranking criteria might be changed by changing the options at the bottom of the table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "The buttons on top of the pathway are:", external_react_default.a.createElement("ul", null, external_react_default.a.createElement("table", {
+        cellPadding: 5
+      }, external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        src: save_png_default.a
+      })), " ", external_react_default.a.createElement("td", null, "Save as PNG")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        src: save_svg_default.a
+      })), " ", external_react_default.a.createElement("td", null, "Save as SVG")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        src: layout_cose_default.a
+      })), " ", external_react_default.a.createElement("td", null, "Perform layout: Layout is recalculated taking current node positions into account")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        src: CBioHelpModal_addSelImage
+      })), " ", external_react_default.a.createElement("td", null, "Add selected genes to query: You may select additional genes from the pathway by left clicking (Shift + left click to add more genes)")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        src: CBioHelpModal_addAllImage
+      })), " ", external_react_default.a.createElement("td", null, "Add all valid genes to query: All valid gene symbols will be added to the query; others will be ignored")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        src: edit_default.a
+      })), " ", external_react_default.a.createElement("td", null, "Edit pathway: Edit both the topology and the geometry of the current pathway with the full blown PathwayMapper editor")))))), ",", this.props.patientView && external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("p", {
+        className: "leftText"
+      }, "PathwayMapper shows you your genes of interest with the mutation types, copy number alterations and fusions of selected genetic profiles of the chosen study overlaid on a TCGA pathway using the OncoPrint color scheme. All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with the highest number of genes of interest matching the ones in a pathway but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Refer to the documentation ", external_react_default.a.createElement("a", {
+        href: "https://github.com/iVis-at-Bilkent/pathway-mapper",
+        target: "_blank"
+      }, "here"), " for the notation used.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Genetic alteration legend:", external_react_default.a.createElement("br", null), external_react_default.a.createElement("div", {
+        className: "container",
+        style: {
+          paddingLeft: legendPadding,
+          width: 'fit-content'
+        },
+        dangerouslySetInnerHTML: {
+          __html: this.generateOncoprintLegend().outerHTML
+        }
+      }), external_react_default.a.createElement("p", {
+        style: {
+          paddingLeft: legendPadding
+        }
+      }, "Putative driver and unknown significance annotations are based on data from OncoKB and CancerHotspots.org."), external_react_default.a.createElement("br", null), "To search for a particular pathway of your interest, use the search field on top of the pathway table. To switch to another pathway, click on the button in the associated row of the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "The buttons on top of the pathway are:", external_react_default.a.createElement("ul", null, external_react_default.a.createElement("table", {
+        cellPadding: 5
+      }, external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        src: save_png_default.a
+      })), " ", external_react_default.a.createElement("td", null, "Save as PNG")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        src: save_svg_default.a
+      })), " ", external_react_default.a.createElement("td", null, "Save as SVG")), external_react_default.a.createElement("tr", null, external_react_default.a.createElement("td", null, external_react_default.a.createElement("img", {
+        height: "22px",
+        width: "22px",
+        src: layout_cose_default.a
+      })), " ", external_react_default.a.createElement("td", null, "Perform layout: Layout is recalculated taking current node positions into account")))))));
+    }
+  });
   return CBioHelpModal;
 }(external_react_default.a.Component);
 
@@ -15835,7 +17858,7 @@ var react_pathway_mapper_extends = undefined && undefined.__extends || function 
     } instanceof Array && function (d, b) {
       d.__proto__ = b;
     } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
 
     return extendStatics(d, b);
@@ -15918,12 +17941,103 @@ function (_super) {
   function PathwayMapper(props) {
     var _this = _super.call(this, props) || this;
 
-    _this.NUMBER_OF_PATHWAYS_TO_SHOW = 10;
-    _this.patientData = [];
-    _this.pathwayGeneMap = {};
-    _this.bestPathwaysAlgos = [];
-    _this.oldName = "";
-    _this.profiles = [];
+    Object.defineProperty(_this, "NUMBER_OF_PATHWAYS_TO_SHOW", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 10
+    });
+    Object.defineProperty(_this, "selectedPathway", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "fileManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "editor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "pathwayActions", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "isModalShown", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "portalAcessor", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "alterationData", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "patientData", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: []
+    });
+    Object.defineProperty(_this, "pathwayGeneMap", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: {}
+    });
+    Object.defineProperty(_this, "bestPathwaysAlgos", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: []
+    });
+    Object.defineProperty(_this, "oldName", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: ""
+    });
+    Object.defineProperty(_this, "profiles", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: []
+    });
+    Object.defineProperty(_this, "setActiveEdge", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "viewOperationsManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "gridOptionsManager", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object(external_mobx_["makeObservable"])(_this);
     _this.fileManager = new managers_FileOperationsManager();
     _this.pathwayActions = new utils_PathwayActions(_this.pathwayHandler, _this.profiles, _this.fileManager, _this.handleOpen, _this.props.isCBioPortal, _this.props.isCollaborative);
     _this.selectedPathway = "";
@@ -15932,7 +18046,7 @@ function (_super) {
       _this.pathwayActions.changePathway(_this.props.pathwayName);
     }
 
-    _this.isModalShown = [false, false, false, false, false, false, false, false]; // TODO: Change below
+    _this.isModalShown = [false, false, false, false, false, false, false, false, false]; // TODO: Change below
 
     _this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
 
@@ -15985,213 +18099,264 @@ function (_super) {
   }
 
   PathwayMapper_1 = PathwayMapper;
-
-  PathwayMapper.prototype.calculateAlterationData = function (cBioAlterationData) {
-    var _this = this; // Transform cBioDataAlteration into AlterationData
-
-
-    this.alterationData[PathwayMapper_1.CBIO_PROFILE_NAME] = {};
-    cBioAlterationData.forEach(function (geneAltData) {
-      var perc = geneAltData.altered / geneAltData.sequenced * 100; // NaN value is replaced with -101 since NaN value leads to some runtime exceptions (such as with toFixed() function),
-      // hence it is represented as -101. It will be recognized in the genomic data svg creation to show N/P instead of
-      // a percentage. -101 is chosen because this percentage is impossible to get.
-
-      _this.alterationData[PathwayMapper_1.CBIO_PROFILE_NAME][geneAltData.gene] = Object.is(perc, NaN) ? -101 : perc;
-    });
-  };
-
-  PathwayMapper.prototype.calculatePatientData = function (cBioAlterationData) {
-    // Transform cBioDataAlteration into Patient Data every alteration is accepted 100% altered
-    var _this = this;
-
-    this.alterationData[PathwayMapper_1.CBIO_PROFILE_NAME] = {};
-    var allTypes = cBioAlterationData.map(function (x) {
-      return x.gene;
-    }); //const allTypes = cBioAlterationData.map(x => x.percentAltered);
-
-    var uniqueTypes = allTypes.filter(function (x, i, a) {
-      return a.indexOf(x) == i;
-    }); //This is a flag for GenomicDataOverlayManager showPatientData
-
-    this.patientData["PatientView"] = 1;
-    uniqueTypes.forEach(function (x) {
-      _this.patientData[x] = {};
-    });
-    cBioAlterationData.forEach(function (geneAltData) {
-      var perc = geneAltData.altered / geneAltData.sequenced * 100;
-      _this.alterationData[PathwayMapper_1.CBIO_PROFILE_NAME][geneAltData.gene] = Object.is(perc, NaN) ? -101 : perc;
-      _this.patientData[geneAltData.gene][geneAltData.percentAltered] = Object.is(perc, NaN) ? -101 : perc;
-      _this.patientData[geneAltData.gene]["geneticTrackData"] = geneAltData.geneticTrackData;
-      _this.patientData[geneAltData.gene]["geneticTrackRuleSetParams"] = geneAltData.geneticTrackRuleSetParams;
-    });
-  };
-
-  PathwayMapper.prototype.addSampleIconData = function (sampleIconData) {
-    if (sampleIconData) {
-      this.patientData["sampleColors"] = sampleIconData.sampleColors;
-      this.patientData["sampleIndex"] = sampleIconData.sampleIndex;
+  Object.defineProperty(PathwayMapper.prototype, "setSelectedPathway", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (pathway) {
+      this.selectedPathway = pathway;
     }
-  };
+  });
+  Object.defineProperty(PathwayMapper.prototype, "setEditor", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (editor) {
+      this.editor = editor;
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "calculateAlterationData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (cBioAlterationData) {
+      var _this = this; // Transform cBioDataAlteration into AlterationData
 
-  PathwayMapper.prototype.getGeneStudyMap = function (studyGeneMap) {
-    var genomicDataMap = {};
 
-    for (var _i = 0, _a = Object.keys(studyGeneMap); _i < _a.length; _i++) {
-      var cancerStudy = _a[_i];
-      var cancerData = studyGeneMap[cancerStudy];
+      this.alterationData[PathwayMapper_1.CBIO_PROFILE_NAME] = {};
+      cBioAlterationData.forEach(function (geneAltData) {
+        var perc = geneAltData.altered / geneAltData.sequenced * 100; // NaN value is replaced with -101 since NaN value leads to some runtime exceptions (such as with toFixed() function),
+        // hence it is represented as -101. It will be recognized in the genomic data svg creation to show N/P instead of
+        // a percentage. -101 is chosen because this percentage is impossible to get.
 
-      for (var _b = 0, _c = Object.keys(cancerData); _b < _c.length; _b++) {
-        var geneSymbol = _c[_b];
-        if (genomicDataMap[geneSymbol] === undefined) genomicDataMap[geneSymbol] = {};
-        genomicDataMap[geneSymbol][cancerStudy] = studyGeneMap[cancerStudy][geneSymbol].toFixed(2);
+        _this.alterationData[PathwayMapper_1.CBIO_PROFILE_NAME][geneAltData.gene] = Object.is(perc, NaN) ? -101 : perc;
+      });
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "calculatePatientData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (cBioAlterationData) {
+      // Transform cBioDataAlteration into Patient Data every alteration is accepted 100% altered
+      var _this = this;
+
+      this.alterationData[PathwayMapper_1.CBIO_PROFILE_NAME] = {};
+      var allTypes = cBioAlterationData.map(function (x) {
+        return x.gene;
+      }); //const allTypes = cBioAlterationData.map(x => x.percentAltered);
+
+      var uniqueTypes = allTypes.filter(function (x, i, a) {
+        return a.indexOf(x) == i;
+      }); //This is a flag for GenomicDataOverlayManager showPatientData
+
+      this.patientData["PatientView"] = 1;
+      uniqueTypes.forEach(function (x) {
+        _this.patientData[x] = {};
+      });
+      cBioAlterationData.forEach(function (geneAltData) {
+        var perc = geneAltData.altered / geneAltData.sequenced * 100;
+        _this.alterationData[PathwayMapper_1.CBIO_PROFILE_NAME][geneAltData.gene] = Object.is(perc, NaN) ? -101 : perc;
+        _this.patientData[geneAltData.gene][geneAltData.percentAltered] = Object.is(perc, NaN) ? -101 : perc;
+        _this.patientData[geneAltData.gene]["geneticTrackData"] = geneAltData.geneticTrackData;
+        _this.patientData[geneAltData.gene]["geneticTrackRuleSetParams"] = geneAltData.geneticTrackRuleSetParams;
+      });
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "addSampleIconData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (sampleIconData) {
+      if (sampleIconData) {
+        this.patientData["sampleColors"] = sampleIconData.sampleColors;
+        this.patientData["sampleIndex"] = sampleIconData.sampleIndex;
       }
     }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "getGeneStudyMap", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (studyGeneMap) {
+      var genomicDataMap = {};
 
-    return genomicDataMap;
-  };
+      for (var _i = 0, _a = Object.keys(studyGeneMap); _i < _a.length; _i++) {
+        var cancerStudy = _a[_i];
+        var cancerData = studyGeneMap[cancerStudy];
 
-  PathwayMapper.prototype.getAlterationAveragePerGene = function (genomicDataMap) {
-    var geneAlterationMap = {};
-
-    for (var _i = 0, _a = Object.keys(genomicDataMap); _i < _a.length; _i++) {
-      var gene = _a[_i];
-      var sum = 0,
-          count = 0;
-
-      for (var _b = 0, _c = Object.values(genomicDataMap[gene]); _b < _c.length; _b++) {
-        var alteration = _c[_b];
-        sum += parseFloat(alteration);
-        count++;
+        for (var _b = 0, _c = Object.keys(cancerData); _b < _c.length; _b++) {
+          var geneSymbol = _c[_b];
+          if (genomicDataMap[geneSymbol] === undefined) genomicDataMap[geneSymbol] = {};
+          genomicDataMap[geneSymbol][cancerStudy] = studyGeneMap[cancerStudy][geneSymbol].toFixed(2);
+        }
       }
 
-      if (count === 0) {
-        geneAlterationMap[gene] = 0;
-      } else {
-        geneAlterationMap[gene] = sum / count;
-      }
+      return genomicDataMap;
     }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "getAlterationAveragePerGene", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (genomicDataMap) {
+      var geneAlterationMap = {};
 
-    return geneAlterationMap;
-  };
+      for (var _i = 0, _a = Object.keys(genomicDataMap); _i < _a.length; _i++) {
+        var gene = _a[_i];
+        var sum = 0,
+            count = 0;
+
+        for (var _b = 0, _c = Object.values(genomicDataMap[gene]); _b < _c.length; _b++) {
+          var alteration = _c[_b];
+          sum += parseFloat(alteration);
+          count++;
+        }
+
+        if (count === 0) {
+          geneAlterationMap[gene] = 0;
+        } else {
+          geneAlterationMap[gene] = sum / count;
+        }
+      }
+
+      return geneAlterationMap;
+    }
+  });
   /**
    *
    * @param rankingMode: number => 0 = Count, 1 = Percentage, 2 = Count with Alteration, 3 = Percentage with Alteration
    *
    */
 
+  Object.defineProperty(PathwayMapper.prototype, "getBestPathway", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (rankingMode) {
+      var genomicDataMap = this.getGeneStudyMap(this.alterationData);
+      var alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
+      maxHeap = maxHeapFn();
+      var matchedGenesMap = {};
+      var bestPathways = [];
 
-  PathwayMapper.prototype.getBestPathway = function (rankingMode) {
-    var genomicDataMap = this.getGeneStudyMap(this.alterationData);
-    var alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
-    maxHeap = maxHeapFn();
-    var matchedGenesMap = {};
-    var bestPathways = [];
+      for (var pathwayName in this.pathwayGeneMap) {
+        if (this.pathwayGeneMap.hasOwnProperty(pathwayName)) {
+          var genesMatching = []; // Calculate sum of all alterations
 
-    for (var pathwayName in this.pathwayGeneMap) {
-      if (this.pathwayGeneMap.hasOwnProperty(pathwayName)) {
-        var genesMatching = []; // Calculate sum of all alterations
+          var sumOfAlterations = 0;
 
-        var sumOfAlterations = 0;
+          for (var _i = 0, _a = this.props.genes; _i < _a.length; _i++) {
+            var gene = _a[_i];
 
-        for (var _i = 0, _a = this.props.genes; _i < _a.length; _i++) {
-          var gene = _a[_i];
-
-          if (this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) && this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE") {
-            genesMatching.push(gene.hugoGeneSymbol);
-            sumOfAlterations += alterationPerGene[gene.hugoGeneSymbol];
+            if (this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) && this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE") {
+              genesMatching.push(gene.hugoGeneSymbol);
+              sumOfAlterations += alterationPerGene[gene.hugoGeneSymbol];
+            }
           }
-        }
 
-        matchedGenesMap[pathwayName] = genesMatching;
-        var geneCount = 0; // Count number of genes *not processess* in a pathway
+          matchedGenesMap[pathwayName] = genesMatching;
+          var geneCount = 0; // Count number of genes *not processess* in a pathway
 
-        for (var _b = 0, _c = Object.values(this.pathwayGeneMap[pathwayName]); _b < _c.length; _b++) {
-          var geneType = _c[_b];
+          for (var _b = 0, _c = Object.values(this.pathwayGeneMap[pathwayName]); _b < _c.length; _b++) {
+            var geneType = _c[_b];
 
-          if (geneType === "GENE") {
-            geneCount++;
+            if (geneType === "GENE") {
+              geneCount++;
+            }
           }
-        }
 
-        if (rankingMode === 0) {
-          maxHeap.insert(genesMatching.length, {
-            pathwayName: pathwayName
-          });
-        } else if (rankingMode === 1) {
-          maxHeap.insert(genesMatching.length / geneCount * 100, {
-            pathwayName: pathwayName
-          });
-        } else if (rankingMode === 2) {
-          maxHeap.insert(sumOfAlterations, {
-            pathwayName: pathwayName
-          });
-        } else if (rankingMode === 3) {
-          maxHeap.insert(genesMatching.length * sumOfAlterations / geneCount, {
-            pathwayName: pathwayName
-          });
+          if (rankingMode === 0) {
+            maxHeap.insert(genesMatching.length, {
+              pathwayName: pathwayName
+            });
+          } else if (rankingMode === 1) {
+            maxHeap.insert(genesMatching.length / geneCount * 100, {
+              pathwayName: pathwayName
+            });
+          } else if (rankingMode === 2) {
+            maxHeap.insert(sumOfAlterations, {
+              pathwayName: pathwayName
+            });
+          } else if (rankingMode === 3) {
+            maxHeap.insert(genesMatching.length * sumOfAlterations / geneCount, {
+              pathwayName: pathwayName
+            });
+          }
         }
       }
-    }
 
-    while (maxHeap.size() > 0) {
-      var top_1 = maxHeap.extractMax();
-      var pathwayName = top_1.getValue().pathwayName;
-      bestPathways.push({
-        score: top_1.getKey(),
-        genesMatched: matchedGenesMap[pathwayName],
-        pathwayName: pathwayName
-      });
-    }
+      while (maxHeap.size() > 0) {
+        var top_1 = maxHeap.extractMax();
+        var pathwayName = top_1.getValue().pathwayName;
+        bestPathways.push({
+          score: top_1.getKey(),
+          genesMatched: matchedGenesMap[pathwayName],
+          pathwayName: pathwayName
+        });
+      }
 
-    if (this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
-      this.selectedPathway = bestPathways[0].pathwayName;
-    this.bestPathwaysAlgos.push(bestPathways);
-  }; // This method extracts all genes of a pathway and adds it to the pathwayGeneMap
+      if (this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
+        this.setSelectedPathway(bestPathways[0].pathwayName);
+      this.bestPathwaysAlgos.push(bestPathways);
+    }
+  }); // This method extracts all genes of a pathway and adds it to the pathwayGeneMap
   // so that it can be used by percentage calculation and genomic data 
   // Note: Pathway title
 
+  Object.defineProperty(PathwayMapper.prototype, "includePathway", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (pathwayData, pathwayName) {
+      var genes = pathwayData.nodes;
+      var geneHash = {};
 
-  PathwayMapper.prototype.includePathway = function (pathwayData, pathwayName) {
-    var genes = pathwayData.nodes;
-    var geneHash = {};
+      for (var _i = 0, genes_1 = genes; _i < genes_1.length; _i++) {
+        var gene = genes_1[_i];
+        if (gene.data.type === "GENE") geneHash[gene.data.name] = gene.data.type;
+      }
 
-    for (var _i = 0, genes_1 = genes; _i < genes_1.length; _i++) {
-      var gene = genes_1[_i];
-      if (gene.data.type === "GENE") geneHash[gene.data.name] = gene.data.type;
+      this.pathwayGeneMap[pathwayData.title] = geneHash;
     }
-
-    this.pathwayGeneMap[pathwayData.title] = geneHash;
-  };
-
-  PathwayMapper.prototype.extractAllGenes = function () {
-    for (var pathwayName in pathways) {
-      if (pathways.hasOwnProperty(pathwayName)) {
-        var pathwayData = utils_SaveLoadUtility.parseGraph(pathways[pathwayName], true);
-        this.includePathway(pathwayData);
+  });
+  Object.defineProperty(PathwayMapper.prototype, "extractAllGenes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      for (var pathwayName in pathways) {
+        if (pathways.hasOwnProperty(pathwayName)) {
+          var pathwayData = utils_SaveLoadUtility.parseGraph(pathways[pathwayName], true);
+          this.includePathway(pathwayData);
+        }
       }
     }
-  };
+  });
+  Object.defineProperty(PathwayMapper.prototype, "loadRedirectedPortalData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
 
-  PathwayMapper.prototype.loadRedirectedPortalData = function () {
-    var _this = this;
+      if (!this.props.alterationData) {
+        // If size 0 that means it is not redirected.
+        return;
+      }
 
-    if (!this.props.alterationData) {
-      // If size 0 that means it is not redirected.
-      return;
+      var redirectedProfiles = Object.keys(this.props.alterationData).map(function (data) {
+        return {
+          profileId: data,
+          enabled: true
+        };
+      });
+      redirectedProfiles.forEach(function (redirectedProfile) {
+        _this.profiles.push(redirectedProfile);
+      });
+      this.editor.addPortalGenomicData(this.props.alterationData, this.editor.getEmptyGroupID());
     }
-
-    var redirectedProfiles = Object.keys(this.props.alterationData).map(function (data) {
-      return {
-        profileId: data,
-        enabled: true
-      };
-    });
-    redirectedProfiles.forEach(function (redirectedProfile) {
-      _this.profiles.push(redirectedProfile);
-    });
-    this.editor.addPortalGenomicData(this.props.alterationData, this.editor.getEmptyGroupID());
-  };
-
+  });
   Object.defineProperty(PathwayMapper.prototype, "profileEnabledMap", {
     get: function () {
       var profileEnabledMap = {};
@@ -16200,304 +18365,352 @@ function (_super) {
       });
       return profileEnabledMap;
     },
-    enumerable: true,
+    enumerable: false,
     configurable: true
   });
-
-  PathwayMapper.prototype.doesProfileExist = function (profileId) {
-    var exists = false;
-    this.profiles.forEach(function (profile) {
-      if (profile.profileId === profileId) {
-        exists = true;
-      }
-    });
-    return exists;
-  };
-
-  PathwayMapper.prototype.loadFromCBio = function (dataTypes, selectedStudyData) {
-    var _this = this;
-
-    if (!this.pathwayActions.doesCyHaveElements()) {
-      external_react_toastify_["toast"].warn("Your pathway is empty");
-      return;
-    }
-
-    for (var _i = 0, _a = Object.keys(dataTypes); _i < _a.length; _i++) {
-      var dataType = _a[_i];
-      if (!dataTypes[dataType].checked) continue;
-
-      if (this.doesProfileExist(dataTypes[dataType].profile)) {
-        external_react_toastify_["toast"].warn(dataTypes[dataType].profile + " already exists");
-        continue;
-      }
-
-      this.profiles.push({
-        studyId: selectedStudyData[0],
-        profileId: dataTypes[dataType].profile,
-        enabled: true
+  Object.defineProperty(PathwayMapper.prototype, "doesProfileExist", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (profileId) {
+      var exists = false;
+      this.profiles.forEach(function (profile) {
+        if (profile.profileId === profileId) {
+          exists = true;
+        }
       });
-      this.portalAcessor.getProfileData({
-        caseSetId: selectedStudyData[0],
-        geneticProfileId: dataTypes[dataType].profile,
-        genes: this.editor.cy.json().elements.nodes.filter(function (node) {
-          return node.data.type === "GENE";
-        }).map(function (node) {
-          return node.data.name;
-        })
-      }, function (data) {
-        _this.editor.addPortalGenomicData(data, _this.editor.getEmptyGroupID());
+      return exists;
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "loadFromCBio", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (dataTypes, selectedStudyData) {
+      var _this = this;
+
+      if (!this.pathwayActions.doesCyHaveElements()) {
+        external_react_toastify_["toast"].warn("Your pathway is empty");
+        return;
+      }
+
+      for (var _i = 0, _a = Object.keys(dataTypes); _i < _a.length; _i++) {
+        var dataType = _a[_i];
+        if (!dataTypes[dataType].checked) continue;
+
+        if (this.doesProfileExist(dataTypes[dataType].profile)) {
+          external_react_toastify_["toast"].warn(dataTypes[dataType].profile + " already exists");
+          continue;
+        }
+
+        this.profiles.push({
+          studyId: selectedStudyData[0],
+          profileId: dataTypes[dataType].profile,
+          enabled: true
+        });
+        this.portalAcessor.getProfileData({
+          caseSetId: selectedStudyData[0],
+          geneticProfileId: dataTypes[dataType].profile,
+          genes: this.editor.cy.json().elements.nodes.filter(function (node) {
+            return node.data.type === "GENE";
+          }).map(function (node) {
+            return node.data.name;
+          })
+        }, function (data) {
+          _this.editor.addPortalGenomicData(data, _this.editor.getEmptyGroupID());
+        });
+      }
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "setActiveEdgeHandler", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (setActiveEdge) {
+      this.setActiveEdge = setActiveEdge;
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "addGenomicData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (cBioAlterationData) {
+      this.calculateAlterationData(cBioAlterationData);
+      this.editor.removeGenomicData();
+      this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "render", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
+
+      var isCBioPortal = this.props.isCBioPortal;
+      var cytoComp = external_react_default.a.createElement(ui_CytoscapeArea, {
+        profiles: this.profiles,
+        isCbioPortal: this.props.isCBioPortal,
+        isCollaborative: this.props.isCollaborative,
+        setActiveEdge: this.setActiveEdge,
+        editorHandler: this.editorHandler,
+        selectedPathway: this.selectedPathway,
+        pathwayHandler: this.pathwayHandler,
+        handleOpen: this.handleOpen
       });
+      return external_react_default.a.createElement("div", {
+        className: "pathwayMapper"
+      }, external_react_default.a.createElement("div", {
+        style: isCBioPortal ? {
+          width: window.innerWidth * 0.99
+        } : {},
+        className: isCBioPortal ? "cBioMode container" : "customMargins"
+      }, !isCBioPortal && [external_react_default.a.createElement("div", null, external_react_default.a.createElement(ui_Menubar, {
+        pathwayActions: this.pathwayActions,
+        handleOpen: this.handleOpen,
+        setActiveEdge: this.setActiveEdge
+      })), external_react_default.a.createElement("div", null, external_react_default.a.createElement(ui_Buttonbar, {
+        pathwayActions: this.pathwayActions,
+        handleOpen: this.handleOpen
+      }))], isCBioPortal && external_react_default.a.createElement(external_react_bootstrap_["Row"], {
+        style: {
+          marginBottom: "6px"
+        }
+      }, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        xs: 2,
+        style: {
+          paddingRight: '0px',
+          marginBottom: '5px'
+        }
+      }, external_react_default.a.createElement(ui_Toolbar, {
+        pathwayActions: this.pathwayActions,
+        selectedPathway: this.selectedPathway,
+        alterationData: this.alterationData,
+        genes: this.props.genes,
+        handleOpen: this.handleOpen,
+        validGenes: this.props.validGenes,
+        showMessage: this.props.showMessage,
+        pathwayGenes: Object.keys(this.pathwayGeneMap[this.selectedPathway]),
+        onAddGenes: this.props.onAddGenes,
+        patientView: this.props.patientView
+      })), this.props.messageBanner ? external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        xs: 4,
+        style: {
+          maxHeight: '32px',
+          paddingRight: '0px'
+        }
+      }, this.props.messageBanner()) : external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        xs: 4,
+        style: {
+          maxHeight: '32px',
+          paddingRight: '0px'
+        }
+      }), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        xs: 3,
+        style: {
+          paddingLeft: "0px",
+          marginTop: "12px",
+          textAlign: "right",
+          paddingRight: "25px"
+        }
+      }, this.selectedPathway)), external_react_default.a.createElement("div", {
+        className: isCBioPortal ? "row" : "mainContentWrapper"
+      }, !isCBioPortal && external_react_default.a.createElement("div", null, external_react_default.a.createElement(ui_Sidebar, {
+        pathwayActions: this.pathwayActions,
+        setActiveEdgeHandler: this.setActiveEdgeHandler,
+        handleOpen: this.handleOpen
+      })), isCBioPortal ? external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        xs: 9
+      }, cytoComp, external_react_default.a.createElement("div", {
+        style: {
+          paddingRight: "9px",
+          textAlign: "right",
+          fontSize: "13px"
+        }
+      }, "Powered by ", external_react_default.a.createElement("a", {
+        href: "https://github.com/iVis-at-Bilkent/pathway-mapper",
+        target: "_blank"
+      }, "PathwayMapper"))) : cytoComp, isCBioPortal && external_react_default.a.createElement(external_react_bootstrap_["Col"], {
+        xs: 3,
+        style: {
+          paddingLeft: "0px"
+        }
+      }, external_react_default.a.createElement(ui_Ranking, {
+        pathwayActions: this.pathwayActions,
+        bestPathwaysAlgos: this.bestPathwaysAlgos,
+        tableComponent: this.props.tableComponent,
+        patientView: this.props.patientView
+      }))), external_react_default.a.createElement("div", {
+        id: "invisibles"
+      }, external_react_default.a.createElement("div", {
+        id: "pm-modals"
+      }, external_react_default.a.createElement(modals_ProfilesModal, {
+        profiles: this.profiles,
+        editor: this.editor,
+        isModalShown: this.isModalShown[EModalType.PROFILES],
+        handleClose: this.handleClose
+      }), external_react_default.a.createElement(modals_PathwayDetailsModal, {
+        isModalShown: this.isModalShown[EModalType.PW_DETAILS],
+        handleClose: this.handleClose,
+        pathwayActions: this.pathwayActions
+      }), external_react_default.a.createElement(modals_GridSettings, {
+        isModalShown: this.isModalShown[EModalType.GRID],
+        handleClose: this.handleClose,
+        pathwayActions: this.pathwayActions
+      }), external_react_default.a.createElement(modals_QuickHelpModal, {
+        isModalShown: this.isModalShown[EModalType.HELP],
+        handleClose: this.handleClose
+      }), external_react_default.a.createElement(modals_LayoutProperties, {
+        isModalShown: this.isModalShown[EModalType.LAYOUT],
+        handleClose: this.handleClose,
+        pathwayActions: this.pathwayActions
+      }), external_react_default.a.createElement(modals_ConfirmationModal, {
+        isModalShown: this.isModalShown[EModalType.CONFIRMATION],
+        handleClose: this.handleClose
+      }), external_react_default.a.createElement(modals_CBioHelpModal, {
+        isModalShown: this.isModalShown[EModalType.CHELP],
+        handleClose: this.handleClose,
+        patientView: this.props.patientView
+      }), external_react_default.a.createElement(modals_AboutModal, {
+        isModalShown: this.isModalShown[EModalType.ABOUT],
+        handleClose: this.handleClose
+      })), !this.props.isCBioPortal && [external_react_default.a.createElement(modals_StudyModal, {
+        isModalShown: this.isModalShown[EModalType.STUDY],
+        loadFromCBio: this.loadFromCBio,
+        handleClose: this.handleClose
+      }), external_react_default.a.createElement(external_react_toastify_["ToastContainer"], {
+        className: "pm-toast-container"
+      })], external_react_default.a.createElement(external_react_tooltip_default.a, {
+        className: isCBioPortal ? "" : "pmTip",
+        style: {
+          maxWidth: "350px",
+          zIndex: 9999999
+        }
+      }), external_react_default.a.createElement("input", {
+        id: "myInput",
+        type: "file",
+        ref: function (ref) {
+          _this.pathwayActions.setUploaders(ref, false);
+        },
+        style: {
+          display: 'none'
+        },
+        onChange: function (e) {
+          _this.pathwayActions.onChangeFile(e, false);
+        }
+      }), external_react_default.a.createElement("input", {
+        id: "myInput2",
+        type: "file",
+        ref: function (ref) {
+          _this.pathwayActions.setUploaders(ref, true);
+        },
+        style: {
+          display: 'none'
+        },
+        onChange: function (e) {
+          _this.pathwayActions.onChangeFile(e, true);
+        }
+      }), external_react_default.a.createElement("input", {
+        id: "myInput3",
+        type: "file",
+        ref: function (ref) {
+          _this.pathwayActions.setOverlayUploader(ref);
+        },
+        style: {
+          display: 'none'
+        },
+        onChange: function (e) {
+          _this.pathwayActions.overlayFromText(e.target.files[0]);
+        }
+      }))));
     }
-  };
-
-  PathwayMapper.prototype.setActiveEdgeHandler = function (setActiveEdge) {
-    this.setActiveEdge = setActiveEdge;
-  };
-
-  PathwayMapper.prototype.addGenomicData = function (cBioAlterationData) {
-    this.calculateAlterationData(cBioAlterationData);
-    this.editor.removeGenomicData();
-    this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
-  };
-
-  PathwayMapper.prototype.render = function () {
-    var _this = this;
-
-    var isCBioPortal = this.props.isCBioPortal;
-    var cytoComp = external_react_default.a.createElement(ui_CytoscapeArea, {
-      profiles: this.profiles,
-      isCbioPortal: this.props.isCBioPortal,
-      isCollaborative: this.props.isCollaborative,
-      setActiveEdge: this.setActiveEdge,
-      editorHandler: this.editorHandler,
-      selectedPathway: this.selectedPathway,
-      pathwayHandler: this.pathwayHandler,
-      handleOpen: this.handleOpen
-    });
-    return external_react_default.a.createElement("div", {
-      className: "pathwayMapper"
-    }, external_react_default.a.createElement("div", {
-      style: isCBioPortal ? {
-        width: window.innerWidth * 0.99
-      } : {},
-      className: isCBioPortal ? "cBioMode container" : "customMargins"
-    }, !isCBioPortal && [external_react_default.a.createElement("div", null, external_react_default.a.createElement(ui_Menubar, {
-      pathwayActions: this.pathwayActions,
-      handleOpen: this.handleOpen,
-      setActiveEdge: this.setActiveEdge
-    })), external_react_default.a.createElement("div", null, external_react_default.a.createElement(ui_Buttonbar, {
-      pathwayActions: this.pathwayActions,
-      handleOpen: this.handleOpen
-    }))], isCBioPortal && external_react_default.a.createElement(external_react_bootstrap_["Row"], {
-      style: {
-        marginBottom: "6px"
-      }
-    }, external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      xs: 2,
-      style: {
-        paddingRight: '0px',
-        marginBottom: '5px'
-      }
-    }, external_react_default.a.createElement(ui_Toolbar, {
-      pathwayActions: this.pathwayActions,
-      selectedPathway: this.selectedPathway,
-      alterationData: this.alterationData,
-      genes: this.props.genes,
-      handleOpen: this.handleOpen,
-      validGenes: this.props.validGenes,
-      showMessage: this.props.showMessage,
-      pathwayGenes: Object.keys(this.pathwayGeneMap[this.selectedPathway]),
-      onAddGenes: this.props.onAddGenes,
-      patientView: this.props.patientView
-    })), this.props.messageBanner ? external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      xs: 4,
-      style: {
-        maxHeight: '32px',
-        paddingRight: '0px'
-      }
-    }, this.props.messageBanner()) : external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      xs: 4,
-      style: {
-        maxHeight: '32px',
-        paddingRight: '0px'
-      }
-    }), external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      xs: 3,
-      style: {
-        paddingLeft: "0px",
-        marginTop: "12px",
-        textAlign: "right",
-        paddingRight: "25px"
-      }
-    }, this.selectedPathway)), external_react_default.a.createElement("div", {
-      className: isCBioPortal ? "row" : "mainContentWrapper"
-    }, !isCBioPortal && external_react_default.a.createElement("div", null, external_react_default.a.createElement(ui_Sidebar, {
-      pathwayActions: this.pathwayActions,
-      setActiveEdgeHandler: this.setActiveEdgeHandler,
-      handleOpen: this.handleOpen
-    })), isCBioPortal ? external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      xs: 9
-    }, cytoComp, external_react_default.a.createElement("div", {
-      style: {
-        paddingRight: "9px",
-        textAlign: "right",
-        fontSize: "13px"
-      }
-    }, "Powered by ", external_react_default.a.createElement("a", {
-      href: "https://github.com/iVis-at-Bilkent/pathway-mapper",
-      target: "_blank"
-    }, "PathwayMapper"))) : cytoComp, isCBioPortal && external_react_default.a.createElement(external_react_bootstrap_["Col"], {
-      xs: 3,
-      style: {
-        paddingLeft: "0px"
-      }
-    }, external_react_default.a.createElement(ui_Ranking, {
-      pathwayActions: this.pathwayActions,
-      bestPathwaysAlgos: this.bestPathwaysAlgos,
-      tableComponent: this.props.tableComponent,
-      patientView: this.props.patientView
-    }))), external_react_default.a.createElement("div", {
-      id: "invisibles"
-    }, external_react_default.a.createElement("div", {
-      id: "pm-modals"
-    }, external_react_default.a.createElement(modals_ProfilesModal, {
-      profiles: this.profiles,
-      editor: this.editor,
-      isModalShown: this.isModalShown[EModalType.PROFILES],
-      handleClose: this.handleClose
-    }), external_react_default.a.createElement(modals_PathwayDetailsModal, {
-      isModalShown: this.isModalShown[EModalType.PW_DETAILS],
-      handleClose: this.handleClose,
-      pathwayActions: this.pathwayActions
-    }), external_react_default.a.createElement(modals_GridSettings, {
-      isModalShown: this.isModalShown[EModalType.GRID],
-      handleClose: this.handleClose,
-      pathwayActions: this.pathwayActions
-    }), external_react_default.a.createElement(modals_QuickHelpModal, {
-      isModalShown: this.isModalShown[EModalType.HELP],
-      handleClose: this.handleClose
-    }), external_react_default.a.createElement(modals_LayoutProperties, {
-      isModalShown: this.isModalShown[EModalType.LAYOUT],
-      handleClose: this.handleClose,
-      pathwayActions: this.pathwayActions
-    }), external_react_default.a.createElement(modals_ConfirmationModal, {
-      isModalShown: this.isModalShown[EModalType.CONFIRMATION],
-      handleClose: this.handleClose
-    }), external_react_default.a.createElement(modals_CBioHelpModal, {
-      isModalShown: this.isModalShown[EModalType.CHELP],
-      handleClose: this.handleClose,
-      patientView: this.props.patientView
-    }), external_react_default.a.createElement(modals_AboutModal, {
-      isModalShown: this.isModalShown[EModalType.ABOUT],
-      handleClose: this.handleClose
-    })), !this.props.isCBioPortal && [external_react_default.a.createElement(modals_StudyModal, {
-      isModalShown: this.isModalShown[EModalType.STUDY],
-      loadFromCBio: this.loadFromCBio,
-      handleClose: this.handleClose
-    }), external_react_default.a.createElement(external_react_toastify_["ToastContainer"], {
-      className: "pm-toast-container"
-    })], external_react_default.a.createElement(external_react_tooltip_default.a, {
-      className: isCBioPortal ? "" : "pmTip",
-      style: {
-        maxWidth: "350px",
-        zIndex: 9999999
-      }
-    }), external_react_default.a.createElement("input", {
-      id: "myInput",
-      type: "file",
-      ref: function (ref) {
-        _this.pathwayActions.setUploaders(ref, false);
-      },
-      style: {
-        display: 'none'
-      },
-      onChange: function (e) {
-        _this.pathwayActions.onChangeFile(e, false);
-      }
-    }), external_react_default.a.createElement("input", {
-      id: "myInput2",
-      type: "file",
-      ref: function (ref) {
-        _this.pathwayActions.setUploaders(ref, true);
-      },
-      style: {
-        display: 'none'
-      },
-      onChange: function (e) {
-        _this.pathwayActions.onChangeFile(e, true);
-      }
-    }), external_react_default.a.createElement("input", {
-      id: "myInput3",
-      type: "file",
-      ref: function (ref) {
-        _this.pathwayActions.setOverlayUploader(ref);
-      },
-      style: {
-        display: 'none'
-      },
-      onChange: function (e) {
-        _this.pathwayActions.overlayFromText(e.target.files[0]);
-      }
-    }))));
-  };
-
-  PathwayMapper.prototype.componentDidMount = function () {
-    if (!this.props.isCBioPortal) {
-      $(".container").css('width', "auto");
-      $(".container").css('paddingLeft', 0);
-      $(".container").css('marginLeft', 5);
-    } else {
-      this.pathwayActions.emphasiseQueryGenes(this.props.genes.map(function (gene) {
-        return gene.hugoGeneSymbol;
-      }));
-    }
-  };
-
-  PathwayMapper.prototype.componentDidUpdate = function () {
-    if (this.props.isCBioPortal) {
-      this.pathwayActions.emphasiseQueryGenes(this.props.genes.map(function (gene) {
-        return gene.hugoGeneSymbol;
-      }));
-    }
-  };
-
-  PathwayMapper.prototype.handleOpen = function (modalId) {
-    this.isModalShown[modalId] = true;
-  };
-
-  PathwayMapper.prototype.handleClose = function (modalId) {
-    this.isModalShown[modalId] = false;
-  };
-
-  PathwayMapper.prototype.editorHandler = function (editor, eh, undoRedoManager) {
-    this.editor = editor;
-    this.gridOptionsManager = new managers_GridOptionsManager(this.editor.cy);
-    this.viewOperationsManager = new managers_ViewOperationsManager(this.editor, this.editor.cy);
-    this.pathwayActions.editorHandler(editor, eh, undoRedoManager, this.viewOperationsManager, this.gridOptionsManager);
-
-    if (this.props.isCBioPortal) {
-      if (this.props.patientView) {
-        this.editor.addPortalGenomicData(this.patientData, this.editor.getEmptyGroupID());
+  });
+  Object.defineProperty(PathwayMapper.prototype, "componentDidMount", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      if (!this.props.isCBioPortal) {
+        $(".container").css('width', "auto");
+        $(".container").css('paddingLeft', 0);
+        $(".container").css('marginLeft', 5);
       } else {
-        this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
+        this.pathwayActions.emphasiseQueryGenes(this.props.genes.map(function (gene) {
+          return gene.hugoGeneSymbol;
+        }));
       }
-    } else {
-      this.portalAcessor = new utils_CBioPortalAccessor();
-      this.loadRedirectedPortalData();
     }
-  };
+  });
+  Object.defineProperty(PathwayMapper.prototype, "componentDidUpdate", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      if (this.props.isCBioPortal) {
+        this.pathwayActions.emphasiseQueryGenes(this.props.genes.map(function (gene) {
+          return gene.hugoGeneSymbol;
+        }));
+      }
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "handleOpen", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (modalId) {
+      this.isModalShown[modalId] = true;
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "handleClose", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (modalId) {
+      this.isModalShown[modalId] = false;
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "editorHandler", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (editor, eh, undoRedoManager) {
+      this.setEditor(editor);
+      this.gridOptionsManager = new managers_GridOptionsManager(this.editor.cy);
+      this.viewOperationsManager = new managers_ViewOperationsManager(this.editor, this.editor.cy);
+      this.pathwayActions.editorHandler(editor, eh, undoRedoManager, this.viewOperationsManager, this.gridOptionsManager);
 
-  PathwayMapper.prototype.pathwayHandler = function (pathway) {
-    var _this = this;
+      if (this.props.isCBioPortal) {
+        if (this.props.patientView) {
+          this.editor.addPortalGenomicData(this.patientData, this.editor.getEmptyGroupID());
+        } else {
+          this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
+        }
+      } else {
+        this.portalAcessor = new utils_CBioPortalAccessor();
+        this.loadRedirectedPortalData();
+      }
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "pathwayHandler", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (pathway) {
+      var _this = this;
 
-    this.selectedPathway = pathway;
-    if (this.pathwayGeneMap[pathway] && this.props.changePathwayHandler) this.props.changePathwayHandler(Object.keys(this.pathwayGeneMap[pathway]).filter(function (gene) {
-      return !_this.alterationData[PathwayMapper_1.CBIO_PROFILE_NAME].hasOwnProperty(gene);
-    }));
-  };
-
+      this.setSelectedPathway(pathway);
+      if (this.pathwayGeneMap[pathway] && this.props.changePathwayHandler) this.props.changePathwayHandler(Object.keys(this.pathwayGeneMap[pathway]).filter(function (gene) {
+        return !_this.alterationData[PathwayMapper_1.CBIO_PROFILE_NAME].hasOwnProperty(gene);
+      }));
+    }
+  });
   var PathwayMapper_1;
-  PathwayMapper.CBIO_PROFILE_NAME = "cBioPortal_data";
+  Object.defineProperty(PathwayMapper, "CBIO_PROFILE_NAME", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: "cBioPortal_data"
+  });
 
   react_pathway_mapper_decorate([external_mobx_["observable"]], PathwayMapper.prototype, "selectedPathway", void 0);
 
@@ -16515,6 +18728,10 @@ function (_super) {
 
   react_pathway_mapper_decorate([external_mobx_["observable"]], PathwayMapper.prototype, "profiles", void 0);
 
+  react_pathway_mapper_decorate([external_mobx_["action"]], PathwayMapper.prototype, "setSelectedPathway", null);
+
+  react_pathway_mapper_decorate([external_mobx_["action"]], PathwayMapper.prototype, "setEditor", null);
+
   react_pathway_mapper_decorate([external_autobind_decorator_default.a], PathwayMapper.prototype, "includePathway", null);
 
   react_pathway_mapper_decorate([external_mobx_["computed"]], PathwayMapper.prototype, "profileEnabledMap", null);
@@ -16525,9 +18742,9 @@ function (_super) {
 
   react_pathway_mapper_decorate([external_autobind_decorator_default.a], PathwayMapper.prototype, "addGenomicData", null);
 
-  react_pathway_mapper_decorate([external_autobind_decorator_default.a], PathwayMapper.prototype, "handleOpen", null);
+  react_pathway_mapper_decorate([external_mobx_["action"].bound], PathwayMapper.prototype, "handleOpen", null);
 
-  react_pathway_mapper_decorate([external_autobind_decorator_default.a], PathwayMapper.prototype, "handleClose", null);
+  react_pathway_mapper_decorate([external_mobx_["action"].bound], PathwayMapper.prototype, "handleClose", null);
 
   react_pathway_mapper_decorate([external_autobind_decorator_default.a], PathwayMapper.prototype, "editorHandler", null);
 

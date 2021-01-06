@@ -3,7 +3,7 @@ import {Label, Modal} from "react-bootstrap";
 import { observer } from "mobx-react";
 import { IProfileMetaData, EModalType } from "../ui/react-pathway-mapper";
 import EditorActionsManager from "../managers/EditorActionsManager";
-import { computed } from "mobx";
+import { computed, makeObservable } from "mobx";
 interface IProfilesModalProps {
     profiles: IProfileMetaData[];
     editor: EditorActionsManager;
@@ -16,6 +16,8 @@ export default class ProfilesModal extends React.Component<IProfilesModalProps, 
 
     constructor(props: IProfilesModalProps){
         super(props);
+
+        makeObservable(this);
     }
 
     @computed get profileEnabledMap(){

@@ -1,3 +1,4 @@
+/// <reference types="jquery" />
 import EditorActionsManager from "./EditorActionsManager";
 export default class QtipManager {
     private cy;

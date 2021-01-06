@@ -4,7 +4,7 @@ import CytoscapeArea from "./CytoscapeArea";
 import Ranking from "../ui/Ranking";
 import EditorActionsManager from "../managers/EditorActionsManager";
 import autobind from "autobind-decorator";
-import {observable, computed} from "mobx";
+import {observable, computed, makeObservable, action} from "mobx";
 import {observer} from "mobx-react";
 import FileOperationsManager from '../managers/FileOperationsManager';
 import {Row, Col, Grid, Label} from "react-bootstrap"; 
@@ -160,6 +160,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   constructor(props: IPathwayMapperProps){
     super(props);
+    makeObservable(this);
+    
     this.fileManager = new FileOperationsManager();
     this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, 
                                              this.handleOpen, this.props.isCBioPortal, this.props.isCollaborative);
@@ -167,7 +169,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     if(this.props.pathwayName){
       this.pathwayActions.changePathway(this.props.pathwayName);
     }
-    this.isModalShown = [false, false, false, false, false, false, false, false];
+    this.isModalShown = [false, false, false, false, false, false, false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
@@ -209,6 +211,16 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.profiles.push(profile1, profile2, profile3, profile4, profile5, profile6);
     */
 
+  }
+
+  @action
+  setSelectedPathway(pathway: string) {
+    this.selectedPathway = pathway;
+  }
+
+  @action
+  setEditor(editor: EditorActionsManager) {
+    this.editor = editor;
   }
 
   calculateAlterationData(cBioAlterationData: ICBioData[]){
@@ -351,7 +363,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         bestPathways.push({score: top.getKey(), genesMatched: matchedGenesMap[pathwayName], pathwayName: pathwayName});
     }
     if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
-    this.selectedPathway = bestPathways[0].pathwayName;
+      this.setSelectedPathway(bestPathways[0].pathwayName);
     this.bestPathwaysAlgos.push(bestPathways);
   }
   
@@ -597,13 +609,13 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     }
   }
 
-  @autobind
+  @action.bound
   handleOpen(modalId: EModalType){
     this.isModalShown[modalId] = true;
   }
 
 
-  @autobind
+  @action.bound
   handleClose(modalId: EModalType){
       this.isModalShown[modalId] = false;
   }
@@ -611,7 +623,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
   @autobind
   editorHandler(editor, eh, undoRedoManager){
 
-    this.editor = editor;
+    this.setEditor(editor);
     this.gridOptionsManager = new GridOptionsManager(this.editor.cy);
     this.viewOperationsManager = new ViewOperationsManager(this.editor, this.editor.cy);
     this.pathwayActions.editorHandler(editor, eh, undoRedoManager, this.viewOperationsManager, this.gridOptionsManager);
@@ -632,7 +644,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
   @autobind
   pathwayHandler(pathway: string){
-      this.selectedPathway = pathway;
+      this.setSelectedPathway(pathway);
       if(this.pathwayGeneMap[pathway] && this.props.changePathwayHandler)
         this.props.changePathwayHandler(
           Object.keys(this.pathwayGeneMap[pathway])

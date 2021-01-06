@@ -1,9 +1,8 @@
 import React from 'react';
 import {Grid, Row, Col} from 'react-bootstrap';
 import ReactTooltip from 'react-tooltip'
-import { observable } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import { observer } from 'mobx-react';
-import autobind from 'autobind-decorator';
 import { VisibilityProperty } from 'csstype';
 
 interface IWelcomePageProps{
@@ -15,18 +14,17 @@ interface IWelcomePageProps{
 export default class WelcomePage extends React.Component<IWelcomePageProps, {}>{
 
     @observable
-    private continueButtonVisibility: VisibilityProperty;
+    private continueButtonVisibility: VisibilityProperty = 'hidden';
 
     @observable
-    private activeType: number;
+    private activeType: number = -1;
 
     constructor(props: IWelcomePageProps){
         super(props);
-        this.continueButtonVisibility = 'hidden';
-        this.activeType = -1;
+        makeObservable(this);
     }
 
-    @autobind
+    @action.bound
     handleTypeClick(type: number){
         this.activeType = type;
         this.continueButtonVisibility = 'visible';

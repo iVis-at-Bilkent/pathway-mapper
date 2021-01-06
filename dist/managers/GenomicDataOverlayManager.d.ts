@@ -1,3 +1,4 @@
+/// <reference types="jquery" />
 export default class GenomicDataOverlayManager {
     genomicDataMap: {};
     visibleGenomicDataMapByType: {};

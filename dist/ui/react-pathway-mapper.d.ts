@@ -103,6 +103,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     viewOperationsManager: ViewOperationsManager;
     gridOptionsManager: GridOptionsManager;
     constructor(props: IPathwayMapperProps);
+    setSelectedPathway(pathway: string): void;
+    setEditor(editor: EditorActionsManager): void;
     calculateAlterationData(cBioAlterationData: ICBioData[]): void;
     calculatePatientData(cBioAlterationData: ICBioData[]): void;
     addSampleIconData(sampleIconData: any): void;
@@ -117,7 +119,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     includePathway(pathwayData?: IPathwayData, pathwayName?: string): void;
     extractAllGenes(): void;
     loadRedirectedPortalData(): void;
-    readonly profileEnabledMap: {};
+    get profileEnabledMap(): {};
     doesProfileExist(profileId: string): boolean;
     loadFromCBio(dataTypes: {
         [dataType: string]: IDataTypeMetaData;

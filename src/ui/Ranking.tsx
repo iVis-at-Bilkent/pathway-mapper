@@ -1,6 +1,6 @@
 import React from 'react';
 import {observer} from "mobx-react";
-import {action, computed, observable} from "mobx";
+import {action, computed, makeObservable, observable} from "mobx";
 import autobind from "autobind-decorator";
 import {Table, DropdownButton,MenuItem, Checkbox, Button, Label} from "react-bootstrap";
 import PathwayActions from '../utils/PathwayActions.js';
@@ -36,12 +36,15 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
     constructor(props: IRankingProps){
         super(props);
+        makeObservable(this);
+        
         this.isPercentageMatch = 0;
         this.isAlterationEnabled = 0;
         this.dropDownTitle = "Match count";
         this.isExpanded = false;
         this.setBestPathwayMethod(0);
-	    this.selectedPathway = this.bestPathways[0].pathwayName;
+        this.selectedPathway = this.bestPathways[0].pathwayName;
+        
     }
 
     @autobind

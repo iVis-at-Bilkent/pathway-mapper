@@ -1,7 +1,7 @@
 import SaveLoadUtilities from '../utils/SaveLoadUtility.js';
 import {saveAs} from 'file-saver';
 import EditorActionsManager from './EditorActionsManager.js';
-import { observable, computed } from 'mobx';
+import { observable, computed, makeObservable } from 'mobx';
 import SaveLoadUtility from '../utils/SaveLoadUtility';
 
 
@@ -18,6 +18,7 @@ export default class FileOperationsManager{
     pathwayInfo: IPathwayInfo;
 
     constructor(){
+        makeObservable(this);
         this.pathwayInfo = {pathwayTitle: "New Pathway", pathwayDetails: "", fileName: "pathway.txt"};
     }
 
