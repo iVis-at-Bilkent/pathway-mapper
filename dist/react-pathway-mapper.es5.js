@@ -6415,8 +6415,9 @@ function () {
         //Create SVG for current node
         nodeMap[node.id()] = node;
         var genomicDataSVG = that.editor.getGenomicDataSVG(node).children;
+        var oncoprintDataSVG = that.editor.getOncoprintDataSVG(node);
         that.svg.appendChild(that.createRect(node));
-        var labelOffset = genomicDataSVG && genomicDataSVG.length > 0 ? that.GENOMICDATA_LABEL_Y_OFFSET : 0;
+        var labelOffset = genomicDataSVG && genomicDataSVG.length > 0 || oncoprintDataSVG.outerHTML !== '' ? that.GENOMICDATA_LABEL_Y_OFFSET : 0;
         that.svg.appendChild(that.createText(node, labelOffset)); //Append Genomic Data SVG here
 
         if (genomicDataSVG) {
@@ -6429,6 +6430,15 @@ function () {
             elemSVG.setAttribute('y', nodePosition.y - node.height() / 2 + parseFloat(svgY));
             that.svg.appendChild(elemSVG);
           }
+        } else if (oncoprintDataSVG.outerHTML !== '') {
+          var nodePosition = node.position();
+          var width = parseInt(oncoprintDataSVG.getAttribute('width'));
+          var height = parseInt(oncoprintDataSVG.getAttribute('height'));
+          var verticalPadding = 8;
+          var y = nodePosition.y + node.height() / 2 - (height + verticalPadding);
+          oncoprintDataSVG.setAttribute('x', nodePosition.x - width / 2);
+          oncoprintDataSVG.setAttribute('y', y);
+          that.svg.appendChild(oncoprintDataSVG);
         } //Traverse children
 
 
@@ -6696,7 +6706,7 @@ function () {
     writable: true,
     value: function (node, nodeRectangle) {
       var nodeType = node.data().type;
-      var strokeWidth = this.NODE_STROKE_WIDTH;
+      var strokeWidth = node.css('border-width') || this.NODE_STROKE_WIDTH;
       var strokeColor = this.NODE_STROKE_COLOR;
       var fillColor = this.NODE_FILL_COLOR;
       var opacity = this.NODE_OPACITY;
@@ -6904,6 +6914,12 @@ function () {
       writable: true,
       value: void 0
     });
+    Object.defineProperty(this, "patientData", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
     Object.defineProperty(this, "DEFAULT_VISIBLE_GENOMIC_DATA_COUNT", {
       enumerable: true,
       configurable: true,
@@ -7015,6 +7031,7 @@ function () {
     });
     this.cy = cy;
     this.genomicDataMap = {};
+    this.patientData = {};
     this.visibleGenomicDataMapByType = {};
     this.groupedGenomicDataMap = {};
     this.groupedGenomicDataCount = 0;
@@ -7124,7 +7141,8 @@ function () {
 
 
       if (data['PatientView'] == 1) {
-        this.showPatientData(data);
+        this.patientData = data;
+        this.showPatientData();
       } else {
         this.showGenomicData();
       }
@@ -7436,10 +7454,11 @@ function () {
     enumerable: false,
     configurable: true,
     writable: true,
-    value: function (data) {
+    value: function () {
       var _this = this;
 
-      var self = this; // const genomicDataBoxCount = 3 //this.countVisibleGenomicDataByType(); //CHANGE
+      var self = this;
+      var data = this.patientData; // const genomicDataBoxCount = 3 //this.countVisibleGenomicDataByType(); //CHANGE
 
       var genomicDataBoxCount = data.geneticTrackData ? data.geneticTrackData.length : 3;
 
@@ -7463,7 +7482,7 @@ function () {
         return -15;
       }).style('background-image', function (ele) {
         var x = encodeURIComponent( // self.generateSVGForPatientNode(ele, data).outerHTML
-        self.generateOncoprintForPatientNode(ele, data).outerHTML);
+        self.generateOncoprintForPatientNode(ele).outerHTML);
 
         if (x === 'undefined') {
           return 'none';
@@ -7633,9 +7652,10 @@ function () {
     enumerable: false,
     configurable: true,
     writable: true,
-    value: function (ele, patientData) {
+    value: function (ele) {
       // const dataURI = 'data:image/svg+xml;utf8,'
       // nodeLabel refers to the nodeLabels in the overlay data
+      var patientData = this.patientData;
       var nodeLabel = ele.data('name');
       var genomicData = patientData[nodeLabel];
       var svgNameSpace = 'http://www.w3.org/2000/svg';
@@ -9936,6 +9956,14 @@ function () {
     value: function (node) {
       // @ts-ignore
       return this.genomicDataOverlayManager.generateSVGForNode(node);
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "getOncoprintDataSVG", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (node) {
+      return this.genomicDataOverlayManager.generateOncoprintForPatientNode(node);
     }
   });
   Object.defineProperty(EditorActionsManager.prototype, "removeGenomicData", {

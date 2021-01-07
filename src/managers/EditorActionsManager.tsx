@@ -1677,6 +1677,11 @@ export default class EditorActionsManager{
         return this.genomicDataOverlayManager.generateSVGForNode(node);
     }
 
+    getOncoprintDataSVG(node: any) 
+    {
+        return this.genomicDataOverlayManager.generateOncoprintForPatientNode(node);
+    }
+
     removeGenomicData()
     {
         if(this.isCollaborative)

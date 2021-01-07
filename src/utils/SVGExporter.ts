@@ -58,9 +58,11 @@ export default class SVGExporter {
       //Create SVG for current node
       nodeMap[node.id()] = node
       var genomicDataSVG = that.editor.getGenomicDataSVG(node).children
+      var oncoprintDataSVG = that.editor.getOncoprintDataSVG(node)
       that.svg.appendChild(that.createRect(node))
       var labelOffset =
-        genomicDataSVG && genomicDataSVG.length > 0
+        (genomicDataSVG && genomicDataSVG.length > 0)
+        || (oncoprintDataSVG.outerHTML !== '')
           ? that.GENOMICDATA_LABEL_Y_OFFSET
           : 0
       that.svg.appendChild(that.createText(node, labelOffset))
@@ -82,6 +84,22 @@ export default class SVGExporter {
           )
           that.svg.appendChild(elemSVG)
         }
+      } else if (oncoprintDataSVG.outerHTML !== '') {
+        var nodePosition = node.position()
+        
+        const width = parseInt(oncoprintDataSVG.getAttribute('width'));
+        const height = parseInt(oncoprintDataSVG.getAttribute('height'));
+        const verticalPadding = 8
+
+        const y = nodePosition.y + (node.height() / 2) - (height + verticalPadding)
+        oncoprintDataSVG.setAttribute(
+          'x',
+          nodePosition.x - (width / 2)
+        )
+        oncoprintDataSVG.setAttribute(
+          'y', y
+        )
+        that.svg.appendChild(oncoprintDataSVG);
       }
 
       //Traverse children
@@ -396,7 +414,7 @@ export default class SVGExporter {
 
   createStyleForNodes(node, nodeRectangle) {
     var nodeType = node.data().type
-    var strokeWidth = this.NODE_STROKE_WIDTH
+    var strokeWidth = node.css('border-width') || this.NODE_STROKE_WIDTH;
     var strokeColor = this.NODE_STROKE_COLOR
     var fillColor = this.NODE_FILL_COLOR
     var opacity = this.NODE_OPACITY

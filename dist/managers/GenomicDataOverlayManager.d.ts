@@ -4,6 +4,7 @@ export default class GenomicDataOverlayManager {
     visibleGenomicDataMapByType: {};
     groupedGenomicDataCount: number;
     groupedGenomicDataMap: {};
+    patientData: any;
     private DEFAULT_VISIBLE_GENOMIC_DATA_COUNT;
     private MAX_VISIBLE_GENOMIC_DATA_COUNT;
     private observers;
@@ -38,12 +39,10 @@ export default class GenomicDataOverlayManager {
     registerObserver(observer: any): void;
     notifyObservers(): void;
     getAlterationCountForPatient(geneData: any): number;
-    showPatientData(data: any): void;
+    showPatientData(): void;
     getOncoprintColors(selectedGene: any): any;
     generateSVGForPatientNode(ele: any, patientData: any): any;
-    generateOncoprintForPatientNode(ele: any, patientData: any): SVGSVGElement | {
-        outerHTML: string;
-    };
+    generateOncoprintForPatientNode(ele: any): any;
     getCNADisplayString(alterationTypeKey: number): string;
     generateSvgIconForSample(iconColor: string, iconText: string): string;
     generateHTMLContentForNodeTooltip(ele: any, patientData: any): JQuery<HTMLElement>;

@@ -7,6 +7,7 @@ export default class GenomicDataOverlayManager {
   public visibleGenomicDataMapByType: {}
   public groupedGenomicDataCount: number
   public groupedGenomicDataMap: {}
+  public patientData: any
   private DEFAULT_VISIBLE_GENOMIC_DATA_COUNT: number
   private MAX_VISIBLE_GENOMIC_DATA_COUNT: number
   private observers: any[]
@@ -14,6 +15,7 @@ export default class GenomicDataOverlayManager {
   constructor(cy: any) {
     this.cy = cy
     this.genomicDataMap = {}
+    this.patientData = {}
     this.visibleGenomicDataMapByType = {}
     this.groupedGenomicDataMap = {}
     this.groupedGenomicDataCount = 0
@@ -96,7 +98,8 @@ export default class GenomicDataOverlayManager {
     }
     //This parameter is used as flag for PatientView PathwayMapper Functions
     if (data['PatientView'] == 1) {
-      this.showPatientData(data)
+      this.patientData = data;
+      this.showPatientData()
     } else {
       this.showGenomicData()
     }
@@ -478,8 +481,10 @@ export default class GenomicDataOverlayManager {
   //These methods are created to be used in CbioPortal PatientView they are not used
   //in ResultView Page or PathwayMapper Editor
 
-  showPatientData(data) {
+  showPatientData() {
     const self = this
+
+    const data = this.patientData;
 
     // const genomicDataBoxCount = 3 //this.countVisibleGenomicDataByType(); //CHANGE
     const genomicDataBoxCount = data.geneticTrackData
@@ -512,7 +517,7 @@ export default class GenomicDataOverlayManager {
       .style('background-image', function(ele) {
         const x = encodeURIComponent(
           // self.generateSVGForPatientNode(ele, data).outerHTML
-          self.generateOncoprintForPatientNode(ele, data).outerHTML
+          self.generateOncoprintForPatientNode(ele).outerHTML
         )
         if (x === 'undefined') {
           return 'none'
@@ -705,14 +710,15 @@ export default class GenomicDataOverlayManager {
     return svg
   }
 
-  generateOncoprintForPatientNode(ele, patientData) {
+  generateOncoprintForPatientNode(ele) {
     // const dataURI = 'data:image/svg+xml;utf8,'
     // nodeLabel refers to the nodeLabels in the overlay data
+    const patientData = this.patientData;
     const nodeLabel = ele.data('name')
     const genomicData = patientData[nodeLabel]
 
     const svgNameSpace = 'http://www.w3.org/2000/svg'
-    const svgElement = document.createElementNS(svgNameSpace, 'svg')
+    const svgElement: any = document.createElementNS(svgNameSpace, 'svg')
 
     if (!genomicData) {
       return { outerHTML: '' }

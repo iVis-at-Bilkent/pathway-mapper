@@ -121,6 +121,7 @@ export default class EditorActionsManager {
     updateVisibility(ele: any, isHidden: boolean): void;
     updateElementCallback(op: any): void;
     getGenomicDataSVG(node: any): any;
+    getOncoprintDataSVG(node: any): any;
     removeGenomicData(): void;
     addGenomicData(genomicData: any): void;
     adjustVisibilityShareDB(profileId: string, isEnabled: boolean): void;
