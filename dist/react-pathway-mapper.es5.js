@@ -6130,8 +6130,6 @@ function (_super) {
         "data-effect": "solid",
         src: aboutImage,
         onClick: function () {
-          console.log("Here");
-
           _this.props.handleOpen(EModalType.CHELP);
         }
       }));
@@ -7333,9 +7331,7 @@ function () {
         // Hide all genomic data and return
         this.hideGenomicData();
         return;
-      } //console.log('Inside showGenomicData')
-      //console.log(this.cy)
-
+      }
 
       this.cy.style().selector('node[type="GENE"]') // It used to change the width of nodes only locally
       .style('width', function (ele) {
@@ -8855,7 +8851,6 @@ function () {
     writable: true,
     value: function (edge, pubmedIDs) {
       if (this.isCollaborative) {
-        console.log(edge, pubmedIDs);
         this.shareDBManager.addPubmedIDs(edge.id(), pubmedIDs);
       } else {
         var pubmedArray = edge.data('pubmedIDs');
@@ -9068,7 +9063,6 @@ function () {
     writable: true,
     value: function (nodeData, posData) {
       if (this.isCollaborative) {
-        console.log("Add node to DB");
         this.addNewNodeToShareDB(nodeData, posData);
       } else {
         this.addNodetoCy(nodeData, posData);
@@ -9092,8 +9086,6 @@ function () {
     configurable: true,
     writable: true,
     value: function (nodes) {
-      console.log("From EAM/addNodesCy");
-      console.log(nodes);
       var nodeArr = [];
 
       for (var i in nodes) {
@@ -9160,9 +9152,7 @@ function () {
     configurable: true,
     writable: true,
     value: function (op) {
-      console.log("shareDBNodeAddRemoveEventCallBack");
-      console.log(op); //Get real time node object and sync it to node addition or removal
-
+      //Get real time node object and sync it to node addition or removal
       var isRemove = Object.keys(op)[1] === 'od';
       var node = op.oi || op.od; //Removal Operation
 
@@ -9256,7 +9246,6 @@ function () {
         newEdges.push(newEdge);
       }
 
-      console.log("From addEdgesCy");
       this.cy.add(newEdges);
     }
   });
@@ -9516,7 +9505,6 @@ function () {
           dim_1.push(parameters);
           id_1.push(ele.id());
         });
-        console.log(parentData);
         var parentElem = this.cy.getElementById(parentData);
         var param = {
           firstTime: true,
@@ -9525,8 +9513,7 @@ function () {
           posDiffX: !parentData ? 0 : parentElem.position('x') - eles[0].position('x'),
           posDiffY: !parentData ? 0 : parentElem.position('y') - eles[0].position('y')
         };
-        this.undoRedoManager.do('changeParent', param);
-        console.log(this.undoRedoManager.getUndoStack()); //The elements after change parent operation are different so we find them by using the saved ids
+        this.undoRedoManager.do('changeParent', param); //The elements after change parent operation are different so we find them by using the saved ids
         // and add them to the collection
 
         var collection = this.cy.collection();
@@ -9534,9 +9521,8 @@ function () {
         for (var i in id_1) {
           var elementById = this.cy.getElementById(id_1[i]);
           collection = collection.add(elementById);
-        }
+        } //Set their previous size to the new elements in the collection
 
-        console.log(collection); //Set their previous size to the new elements in the collection
 
         collection.forEach(function (ele, i) {
           if (ele.id() == dim_1[i].id) ele.style("width", dim_1[i].width);
@@ -9812,7 +9798,6 @@ function () {
     value: function (nodes, edges) {
       if (this.isCollaborative) {
         //Real time load graph
-        console.log("Real time load graph");
         this.loadfileShareDB(nodes, edges);
       } else {
         //Local usage file load
@@ -9981,8 +9966,6 @@ function () {
     writable: true,
     value: function (genomicData) {
       var groupID = this.getEmptyGroupID();
-      console.log("genomicData");
-      console.log(genomicData);
 
       if (this.isCollaborative) {
         var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataShareDB(genomicData);
@@ -10068,9 +10051,6 @@ function () {
 
       if (!isRemove) {
         this.genomicDataOverlayManager.addGenomicGroupData(key, data);
-        console.log("key");
-        console.log(key);
-        console.log(data);
 
         if (data.length !== 1) {
           console.log("Grouped genomic data expected to be of length 1");
@@ -10104,7 +10084,6 @@ function () {
         this.adjustVisibilityShareDB(key, data);
       } // Removal
       else {
-          console.log("Removal from vis handler");
           this.genomicDataOverlayManager.removeGenomicVisData();
           this.profiles.length = 0;
         }
@@ -10764,14 +10743,9 @@ function () {
       var pubmedIDList = external_jquery_default()('<div class="pubmedIDList"></div>');
       var pubmedURL = 'https://www.ncbi.nlm.nih.gov/pubmed/';
       var pubmedData = edge.data('pubmedIDs');
-      console.log("edge.data('pubmedIDs')");
-      console.log(edge.data('pubmedIDs'));
       var edgeLabelInput = external_jquery_default()('<div class="col-xs-6 inputCol"><input type="text" class="form-control" edgeid="' + edge.id() + '"value="' + edge.data('name') + '"></div>');
 
       function generatePubmedLinks(argData, isInitialDisplay) {
-        console.log(argData);
-        console.log(self.cy.edges());
-
         for (var key in argData) {
           if (!argData.hasOwnProperty(key)) {
             continue;
@@ -11179,9 +11153,6 @@ function () {
         p: [mapName, objectKey],
         oi: object
       }], this.shareDBError);
-      console.log("this.doc");
-      console.log(this.doc);
-      console.log(mapName, objectKey, object);
     }
   });
   ;
@@ -11371,9 +11342,6 @@ function () {
         //Create new shared document
         createNewDocument();
       }
-
-      console.log("this.doc");
-      console.log(this.doc);
     }
   });
   ;
@@ -11525,9 +11493,6 @@ function () {
         var key_g = _j[_h];
         this.editor.genomicDataOverlayManager.genomicDataMap[key_g] = genomicDataMap[key_g];
       }
-
-      console.log("visDataMap");
-      console.log(visDataMap);
 
       for (var _k = 0, _l = Object.keys(groupedGenomicDataMap); _k < _l.length; _k++) {
         var key_g = _l[_k];
@@ -12296,8 +12261,7 @@ function () {
       } //Create graph hierarchy from given list of flat nodes
 
 
-      var tree = this.graphUtilities.createGraphHierarchyRealTime(nodes);
-      console.log(tree); //Traverse from root nodes of tree
+      var tree = this.graphUtilities.createGraphHierarchyRealTime(nodes); //Traverse from root nodes of tree
 
       for (var _i = 0, tree_1 = tree; _i < tree_1.length; _i++) {
         var rootLevelNode = tree_1[_i];
@@ -12311,7 +12275,6 @@ function () {
 
       for (var _a = 0, edges_1 = edges; _a < edges_1.length; _a++) {
         var edge = edges_1[_a];
-        console.log(edge);
         edge.data.source = oldIdNewIdMap[edge.data.source];
         edge.data.target = oldIdNewIdMap[edge.data.target];
         var params = edge.data;
@@ -12780,9 +12743,7 @@ function () {
       var numOfTumorSamples = tumorSamples.length - 2;
       var outData = {};
       outData[geneticProfileId] = {};
-      var geneticProfileType = CBioPortalAccessor.getDataType(geneticProfileId);
-      console.log("geneticProfileType");
-      console.log(geneticProfileType); // skip meta line and iterate over tumor sample data
+      var geneticProfileType = CBioPortalAccessor.getDataType(geneticProfileId); // skip meta line and iterate over tumor sample data
 
       for (var i = startIndex + 1; i < lines.length; i++) {
         if (lines[i].length <= 0) continue; //Iterate over samples for each gene to calculate profile data
@@ -12796,7 +12757,6 @@ function () {
               profileDataAlteration++;
             } else if (geneticProfileType === CBioPortalAccessor.GENE_EXPRESSION && (parseFloat(lineData[j]) >= CBioPortalAccessor.Z_SCORE_UPPER_THRESHOLD || parseFloat(lineData[j]) <= CBioPortalAccessor.Z_SCORE_LOWER_THRESHOLD)) {
               profileDataAlteration++;
-              console.log(parseInt(lineData[j]), parseFloat(lineData[j]), lineData[j]);
             }
           }
         } //
@@ -12832,8 +12792,6 @@ function () {
 
       request.onreadystatechange = function () {
         if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-          console.log("Query Result");
-          console.log(request.responseText);
           self.calcAlterationPercentages(request.responseText, params.geneticProfileId, callbackFunction);
           external_react_toastify_["toast"].success(params.geneticProfileId + " is succesfully loaded from cBioPortal");
         }
@@ -12859,8 +12817,6 @@ function () {
         queryURL += gene;
       }
 
-      console.log("queryURL");
-      console.log(queryURL);
       request.open("GET", queryURL);
       request.send();
     }
@@ -12992,7 +12948,6 @@ function () {
     configurable: true,
     writable: true,
     value: function (pathwayDetails, cy, edgeEditing, graphJSON) {
-      console.log(graphJSON);
       var returnString = pathwayDetails.pathwayTitle + '\n\n';
       returnString += pathwayDetails.pathwayDetails + '\n\n'; //Get nodes and edges
 
@@ -13001,12 +12956,9 @@ function () {
       var edges = cy.edges(); //Prepare Meta Line
 
       returnString += '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY\tWIDTH\tHEIGHT--' + '\n';
-      console.log("Here");
 
       if (nodes) {
         for (var i = 0; i < nodes.length; i++) {
-          console.log("nodes[i]");
-          console.log(nodes[i]);
           returnString += this.exportNode(nodes[i]);
         }
       } //Put a blank line between nodes and edges
@@ -13134,8 +13086,7 @@ function () {
 
       var seperator = /\r?\n|\r/;
       var lines = isArray ? graph : graph.split(seperator);
-      var edgesStartIndex = -1; //console.log(lines);
-
+      var edgesStartIndex = -1;
       var title = lines[0];
       var description = lines[2]; // In old version description used to expand in multiple lines
       // graphDataIndex holds the line index where the first --NODE_NAME occurs and is used later to load nodes
@@ -13186,8 +13137,7 @@ function () {
         var nodeW = lineData.length > 7 ? lineData[6] : nodeType === 'PROCESS' ? nodeName.length * 6 + 24 : "150";
         var nodeH = lineData.length > 7 ? lineData[7] : nodeType === 'PROCESS' ? "24" : "52";
 
-        if (nodeName === " " || nodeName === "") {
-          console.log("Here empty"); //nodeName = "No Name " + (i + 1);
+        if (nodeName === " " || nodeName === "") {//nodeName = "No Name " + (i + 1);
         }
 
         var newNode = {
@@ -13211,8 +13161,7 @@ function () {
         }
 
         nodes.push(newNode);
-      } //console.log(edgesStartIndex);
-      //Read edges
+      } //Read edges
 
 
       for (var i_1 = edgesStartIndex; i_1 < lines.length; i_1++) {
@@ -13221,8 +13170,7 @@ function () {
           break;
         }
 
-        if (!isArray) console.log(lines);
-        var lineData = lines[i_1].split('\t');
+        if (!isArray) var lineData = lines[i_1].split('\t');
         var edgeID = lineData[0];
         var edgeSource = lineData[1];
         var edgeTarget = lineData[2];
@@ -13245,11 +13193,6 @@ function () {
             });
           }
         }
-        /*
-              console.log("From parseGraph");
-              console.log(lineData);
-              console.log(edgeType);*/
-
 
         var newEdge = {
           group: 'edges',
@@ -13267,11 +13210,6 @@ function () {
         };
         edges.push(newEdge);
       } // edgeEditing.initBendPoints(cy.edges());
-
-      /*
-      console.log("Edges and Nodes");
-      console.log(edges)
-      console.log(nodes)*/
 
 
       return {
@@ -13537,7 +13475,6 @@ function (_super) {
     configurable: true,
     writable: true,
     value: function (nextProps) {
-      console.log("Component will update", nextProps.selectedPathway);
       this.getPathway(nextProps.selectedPathway);
     }
   }); // This method only opens pathways that are available in pathway.json. Namely, imported or merged pathways are not opened via this method.
@@ -13645,8 +13582,7 @@ function (_super) {
       var heightPatwayNavbar = external_jquery_default()('.pathway-navbar').outerHeight();
       var heightPathwayToolbar = external_jquery_default()('.pathway-toolbar').outerHeight();
       var widthSideBar = external_jquery_default()('.sideBarWrapper').outerWidth();
-      var widthcBioPortalSideBar = external_jquery_default()('.cBioPortal-sidebar').outerWidth();
-      console.log(widthSideBar, widthCy, leftCy, widthNavigator, offset); //706px 1513.15px
+      var widthcBioPortalSideBar = external_jquery_default()('.cBioPortal-sidebar').outerWidth(); //706px 1513.15px
       //694px 1391.15px
       //var heightPanzoom = $('.cy-panzoom').outerHeight();
       //var widthPanzoom = $('.cy-panzoom').outerWidth();
@@ -13766,8 +13702,7 @@ function (_super) {
           name: 'preset'
         }
       });
-      this.undoRedoManager = this.cy.undoRedo();
-      console.log("undoRedoManager" + this.undoRedoManager); // Create Manager Classes
+      this.undoRedoManager = this.cy.undoRedo(); // Create Manager Classes
 
       this.shareDBManager = new managers_ShareDBManager(function () {
         var dbDoc = _this.shareDBManager.getDoc();
@@ -13849,20 +13784,14 @@ function (_super) {
           return {};
         },
         start: function (sourceNode) {
-          console.log("Inside start"); // fired when edgehandles interaction starts (drag on handle)
-
-          var type = self.getGlobalEdgeType();
-          console.log("Type");
-          console.log(type); //self.cy.edgehandles('option', 'ghostEdgeType', type);
+          // fired when edgehandles interaction starts (drag on handle)
+          var type = self.getGlobalEdgeType(); //self.cy.edgehandles('option', 'ghostEdgeType', type);
         },
         complete: function (sourceNode, targetNodes, addedEntities) {
-          // @ts-ignore
-          console.log(window.edgeAddingMode); //  // Remove recently added edge !
+          //  // Remove recently added edge !
           //  // FBI takes this case from now on :O
           //  // We will take care of addition in our manager :)
-
           self.cy.remove(addedEntities);
-          console.log(addedEntities);
           self.editor.addEdge({
             source: sourceNode.id(),
             target: targetNodes[0].id(),
@@ -13883,7 +13812,6 @@ function (_super) {
         }
       }; //Edge Handles initialization
 
-      console.log("Edge Handles inside Cytoscape ARea");
       this.eh = this.cy.edgehandles(edgeHandleDefaults);
       this.eh.disable();
       this.props.editorHandler(this.editor, this.eh, this.undoRedoManager);
@@ -14371,7 +14299,6 @@ function (_super) {
     configurable: true,
     writable: true,
     value: function (pathway) {
-      // console.log(pathway);
       this.selectedPathway = pathway;
       this.props.pathwayActions.changePathway(this.selectedPathway);
     }
@@ -15599,7 +15526,6 @@ function () {
     writable: true,
     value: function (e, isMerge) {
       var file = e.target.files[0];
-      console.log(file);
       this.processFile(file, isMerge);
     }
   });
@@ -15627,13 +15553,10 @@ function () {
         var _a;
 
         if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-          console.log('request.responseText');
-          console.log(request.responseText);
           var linesOfData = request.responseText.split('\n');
 
           if (linesOfData.length > 0) {
             var profileIdsFromFile = linesOfData[0].split('\t').slice(1);
-            console.log(profileIdsFromFile);
 
             (_a = _this.profiles).push.apply(_a, profileIdsFromFile.map(function (id) {
               return {
@@ -15642,7 +15565,7 @@ function () {
               };
             }));
           } else {
-            console.log('No valid data');
+            console.log('Error: No valid data');
           }
 
           _this.editor.addGenomicData(request.responseText);
@@ -15851,8 +15774,6 @@ function () {
     value: function (edgeTypeIndex) {
       // @ts-ignore
       window.edgeAddingMode = edgeTypeIndex + 1;
-      console.log('edgeTypeIndex');
-      console.log(edgeTypeIndex);
 
       if (edgeTypeIndex === -1) {
         this.eh.disable();
@@ -15870,7 +15791,6 @@ function () {
     writable: true,
     value: function (oldName, newName) {
       var cyNode = this.editor.cy.$('[name="' + oldName + '"]')[0];
-      console.log(this.editor.cy.$('[name="' + oldName + '"]'));
       this.editor.changeName(cyNode, newName);
     }
   });
@@ -15940,11 +15860,8 @@ function () {
       request.onreadystatechange = function () {
         if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
           var pathwayData = utils_SaveLoadUtility.parseGraph(request.responseText, false);
-          console.log('Process File');
 
           if (isMerge) {
-            console.log('It is a merge');
-
             _this.editor.mergeGraph(pathwayData.nodes, pathwayData.edges);
 
             var graphJSON = _this.editor.cy.json(); //TODO change file name maybe, probabyly  not necessary ?
@@ -16485,7 +16402,6 @@ function (_super) {
           _loop_1(study);
         }
       });
-      console.log(this.itemArray);
     }
   });
   Object.defineProperty(StudyModal.prototype, "resetModal", {
@@ -16503,7 +16419,6 @@ function (_super) {
     writable: true,
     value: function (dataType) {
       this.dataTypes[dataType].checked = !this.dataTypes[dataType].checked;
-      console.log(this.dataTypes[dataType].checked);
     }
   });
   Object.defineProperty(StudyModal.prototype, "render", {
@@ -17046,7 +16961,6 @@ function (_super) {
       this.props.profiles.forEach(function (profile) {
         profileEnabledMap[profile.profileId] = profile.enabled;
       });
-      console.log(profileEnabledMap);
       return profileEnabledMap;
     },
     enumerable: false,
@@ -17724,10 +17638,7 @@ function (_super) {
   CBioHelpModal_extends(CBioHelpModal, _super);
 
   function CBioHelpModal(props) {
-    var _this = _super.call(this, props) || this;
-
-    console.log("CBioModal", _this.props.patientView);
-    return _this;
+    return _super.call(this, props) || this;
   }
 
   Object.defineProperty(CBioHelpModal.prototype, "generateOncoprintLegend", {

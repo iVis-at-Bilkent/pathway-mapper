@@ -55,7 +55,7 @@ export default class PathwayActions {
     this.isCollaborative = isCollaborative
     this.enabledType = EGridType.NONE
 
-    makeObservable(this);
+    makeObservable(this)
   }
 
   emphasiseQueryGenes(queryGenes: string[]) {
@@ -113,7 +113,6 @@ export default class PathwayActions {
   @autobind
   onChangeFile(e: any, isMerge: boolean) {
     const file = e.target.files[0] as File
-    console.log(file)
     this.processFile(file, isMerge)
   }
 
@@ -131,17 +130,14 @@ export default class PathwayActions {
         request.readyState === XMLHttpRequest.DONE &&
         request.status === 200
       ) {
-        console.log('request.responseText')
-        console.log(request.responseText)
         const linesOfData = request.responseText.split('\n')
         if (linesOfData.length > 0) {
           const profileIdsFromFile = linesOfData[0].split('\t').slice(1)
-          console.log(profileIdsFromFile)
           this.profiles.push(
             ...profileIdsFromFile.map(id => ({ profileId: id, enabled: true }))
           )
         } else {
-          console.log('No valid data')
+          console.log('Error: No valid data')
         }
         this.editor.addGenomicData(request.responseText)
       }
@@ -284,8 +280,6 @@ export default class PathwayActions {
   addEdge(edgeTypeIndex: number) {
     // @ts-ignore
     window.edgeAddingMode = edgeTypeIndex + 1
-    console.log('edgeTypeIndex')
-    console.log(edgeTypeIndex)
     if (edgeTypeIndex === -1) {
       this.eh.disable()
       this.eh.hide()
@@ -299,7 +293,6 @@ export default class PathwayActions {
   @autobind
   changeNodeName(oldName: string, newName: string) {
     const cyNode = this.editor.cy.$('[name="' + oldName + '"]')[0]
-    console.log(this.editor.cy.$('[name="' + oldName + '"]'))
     this.editor.changeName(cyNode, newName)
   }
 
@@ -362,10 +355,8 @@ export default class PathwayActions {
           request.responseText,
           false
         )
-        console.log('Process File')
 
         if (isMerge) {
-          console.log('It is a merge')
           this.editor.mergeGraph(pathwayData.nodes, pathwayData.edges)
           const graphJSON = this.editor.cy.json()
 

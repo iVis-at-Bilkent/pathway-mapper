@@ -654,7 +654,6 @@ export default class EditorActionsManager{
     {
         if (this.isCollaborative)
         {
-            console.log(edge, pubmedIDs);
             this.shareDBManager.addPubmedIDs(edge.id(), pubmedIDs);
         }
         else
@@ -823,7 +822,6 @@ export default class EditorActionsManager{
     {
         if (this.isCollaborative)
         {
-            console.log("Add node to DB");
             this.addNewNodeToShareDB(nodeData, posData);
         }
         else
@@ -842,8 +840,6 @@ export default class EditorActionsManager{
 
     addNodesCy(nodes: any[])
     {
-      console.log("From EAM/addNodesCy");
-      console.log(nodes);
         var nodeArr: any[] = [];
         for (var i in nodes)
         {
@@ -911,8 +907,6 @@ export default class EditorActionsManager{
 
     shareDBNodeAddRemoveEventCallBack(op: any)
     {
-        console.log("shareDBNodeAddRemoveEventCallBack");
-        console.log(op);
         //Get real time node object and sync it to node addition or removal
         var isRemove = Object.keys(op)[1] === 'od';
         var node = op.oi || op.od;
@@ -997,7 +991,6 @@ export default class EditorActionsManager{
                 };
             newEdges.push(newEdge);
         }
-        console.log("From addEdgesCy");
         this.cy.add(newEdges);
     };
 
@@ -1244,7 +1237,6 @@ export default class EditorActionsManager{
                 id.push(ele.id());
             });
 
-            console.log(parentData);
             const parentElem = this.cy.getElementById(parentData);
             var param = {
                 firstTime: true,
@@ -1254,7 +1246,6 @@ export default class EditorActionsManager{
                 posDiffY: (!parentData) ? 0 : parentElem.position('y') - eles[0].position('y')
             };
             this.undoRedoManager.do('changeParent', param);
-            console.log(this.undoRedoManager.getUndoStack());
 
             //The elements after change parent operation are different so we find them by using the saved ids
             // and add them to the collection
@@ -1264,7 +1255,6 @@ export default class EditorActionsManager{
                 var elementById = this.cy.getElementById(id[i]);
                 collection = collection.add(elementById);
             }
-            console.log(collection);
             //Set their previous size to the new elements in the collection
             collection.forEach(function (ele: any, i: number)
             {
@@ -1542,7 +1532,6 @@ export default class EditorActionsManager{
         if (this.isCollaborative)
         {
             //Real time load graph
-            console.log("Real time load graph");
             this.loadfileShareDB(nodes, edges);
         }
         else
@@ -1701,10 +1690,6 @@ export default class EditorActionsManager{
     addGenomicData(genomicData: any)
     {
         const groupID = this.getEmptyGroupID();
-        
-        console.log("genomicData");
-        console.log(genomicData);
-
 
         if(this.isCollaborative)
         {
@@ -1782,9 +1767,6 @@ export default class EditorActionsManager{
         if(!isRemove)
         {
             this.genomicDataOverlayManager.addGenomicGroupData(key, data);
-            console.log("key");
-            console.log(key);
-            console.log(data);
             if(data.length !== 1){
                 console.log("Grouped genomic data expected to be of length 1");
             }
@@ -1814,7 +1796,6 @@ export default class EditorActionsManager{
         // Removal
         else
         {
-            console.log("Removal from vis handler");
             this.genomicDataOverlayManager.removeGenomicVisData();
             this.profiles.length = 0;
         }

@@ -79,7 +79,6 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
             this.itemArray.push(item);
         }
         });
-        console.log(this.itemArray);
     }
 
     @autobind
@@ -91,7 +90,6 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
     @autobind
     handleCheckboxClick(dataType){
       this.dataTypes[dataType].checked = !this.dataTypes[dataType].checked;
-      console.log(this.dataTypes[dataType].checked);
     }
     render(){
         return(

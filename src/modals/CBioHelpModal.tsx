@@ -178,7 +178,6 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
 
     constructor(props: ICBioHelpModalProps){
         super(props);
-        console.log("CBioModal", this.props.patientView)
     }
 
     generateOncoprintLegend() {

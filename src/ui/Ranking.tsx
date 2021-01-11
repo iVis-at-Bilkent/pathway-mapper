@@ -56,7 +56,6 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
     @autobind
     onPathwayClick(pathway: string){
-        // console.log(pathway);
         this.selectedPathway = pathway;
         this.props.pathwayActions.changePathway(this.selectedPathway);
     }

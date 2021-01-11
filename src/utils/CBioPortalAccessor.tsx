@@ -156,8 +156,6 @@ export default class CBioPortalAccessor{
       outData[geneticProfileId] = {};
 
       const geneticProfileType = CBioPortalAccessor.getDataType(geneticProfileId);
-      console.log("geneticProfileType");
-      console.log(geneticProfileType);
       // skip meta line and iterate over tumor sample data
       for(let i = startIndex + 1; i < lines.length; i++)
       {
@@ -181,7 +179,6 @@ export default class CBioPortalAccessor{
                 && (parseFloat(lineData[j]) >= CBioPortalAccessor.Z_SCORE_UPPER_THRESHOLD 
                 || parseFloat(lineData[j]) <= CBioPortalAccessor.Z_SCORE_LOWER_THRESHOLD)){
                     profileDataAlteration++;
-                    console.log(parseInt(lineData[j]), parseFloat(lineData[j]), lineData[j]);
                 }
               }
           }
@@ -216,8 +213,6 @@ export default class CBioPortalAccessor{
       {
           if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
           {
-              console.log("Query Result");
-              console.log(request.responseText);
               self.calcAlterationPercentages(request.responseText, params.geneticProfileId, callbackFunction);
               toast.success(params.geneticProfileId + " is succesfully loaded from cBioPortal");
 
@@ -241,9 +236,6 @@ export default class CBioPortalAccessor{
           queryURL += gene;
           
       }
-      console.log("queryURL");
-      console.log(queryURL);
-
       request.open("GET", queryURL);
       request.send();
   };

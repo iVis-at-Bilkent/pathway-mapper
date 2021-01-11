@@ -23,7 +23,6 @@ export default class ProfilesModal extends React.Component<IProfilesModalProps, 
     @computed get profileEnabledMap(){
         const profileEnabledMap = {};
         this.props.profiles.forEach((profile: IProfileMetaData) => {profileEnabledMap[profile.profileId] = profile.enabled});
-        console.log(profileEnabledMap);
         return profileEnabledMap;
     }
 

@@ -88,7 +88,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
 
   componentWillUpdate(nextProps: PathwayMapperType) {
-    console.log("Component will update", nextProps.selectedPathway);
     this.getPathway(nextProps.selectedPathway);
   }
 
@@ -171,8 +170,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     var heightPathwayToolbar = $('.pathway-toolbar').outerHeight();
     var widthSideBar = $('.sideBarWrapper').outerWidth();
     var widthcBioPortalSideBar = $('.cBioPortal-sidebar').outerWidth();
-
-    console.log(widthSideBar, widthCy, leftCy, widthNavigator, offset);
 
 //706px 1513.15px
 //694px 1391.15px
@@ -280,7 +277,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     
 
     this.undoRedoManager = this.cy.undoRedo();
-    console.log("undoRedoManager" + this.undoRedoManager);
     // Create Manager Classes
     this.shareDBManager = new ShareDBManager(() => {
       const dbDoc = this.shareDBManager.getDoc();
@@ -381,22 +377,16 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
         },
         start: function( sourceNode )
         {
-          console.log("Inside start");
           // fired when edgehandles interaction starts (drag on handle)
           var type = self.getGlobalEdgeType();
-          console.log("Type");
-          console.log(type);
           //self.cy.edgehandles('option', 'ghostEdgeType', type);
         },
         complete: function( sourceNode, targetNodes, addedEntities )
         {
-            // @ts-ignore
-            console.log(window.edgeAddingMode);
             //  // Remove recently added edge !
             //  // FBI takes this case from now on :O
             //  // We will take care of addition in our manager :)
             self.cy.remove(addedEntities);
-            console.log(addedEntities);
             self.editor.addEdge({
               source: sourceNode.id(),
               target: targetNodes[0].id(),
@@ -418,8 +408,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
         },
       };
     //Edge Handles initialization
-
-    console.log("Edge Handles inside Cytoscape ARea");
     this.eh = this.cy.edgehandles(edgeHandleDefaults);
     this.eh.disable();
     this.props.editorHandler(this.editor, this.eh, this.undoRedoManager);
