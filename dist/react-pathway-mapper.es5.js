@@ -7505,13 +7505,13 @@ function () {
             classes: 'qtip-light qtip-rounded'
           },
           show: {
-            event: "showqtipevent"
+            event: 'showqtipevent'
           },
           hide: {
             event: 'mouseout'
           }
         }, event);
-        node.trigger("showqtipevent");
+        node.trigger('showqtipevent');
       });
     }
   }); //Every mutation type has a unique color coded. This method is used to retrieve the colors
@@ -7687,7 +7687,7 @@ function () {
       return svgElement;
     }
   }); // Mapping of alteration type keys to strings
-  // See: https://github.com/cBioPortal/cbioportal-frontend/blob/442e108208846255feb1ed5b309218cd44927fb9/src/shared/components/oncoprint/TooltipUtils.ts#L599    
+  // See: https://github.com/cBioPortal/cbioportal-frontend/blob/442e108208846255feb1ed5b309218cd44927fb9/src/shared/components/oncoprint/TooltipUtils.ts#L599
 
   Object.defineProperty(GenomicDataOverlayManager.prototype, "getCNADisplayString", {
     enumerable: false,
@@ -7786,33 +7786,33 @@ function () {
         var cnaInfoHTML = cnaInfo.length > 0 ? 'CNA: ' : '';
         var fusionInfoHTML = fusionInfo.length > 0 ? 'Fusion: ' : '';
         mutationInfo.forEach(function (mutation, index) {
-          mutationInfoHTML += "<b>" + mutation.gene + " " + mutation.proteinChange + "</b>";
+          mutationInfoHTML += '<b>' + mutation.gene + ' ' + mutation.proteinChange + '</b>';
 
           if (index !== mutationInfo.length - 1) {
-            mutationInfoHTML += ", ";
+            mutationInfoHTML += ', ';
           } else {
-            mutationInfoHTML += "<br>";
+            mutationInfoHTML += '<br>';
           }
         });
         cnaInfo.forEach(function (cna, index) {
-          cnaInfoHTML += "<b>" + cna.gene + " " + cna.cnaLabel + "</b>";
+          cnaInfoHTML += '<b>' + cna.gene + ' ' + cna.cnaLabel + '</b>';
 
           if (index !== cnaInfo.length - 1) {
-            cnaInfoHTML += ", ";
+            cnaInfoHTML += ', ';
           } else {
-            cnaInfoHTML += "<br>";
+            cnaInfoHTML += '<br>';
           }
         });
         fusionInfo.forEach(function (fusion, index) {
-          fusionInfoHTML += "<b>" + fusion.gene + " " + fusion.proteinChange + "</b>";
+          fusionInfoHTML += '<b>' + fusion.gene + ' ' + fusion.proteinChange + '</b>';
 
           if (index !== fusionInfo.length - 1) {
-            fusionInfoHTML += ", ";
+            fusionInfoHTML += ', ';
           } else {
-            fusionInfoHTML += "<br>";
+            fusionInfoHTML += '<br>';
           }
         });
-        var sampleIdHTML = "<b> " + sampleId + "</b>" + "<br>";
+        var sampleIdHTML = '<b> ' + sampleId + '</b>' + '<br>';
         sampleWrapper.append(external_jquery_default()('<div>' + sampleIconSvgHTML + sampleIdHTML + mutationInfoHTML + cnaInfoHTML + fusionInfoHTML + +'</div>'));
         wrapper.append(sampleWrapper);
       });
@@ -13170,7 +13170,7 @@ function () {
           break;
         }
 
-        if (!isArray) var lineData = lines[i_1].split('\t');
+        var lineData = lines[i_1].split('\t');
         var edgeID = lineData[0];
         var edgeSource = lineData[1];
         var edgeTarget = lineData[2];
