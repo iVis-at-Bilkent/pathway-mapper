@@ -95,7 +95,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
         return(
             <Modal id="cbioPortalModal" show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.STUDY); this.resetModal();}}>
                 <Modal.Header closeButton>
-                    <Modal.Title><h3>Profile Data from cBioPortal</h3></Modal.Title>
+                    <Modal.Title>Profile Data from cBioPortal</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
 
