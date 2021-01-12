@@ -5,7 +5,7 @@ import EditorActionsManager from '../managers/EditorActionsManager';
 import GridOptionsManager from '../managers/GridOptionsManager';
 import PathwayActions from '../utils/PathwayActions';
 import { observer } from 'mobx-react';
-import { observable } from 'mobx';
+import { makeObservable, observable } from 'mobx';
 interface IGridSettingsProps{
     isModalShown: boolean;
     handleClose: Function;
@@ -35,6 +35,8 @@ export default class GridSettings extends React.Component<IGridSettingsProps, {}
     private enabledType: EGridType;
     constructor(props: IGridSettingsProps){
         super(props);
+        makeObservable(this);
+        
         this.gridSize = this.defaultSettings.gridSpacing;
         this.guideColor = this.defaultSettings.guidelinesStyle.strokeStyle;
     }

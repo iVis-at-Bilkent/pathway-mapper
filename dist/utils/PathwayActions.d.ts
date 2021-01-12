@@ -39,7 +39,7 @@ export default class PathwayActions {
     merge(): void;
     setOverlayUploader(inputRef: any): void;
     setUploaders(inputRef: any, isMerge: boolean): void;
-    readonly getPathwayInfo: IPathwayInfo;
+    get getPathwayInfo(): IPathwayInfo;
     setPathwayInfo(other: IPathwayInfo): void;
     undo(): void;
     redo(): void;

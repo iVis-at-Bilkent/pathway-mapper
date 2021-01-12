@@ -22,7 +22,8 @@
     "experimentalDecorators": true,
     "typeRoots": [
       "node_modules/@types"
-    ]
+    ],
+    "useDefineForClassFields": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "build", "dist", "example", "rollup.config.js"]

@@ -1,8 +1,10 @@
+/// <reference types="jquery" />
 export default class GenomicDataOverlayManager {
     genomicDataMap: {};
     visibleGenomicDataMapByType: {};
     groupedGenomicDataCount: number;
     groupedGenomicDataMap: {};
+    patientData: any;
     private DEFAULT_VISIBLE_GENOMIC_DATA_COUNT;
     private MAX_VISIBLE_GENOMIC_DATA_COUNT;
     private observers;
@@ -36,4 +38,12 @@ export default class GenomicDataOverlayManager {
     parseGenomicData(genomicData: any, groupID: any): void;
     registerObserver(observer: any): void;
     notifyObservers(): void;
+    getAlterationCountForPatient(geneData: any): number;
+    showPatientData(): void;
+    getOncoprintColors(selectedGene: any): any;
+    generateSVGForPatientNode(ele: any, patientData: any): any;
+    generateOncoprintForPatientNode(ele: any): any;
+    getCNADisplayString(alterationTypeKey: number): string;
+    generateSvgIconForSample(iconColor: string, iconText: string): string;
+    generateHTMLContentForNodeTooltip(ele: any, patientData: any): JQuery<HTMLElement>;
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { Nav, Navbar, NavItem, FormControl, Glyphicon, InputGroup, ButtonGroup, ButtonToolbar, Button, FormGroup } from "react-bootstrap";
 import PathwayActions from "../utils/PathwayActions";
-import { observable } from "mobx";
+import { makeObservable, observable } from "mobx";
 // @ts-ignore
 import loadSvg from '../images/toolbar/load.svg';
 // @ts-ignore
@@ -74,6 +74,8 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
 
     constructor(props: IButtonbarProps) {
         super(props);
+        makeObservable(this);
+        
         this.searchedGene = "";
         this.props.pathwayActions.enabledType = EGridType.NONE;
     }

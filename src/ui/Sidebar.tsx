@@ -24,7 +24,7 @@ import repImg from "../images/edges/represses.svg";
 import bindImg from "../images/edges/binds.svg";
 
 import "../css/supp.css"
-import { observable } from "mobx";
+import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import autobind from "autobind-decorator";
 import { EModalType } from "./react-pathway-mapper";
@@ -43,6 +43,8 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
 
     constructor(props: ISideBarProps){
         super(props);
+        makeObservable(this);
+        
         this.activeEdge = -1;
         props.setActiveEdgeHandler(this.setActiveEdge);
     }

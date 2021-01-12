@@ -3,7 +3,7 @@ import CBioPortalAccessor from "../utils/CBioPortalAccessor";
 import SVGExporter from "../utils/SVGExporter";
 import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
 import { IProfileMetaData, IPathwayData } from "../ui/react-pathway-mapper";
-import { observable } from "mobx";
+import { observable, makeObservable } from "mobx";
 import LayoutProperties, { ILayoutProperties } from "../modals/LayoutProperties";
 
 const _ = require('underscore');
@@ -61,6 +61,7 @@ export default class EditorActionsManager{
                 undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[])
     {
         // Set cy instance and set real time manager reference if collaborative mode
+        makeObservable(this);
         this.cy = cyInst;
         this.isCollaborative = isCollaborative;
         this.isCbioPortal = isCBioPortal;
@@ -1674,6 +1675,11 @@ export default class EditorActionsManager{
     {
       // @ts-ignore
         return this.genomicDataOverlayManager.generateSVGForNode(node);
+    }
+
+    getOncoprintDataSVG(node: any) 
+    {
+        return this.genomicDataOverlayManager.generateOncoprintForPatientNode(node);
     }
 
     removeGenomicData()

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Modal, MenuItem, DropdownButton, Checkbox, Button} from 'react-bootstrap';
-import { observable } from 'mobx';
+import { makeObservable, observable } from 'mobx';
 import autobind from 'autobind-decorator';
 import { IDataTypeMetaData, EModalType } from '../ui/react-pathway-mapper';
 import CBioPortalAccessor from '../utils/CBioPortalAccessor';
@@ -17,8 +17,9 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
 
     @observable
     dataTypes: {[dataType: string]: IDataTypeMetaData} = {};
-    @observable
+    
     itemArray: any[];
+    
     @observable
     selectedStudyData: any[];
     @observable
@@ -26,6 +27,8 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
 
     constructor(props: IStudyModalProps){
         super(props);
+        makeObservable(this);
+
         this.selectedStudyData = [];
         this.portalAccessor = new CBioPortalAccessor();
         this.fetchStudy();
@@ -69,7 +72,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
             if(!cancerStudies.hasOwnProperty(study)){
             continue;
             }
-            const item = <MenuItem key={study} onClick={() => {console.log(this.selectedStudyData); this.selectedStudyData = cancerStudies[study]; this.preparePortalAccess(cancerStudies[study][0]);}}>
+            const item = <MenuItem key={study} onClick={() => {this.selectedStudyData = cancerStudies[study]; this.preparePortalAccess(cancerStudies[study][0]);}}>
             {cancerStudies[study][1]}
             </MenuItem>;
     

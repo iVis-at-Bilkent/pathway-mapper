@@ -8,9 +8,10 @@ interface IToolbarProps {
     handleOpen: (modalId: number) => void;
     genes: any[];
     validGenes: any;
-    toast: any;
+    showMessage: (message: string) => void;
     pathwayGenes: string[];
     onAddGenes: (selectedGenes: string[]) => void;
+    patientView?: boolean;
 }
 export default class Toolbar extends React.Component<IToolbarProps, {}> {
     selectedGenes: string[];

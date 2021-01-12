@@ -4,7 +4,7 @@ import {Modal, Form, InputGroup, ControlLabel, Col, FormControl, Checkbox, Butto
 import EditorActionsManager from '../managers/EditorActionsManager';
 import _ from 'lodash';
 import PathwayActions from '../utils/PathwayActions';
-import { observable } from 'mobx';
+import { observable, makeObservable } from 'mobx';
 import { observer } from 'mobx-react';
 
 interface ILayoutPropertiesProps{
@@ -43,6 +43,7 @@ export default class LayoutProperties extends React.Component<ILayoutPropertiesP
     
     constructor(props: ILayoutPropertiesProps){
         super(props);
+        makeObservable(this);
         LayoutProperties.layoutProperties = _.clone(EditorActionsManager.defaultLayoutProperties);
 
         console.log(LayoutProperties.layoutProperties);

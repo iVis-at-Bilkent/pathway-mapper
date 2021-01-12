@@ -7,7 +7,7 @@ export interface IPathwayInfo {
 export default class FileOperationsManager {
     pathwayInfo: IPathwayInfo;
     constructor();
-    readonly getPathwayInfo: IPathwayInfo;
+    get getPathwayInfo(): IPathwayInfo;
     setPathwayInfo(other: IPathwayInfo): void;
     b64toBlob(b64Data: any, contentType: any, sliceSize?: number): Blob;
     saveAsJPEG(cy: any): void;

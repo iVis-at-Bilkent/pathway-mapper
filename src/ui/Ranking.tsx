@@ -1,6 +1,6 @@
 import React from 'react';
 import {observer} from "mobx-react";
-import {action, computed, observable} from "mobx";
+import {action, computed, makeObservable, observable} from "mobx";
 import autobind from "autobind-decorator";
 import {Table, DropdownButton,MenuItem, Checkbox, Button, Label} from "react-bootstrap";
 import PathwayActions from '../utils/PathwayActions.js';
@@ -10,6 +10,7 @@ interface IRankingProps{
     pathwayActions: PathwayActions;
     bestPathwaysAlgos: any[][];
     tableComponent: (data: IPathwayMapperTable[], selectedPathway: string, onPathwaySelect: (pathway: string) => void) => JSX.Element;
+    patientView ?: boolean;
 }
 
 
@@ -30,17 +31,20 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     isExpanded: boolean;
 
     readonly COUNT_PERC_EXPLANATION = "Whether we should favor the number of genes of interest matching the ones in a pathway or the percentage of such genes in that pathway. For instance, suppose genes of interest are A, B, and C, and the pathway contains genes B, C, D, and E. When we consider count, the score is 2 (for the two genes that match). However, when we consider percentage the score will be 50% as 2 of the 4 genes in the pathway are among genes of interest.";
-    readonly ALTERATION_EXPLANATION = "When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and %50 for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (0.2+0.3)/4=%12.5 for match count and percentage, respectively.";
+    readonly ALTERATION_EXPLANATION = "When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and 50% for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (0.2+0.3)/4=12.5% for match count and percentage, respectively.";
     
 
     constructor(props: IRankingProps){
         super(props);
+        makeObservable(this);
+        
         this.isPercentageMatch = 0;
         this.isAlterationEnabled = 0;
         this.dropDownTitle = "Match count";
         this.isExpanded = false;
         this.setBestPathwayMethod(0);
-	    this.selectedPathway = this.bestPathways[0].pathwayName;
+        this.selectedPathway = this.bestPathways[0].pathwayName;
+        
     }
 
     @autobind
@@ -86,6 +90,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                 this.selectedPathway,
                 this.onPathwayClick)
             }
+            {(!this.props.patientView &&
             <div className="info-entry" style={{marginTop: "10px"}}>
 
 
@@ -115,8 +120,11 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                     </Checkbox>
                 </div>
             </div>
+              )}
           </div>
+        
         );
+       
     }
 
     

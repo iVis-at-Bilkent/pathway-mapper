@@ -9,7 +9,7 @@ interface IProfilesModalProps {
 }
 export default class ProfilesModal extends React.Component<IProfilesModalProps, {}> {
     constructor(props: IProfilesModalProps);
-    readonly profileEnabledMap: {};
+    get profileEnabledMap(): {};
     render(): JSX.Element;
 }
 export {};

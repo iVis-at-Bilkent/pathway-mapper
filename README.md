@@ -5,6 +5,11 @@ PathwayMapper is a web based pathway curation tool for interactive creation, edi
   <img src="assets/sample-screenshot.png" width="600"/>
 </p>
 
+A special, viewer edition of PathwayMapper was built for use in cBioPortal ([example](https://www.cbioportal.org/results/pathways?Action=Submit&Z_SCORE_THRESHOLD=1.0&cancer_study_id=gbm_tcga_pub&cancer_study_list=gbm_tcga_pub&case_set_id=gbm_tcga_pub_sequenced&gene_list=TP53%20MDM2%20MDM4&gene_set_choice=user-defined_list&genetic_profile_ids_PROFILE_COPY_NUMBER_ALTERATION=gbm_tcga_pub_cna_rae&genetic_profile_ids_PROFILE_MUTATION_EXTENDED=gbm_tcga_pub_mutations), [tutorial](https://www.cbioportal.org/tutorials)).
+<p align="center">
+  <img src="assets/sample-screenshot-cBioPortal.png" width="600"/>
+</p>
+
 Below is a video tutorial on basics of PathwayMapper:
 <a href="https://youtu.be/jvEueUqZZPI" target="_blank"><p align="center"><img src="assets/basics-of-PM.jpg" width="340" title="Click to watch video"/></p></a>
 
@@ -260,7 +265,7 @@ Icons made by [Freepik](http://www.freepik.com),
 
 ## Team
 
-  * [Ziya Erkoc](https://github.com/Rgtemze), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and Konnor C. La, [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [The Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
+  * [Ziya Erkoc](https://github.com/Rgtemze), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and [S. Onur Sumer](https://github.com/onursumer), Konnor C. La, [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [The Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
 
 #### Alumni
 
