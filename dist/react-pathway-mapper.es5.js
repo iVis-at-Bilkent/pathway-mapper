@@ -7874,7 +7874,6 @@ var LayoutProperties_decorate = undefined && undefined.__decorate || function (d
 
 
 
-
 var LayoutProperties_LayoutProperties =
 /** @class */
 function (_super) {
@@ -7883,9 +7882,7 @@ function (_super) {
   function LayoutProperties(props) {
     var _this = _super.call(this, props) || this;
 
-    Object(external_mobx_["makeObservable"])(_this);
     LayoutProperties_1.layoutProperties = external_lodash_default.a.clone(managers_EditorActionsManager.defaultLayoutProperties);
-    console.log(LayoutProperties_1.layoutProperties);
     return _this;
   }
 
@@ -8084,9 +8081,6 @@ function (_super) {
     }
   });
   var LayoutProperties_1;
-
-  LayoutProperties_decorate([external_mobx_["observable"]], LayoutProperties, "layoutProperties", void 0);
-
   LayoutProperties = LayoutProperties_1 = LayoutProperties_decorate([external_mobx_react_["observer"]], LayoutProperties);
   return LayoutProperties;
 }(external_react_default.a.Component);

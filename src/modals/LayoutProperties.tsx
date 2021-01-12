@@ -37,16 +37,11 @@ export interface ILayoutProperties{
 @observer
 export default class LayoutProperties extends React.Component<ILayoutPropertiesProps>{
     
-    @observable
     static layoutProperties: ILayoutProperties;
-    
     
     constructor(props: ILayoutPropertiesProps){
         super(props);
-        makeObservable(this);
         LayoutProperties.layoutProperties = _.clone(EditorActionsManager.defaultLayoutProperties);
-
-        console.log(LayoutProperties.layoutProperties);
     }
     
 
