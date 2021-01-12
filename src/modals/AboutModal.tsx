@@ -34,7 +34,7 @@ export default class AboutModal extends React.Component<IAboutModalProps, {}> {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <h3 id="about-model-header">PathwayMapper 2.0</h3>
+                <h3 id="about-model-header">PathwayMapper 2.1</h3>
                 <div className="aboutImageContent">
                   <img src={require("../images/about/i-vis.png")} alt="" height="25px"/>
                 </div>

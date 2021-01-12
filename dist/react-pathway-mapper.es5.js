@@ -17152,7 +17152,7 @@ function (_super) {
         closeButton: true
       }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, external_react_default.a.createElement("h3", null, "About"))), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("h3", {
         id: "about-model-header"
-      }, "PathwayMapper 2.0"), external_react_default.a.createElement("div", {
+      }, "PathwayMapper 2.1"), external_react_default.a.createElement("div", {
         className: "aboutImageContent"
       }, external_react_default.a.createElement("img", {
         src: __webpack_require__(71),
