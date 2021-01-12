@@ -147,12 +147,13 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
             <Navbar style={{backgroundColor: "#eff0f2", minHeight: "36px"}} className="pathway-toolbar">
                 <Nav>
                     <ButtonToolbar style={{paddingBottom: 0, paddingTop: "7px" }} className="toolbar pathway-toolbar">
-                        {   allFunctions.map((functions) =>
-                        <ButtonGroup>
-                            { functions.map((svg: ISVGFunction) => 
-                                (<div className={"toolbar-button" + ((svg.isFocused ? " toolbar-button-focused" : ""))}>
+                        {   allFunctions.map((functions, index) =>
+                        <ButtonGroup key={index}>
+                            { functions.map((svg: ISVGFunction, index) => 
+                                (
+                                <Button key={index} className={"toolbar-button" + ((svg.isFocused ? " toolbar-button-focused" : ""))} style={{padding: 0}}>
                                     <img height="22px" width="22px" src={svg.svg} data-tip={svg.tooltip} data-place="bottom" data-effect="solid" onClick={svg.function}></img>
-                                </div>)
+                                </Button>)
                                 )
                             }
                         </ButtonGroup>)

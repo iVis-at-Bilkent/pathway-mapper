@@ -103,7 +103,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                 {
                         nodeIds.map((id) => {
                         return (
-                        <div id={id} data-tip="Click on this and drag to the location on drawing canvas and release!" data-effect="solid" data-place="bottom" data-delay-show="1000" className="dragButtonContainer">
+                        <div key={id} id={id} data-tip="Click on this and drag to the location on drawing canvas and release!" data-effect="solid" data-place="bottom" data-delay-show="1000" className="dragButtonContainer">
                         </div>);
                         })
                       }
@@ -118,7 +118,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                     <div className="list-group edge-palette">
                     {
                     edgeTypes.map((edgeType: string, i: number) => {
-                    return (<div data-tip="Click to activate; then, start the interaction from the little circle on the source node!" data-effect="solid" data-place="bottom" data-delay-show="1000" >
+                    return (<div key={i} data-tip="Click to activate; then, start the interaction from the little circle on the source node!" data-effect="solid" data-place="bottom" data-delay-show="1000" >
                         <a style={{marginBottom: "5px"}} className={ "list-group-item " + (this.activeEdge === i ? "active" : "")} 
                         onClick={() => {this.addEdge(i);}} href="#" >
                         <img style={{width:"30px"}} className="pull-left" src={edgeImgs[i]}></img>{' '}

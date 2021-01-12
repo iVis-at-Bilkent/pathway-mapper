@@ -483,14 +483,14 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     <div className="pathwayMapper">
       <div style={isCBioPortal ? {width: window.innerWidth * 0.99} : {}} className={isCBioPortal ? "cBioMode container" : "customMargins"}>
           {!isCBioPortal && 
-          [
-          <div>
-            <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen} setActiveEdge={this.setActiveEdge}/>
-          </div>
-          ,
-          <div>
-            <Buttonbar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen}/> 
-          </div>]
+            <React.Fragment>
+              <div>
+                <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen} setActiveEdge={this.setActiveEdge}/>
+              </div>    
+              <div>
+                <Buttonbar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen}/> 
+              </div>
+            </React.Fragment>
           }
           { isCBioPortal &&
           <Row style={{marginBottom: "6px"}}>
@@ -563,8 +563,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           </div>)
           }
           { !this.props.isCBioPortal &&
-            [<StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>,
-            <ToastContainer className={"pm-toast-container"}/>]
+            <React.Fragment>
+              <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
+              <ToastContainer className={"pm-toast-container"}/>
+            </React.Fragment>
           }
           <ReactTooltip className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 9999999}}/>
 
