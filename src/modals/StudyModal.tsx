@@ -1,6 +1,6 @@
 import React from 'react';
 import {Modal, MenuItem, DropdownButton, Checkbox, Button} from 'react-bootstrap';
-import { makeObservable, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import autobind from 'autobind-decorator';
 import { IDataTypeMetaData, EModalType } from '../ui/react-pathway-mapper';
 import CBioPortalAccessor from '../utils/CBioPortalAccessor';
@@ -34,7 +34,15 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
         this.fetchStudy();
     }
 
+    @action.bound
+    setSelectedStudyData(data: any[]) {
+        this.selectedStudyData = data;
+    }
 
+    @action.bound
+    setDataTypeProperties(dataType: string, properties: IDataTypeMetaData) {
+        this.dataTypes[dataType] = properties;
+    }
 
     preparePortalAccess(studyId: string){
         this.portalAccessor.getSupportedGeneticProfiles(studyId, (data) => {
@@ -43,8 +51,11 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
             for(const profile of Object.keys(data)){
             const type = CBioPortalAccessor.getDataType(profile);
             if(type !== ""){
-                this.dataTypes[type].enabled = true;
-                this.dataTypes[type].profile = profile;
+                this.setDataTypeProperties(type, {
+                    ...this.dataTypes[type], 
+                    enabled: true, 
+                    profile: profile
+                });
             }
             }
         });
@@ -52,9 +63,11 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
 
     disableAllDataTypes(){
         for(const dataType of Object.keys(this.dataTypes)){
-        this.dataTypes[dataType].enabled = false;
-        this.dataTypes[dataType].checked = false;
-        this.dataTypes[dataType].profile = undefined;
+            this.setDataTypeProperties(dataType, {
+                enabled: false,
+                checked: false,
+                profile: undefined
+            });
         }
     }
 
@@ -63,18 +76,27 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
 
 
         this.portalAccessor.getDataTypes().forEach((dataType) => {
-        this.dataTypes[dataType] = {enabled: false, checked: false, profile: undefined};
+            this.setDataTypeProperties(dataType, {
+                enabled: false,
+                checked: false,
+                profile: undefined
+            });
         });
     
         this.portalAccessor.fetchCancerStudies((cancerStudies: any) => {
         for(const study in cancerStudies){
 
             if(!cancerStudies.hasOwnProperty(study)){
-            continue;
+                continue;
             }
-            const item = <MenuItem key={study} onClick={() => {this.selectedStudyData = cancerStudies[study]; this.preparePortalAccess(cancerStudies[study][0]);}}>
-            {cancerStudies[study][1]}
-            </MenuItem>;
+            const item = <MenuItem 
+                            key={study} 
+                            onClick={() => {
+                                this.setSelectedStudyData(cancerStudies[study]); 
+                                this.preparePortalAccess(cancerStudies[study][0]);
+                            }}>
+                            {cancerStudies[study][1]}
+                        </MenuItem>;
     
             this.itemArray.push(item);
         }
@@ -84,13 +106,27 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
     @autobind
     resetModal(){
         this.disableAllDataTypes();
-        this.selectedStudyData = [];
+        this.setSelectedStudyData([]);
     }
 
     @autobind
     handleCheckboxClick(dataType){
-      this.dataTypes[dataType].checked = !this.dataTypes[dataType].checked;
+        this.setDataTypeProperties(dataType, {
+            ...this.dataTypes[dataType],
+            checked: !this.dataTypes[dataType].checked
+        });
     }
+
+    @computed
+    get selectedStudyDataTitle() {
+        if (this.selectedStudyData.length > 1) {
+            return this.selectedStudyData[1] || "Choose study";
+        }
+        else {
+            return "Choose study";
+        }
+    }
+
     render(){
         return(
             <Modal id="cbioPortalModal" show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.STUDY); this.resetModal();}}>
@@ -101,7 +137,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}>{
 
                     <div id="cancerDropDown">
                         <h4>Select Cancer Study</h4>
-                        <DropdownButton id="dropdown-study" title={this.selectedStudyData[1] || "Choose study"}>
+                        <DropdownButton id="dropdown-study" title={this.selectedStudyDataTitle}>
                         {this.itemArray}
                         </DropdownButton>
                     </div>

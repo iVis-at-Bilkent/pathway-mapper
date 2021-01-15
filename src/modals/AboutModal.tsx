@@ -29,9 +29,7 @@ export default class AboutModal extends React.Component<IAboutModalProps, {}> {
           onHide={() => {this.props.handleClose(EModalType.ABOUT)}}
           >
             <Modal.Header closeButton>
-              <Modal.Title>
-                <h3>About</h3>
-              </Modal.Title>
+              <Modal.Title>About</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <h3 id="about-model-header">PathwayMapper 2.0</h3>

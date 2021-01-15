@@ -223,6 +223,16 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.editor = editor;
   }
 
+  @action
+  addProfile(profile: IProfileMetaData) {
+    this.profiles.push(profile);
+  }
+
+  @action
+  toggleProfileEnabled(index: number) {
+    this.profiles[index].enabled = !this.profiles[index].enabled;
+  }
+
   calculateAlterationData(cBioAlterationData: ICBioData[]){
     // Transform cBioDataAlteration into AlterationData
       this.alterationData[PathwayMapper.CBIO_PROFILE_NAME] = {};
@@ -405,7 +415,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     
     const redirectedProfiles = Object.keys(this.props.alterationData).map((data: string) : IProfileMetaData => ({profileId: data, enabled: true}));
     redirectedProfiles.forEach((redirectedProfile) => {
-      this.profiles.push(redirectedProfile);
+      this.addProfile(redirectedProfile);
     });
     this.editor.addPortalGenomicData(this.props.alterationData, this.editor.getEmptyGroupID());
   }
@@ -444,7 +454,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         }
 
 
-        this.profiles.push({studyId: selectedStudyData[0], profileId: dataTypes[dataType].profile, enabled: true});
+        this.addProfile({studyId: selectedStudyData[0], profileId: dataTypes[dataType].profile, enabled: true});
         this.portalAcessor.getProfileData({
             caseSetId: selectedStudyData[0],
             geneticProfileId: dataTypes[dataType].profile,
@@ -552,7 +562,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
           {
           (<div id="pm-modals">
-            <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[EModalType.PROFILES]} handleClose={this.handleClose} />
+            <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[EModalType.PROFILES]} handleClose={this.handleClose} handleProfileLabelClicked={this.toggleProfileEnabled}/>
             <PathwayDetailsModal isModalShown={this.isModalShown[EModalType.PW_DETAILS]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <GridSettings isModalShown={this.isModalShown[EModalType.GRID]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <QuickHelpModal isModalShown={this.isModalShown[EModalType.HELP]} handleClose={this.handleClose}/>

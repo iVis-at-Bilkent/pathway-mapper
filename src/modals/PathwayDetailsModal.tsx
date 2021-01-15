@@ -28,7 +28,7 @@ export default class PathwayDetailsModal extends React.Component<IPathwayDetails
 
             <Modal id="pathwayDetailsDiv" show={this.props.isModalShown} onHide={() => {this.props.handleClose(4)}}>
                 <Modal.Header closeButton>
-                    <Modal.Title><h3>Pathway Properties</h3></Modal.Title>
+                    <Modal.Title>Pathway Properties</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <Form id="pathwayDetailsForm">

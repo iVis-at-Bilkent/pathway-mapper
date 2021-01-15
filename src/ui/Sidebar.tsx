@@ -3,16 +3,6 @@ import {Panel, Button, Col, Row, ListGroup, ListGroupItem} from "react-bootstrap
 import PathwayActions from "../utils/PathwayActions";
 
 // @ts-ignore
-import geneImg from "../images/nodes/gene.svg";
-// @ts-ignore
-import familyImg from "../images/nodes/family.svg";
-// @ts-ignore
-import complexImg from "../images/nodes/complex.svg";
-// @ts-ignore
-import compartmentImg from "../images/nodes/compartment.svg";
-// @ts-ignore
-import processImg from "../images/nodes/process.svg";
-// @ts-ignore
 import acImg from "../images/edges/activates.svg";
 // @ts-ignore
 import inhImg from "../images/edges/inhibits.svg";
@@ -24,9 +14,8 @@ import repImg from "../images/edges/represses.svg";
 import bindImg from "../images/edges/binds.svg";
 
 import "../css/supp.css"
-import { makeObservable, observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
-import autobind from "autobind-decorator";
 import { EModalType } from "./react-pathway-mapper";
 
 interface ISideBarProps{
@@ -39,13 +28,11 @@ interface ISideBarProps{
 export default class Sidebar extends React.Component<ISideBarProps, {}>{
 
     @observable
-    activeEdge: number;
+    activeEdge: number = -1;
 
     constructor(props: ISideBarProps){
         super(props);
         makeObservable(this);
-        
-        this.activeEdge = -1;
         props.setActiveEdgeHandler(this.setActiveEdge);
     }
 
@@ -59,17 +46,15 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
       this.props.pathwayActions.addEdge(edgeIndex);
     }
 
-    @autobind
+    @action.bound
     setActiveEdge(edgeIndex: number){
       this.activeEdge = edgeIndex;
     }
 
     render(){
 
-        const nodeTypes = ["Gene", "Family", "Complex", "Compartment", "Process"];
         const edgeTypes = ["Activates", "Inhibits", "Induces", "Represses", "Binds"];
 
-        const nodeImgs = [geneImg, familyImg, complexImg, compartmentImg, processImg];
         const edgeImgs = [acImg, inhImg, indImg, repImg, bindImg];
 
         const nodeIds = ["simpleNodeDiv", "familyNodeDiv", "complexNodeDiv", "compartmentNodeDiv", "processNodeDiv"];

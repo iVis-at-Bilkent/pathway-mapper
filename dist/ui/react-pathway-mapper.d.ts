@@ -105,6 +105,8 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     constructor(props: IPathwayMapperProps);
     setSelectedPathway(pathway: string): void;
     setEditor(editor: EditorActionsManager): void;
+    addProfile(profile: IProfileMetaData): void;
+    toggleProfileEnabled(index: number): void;
     calculateAlterationData(cBioAlterationData: ICBioData[]): void;
     calculatePatientData(cBioAlterationData: ICBioData[]): void;
     addSampleIconData(sampleIconData: any): void;

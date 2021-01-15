@@ -18,7 +18,7 @@ export default class QuickHelpModal extends React.Component<IQuickHelpModalProps
         return(
             <Modal id="quickHelpModal" show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.HELP)}}>
                 <Modal.Header closeButton>
-                    <Modal.Title><h3>Quick Help</h3></Modal.Title>
+                    <Modal.Title>Quick Help</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <ul className="leftText">

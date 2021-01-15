@@ -5,7 +5,6 @@ module.exports = (function()
       selector: 'node',
       style:
       {
-        'label': 'data(name)',
         'text-valign': 'center',
         'text-halign': 'center',
         'color': '#1e2829',
@@ -36,6 +35,12 @@ module.exports = (function()
           return nodeBorderColorFunction(ele);
         },
         'font-size': 14
+      }
+    },
+    {
+      selector: 'node[name]',
+      style: {
+        'label': 'data(name)'
       }
     },
     {
@@ -73,7 +78,6 @@ module.exports = (function()
       selector: 'edge',
       style:
       {
-        'label': 'data(name)',
         'arrow-scale': 1.7,
         'curve-style': 'bezier',
         'text-background-color': '#EEEEEE',
@@ -97,6 +101,12 @@ module.exports = (function()
         },
         'opacity': 1,
 
+      }
+    },
+    {
+      selector: 'edge[name]',
+      style: {
+        'label': 'data(name)'
       }
     },
     // {
