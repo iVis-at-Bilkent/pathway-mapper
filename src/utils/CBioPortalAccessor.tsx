@@ -1,5 +1,5 @@
 import EditorActionsManager from "../managers/EditorActionsManager";
-import _ from "underscore";
+import _ from "lodash";
 
 import {toast} from 'react-toastify';
 

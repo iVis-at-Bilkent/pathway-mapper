@@ -1,5 +1,5 @@
 import EditorActionsManager from "./EditorActionsManager";
-import _ from "underscore";
+import _ from "lodash";
 import GraphUtilities from "../utils/GraphUtilities";
 
 let sharedb;

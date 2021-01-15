@@ -6,7 +6,7 @@ import { IProfileMetaData, IPathwayData } from "../ui/react-pathway-mapper";
 import { observable, makeObservable } from "mobx";
 import LayoutProperties, { ILayoutProperties } from "../modals/LayoutProperties";
 
-const _ = require('underscore');
+const _ = require('lodash');
 
 export default class EditorActionsManager{
 
