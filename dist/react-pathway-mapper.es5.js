@@ -15454,7 +15454,7 @@ function () {
     configurable: true,
     writable: true,
     value: function () {
-      this.profiles = [];
+      this.profiles.length = 0;
     }
   });
   Object.defineProperty(PathwayActions.prototype, "emphasiseQueryGenes", {

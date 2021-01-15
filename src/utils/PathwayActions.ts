@@ -64,7 +64,7 @@ export default class PathwayActions {
 
   @action.bound
   clearProfiles() {
-    this.profiles = [];
+    this.profiles.length = 0;
   }
 
   emphasiseQueryGenes(queryGenes: string[]) {
