@@ -144,35 +144,34 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
 
         
         return (
-            <Navbar style={{backgroundColor: "#eff0f2", minHeight: "36px"}} className="pathway-toolbar">
-                <Nav>
-                    <ButtonToolbar style={{paddingBottom: 0, paddingTop: "7px" }} className="toolbar pathway-toolbar">
-                        {   allFunctions.map((functions, index) =>
-                        <ButtonGroup key={index}>
-                            { functions.map((svg: ISVGFunction, index) => 
-                                (
-                                <Button key={index} className={"toolbar-button" + ((svg.isFocused ? " toolbar-button-focused" : ""))} style={{padding: 0}}>
-                                    <img height="22px" width="22px" src={svg.svg} data-tip={svg.tooltip} data-place="bottom" data-effect="solid" onClick={svg.function}></img>
-                                </Button>)
-                                )
-                            }
-                        </ButtonGroup>)
+            <Navbar fluid style={{backgroundColor: "#eff0f2", minHeight: "0px"}} className="pathway-toolbar">
+                <ButtonToolbar className="toolbar pathway-toolbar" style={{marginBottom: "0px"}}>
+                    {   allFunctions.map((functions, index) =>
+                    <ButtonGroup key={index}>
+                        { functions.map((svg: ISVGFunction, index) => 
+                            (
+                            <Button key={index} className={"toolbar-button" + ((svg.isFocused ? " toolbar-button-focused" : ""))} style={{padding: 0}}>
+                                <img height="22px" width="22px" src={svg.svg} data-tip={svg.tooltip} data-place="bottom" data-effect="solid" onClick={svg.function}></img>
+                            </Button>)
+                            )
                         }
-                    </ButtonToolbar>
-                </Nav>
-                <Nav pullRight style={{marginTop: "0", marginBottom: "0"}} className="toolbar">
+                    </ButtonGroup>)
+                    }
                     <ButtonGroup id="searchGeneToolbar">
-                        <FormGroup>
-                            <FormGroup className="has-feedback">
-                            <FormControl id="searchGene" type="text"
-                                onChange={(e: any) => { this.searchedGene = e.target.value;}}
-                                placeholder="Search Genes..."
-                                onKeyPress={(e: any) => { if (e.key !== "Enter") return; this.props.pathwayActions.searchGene(this.searchedGene) }} />
-                            <Glyphicon className="form-control-feedback" onClick={() => { this.props.pathwayActions.searchGene(this.searchedGene) }} glyph="search" />
-                            </FormGroup>
+                    <FormGroup>
+                        <FormGroup className="has-feedback">
+                        <FormControl 
+                            id="searchGene" 
+                            type="text"
+                            style={{maxHeight: '32px'}}
+                            onChange={(e: any) => { this.searchedGene = e.target.value;}}
+                            placeholder="Search Genes..."
+                            onKeyPress={(e: any) => { if (e.key !== "Enter") return; this.props.pathwayActions.searchGene(this.searchedGene) }} />
+                        <Glyphicon className="form-control-feedback" onClick={() => { this.props.pathwayActions.searchGene(this.searchedGene) }} glyph="search" />
                         </FormGroup>
-                    </ButtonGroup>
-                </Nav>
+                    </FormGroup>
+                </ButtonGroup>
+                </ButtonToolbar>
             </Navbar>
         )
     }

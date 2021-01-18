@@ -356,39 +356,40 @@ export default class PathwayActions {
     formData.append("graphFile", file);
     const request = new XMLHttpRequest();
     request.onreadystatechange = () => {
-      if (
-        request.readyState === XMLHttpRequest.DONE &&
-        request.status === 200
-      ) {
-        const pathwayData: IPathwayData = SaveLoadUtility.parseGraph(
-          request.responseText,
-          false
-        );
+      if (request.readyState === XMLHttpRequest.DONE) {
+        if (request.status === 200) {
+          const pathwayData: IPathwayData = SaveLoadUtility.parseGraph(
+            request.responseText,
+            false
+          );
 
-        if (isMerge) {
-          this.editor.mergeGraph(pathwayData.nodes, pathwayData.edges);
-          const graphJSON = this.editor.cy.json();
+          if (isMerge) {
+            this.editor.mergeGraph(pathwayData.nodes, pathwayData.edges);
+            const graphJSON = this.editor.cy.json();
 
-          //TODO change file name maybe, probabyly  not necessary ?
-          // Pathway nodes and edges are now combination of both previous and new pathway.
-          pathwayData.nodes = graphJSON.elements.nodes; //this.editor.cy.nodes().map((node) => ({data: node.data()}));
-          pathwayData.edges = graphJSON.elements.edges; //this.editor.cy.edges().map((edge) => ({data: edge.data()}));
-          pathwayData.title = "Additional Pathway";
+            //TODO change file name maybe, probabyly  not necessary ?
+            // Pathway nodes and edges are now combination of both previous and new pathway.
+            pathwayData.nodes = graphJSON.elements.nodes; //this.editor.cy.nodes().map((node) => ({data: node.data()}));
+            pathwayData.edges = graphJSON.elements.edges; //this.editor.cy.edges().map((edge) => ({data: edge.data()}));
+            pathwayData.title = "Additional Pathway";
+          } else {
+            this.editor.loadFile(pathwayData.nodes, pathwayData.edges);
+            this.fileManager.setPathwayInfo({
+              pathwayTitle: pathwayData.title,
+              pathwayDetails: pathwayData.description,
+              fileName: pathwayData.title + ".txt"
+            });
+          }
+
+          this.pathwayHandler(pathwayData.title + "_imported");
+          this.resetUndoStack();
         } else {
-          this.editor.loadFile(pathwayData.nodes, pathwayData.edges);
-          this.fileManager.setPathwayInfo({
-            pathwayTitle: pathwayData.title,
-            pathwayDetails: pathwayData.description,
-            fileName: pathwayData.title + ".txt"
-          });
+          console.error(
+            "Error processing file: " +
+              request.readyState +
+              request.responseText
+          );
         }
-
-        this.pathwayHandler(pathwayData.title + "_imported");
-        this.resetUndoStack();
-      } else {
-        console.error(
-          "Process File error: " + request.status + ", " + request.responseText
-        );
       }
     };
     request.open("POST", "/loadGraph");

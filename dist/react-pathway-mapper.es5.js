@@ -15879,36 +15879,38 @@ function () {
       var request = new XMLHttpRequest();
 
       request.onreadystatechange = function () {
-        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-          var pathwayData = utils_SaveLoadUtility.parseGraph(request.responseText, false);
+        if (request.readyState === XMLHttpRequest.DONE) {
+          if (request.status === 200) {
+            var pathwayData = utils_SaveLoadUtility.parseGraph(request.responseText, false);
 
-          if (isMerge) {
-            _this.editor.mergeGraph(pathwayData.nodes, pathwayData.edges);
+            if (isMerge) {
+              _this.editor.mergeGraph(pathwayData.nodes, pathwayData.edges);
 
-            var graphJSON = _this.editor.cy.json(); //TODO change file name maybe, probabyly  not necessary ?
-            // Pathway nodes and edges are now combination of both previous and new pathway.
+              var graphJSON = _this.editor.cy.json(); //TODO change file name maybe, probabyly  not necessary ?
+              // Pathway nodes and edges are now combination of both previous and new pathway.
 
 
-            pathwayData.nodes = graphJSON.elements.nodes; //this.editor.cy.nodes().map((node) => ({data: node.data()}));
+              pathwayData.nodes = graphJSON.elements.nodes; //this.editor.cy.nodes().map((node) => ({data: node.data()}));
 
-            pathwayData.edges = graphJSON.elements.edges; //this.editor.cy.edges().map((edge) => ({data: edge.data()}));
+              pathwayData.edges = graphJSON.elements.edges; //this.editor.cy.edges().map((edge) => ({data: edge.data()}));
 
-            pathwayData.title = "Additional Pathway";
+              pathwayData.title = "Additional Pathway";
+            } else {
+              _this.editor.loadFile(pathwayData.nodes, pathwayData.edges);
+
+              _this.fileManager.setPathwayInfo({
+                pathwayTitle: pathwayData.title,
+                pathwayDetails: pathwayData.description,
+                fileName: pathwayData.title + ".txt"
+              });
+            }
+
+            _this.pathwayHandler(pathwayData.title + "_imported");
+
+            _this.resetUndoStack();
           } else {
-            _this.editor.loadFile(pathwayData.nodes, pathwayData.edges);
-
-            _this.fileManager.setPathwayInfo({
-              pathwayTitle: pathwayData.title,
-              pathwayDetails: pathwayData.description,
-              fileName: pathwayData.title + ".txt"
-            });
+            console.error("Error processing file: " + request.readyState + request.responseText);
           }
-
-          _this.pathwayHandler(pathwayData.title + "_imported");
-
-          _this.resetUndoStack();
-        } else {
-          console.error("Process File error: " + request.status + ", " + request.responseText);
         }
       };
 
@@ -16907,17 +16909,17 @@ function (_super) {
       }];
       var allFunctions = [fileFunctions, modFunctions, alignFunctions, utilFunctions, visibilityFunctions, portalFunctions, layoutFunctions, infoFunctions];
       return external_react_default.a.createElement(external_react_bootstrap_["Navbar"], {
+        fluid: true,
         style: {
           backgroundColor: "#eff0f2",
-          minHeight: "36px"
+          minHeight: "0px"
         },
         className: "pathway-toolbar"
-      }, external_react_default.a.createElement(external_react_bootstrap_["Nav"], null, external_react_default.a.createElement(external_react_bootstrap_["ButtonToolbar"], {
+      }, external_react_default.a.createElement(external_react_bootstrap_["ButtonToolbar"], {
+        className: "toolbar pathway-toolbar",
         style: {
-          paddingBottom: 0,
-          paddingTop: "7px"
-        },
-        className: "toolbar pathway-toolbar"
+          marginBottom: "0px"
+        }
       }, allFunctions.map(function (functions, index) {
         return external_react_default.a.createElement(external_react_bootstrap_["ButtonGroup"], {
           key: index
@@ -16938,20 +16940,16 @@ function (_super) {
             onClick: svg.function
           }));
         }));
-      }))), external_react_default.a.createElement(external_react_bootstrap_["Nav"], {
-        pullRight: true,
-        style: {
-          marginTop: "0",
-          marginBottom: "0"
-        },
-        className: "toolbar"
-      }, external_react_default.a.createElement(external_react_bootstrap_["ButtonGroup"], {
+      }), external_react_default.a.createElement(external_react_bootstrap_["ButtonGroup"], {
         id: "searchGeneToolbar"
       }, external_react_default.a.createElement(external_react_bootstrap_["FormGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["FormGroup"], {
         className: "has-feedback"
       }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
         id: "searchGene",
         type: "text",
+        style: {
+          maxHeight: '32px'
+        },
         onChange: function (e) {
           _this.searchedGene = e.target.value;
         },
