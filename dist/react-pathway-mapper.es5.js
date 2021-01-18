@@ -16918,7 +16918,8 @@ function (_super) {
       }, external_react_default.a.createElement(external_react_bootstrap_["ButtonToolbar"], {
         className: "toolbar pathway-toolbar",
         style: {
-          marginBottom: "0px"
+          marginBottom: "0px",
+          paddingBottom: "0px"
         }
       }, allFunctions.map(function (functions, index) {
         return external_react_default.a.createElement(external_react_bootstrap_["ButtonGroup"], {
@@ -16942,13 +16943,13 @@ function (_super) {
         }));
       }), external_react_default.a.createElement(external_react_bootstrap_["ButtonGroup"], {
         id: "searchGeneToolbar"
-      }, external_react_default.a.createElement(external_react_bootstrap_["FormGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["FormGroup"], {
-        className: "has-feedback"
-      }, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
+      }, external_react_default.a.createElement(external_react_bootstrap_["FormGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["InputGroup"], null, external_react_default.a.createElement(external_react_bootstrap_["FormControl"], {
         id: "searchGene",
         type: "text",
         style: {
-          maxHeight: '32px'
+          maxHeight: '32px',
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0
         },
         onChange: function (e) {
           _this.searchedGene = e.target.value;
@@ -16959,13 +16960,17 @@ function (_super) {
 
           _this.props.pathwayActions.searchGene(_this.searchedGene);
         }
-      }), external_react_default.a.createElement(external_react_bootstrap_["Glyphicon"], {
-        className: "form-control-feedback",
+      }), external_react_default.a.createElement(external_react_bootstrap_["InputGroup"].Addon, {
+        id: "search-gene-input-group-addon",
         onClick: function () {
           _this.props.pathwayActions.searchGene(_this.searchedGene);
         },
+        style: {
+          cursor: 'pointer'
+        }
+      }, external_react_default.a.createElement(external_react_bootstrap_["Glyphicon"], {
         glyph: "search"
-      }))))));
+      })))))));
     }
   });
 

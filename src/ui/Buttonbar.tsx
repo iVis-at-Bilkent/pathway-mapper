@@ -145,7 +145,7 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
         
         return (
             <Navbar fluid style={{backgroundColor: "#eff0f2", minHeight: "0px"}} className="pathway-toolbar">
-                <ButtonToolbar className="toolbar pathway-toolbar" style={{marginBottom: "0px"}}>
+                <ButtonToolbar className="toolbar pathway-toolbar" style={{marginBottom: "0px", paddingBottom: "0px"}}>
                     {   allFunctions.map((functions, index) =>
                     <ButtonGroup key={index}>
                         { functions.map((svg: ISVGFunction, index) => 
@@ -159,18 +159,28 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
                     }
                     <ButtonGroup id="searchGeneToolbar">
                     <FormGroup>
-                        <FormGroup className="has-feedback">
-                        <FormControl 
-                            id="searchGene" 
-                            type="text"
-                            style={{maxHeight: '32px'}}
-                            onChange={(e: any) => { this.searchedGene = e.target.value;}}
-                            placeholder="Search Genes..."
-                            onKeyPress={(e: any) => { if (e.key !== "Enter") return; this.props.pathwayActions.searchGene(this.searchedGene) }} />
-                        <Glyphicon className="form-control-feedback" onClick={() => { this.props.pathwayActions.searchGene(this.searchedGene) }} glyph="search" />
-                        </FormGroup>
+                        <InputGroup>
+                            <FormControl 
+                                id="searchGene" 
+                                type="text"
+                                style={{
+                                    maxHeight: '32px',
+                                    borderTopRightRadius: 0,
+                                    borderBottomRightRadius: 0
+                                }}
+                                onChange={(e: any) => { this.searchedGene = e.target.value;}}
+                                placeholder="Search Genes..."
+                                onKeyPress={(e: any) => { if (e.key !== "Enter") return; this.props.pathwayActions.searchGene(this.searchedGene) }} />
+                            <InputGroup.Addon
+                                id="search-gene-input-group-addon"
+                                onClick={() => {this.props.pathwayActions.searchGene(this.searchedGene)}}
+                                style={{cursor: 'pointer'}}
+                            >
+                                <Glyphicon glyph="search"/>
+                            </InputGroup.Addon>
+                        </InputGroup>
                     </FormGroup>
-                </ButtonGroup>
+                    </ButtonGroup>
                 </ButtonToolbar>
             </Navbar>
         )

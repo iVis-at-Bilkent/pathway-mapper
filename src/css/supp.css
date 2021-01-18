@@ -179,3 +179,7 @@ transform: scale(0.86);
 .pathwayMapper .smallToast {
     width: 325px;
 }
+
+.pathwayMapper #search-gene-input-group-addon:hover {
+    background-color: #fff;
+}
