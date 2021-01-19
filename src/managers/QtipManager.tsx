@@ -1,5 +1,5 @@
-import EditorActionsManager from "./EditorActionsManager";
 import $ from 'jquery';
+import EditorActionsManager from "./EditorActionsManager";
 export default class QtipManager{
   private cy: any;
   private editor: any;
@@ -18,7 +18,7 @@ export default class QtipManager{
     var pubmedData = edge.data('pubmedIDs');
     var edgeLabelInput = $('<div class="col-xs-6 inputCol"><input type="text" class="form-control" edgeid="' + edge.id() + '"value="'+ edge.data('name') +'"></div>');
 
-    function generatePubmedLinks(argData, isInitialDisplay)
+    function generatePubmedLinks(argData)
     {
       for (var key in argData)
       {
@@ -66,7 +66,7 @@ export default class QtipManager{
     if (pubmedData.length > 0)
     {
       generatePubmedLinksHeader();
-      generatePubmedLinks(pubmedData, true);
+      generatePubmedLinks(pubmedData);
     }
 
     textInput.change(function()
@@ -83,7 +83,7 @@ export default class QtipManager{
 
       self.editor.addPubmedIDs(edge, pumbedIDs);
 
-      generatePubmedLinks(pumbedIDs, false);
+      generatePubmedLinks(pumbedIDs);
 
     });
 
@@ -162,7 +162,7 @@ export default class QtipManager{
   addQtipToElements(eles)
   {
     var self = this;
-    eles.forEach(function(ele,i)
+    eles.forEach(function(ele,)
     {
       var qTipOpts = {};
       if (ele.isNode())

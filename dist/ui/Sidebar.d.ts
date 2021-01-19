@@ -1,6 +1,6 @@
 import React from "react";
-import PathwayActions from "../utils/PathwayActions";
 import "../css/supp.css";
+import PathwayActions from "../utils/PathwayActions";
 interface ISideBarProps {
     pathwayActions: PathwayActions;
     setActiveEdgeHandler: Function;

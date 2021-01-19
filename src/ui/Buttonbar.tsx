@@ -1,33 +1,23 @@
-import React from "react";
-import { Nav, Navbar, NavItem, FormControl, Glyphicon, InputGroup, ButtonGroup, ButtonToolbar, Button, FormGroup } from "react-bootstrap";
-import PathwayActions from "../utils/PathwayActions";
 import { makeObservable, observable } from "mobx";
-// @ts-ignore
-import loadSvg from '../images/toolbar/load.svg';
+import { observer } from "mobx-react";
+import React from "react";
+import { Button, ButtonGroup, ButtonToolbar, FormControl, FormGroup, Glyphicon, InputGroup, Navbar } from "react-bootstrap";
 // @ts-ignore
 import aboutSvg from '../images/toolbar/about.svg';
 // @ts-ignore
-import newSvg from '../images/toolbar/new.svg';
-// @ts-ignore
-import saveSvg from '../images/toolbar/save.svg';
-// @ts-ignore
-import deleteSvg from '../images/toolbar/delete-simple.svg';
-// @ts-ignore
-import undoSvg from '../images/toolbar/undo.svg';
-// @ts-ignore
-import redoSvg from '../images/toolbar/redo.svg';
-// @ts-ignore
-import ahtSvg from '../images/toolbar/align/align-horizontal-top.svg';
+import ahbSvg from '../images/toolbar/align/align-horizontal-bottom.svg';
 // @ts-ignore
 import ahmSvg from '../images/toolbar/align/align-horizontal-middle.svg';
 // @ts-ignore
-import ahbSvg from '../images/toolbar/align/align-horizontal-bottom.svg';
-// @ts-ignore
-import avlSvg from '../images/toolbar/align/align-vertical-left.svg';
+import ahtSvg from '../images/toolbar/align/align-horizontal-top.svg';
 // @ts-ignore
 import avcSvg from '../images/toolbar/align/align-vertical-center.svg';
 // @ts-ignore
+import avlSvg from '../images/toolbar/align/align-vertical-left.svg';
+// @ts-ignore
 import avrSvg from '../images/toolbar/align/align-vertical-right.svg';
+// @ts-ignore
+import deleteSvg from '../images/toolbar/delete-simple.svg';
 // @ts-ignore
 import gridSvg from '../images/toolbar/grid.svg';
 // @ts-ignore
@@ -35,20 +25,30 @@ import guideSvg from '../images/toolbar/guidelines.svg';
 // @ts-ignore
 import hideSvg from '../images/toolbar/hide-selected.svg';
 // @ts-ignore
-import showSvg from '../images/toolbar/show-all.svg';
-// @ts-ignore
-import portalSvg from '../images/toolbar/portal.svg';
-// @ts-ignore
-import setingsSvg from '../images/toolbar/settings.svg';
-// @ts-ignore
 import layoutSvg from '../images/toolbar/layout-cose.svg';
 // @ts-ignore
 import layoutPropSvg from '../images/toolbar/layout-properties.svg';
 // @ts-ignore
+import loadSvg from '../images/toolbar/load.svg';
+// @ts-ignore
+import newSvg from '../images/toolbar/new.svg';
+// @ts-ignore
+import portalSvg from '../images/toolbar/portal.svg';
+// @ts-ignore
 import helpSvg from '../images/toolbar/quick-help.svg';
-import { EModalType } from "./react-pathway-mapper";
-import { observer } from "mobx-react";
+// @ts-ignore
+import redoSvg from '../images/toolbar/redo.svg';
+// @ts-ignore
+import saveSvg from '../images/toolbar/save.svg';
+// @ts-ignore
+import setingsSvg from '../images/toolbar/settings.svg';
+// @ts-ignore
+import showSvg from '../images/toolbar/show-all.svg';
+// @ts-ignore
+import undoSvg from '../images/toolbar/undo.svg';
 import { EGridType } from "../modals/GridSettings";
+import PathwayActions from "../utils/PathwayActions";
+import { EModalType } from "./react-pathway-mapper";
 
 
 interface IButtonbarProps {

@@ -1,22 +1,22 @@
+import { action, makeObservable, observable } from "mobx";
+import { observer } from "mobx-react";
 import React from "react";
-import {Panel, Button, Col, Row, ListGroup, ListGroupItem} from "react-bootstrap";
-import PathwayActions from "../utils/PathwayActions";
-
+import { Button, Panel } from "react-bootstrap";
+import "../css/supp.css";
 // @ts-ignore
 import acImg from "../images/edges/activates.svg";
 // @ts-ignore
-import inhImg from "../images/edges/inhibits.svg";
+import bindImg from "../images/edges/binds.svg";
 // @ts-ignore
 import indImg from "../images/edges/induces.svg";
 // @ts-ignore
-import repImg from "../images/edges/represses.svg";
+import inhImg from "../images/edges/inhibits.svg";
 // @ts-ignore
-import bindImg from "../images/edges/binds.svg";
-
-import "../css/supp.css"
-import { action, makeObservable, observable } from "mobx";
-import { observer } from "mobx-react";
+import repImg from "../images/edges/represses.svg";
+import PathwayActions from "../utils/PathwayActions";
 import { EModalType } from "./react-pathway-mapper";
+
+
 
 interface ISideBarProps{
   pathwayActions: PathwayActions;

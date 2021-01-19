@@ -6,7 +6,6 @@ export default class GenomicDataOverlayManager {
     groupedGenomicDataMap: {};
     patientData: any;
     private DEFAULT_VISIBLE_GENOMIC_DATA_COUNT;
-    private MAX_VISIBLE_GENOMIC_DATA_COUNT;
     private observers;
     private cy;
     constructor(cy: any);

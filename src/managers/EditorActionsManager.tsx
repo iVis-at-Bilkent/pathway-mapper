@@ -1,10 +1,10 @@
-import ShareDBManager from "./ShareDBManager";
+import { makeObservable, observable } from "mobx";
+import LayoutProperties, { ILayoutProperties } from "../modals/LayoutProperties";
+import { IProfileMetaData } from "../ui/react-pathway-mapper";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
 import SVGExporter from "../utils/SVGExporter";
 import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
-import { IProfileMetaData, IPathwayData } from "../ui/react-pathway-mapper";
-import { observable, makeObservable } from "mobx";
-import LayoutProperties, { ILayoutProperties } from "../modals/LayoutProperties";
+import ShareDBManager from "./ShareDBManager";
 
 const _ = require('lodash');
 
@@ -54,8 +54,6 @@ export default class EditorActionsManager{
 
     @observable
     private profiles: IProfileMetaData[];
-    private modifyPathwayGeneMap: (pathwayData: IPathwayData, isRemove: boolean) => void;
-
 
     constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean,
                 undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[])

@@ -1,10 +1,10 @@
 import EditorActionsManager from "../managers/EditorActionsManager";
 import FileOperationsManager, { IPathwayInfo } from "../managers/FileOperationsManager";
-import { IProfileMetaData, EModalType } from "../ui/react-pathway-mapper";
-import ViewOperationsManager from "../managers/ViewOperationsManager";
 import GridOptionsManager from "../managers/GridOptionsManager";
-import { ILayoutProperties } from "../modals/LayoutProperties";
+import ViewOperationsManager from "../managers/ViewOperationsManager";
 import { EGridType } from "../modals/GridSettings";
+import { ILayoutProperties } from "../modals/LayoutProperties";
+import { EModalType, IProfileMetaData } from "../ui/react-pathway-mapper";
 export default class PathwayActions {
     selectedPathway: string;
     fileManager: FileOperationsManager;

@@ -1,5 +1,4 @@
 import { IPathwayInfo } from "../managers/FileOperationsManager";
-import { IPathwayData } from "../ui/react-pathway-mapper";
 
 export default class SaveLoadUtility{
   //Exports given json graph(based on cy.export()) into a string

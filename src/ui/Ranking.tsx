@@ -1,10 +1,10 @@
-import React from 'react';
-import {observer} from "mobx-react";
-import {action, computed, makeObservable, observable} from "mobx";
 import autobind from "autobind-decorator";
-import {Table, DropdownButton,MenuItem, Checkbox, Button, Label} from "react-bootstrap";
+import { makeObservable, observable } from "mobx";
+import { observer } from "mobx-react";
+import React from 'react';
+import { Checkbox, DropdownButton, MenuItem } from "react-bootstrap";
 import PathwayActions from '../utils/PathwayActions.js';
-import {IPathwayMapperTable} from "./react-pathway-mapper";
+import { IPathwayMapperTable } from "./react-pathway-mapper";
 
 interface IRankingProps{
     pathwayActions: PathwayActions;

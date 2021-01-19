@@ -1,16 +1,13 @@
-import SaveLoadUtilities from '../utils/SaveLoadUtility.js';
-import {saveAs} from 'file-saver';
-import EditorActionsManager from './EditorActionsManager.js';
-import { observable, computed, makeObservable, action } from 'mobx';
+import { saveAs } from 'file-saver';
+import { action, computed, makeObservable, observable } from 'mobx';
 import SaveLoadUtility from '../utils/SaveLoadUtility';
-
+import EditorActionsManager from './EditorActionsManager.js';
 
 export interface IPathwayInfo{
     fileName: string;
     pathwayTitle: string;
     pathwayDetails: string;
 }
-
 
 export default class FileOperationsManager{
 

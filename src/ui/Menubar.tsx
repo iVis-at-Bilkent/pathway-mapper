@@ -1,11 +1,9 @@
 import React from 'react';
-import {Navbar, Nav, NavDropdown, MenuItem, NavItem} from 'react-bootstrap';
+import { MenuItem, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import pathways from "../data/pathways.json";
-import PathwayActions from '../utils/PathwayActions';
-import autobind from 'autobind-decorator';
-import SaveLoadUtility from '../utils/SaveLoadUtility';
-import { EModalType } from './react-pathway-mapper';
 import ConfirmationModal from '../modals/ConfirmationModal';
+import PathwayActions from '../utils/PathwayActions';
+import { EModalType } from './react-pathway-mapper';
 
 interface IMenubarProps{
     pathwayActions: PathwayActions;

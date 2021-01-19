@@ -25,7 +25,7 @@ export default class ViewOperationsManager{
             nodes = nodes.add(tmpNodes[key]);
         }
 
-        nodes.forEach(function(node,index)
+        nodes.forEach(function(node)
         {
             if (node.isParent())
             {

@@ -1,32 +1,32 @@
-import React from 'react';
+import autobind from "autobind-decorator";
 import cytoscape from 'cytoscape';
 import $ from "jquery";
-// @ts-ignore
-window.$ = $;
-import autobind from "autobind-decorator";
-import {observer} from "mobx-react";
-import ViewOperationsManager from "../managers/ViewOperationsManager";
-import EditorActionsManager from "../managers/EditorActionsManager";
-import DragDropNodeAddPlugin from "../utils/DragDropNodeAddPlugin";
-import ContextMenuManager from "../managers/ContextMenuManager";
-import QtipManager from "../managers/QtipManager";
-import ShareDBManager from "../managers/ShareDBManager";
-import CBioPortalAccessor from "../utils/CBioPortalAccessor";
-import SaveLoadUtility from "../utils/SaveLoadUtility";
-import pathways from "../data/pathways.json";
+import { observer } from "mobx-react";
+import React from 'react';
 // @ts-ignore
 import resizeCue from '../../node_modules/cytoscape-node-resize/resizeCue.svg';
-// @ts-ignore
-import geneImg from "../images/nodes/gene.svg";
-// @ts-ignore
-import familyImg from "../images/nodes/family.svg";
-// @ts-ignore
-import complexImg from "../images/nodes/complex.svg";
+import pathways from "../data/pathways.json";
 // @ts-ignore
 import compartmentImg from "../images/nodes/compartment.svg";
 // @ts-ignore
+import complexImg from "../images/nodes/complex.svg";
+// @ts-ignore
+import familyImg from "../images/nodes/family.svg";
+// @ts-ignore
+import geneImg from "../images/nodes/gene.svg";
+// @ts-ignore
 import processImg from "../images/nodes/process.svg";
-import { IProfileMetaData, IPathwayData, EModalType } from './react-pathway-mapper';
+import ContextMenuManager from "../managers/ContextMenuManager";
+import EditorActionsManager from "../managers/EditorActionsManager";
+import QtipManager from "../managers/QtipManager";
+import ShareDBManager from "../managers/ShareDBManager";
+import ViewOperationsManager from "../managers/ViewOperationsManager";
+import CBioPortalAccessor from "../utils/CBioPortalAccessor";
+import DragDropNodeAddPlugin from "../utils/DragDropNodeAddPlugin";
+import SaveLoadUtility from "../utils/SaveLoadUtility";
+import { EModalType, IProfileMetaData } from './react-pathway-mapper';
+// @ts-ignore
+window.$ = $;
 
 const edgeHandles = require('cytoscape-edgehandles');
 const edgeEditing = require('cytoscape-edge-editing');
@@ -297,8 +297,13 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
 
     this.qtipManager = new QtipManager(this.cy, this.editor);
-    this.cxtMenuManager = new ContextMenuManager(this.cy, this.editor, this.isCbioPortal,
-                                                 this.props.handleOpen, this.undoRedoManager, this.props.isCollaborative);
+    
+    this.cxtMenuManager = new ContextMenuManager(this.cy, 
+                                                this.editor,
+                                                this.props.handleOpen, 
+                                                this.undoRedoManager, 
+                                                this.props.isCollaborative);
+                                                
     this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editor, this.cy, this.props.pathwayHandler);
 
     // Initialize panzoom

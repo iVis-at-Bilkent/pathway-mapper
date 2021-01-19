@@ -1,11 +1,10 @@
-import React from 'react';
-import { EModalType } from '../ui/react-pathway-mapper';
-import {Modal, Form, InputGroup, ControlLabel, Col, FormControl, Checkbox, Button} from 'react-bootstrap';
-import EditorActionsManager from '../managers/EditorActionsManager';
 import _ from 'lodash';
-import PathwayActions from '../utils/PathwayActions';
-import { observable, makeObservable } from 'mobx';
 import { observer } from 'mobx-react';
+import React from 'react';
+import { Button, Checkbox, Col, ControlLabel, Form, FormControl, InputGroup, Modal } from 'react-bootstrap';
+import EditorActionsManager from '../managers/EditorActionsManager';
+import { EModalType } from '../ui/react-pathway-mapper';
+import PathwayActions from '../utils/PathwayActions';
 
 interface ILayoutPropertiesProps{
     isModalShown: boolean;

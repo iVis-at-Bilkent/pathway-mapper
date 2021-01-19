@@ -1,6 +1,5 @@
-import { Console } from 'console'
-import { GeneticAlterationRuleSet, shapeToSvg } from 'oncoprintjs'
 import $ from 'jquery'
+import { GeneticAlterationRuleSet, shapeToSvg } from 'oncoprintjs'
 
 export default class GenomicDataOverlayManager {
   public genomicDataMap: {}
@@ -9,7 +8,6 @@ export default class GenomicDataOverlayManager {
   public groupedGenomicDataMap: {}
   public patientData: any
   private DEFAULT_VISIBLE_GENOMIC_DATA_COUNT: number
-  private MAX_VISIBLE_GENOMIC_DATA_COUNT: number
   private observers: any[]
   private cy: any
   constructor(cy: any) {
@@ -20,7 +18,6 @@ export default class GenomicDataOverlayManager {
     this.groupedGenomicDataMap = {}
     this.groupedGenomicDataCount = 0
     this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT = 3
-    this.MAX_VISIBLE_GENOMIC_DATA_COUNT = 6
 
     // Observer-observable pattern related stuff
     this.observers = []

@@ -1,11 +1,10 @@
-import React from 'react';
-import {Modal, Form, FormGroup, Col, Row, FormControl, ControlLabel, Checkbox, Button, InputGroup} from 'react-bootstrap';
-import { EModalType } from '../ui/react-pathway-mapper';
-import EditorActionsManager from '../managers/EditorActionsManager';
-import GridOptionsManager from '../managers/GridOptionsManager';
-import PathwayActions from '../utils/PathwayActions';
-import { observer } from 'mobx-react';
 import { makeObservable, observable } from 'mobx';
+import { observer } from 'mobx-react';
+import React from 'react';
+import { Button, Checkbox, Col, ControlLabel, Form, FormControl, InputGroup, Modal } from 'react-bootstrap';
+import GridOptionsManager from '../managers/GridOptionsManager';
+import { EModalType } from '../ui/react-pathway-mapper';
+import PathwayActions from '../utils/PathwayActions';
 interface IGridSettingsProps{
     isModalShown: boolean;
     handleClose: Function;

@@ -1,19 +1,17 @@
-import EditorActionsManager from "./EditorActionsManager";
 import { EModalType } from "../ui/react-pathway-mapper";
+import EditorActionsManager from "./EditorActionsManager";
 
 export default class ContextMenuManager {
   private cy: any;
   private editor: EditorActionsManager;
-  private isCBioPortal: boolean;
   private handleOpen: (modalId: EModalType) => void;
   private undoRedoManager: any;
   private isCollaborative: any;
-  constructor(cy: any, editor: EditorActionsManager, isCBioPortal: boolean,
+  constructor(cy: any, editor: EditorActionsManager,
               handleOpen: (modalId: EModalType) => void, undoRedoManager: any,
               isCollaborative: boolean){
     this.cy = cy;
     this.editor = editor;
-    this.isCBioPortal = isCBioPortal;
     this.handleOpen = handleOpen;
     this.undoRedoManager = undoRedoManager;
     this.isCollaborative = isCollaborative;

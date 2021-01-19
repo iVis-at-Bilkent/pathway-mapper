@@ -1,14 +1,14 @@
-import React from 'react';
-import EditorActionsManager from "../managers/EditorActionsManager";
-import FileOperationsManager from '../managers/FileOperationsManager';
-import PathwayActions from '../utils/PathwayActions';
-import CBioPortalAccessor from '../utils/CBioPortalAccessor';
 import { IGeneticAlterationRuleSetParams } from 'oncoprintjs';
-import ViewOperationsManager from '../managers/ViewOperationsManager';
-import GridOptionsManager from '../managers/GridOptionsManager';
+import React from 'react';
 import "../css/pmv1.css";
 import "../css/pmv2.css";
 import '../css/qtip.css';
+import EditorActionsManager from "../managers/EditorActionsManager";
+import FileOperationsManager from '../managers/FileOperationsManager';
+import GridOptionsManager from '../managers/GridOptionsManager';
+import ViewOperationsManager from '../managers/ViewOperationsManager';
+import CBioPortalAccessor from '../utils/CBioPortalAccessor';
+import PathwayActions from '../utils/PathwayActions';
 interface IPathwayMapperProps {
     isCBioPortal: boolean;
     genes: any[];

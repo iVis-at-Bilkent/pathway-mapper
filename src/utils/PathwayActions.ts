@@ -1,21 +1,18 @@
 import autobind from "autobind-decorator";
-import { observable, computed, makeObservable, action } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
 import EditorActionsManager from "../managers/EditorActionsManager";
 import FileOperationsManager, {
   IPathwayInfo
 } from "../managers/FileOperationsManager";
-import $ from "jquery";
+import GridOptionsManager from "../managers/GridOptionsManager";
+import ViewOperationsManager from "../managers/ViewOperationsManager";
+import ConfirmationModal from "../modals/ConfirmationModal";
+import { EGridType } from "../modals/GridSettings";
+import { ILayoutProperties } from "../modals/LayoutProperties";
 import {
-  IProfileMetaData,
-  IPathwayData,
-  EModalType
+  EModalType, IPathwayData, IProfileMetaData
 } from "../ui/react-pathway-mapper";
 import SaveLoadUtility from "./SaveLoadUtility";
-import ViewOperationsManager from "../managers/ViewOperationsManager";
-import GridOptionsManager from "../managers/GridOptionsManager";
-import { ILayoutProperties } from "../modals/LayoutProperties";
-import { EGridType } from "../modals/GridSettings";
-import ConfirmationModal from "../modals/ConfirmationModal";
 
 export default class PathwayActions {
   @observable
