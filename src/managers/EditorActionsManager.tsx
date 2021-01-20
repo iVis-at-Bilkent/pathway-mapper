@@ -1,4 +1,4 @@
-import { makeObservable, observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import LayoutProperties, { ILayoutProperties } from "../modals/LayoutProperties";
 import { IProfileMetaData } from "../ui/react-pathway-mapper";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
@@ -113,6 +113,21 @@ export default class EditorActionsManager{
         this.undoRedoManager.action("removeOtherHighlight", this.undoHighlight, this.doHighlight);
 
     };
+
+    @action.bound
+    setProfile(index: number, profile: IProfileMetaData) {
+        this.profiles[index] = profile;
+    }
+
+    @action.bound
+    addProfile(profile: IProfileMetaData) {
+        this.profiles.push(profile);
+    }
+
+    @action.bound
+    removeProfiles() {
+        this.profiles.length = 0;
+    }
 
     handleChangePositionByAlignment(movedNodeArr: any)
     {
@@ -1705,7 +1720,10 @@ export default class EditorActionsManager{
 
     adjustVisibilityShareDB(profileId: string, isEnabled: boolean){
         const targetProfileIndex = this.profiles.map(profile => profile.profileId).indexOf(profileId);
-        this.profiles[targetProfileIndex].enabled = isEnabled;   
+        this.setProfile(targetProfileIndex, {
+            ...this.profiles[targetProfileIndex],
+            enabled: isEnabled
+        }); 
     }
 
     addToProfiles(profileId: string){
@@ -1714,7 +1732,10 @@ export default class EditorActionsManager{
             return;
         }
 
-        this.profiles.push({profileId: profileId, enabled: true});
+        this.addProfile({
+            profileId: profileId, 
+            enabled: true
+        });
     }
 
     addPortalGenomicData(genomicData: any, groupID: any)
@@ -1795,7 +1816,7 @@ export default class EditorActionsManager{
         else
         {
             this.genomicDataOverlayManager.removeGenomicVisData();
-            this.profiles.length = 0;
+            this.removeProfiles();
         }
 
         this.genomicDataOverlayManager.showGenomicData();

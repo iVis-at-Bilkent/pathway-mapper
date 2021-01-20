@@ -9027,6 +9027,20 @@ function () {
 
 /* harmony default export */ var managers_GenomicDataOverlayManager = (GenomicDataOverlayManager_GenomicDataOverlayManager);
 // CONCATENATED MODULE: ./src/managers/EditorActionsManager.tsx
+var __assign = undefined && undefined.__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
 var EditorActionsManager_decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
   var c = arguments.length,
       r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
@@ -9183,6 +9197,30 @@ function () {
   }
 
   ;
+  Object.defineProperty(EditorActionsManager.prototype, "setProfile", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (index, profile) {
+      this.profiles[index] = profile;
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "addProfile", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (profile) {
+      this.profiles.push(profile);
+    }
+  });
+  Object.defineProperty(EditorActionsManager.prototype, "removeProfiles", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.profiles.length = 0;
+    }
+  });
   Object.defineProperty(EditorActionsManager.prototype, "handleChangePositionByAlignment", {
     enumerable: false,
     configurable: true,
@@ -10923,7 +10961,9 @@ function () {
       var targetProfileIndex = this.profiles.map(function (profile) {
         return profile.profileId;
       }).indexOf(profileId);
-      this.profiles[targetProfileIndex].enabled = isEnabled;
+      this.setProfile(targetProfileIndex, __assign(__assign({}, this.profiles[targetProfileIndex]), {
+        enabled: isEnabled
+      }));
     }
   });
   Object.defineProperty(EditorActionsManager.prototype, "addToProfiles", {
@@ -10938,7 +10978,7 @@ function () {
         return;
       }
 
-      this.profiles.push({
+      this.addProfile({
         profileId: profileId,
         enabled: true
       });
@@ -11023,7 +11063,7 @@ function () {
       } // Removal
       else {
           this.genomicDataOverlayManager.removeGenomicVisData();
-          this.profiles.length = 0;
+          this.removeProfiles();
         }
 
       this.genomicDataOverlayManager.showGenomicData();
@@ -11164,6 +11204,12 @@ function () {
   });
 
   EditorActionsManager_decorate([external_mobx_["observable"]], EditorActionsManager.prototype, "profiles", void 0);
+
+  EditorActionsManager_decorate([external_mobx_["action"].bound], EditorActionsManager.prototype, "setProfile", null);
+
+  EditorActionsManager_decorate([external_mobx_["action"].bound], EditorActionsManager.prototype, "addProfile", null);
+
+  EditorActionsManager_decorate([external_mobx_["action"].bound], EditorActionsManager.prototype, "removeProfiles", null);
 
   return EditorActionsManager;
 }();
@@ -12088,8 +12134,8 @@ var StudyModal_extends = undefined && undefined.__extends || function () {
   };
 }();
 
-var __assign = undefined && undefined.__assign || function () {
-  __assign = Object.assign || function (t) {
+var StudyModal_assign = undefined && undefined.__assign || function () {
+  StudyModal_assign = Object.assign || function (t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
 
@@ -12099,7 +12145,7 @@ var __assign = undefined && undefined.__assign || function () {
     return t;
   };
 
-  return __assign.apply(this, arguments);
+  return StudyModal_assign.apply(this, arguments);
 };
 
 var StudyModal_decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
@@ -12191,7 +12237,7 @@ function (_super) {
           var type = utils_CBioPortalAccessor.getDataType(profile);
 
           if (type !== "") {
-            _this.setDataTypeProperties(type, __assign(__assign({}, _this.dataTypes[type]), {
+            _this.setDataTypeProperties(type, StudyModal_assign(StudyModal_assign({}, _this.dataTypes[type]), {
               enabled: true,
               profile: profile
             }));
@@ -12268,7 +12314,7 @@ function (_super) {
     configurable: true,
     writable: true,
     value: function (dataType) {
-      this.setDataTypeProperties(dataType, __assign(__assign({}, this.dataTypes[dataType]), {
+      this.setDataTypeProperties(dataType, StudyModal_assign(StudyModal_assign({}, this.dataTypes[dataType]), {
         checked: !this.dataTypes[dataType].checked
       }));
     }

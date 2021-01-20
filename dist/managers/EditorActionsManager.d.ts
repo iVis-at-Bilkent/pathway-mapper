@@ -19,6 +19,9 @@ export default class EditorActionsManager {
     private portalAccessor;
     private profiles;
     constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[]);
+    setProfile(index: number, profile: IProfileMetaData): void;
+    addProfile(profile: IProfileMetaData): void;
+    removeProfiles(): void;
     handleChangePositionByAlignment(movedNodeArr: any): void;
     doChangePosition(movedNodes: any): any[];
     undoChangePosition(movedNodes: any): any[];
