@@ -1,9 +1,9 @@
-import React from 'react';
-import {Grid, Row, Col} from 'react-bootstrap';
-import ReactTooltip from 'react-tooltip'
+import { VisibilityProperty } from 'csstype';
 import { action, makeObservable, observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { VisibilityProperty } from 'csstype';
+import React from 'react';
+import { Col, Grid, Row } from 'react-bootstrap';
+import ReactTooltip from 'react-tooltip';
 
 interface IWelcomePageProps{
     postWelcome: Function;

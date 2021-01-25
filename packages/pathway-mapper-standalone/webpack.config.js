@@ -15,33 +15,22 @@ module.exports = {
       filename: "index.html",  //target html
       template: "./src/index.html" //source html
     }),
-    new MiniCssExtractPlugin({ filename: './base.css' })
+    new MiniCssExtractPlugin({filename: './styles.css'})
   ],
-  optimization: {
-    minimize: false
-  },
   devtool: 'source-map',
-  entry: "./src/ui/react-pathway-mapper.tsx",
+  entry: "./src/index.jsx",
   output: {
     path: path.join(__dirname, "/dist"),
-    filename: "react-pathway-mapper.es5.js",
-    library: 'react-pathway-mapper',
-    libraryTarget: 'commonjs-module'
-  },
-  node: {
-    fs: 'empty'
+    filename: "index.es5.js",
   },
   externals: [
     nodeExternals({
-      // TODO a workaround for problematic imports, ideally these should not be included in the bundle
-      whitelist: [
-        'cytoscape-edge-editing',
-        'cytoscape-context-menus',
-        'cytoscape-node-resize',
-        'cytoscape-view-utilities'
-      ]
+      modulesFromFile: true
     })
   ],
+  node: {
+    fs: 'empty'
+  },
   resolve: {
     extensions: [
       '.js',
@@ -87,7 +76,7 @@ module.exports = {
         }
       ]
     },{
-      test: /\.css$/,
+      test: /\.css$/i,
       use: [
         MiniCssExtractPlugin.loader, 
         'css-loader'

@@ -12,7 +12,7 @@ const multerInstance = multer({dest:'./uploads/'});
 
 const staticPath = path.join(__dirname, '../dist');
 app.use(express.static(staticPath));
-console.log(staticPath);
+console.log("Serving files from: " + staticPath);
 const server = http.createServer(app);
 app.get('/', function (req, res) {
    res.sendFile(path.join(__dirname + '/index.html'));

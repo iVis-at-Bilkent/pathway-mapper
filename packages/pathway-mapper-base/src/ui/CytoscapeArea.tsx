@@ -3,8 +3,6 @@ import cytoscape from 'cytoscape';
 import $ from "jquery";
 import { observer } from "mobx-react";
 import React from 'react';
-// @ts-ignore
-import resizeCue from '../../node_modules/cytoscape-node-resize/resizeCue.svg';
 import pathways from "../data/pathways.json";
 // @ts-ignore
 import compartmentImg from "../images/nodes/compartment.svg";
@@ -515,7 +513,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
           sw: "sw-resize",
           w: "w-resize"
       },
-      resizeToContentCueImage: resizeCue,
       resizeToContentFunction: this.editor.resizeNodesToContent.bind(this.editor),
 
   });

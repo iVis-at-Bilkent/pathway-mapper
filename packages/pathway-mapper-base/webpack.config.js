@@ -1,6 +1,7 @@
 const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const nodeExternals = require('webpack-node-externals');
 
 const root = path.resolve(__dirname);
 const src = path.join(root, 'src');
@@ -14,17 +15,28 @@ module.exports = {
       filename: "index.html",  //target html
       template: "./src/index.html" //source html
     }),
-    new MiniCssExtractPlugin({filename: './base.css'})
+    new MiniCssExtractPlugin({ filename: './styles.css' })
   ],
+  optimization: {
+    minimize: false
+  },
   devtool: 'source-map',
-  entry: "./src/index.jsx",
+  entry: "./src/ui/react-pathway-mapper.tsx",
   output: {
     path: path.join(__dirname, "/dist"),
-    filename: "react-pathway-mapper.es5.js",
+    filename: "index.es5.js",
+    library: 'pathway-mapper-base',
+    libraryTarget: 'commonjs-module'
   },
   node: {
     fs: 'empty'
   },
+  externals: [
+    nodeExternals({
+      // TODO a workaround for problematic imports, ideally these should not be included in the bundle
+      modulesFromFile: true
+    })
+  ],
   resolve: {
     extensions: [
       '.js',
@@ -70,7 +82,7 @@ module.exports = {
         }
       ]
     },{
-      test: /\.css$/i,
+      test: /\.css$/,
       use: [
         MiniCssExtractPlugin.loader, 
         'css-loader'
