@@ -7036,7 +7036,7 @@ function (_super) {
         }
       }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Header, {
         closeButton: true
-      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, "PathwayMapper cBioPortal Edition 2.0")), !this.props.patientView && external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("p", {
+      }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, "PathwayMapper cBioPortal Edition 2.1")), !this.props.patientView && external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("p", {
         className: "leftText"
       }, "PathwayMapper shows you your genes of interest with the alteration frequencies of selected genetic profiles of the chosen study overlaid on a TCGA pathway using a white to red color scale (the more frequently altered a gene is, the more red it's shown). All available TCGA pathways are ranked with the aim to choose the pathway that matches your interest the most. By default we display the pathway with highest ranking with the default ranking options but you may look at your genes of interest in the context of other pathways as well by choosing from the pathway table.", external_react_default.a.createElement("br", null), external_react_default.a.createElement("br", null), "Refer to the documentation ", external_react_default.a.createElement("a", {
         href: "https://github.com/iVis-at-Bilkent/pathway-mapper",
@@ -12433,6 +12433,7 @@ var Ranking_decorate = undefined && undefined.__decorate || function (decorators
 
 
 
+var TCGA_PANCAN_PATHWAY_NAMES = ["Cell Cycle", "HIPPO", "MYC", "NOTCH", "NRF2", "PI3K", "RTK-RAS", "TGF-Beta", "TP53", "WNT"];
 
 var Ranking_Ranking =
 /** @class */
@@ -12443,6 +12444,12 @@ function (_super) {
     var _this = _super.call(this, props) || this;
 
     Object.defineProperty(_this, "bestPathways", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(_this, "shownPathways", {
       enumerable: true,
       configurable: true,
       writable: true,
@@ -12472,6 +12479,12 @@ function (_super) {
       writable: true,
       value: void 0
     });
+    Object.defineProperty(_this, "considerOnlyTCGAPanPathways", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
     Object.defineProperty(_this, "isExpanded", {
       enumerable: true,
       configurable: true,
@@ -12490,15 +12503,29 @@ function (_super) {
       writable: true,
       value: "When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and 50% for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (0.2+0.3)/4=12.5% for match count and percentage, respectively."
     });
+    Object.defineProperty(_this, "TCGA_PANCAN_EXPLANATION", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: "When this is checked, only pathways from the TCGA PanCancer Atlas will be shown."
+    });
     Object(external_mobx_["makeObservable"])(_this);
     _this.isPercentageMatch = 0;
     _this.isAlterationEnabled = 0;
+    _this.considerOnlyTCGAPanPathways = true;
     _this.dropDownTitle = "Match count";
     _this.isExpanded = false;
 
     _this.setBestPathwayMethod(0);
 
-    _this.selectedPathway = _this.bestPathways[0].pathwayName;
+    _this.shownPathways = _this.bestPathways.filter(function (data) {
+      if (_this.considerOnlyTCGAPanPathways) {
+        return TCGA_PANCAN_PATHWAY_NAMES.indexOf(data.pathwayName) > -1;
+      }
+
+      return true;
+    });
+    _this.selectedPathway = _this.shownPathways[0].pathwayName;
     return _this;
   }
 
@@ -12529,6 +12556,28 @@ function (_super) {
       this.setBestPathwayMethod(2 * this.isAlterationEnabled + this.isPercentageMatch);
     }
   });
+  Object.defineProperty(Ranking.prototype, "toggleConsiderOnlyTCGAPanPathways", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      var _this = this;
+
+      this.considerOnlyTCGAPanPathways = !this.considerOnlyTCGAPanPathways;
+      this.shownPathways = this.bestPathways.filter(function (data) {
+        if (_this.considerOnlyTCGAPanPathways) {
+          return TCGA_PANCAN_PATHWAY_NAMES.indexOf(data.pathwayName) > -1;
+        }
+
+        return true;
+      }); // change selected pathway if we are filtered and doesn't exist
+
+      if (this.considerOnlyTCGAPanPathways && TCGA_PANCAN_PATHWAY_NAMES.indexOf(this.selectedPathway) < 0) {
+        this.selectedPathway = this.shownPathways[0].pathwayName;
+        this.props.pathwayActions.changePathway(this.selectedPathway);
+      }
+    }
+  });
   Object.defineProperty(Ranking.prototype, "componentDidMount", {
     enumerable: false,
     configurable: true,
@@ -12547,17 +12596,30 @@ function (_super) {
       var lengthThreshold = 13;
       return external_react_default.a.createElement("div", {
         id: "ranking-bar"
-      }, this.props.tableComponent && this.props.tableComponent(this.bestPathways.map(function (data) {
+      }, this.props.tableComponent && this.props.tableComponent(this.shownPathways.map(function (data) {
         return {
           name: data.pathwayName,
           score: data.score,
           genes: data.genesMatched
         };
-      }), this.selectedPathway, this.onPathwayClick), !this.props.patientView && external_react_default.a.createElement("div", {
-        className: "info-entry",
+      }), this.selectedPathway, this.onPathwayClick), external_react_default.a.createElement("div", {
+        className: "indent"
+      }, external_react_default.a.createElement(external_react_bootstrap_["Checkbox"], {
+        checked: this.considerOnlyTCGAPanPathways,
+        id: "tcgaPathwaysCheckbox",
+        onClick: this.toggleConsiderOnlyTCGAPanPathways,
         style: {
-          marginTop: "10px"
+          fontSize: "13px"
         }
+      }, "Show TCGA PanCancer Atlas pathways only\u00A0", external_react_default.a.createElement("span", {
+        "data-tip": this.TCGA_PANCAN_EXPLANATION,
+        "data-border": "true",
+        "data-type": "light",
+        "data-place": "left",
+        "data-effect": "solid",
+        className: "fa fa-question-circle styles-module__infoIcon__zMiog"
+      }))), !this.props.patientView && external_react_default.a.createElement("div", {
+        className: "info-entry"
       }, external_react_default.a.createElement("div", {
         id: "criteria-title",
         className: "info-title"
@@ -12566,10 +12628,7 @@ function (_super) {
           display: "inline-block"
         }
       }, "\u00A0Ranking options")), external_react_default.a.createElement("div", {
-        className: "indent",
-        style: {
-          marginTop: "10px"
-        }
+        className: "indent"
       }, external_react_default.a.createElement(external_react_bootstrap_["DropdownButton"], {
         title: this.dropDownTitle,
         id: "0",
@@ -12628,9 +12687,13 @@ function (_super) {
 
   Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "bestPathways", void 0);
 
+  Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "shownPathways", void 0);
+
   Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "dropDownTitle", void 0);
 
   Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "selectedPathway", void 0);
+
+  Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "considerOnlyTCGAPanPathways", void 0);
 
   Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "isExpanded", void 0);
 
@@ -12639,6 +12702,8 @@ function (_super) {
   Ranking_decorate([external_autobind_decorator_default.a], Ranking.prototype, "onPathwayClick", null);
 
   Ranking_decorate([external_autobind_decorator_default.a], Ranking.prototype, "onApplyClick", null);
+
+  Ranking_decorate([external_mobx_["action"].bound], Ranking.prototype, "toggleConsiderOnlyTCGAPanPathways", null);
 
   Ranking = Ranking_decorate([external_mobx_react_["observer"]], Ranking);
   return Ranking;

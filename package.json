@@ -1,6 +1,6 @@
 {
   "name": "pathway-mapper",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "",
   "keywords": [],
   "main": "dist/react-pathway-mapper.es5.js",
@@ -86,8 +86,8 @@
     "file-saver": "^2.0.2",
     "jquery-ui-dist": "^1.12.1",
     "konva": "^1.6.3",
-    "lodash": "^4.17.20",
-    "oncoprintjs": "4.2.3",
+    "lodash": "^4.17.11",
+    "oncoprintjs": "^4.2.3",
     "react-loader-spinner": "^2.3.0",
     "react-scrollbar": "^0.5.6",
     "react-table": "^6.10.0",
