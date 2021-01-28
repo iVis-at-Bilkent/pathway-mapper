@@ -23,11 +23,6 @@ module.exports = {
     path: path.join(__dirname, "/dist"),
     filename: "index.es5.js",
   },
-  externals: [
-    nodeExternals({
-      modulesFromFile: true
-    })
-  ],
   node: {
     fs: 'empty'
   },
@@ -41,7 +36,8 @@ module.exports = {
     ],
     modules: [
       src,
-      modules
+      modules,
+      path.resolve(__dirname, '../../node_modules')
     ]
   },
   module: {
