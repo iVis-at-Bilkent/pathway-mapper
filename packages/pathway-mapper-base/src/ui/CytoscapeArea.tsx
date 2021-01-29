@@ -24,6 +24,9 @@ import DragDropNodeAddPlugin from "../utils/DragDropNodeAddPlugin";
 import SaveLoadUtility from "../utils/SaveLoadUtility";
 import { EModalType, IProfileMetaData } from './react-pathway-mapper';
 // @ts-ignore
+import resizeCue from './resizeCue.svg';
+
+// @ts-ignore
 window.$ = $;
 
 const edgeHandles = require('cytoscape-edgehandles');
@@ -513,6 +516,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
           sw: "sw-resize",
           w: "w-resize"
       },
+      resizeToContentCueImage: resizeCue,
       resizeToContentFunction: this.editor.resizeNodesToContent.bind(this.editor),
 
   });

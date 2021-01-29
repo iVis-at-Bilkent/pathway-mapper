@@ -80,7 +80,7 @@ export interface IPathwayMapperTable {
     score: number;
     genes: string[];
 }
-export default class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
+export declare class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     static readonly CBIO_PROFILE_NAME = "cBioPortal_data";
     readonly NUMBER_OF_PATHWAYS_TO_SHOW = 10;
     selectedPathway: string;
@@ -136,4 +136,4 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     editorHandler(editor: any, eh: any, undoRedoManager: any): void;
     pathwayHandler(pathway: string): void;
 }
-export {};
+export default PathwayMapper;

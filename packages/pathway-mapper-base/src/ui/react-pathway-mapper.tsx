@@ -115,7 +115,7 @@ export interface IPathwayMapperTable{
 }
 
 @observer
-export default class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
+export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   static readonly CBIO_PROFILE_NAME = "cBioPortal_data";
 
   readonly NUMBER_OF_PATHWAYS_TO_SHOW = 10;
@@ -664,3 +664,5 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         );
   }
 }
+
+export default PathwayMapper;
