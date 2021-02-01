@@ -1,6 +1,7 @@
 const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const root = path.resolve(__dirname);
 const src = path.join(root, 'src');
@@ -14,7 +15,8 @@ module.exports = {
       filename: "index.html",  //target html
       template: "./src/index.html" //source html
     }),
-    new MiniCssExtractPlugin({filename: './styles.css'})
+    new MiniCssExtractPlugin({filename: './styles.css'}),
+    new CleanWebpackPlugin()
   ],
   devtool: 'source-map',
   entry: "./src/index.jsx",
