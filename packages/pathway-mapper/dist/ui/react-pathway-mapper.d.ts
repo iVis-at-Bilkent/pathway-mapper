@@ -1,8 +1,8 @@
 import { IGeneticAlterationRuleSetParams } from 'oncoprintjs';
 import React from 'react';
-import "../css/pmv1.css";
-import "../css/pmv2.css";
-import '../css/qtip.css';
+import "../../../common/css/pmv1.css";
+import "../../../common/css/pmv2.css";
+import '../../../common/css/qtip.css';
 import EditorActionsManager from "../managers/EditorActionsManager";
 import FileOperationsManager from '../managers/FileOperationsManager';
 import GridOptionsManager from '../managers/GridOptionsManager';
