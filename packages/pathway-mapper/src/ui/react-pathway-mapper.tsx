@@ -452,10 +452,13 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
 
 
         this.addProfile({studyId: selectedStudyData[0], profileId: dataTypes[dataType].profile, enabled: true});
+        const currentMapNodeNames = this.editor.cy.nodes()
+                                          .filter((node) => (node.data("type") === "GENE"))
+                                          .map((node) => (node.data("name")));
         this.portalAcessor.getProfileData({
             caseSetId: selectedStudyData[0],
             geneticProfileId: dataTypes[dataType].profile,
-            genes: this.editor.cy.json().elements.nodes.filter((node) => (node.data.type === "GENE")).map((node) => (node.data.name))
+            genes: currentMapNodeNames
         },
                                           (data: any) =>{
           this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID());

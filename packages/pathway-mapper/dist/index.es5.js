@@ -1140,12 +1140,11 @@ function () {
     enumerable: false,
     configurable: true,
     writable: true,
-    value: function (pathwayDetails, cy, edgeEditing, graphJSON) {
+    value: function (pathwayDetails, cy, edgeEditing) {
       var returnString = pathwayDetails.pathwayTitle + '\n\n';
       returnString += pathwayDetails.pathwayDetails + '\n\n'; //Get nodes and edges
 
-      var nodes = graphJSON.elements.nodes; // var edges = pathwayDetails.graphJSON.elements.edges;
-
+      var nodes = cy.nodes();
       var edges = cy.edges(); //Prepare Meta Line
 
       returnString += '--NODE_NAME\tNODE_ID\tNODE_TYPE\tPARENT_ID\tPOSX\tPOSY\tWIDTH\tHEIGHT--' + '\n';
@@ -1197,11 +1196,11 @@ function () {
     enumerable: false,
     configurable: true,
     writable: true,
-    value: function (pathwayDetails, graphJSON) {
+    value: function (cy) {
       var returnString = ""; //Get nodes and edges
 
-      var nodes = graphJSON.elements.nodes;
-      var edges = graphJSON.elements.edges;
+      var nodes = cy.nodes();
+      var edges = cy.edges();
       var nodeMap = {}; //Put a blank line between nodes and edges
 
       returnString += '\n';
@@ -1210,7 +1209,7 @@ function () {
       if (nodes) {
         for (var i = 0; i < nodes.length; i++) {
           returnString += this.exportNode(nodes[i]);
-          nodeMap[nodes[i].data.id] = nodes[i];
+          nodeMap[nodes[i].id()] = nodes[i];
         }
       } //Put a blank line between nodes and edges
 
@@ -1221,11 +1220,11 @@ function () {
       if (edges) {
         //Write edges
         for (var i = 0; i < edges.length; i++) {
-          var edgeType = edges[i].data.type;
-          var source = edges[i].data.source;
-          var target = edges[i].data.target;
-          var edgeName = edges[i].data.name;
-          var pubmedIDs = edges[i].data.pubmedIDs;
+          var edgeType = edges[i].data("type");
+          var source = edges[i].data("source");
+          var target = edges[i].data("target");
+          var edgeName = edges[i].data("name");
+          var pubmedIDs = edges[i].data("pubmedIDs");
           var pubmedString = "";
 
           if (pubmedIDs != undefined) {
@@ -1235,7 +1234,7 @@ function () {
             }
           }
 
-          returnString += nodeMap[source].data.name + '\t' + nodeMap[target].data.name + '\t' + edgeType + '\t' + pubmedString + '\t' + edgeName + '\n';
+          returnString += nodeMap[source].data("name") + '\t' + nodeMap[target].data("name") + '\t' + edgeType + '\t' + pubmedString + '\t' + edgeName + '\n';
         }
       } //Finally return a string that includes whole graph lovely and peacefully :)
 
@@ -1249,16 +1248,16 @@ function () {
     writable: true,
     value: function (node) {
       //Node specific data fields
-      var nodeName = node.data.name;
-      var parentID = node.data.parent;
-      var nodeID = node.data.id;
-      var pos = node.position;
-      var nodeType = node.data.type;
-      var nodeW = node.data.w;
-      var nodeH = node.data.h; //Check if node has a parent, if not set parent id -1
+      var nodeName = node.data("name");
+      var parentID = node.data("parent");
+      var nodeID = node.data("id");
+      var pos = node.position();
+      var nodeType = node.data("type");
+      var nodeW = node.data("w");
+      var nodeH = node.data("h"); //Check if node has a parent, if not set parent id -1
 
-      if (node.data.parent) {
-        parentID = node.data.parent;
+      if (node.data("parent")) {
+        parentID = node.data("parent");
       } else {
         parentID = -1;
       } // Write a line for a node
@@ -1545,7 +1544,7 @@ function () {
     writable: true,
     value: function (isSIFNX, editor) {
       var pathwayData = this.pathwayInfo;
-      var returnString = isSIFNX ? utils_SaveLoadUtility.exportAsSIFNX(pathwayData, editor.cy.json()) : utils_SaveLoadUtility.exportGraph(pathwayData, editor.cy, editor.edgeEditing, editor.cy.json());
+      var returnString = isSIFNX ? utils_SaveLoadUtility.exportAsSIFNX(editor.cy) : utils_SaveLoadUtility.exportGraph(pathwayData, editor.cy, editor.edgeEditing);
       var blob = new Blob([returnString], {
         type: "text/plain;charset=utf-8"
       });
@@ -13660,14 +13659,15 @@ function (_super) {
           profileId: dataTypes[dataType].profile,
           enabled: true
         });
+        var currentMapNodeNames = this.editor.cy.nodes().filter(function (node) {
+          return node.data("type") === "GENE";
+        }).map(function (node) {
+          return node.data("name");
+        });
         this.portalAcessor.getProfileData({
           caseSetId: selectedStudyData[0],
           geneticProfileId: dataTypes[dataType].profile,
-          genes: this.editor.cy.json().elements.nodes.filter(function (node) {
-            return node.data.type === "GENE";
-          }).map(function (node) {
-            return node.data.name;
-          })
+          genes: currentMapNodeNames
         }, function (data) {
           _this.editor.addPortalGenomicData(data, _this.editor.getEmptyGroupID());
         });

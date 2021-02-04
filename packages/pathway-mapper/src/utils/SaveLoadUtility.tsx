@@ -2,14 +2,13 @@ import { IPathwayInfo } from "../managers/FileOperationsManager";
 
 export default class SaveLoadUtility{
   //Exports given json graph(based on cy.export()) into a string
-  static exportGraph(pathwayDetails: IPathwayInfo, cy, edgeEditing, graphJSON: any)
+  static exportGraph(pathwayDetails: IPathwayInfo, cy, edgeEditing)
   {
     var returnString = pathwayDetails.pathwayTitle + '\n\n';
     returnString += pathwayDetails.pathwayDetails +'\n\n';
 
     //Get nodes and edges
-    var nodes = graphJSON.elements.nodes;
-    // var edges = pathwayDetails.graphJSON.elements.edges;
+    var nodes = cy.nodes();
     var edges = cy.edges();
 
     //Prepare Meta Line
@@ -71,13 +70,13 @@ export default class SaveLoadUtility{
     //Finally return a string that includes whole graph lovely and peacefully :)
     return returnString;
   }
-  static exportAsSIFNX(pathwayDetails: any, graphJSON: any)
+  static exportAsSIFNX(cy: any)
   {
     let returnString = "";
 
     //Get nodes and edges
-    const nodes = graphJSON.elements.nodes;
-    const edges = graphJSON.elements.edges;
+    const nodes = cy.nodes();
+    const edges = cy.edges();
     const nodeMap = {};
     //Put a blank line between nodes and edges
     returnString += '\n';
@@ -89,7 +88,7 @@ export default class SaveLoadUtility{
       {
         returnString += this.exportNode(nodes[i]);
 
-        nodeMap[nodes[i].data.id] = nodes[i];
+        nodeMap[nodes[i].id()] = nodes[i];
       }
     }
 
@@ -102,11 +101,11 @@ export default class SaveLoadUtility{
       //Write edges
       for (var i = 0; i < edges.length; i++)
       {
-        var edgeType = edges[i].data.type;
-        var source = edges[i].data.source;
-        var target = edges[i].data.target;
-        var edgeName = edges[i].data.name;
-        var pubmedIDs = edges[i].data.pubmedIDs;
+        var edgeType = edges[i].data("type");
+        var source = edges[i].data("source");
+        var target = edges[i].data("target");
+        var edgeName = edges[i].data("name");
+        var pubmedIDs = edges[i].data("pubmedIDs");
         var pubmedString = "";
 
         if (pubmedIDs != undefined) {
@@ -118,8 +117,8 @@ export default class SaveLoadUtility{
             }
         }
 
-        returnString += nodeMap[source].data.name + '\t' +
-                        nodeMap[target].data.name  + '\t' +
+        returnString += nodeMap[source].data("name") + '\t' +
+                        nodeMap[target].data("name")  + '\t' +
                         edgeType + '\t' +
                         pubmedString + '\t' +
                         edgeName + '\n';
@@ -132,18 +131,18 @@ export default class SaveLoadUtility{
   static exportNode(node)
   {
       //Node specific data fields
-      var nodeName = node.data.name;
-      var parentID = node.data.parent;
-      var nodeID = node.data.id;
-      var pos = node.position;
-      var nodeType = node.data.type;
-      var nodeW = node.data.w;
-      var nodeH = node.data.h;
+      var nodeName = node.data("name");
+      var parentID = node.data("parent");
+      var nodeID = node.data("id");
+      var pos = node.position();
+      var nodeType = node.data("type");
+      var nodeW = node.data("w");
+      var nodeH = node.data("h");
 
       //Check if node has a parent, if not set parent id -1
-      if (node.data.parent)
+      if (node.data("parent"))
       {
-          parentID = node.data.parent;
+          parentID = node.data("parent");
       }
       else
       {
