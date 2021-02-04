@@ -3,8 +3,7 @@
   "workspaces": ["packages/*"],
   "scripts": {
     "build": "yarn workspace pathway-mapper-standalone build",
-    "build:lib": "yarn workspace react-pathway-mapper build",
-    "update:lib": "yarn workspace pathway-mapper-standalone upgrade react-pathway-mapper",
+    "build:lib": "yarn workspace pathway-mapper build",
     "start": "yarn workspace pathway-mapper-standalone start"
   }
 }

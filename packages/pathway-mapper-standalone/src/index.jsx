@@ -1,6 +1,6 @@
+import { PathwayMapper } from 'pathway-mapper';
 import React from 'react';
 import { render } from 'react-dom';
-import { PathwayMapper } from 'react-pathway-mapper';
 import "../../common/css/pmv1.css";
 import "../../common/css/pmv2.css";
 import '../../common/css/qtip.css';

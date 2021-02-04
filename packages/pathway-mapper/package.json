@@ -1,5 +1,5 @@
 {
-  "name": "react-pathway-mapper",
+  "name": "pathway-mapper",
   "description": "Base React components for PathwayMapper",
   "version": "2.1.0",
   "main": "dist/index.es5.js",
