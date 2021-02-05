@@ -1,11 +1,9 @@
 import React from 'react';
-import {Navbar, Nav, NavDropdown, MenuItem, NavItem} from 'react-bootstrap';
+import { MenuItem, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import pathways from "../data/pathways.json";
-import PathwayActions from '../utils/PathwayActions';
-import autobind from 'autobind-decorator';
-import SaveLoadUtility from '../utils/SaveLoadUtility';
-import { EModalType } from './react-pathway-mapper';
 import ConfirmationModal from '../modals/ConfirmationModal';
+import PathwayActions from '../utils/PathwayActions';
+import { EModalType } from './react-pathway-mapper';
 
 interface IMenubarProps{
     pathwayActions: PathwayActions;
@@ -47,13 +45,13 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.upload();}}>Import</MenuItem>
                   <NavDropdown className="dropdown-submenu" eventKey={1} title="TCGA" id="basic-nav-TCGA">
                     {
-                      Object.keys(pathwayDropdownData).map((pwHead) => {
+                      Object.keys(pathwayDropdownData).map((pwHead, index) => {
                           return (
-                            <NavDropdown id={pwHead + "_dropdown"} className="dropdown-submenu" eventKey={1} title={pwHead}>
+                            <NavDropdown key={index} id={pwHead + "_dropdown"} className="dropdown-submenu" eventKey={1} title={pwHead}>
                               
                               {
-                                pathwayDropdownData[pwHead].map((pwName) => 
-                                <MenuItem onClick={() => {
+                                pathwayDropdownData[pwHead].map((pwName, index) => 
+                                <MenuItem key={index} onClick={() => {
 
                                     if(this.props.pathwayActions.doesCyHaveElements()){
                                       this.props.handleOpen(EModalType.CONFIRMATION);
@@ -85,8 +83,8 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                 <NavDropdown eventKey={2} title="Edit" id="basic-nav-edit">
                   <NavDropdown id="add-node-submenu" className="dropdown-submenu" eventKey={2.1} title="Add Node">
                       {
-                        nodeTypes.map((nodeType) => {
-                        return (<MenuItem onClick={() => {this.props.pathwayActions.addNode(nodeType);}}>
+                        nodeTypes.map((nodeType, index) => {
+                        return (<MenuItem key={index} onClick={() => {this.props.pathwayActions.addNode(nodeType);}}>
                         {nodeType}
                       </MenuItem>);} )
                       }
@@ -95,6 +93,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                       {
                         edgeTypes.map((nodeType, i) => {
                         return (<MenuItem 
+                          key={i}
                           onClick={
                           () => {
                             this.props.pathwayActions.addEdge(i);
@@ -108,8 +107,10 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.resizeToContent();}}>Resize Nodes to Content</MenuItem>
 
                   { !this.props.pathwayActions.isCollaborative && 
-                  [<MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.undo();}}>Undo</MenuItem>,
-                  <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.redo();}}>Redo</MenuItem>]
+                  <React.Fragment>
+                    <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.undo();}}>Undo</MenuItem>
+                    <MenuItem eventKey={1.1} onClick={() => {this.props.pathwayActions.redo();}}>Redo</MenuItem>
+                  </React.Fragment>
                   }
                 </NavDropdown>
                 <NavDropdown eventKey={3} title="View" id="basic-nav-view">

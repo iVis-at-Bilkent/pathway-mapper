@@ -1,9 +1,9 @@
-import React from 'react';
-import {Modal, Form, FormGroup, FormControl, Col, Button, InputGroup, ControlLabel} from 'react-bootstrap';
 import { observer } from 'mobx-react';
-import PathwayActions from '../utils/PathwayActions';
+import React from 'react';
+import { Button, Col, ControlLabel, Form, FormControl, InputGroup, Modal } from 'react-bootstrap';
 import { IPathwayInfo } from '../managers/FileOperationsManager';
 import { EModalType } from '../ui/react-pathway-mapper';
+import PathwayActions from '../utils/PathwayActions';
 
 interface IPathwayDetailsModalProps{
     isModalShown: boolean;
@@ -28,7 +28,7 @@ export default class PathwayDetailsModal extends React.Component<IPathwayDetails
 
             <Modal id="pathwayDetailsDiv" show={this.props.isModalShown} onHide={() => {this.props.handleClose(4)}}>
                 <Modal.Header closeButton>
-                    <Modal.Title><h3>Pathway Properties</h3></Modal.Title>
+                    <Modal.Title>Pathway Properties</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <Form id="pathwayDetailsForm">

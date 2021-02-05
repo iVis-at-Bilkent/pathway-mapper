@@ -1,39 +1,39 @@
-import React, { Component } from 'react';
-import Toolbar from "../ui/Toolbar";
-import CytoscapeArea from "./CytoscapeArea";
-import Ranking from "../ui/Ranking";
-import EditorActionsManager from "../managers/EditorActionsManager";
 import autobind from "autobind-decorator";
-import {observable, computed, makeObservable, action} from "mobx";
-import {observer} from "mobx-react";
-import FileOperationsManager from '../managers/FileOperationsManager';
-import {Row, Col, Grid, Label} from "react-bootstrap"; 
-import pathways from "../data/pathways.json";
-import Menubar from './Menubar';
-import PathwayActions from '../utils/PathwayActions';
-import CBioPortalAccessor from '../utils/CBioPortalAccessor';
-import SaveLoadUtility from '../utils/SaveLoadUtility';
-import Sidebar from './Sidebar';
-import StudyModal from '../modals/StudyModal';
-import Buttonbar from "./Buttonbar";
-import ProfilesModal from '../modals/ProfilesModal';
+import { action, computed, makeObservable, observable } from "mobx";
+import { observer } from "mobx-react";
 import { IGeneticAlterationRuleSetParams } from 'oncoprintjs';
-
-import {toast, ToastContainer} from 'react-toastify';
-import AboutModal from '../modals/AboutModal';
+import React from 'react';
+import { Col, Row } from "react-bootstrap";
+import { toast, ToastContainer } from 'react-toastify';
 import ReactTooltip from 'react-tooltip';
-import PathwayDetailsModal from '../modals/PathwayDetailsModal';
-import ViewOperationsManager from '../managers/ViewOperationsManager';
-import GridSettings from '../modals/GridSettings';
-import GridOptionsManager from '../managers/GridOptionsManager';
-import QuickHelpModal from '../modals/QuickHelpModal';
-import LayoutProperties from '../modals/LayoutProperties';
-import ConfirmationModal from '../modals/ConfirmationModal';
-import CBioHelpModal from '../modals/CBioHelpModal';
-
 import "../css/pmv1.css";
 import "../css/pmv2.css";
 import '../css/qtip.css';
+import pathways from "../data/pathways.json";
+import EditorActionsManager from "../managers/EditorActionsManager";
+import FileOperationsManager from '../managers/FileOperationsManager';
+import GridOptionsManager from '../managers/GridOptionsManager';
+import ViewOperationsManager from '../managers/ViewOperationsManager';
+import AboutModal from '../modals/AboutModal';
+import CBioHelpModal from '../modals/CBioHelpModal';
+import ConfirmationModal from '../modals/ConfirmationModal';
+import GridSettings from '../modals/GridSettings';
+import LayoutProperties from '../modals/LayoutProperties';
+import PathwayDetailsModal from '../modals/PathwayDetailsModal';
+import ProfilesModal from '../modals/ProfilesModal';
+import QuickHelpModal from '../modals/QuickHelpModal';
+import StudyModal from '../modals/StudyModal';
+import Ranking from "../ui/Ranking";
+import Toolbar from "../ui/Toolbar";
+import CBioPortalAccessor from '../utils/CBioPortalAccessor';
+import PathwayActions from '../utils/PathwayActions';
+import SaveLoadUtility from '../utils/SaveLoadUtility';
+import Buttonbar from "./Buttonbar";
+import CytoscapeArea from "./CytoscapeArea";
+import Menubar from './Menubar';
+import Sidebar from './Sidebar';
+
+
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
@@ -223,6 +223,16 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.editor = editor;
   }
 
+  @action
+  addProfile(profile: IProfileMetaData) {
+    this.profiles.push(profile);
+  }
+
+  @action
+  toggleProfileEnabled(index: number) {
+    this.profiles[index].enabled = !this.profiles[index].enabled;
+  }
+
   calculateAlterationData(cBioAlterationData: ICBioData[]){
     // Transform cBioDataAlteration into AlterationData
       this.alterationData[PathwayMapper.CBIO_PROFILE_NAME] = {};
@@ -405,7 +415,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     
     const redirectedProfiles = Object.keys(this.props.alterationData).map((data: string) : IProfileMetaData => ({profileId: data, enabled: true}));
     redirectedProfiles.forEach((redirectedProfile) => {
-      this.profiles.push(redirectedProfile);
+      this.addProfile(redirectedProfile);
     });
     this.editor.addPortalGenomicData(this.props.alterationData, this.editor.getEmptyGroupID());
   }
@@ -444,7 +454,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
         }
 
 
-        this.profiles.push({studyId: selectedStudyData[0], profileId: dataTypes[dataType].profile, enabled: true});
+        this.addProfile({studyId: selectedStudyData[0], profileId: dataTypes[dataType].profile, enabled: true});
         this.portalAcessor.getProfileData({
             caseSetId: selectedStudyData[0],
             geneticProfileId: dataTypes[dataType].profile,
@@ -483,14 +493,14 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     <div className="pathwayMapper">
       <div style={isCBioPortal ? {width: window.innerWidth * 0.99} : {}} className={isCBioPortal ? "cBioMode container" : "customMargins"}>
           {!isCBioPortal && 
-          [
-          <div>
-            <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen} setActiveEdge={this.setActiveEdge}/>
-          </div>
-          ,
-          <div>
-            <Buttonbar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen}/> 
-          </div>]
+            <React.Fragment>
+              <div>
+                <Menubar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen} setActiveEdge={this.setActiveEdge}/>
+              </div>    
+              <div>
+                <Buttonbar pathwayActions={this.pathwayActions} handleOpen={this.handleOpen}/> 
+              </div>
+            </React.Fragment>
           }
           { isCBioPortal &&
           <Row style={{marginBottom: "6px"}}>
@@ -552,7 +562,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
 
           {
           (<div id="pm-modals">
-            <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[EModalType.PROFILES]} handleClose={this.handleClose} />
+            <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[EModalType.PROFILES]} handleClose={this.handleClose} handleProfileLabelClicked={this.toggleProfileEnabled}/>
             <PathwayDetailsModal isModalShown={this.isModalShown[EModalType.PW_DETAILS]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <GridSettings isModalShown={this.isModalShown[EModalType.GRID]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <QuickHelpModal isModalShown={this.isModalShown[EModalType.HELP]} handleClose={this.handleClose}/>
@@ -563,8 +573,10 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
           </div>)
           }
           { !this.props.isCBioPortal &&
-            [<StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>,
-            <ToastContainer className={"pm-toast-container"}/>]
+            <React.Fragment>
+              <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
+              <ToastContainer className={"pm-toast-container"}/>
+            </React.Fragment>
           }
           <ReactTooltip className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 9999999}}/>
 

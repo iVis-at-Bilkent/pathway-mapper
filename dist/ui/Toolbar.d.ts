@@ -1,6 +1,6 @@
 import React from 'react';
-import PathwayActions from '../utils/PathwayActions';
 import { IAlterationData } from '../ui/react-pathway-mapper';
+import PathwayActions from '../utils/PathwayActions';
 interface IToolbarProps {
     pathwayActions: PathwayActions;
     selectedPathway: string;

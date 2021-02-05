@@ -1,22 +1,19 @@
+import { shapeToSvg } from 'oncoprintjs';
 import React from 'react';
-import { EModalType } from '../ui/react-pathway-mapper';
-import {Modal} from 'react-bootstrap';
-import {shapeToSvg} from 'oncoprintjs';
-import $ from 'jquery';
+import { Modal } from 'react-bootstrap';
+// @ts-ignore
+import openImage from "../images/toolbar/edit.svg";
 // @ts-ignore
 import layoutImage from "../images/toolbar/layout-cose.svg";
 // @ts-ignore
 import savePNGImage from "../images/toolbar/save_png.svg";
 // @ts-ignore
 import saveSVGImage from "../images/toolbar/save_svg.svg";
+import { EModalType } from '../ui/react-pathway-mapper';
 // @ts-ignore
 const addSelImage = require("../images/toolbar/add-selected.svg");
 // @ts-ignore
 const addAllImage = require("../images/toolbar/add-all.svg");
-// @ts-ignore
-import openImage from "../images/toolbar/edit.svg";
-// @ts-ignore
-import patientImage from "../images/toolbar/PatientViewHelp.png";
 
 
 interface ICBioHelpModalProps{
@@ -27,12 +24,8 @@ interface ICBioHelpModalProps{
 
 // https://github.com/cBioPortal/cbioportal-frontend/blob/29a93c5e992ca1affd3d027355015164ae3602bd/src/shared/lib/Colors.ts
 const CNA_COLOR_AMP = '#ff0000';
-const CNA_COLOR_GAIN = '#ffb6c1';
-const CNA_COLOR_HETLOSS = '#8fd8d8';
 const CNA_COLOR_HOMDEL = '#0000ff';
 const DEFAULT_GREY = '#bebebe';
-const MRNA_COLOR_HIGH = '#ff9999';
-const MRNA_COLOR_LOW = '#6699cc';
 const MUT_COLOR_MISSENSE = '#008000';
 const MUT_COLOR_MISSENSE_PASSENGER = '#53D400';
 const MUT_COLOR_INFRAME = '#993404';
@@ -43,8 +36,6 @@ const MUT_COLOR_FUSION = '#8B00C9';
 const MUT_COLOR_PROMOTER = '#00B7CE';
 const MUT_COLOR_OTHER = '#cf58bc';
 const MUT_COLOR_GERMLINE = '#FFFFFF';
-const PROT_COLOR_HIGH = '#ff3df8';
-const PROT_COLOR_LOW = '#00E1FF';
 
 // always used shape
 const defaultShape = {
@@ -178,7 +169,6 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
 
     constructor(props: ICBioHelpModalProps){
         super(props);
-        console.log("CBioModal", this.props.patientView)
     }
 
     generateOncoprintLegend() {
@@ -235,7 +225,7 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
         return( 
             <Modal bsSize="lg" id="cBioHelpModal" className="pathwayMapper" show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.CHELP)}}>
                 <Modal.Header closeButton>
-                    <Modal.Title>PathwayMapper cBioPortal Edition 2.0</Modal.Title>
+                    <Modal.Title>PathwayMapper cBioPortal Edition 2.1</Modal.Title>
                 </Modal.Header>
                 {(!this.props.patientView &&
                 <Modal.Body> 

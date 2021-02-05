@@ -1,6 +1,5 @@
-import { Console } from 'console'
-import { GeneticAlterationRuleSet, shapeToSvg } from 'oncoprintjs'
 import $ from 'jquery'
+import { GeneticAlterationRuleSet, shapeToSvg } from 'oncoprintjs'
 
 export default class GenomicDataOverlayManager {
   public genomicDataMap: {}
@@ -9,7 +8,6 @@ export default class GenomicDataOverlayManager {
   public groupedGenomicDataMap: {}
   public patientData: any
   private DEFAULT_VISIBLE_GENOMIC_DATA_COUNT: number
-  private MAX_VISIBLE_GENOMIC_DATA_COUNT: number
   private observers: any[]
   private cy: any
   constructor(cy: any) {
@@ -20,7 +18,6 @@ export default class GenomicDataOverlayManager {
     this.groupedGenomicDataMap = {}
     this.groupedGenomicDataCount = 0
     this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT = 3
-    this.MAX_VISIBLE_GENOMIC_DATA_COUNT = 6
 
     // Observer-observable pattern related stuff
     this.observers = []
@@ -98,7 +95,7 @@ export default class GenomicDataOverlayManager {
     }
     //This parameter is used as flag for PatientView PathwayMapper Functions
     if (data['PatientView'] == 1) {
-      this.patientData = data;
+      this.patientData = data
       this.showPatientData()
     } else {
       this.showGenomicData()
@@ -377,9 +374,6 @@ export default class GenomicDataOverlayManager {
       return
     }
 
-    //console.log('Inside showGenomicData')
-    //console.log(this.cy)
-
     this.cy
       .style()
       .selector('node[type="GENE"]')
@@ -484,7 +478,7 @@ export default class GenomicDataOverlayManager {
   showPatientData() {
     const self = this
 
-    const data = this.patientData;
+    const data = this.patientData
 
     // const genomicDataBoxCount = 3 //this.countVisibleGenomicDataByType(); //CHANGE
     const genomicDataBoxCount = data.geneticTrackData
@@ -527,13 +521,14 @@ export default class GenomicDataOverlayManager {
       })
       .update()
 
-      this.cy.on('mouseover', 'node[type="GENE"]', function(event) {
-        var node = event.target || event.cyTarget
-        const nodeLabel = node.data('name')
-        if (!data[nodeLabel]) {
-          return
-        }
-        node.qtip({
+    this.cy.on('mouseover', 'node[type="GENE"]', function(event) {
+      var node = event.target || event.cyTarget
+      const nodeLabel = node.data('name')
+      if (!data[nodeLabel]) {
+        return
+      }
+      node.qtip(
+        {
           content: {
             text: function() {
               return self.generateHTMLContentForNodeTooltip(node, data)
@@ -543,14 +538,16 @@ export default class GenomicDataOverlayManager {
             classes: 'qtip-light qtip-rounded'
           },
           show: {
-            event: "showqtipevent"
+            event: 'showqtipevent'
           },
           hide: {
             event: 'mouseout'
           }
-        }, event);
-        node.trigger("showqtipevent") 
-      })
+        },
+        event
+      )
+      node.trigger('showqtipevent')
+    })
   }
 
   //Every mutation type has a unique color coded. This method is used to retrieve the colors
@@ -713,7 +710,7 @@ export default class GenomicDataOverlayManager {
   generateOncoprintForPatientNode(ele) {
     // const dataURI = 'data:image/svg+xml;utf8,'
     // nodeLabel refers to the nodeLabels in the overlay data
-    const patientData = this.patientData;
+    const patientData = this.patientData
     const nodeLabel = ele.data('name')
     const genomicData = patientData[nodeLabel]
 
@@ -764,57 +761,62 @@ export default class GenomicDataOverlayManager {
   }
 
   // Mapping of alteration type keys to strings
-  // See: https://github.com/cBioPortal/cbioportal-frontend/blob/442e108208846255feb1ed5b309218cd44927fb9/src/shared/components/oncoprint/TooltipUtils.ts#L599    
+  // See: https://github.com/cBioPortal/cbioportal-frontend/blob/442e108208846255feb1ed5b309218cd44927fb9/src/shared/components/oncoprint/TooltipUtils.ts#L599
   getCNADisplayString(alterationTypeKey: number) {
     const disp_cna: { [integerCN: string]: string } = {
       '-2': 'HOMODELETED',
       '-1': 'HETLOSS',
       '1': 'GAIN',
-      '2': 'AMPLIFIED',
+      '2': 'AMPLIFIED'
     }
     return disp_cna[alterationTypeKey]
   }
 
   generateSvgIconForSample(iconColor: string, iconText: string) {
-    
-    var html = '<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">' + 
-    '<g transform="translate(6,6)">' +
-    	'<circle r="6" fill="' + iconColor + '" fill-opacity="1"></circle>' +
-    '</g>' +
-    '<g transform="translate(6,5.5)">' +
+    var html =
+      '<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">' +
+      '<g transform="translate(6,6)">' +
+      '<circle r="6" fill="' +
+      iconColor +
+      '" fill-opacity="1"></circle>' +
+      '</g>' +
+      '<g transform="translate(6,5.5)">' +
       '<text y="4" text-anchor="middle" font-size="10" fill="white" style="cursor: default;">' +
-      iconText +'</text>' +
-    '</g>' +'</svg>'
+      iconText +
+      '</text>' +
+      '</g>' +
+      '</svg>'
 
-    return html;
+    return html
   }
 
   generateHTMLContentForNodeTooltip(ele, patientData) {
-
-    const tooltipMaxHeight = '200px';
+    const tooltipMaxHeight = '200px'
     const tooltipMaxWidth = '200px'
-    const marginBetweenSamples = '10px';
+    const marginBetweenSamples = '10px'
     const sampleIconColorMap = patientData.sampleColors
     const sampleIndexMap = patientData.sampleIndex
 
-    const nodeLabel = ele.data('name')  
+    const nodeLabel = ele.data('name')
     const data = patientData[nodeLabel]
 
     // Outer wrapper for the entire tooltip
     var wrapper = $('<div></div>')
     wrapper.css({
-      'max-width' : tooltipMaxWidth,
+      'max-width': tooltipMaxWidth,
       'max-height': tooltipMaxHeight,
-      'word-wrap' : 'break-word',
+      'word-wrap': 'break-word',
       'overflow-y': 'auto'
     })
 
     data.geneticTrackData.forEach((sample, sampleIndex) => {
-      
       const sampleId = sample.sample
-      const iconColor = sampleIconColorMap[sampleId];
-      const iconText = (sampleIndexMap[sampleId] + 1).toString();
-      const sampleIconSvgHTML = this.generateSvgIconForSample(iconColor, iconText);
+      const iconColor = sampleIconColorMap[sampleId]
+      const iconText = (sampleIndexMap[sampleId] + 1).toString()
+      const sampleIconSvgHTML = this.generateSvgIconForSample(
+        iconColor,
+        iconText
+      )
 
       const margin = sampleIndex > 0 ? marginBetweenSamples : '0px'
 
@@ -823,7 +825,7 @@ export default class GenomicDataOverlayManager {
       sampleWrapper.css({
         'margin-top': margin
       })
-      
+
       const sampleData = sample.data
       var mutationInfo = []
       var cnaInfo = []
@@ -831,7 +833,11 @@ export default class GenomicDataOverlayManager {
       sampleData.forEach(data => {
         const geneSymbol = data.gene.hugoGeneSymbol
 
-        if (sample.disp_mut && data.proteinChange && data.mutationType !== 'Fusion') {
+        if (
+          sample.disp_mut &&
+          data.proteinChange &&
+          data.mutationType !== 'Fusion'
+        ) {
           const proteinChange = data.proteinChange
           mutationInfo.push({
             gene: geneSymbol,
@@ -848,59 +854,66 @@ export default class GenomicDataOverlayManager {
           })
         }
 
-        if (sample.disp_fusion && data.proteinChange && data.mutationType === 'Fusion') {
+        if (
+          sample.disp_fusion &&
+          data.proteinChange &&
+          data.mutationType === 'Fusion'
+        ) {
           const proteinChange = data.proteinChange
           fusionInfo.push({
             gene: geneSymbol,
             proteinChange: proteinChange
           })
         }
-
-      });
+      })
       // Prepare HTML for tooltip
       var mutationInfoHTML = mutationInfo.length > 0 ? 'Mutation: ' : ''
-      var cnaInfoHTML = cnaInfo.length > 0 ? 'CNA: ': ''
+      var cnaInfoHTML = cnaInfo.length > 0 ? 'CNA: ' : ''
       var fusionInfoHTML = fusionInfo.length > 0 ? 'Fusion: ' : ''
 
       mutationInfo.forEach((mutation, index) => {
-        mutationInfoHTML += "<b>" + mutation.gene + " " 
-                            + mutation.proteinChange + "</b>"
+        mutationInfoHTML +=
+          '<b>' + mutation.gene + ' ' + mutation.proteinChange + '</b>'
         if (index !== mutationInfo.length - 1) {
-          mutationInfoHTML += ", "
-        }
-        else {
-          mutationInfoHTML += "<br>"
+          mutationInfoHTML += ', '
+        } else {
+          mutationInfoHTML += '<br>'
         }
       })
 
       cnaInfo.forEach((cna, index) => {
-        cnaInfoHTML += "<b>" + cna.gene + " " + cna.cnaLabel + "</b>"
+        cnaInfoHTML += '<b>' + cna.gene + ' ' + cna.cnaLabel + '</b>'
         if (index !== cnaInfo.length - 1) {
-          cnaInfoHTML += ", "
-        }
-        else {
-          cnaInfoHTML += "<br>"
+          cnaInfoHTML += ', '
+        } else {
+          cnaInfoHTML += '<br>'
         }
       })
 
       fusionInfo.forEach((fusion, index) => {
-        fusionInfoHTML += "<b>" + fusion.gene + " " + fusion.proteinChange + "</b>"
+        fusionInfoHTML +=
+          '<b>' + fusion.gene + ' ' + fusion.proteinChange + '</b>'
         if (index !== fusionInfo.length - 1) {
-          fusionInfoHTML += ", "
-        }
-        else {
-          fusionInfoHTML += "<br>"
+          fusionInfoHTML += ', '
+        } else {
+          fusionInfoHTML += '<br>'
         }
       })
-      const sampleIdHTML = "<b> " + sampleId + "</b>" + "<br>"
-      sampleWrapper.append($('<div>' + sampleIconSvgHTML + sampleIdHTML 
-                            + mutationInfoHTML + cnaInfoHTML 
-                            + fusionInfoHTML +
-                            + '</div>'))
+      const sampleIdHTML = '<b> ' + sampleId + '</b>' + '<br>'
+      sampleWrapper.append(
+        $(
+          '<div>' +
+            sampleIconSvgHTML +
+            sampleIdHTML +
+            mutationInfoHTML +
+            cnaInfoHTML +
+            fusionInfoHTML +
+            +'</div>'
+        )
+      )
       wrapper.append(sampleWrapper)
-    });
+    })
 
     return wrapper
   }
-
 }

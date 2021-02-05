@@ -1,33 +1,23 @@
-import React from "react";
-import { Nav, Navbar, NavItem, FormControl, Glyphicon, InputGroup, ButtonGroup, ButtonToolbar, Button, FormGroup } from "react-bootstrap";
-import PathwayActions from "../utils/PathwayActions";
 import { makeObservable, observable } from "mobx";
-// @ts-ignore
-import loadSvg from '../images/toolbar/load.svg';
+import { observer } from "mobx-react";
+import React from "react";
+import { Button, ButtonGroup, ButtonToolbar, FormControl, FormGroup, Glyphicon, InputGroup, Navbar } from "react-bootstrap";
 // @ts-ignore
 import aboutSvg from '../images/toolbar/about.svg';
 // @ts-ignore
-import newSvg from '../images/toolbar/new.svg';
-// @ts-ignore
-import saveSvg from '../images/toolbar/save.svg';
-// @ts-ignore
-import deleteSvg from '../images/toolbar/delete-simple.svg';
-// @ts-ignore
-import undoSvg from '../images/toolbar/undo.svg';
-// @ts-ignore
-import redoSvg from '../images/toolbar/redo.svg';
-// @ts-ignore
-import ahtSvg from '../images/toolbar/align/align-horizontal-top.svg';
+import ahbSvg from '../images/toolbar/align/align-horizontal-bottom.svg';
 // @ts-ignore
 import ahmSvg from '../images/toolbar/align/align-horizontal-middle.svg';
 // @ts-ignore
-import ahbSvg from '../images/toolbar/align/align-horizontal-bottom.svg';
-// @ts-ignore
-import avlSvg from '../images/toolbar/align/align-vertical-left.svg';
+import ahtSvg from '../images/toolbar/align/align-horizontal-top.svg';
 // @ts-ignore
 import avcSvg from '../images/toolbar/align/align-vertical-center.svg';
 // @ts-ignore
+import avlSvg from '../images/toolbar/align/align-vertical-left.svg';
+// @ts-ignore
 import avrSvg from '../images/toolbar/align/align-vertical-right.svg';
+// @ts-ignore
+import deleteSvg from '../images/toolbar/delete-simple.svg';
 // @ts-ignore
 import gridSvg from '../images/toolbar/grid.svg';
 // @ts-ignore
@@ -35,20 +25,30 @@ import guideSvg from '../images/toolbar/guidelines.svg';
 // @ts-ignore
 import hideSvg from '../images/toolbar/hide-selected.svg';
 // @ts-ignore
-import showSvg from '../images/toolbar/show-all.svg';
-// @ts-ignore
-import portalSvg from '../images/toolbar/portal.svg';
-// @ts-ignore
-import setingsSvg from '../images/toolbar/settings.svg';
-// @ts-ignore
 import layoutSvg from '../images/toolbar/layout-cose.svg';
 // @ts-ignore
 import layoutPropSvg from '../images/toolbar/layout-properties.svg';
 // @ts-ignore
+import loadSvg from '../images/toolbar/load.svg';
+// @ts-ignore
+import newSvg from '../images/toolbar/new.svg';
+// @ts-ignore
+import portalSvg from '../images/toolbar/portal.svg';
+// @ts-ignore
 import helpSvg from '../images/toolbar/quick-help.svg';
-import { EModalType } from "./react-pathway-mapper";
-import { observer } from "mobx-react";
+// @ts-ignore
+import redoSvg from '../images/toolbar/redo.svg';
+// @ts-ignore
+import saveSvg from '../images/toolbar/save.svg';
+// @ts-ignore
+import setingsSvg from '../images/toolbar/settings.svg';
+// @ts-ignore
+import showSvg from '../images/toolbar/show-all.svg';
+// @ts-ignore
+import undoSvg from '../images/toolbar/undo.svg';
 import { EGridType } from "../modals/GridSettings";
+import PathwayActions from "../utils/PathwayActions";
+import { EModalType } from "./react-pathway-mapper";
 
 
 interface IButtonbarProps {
@@ -144,34 +144,44 @@ export default class Buttonbar extends React.Component<IButtonbarProps, {}>{
 
         
         return (
-            <Navbar style={{backgroundColor: "#eff0f2", minHeight: "36px"}} className="pathway-toolbar">
-                <Nav>
-                    <ButtonToolbar style={{paddingBottom: 0, paddingTop: "7px" }} className="toolbar pathway-toolbar">
-                        {   allFunctions.map((functions) =>
-                        <ButtonGroup>
-                            { functions.map((svg: ISVGFunction) => 
-                                (<div className={"toolbar-button" + ((svg.isFocused ? " toolbar-button-focused" : ""))}>
-                                    <img height="22px" width="22px" src={svg.svg} data-tip={svg.tooltip} data-place="bottom" data-effect="solid" onClick={svg.function}></img>
-                                </div>)
-                                )
-                            }
-                        </ButtonGroup>)
+            <Navbar fluid style={{backgroundColor: "#eff0f2", minHeight: "0px"}} className="pathway-toolbar">
+                <ButtonToolbar className="toolbar pathway-toolbar" style={{marginBottom: "0px", paddingBottom: "0px"}}>
+                    {   allFunctions.map((functions, index) =>
+                    <ButtonGroup key={index}>
+                        { functions.map((svg: ISVGFunction, index) => 
+                            (
+                            <Button key={index} className={"toolbar-button" + ((svg.isFocused ? " toolbar-button-focused" : ""))} style={{padding: 0}}>
+                                <img height="22px" width="22px" src={svg.svg} data-tip={svg.tooltip} data-place="bottom" data-effect="solid" onClick={svg.function}></img>
+                            </Button>)
+                            )
                         }
-                    </ButtonToolbar>
-                </Nav>
-                <Nav pullRight style={{marginTop: "0", marginBottom: "0"}} className="toolbar">
+                    </ButtonGroup>)
+                    }
                     <ButtonGroup id="searchGeneToolbar">
-                        <FormGroup>
-                            <FormGroup className="has-feedback">
-                            <FormControl id="searchGene" type="text"
+                    <FormGroup>
+                        <InputGroup>
+                            <FormControl 
+                                id="searchGene" 
+                                type="text"
+                                style={{
+                                    maxHeight: '32px',
+                                    borderTopRightRadius: 0,
+                                    borderBottomRightRadius: 0
+                                }}
                                 onChange={(e: any) => { this.searchedGene = e.target.value;}}
                                 placeholder="Search Genes..."
                                 onKeyPress={(e: any) => { if (e.key !== "Enter") return; this.props.pathwayActions.searchGene(this.searchedGene) }} />
-                            <Glyphicon className="form-control-feedback" onClick={() => { this.props.pathwayActions.searchGene(this.searchedGene) }} glyph="search" />
-                            </FormGroup>
-                        </FormGroup>
+                            <InputGroup.Addon
+                                id="search-gene-input-group-addon"
+                                onClick={() => {this.props.pathwayActions.searchGene(this.searchedGene)}}
+                                style={{cursor: 'pointer'}}
+                            >
+                                <Glyphicon glyph="search"/>
+                            </InputGroup.Addon>
+                        </InputGroup>
+                    </FormGroup>
                     </ButtonGroup>
-                </Nav>
+                </ButtonToolbar>
             </Navbar>
         )
     }

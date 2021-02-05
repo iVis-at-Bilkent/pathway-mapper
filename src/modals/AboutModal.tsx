@@ -1,15 +1,9 @@
 import React from 'react';
-import {Modal} from 'react-bootstrap';
-
-// @ts-ignore
-import iVisImg from "../about/i-vis.png";
-// @ts-ignore
-import mskccImg from "../about/mskcc.png";
+import { Modal } from 'react-bootstrap';
 import { EModalType } from '../ui/react-pathway-mapper';
 interface IAboutModalProps{
     isModalShown: boolean;
     handleClose: Function;
-
 }
 
 export default class AboutModal extends React.Component<IAboutModalProps, {}> {
@@ -17,7 +11,6 @@ export default class AboutModal extends React.Component<IAboutModalProps, {}> {
     constructor(props: IAboutModalProps){
         super(props);
     }
-
 
     render(){
 
@@ -29,9 +22,7 @@ export default class AboutModal extends React.Component<IAboutModalProps, {}> {
           onHide={() => {this.props.handleClose(EModalType.ABOUT)}}
           >
             <Modal.Header closeButton>
-              <Modal.Title>
-                <h3>About</h3>
-              </Modal.Title>
+              <Modal.Title>About</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <h3 id="about-model-header">PathwayMapper 2.1</h3>

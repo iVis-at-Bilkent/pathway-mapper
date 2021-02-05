@@ -5,7 +5,6 @@ import WelcomePage from "./ui/WelcomePage";
 
 window.onload = () => {
   const rootEl = document.getElementById('app');
-  console.log(window.location.search);
   const placeHolderGenes = [/*{hugoGeneSymbol: "TP53"}, {hugoGeneSymbol: "CDKN2A"}, {hugoGeneSymbol: "CCNE1"}, {hugoGeneSymbol: "MDM4"}*/];
 
 
@@ -19,8 +18,6 @@ window.onload = () => {
   if(genesParam){
     genes = genesParam.split("+").map(gene => ({hugoGeneSymbol: gene}))
   }
-
-  console.log(genes);
 
   const id = findGetParameter("id");
 

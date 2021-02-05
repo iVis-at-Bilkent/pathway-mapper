@@ -1,6 +1,6 @@
 const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const root = path.resolve(__dirname);
 const src = path.join(root, 'src');
@@ -8,6 +8,14 @@ const modules = path.join(root, 'node_modules');
 
 
 module.exports = {
+  plugins: [
+    new HtmlWebPackPlugin({
+      hash: true,
+      filename: "index.html",  //target html
+      template: "./src/index.html" //source html
+    }),
+    new MiniCssExtractPlugin({filename: './base.css'})
+  ],
   devtool: 'source-map',
   entry: "./src/index.jsx",
   output: {
@@ -62,13 +70,11 @@ module.exports = {
         }
       ]
     },{
-      test: /\.css$/,
-      use: ExtractTextPlugin.extract(
-        {
-          fallback: 'style-loader',
-          use: ['css-loader']
-        }
-      )
+      test: /\.css$/i,
+      use: [
+        MiniCssExtractPlugin.loader, 
+        'css-loader'
+      ]
     },
     {
       test: /\.(png|jpg|gif)$/,
@@ -90,13 +96,5 @@ module.exports = {
       }]
     }
     ]
-  },
-  plugins: [
-    new HtmlWebPackPlugin({
-      hash: true,
-      filename: "index.html",  //target html
-      template: "./src/index.html" //source html
-    }),
-    new ExtractTextPlugin({ filename: './base.css' })
-  ]
+  }
 };

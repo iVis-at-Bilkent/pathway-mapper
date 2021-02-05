@@ -1,7 +1,3 @@
-/**
- *
- */
-import SaveLoadUtility from '../utils/SaveLoadUtility'
 import EditorActionsManager from '../managers/EditorActionsManager'
 import GraphUtilities from '../utils/GraphUtilities'
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { IProfileMetaData, EModalType } from './react-pathway-mapper';
+import { EModalType, IProfileMetaData } from './react-pathway-mapper';
 declare type PathwayMapperType = {
     isCollaborative: boolean;
     isCbioPortal: boolean;

@@ -1,10 +1,10 @@
-import EditorActionsManager from '../managers/EditorActionsManager';
-import FileOperationsManager, { IPathwayInfo } from '../managers/FileOperationsManager';
-import { IProfileMetaData, EModalType } from '../ui/react-pathway-mapper';
-import ViewOperationsManager from '../managers/ViewOperationsManager';
-import GridOptionsManager from '../managers/GridOptionsManager';
-import { ILayoutProperties } from '../modals/LayoutProperties';
-import { EGridType } from '../modals/GridSettings';
+import EditorActionsManager from "../managers/EditorActionsManager";
+import FileOperationsManager, { IPathwayInfo } from "../managers/FileOperationsManager";
+import GridOptionsManager from "../managers/GridOptionsManager";
+import ViewOperationsManager from "../managers/ViewOperationsManager";
+import { EGridType } from "../modals/GridSettings";
+import { ILayoutProperties } from "../modals/LayoutProperties";
+import { EModalType, IProfileMetaData } from "../ui/react-pathway-mapper";
 export default class PathwayActions {
     selectedPathway: string;
     fileManager: FileOperationsManager;
@@ -23,6 +23,8 @@ export default class PathwayActions {
     overlayUploader: any;
     enabledType: EGridType;
     constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, handleOpen: (modalId: EModalType) => void, isCBioPortal: boolean, isCollaborative: boolean);
+    addProfile(profile: IProfileMetaData): void;
+    clearProfiles(): void;
     emphasiseQueryGenes(queryGenes: string[]): void;
     getSelectedNodes(): any;
     setLayoutProperties(layoutProperties: ILayoutProperties): void;

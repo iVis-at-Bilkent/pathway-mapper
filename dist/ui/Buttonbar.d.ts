@@ -1,7 +1,7 @@
 import React from "react";
+import { EGridType } from "../modals/GridSettings";
 import PathwayActions from "../utils/PathwayActions";
 import { EModalType } from "./react-pathway-mapper";
-import { EGridType } from "../modals/GridSettings";
 interface IButtonbarProps {
     pathwayActions: PathwayActions;
     handleOpen: (modelId: EModalType) => void;

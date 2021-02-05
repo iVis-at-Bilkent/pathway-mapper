@@ -25,9 +25,7 @@ export default class ConfirmationModal extends React.Component<IConfirmationModa
             onHide={() => {this.props.handleClose(EModalType.CONFIRMATION);}}
             >
                 <Modal.Header closeButton>
-                <Modal.Title>
-                    <h4>Confirmation</h4>
-                </Modal.Title>
+                <Modal.Title>Confirmation</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div>    
