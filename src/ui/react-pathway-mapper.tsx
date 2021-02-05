@@ -480,13 +480,19 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
   }
 
+  @autobind
+  emphasizeQueryGenes() {
+    this.pathwayActions.emphasizeQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
+  }
+
   render() {
   const isCBioPortal = this.props.isCBioPortal;     
 
   const cytoComp = <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative} 
   setActiveEdge={this.setActiveEdge} editorHandler={this.editorHandler} 
   selectedPathway={this.selectedPathway} pathwayHandler={this.pathwayHandler} 
-  handleOpen={this.handleOpen}/>;
+  handleOpen={this.handleOpen}
+  onPathwayChangeCompleted={this.emphasizeQueryGenes}/>;
 
   return (
 
@@ -610,14 +616,6 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
       $(".container").css('width', "auto");
       $(".container").css('paddingLeft', 0);
       $(".container").css('marginLeft', 5);
-    } else {
-      this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
-    }
-  }
-
-  componentDidUpdate(){
-    if(this.props.isCBioPortal){
-      this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
     }
   }
 
