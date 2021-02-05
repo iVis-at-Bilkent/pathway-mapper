@@ -2,7 +2,7 @@ import autobind from "autobind-decorator";
 import { action, computed, makeObservable, observable } from "mobx";
 import EditorActionsManager from "../managers/EditorActionsManager";
 import FileOperationsManager, {
-  IPathwayInfo
+    IPathwayInfo
 } from "../managers/FileOperationsManager";
 import GridOptionsManager from "../managers/GridOptionsManager";
 import ViewOperationsManager from "../managers/ViewOperationsManager";
@@ -10,7 +10,7 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 import { EGridType } from "../modals/GridSettings";
 import { ILayoutProperties } from "../modals/LayoutProperties";
 import {
-  EModalType, IPathwayData, IProfileMetaData
+    EModalType, IPathwayData, IProfileMetaData
 } from "../ui/react-pathway-mapper";
 import SaveLoadUtility from "./SaveLoadUtility";
 
@@ -64,7 +64,7 @@ export default class PathwayActions {
     this.profiles.length = 0;
   }
 
-  emphasiseQueryGenes(queryGenes: string[]) {
+  emphasizeQueryGenes(queryGenes: string[]) {
     if (this.editor)
       this.editor.cy.nodes().forEach((node: any) => {
         const nodeName = node.data().name;

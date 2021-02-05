@@ -13084,7 +13084,7 @@ function () {
       this.profiles.length = 0;
     }
   });
-  Object.defineProperty(PathwayActions.prototype, "emphasiseQueryGenes", {
+  Object.defineProperty(PathwayActions.prototype, "emphasizeQueryGenes", {
     enumerable: false,
     configurable: true,
     writable: true,
@@ -16720,6 +16720,16 @@ function (_super) {
     value: function (nextProps) {
       this.getPathway(nextProps.selectedPathway);
     }
+  });
+  Object.defineProperty(CytoscapeArea.prototype, "componentDidUpdate", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (prevProps) {
+      if (this.isCbioPortal && prevProps.selectedPathway !== this.props.selectedPathway) {
+        this.props.onPathwayChangeCompleted();
+      }
+    }
   }); // This method only opens pathways that are available in pathway.json. Namely, imported or merged pathways are not opened via this method.
   // Yet, they individually call parsing method.
 
@@ -18583,6 +18593,16 @@ function (_super) {
       this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
     }
   });
+  Object.defineProperty(PathwayMapper.prototype, "emphasizeQueryGenes", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.pathwayActions.emphasizeQueryGenes(this.props.genes.map(function (gene) {
+        return gene.hugoGeneSymbol;
+      }));
+    }
+  });
   Object.defineProperty(PathwayMapper.prototype, "render", {
     enumerable: false,
     configurable: true,
@@ -18599,7 +18619,8 @@ function (_super) {
         editorHandler: this.editorHandler,
         selectedPathway: this.selectedPathway,
         pathwayHandler: this.pathwayHandler,
-        handleOpen: this.handleOpen
+        handleOpen: this.handleOpen,
+        onPathwayChangeCompleted: this.emphasizeQueryGenes
       });
       return external_react_default.a.createElement("div", {
         className: "pathwayMapper"
@@ -18778,22 +18799,6 @@ function (_super) {
         $(".container").css('width', "auto");
         $(".container").css('paddingLeft', 0);
         $(".container").css('marginLeft', 5);
-      } else {
-        this.pathwayActions.emphasiseQueryGenes(this.props.genes.map(function (gene) {
-          return gene.hugoGeneSymbol;
-        }));
-      }
-    }
-  });
-  Object.defineProperty(PathwayMapper.prototype, "componentDidUpdate", {
-    enumerable: false,
-    configurable: true,
-    writable: true,
-    value: function () {
-      if (this.props.isCBioPortal) {
-        this.pathwayActions.emphasiseQueryGenes(this.props.genes.map(function (gene) {
-          return gene.hugoGeneSymbol;
-        }));
       }
     }
   });
@@ -18889,6 +18894,8 @@ function (_super) {
   react_pathway_mapper_decorate([external_autobind_decorator_default.a], PathwayMapper.prototype, "setActiveEdgeHandler", null);
 
   react_pathway_mapper_decorate([external_autobind_decorator_default.a], PathwayMapper.prototype, "addGenomicData", null);
+
+  react_pathway_mapper_decorate([external_autobind_decorator_default.a], PathwayMapper.prototype, "emphasizeQueryGenes", null);
 
   react_pathway_mapper_decorate([external_mobx_["action"].bound], PathwayMapper.prototype, "handleOpen", null);
 

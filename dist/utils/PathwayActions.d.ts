@@ -25,7 +25,7 @@ export default class PathwayActions {
     constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, handleOpen: (modalId: EModalType) => void, isCBioPortal: boolean, isCollaborative: boolean);
     addProfile(profile: IProfileMetaData): void;
     clearProfiles(): void;
-    emphasiseQueryGenes(queryGenes: string[]): void;
+    emphasizeQueryGenes(queryGenes: string[]): void;
     getSelectedNodes(): any;
     setLayoutProperties(layoutProperties: ILayoutProperties): void;
     doesCyHaveElements(): boolean;
