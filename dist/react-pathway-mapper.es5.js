@@ -12507,7 +12507,7 @@ function (_super) {
       enumerable: true,
       configurable: true,
       writable: true,
-      value: "When this is checked, only pathways from the TCGA PanCancer Atlas will be shown."
+      value: "The pathways listed above were retrieved from PathwayMapper. When this option is checked, only the pathways under TCGA > PanCanAtlas will be shown. Uncheck to show all."
     });
     Object(external_mobx_["makeObservable"])(_this);
     _this.isPercentageMatch = 0;
