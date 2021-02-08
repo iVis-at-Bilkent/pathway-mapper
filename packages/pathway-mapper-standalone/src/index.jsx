@@ -1,10 +1,7 @@
 import { PathwayMapper } from 'pathway-mapper';
+import "pathway-mapper/dist/base.css";
 import React from 'react';
 import { render } from 'react-dom';
-import "../../common/css/pmv1.css";
-import "../../common/css/pmv2.css";
-import '../../common/css/qtip.css';
-import '../../common/css/supp.css';
 import WelcomePage from "./WelcomePage";
 
 window.onload = () => {
