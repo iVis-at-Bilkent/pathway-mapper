@@ -7,7 +7,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const root = path.resolve(__dirname);
 const src = path.join(root, 'src');
 const modules = path.join(root, 'node_modules');
-
+const prod = process.env.NODE_ENV === "production";
 
 module.exports = {
   plugins: [
@@ -20,7 +20,7 @@ module.exports = {
     new CleanWebpackPlugin()
   ],
   optimization: {
-    minimize: false
+    minimize: prod ? true : false
   },
   devtool: 'source-map',
   entry: "./src/ui/react-pathway-mapper.tsx",

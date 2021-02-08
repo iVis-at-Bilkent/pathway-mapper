@@ -2,8 +2,11 @@
   "private": true,
   "workspaces": ["packages/*"],
   "scripts": {
-    "build": "yarn workspace pathway-mapper-standalone build",
-    "build:lib": "yarn workspace pathway-mapper build",
+    "build": "yarn buildApp:prod",
+    "buildApp:dev": "yarn workspace pathway-mapper-standalone build:dev",
+    "buildApp:prod": "yarn workspace pathway-mapper-standalone build:prod",
+    "buildLib:dev": "yarn workspace pathway-mapper build:dev",
+    "buildLib:prod": "yarn workspace pathway-mapper build:prod",
     "start": "yarn workspace pathway-mapper-standalone start"
   }
 }
