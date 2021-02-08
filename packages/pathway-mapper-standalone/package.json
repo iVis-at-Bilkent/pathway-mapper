@@ -2,6 +2,16 @@
   "name": "pathway-mapper-standalone",
   "description": "PathwayMapper for pathway visualization",
   "version": "2.1.0",
+  "author": "i-Vis at Bilkent <ivisatbilkent@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iVis-at-Bilkent/pathway-mapper"
+  },
+  "license": "AGPL-3.0-only",
+  "engines": {
+    "yarn": ">=1.21.1",
+    "node": ">=8.12.0"
+  },
   "scripts": {
     "build:dev": "cross-env NODE_ENV=development webpack",
     "build:prod": "cross-env NODE_ENV=production webpack",
