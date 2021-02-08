@@ -1,7 +1,7 @@
 {
   "name": "pathway-mapper",
   "description": "Base React components for PathwayMapper",
-  "version": "2.1.0",
+  "version": "2.1.2-beta.0",
   "main": "dist/index.es5.js",
   "module": "dist/index.es5.js",
   "jsnext:main": "dist/index.es5.js",
