@@ -51,7 +51,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
     readonly COUNT_PERC_EXPLANATION = "Whether we should favor the number of genes of interest matching the ones in a pathway or the percentage of such genes in that pathway. For instance, suppose genes of interest are A, B, and C, and the pathway contains genes B, C, D, and E. When we consider count, the score is 2 (for the two genes that match). However, when we consider percentage the score will be 50% as 2 of the 4 genes in the pathway are among genes of interest.";
     readonly ALTERATION_EXPLANATION = "When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and 50% for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (0.2+0.3)/4=12.5% for match count and percentage, respectively.";
-    readonly TCGA_PANCAN_EXPLANATION = "The pathways listed above were retrieved from PathwayMapper. When this option is checked, only the pathways under TCGA > PanCanAtlas will be shown. Uncheck to show all.";
+    readonly TCGA_PANCAN_EXPLANATION = "The pathways listed above were retrieved from <a href='http://www.pathwaymapper.org' target='_blank'>PathwayMapper</a>. When this option is checked, only the pathways under TCGA > PanCanAtlas will be shown. Uncheck to show all.";
 
     constructor(props: IRankingProps){
         super(props);
@@ -140,7 +140,15 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                 style={{fontSize: "13px"}}
             >
                 Show TCGA PanCancer Atlas pathways only&nbsp;            
-                <span data-tip={this.TCGA_PANCAN_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></span>
+                <span data-tip={this.TCGA_PANCAN_EXPLANATION} 
+                    data-border="true" 
+                    data-type="light" 
+                    data-place="left" 
+                    data-effect="solid"
+                    data-html="true"
+                    data-delay-hide="500" 
+                    className="fa fa-question-circle styles-module__infoIcon__zMiog">
+                </span>
             </Checkbox>
             </div>
             }

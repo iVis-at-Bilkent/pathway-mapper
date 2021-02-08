@@ -584,7 +584,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
               <ToastContainer className={"pm-toast-container"}/>
             </React.Fragment>
           }
-          <ReactTooltip className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 9999999}}/>
+          <ReactTooltip clickable={true} className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 9999999}}/>
 
           <input id="myInput"
             type="file"

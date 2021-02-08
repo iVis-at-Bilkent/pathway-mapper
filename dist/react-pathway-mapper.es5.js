@@ -12507,7 +12507,7 @@ function (_super) {
       enumerable: true,
       configurable: true,
       writable: true,
-      value: "The pathways listed above were retrieved from PathwayMapper. When this option is checked, only the pathways under TCGA > PanCanAtlas will be shown. Uncheck to show all."
+      value: "The pathways listed above were retrieved from <a href='http://www.pathwaymapper.org' target='_blank'>PathwayMapper</a>. When this option is checked, only the pathways under TCGA > PanCanAtlas will be shown. Uncheck to show all."
     });
     Object(external_mobx_["makeObservable"])(_this);
     _this.isPercentageMatch = 0;
@@ -12617,6 +12617,8 @@ function (_super) {
         "data-type": "light",
         "data-place": "left",
         "data-effect": "solid",
+        "data-html": "true",
+        "data-delay-hide": "500",
         className: "fa fa-question-circle styles-module__infoIcon__zMiog"
       }))), !this.props.patientView && external_react_default.a.createElement("div", {
         className: "info-entry"
@@ -18746,6 +18748,7 @@ function (_super) {
       }), external_react_default.a.createElement(external_react_toastify_["ToastContainer"], {
         className: "pm-toast-container"
       })), external_react_default.a.createElement(external_react_tooltip_default.a, {
+        clickable: true,
         className: isCBioPortal ? "" : "pmTip",
         style: {
           maxWidth: "350px",
