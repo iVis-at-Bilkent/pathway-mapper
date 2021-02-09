@@ -129,6 +129,7 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     }, selectedStudyData: any[]): void;
     setActiveEdgeHandler(setActiveEdge: (edgeId: number) => void): void;
     addGenomicData(cBioAlterationData: ICBioData[]): void;
+    emphasizeQueryGenes(): void;
     render(): JSX.Element;
     componentDidMount(): void;
     componentDidUpdate(): void;

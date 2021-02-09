@@ -9,6 +9,7 @@ declare type PathwayMapperType = {
     profiles: IProfileMetaData[];
     pathwayHandler: (pathwayName: string) => void;
     handleOpen: (modalId: EModalType) => void;
+    onPathwayChangeCompleted: () => void;
 };
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}> {
     private cy;
@@ -32,6 +33,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     private lastSelectedEdge;
     constructor(props: PathwayMapperType);
     componentWillUpdate(nextProps: PathwayMapperType): void;
+    componentDidUpdate(prevProps: PathwayMapperType): void;
     getPathway(selectedPathway: string): void;
     render(): JSX.Element;
     componentDidMount(): void;

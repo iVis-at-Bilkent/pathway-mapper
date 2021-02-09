@@ -53,6 +53,7 @@ type PathwayMapperType = {
   profiles: IProfileMetaData[];
   pathwayHandler: (pathwayName: string) => void;
   handleOpen: (modalId: EModalType) => void;
+  onPathwayChangeCompleted: () => void;
 };
 @observer
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}>{
@@ -90,6 +91,13 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
   componentWillUpdate(nextProps: PathwayMapperType) {
     this.getPathway(nextProps.selectedPathway);
+  }
+
+  componentDidUpdate(prevProps: PathwayMapperType) {
+    if (this.isCbioPortal && 
+      prevProps.selectedPathway !== this.props.selectedPathway) {
+        this.props.onPathwayChangeCompleted();
+    }
   }
 
   // This method only opens pathways that are available in pathway.json. Namely, imported or merged pathways are not opened via this method.

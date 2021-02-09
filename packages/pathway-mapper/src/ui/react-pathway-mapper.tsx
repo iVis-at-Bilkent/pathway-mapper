@@ -481,13 +481,19 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
   }
 
+  @autobind
+  emphasizeQueryGenes() {
+    this.pathwayActions.emphasizeQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
+  }
+
   render() {
   const isCBioPortal = this.props.isCBioPortal;     
 
   const cytoComp = <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative} 
   setActiveEdge={this.setActiveEdge} editorHandler={this.editorHandler} 
   selectedPathway={this.selectedPathway} pathwayHandler={this.pathwayHandler} 
-  handleOpen={this.handleOpen}/>;
+  handleOpen={this.handleOpen}
+  onPathwayChangeCompleted={this.emphasizeQueryGenes}/>;
 
   return (
 
@@ -579,7 +585,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
               <ToastContainer className={"pm-toast-container"}/>
             </React.Fragment>
           }
-          <ReactTooltip className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 9999999}}/>
+          <ReactTooltip clickable={true} className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 9999999}}/>
 
           <input id="myInput"
             type="file"
@@ -612,13 +618,13 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
       $(".container").css('paddingLeft', 0);
       $(".container").css('marginLeft', 5);
     } else {
-      this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
+      this.pathwayActions.emphasizeQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
     }
   }
 
   componentDidUpdate(){
     if(this.props.isCBioPortal){
-      this.pathwayActions.emphasiseQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
+      this.pathwayActions.emphasizeQueryGenes(this.props.genes.map((gene: any) => gene.hugoGeneSymbol));
     }
   }
 
