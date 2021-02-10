@@ -5336,10 +5336,9 @@ cytoscape-edgehandles@^3.5.1:
     lodash.memoize "^4.1.2"
     lodash.throttle "^4.1.1"
 
-cytoscape-grid-guide@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/cytoscape-grid-guide/-/cytoscape-grid-guide-2.2.1.tgz#91891c926405e4c15763184e9b873e912ce3e5ce"
-  integrity sha512-zJFImEcvd6ubHBlKdAQwmP5qOvYg2u2brwbvadSc9fM2N7WDcYol6d/wKvsLm+g+ixgIhglKKC2X1yEGvQiPeA==
+"cytoscape-grid-guide@github:iVis-at-Bilkent/cytoscape.js-grid-guide#unstable":
+  version "2.3.2"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-grid-guide/tar.gz/44a4ca30244c36deaad3a52b1d3ed41036403226"
   dependencies:
     functional-red-black-tree "^1.0.1"
 

@@ -41,7 +41,7 @@ const navigator = require('cytoscape-navigator');
 const contextMenus = require('cytoscape-context-menus');
 const konva = require('konva');
 const viewUtilities = require('cytoscape-view-utilities');
-const grid_guide = require('cytoscape-grid-guide');
+const gridGuide = require('cytoscape-grid-guide');
 const cyqtip = require('cytoscape-qtip');
 
 type PathwayMapperType = {
@@ -229,7 +229,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       console.log(err);
     }
     try { 
-      grid_guide(cytoscape, $); // register extension
+      gridGuide(cytoscape, $); // register extension
     } catch(err){
       console.log(err);
     }
