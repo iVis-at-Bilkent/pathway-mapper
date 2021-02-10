@@ -131,6 +131,7 @@ export default class PathwayMapper extends React.Component<IPathwayMapperProps, 
     emphasizeQueryGenes(): void;
     render(): JSX.Element;
     componentDidMount(): void;
+    componentDidUpdate(): void;
     handleOpen(modalId: EModalType): void;
     handleClose(modalId: EModalType): void;
     editorHandler(editor: any, eh: any, undoRedoManager: any): void;
