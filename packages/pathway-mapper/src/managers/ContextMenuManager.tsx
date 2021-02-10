@@ -25,48 +25,40 @@ export default class ContextMenuManager {
 
     let menuItems = [
       {
-        id: 'deleteSelected', // ID of menu item
-        content: 'Delete Selected', // content of menu item
-        // Filters the elements to have this menu item on cxttap
-        // If the selector is not truthy no elements will have this menu item on cxttap
+        id: 'deleteSelected',
+        content: 'Delete Selected',
         coreAsWell: true,
-        onClickFunction: (event) => {
+        onClickFunction: () => {
             const selectedEles = this.cy.elements(':selected');
             classRef.editor.removeElement(selectedEles);
         },
-        disabled: false, // Whether the item will be created as disabled
-        hasTrailingDivider: true, // Whether the item will have a trailing divider
+        disabled: false, 
+        hasTrailingDivider: false,
       },
       {
-          id: 'hideSelected', // ID of menu item
-          content: 'Hide Selected', // content of menu item
-          // Filters the elements to have this menu item on cxttap
-          // If the selector is not truthy no elements will have this menu item on cxttap
+          id: 'hideSelected',
+          content: 'Hide Selected',
           coreAsWell: true,
-          onClickFunction: function (event) {
+          onClickFunction: function () {
               classRef.editor.hideSelectedNodes();
           },
-          disabled: false, // Whether the item will be created as disabled
-          hasTrailingDivider: true, // Whether the item will have a trailing divider
+          disabled: false,
+          hasTrailingDivider: false, 
       },
       {
-          id: 'loadFromCBioPortal', // ID of menu item
-          content: 'Load From cBioPortal...', // content of menu item
-          // Filters the elements to have this menu item on cxttap
-          // If the selector is not truthy no elements will have this menu item on cxttap
+          id: 'loadFromCBioPortal',
+          content: 'Load From cBioPortal...', 
           coreAsWell: true,
-          onClickFunction: (event) => {
+          onClickFunction: () => {
             this.handleOpen(EModalType.STUDY);
           },
-          disabled: false, // Whether the item will be created as disabled
-          hasTrailingDivider: true, // Whether the item will have a trailing divider
+          disabled: false,
+          hasTrailingDivider: false,
       },
       //Context menu items when clicking on nodes/compounds
       {
-        id: 'remove', // ID of menu item
-        content: 'Delete', // content of menu item
-        // Filters the elements to have this menu item on cxttap
-        // If the selector is not truthy no elements will have this menu item on cxttap
+        id: 'remove', 
+        content: 'Delete', 
         selector: 'node, edge',
         onClickFunction: function (event) {
           var ele = event.target;
@@ -74,15 +66,13 @@ export default class ContextMenuManager {
           var selectedElements = classRef.cy.nodes(':selected').union(ele);
           classRef.editor.removeElement(selectedElements);
         },
-        disabled: false, // Whether the item will be created as disabled
-        hasTrailingDivider: true, // Whether the item will have a trailing divider
-        coreAsWell: false // Whether core instance have this item on cxttap
+        disabled: false,
+        hasTrailingDivider: false, 
+        coreAsWell: false 
       },
       {
-        id: 'addSelected', // ID of menu item
-        content: 'Add Selected Into This', // content of menu item
-        // Filters the elements to have this menu item on cxttap
-        // If the selector is not truthy no elements will have this menu item on cxttap
+        id: 'addSelected',
+        content: 'Add Selected Into This', 
         selector: 'node',
         onClickFunction: function (event)
         {
@@ -145,15 +135,13 @@ export default class ContextMenuManager {
           selectedNodes.unselect();
 
         },
-        disabled: false, // Whether the item will be created as disabled
-        hasTrailingDivider: true, // Whether the item will have a trailing divider
-        coreAsWell: false // Whether core instance have this item on cxttap
+        disabled: false,
+        hasTrailingDivider: false, 
+        coreAsWell: false 
       },
       {
-        id: 'removeSelected', // ID of menu item
-        content: 'Remove Selected From Parent', // content of menu item
-        // Filters the elements to have this menu item on cxttap
-        // If the selector is not truthy no elements will have this menu item on cxttap
+        id: 'removeSelected',
+        content: 'Remove Selected From Parent', 
         selector: 'node',
         onClickFunction: function (event) {
           const ele = event.target;
@@ -180,49 +168,43 @@ export default class ContextMenuManager {
           //Unselecting nodes to remove them from selectedNodeStack
           selectedNodes.unselect();
         },
-        disabled: false, // Whether the item will be created as disabled
-        hasTrailingDivider: true, // Whether the item will have a trailing divider
-        coreAsWell: false // Whether core instance have this item on cxttap
+        disabled: false, 
+        hasTrailingDivider: false,
+        coreAsWell: false 
       },
       {
-          id: 'performLayout', // ID of menu item
-          content: 'Perform Layout', // content of menu item
-          // Filters the elements to have this menu item on cxttap
-          // If the selector is not truthy no elements will have this menu item on cxttap
+          id: 'performLayout', 
+          content: 'Perform Layout', 
           coreAsWell: true,
-          onClickFunction: (event) => {
+          onClickFunction: () => {
             this.editor.performLayout();
           },
-          disabled: false, // Whether the item will be created as disabled
-          hasTrailingDivider: true, // Whether the item will have a trailing divider
+          disabled: false, 
+          hasTrailingDivider: false, 
       }
 
     ];
     let nonCollabItems = [ 
       //Context menu items when clicking on blank space
       {
-          id: 'undoAction', // ID of menu item
-          content: 'Undo', // content of menu item
-          // Filters the elements to have this menu item on cxttap
-          // If the selector is not truthy no elements will have this menu item on cxttap
+          id: 'undoAction', 
+          content: 'Undo', 
           coreAsWell: true,
-          onClickFunction: (event) => {
+          onClickFunction: () => {
               this.undoRedoManager.undo();
           },
-          disabled: false, // Whether the item will be created as disabled
-          hasTrailingDivider: true, // Whether the item will have a trailing divider
+          disabled: false, 
+          hasTrailingDivider: false, 
       },
       {
-          id: 'redoAction', // ID of menu item
-          content: 'Redo', // content of menu item
-          // Filters the elements to have this menu item on cxttap
-          // If the selector is not truthy no elements will have this menu item on cxttap
+          id: 'redoAction',
+          content: 'Redo',
           coreAsWell: true,
-          onClickFunction: (event) => {
+          onClickFunction: () => {
             this.undoRedoManager.redo();
           },
-          disabled: false, // Whether the item will be created as disabled
-          hasTrailingDivider: true, // Whether the item will have a trailing divider
+          disabled: false,
+          hasTrailingDivider: false,
       }
     ];
 
