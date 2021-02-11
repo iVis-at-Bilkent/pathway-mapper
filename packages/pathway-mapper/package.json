@@ -34,7 +34,7 @@
     "@datastructures-js/max-heap": "^2.0.0",
     "autobind-decorator": "^2.4.0",
     "cytoscape": "^3.8.2",
-    "cytoscape-context-menus": "file:../../../cytoscape.js-context-menus/",
+    "cytoscape-context-menus": "github:iVis-at-Bilkent/cytoscape.js-context-menus#unstable",
     "cytoscape-cose-bilkent": "^4.0.0",
     "cytoscape-edge-editing": "github:iVis-at-Bilkent/cytoscape.js-edge-editing#unstable",
     "cytoscape-edgehandles": "^3.5.1",
