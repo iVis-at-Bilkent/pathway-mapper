@@ -21,7 +21,7 @@ export default class ContextMenuManager {
   init() {
     const classRef = this;
 
-    const ctxMenus = this.cy.contextMenus();
+    const ctxMenus = this.cy.contextMenus('get');
 
     let menuItems = [
       {

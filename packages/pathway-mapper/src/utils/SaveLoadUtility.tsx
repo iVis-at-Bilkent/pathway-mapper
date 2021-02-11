@@ -24,7 +24,7 @@ export default class SaveLoadUtility{
 
     //Put a blank line between nodes and edges
     returnString += '\n';
-    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\tINTERACTION_PUBMED_ID\tEDGE_NAME\tEDGE_BENDS\n';
+    returnString += '--EDGE_ID\tSOURCE\tTARGET\tEDGE_TYPE\tINTERACTION_PUBMED_ID\tEDGE_NAME\tEDGE_BENDS\tEDGE_CURVE_STYLE\n';
 
     if (edges) {
       //Write edges
@@ -37,15 +37,17 @@ export default class SaveLoadUtility{
         var pubmedIDs = edges[i].data('pubmedIDs');
         var pubmedString = "";
         var edgeName = (edges[i].data('name')) ? edges[i].data('name') : "";
+        var edgeCurveStyle = edges[i].css('curve-style');
 
-        var numberOfBendPoints = 0;
-        if (edgeEditing.getSegmentPoints(edges[i]) !== undefined)
-            numberOfBendPoints = edgeEditing.getSegmentPoints(edges[i]).length/2;
-        var bendPointPositions = "";
-        for (var j = 0; j < numberOfBendPoints; j++)
+        var numberOfAnchorPoints = 0;
+        var anchors = edgeEditing.getAnchorsAsArray(edges[i])
+        if (anchors !== undefined)
+            numberOfAnchorPoints = anchors.length/2;
+        var anchorPointPositions = "";
+        for (var j = 0; j < numberOfAnchorPoints; j++)
         {
-            bendPointPositions += "(" + edgeEditing.getSegmentPoints(edges[i])[2*j] + ";" +
-                edgeEditing.getSegmentPoints(edges[i])[2*j+1] + ")";
+            anchorPointPositions += "(" + anchors[2*j] + ";" +
+                anchors[2*j+1] + ")";
         }
 
         if (pubmedIDs != undefined) {
@@ -63,7 +65,8 @@ export default class SaveLoadUtility{
                         edgeType + '\t' +
                         pubmedString + '\t' +
                         edgeName + '\t' +
-                        bendPointPositions + '\n';
+                        anchorPointPositions + '\t' + 
+                        edgeCurveStyle + '\n';
       }
     }
 
@@ -259,34 +262,42 @@ export default class SaveLoadUtility{
       var edgeType = lineData[3];
       var pubmedIDs = (lineData.length > 4) ? lineData[4].split(';') : [];
       var label = (lineData.length > 5) ? lineData[5] : '';
-      var bendPoints = (lineData.length > 6) ? lineData[6] : '';
+      var anchorPoints = (lineData.length > 6) ? lineData[6] : '';
+      var edgeCurveStyle = (lineData.length > 7) ? lineData[7] : '';
 
-      var bendPointPositions = [];
-      if (bendPoints) {
-        var bendPair = bendPoints.split(')'); //The last element of bendPair array is ""
-        for (var j = 0; j < bendPair.length - 1; j++) {
-          var separatorIndex = bendPair[j].indexOf(";");
-          var x = bendPair[j].substring(1, separatorIndex);
-          var y = bendPair[j].substring(separatorIndex + 1, bendPair[j].length);
-          bendPointPositions.push({x: parseFloat(x), y: parseFloat(y)});
+      var anchorPointPositions = [];
+      if (anchorPoints) {
+        var anchorPair = anchorPoints.split(')'); //The last element of anchorPair array is ""
+        for (var j = 0; j < anchorPair.length - 1; j++) {
+          var separatorIndex = anchorPair[j].indexOf(";");
+          var x = anchorPair[j].substring(1, separatorIndex);
+          var y = anchorPair[j].substring(separatorIndex + 1, anchorPair[j].length);
+          anchorPointPositions.push({x: parseFloat(x), y: parseFloat(y)});
         }
       }
 
+      var edgeData = {
+        id: edgeID,//((isFound) ? edgeID : i - edgesStartIndex),
+        type: edgeType,//((isFound) ? edgeType : edgeTarget),
+        source: edgeSource,//((isFound) ? edgeSource : edgeID),
+        target: edgeTarget,//((isFound) ? edgeTarget : edgeSource),
+        pubmedIDs: pubmedIDs,
+        name: label,
+      }
+
+      if (edgeCurveStyle === "unbundled-bezier") {
+        edgeData['controlPointPositions'] = anchorPointPositions;
+      }
+      else {
+        edgeData['bendPointPositions'] = anchorPointPositions;
+      }
+
       const newEdge = {
-        group: 'edges', data:
-          {
-            id: edgeID,//((isFound) ? edgeID : i - edgesStartIndex),
-            type: edgeType,//((isFound) ? edgeType : edgeTarget),
-            source: edgeSource,//((isFound) ? edgeSource : edgeID),
-            target: edgeTarget,//((isFound) ? edgeTarget : edgeSource),
-            pubmedIDs: pubmedIDs,
-            name: label,
-            bendPointPositions: bendPointPositions/*[{x:100,y:100}]*/
-          }
+        group: 'edges', 
+        data: edgeData
       };
       edges.push(newEdge);
     }
-    // edgeEditing.initBendPoints(cy.edges());
     return {title: title, description: description, nodes: nodes, edges: edges};
   }
 }

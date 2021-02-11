@@ -1,5 +1,5 @@
-import EditorActionsManager from "./EditorActionsManager";
 import GraphUtilities from "../utils/GraphUtilities";
+import EditorActionsManager from "./EditorActionsManager";
 export default class ShareDBManager {
     readonly NODEMAP_NAME = "nodes";
     readonly EDGEMAP_NAME = "edges";
@@ -54,7 +54,7 @@ export default class ShareDBManager {
     changeHighlightInvalidGenes(nodeIDs: any, isInvalid: any): void;
     addPubmedIDs(edgeID: any, pubmedIDs: any): void;
     removePubmedID(edgeID: any, pubmedIDs: any): void;
-    updateEdgeBendPoints(edgeID: any, bendPointsArray: any): void;
+    updateEdgeAnchorPoints(edgeID: any, anchorPointsArray: any, edgeCurveStyle: any): void;
     changeName(ele: any, newName: any): void;
     changeParent(rootNode: any, newParentId: any, connectedEdges: any): void;
     removeAllElements(): void;

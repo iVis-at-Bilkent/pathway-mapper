@@ -153,7 +153,7 @@ After alignment:
 
 ### Editing and Reconnecting Interactions
 
-Interactions may be routed through additional bend points. To introduce a new bendpoint, first select the interaction by clicking on it, and then click and drag at a location where you'd like to introduce a bendpoint. Bendpoints may be moved by clicking on them and drag them. In order to remove a bendpoint, move it to a location where it becomes almost unnecessary (it falls onto a straight line).
+Interactions may be routed through additional anchor (bend or control) points. To introduce a new anchor point, first select the interaction by clicking on it, and then right click and select Add Bend Point or Add Control Point. After the anchor point is created, drag it around to bend the edge. If an edge already has one type of anchor point (bend or control) additional anchor points of the same type can be created by dragging on the edge when it is selected, without needing to right click and add. In order to remove an anchor point, either move it to a location where it becomes almost unnecessary (it falls onto a straight line) or right click on the anchor point and select the Remove Bend/Control Point option. Given that there are multiple anchor points on an edge, all anchor points can be removed at once by right clicking on the edge or one of the anchors and selecting Remove All Bend/Control Points.
 
 One may also reconnect an interaction through its reconnection handles that appear when the edge is selected. Simply click on the reconnection handle close to the source / target that you'd like to change and drag it onto the new source / target.
 

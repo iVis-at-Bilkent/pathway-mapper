@@ -1,6 +1,6 @@
-import EditorActionsManager from "./EditorActionsManager";
 import _ from "lodash";
 import GraphUtilities from "../utils/GraphUtilities";
+import EditorActionsManager from "./EditorActionsManager";
 
 let sharedb;
 let socket;
@@ -290,10 +290,21 @@ export default class ShareDBManager {
         for (const key of Object.keys(edgeMap)) {
             var tmpEdge = edgeMap[key];
 
-            if (tmpEdge.pubmedIDs == undefined || tmpEdge.name == undefined || tmpEdge.bendPoint == undefined) {
+            if (tmpEdge.pubmedIDs == undefined 
+                || tmpEdge.name == undefined 
+                || tmpEdge.bendPoint == undefined 
+                || tmpEdge.anchorPoints == undefined
+                || tmpEdge.edgeCurveStyle == undefined) {
                 var pubmedIDs = (tmpEdge.pubmedIDs == undefined) ? [] : tmpEdge.pubmedID;
                 var edgeLabel = (tmpEdge.name == undefined) ? "" : tmpEdge.name;
-                var bendPoint = (tmpEdge.bendPoint == undefined) ? [] : tmpEdge.bendPoint;
+                var anchorPoints = [];
+                if (tmpEdge.bendPoint) {
+                    anchorPoints = tmpEdge.bendPoint;
+                }
+                else if (tmpEdge.anchorPoints) {
+                    anchorPoints = tmpEdge.anchorPoints;
+                }
+                var edgeCurveStyle = tmpEdge.edgeCurveStyle ? "bezier" : tmpEdge.edgeCurveStyle;
 
                 var param = {
                     type: tmpEdge.type,
@@ -302,7 +313,8 @@ export default class ShareDBManager {
                     target: tmpEdge.target,
                     pubmedID: pubmedIDs,
                     name: edgeLabel,
-                    bendPoint: bendPoint
+                    anchorPoints: anchorPoints,
+                    edgeCurveStyle: edgeCurveStyle
                 };
 
                 var newEdge: any = self.edgeInitializer(param);
@@ -650,7 +662,7 @@ export default class ShareDBManager {
             target: edgeData.target,
             pubmedIDs: edgeData.pubmedIDs,
             name: edgeData.name,
-            bendPoint: edgeData.bendPoint
+            anchorPoints: edgeData.anchorPoints
         };
 
         //Ensures new edge is compatible with the other edge
@@ -866,13 +878,14 @@ export default class ShareDBManager {
         }
     };
 
-    updateEdgeBendPoints(edgeID, bendPointsArray) {
+    updateEdgeAnchorPoints(edgeID, anchorPointsArray, edgeCurveStyle) {
 
         var edgeMap = this.doc.data[this.EDGEMAP_NAME];
         
         if (edgeMap.hasOwnProperty(edgeID)) {
             var tmpEdge = edgeMap[edgeID];
-            tmpEdge.bendPoint = bendPointsArray;
+            tmpEdge.anchorPoints = anchorPointsArray;
+            tmpEdge.edgeCurveStyle = edgeCurveStyle;
             this.updateShareDBObject(this.EDGEMAP_NAME, edgeID, tmpEdge);
         }
         else {
@@ -1059,9 +1072,24 @@ export default class ShareDBManager {
         for (const edge of edges) {
             edge.data.source = oldIdNewIdMap[edge.data.source];
             edge.data.target = oldIdNewIdMap[edge.data.target];
+
+            var edgeCurveStyle = "bezier";
+            if (edge.data.bendPointPositions && edge.data.bendPointPositions.length > 0) {
+                edge.data['anchorPoints'] = edge.data['bendPointPositions'];
+                delete edge.data['bendPointPositions'];
+                edgeCurveStyle = "segments";
+            }
+            else if (edge.data.controlPointPositions && edge.data.controlPointPositions.length > 0) {
+                edge.data['anchorPoints'] = edge.data['controlPointPositions'];
+                delete edge.data['controlPointPositions'];
+                edgeCurveStyle = "unbundled-bezier";
+            }
+
             var params = edge.data;
+            params.edgeCurveStyle = edgeCurveStyle;
             var newEdgeID = self.getCustomObjId();
             params.id = newEdgeID;
+            
             var newEdge = self.edgeInitializer(params);
             self.insertShareDBObject(self.EDGEMAP_NAME, newEdgeID, newEdge);
         }
@@ -1211,6 +1239,8 @@ export default class ShareDBManager {
         edge.target = params.target || "undefined";
         edge.name = params.name || "";
         edge.isHighlighted = params.isHighlighted || false;
+        edge.anchorPoints = params.anchorPoints || [];
+        edge.edgeCurveStyle = params.edgeCurveStyle || "bezier"
 
         if (params.pubmedIDs) {
             if (edge.pubmedIDs == undefined) {
@@ -1223,14 +1253,20 @@ export default class ShareDBManager {
             edge.pubmedIDs = [];
         }
 
-        if (params.bendPoint) {
-            if (edge.bendPoint == undefined) {
-                edge.bendPoint = [];
+        if (params.anchorPoints) {
+            if (edge.anchorPoints == undefined) {
+                edge.anchorPoints = [];
             }
-            edge.bendPoint.push(params.bendPoint);
+            // legacy workaround
+            if (Array.isArray(params.anchorPoints[0])) {
+                edge.anchorPoints = params.anchorPoints[0];
+            }
+            else {
+                edge.anchorPoints = params.anchorPoints;
+            }
         }
         else {
-            edge.bendPoint = [];
+            edge.anchorPoints = [];
         }
         return edge;
     };
