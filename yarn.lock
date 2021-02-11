@@ -5368,17 +5368,15 @@ cytoscape-qtip@iVis-at-Bilkent/cytoscape.js-qtip#master:
     jquery "^2.0 || ^1.10.0"
     qtip2 "^3.0 || ^2.2.0"
 
-cytoscape-undo-redo@^1.3.2:
+"cytoscape-undo-redo@github:iVis-at-Bilkent/cytoscape.js-undo-redo#unstable":
   version "1.3.2"
-  resolved "https://registry.yarnpkg.com/cytoscape-undo-redo/-/cytoscape-undo-redo-1.3.2.tgz#81ea1c8ae1f5bccb9a9d2249afa0e4f5c3c0c631"
-  integrity sha512-RnJI0uWc19gyWx/qWY2Q/vg159MR32dpXHk+QmQih2buLoC7fxYRBPSPgNGUkF8QIxSmkavQEic1ARQO7GBTtg==
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-undo-redo/tar.gz/335bab28027df8a67e348e17516d21aa94cc3ddb"
 
-cytoscape-view-utilities@^2.0.6:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/cytoscape-view-utilities/-/cytoscape-view-utilities-2.2.0.tgz#36d182c5fd0f87a8e1dc15c79fdbe52884efee72"
-  integrity sha512-QFmHZYU+XE4xnp+2Nr027Fwmi7QpPaqosKRr9VSBKRemJxdIyMXnIcqNh2rs+aMhm4nwoBYFSEtuFSvQIap4XA==
+"cytoscape-view-utilities@github:iVis-at-Bilkent/cytoscape.js-view-utilities#unstable":
+  version "4.1.0"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-view-utilities/tar.gz/87f3f44dcc81e3f78d6757995676f9842bb1e1f0"
   dependencies:
-    mousetrap "^1.6.0"
+    geometric "^2.2.3"
 
 cytoscape@^3.8.2:
   version "3.8.2"
@@ -7345,6 +7343,11 @@ gentle-fs@^2.0.0, gentle-fs@^2.0.1:
     path-is-inside "^1.0.2"
     read-cmd-shim "^1.0.1"
     slide "^1.1.6"
+
+geometric@^2.2.3:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/geometric/-/geometric-2.2.6.tgz#1079acc70dc5ac9a364b59a05a716c02b540b830"
+  integrity sha512-6BOUXb7DlLcCITUtqqRNkQpKWm9fiS9X13TYU0M+62dJJ4DBwL11/OmgH/UUZKSzI35inLkJvCw3xAhwZKeRrw==
 
 get-caller-file@^1.0.1:
   version "1.0.3"
@@ -11301,11 +11304,6 @@ mongodb@^2.1.2:
     es6-promise "3.2.1"
     mongodb-core "2.1.20"
     readable-stream "2.2.7"
-
-mousetrap@^1.6.0:
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/mousetrap/-/mousetrap-1.6.3.tgz#80fee49665fd478bccf072c9d46bdf1bfed3558a"
-  integrity sha512-bd+nzwhhs9ifsUrC2tWaSgm24/oo2c83zaRyZQF06hYA6sANfsXHtnZ19AbbbDXCDzeH5nZBSQ4NvCjgD62tJA==
 
 move-concurrently@^1.0.1:
   version "1.0.1"
