@@ -83,11 +83,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.isCollaborative = props.isCollaborative;
     this.edgeAddingMode = 0;
     this.isCbioPortal = props.isCbioPortal;
-    // this.init();
-    // this.createSampleMenu(); //TODO: AMENDMENT Menu must be react.
-    // this.createCBioPortalAccessModal();
   }
-
 
   componentWillUpdate(nextProps: PathwayMapperType) {
     this.getPathway(nextProps.selectedPathway);
@@ -175,26 +171,15 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     var widthCy = $(this.cyDiv).outerWidth();
     var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
     var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
-    var heightPatwayNavbar = $('.pathway-navbar').outerHeight();
-    var heightPathwayToolbar = $('.pathway-toolbar').outerHeight();
-    var widthSideBar = $('.sideBarWrapper').outerWidth();
-    var widthcBioPortalSideBar = $('.cBioPortal-sidebar').outerWidth();
-
-//706px 1513.15px
-//694px 1391.15px
-    //var heightPanzoom = $('.cy-panzoom').outerHeight();
-    //var widthPanzoom = $('.cy-panzoom').outerWidth();
 
     if(!this.isCbioPortal) {
       
       $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset + 13);
       $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset + 21 - 0.5 + 0.35);
-      //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset);
     }
     else {
       $('.cytoscape-navigator-wrapper').css('bottom', 10.5);
       $('.cytoscape-navigator-wrapper').css('right', 0);
-      //$('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator + widthcBioPortalSideBar + offset - widthSideBar);
     }
     $('.cytoscape-navigator-wrapper').css('z-index', 1039);
 
@@ -212,12 +197,12 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   }
 
   initCyJS() {
-    try{
+    
+    try {
       panzoom(cytoscape, $);  // register extension
     } catch(err){
       console.log(err);
     }
-    // cxtmenu( cytoscape, $ ); // register extension
     try { 
       regCose(cytoscape); // register extension
     } catch(err){
@@ -269,21 +254,19 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       console.log(err);
     }
 
-    this.edgeAddingMode = 0;
-    // var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
     this.cy = cytoscape({
       container: this.cyDiv,
       boxSelectionEnabled: true,
       autounselectify: false,
       wheelSensitivity: 0.1,
       style: styleSheet,
-      // elements: allEles,
       textureOnViewport: false,
       motionBlur: true,
       layout: {name: 'preset'}
     });
 
-    
+    this.edgeAddingMode = 0;
+    // var allEles = SaveLoadUtilities.parseGraph(sampleGraph);
 
     this.undoRedoManager = this.cy.undoRedo();
     // Create Manager Classes
@@ -301,9 +284,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     if(this.isCollaborative){
       this.shareDBManager.initShareDB();
     }
-    //@ts-ignore
-    window.editorActionsManager = this.editor;
-
 
     this.qtipManager = new QtipManager(this.cy, this.editor);
     
@@ -426,109 +406,108 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.eh.disable();
     this.props.editorHandler(this.editor, this.eh, this.undoRedoManager);
 
-    if(!this.isCbioPortal)
-    this.cy.nodeEditing({
-      padding: 5, // spacing between node and grapples/rectangle
-      undoable: true, // and if cy.undoRedo exists
+    if(!this.isCbioPortal) {
+      this.cy.nodeEditing({
+        padding: 5, // spacing between node and grapples/rectangle
+        undoable: true, // and if cy.undoRedo exists
 
-      grappleSize: 8, // size of square dots
-      grappleColor: "#ffc90e", // color of grapples
-      inactiveGrappleStroke: "inside 1px blue",
-      boundingRectangle: true, // enable/disable bounding rectangle
-      boundingRectangleLineDash: [4, 8], // line dash of bounding rectangle
-      boundingRectangleLineColor: "ffc90e",
-      boundingRectangleLineWidth: 1.5,
-      zIndex: 999,
+        grappleSize: 8, // size of square dots
+        grappleColor: "#ffc90e", // color of grapples
+        inactiveGrappleStroke: "inside 1px blue",
+        boundingRectangle: true, // enable/disable bounding rectangle
+        boundingRectangleLineDash: [4, 8], // line dash of bounding rectangle
+        boundingRectangleLineColor: "ffc90e",
+        boundingRectangleLineWidth: 1.5,
+        zIndex: 999,
 
-      moveSelectedNodesOnKeyEvents: function () {
-          return true;
-      },
+        moveSelectedNodesOnKeyEvents: function () {
+            return true;
+        },
 
-      minWidth: function (node) {
-          var data = node.data("resizeMinWidth");
-          return data ? data : 15;
-      }, // a function returns min width of node
-      minHeight: function (node) {
-          var data = node.data("resizeMinHeight");
-          return data ? data : 15;
-      }, // a function returns min height of node
+        minWidth: function (node) {
+            var data = node.data("resizeMinWidth");
+            return data ? data : 15;
+        }, // a function returns min width of node
+        minHeight: function (node) {
+            var data = node.data("resizeMinHeight");
+            return data ? data : 15;
+        }, // a function returns min height of node
 
-      // Getters for some style properties the defaults returns ele.css('property-name')
-      // you are encouraged to override these getters
-      getCompoundMinWidth: function (node) {
-          return node.style('min-width');
-      },
-      getCompoundMinHeight: function (node) {
-          return node.style('min-height');
-      },
-      getCompoundMinWidthBiasRight: function (node) {
-          return node.style('min-width-bias-right');
-      },
-      getCompoundMinWidthBiasLeft: function (node) {
-          return node.style('min-width-bias-left');
-      },
-      getCompoundMinHeightBiasTop: function (node) {
-          return node.style('min-height-bias-top');
-      },
-      getCompoundMinHeightBiasBottom: function (node) {
-          return node.style('min-height-bias-bottom');
-      },
+        // Getters for some style properties the defaults returns ele.css('property-name')
+        // you are encouraged to override these getters
+        getCompoundMinWidth: function (node) {
+            return node.style('min-width');
+        },
+        getCompoundMinHeight: function (node) {
+            return node.style('min-height');
+        },
+        getCompoundMinWidthBiasRight: function (node) {
+            return node.style('min-width-bias-right');
+        },
+        getCompoundMinWidthBiasLeft: function (node) {
+            return node.style('min-width-bias-left');
+        },
+        getCompoundMinHeightBiasTop: function (node) {
+            return node.style('min-height-bias-top');
+        },
+        getCompoundMinHeightBiasBottom: function (node) {
+            return node.style('min-height-bias-bottom');
+        },
 
 
-      isFixedAspectRatioResizeMode: function (node) {
-          return node.is(".fixedAspectRatioResizeMode")
-      },// with only 4 active grapples (at corners)
-      isNoResizeMode: function (node) {
-          return undefined;
-      }, // no active grapples
+        isFixedAspectRatioResizeMode: function (node) {
+            return node.is(".fixedAspectRatioResizeMode")
+        },// with only 4 active grapples (at corners)
+        isNoResizeMode: function (node) {
+            return undefined;
+        }, // no active grapples
 
-      // These optional function will be executed to set the width/height of a node in this extension
-      // Using node.css() is not a recommended way (http://js.cytoscape.org/#eles.style) to do this. Therefore, overriding these defaults
-      // so that a data field or something like that will be used to set node dimentions instead of directly calling node.css()
-      // is highly recommended (Of course this will require a proper setting in the stylesheet).
-      setWidth: function (node, width) {
-          node.style('width', width);
-      },
-      setHeight: function (node, height) {
-          node.style('height', height);
-      },
-      setCompoundMinWidth: function (node, minWidth) {
-          node.style('min-width', minWidth);
-      },
-      setCompoundMinHeight: function (node, minHeight) {
-          node.style('min-height', minHeight);
-      },
-      setCompoundMinWidthBiasLeft: function (node, minWidthBiasLeft) {
-          node.style('min-width-bias-left', minWidthBiasLeft);
-      },
-      setCompoundMinWidthBiasRight: function (node, minHeightBiasRight) {
-          node.style('min-width-bias-right', minHeightBiasRight);
-      },
-      setCompoundMinHeightBiasTop: function (node, minHeightBiasTop) {
-          node.style('min-height-bias-top', minHeightBiasTop);
-      },
-      setCompoundMinHeightBiasBottom: function (node, minHeightBiasBottom) {
-          node.style('min-height-bias-bottom', minHeightBiasBottom);
-      },
+        // These optional function will be executed to set the width/height of a node in this extension
+        // Using node.css() is not a recommended way (http://js.cytoscape.org/#eles.style) to do this. Therefore, overriding these defaults
+        // so that a data field or something like that will be used to set node dimentions instead of directly calling node.css()
+        // is highly recommended (Of course this will require a proper setting in the stylesheet).
+        setWidth: function (node, width) {
+            node.style('width', width);
+        },
+        setHeight: function (node, height) {
+            node.style('height', height);
+        },
+        setCompoundMinWidth: function (node, minWidth) {
+            node.style('min-width', minWidth);
+        },
+        setCompoundMinHeight: function (node, minHeight) {
+            node.style('min-height', minHeight);
+        },
+        setCompoundMinWidthBiasLeft: function (node, minWidthBiasLeft) {
+            node.style('min-width-bias-left', minWidthBiasLeft);
+        },
+        setCompoundMinWidthBiasRight: function (node, minHeightBiasRight) {
+            node.style('min-width-bias-right', minHeightBiasRight);
+        },
+        setCompoundMinHeightBiasTop: function (node, minHeightBiasTop) {
+            node.style('min-height-bias-top', minHeightBiasTop);
+        },
+        setCompoundMinHeightBiasBottom: function (node, minHeightBiasBottom) {
+            node.style('min-height-bias-bottom', minHeightBiasBottom);
+        },
 
-      cursors: { // See http://www.w3schools.com/cssref/tryit.asp?filename=trycss_cursor
-          // May take any "cursor" css property
-          default: "default", // to be set after resizing finished or mouseleave
-          inactive: "not-allowed",
-          nw: "nw-resize",
-          n: "n-resize",
-          ne: "ne-resize",
-          e: "e-resize",
-          se: "se-resize",
-          s: "s-resize",
-          sw: "sw-resize",
-          w: "w-resize"
-      },
-      resizeToContentCueImage: resizeCue,
-      resizeToContentFunction: this.editor.resizeNodesToContent.bind(this.editor),
-      autoRemoveResizeToContentCue: true
-  });
-
+        cursors: { // See http://www.w3schools.com/cssref/tryit.asp?filename=trycss_cursor
+            // May take any "cursor" css property
+            default: "default", // to be set after resizing finished or mouseleave
+            inactive: "not-allowed",
+            nw: "nw-resize",
+            n: "n-resize",
+            ne: "ne-resize",
+            e: "e-resize",
+            se: "se-resize",
+            s: "s-resize",
+            sw: "sw-resize",
+            w: "w-resize"
+        },
+        resizeToContentCueImage: resizeCue,
+        resizeToContentFunction: this.editor.resizeNodesToContent.bind(this.editor),
+    });
+  }
     //Navigator for cytoscape js
     var navDefaults = {
       container: '.cytoscape-navigator-wrapper' // can be a HTML or jQuery element or jQuery selector

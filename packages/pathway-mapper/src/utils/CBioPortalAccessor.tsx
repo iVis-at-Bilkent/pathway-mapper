@@ -1,7 +1,7 @@
-import EditorActionsManager from "../managers/EditorActionsManager";
 import _ from "lodash";
+import { toast } from 'react-toastify';
+import EditorActionsManager from "../managers/EditorActionsManager";
 
-import {toast} from 'react-toastify';
 
 export default class CBioPortalAccessor{
   static readonly CNA_GAIN = 2;
@@ -98,7 +98,6 @@ export default class CBioPortalAccessor{
           else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200)
           {
             console.error("Error retrieving studies");
-              // window.notificationManager.createNotification("Error retrieving genetic profiles", "fail")
           }
       };
       request.open("GET", CBioPortalAccessor.GET_GENETIC_PROFILES_URL + cancerStudy);

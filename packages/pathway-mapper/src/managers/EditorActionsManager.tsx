@@ -1564,7 +1564,9 @@ export default class EditorActionsManager{
             //Local usage file load
             this.loadFileCy(nodes,edges);
         }
-        this.cy.edgeEditing('get').initAnchorPoints(this.cy.edges());
+        
+        this.edgeEditing.initAnchorPoints(this.cy.edges());
+        
         this.fitGraph();
     };
 

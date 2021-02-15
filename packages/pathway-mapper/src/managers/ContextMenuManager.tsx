@@ -21,7 +21,9 @@ export default class ContextMenuManager {
   init() {
     const classRef = this;
 
-    const ctxMenus = this.cy.contextMenus('get');
+    const ctxMenus = this.cy.scratch('cycontextmenus') ? 
+                      this.cy.contextMenus('get') :
+                      this.cy.contextMenus();
 
     let menuItems = [
       {
@@ -213,10 +215,6 @@ export default class ContextMenuManager {
     }
     ctxMenus.appendMenuItems(menuItems);
   }
-
-
-    //TODO ??????
-    //window.edgeAddingMode = false;
 
     //TODO better move this to another class
     //Utility function to check whether query node is children of given node

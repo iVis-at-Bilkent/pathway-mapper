@@ -91,7 +91,6 @@ export default class GridOptionsManager
         this.currentProperties.drawGrid = state;
         this.currentProperties.snapToGridDuringDrag = state;
         this.refreshGridOptionsExtension();
-        //window.appManager.gridOptionsView.changeParameters();
     }
 
     refreshGridOptionsExtension()

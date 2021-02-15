@@ -5314,18 +5314,18 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
-"cytoscape-context-menus@github:iVis-at-Bilkent/cytoscape.js-context-menus#unstable":
-  version "3.1.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-context-menus/tar.gz/a1269f8f5a085b37c2e06f761eef74aad264675f"
+"cytoscape-context-menus@github:iVis-at-Bilkent/cytoscape.js-context-menus#master":
+  version "4.0.0"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-context-menus/tar.gz/af53cb96cc4d58496c91d09aa56c405fcbaa23bb"
 
 cytoscape-cose-bilkent@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/cytoscape-cose-bilkent/-/cytoscape-cose-bilkent-4.0.0.tgz#5f0afbe5c55a7a026442b756ca388ce77c262967"
   integrity sha1-Xwr75cVaegJkQrdWyjiM53wmKWc=
 
-"cytoscape-edge-editing@github:iVis-at-Bilkent/cytoscape.js-edge-editing#unstable":
+"cytoscape-edge-editing@github:iVis-at-Bilkent/cytoscape.js-edge-editing#master":
   version "3.0.2"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-edge-editing/tar.gz/b25e4ed4f07ef761807dd1235d11804003ef4584"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-edge-editing/tar.gz/149c0aa59b0f5d2a39a3150b81f85f0f01105333"
 
 cytoscape-edgehandles@^3.5.1:
   version "3.5.1"
@@ -5335,9 +5335,9 @@ cytoscape-edgehandles@^3.5.1:
     lodash.memoize "^4.1.2"
     lodash.throttle "^4.1.1"
 
-"cytoscape-grid-guide@github:iVis-at-Bilkent/cytoscape.js-grid-guide#unstable":
+"cytoscape-grid-guide@github:iVis-at-Bilkent/cytoscape.js-grid-guide#master":
   version "2.3.2"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-grid-guide/tar.gz/44a4ca30244c36deaad3a52b1d3ed41036403226"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-grid-guide/tar.gz/6a4f832ee552f9523efdffe6bb2fce4925fa81c9"
   dependencies:
     functional-red-black-tree "^1.0.1"
 
@@ -5348,9 +5348,9 @@ cytoscape-navigator@^1.3.3:
   dependencies:
     jquery "^2.0.0 || ^1.4.0"
 
-"cytoscape-node-editing@github:iVis-at-Bilkent/cytoscape.js-node-editing#unstable":
-  version "3.2.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-node-editing/tar.gz/2f08f430bff9a5f4ef85594db2fa0af470a3b4f2"
+"cytoscape-node-editing@github:iVis-at-Bilkent/cytoscape.js-node-editing#master":
+  version "4.0.0"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-node-editing/tar.gz/23b21d7fb1094409989da70264cb8890aa2c4740"
 
 cytoscape-panzoom@~2.5.2:
   version "2.5.3"
@@ -5366,13 +5366,13 @@ cytoscape-qtip@iVis-at-Bilkent/cytoscape.js-qtip#master:
     jquery "^2.0 || ^1.10.0"
     qtip2 "^3.0 || ^2.2.0"
 
-"cytoscape-undo-redo@github:iVis-at-Bilkent/cytoscape.js-undo-redo#unstable":
-  version "1.3.2"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-undo-redo/tar.gz/335bab28027df8a67e348e17516d21aa94cc3ddb"
+"cytoscape-undo-redo@github:iVis-at-Bilkent/cytoscape.js-undo-redo#master":
+  version "1.3.3"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-undo-redo/tar.gz/77cfc823f78f91fb85cdbb57ab7c980d32ce9d8f"
 
-"cytoscape-view-utilities@github:iVis-at-Bilkent/cytoscape.js-view-utilities#unstable":
-  version "4.1.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-view-utilities/tar.gz/87f3f44dcc81e3f78d6757995676f9842bb1e1f0"
+"cytoscape-view-utilities@github:iVis-at-Bilkent/cytoscape.js-view-utilities#master":
+  version "5.0.0"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-view-utilities/tar.gz/efe978e225b8894e65f1476d11a6c55a5928bc2f"
   dependencies:
     geometric "^2.2.3"
 
