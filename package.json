@@ -1,6 +1,8 @@
 {
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "author": "i-Vis at Bilkent <ivisatbilkent@gmail.com>",
   "repository": {
     "type": "git",
