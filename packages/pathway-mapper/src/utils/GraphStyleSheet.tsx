@@ -109,17 +109,6 @@ module.exports = (function()
         'label': 'data(name)'
       }
     },
-    // {
-    //     selector: 'edge.segments',
-    //     style:
-    //     {
-    //       'curve-style': 'segments',
-    //       'segment-distances': '0 100',
-    //       'segment-weights': '0 1'
-    //     }
-    // },
-
-
 
     // some style for the Edge Handles !!!
 
@@ -190,9 +179,6 @@ module.exports = (function()
           },
           'border-color': '#1abc9c',
           'background-color': '#fff',
-          // 'shadow-color' : '#1abc9c',
-          // 'background-opacity': 0.5,
-          // 'shadow-opacity': 1.0
       }
     },
     {
@@ -211,11 +197,8 @@ module.exports = (function()
       {
           'border-width': 3,
           'font-weight' : 'bold',
-          // 'shadow-color' : '#e94332',
-          // 'background-color': '#e94332',
           'border-color': '#e94332',
           'color': '#e94332',
-          // 'shadow-opacity': 1.0,
       }
     },
     {
@@ -256,11 +239,11 @@ module.exports = (function()
   {
     switch (ele._private.data['type'])
     {
-      case "FAMILY": return 5; break;
-      case "COMPLEX": return '5'; break;
-      case "COMPARTMENT": return 10; break;
-      case "PROCESS": return 10; break;
-      default: return 5; break;
+      case "FAMILY": return 5;
+      case "COMPLEX": return '5'; 
+      case "COMPARTMENT": return 10;
+      case "PROCESS": return 10;
+      default: return 5;
     }
   };
 
@@ -276,11 +259,11 @@ module.exports = (function()
   {
     switch (ele._private.data['type'])
     {
-      case "GENE": return 'center'; break;
-      case "FAMILY": return 'top'; break;
-      case "COMPLEX": return 'top'; break;
-      case "COMPARTMENT": return 'top'; break;
-      default: return 'center'; break;
+      case "GENE": return 'center';
+      case "FAMILY": return 'top';
+      case "COMPLEX": return 'top';
+      case "COMPARTMENT": return 'top';
+      default: return 'center';
     }
   };
 
@@ -288,11 +271,11 @@ module.exports = (function()
   {
     switch (ele._private.data['type'])
     {
-      case "GENE": return 1; break;
-      case "PROCESS": return 0; break;
-      case "FAMILY": return 2; break;
-      case "COMPARTMENT": return 4; break;
-      default: return 1; break;
+      case "GENE": return 1;
+      case "PROCESS": return 0;
+      case "FAMILY": return 2;
+      case "COMPARTMENT": return 4;
+      default: return 1;
     }
   };
 
@@ -300,12 +283,12 @@ module.exports = (function()
   {
     switch (ele._private.data['type'])
     {
-      case "GENE": return 1; break;
-      case "PROCESS": return 0; break;
-      case "FAMILY": return 2; break;
-      case "COMPLEX": return 1; break;
-      case "COMPARTMENT": return 4; break;
-      default: return 1; break;
+      case "GENE": return 1;
+      case "PROCESS": return 0;
+      case "FAMILY": return 2;
+      case "COMPLEX": return 1;
+      case "COMPARTMENT": return 4;
+      default: return 1;
     }
   };
 
@@ -313,11 +296,11 @@ module.exports = (function()
   {
       switch (ele._private.data['type'])
       {
-          case "GENE": return 3; break;
-          case "PROCESS": return 0; break;
-          case "FAMILY": return 4; break;
-          case "COMPARTMENT": return 6; break;
-          default: return 3; break;
+          case "GENE": return 3;
+          case "PROCESS": return 0;
+          case "FAMILY": return 4;
+          case "COMPARTMENT": return 6;
+          default: return 3;
       }
   };
 
@@ -325,22 +308,22 @@ module.exports = (function()
     {
         switch (ele._private.data['type'])
         {
-            case "GENE": return 2; break;
-            case "PROCESS": return 0; break;
-            case "FAMILY": return 3; break;
-            case "COMPARTMENT": return 5; break;
-            default: return 2; break;
+            case "GENE": return 2;
+            case "PROCESS": return 0;
+            case "FAMILY": return 3;
+            case "COMPARTMENT": return 5;
+            default: return 2;
         }
     };
     var selectedHighlightedBorderWidthFunction = function( ele )
     {
         switch (ele._private.data['type'])
         {
-            case "GENE": return 3; break;
-            case "PROCESS": return 0; break;
-            case "FAMILY": return 4; break;
-            case "COMPARTMENT": return 6; break;
-            default: return 3; break;
+            case "GENE": return 3;
+            case "PROCESS": return 0;
+            case "FAMILY": return 4;
+            case "COMPARTMENT": return 6;
+            default: return 3;
         }
     };
 
@@ -349,24 +332,17 @@ module.exports = (function()
   {
     switch (ele._private.data['type'])
     {
-      case "GENE": return "roundrectangle"; break;
-      case "PROCESS": return "roundrectangle"; break;
-      case "FAMILY": return "rectangle"; break;
-      case "COMPARTMENT": return "roundrectangle"; break;
-      case "COMPLEX": return "rectangle"; break;
-      default: return "roundrectangle"; break;
+      case "GENE": return "roundrectangle";
+      case "PROCESS": return "roundrectangle";
+      case "FAMILY": return "rectangle";
+      case "COMPARTMENT": return "roundrectangle";
+      case "COMPLEX": return "rectangle";
+      default: return "roundrectangle";
     }
   };
 
   var nodeBackgroundColorFunction = function( ele )
   {
-    // switch (ele._private.data['type'])
-    // {
-    //   case "GENE": return "#fff"; break;
-    //   case "FAMILY": return "#CCCCCC"; break;
-    //   case "COMPARTMENT": return "#fff"; break;
-    //   default: return "#fff"; break;
-    // }
     return "#fff";
   };
 
@@ -374,48 +350,40 @@ module.exports = (function()
   {
     switch (ele._private.data['type'])
     {
-      case "GENE": return "#00000a"; break;
-      case "FAMILY": return "#a3a3a3"; break;
-      case "COMPLEX": return "#000000"; break;
-      case "COMPARTMENT": return "#000000"; break;
-      default: return "#000000"; break;
+      case "GENE": return "#00000a";
+      case "FAMILY": return "#a3a3a3";
+      case "COMPLEX": return "#000000";
+      case "COMPARTMENT": return "#000000";
+      default: return "#000000";
     }
   };
 
   var edgeColorHandler = function( ele )
   {
-    // switch (ele._private.data['type']){
-    //   case "ACTIVATES": return "#904930"; break;
-    //   case "INHIBITS": return "#7B7EF7"; break;
-    //   case "INDUCES": return "#ad47c2"; break;
-    //   case "REPRESSES": return "#67C1A9"; break;
-    //   case "BINDS": return "#67C1A9"; break;
-    //   default: return "#989898"; break;
-    // }
     return "#1b1b1b";
   };
 
   var edgeTargetArrowTypeHandler = function( ele )
   {
     switch (ele._private.data['type']){
-      case "ACTIVATES": return "triangle"; break;
-      case "INHIBITS": return "tee"; break;
-      case "INDUCES": return "triangle"; break;
-      case "REPRESSES": return "tee"; break;
-      case "BINDS": return "none"; break;
-      default: return "none"; break;
+      case "ACTIVATES": return "triangle";
+      case "INHIBITS": return "tee";
+      case "INDUCES": return "triangle";
+      case "REPRESSES": return "tee";
+      case "BINDS": return "none";
+      default: return "none";
     }
   };
 
   var edgeLineTypeHandler = function( ele )
   {
     switch (ele._private.data['type']){
-      case "ACTIVATES": return "solid"; break;
-      case "INHIBITS": return "solid"; break;
-      case "INDUCES": return "dashed"; break;
-      case "REPRESSES": return "dashed"; break;
-      case "BINDS": return "solid"; break;
-      default: return "solid"; break;
+      case "ACTIVATES": return "solid";
+      case "INHIBITS": return "solid";
+      case "INDUCES": return "dashed";
+      case "REPRESSES": return "dashed";
+      case "BINDS": return "solid";
+      default: return "solid";
     }
   };
 
