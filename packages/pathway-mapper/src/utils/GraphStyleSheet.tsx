@@ -297,7 +297,7 @@ module.exports = (function()
       switch (ele._private.data['type'])
       {
           case "GENE": return 3;
-          case "PROCESS": return 0;
+          case "PROCESS": return 1;
           case "FAMILY": return 4;
           case "COMPARTMENT": return 6;
           default: return 3;
@@ -309,7 +309,7 @@ module.exports = (function()
         switch (ele._private.data['type'])
         {
             case "GENE": return 2;
-            case "PROCESS": return 0;
+            case "PROCESS": return 1;
             case "FAMILY": return 3;
             case "COMPARTMENT": return 5;
             default: return 2;
@@ -320,7 +320,7 @@ module.exports = (function()
         switch (ele._private.data['type'])
         {
             case "GENE": return 3;
-            case "PROCESS": return 0;
+            case "PROCESS": return 1;
             case "FAMILY": return 4;
             case "COMPARTMENT": return 6;
             default: return 3;
