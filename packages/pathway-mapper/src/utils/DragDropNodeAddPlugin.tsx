@@ -1,7 +1,7 @@
-import EditorActionsManager from "../managers/EditorActionsManager";
+import cytoscape from 'cytoscape';
 import $ from "jquery";
 import 'jquery-ui-dist/jquery-ui';
-import cytoscape from 'cytoscape';
+import EditorActionsManager from "../managers/EditorActionsManager";
 
 
 export default class DragDropNodeAddPlugin {
@@ -156,9 +156,14 @@ export default class DragDropNodeAddPlugin {
                       nodeData.parent = parent.id();
                     }
                   }
-                  //TODO one place access to these
-                  nodeData.w = "150";
-                  nodeData.h = "52";
+                  if (nodeType === "PROCESS") {
+                    nodeData.w = "100";
+                    nodeData.h = "35";
+                  }
+                  else {
+                    nodeData.w = "150";
+                    nodeData.h = "52";
+                  }
 
                   //Adjust position according to the zoom level and pan !
                   //To set rendered position !!!

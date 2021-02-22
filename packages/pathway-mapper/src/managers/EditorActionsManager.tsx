@@ -1858,7 +1858,7 @@ export default class EditorActionsManager{
                         newWidth = labelLength;
                         newHeight = 24;
                     }
-                    if (visibleNumberOfData > 0)
+                    if (ele.data('type') !== "PROCESS" && visibleNumberOfData > 0)
                     {
                         newHeight = 52;
                         if (visibleNumberOfData < 4)
@@ -1898,7 +1898,9 @@ export default class EditorActionsManager{
                         newWidth = labelLength;
                         newHeight = 24;
                     }
-                    if (visibleNumberOfData > 0) {
+                    if (ele.data('type') !== "PROCESS" && 
+                        visibleNumberOfData > 0) {
+                        
                         newHeight = 52;
                         if (visibleNumberOfData < 4) {
                             if (150 > newWidth)
