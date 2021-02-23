@@ -106,7 +106,9 @@ module.exports = (function()
     {
       selector: 'edge[name]',
       style: {
-        'label': 'data(name)'
+        'label': 'data(name)',
+        'edge-text-rotation': 'autorotate',
+        'text-margin-y': '-10'
       }
     },
 
