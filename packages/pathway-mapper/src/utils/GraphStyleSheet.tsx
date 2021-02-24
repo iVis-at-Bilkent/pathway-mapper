@@ -106,9 +106,16 @@ module.exports = (function()
     {
       selector: 'edge[name]',
       style: {
-        'label': 'data(name)',
+        'label': function(edge) {
+          const label = edge.data('name');
+          if (label === "") {
+            return label;
+          }
+          return (label + "\n\n \u2060"); 
+        },
+        'text-wrap': 'wrap',
         'edge-text-rotation': 'autorotate',
-        'text-margin-y': '-10'
+        'text-background-opacity': '0'
       }
     },
 

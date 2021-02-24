@@ -280,7 +280,6 @@ export default class EditorActionsManager{
         var currentName = args.ele.data('name');
         var newArgs = {ele: args.ele, newName: args.newName, oldName: currentName};
         args.ele.data('name', args.newName);
-        args.ele.css('content', args.newName);
 
         return newArgs;
     };
@@ -291,7 +290,6 @@ export default class EditorActionsManager{
         var currentName = args.ele.data('name');
         var newArgs = {ele: args.ele, newName: args.newName, oldName: currentName};
         args.ele.data('name', args.oldName);
-        args.ele.css('content', args.oldName);
 
         return newArgs;
     };
