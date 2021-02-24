@@ -111,7 +111,7 @@ module.exports = (function()
           if (label === "") {
             return label;
           }
-          return (label + "\n\n \u2060"); 
+          return (label + "\n \u2060"); 
         },
         'text-wrap': 'wrap',
         'edge-text-rotation': 'autorotate',
