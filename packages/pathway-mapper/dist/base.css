@@ -809,5 +809,12 @@ transform: scale(0.86);
     background-color: #fff;
 }
 
+.hidden {
+    display: none;
+}
+
+.fitContent {
+    width: fit-content;
+}
 
 /*# sourceMappingURL=base.css.map*/

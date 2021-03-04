@@ -62,9 +62,9 @@ export default class CBioPortalAccessor{
     request.send();
   };
 
-  /*
+  /**
   * Retrieves all genetic profiles for given cancerStudy from cBioPortal
-  * **/
+  */
   getSupportedGeneticProfiles(cancerStudy, callbackFunction)
   {
       var outData = {};

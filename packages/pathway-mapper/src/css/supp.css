@@ -183,3 +183,11 @@ transform: scale(0.86);
 .pathwayMapper #search-gene-input-group-addon:hover {
     background-color: #fff;
 }
+
+.hidden {
+    display: none;
+}
+
+.fitContent {
+    width: fit-content;
+}

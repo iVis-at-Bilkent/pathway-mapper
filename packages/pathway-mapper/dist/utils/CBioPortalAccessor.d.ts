@@ -16,6 +16,9 @@ export default class CBioPortalAccessor {
     static readonly CNA = "Copy Number Alteration";
     getDataTypes(): string[];
     fetchCancerStudies(callbackFunction: any): void;
+    /**
+    * Retrieves all genetic profiles for given cancerStudy from cBioPortal
+    */
     getSupportedGeneticProfiles(cancerStudy: any, callbackFunction: any): void;
     isSupportedCancerProfile(cancerProfileName: string): boolean;
     static getDataType(cancerProfileName: string): "" | "Mutation" | "Gene Expression" | "Copy Number Alteration";

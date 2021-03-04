@@ -461,7 +461,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
             geneticProfileId: dataTypes[dataType].profile,
             genes: currentMapNodeNames
         },
-                                          (data: any) =>{
+          (data: any) => {
           this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID());
         });
       }
