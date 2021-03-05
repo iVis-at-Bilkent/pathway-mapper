@@ -34,9 +34,10 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
   }
 
   @observable
-  selectedDataTypesPerStudy: string[];
+  selectedDataTypesPerStudy: string[] = [];
 
-  itemArray: any[];
+  @observable
+  itemArray: any[] = [];
 
   @observable
   searchQuery: string = "";
@@ -45,7 +46,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
   showDataTypeSelectionModal = false;
 
   @observable
-  studyListItemCheckboxChecked: boolean[];
+  studyListItemCheckboxChecked: boolean[] = [];
 
   @observable
   selectedStudyData: any[];
@@ -59,6 +60,11 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     this.selectedStudyData = [];
     this.portalAccessor = new CBioPortalAccessor();
     this.fetchStudy();
+  }
+
+  @action.bound 
+  setItemArray(itemArray: any[]) {
+    this.itemArray = itemArray;
   }
 
   @action.bound 
@@ -97,19 +103,16 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     dataTypes: {[dataType: string]: IDataTypeMetaData} 
   }) {
     this.selectedStudies.push(selectedStudy);
-    console.log(this.selectedStudies);
   }
 
   @action.bound 
   removeSelectedStudy(selectedStudyData: any[]) {
     this.selectedStudies = this.selectedStudies.filter(study => study.data[0] != selectedStudyData[0]);
-    console.log(this.selectedStudies);
   }
 
   @action.bound 
   clearSelectedStudies() {
     this.selectedStudies = [];
-    console.log(this.selectedStudies);
   }
 
   @action.bound 
@@ -162,7 +165,6 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
   }
 
   fetchStudy() {
-    this.itemArray = [];
 
     this.portalAccessor.getDataTypes().forEach((dataType) => {
       this.setDataTypeProperties(dataType, {
@@ -173,15 +175,19 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     });
 
     this.portalAccessor.fetchCancerStudies((cancerStudies: any) => {
+      let temp = []
       for (const studyTitle in cancerStudies) {
         if (!cancerStudies.hasOwnProperty(studyTitle)) {
           continue;
         }
         const studyData = cancerStudies[studyTitle];
-        this.itemArray.push(studyData);
+        temp.push(studyData);
       }
-      this.initStudyListItemCheckboxChecked(this.itemArray.length);
-      this.initSelectedDataTypesPerStudy(this.itemArray.length);
+      const numOfStudies = temp.length;
+      this.initStudyListItemCheckboxChecked(numOfStudies);
+      this.initSelectedDataTypesPerStudy(numOfStudies);
+      
+      this.setItemArray(temp);
     });
   }
 
@@ -193,6 +199,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     this.clearStudyCheckboxesChecked();
     this.clearSelectedDataTypesPerStudy();
     this.currentlySelectedItemIndex = -1;
+    this.searchQuery = "";
   }
 
   @autobind
@@ -241,10 +248,14 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
                 maxHeight: '200px',
                 overflow: 'auto',
                 marginTop: '10px',
-                border: '1px solid #888'
+                border: '1px solid #ccc',
+                borderRadius: '4px'
               }}
             >
-              {this.itemArray.map((item, index) => {return {item: item, index: index}})
+              {this.itemArray.length < 1 ? 
+              <span>Studies are being fetched from cBioPortal...</span> 
+              :
+              this.itemArray.map((item, index) => {return {item: item, index: index}})
                             .filter(obj => obj.item[1].toLowerCase().includes(this.searchQuery.toLowerCase()))
                             .map((obj)  => {
                 const item = obj.item;
@@ -261,6 +272,10 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
                     }}>
                       <Checkbox
                         checked={this.studyListItemCheckboxChecked[index]}
+                        style={{
+                          marginTop: '0px',
+                          marginBottom: '0px'
+                        }}
                         onClick={() => {
                           const boundingRect = document.getElementById("listgroupitem" + index).getBoundingClientRect();
                           const modalMargin = 30;

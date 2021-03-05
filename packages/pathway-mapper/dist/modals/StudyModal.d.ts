@@ -28,6 +28,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     selectedStudyData: any[];
     portalAccessor: CBioPortalAccessor;
     constructor(props: IStudyModalProps);
+    setItemArray(itemArray: any[]): void;
     setSearchQuery(query: string): void;
     setSelectedStudyData(data: any[]): void;
     setDataTypeProperties(dataType: string, properties: IDataTypeMetaData): void;
