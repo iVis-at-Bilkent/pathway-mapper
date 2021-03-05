@@ -187,3 +187,7 @@ transform: scale(0.86);
 .Toastify__close-button {
     color: #000
 }
+
+.Toastify__toast {
+    border-radius: 4px;
+}

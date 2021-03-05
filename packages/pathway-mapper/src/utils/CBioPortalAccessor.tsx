@@ -214,7 +214,6 @@ export default class CBioPortalAccessor{
           {
               self.calcAlterationPercentages(request.responseText, params.geneticProfileId, callbackFunction);
               toast.success(params.geneticProfileId + " has been succesfully loaded from cBioPortal.");
-
           }
       };
 

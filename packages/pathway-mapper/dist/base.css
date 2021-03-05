@@ -813,5 +813,9 @@ transform: scale(0.86);
     color: #000
 }
 
+.Toastify__toast {
+    border-radius: 4px;
+}
+
 
 /*# sourceMappingURL=base.css.map*/
