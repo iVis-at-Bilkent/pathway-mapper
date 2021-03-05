@@ -55,7 +55,7 @@ export default class CBioPortalAccessor{
         }
         else if  (request.readyState === XMLHttpRequest.DONE && request.status !== 200)
         {
-            toast.error("Error retrieving studies");
+            toast.error("Could not retrieve studies!");
         }
     };
     request.open("GET", CBioPortalAccessor.GET_ALL_CANCER_STUDIES_URL);
@@ -213,7 +213,7 @@ export default class CBioPortalAccessor{
           if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
           {
               self.calcAlterationPercentages(request.responseText, params.geneticProfileId, callbackFunction);
-              toast.success(params.geneticProfileId + " is succesfully loaded from cBioPortal");
+              toast.success(params.geneticProfileId + " has been succesfully loaded from cBioPortal.");
 
           }
       };

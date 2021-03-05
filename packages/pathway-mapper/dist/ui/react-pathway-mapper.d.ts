@@ -1,5 +1,6 @@
 import { IGeneticAlterationRuleSetParams } from 'oncoprintjs';
 import React from 'react';
+import 'react-toastify/dist/ReactToastify.min.css';
 import "../css/pmv1.css";
 import "../css/pmv2.css";
 import '../css/qtip.css';

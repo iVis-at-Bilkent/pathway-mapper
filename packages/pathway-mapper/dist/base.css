@@ -752,12 +752,6 @@ border-radius: 7px;
 .pathwayMapper .checkbox.layProps {
 margin-top: 0;
 }
-.pathwayMapper .Toastify__toast-container {
-width: 420px;
-}
-.pathwayMapper .Toastify__toast--success {
-background-color: #1abc9c;
-}
 .pathwayMapper #alterationCheckBox {
 margin-top: 0;
 }
@@ -783,26 +777,12 @@ padding: 4px;
     text-align: center;
 }
 
-.pathwayMapper .cBioMode .Toastify__toast--default {
-background-color: #dff0d8;
-color: #333333;
-}
-.pathwayMapper .cBioMode .Toastify__toast {
-min-height: 50px !important;
-}
-.pathwayMapper .cBioMode .Toastify__toast-container {
-width: 550px !important;
-}
 .pathwayMapper .cytoscape-navigator-wrapper {
 transform: scale(0.86);
 }
 
 .pathwayMapper .pathway-toolbar.navbar{
     border-radius: 6px;
-}
-
-.pathwayMapper .smallToast {
-    width: 325px;
 }
 
 .pathwayMapper #search-gene-input-group-addon:hover {
@@ -816,5 +796,22 @@ transform: scale(0.86);
 .fitContent {
     width: fit-content;
 }
+
+.Toastify__toast--success {
+    background: #1abc9c;
+    color: #000;
+}
+.Toastify__toast--warning {
+    color: #000;
+}
+.Toastify__toast--error {
+    background: #F84F31;
+    color: #000
+}
+
+.Toastify__close-button {
+    color: #000
+}
+
 
 /*# sourceMappingURL=base.css.map*/

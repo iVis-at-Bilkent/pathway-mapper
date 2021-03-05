@@ -5,6 +5,7 @@ import { IGeneticAlterationRuleSetParams } from 'oncoprintjs';
 import React from 'react';
 import { Col, Row } from "react-bootstrap";
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
 import ReactTooltip from 'react-tooltip';
 import "../css/pmv1.css";
 import "../css/pmv2.css";
@@ -439,7 +440,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   @autobind
   loadFromCBio(dataTypes: {[dataType: string]: IDataTypeMetaData}, selectedStudyData: any[]){
       if(!this.pathwayActions.doesCyHaveElements()){
-        toast.warn("Your pathway is empty");
+        toast.warn('Your pathway is empty!');
         return;
       }
 
@@ -447,7 +448,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
       {
         if(!dataTypes[dataType].checked) continue;
         if(this.doesProfileExist(dataTypes[dataType].profile)){
-          toast.warn(dataTypes[dataType].profile + " already exists");
+          toast.warn(dataTypes[dataType].profile + " already exists.");
           continue;
         }
 
@@ -582,7 +583,17 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
           { !this.props.isCBioPortal &&
             <React.Fragment>
               <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
-              <ToastContainer className={"pm-toast-container"}/>
+              <ToastContainer
+                position="bottom-left"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                />
             </React.Fragment>
           }
           <ReactTooltip clickable={true} className={isCBioPortal ? "" : "pmTip"} style={{maxWidth: "350px", zIndex: 9999999}}/>
