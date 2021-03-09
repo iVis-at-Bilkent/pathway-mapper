@@ -1,6 +1,5 @@
 import EditorActionsManager from './EditorActionsManager.js';
 export interface IPathwayInfo {
-    fileName: string;
     pathwayTitle: string;
     pathwayDetails: string;
 }

@@ -4,7 +4,6 @@ import SaveLoadUtility from '../utils/SaveLoadUtility';
 import EditorActionsManager from './EditorActionsManager.js';
 
 export interface IPathwayInfo{
-    fileName: string;
     pathwayTitle: string;
     pathwayDetails: string;
 }
@@ -16,7 +15,7 @@ export default class FileOperationsManager{
 
     constructor(){
         makeObservable(this);
-        this.pathwayInfo = {pathwayTitle: "New Pathway", pathwayDetails: "", fileName: "pathway.txt"};
+        this.pathwayInfo = {pathwayTitle: "New Pathway", pathwayDetails: ""};
     }
 
 
@@ -57,31 +56,31 @@ export default class FileOperationsManager{
 
     saveAsJPEG(cy: any)
     {
-        // var fileName = getFileName();
         const graphData = cy.jpeg();
         // this is to remove the beginning of the pngContent: data:img/png;base64,
         const b64data = graphData.substr(graphData.indexOf(",") + 1);
         const imageData = this.b64toBlob(b64data, "image/jpeg");
         const blob = new Blob([imageData]);
-        saveAs(blob, "pathway.jpg");
+        const fileName = this.pathwayInfo.pathwayTitle + ".jpg"
+        saveAs(blob, fileName);
     };
 
     saveAsSVG(editor: EditorActionsManager){
         const returnString: any = editor.exportSVG();
-        const fileName = 'pathway.svg';
+        const fileName = this.pathwayInfo.pathwayTitle + ".svg"
         const blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
         saveAs(blob, fileName);
     }
 
     saveAsPNG(cy: any)
     {
-        // var fileName = getFileName();
         const graphData = cy.png();
         // this is to remove the beginning of the pngContent: data:img/png;base64,
         const b64data = graphData.substr(graphData.indexOf(",") + 1);
         const imageData = this.b64toBlob(b64data, "image/png");
         const blob = new Blob([imageData]);
-        saveAs(blob, "pathway.png");
+        const fileName = this.pathwayInfo.pathwayTitle + ".png"
+        saveAs(blob, fileName);
     };
     
 
@@ -91,6 +90,7 @@ export default class FileOperationsManager{
         const returnString = (isSIFNX) ? SaveLoadUtility.exportAsSIFNX(editor.cy):
                                        SaveLoadUtility.exportGraph(pathwayData, editor.cy, editor.edgeEditing);
         const blob = new Blob([returnString], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, pathwayData.fileName);
+        const fileName = pathwayData.pathwayTitle + ".txt";
+        saveAs(blob, fileName);
     };
 }

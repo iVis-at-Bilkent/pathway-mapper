@@ -2,7 +2,7 @@ import autobind from "autobind-decorator";
 import { action, computed, makeObservable, observable } from "mobx";
 import EditorActionsManager from "../managers/EditorActionsManager";
 import FileOperationsManager, {
-    IPathwayInfo
+  IPathwayInfo
 } from "../managers/FileOperationsManager";
 import GridOptionsManager from "../managers/GridOptionsManager";
 import ViewOperationsManager from "../managers/ViewOperationsManager";
@@ -10,7 +10,7 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 import { EGridType } from "../modals/GridSettings";
 import { ILayoutProperties } from "../modals/LayoutProperties";
 import {
-    EModalType, IPathwayData, IProfileMetaData
+  EModalType, IPathwayData, IProfileMetaData
 } from "../ui/react-pathway-mapper";
 import SaveLoadUtility from "./SaveLoadUtility";
 
@@ -217,8 +217,7 @@ export default class PathwayActions {
       this.editor.removeAllElements();
       this.fileManager.setPathwayInfo({
         pathwayTitle: "New Pathway",
-        pathwayDetails: "",
-        fileName: "pathway.txt"
+        pathwayDetails: ""
       });
       //this.removeAllData()
       this.resetUndoStack();
@@ -241,7 +240,6 @@ export default class PathwayActions {
       this.fileManager.setPathwayInfo({
         pathwayTitle: pathwayName,
         pathwayDetails: "",
-        fileName: pathwayName + ".txt"
       });
       // At the beginning changePathway is called editor is not ready hence removeData shall not be called
       if (this.editor) {
@@ -373,8 +371,7 @@ export default class PathwayActions {
             this.editor.loadFile(pathwayData.nodes, pathwayData.edges);
             this.fileManager.setPathwayInfo({
               pathwayTitle: pathwayData.title,
-              pathwayDetails: pathwayData.description,
-              fileName: pathwayData.title + ".txt"
+              pathwayDetails: pathwayData.description
             });
           }
 

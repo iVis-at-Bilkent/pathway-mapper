@@ -32,14 +32,6 @@ export default class PathwayDetailsModal extends React.Component<IPathwayDetails
                 </Modal.Header>
                 <Modal.Body>
                 <Form id="pathwayDetailsForm">
-                    <InputGroup>
-                        <Col style={{textAlign: "left"}} sm={4}>
-                         <ControlLabel>File Name:</ControlLabel>
-                        </Col>
-                        <Col sm={8}>
-                        <FormControl type="text" onChange={(e: any) => {this.pathwayInfo.fileName = e.target.value;}}value={this.pathwayInfo.fileName}/>
-                        </Col>
-                    </InputGroup>
 
                     <InputGroup>
                         <Col style={{textAlign: "left"}} sm={4}>
