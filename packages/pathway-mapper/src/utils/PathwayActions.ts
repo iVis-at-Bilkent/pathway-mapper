@@ -120,6 +120,8 @@ export default class PathwayActions {
   onChangeFile(e: any, isMerge: boolean) {
     const file = e.target.files[0] as File;
     this.processFile(file, isMerge);
+    //Can't load the same file twice in a row without this
+    e.target.value = "";
   }
 
   uploadOverlay() {
