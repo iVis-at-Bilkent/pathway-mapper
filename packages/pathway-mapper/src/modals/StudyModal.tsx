@@ -19,6 +19,9 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
   @observable
   dataTypes: {[dataType: string]: IDataTypeMetaData} = {};
 
+  @observable 
+  dataTypeFetchResultsReady: boolean = false;
+
   currentlySelectedItemIndex = -1;
 
   @observable
@@ -60,6 +63,11 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     this.selectedStudyData = [];
     this.portalAccessor = new CBioPortalAccessor();
     this.fetchStudy();
+  }
+
+  @action.bound 
+  setDataTypeFetchResultsReady(ready: boolean) {
+    this.dataTypeFetchResultsReady = ready;
   }
 
   @action.bound 
@@ -138,6 +146,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
   }
 
   preparePortalAccess(studyId: string) {
+    this.setDataTypeFetchResultsReady(false);
     this.portalAccessor.getSupportedGeneticProfiles(studyId, (data) => {
       this.disableAllDataTypes();
       // Iterate through profiles
@@ -149,6 +158,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
             enabled: true,
             profile: profile,
           });
+          setTimeout(() => this.setDataTypeFetchResultsReady(true), 500);
         }
       }
     });
@@ -253,7 +263,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
               }}
             >
               {this.itemArray.length < 1 ? 
-              <span>Studies are being fetched from cBioPortal...</span> 
+              <span>Fetching studies from cBioPortal...</span> 
               :
               this.itemArray.map((item, index) => {return {item: item, index: index}})
                             .filter(obj => obj.item[1].toLowerCase().includes(this.searchQuery.toLowerCase()))
@@ -325,7 +335,10 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
             }
             }>
             <Modal.Body>
-            {Object.keys(this.dataTypes).map((dataType: string) => {
+            {this.dataTypeFetchResultsReady === false ?
+            <span>Fetching data types from cBioPortal...</span>  
+            :
+            Object.keys(this.dataTypes).map((dataType: string) => {
               return (
                 <Checkbox
                   inline 

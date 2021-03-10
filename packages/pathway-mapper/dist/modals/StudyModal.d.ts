@@ -10,6 +10,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     dataTypes: {
         [dataType: string]: IDataTypeMetaData;
     };
+    dataTypeFetchResultsReady: boolean;
     currentlySelectedItemIndex: number;
     selectedStudies: {
         data: any[];
@@ -28,6 +29,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     selectedStudyData: any[];
     portalAccessor: CBioPortalAccessor;
     constructor(props: IStudyModalProps);
+    setDataTypeFetchResultsReady(ready: boolean): void;
     setItemArray(itemArray: any[]): void;
     setSearchQuery(query: string): void;
     setSelectedStudyData(data: any[]): void;
