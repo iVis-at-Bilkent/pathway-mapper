@@ -5,7 +5,7 @@
 export default class GraphUtilities {
     
     
-    createGraphHierarchy(nodes)
+    static createGraphHierarchy(nodes)
     {
         //Some arrays and maps for creating graph hierarchy
         var tree = [];
@@ -48,7 +48,7 @@ export default class GraphUtilities {
      * a node in corresponding level.
      *
      * */
-    createGraphHierarchyRealTime(nodes)
+    static createGraphHierarchyRealTime(nodes)
     {
         //Some arrays and maps for creating graph hierarchy
         var tree = [];

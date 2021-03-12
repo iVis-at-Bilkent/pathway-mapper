@@ -19,14 +19,12 @@ export default class ShareDBManager {
     readonly GENOMIC_DATA_GROUP_NAME = 'genomicDataGroupList';
     readonly GENOMIC_DATA_GROUP_COUNT = 'genomicDataGroupCount';
     
-    graphUtilities: GraphUtilities;
     doc: any;
     postFileLoad: any;
     editor: EditorActionsManager;
     constructor(postFileLoadCallback) {
         //Doc data maps names and keys
         this.postFileLoad = postFileLoadCallback;
-        this.graphUtilities = new GraphUtilities();
     };
 
 
@@ -1059,7 +1057,7 @@ export default class ShareDBManager {
         }
 
         //Create graph hierarchy from given list of flat nodes
-        var tree = this.graphUtilities.createGraphHierarchyRealTime(nodes);
+        var tree = GraphUtilities.createGraphHierarchyRealTime(nodes);
         //Traverse from root nodes of tree
         for (const rootLevelNode of tree) {
             traverseTree(rootLevelNode, undefined);
@@ -1160,7 +1158,7 @@ export default class ShareDBManager {
         }
 
         //Traverse from root nodes of tree
-        var tree = this.graphUtilities.createGraphHierarchyRealTime(nodes);
+        var tree = GraphUtilities.createGraphHierarchyRealTime(nodes);
         for (const rootLevelNode of tree) {
             traverseTree(rootLevelNode, rootLevelNode.data.id);
         }
