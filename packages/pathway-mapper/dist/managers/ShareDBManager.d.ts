@@ -1,4 +1,3 @@
-import GraphUtilities from "../utils/GraphUtilities";
 import EditorActionsManager from "./EditorActionsManager";
 export default class ShareDBManager {
     readonly NODEMAP_NAME = "nodes";
@@ -9,7 +8,6 @@ export default class ShareDBManager {
     readonly VISIBLE_GENOMIC_DATA_MAP_NAME = "visibleGenomicDataMapByType";
     readonly GENOMIC_DATA_GROUP_NAME = "genomicDataGroupList";
     readonly GENOMIC_DATA_GROUP_COUNT = "genomicDataGroupCount";
-    graphUtilities: GraphUtilities;
     doc: any;
     postFileLoad: any;
     editor: EditorActionsManager;

@@ -1,4 +1,4 @@
-import EditorActionsManager from '../managers/EditorActionsManager';
+import EditorActionsManager from "../managers/EditorActionsManager";
 export default class SVGExporter {
     SVGNameSpace: string;
     svg: Element;
@@ -11,10 +11,10 @@ export default class SVGExporter {
     NODE_OPACITY: number;
     ROUNDING_FACTOR: number;
     GENOMICDATA_LABEL_Y_OFFSET: number;
+    EDGE_ARROW_SCALE: number;
     EDGE_WIDTH: number;
-    T_WIDTH: number;
-    T_HEIGHT: number;
-    T_ARROW_HEAD_OFFSET: number;
+    T_ARROW_HEAD_WIDTH: number;
+    T_ARROW_HEAD_HEIGHT: number;
     TRIANGLE_ARROW_HEAD_HEIGHT: number;
     TRIANGLE_ARROW_HEAD_WIDTH: number;
     DASH_PARAMETERS: string;
@@ -25,40 +25,10 @@ export default class SVGExporter {
     constructor(edgeEditing: any, editor: EditorActionsManager);
     resetSVG(): void;
     exportGraph(nodes: any, edges: any): string;
-    drawEdge(edge: any, source: any, target: any): void;
-    /**
-     *
-     * **/
-    findClippingPoints(sourceRectangle: any, targetRectangle: any): {
-        sourceClipPoints: {
-            x: any;
-            y: any;
-            slope: number;
-        };
-        targetClipPoints: {
-            x: any;
-            y: any;
-            slope: number;
-        };
-    };
+    drawEdge(edge: any): void;
     createRect(node: any): Element;
-    createText(node: any, genomicDataOffset: any): Element;
+    createNodeLabel(node: any, genomicDataOffset: any): Element;
     createStyleForNodes(node: any, nodeRectangle: any): any;
-    /**
-     * Cohen Sutherland Line Clipping algorithm implementation
-     * **/
-    clipLine(line: any, rectangle: any): {
-        x: any;
-        y: any;
-        slope: number;
-    };
-    /**
-     * Utility vector functions
-     * */
-    dotProduct(v1: any, v2: any): {
-        x: number;
-        y: number;
-    };
     unitVector(v: any): {
         x: number;
         y: number;

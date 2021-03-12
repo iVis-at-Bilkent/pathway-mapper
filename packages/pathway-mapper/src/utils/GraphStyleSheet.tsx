@@ -111,6 +111,7 @@ module.exports = (function()
           if (label === "") {
             return label;
           }
+          //https://github.com/cytoscape/cytoscape.js/issues/2329
           return (label + "\n \u2060"); 
         },
         'text-wrap': 'wrap',

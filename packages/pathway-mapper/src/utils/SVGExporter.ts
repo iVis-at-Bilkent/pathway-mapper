@@ -13,12 +13,12 @@ export default class SVGExporter {
   NODE_OPACITY = 0.5;
   ROUNDING_FACTOR = 6;
   GENOMICDATA_LABEL_Y_OFFSET = -15;
+  EDGE_ARROW_SCALE = 1.7;
   EDGE_WIDTH = 1;
-  T_WIDTH = 2;
-  T_HEIGHT = 8;
-  T_ARROW_HEAD_OFFSET = 2;
-  TRIANGLE_ARROW_HEAD_HEIGHT = 8;
-  TRIANGLE_ARROW_HEAD_WIDTH = 8;
+  T_ARROW_HEAD_WIDTH = 2 * this.EDGE_ARROW_SCALE;
+  T_ARROW_HEAD_HEIGHT = 8 * this.EDGE_ARROW_SCALE;
+  TRIANGLE_ARROW_HEAD_HEIGHT = 8 * this.EDGE_ARROW_SCALE;
+  TRIANGLE_ARROW_HEAD_WIDTH = 8 * this.EDGE_ARROW_SCALE;
   DASH_PARAMETERS = "5, 3";
   COMPOUND_MARGIN = 8;
   NODE_FONT_SIZE = 14;
@@ -46,24 +46,24 @@ export default class SVGExporter {
       cyBounds.x1 + " " + cyBounds.y1 + " " + cyBounds.w + " " + cyBounds.h
     );
 
-    var that = this;
+    var self = this;
     var nodeMap = {};
 
     var nodeTree = GraphUtilities.createGraphHierarchy(nodes);
     var traverseFunction = function(node) {
       //Create SVG for current node
       nodeMap[node.id()] = node;
-      var genomicDataSVG = that.editor.getGenomicDataSVG(node).children;
-      var oncoprintDataSVG = that.editor.getOncoprintDataSVG(node);
-      that.svg.appendChild(that.createRect(node));
+      var genomicDataSVG = self.editor.getGenomicDataSVG(node).children;
+      var oncoprintDataSVG = self.editor.getOncoprintDataSVG(node);
+      self.svg.appendChild(self.createRect(node));
       var labelOffset =
         (genomicDataSVG && genomicDataSVG.length > 0) ||
         oncoprintDataSVG.outerHTML !== ""
-          ? that.GENOMICDATA_LABEL_Y_OFFSET
+          ? self.GENOMICDATA_LABEL_Y_OFFSET
           : 0;
-      that.svg.appendChild(that.createText(node, labelOffset));
+      self.svg.appendChild(self.createNodeLabel(node, labelOffset));
 
-      //Append Genomic Data SVG here
+      //Append Genomic Data SVG
       if (genomicDataSVG) {
         while (genomicDataSVG.length > 0) {
           var elemSVG = genomicDataSVG[0];
@@ -78,9 +78,11 @@ export default class SVGExporter {
             "y",
             nodePosition.y - node.height() / 2 + parseFloat(svgY)
           );
-          that.svg.appendChild(elemSVG);
+          self.svg.appendChild(elemSVG);
         }
-      } else if (oncoprintDataSVG.outerHTML !== "") {
+      }
+      //Append Oncoprint Data SVG
+      else if (oncoprintDataSVG.outerHTML !== "") {
         var nodePosition = node.position();
 
         const width = parseInt(oncoprintDataSVG.getAttribute("width"));
@@ -91,7 +93,7 @@ export default class SVGExporter {
           nodePosition.y + node.height() / 2 - (height + verticalPadding);
         oncoprintDataSVG.setAttribute("x", nodePosition.x - width / 2);
         oncoprintDataSVG.setAttribute("y", y);
-        that.svg.appendChild(oncoprintDataSVG);
+        self.svg.appendChild(oncoprintDataSVG);
       }
 
       //Traverse children
@@ -109,79 +111,53 @@ export default class SVGExporter {
     }
 
     edges.forEach(function(edge) {
-      var source = nodeMap[edge.source().id()];
-      var target = nodeMap[edge.target().id()];
-      that.drawEdge(edge, source, target);
+      self.drawEdge(edge);
     });
 
     return this.svg.outerHTML;
   }
 
-  drawEdge(edge, source, target) {
-    var edgeType = edge.data().type;
-
-    var sourceRectangle = {
-      x: source.position().x,
-      y: source.position().y,
-      width: source.width(),
-      height: source.height(),
+  drawEdge(edge) {
+    const sourceEndpoint = edge.sourceEndpoint();
+    const targetEndpoint = edge.targetEndpoint();
+    const targetArrowShape = edge.style("target-arrow-shape");
+    const lineStyle = edge.style("line-style");
+    const curveStyle = edge.style("curve-style");
+    const anchorPoints = curveStyle === "segments" ? 
+                        edge.segmentPoints() : 
+                        edge.controlPoints();
+    let lastAnchor = {
+      x: sourceEndpoint.x,
+      y: sourceEndpoint.y
+    }
+    let edgeEndpoint = {
+      x: targetEndpoint.x,
+      y: targetEndpoint.y
     };
 
-    var targetRectangle = {
-      x: target.position().x,
-      y: target.position().y,
-      width: target.width(),
-      height: target.height(),
-    };
-
-    //If source or target node is compound node adjust their width and height according to compound margins
-    if (source.isParent()) {
-      sourceRectangle.width += this.COMPOUND_MARGIN;
-      sourceRectangle.height += this.COMPOUND_MARGIN;
+    if (anchorPoints && anchorPoints.length > 0) {
+      lastAnchor = {
+        x: anchorPoints[anchorPoints.length - 1].x,
+        y: anchorPoints[anchorPoints.length - 1].y
+      }
     }
 
-    if (target.isParent()) {
-      targetRectangle.width += this.COMPOUND_MARGIN;
-      targetRectangle.height += this.COMPOUND_MARGIN;
-    }
-
-    var numberOfAnchorPoints = 0;
-    var anchors = this.edgeEditing.getAnchorsAsArray(edge);
-    if (this.edgeEditing.getAnchorsAsArray(edge) !== undefined)
-      numberOfAnchorPoints = anchors.length / 2;
-
-    var clipPoints;
-    if (numberOfAnchorPoints > 0) {
-      var lastBendPoint = {
-        x: anchors[2 * numberOfAnchorPoints - 2],
-        y: anchors[2 * numberOfAnchorPoints - 1],
-        height: 0,
-        width: 0,
-      };
-      //Calculate clipping point of target node with the segment from last bend point by Cohen Sutherland algorithm
-      clipPoints = this.findClippingPoints(lastBendPoint, targetRectangle);
-    } else {
-      //Calculate clipping points of both source and target nodes by Cohen Sutherland algorithm
-      clipPoints = this.findClippingPoints(sourceRectangle, targetRectangle);
-    }
-
-    //Calculate unit vector pointing from source clipping coordinates to target clipping coordinates
     var unitV = this.unitVector({
-      x: clipPoints.targetClipPoints.x - clipPoints.sourceClipPoints.x,
-      y: clipPoints.targetClipPoints.y - clipPoints.sourceClipPoints.y,
+      x: targetEndpoint.x - lastAnchor.x,
+      y: targetEndpoint.y - lastAnchor.y,
     });
     var inverseUnitV = this.scale(unitV, -1);
 
-    var targetX = clipPoints.targetClipPoints.x;
-    var targetY = clipPoints.targetClipPoints.y;
+    var targetX = targetEndpoint.x;
+    var targetY = targetEndpoint.y;
 
     //Draw Triangle arrow head
-    if (edgeType == "ACTIVATES" || edgeType == "INDUCES") {
+    if (targetArrowShape === "triangle") {
       targetX =
-        clipPoints.targetClipPoints.x +
+        targetEndpoint.x +
         this.TRIANGLE_ARROW_HEAD_HEIGHT * inverseUnitV.x;
       targetY =
-        clipPoints.targetClipPoints.y +
+        targetEndpoint.y +
         this.TRIANGLE_ARROW_HEAD_HEIGHT * inverseUnitV.y;
 
       var point1Vector = this.rotateVector(unitV, Math.PI / 2);
@@ -202,6 +178,11 @@ export default class SVGExporter {
       var point2X = targetX + point2Vector.x;
       var point2Y = targetY + point2Vector.y;
 
+      edgeEndpoint = {
+        x: (point1X + point2X) / 2,
+        y: (point1Y + point2Y) / 2
+      }
+
       var polySVG = document.createElementNS(this.SVGNameSpace, "polygon");
       polySVG.setAttribute(
         "points",
@@ -213,32 +194,35 @@ export default class SVGExporter {
           "," +
           point2Y +
           "," +
-          clipPoints.targetClipPoints.x +
+          targetEndpoint.x +
           "," +
-          clipPoints.targetClipPoints.y
+          targetEndpoint.y
       );
 
       this.svg.appendChild(polySVG);
     }
     //Draw T type arrow head
-    else if (edgeType === "INHIBITS" || edgeType === "REPRESSES") {
+    else if (targetArrowShape === "tee") {
       targetX =
-        clipPoints.targetClipPoints.x +
-        this.T_ARROW_HEAD_OFFSET * inverseUnitV.x;
+        targetEndpoint.x 
       targetY =
-        clipPoints.targetClipPoints.y +
-        this.T_ARROW_HEAD_OFFSET * inverseUnitV.y;
+        targetEndpoint.y 
 
       //Calculate T shape points
       var point1Vector = this.rotateVector(unitV, Math.PI / 2);
       var point2Vector = this.rotateVector(unitV, -Math.PI / 2);
-      point1Vector = this.scale(point1Vector, this.T_HEIGHT / 2);
-      point2Vector = this.scale(point2Vector, this.T_HEIGHT / 2);
+      point1Vector = this.scale(point1Vector, this.T_ARROW_HEAD_HEIGHT / 2);
+      point2Vector = this.scale(point2Vector, this.T_ARROW_HEAD_HEIGHT / 2);
 
       var point1X = targetX + point1Vector.x;
       var point1Y = targetY + point1Vector.y;
       var point2X = targetX + point2Vector.x;
       var point2Y = targetY + point2Vector.y;
+
+      edgeEndpoint = {
+        x: (point1X + point2X) / 2,
+        y: (point1Y + point2Y) / 2
+      }
 
       //Draw edge arrow line here !
       var lineSVG = document.createElementNS(this.SVGNameSpace, "line");
@@ -246,110 +230,103 @@ export default class SVGExporter {
       lineSVG.setAttribute("y1", point1Y);
       lineSVG.setAttribute("x2", point2X);
       lineSVG.setAttribute("y2", point2Y);
-      lineSVG.setAttribute("stroke-width", this.T_WIDTH + "");
+      lineSVG.setAttribute("stroke-width", this.T_ARROW_HEAD_WIDTH.toString());
       lineSVG.setAttribute("stroke", "black");
       this.svg.appendChild(lineSVG);
     }
-
-    //Draw edge lines here !
-    if (numberOfAnchorPoints > 0) {
-      //Calculate initial clipping point of source node with the segment from first bend point
-      var firstAnchorPoint = {
-        x: anchors[0],
-        y: anchors[1],
-        height: 0,
-        width: 0,
-      };
-      var initialClipPoint = this.findClippingPoints(
-        sourceRectangle,
-        firstAnchorPoint
-      );
-
-      //Create a copy array of edgeEditing.getAnchorsAsArray(edge) which contain all the bending points
-      // including source and target clipping point. The first elements of the array are source's x and y positions
-      // and the last ones are target's x and y positions
-      var points = [
-        initialClipPoint.sourceClipPoints.x,
-        initialClipPoint.sourceClipPoints.y,
-      ];
-      for (var i = 0; i < numberOfAnchorPoints * 2; i++) {
-        points.push(anchors[i]);
-      }
-      points.push(clipPoints.targetClipPoints.x);
-      points.push(clipPoints.targetClipPoints.y);
-
-      for (var i = 0; i < points.length - 2; i += 2) {
-        var lineSVG = document.createElementNS(this.SVGNameSpace, "line");
-        lineSVG.setAttribute("x1", points[i]);
-        lineSVG.setAttribute("y1", points[i + 1]);
-        lineSVG.setAttribute("x2", points[i + 2]);
-        lineSVG.setAttribute("y2", points[i + 3]);
-        lineSVG.setAttribute("stroke-width", this.EDGE_WIDTH + "");
-        lineSVG.setAttribute("stroke", "black");
-
-        //Draw dashed if induces or represses interaction
-        if (edgeType == "INDUCES" || edgeType == "REPRESSES") {
-          lineSVG.setAttribute("stroke-dasharray", this.DASH_PARAMETERS);
-        }
-
-        this.svg.appendChild(lineSVG);
-      }
-    } else {
-      var lineSVG = document.createElementNS(this.SVGNameSpace, "line");
-      lineSVG.setAttribute("x1", clipPoints.sourceClipPoints.x);
-      lineSVG.setAttribute("y1", clipPoints.sourceClipPoints.y);
-      lineSVG.setAttribute("x2", targetX);
-      lineSVG.setAttribute("y2", targetY);
-      lineSVG.setAttribute("stroke-width", this.EDGE_WIDTH + "");
+    
+    // no anchors means a single line connecting source and target end points
+    if (!anchorPoints || anchorPoints.length < 1) {
+      const lineSVG = document.createElementNS(this.SVGNameSpace, "line");
+      lineSVG.setAttribute("x1", sourceEndpoint.x);
+      lineSVG.setAttribute("y1", sourceEndpoint.y);
+      lineSVG.setAttribute("x2", edgeEndpoint.x);
+      lineSVG.setAttribute("y2", edgeEndpoint.y);
+      lineSVG.setAttribute("stroke-width", this.EDGE_WIDTH.toString());
       lineSVG.setAttribute("stroke", "black");
-
-      //Draw dashed if induces or represses interaction
-      if (edgeType == "INDUCES" || edgeType == "REPRESSES") {
+      if (lineStyle === "dashed") {
         lineSVG.setAttribute("stroke-dasharray", this.DASH_PARAMETERS);
       }
-
       this.svg.appendChild(lineSVG);
     }
-  }
+    else if (curveStyle === "unbundled-bezier" || curveStyle === "bezier") {
+      const pathSVG = document.createElementNS(this.SVGNameSpace, "path");
+      let pathPoints: string[] = [];
 
-  /**
-   *
-   * **/
-  findClippingPoints(sourceRectangle, targetRectangle) {
-    var sourceAABB = {
-      xMin: sourceRectangle.x - sourceRectangle.width / 2,
-      xMax: sourceRectangle.x + sourceRectangle.width / 2,
-      yMin: sourceRectangle.y - sourceRectangle.height / 2,
-      yMax: sourceRectangle.y + sourceRectangle.height / 2,
-    };
+      for (let i = 0; i < anchorPoints.length; i++) {
+        if (i === 0) {
+          pathPoints.push("M" + sourceEndpoint.x + "," + sourceEndpoint.y);
+          pathPoints.push("Q" + anchorPoints[i].x + "," + anchorPoints[i].y);
+          if (anchorPoints.length === 1) {
+            pathPoints.push(edgeEndpoint.x + "," + edgeEndpoint.y);
+          }
+          else {
+            const furtherEndPoint = {
+              x: (anchorPoints[i].x + anchorPoints[i+1].x) / 2,
+              y: (anchorPoints[i].y + anchorPoints[i+1].y) / 2 
+            }
+            pathPoints.push(furtherEndPoint.x + "," + furtherEndPoint.y);
+          }
+        }
+        else {
+          if (i < anchorPoints.length - 1) {
+            const furtherEndPoint = {
+              x: (anchorPoints[i].x + anchorPoints[i+1].x) / 2,
+              y: (anchorPoints[i].y + anchorPoints[i+1].y) / 2 
+            }
+            pathPoints.push("T" + furtherEndPoint.x + "," + furtherEndPoint.y);
+          }
+          else {
+            pathPoints.push("T" + edgeEndpoint.x + "," + edgeEndpoint.y);
+          }
+        }
+      }
+      pathSVG.setAttribute(
+        'd',
+        pathPoints.join(" ")
+      );
+      pathSVG.setAttribute('stroke-width', this.EDGE_WIDTH.toString());
+      pathSVG.setAttribute('stroke', 'black');
+      if (lineStyle === "dashed") {
+        pathSVG.setAttribute("stroke-dasharray", this.DASH_PARAMETERS);
+      }
+      pathSVG.setAttribute('fill', 'none');
+      this.svg.appendChild(pathSVG);
+    }
+    // anchors means polyline
+    else {
+      const polylineSVG = document.createElementNS(this.SVGNameSpace, "polyline");
+      let polylinePoints: string[] = [];
 
-    var targetAABB = {
-      xMin: targetRectangle.x - targetRectangle.width / 2,
-      xMax: targetRectangle.x + targetRectangle.width / 2,
-      yMin: targetRectangle.y - targetRectangle.height / 2,
-      yMax: targetRectangle.y + targetRectangle.height / 2,
-    };
-
-    var line1 = {
-      x1: sourceRectangle.x,
-      y1: sourceRectangle.y,
-      x2: targetRectangle.x,
-      y2: targetRectangle.y,
-    };
-
-    var line2 = {
-      x1: targetRectangle.x,
-      y1: targetRectangle.y,
-      x2: sourceRectangle.x,
-      y2: sourceRectangle.y,
-    };
-
-    var returnObj = {
-      sourceClipPoints: this.clipLine(line1, sourceAABB),
-      targetClipPoints: this.clipLine(line2, targetAABB),
-    };
-
-    return returnObj;
+      for (let i = 0; i < anchorPoints.length; i++) {
+        if (i === 0) {
+          polylinePoints.push(sourceEndpoint.x + "," + sourceEndpoint.y);
+          polylinePoints.push(anchorPoints[i].x + "," + anchorPoints[i].y);
+          if (anchorPoints.length === 1) {
+            polylinePoints.push(edgeEndpoint.x + "," + edgeEndpoint.y);
+          }
+        }
+        else if (i === anchorPoints.length - 1) {
+          polylinePoints.push(anchorPoints[i].x + "," + anchorPoints[i].y);
+          polylinePoints.push(edgeEndpoint.x + "," + edgeEndpoint.y);
+        }
+        else {
+          polylinePoints.push(anchorPoints[i].x + "," + anchorPoints[i].y);
+        }
+      }
+      polylineSVG.setAttribute(
+        'points',
+        polylinePoints.join(" ")
+      );
+      polylineSVG.setAttribute('stroke-width', this.EDGE_WIDTH.toString());
+      polylineSVG.setAttribute('stroke', 'black');
+      if (lineStyle === "dashed") {
+        lineSVG.setAttribute("stroke-dasharray", this.DASH_PARAMETERS);
+      }
+      polylineSVG.setAttribute('fill', 'none');
+      this.svg.appendChild(polylineSVG);
+    }
+    
   }
 
   createRect(node) {
@@ -381,7 +358,7 @@ export default class SVGExporter {
     return nodeRectangle;
   }
 
-  createText(node, genomicDataOffset) {
+  createNodeLabel(node, genomicDataOffset) {
     var verticalTextOffset = 5;
     var nodePosition = node.position();
     var svgText = document.createElementNS(this.SVGNameSpace, "text");
@@ -404,7 +381,7 @@ export default class SVGExporter {
     svgText.setAttribute("font-family", "Arial");
     svgText.setAttribute("text-anchor", "middle");
     svgText.setAttribute("font-size", this.NODE_FONT_SIZE + "");
-    svgText.innerHTML = node.data().name;
+    svgText.innerHTML = node.data("name");
     return svgText;
   }
 
@@ -454,95 +431,6 @@ export default class SVGExporter {
     nodeRectangle.setAttribute("style", styleString);
 
     return nodeRectangle;
-  }
-
-  /**
-   * Cohen Sutherland Line Clipping algorithm implementation
-   * **/
-  clipLine(line, rectangle) {
-    //Clipping regions encoded with different integers !
-    var INSIDE = 0;
-    var LEFT = 1;
-    var RIGHT = 2;
-    var BOTTOM = 4;
-    var TOP = 8;
-
-    /*
-     *  Get outcode of given point compared to the rectangle
-     * */
-    function getOutCode(point, rectangle) {
-      var outcode = INSIDE;
-
-      if (point.x < rectangle.xMin) outcode = outcode | LEFT;
-      else if (point.x > rectangle.xMax) outcode = outcode | RIGHT;
-
-      if (point.y < rectangle.yMin) outcode = outcode | TOP;
-      else if (point.y > rectangle.yMax) outcode = outcode | BOTTOM;
-
-      return outcode;
-    }
-
-    var outcode0 = getOutCode({ x: line.x1, y: line.y1 }, rectangle);
-    var outcode1 = getOutCode({ x: line.x2, y: line.y2 }, rectangle);
-
-    var slope = (line.y2 - line.y1) / (line.x2 - line.x1);
-    var returnCoords = { x: line.x1, y: line.y1, slope: slope };
-
-    //Main clipping loop
-    var accept = false;
-    while (true) {
-      // Bitwise OR is 0. Trivially accept and get out of loop
-      if (!(outcode0 | outcode1)) {
-        accept = true;
-        break;
-      }
-      // Bitwise AND is not 0. Trivially reject and get out of loop
-      else if (outcode0 & outcode1) {
-        break;
-      } else {
-        var outCode = outcode0 ? outcode0 : outcode1;
-
-        if (outCode & TOP) {
-          returnCoords.x = line.x1 + (rectangle.yMin - line.y1) / slope;
-          returnCoords.y = rectangle.yMin;
-        } else if (outCode & BOTTOM) {
-          returnCoords.x = line.x1 + (rectangle.yMax - line.y1) / slope;
-          returnCoords.y = rectangle.yMax;
-        } else if (outCode & RIGHT) {
-          returnCoords.x = rectangle.xMax;
-          returnCoords.y = line.y1 + slope * (rectangle.xMax - line.x1);
-        } else if (outCode & LEFT) {
-          returnCoords.x = rectangle.xMin;
-          returnCoords.y = line.y1 + slope * (rectangle.xMin - line.x1);
-        }
-
-        // Now we move outside point to intersection point to clip
-        // and get ready for next pass.
-        if (outCode == outcode0) {
-          outcode0 = getOutCode(
-            { x: returnCoords.x, y: returnCoords.y },
-            rectangle
-          );
-        } else {
-          outcode1 = getOutCode(
-            { x: returnCoords.x, y: returnCoords.y },
-            rectangle
-          );
-        }
-      }
-    }
-
-    return returnCoords;
-  }
-
-  /**
-   * Utility vector functions
-   * */
-  dotProduct(v1, v2) {
-    var newX = v1.x * v2.x;
-    var newY = v1.y * v2.y;
-
-    return { x: newX, y: newY };
   }
 
   unitVector(v) {
