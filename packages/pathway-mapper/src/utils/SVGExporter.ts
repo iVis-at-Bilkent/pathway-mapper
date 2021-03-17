@@ -126,6 +126,12 @@ export default class SVGExporter {
     const anchorPoints = curveStyle === "segments" ? 
                         edge.segmentPoints() : 
                         edge.controlPoints();
+
+    const labelElement = this.createEdgeLabel(edge);
+    if (labelElement) {
+      this.svg.appendChild(labelElement);
+    }
+
     let lastAnchor = {
       x: sourceEndpoint.x,
       y: sourceEndpoint.y
@@ -380,7 +386,7 @@ export default class SVGExporter {
 
     svgText.setAttribute("font-family", "Arial");
     svgText.setAttribute("text-anchor", "middle");
-    svgText.setAttribute("font-size", this.NODE_FONT_SIZE + "");
+    svgText.setAttribute("font-size", this.NODE_FONT_SIZE.toString());
     svgText.innerHTML = node.data("name");
     return svgText;
   }
@@ -431,6 +437,68 @@ export default class SVGExporter {
     nodeRectangle.setAttribute("style", styleString);
 
     return nodeRectangle;
+  }
+
+  createEdgeLabel(edge) {
+    const labelText = edge.data("name");
+    
+    if (labelText === "") {
+      return undefined;
+    }
+    const svgTextElement = document.createElementNS(this.SVGNameSpace, "text");
+
+    const fontSize = edge.style("font-size");
+    const fontFamily = edge.style("font-family");
+
+    // get rotation angle in degrees for transform: rotate()
+    const labelRotationAngle = this.getEdgeLabelRotationAngle(edge);
+    const lineHeight = edge._private.rscratch.labelLineHeight;
+
+    // adjust margins to compensate for the label hack (see stylesheet)
+    const dx = (lineHeight / 4) * Math.sin(edge._private.rscratch.labelAngle);
+    const dy = (lineHeight / 4) * Math.cos(edge._private.rscratch.labelAngle);
+
+    const labelPos = {
+      x: edge._private.rscratch.labelX + dx,
+      y: edge._private.rscratch.labelY - dy
+    }
+
+    svgTextElement.setAttribute('x', labelPos.x.toString());
+    svgTextElement.setAttribute('y', labelPos.y.toString());
+    svgTextElement.setAttribute("font-family", fontFamily);
+    svgTextElement.setAttribute("text-anchor", "middle");
+    svgTextElement.setAttribute("font-size", fontSize);
+
+    svgTextElement.innerHTML = labelText;
+
+    // adjusting for autorotate option
+    // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/transform#rotate    
+    svgTextElement.setAttribute(
+      "transform", 
+      "rotate(" + 
+      labelRotationAngle +
+      " " +
+      labelPos.x.toString() +
+      " " +
+      labelPos.y.toString()+
+      ")");
+
+    return svgTextElement;
+  }
+
+  getEdgeLabelRotationAngle(edge) {
+    const labelAngle = edge._private.rscratch.labelAngle;
+
+    if (!labelAngle) {
+      return 0;
+    }
+
+    return this.toDegrees(labelAngle);
+  }
+
+  toDegrees(radians) {
+    const pi = Math.PI;
+    return radians * (180/pi);
   }
 
   unitVector(v) {

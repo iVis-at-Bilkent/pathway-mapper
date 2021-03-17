@@ -29,6 +29,9 @@ export default class SVGExporter {
     createRect(node: any): Element;
     createNodeLabel(node: any, genomicDataOffset: any): Element;
     createStyleForNodes(node: any, nodeRectangle: any): any;
+    createEdgeLabel(edge: any): Element;
+    getEdgeLabelRotationAngle(edge: any): number;
+    toDegrees(radians: any): number;
     unitVector(v: any): {
         x: number;
         y: number;
