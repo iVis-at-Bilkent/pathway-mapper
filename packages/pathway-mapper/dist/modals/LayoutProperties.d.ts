@@ -1,6 +1,6 @@
-import React from 'react';
-import { EModalType } from '../ui/react-pathway-mapper';
-import PathwayActions from '../utils/PathwayActions';
+import React from "react";
+import { EModalType } from "../ui/react-pathway-mapper";
+import PathwayActions from "../utils/PathwayActions";
 interface ILayoutPropertiesProps {
     isModalShown: boolean;
     handleClose: (modelId: EModalType) => void;
@@ -28,8 +28,9 @@ export interface ILayoutProperties {
 }
 export default class LayoutProperties extends React.Component<ILayoutPropertiesProps> {
     static layoutProperties: ILayoutProperties;
+    internalLayoutProperties: ILayoutProperties;
     constructor(props: ILayoutPropertiesProps);
-    updateLayoutProperties(property: string, val: boolean | number): void;
+    updateInternalLayoutProperty(property: string, val: boolean | number): void;
     render(): JSX.Element;
 }
 export {};

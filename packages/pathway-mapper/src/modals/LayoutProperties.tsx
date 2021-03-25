@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { action, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 import {
@@ -48,23 +49,34 @@ export default class LayoutProperties extends React.Component<
 > {
   static layoutProperties: ILayoutProperties;
 
+  @observable
+  internalLayoutProperties: ILayoutProperties;
+
   constructor(props: ILayoutPropertiesProps) {
     super(props);
-    LayoutProperties.layoutProperties = _.clone(
+    makeObservable(this);
+    this.internalLayoutProperties = _.clone(
       EditorActionsManager.defaultLayoutProperties
     );
+    LayoutProperties.layoutProperties = _.clone(EditorActionsManager.defaultLayoutProperties);
   }
 
-  updateLayoutProperties(property: string, val: boolean | number) {
-    LayoutProperties.layoutProperties[property] = val;
+  @action.bound
+  updateInternalLayoutProperty(property: string, val: boolean | number) {
+    this.internalLayoutProperties[property] = val;
   }
 
   render() {
+
     return (
       <Modal
         id="layoutPropertiesDiv"
         show={this.props.isModalShown}
+        onEnter={() => {
+          this.internalLayoutProperties = _.clone(LayoutProperties.layoutProperties);
+        }}
         onHide={() => {
+          this.internalLayoutProperties = _.clone(LayoutProperties.layoutProperties);
           this.props.handleClose(EModalType.LAYOUT);
         }}
       >
@@ -76,251 +88,235 @@ export default class LayoutProperties extends React.Component<
         <Modal.Body id="layoutPropsForm" className="leftText">
           <Form>
             <InputGroup>
-              <Col className="control-label" sm={4}>
+              <Col className="control-label" sm={6}>
                 Node Repulsion:
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <FormControl
-                  type="text"
-                  value={LayoutProperties.layoutProperties.nodeRepulsion + ""}
+                  type="number"
+                  value={this.internalLayoutProperties.nodeRepulsion.toString()}
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.nodeRepulsion = Number(
-                      e.target.value
-                    );
+                    this.updateInternalLayoutProperty("nodeRepulsion", Number(e.target.value));
                   }}
                 />
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col sm={4}>
+              <Col className="rightAlignText" sm={6}>
                 <ControlLabel>Ideal Edge Length:</ControlLabel>
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <FormControl
-                  type="text"
-                  value={LayoutProperties.layoutProperties.idealEdgeLength + ""}
+                  type="number"
+                  value={this.internalLayoutProperties.idealEdgeLength.toString()}
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.idealEdgeLength = Number(
-                      e.target.value
-                    );
+                    this.updateInternalLayoutProperty("idealEdgeLength", Number(e.target.value));
                   }}
                 />
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col sm={4}>
+              <Col className="rightAlignText" sm={6}>
                 <ControlLabel>Edge Elasticity:</ControlLabel>
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <FormControl
-                  type="text"
-                  value={LayoutProperties.layoutProperties.edgeElasticity + ""}
+                  type="number"
+                  value={this.internalLayoutProperties.edgeElasticity.toString()}
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.edgeElasticity =
-                      e.target.value;
+                    this.updateInternalLayoutProperty("edgeElasticity", Number(e.target.value));
                   }}
                 />
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col sm={4}>
+              <Col className="rightAlignText" sm={6}>
                 <ControlLabel>Nesting Factor:</ControlLabel>
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <FormControl
-                  type="text"
-                  value={LayoutProperties.layoutProperties.nestingFactor + ""}
+                  type="number"
+                  value={this.internalLayoutProperties.nestingFactor.toString()}
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.nestingFactor =
-                      e.target.value;
+                    this.updateInternalLayoutProperty("nestingFactor", Number(e.target.value));
                   }}
                 />
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col sm={4}>
+              <Col className="rightAlignText" sm={6}>
                 <ControlLabel>Gravity:</ControlLabel>
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <FormControl
-                  type="text"
-                  value={LayoutProperties.layoutProperties.gravity + ""}
+                  type="number"
+                  value={this.internalLayoutProperties.gravity.toString()}
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.gravity = e.target.value;
+                    this.updateInternalLayoutProperty("gravity", Number(e.target.value));
                   }}
                 />
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col sm={4}>
+              <Col className="rightAlignText" sm={6}>
                 <ControlLabel>Gravity Range:</ControlLabel>
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <FormControl
-                  type="text"
-                  value={LayoutProperties.layoutProperties.gravityRange + ""}
+                  type="number"
+                  value={this.internalLayoutProperties.gravityRange.toString()}
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.gravityRange =
-                      e.target.value;
+                    this.updateInternalLayoutProperty("gravityRange", Number(e.target.value));
                   }}
                 />
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col sm={4}>
+              <Col className="rightAlignText" sm={6}>
                 <ControlLabel>Compound Gravity:</ControlLabel>
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <FormControl
-                  type="text"
-                  value={LayoutProperties.layoutProperties.gravityCompound + ""}
+                  type="number"
+                  value={this.internalLayoutProperties.gravityCompound.toString()}
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.gravityCompound =
-                      e.target.value;
+                    this.updateInternalLayoutProperty("gravityCompound", Number(e.target.value));
                   }}
                 />
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col sm={4}>
+              <Col className="rightAlignText" sm={6}>
                 <ControlLabel>Compound Gravity Range:</ControlLabel>
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <FormControl
-                  type="text"
+                  type="number"
                   value={
-                    LayoutProperties.layoutProperties.gravityRangeCompound + ""
+                    this.internalLayoutProperties.gravityRangeCompound.toString()
                   }
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.gravityRangeCompound =
-                      e.target.value;
+                    this.updateInternalLayoutProperty("gravityRangeCompound", Number(e.target.value));
                   }}
                 />
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col sm={4}>
+              <Col className="rightAlignText" sm={6}>
                 <ControlLabel>Number of Iterations:</ControlLabel>
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <FormControl
-                  type="text"
-                  value={LayoutProperties.layoutProperties.numIter + ""}
+                  type="number"
+                  value={this.internalLayoutProperties.numIter.toString()}
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.numIter = e.target.value;
+                    this.updateInternalLayoutProperty("numIter", Number(e.target.value));
                   }}
                 />
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col sm={4}>
+              <Col className="rightAlignText" sm={6}>
                 <ControlLabel>Tiling Vertical Padding:</ControlLabel>
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <FormControl
-                  type="text"
+                  type="number"
                   value={
-                    LayoutProperties.layoutProperties.tilingPaddingVertical + ""
+                    this.internalLayoutProperties.tilingPaddingVertical.toString()
                   }
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.tilingPaddingVertical =
-                      e.target.value;
+                    this.updateInternalLayoutProperty("tilingPaddingVertical", Number(e.target.value));
                   }}
                 />
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col sm={4}>
+              <Col className="rightAlignText" sm={6}>
                 <ControlLabel>Tiling Horizontal Padding:</ControlLabel>
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <FormControl
-                  type="text"
+                  type="number"
                   value={
-                    LayoutProperties.layoutProperties.tilingPaddingHorizontal +
-                    ""
+                    this.internalLayoutProperties.tilingPaddingHorizontal.toString()
                   }
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.tilingPaddingHorizontal =
-                      e.target.value;
+                    this.updateInternalLayoutProperty("tilingPaddingHorizontal", Number(e.target.value));
                   }}
                 />
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col sm={4}>
+              <Col className="rightAlignText" sm={6}>
                 <ControlLabel>Tile Disconnected:</ControlLabel>
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <Checkbox
                   className="layProps"
-                  checked={LayoutProperties.layoutProperties.tile}
+                  checked={this.internalLayoutProperties.tile}
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.tile = !LayoutProperties
-                      .layoutProperties.tile;
+                    this.updateInternalLayoutProperty("tile", !this.internalLayoutProperties.tile);
                   }}
                 ></Checkbox>
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col className="control-label" sm={4}>
+              <Col className="control-label" sm={6}>
                 Animate:
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <Checkbox
                   className="layProps"
-                  checked={LayoutProperties.layoutProperties.animate}
+                  checked={this.internalLayoutProperties.animate}
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.animate = !LayoutProperties
-                      .layoutProperties.animate;
+                    this.updateInternalLayoutProperty("animate",!this.internalLayoutProperties.animate);
                   }}
                 ></Checkbox>
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col sm={4}>
+              <Col className="rightAlignText" sm={6}>
                 <ControlLabel>Incremental:</ControlLabel>
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <Checkbox
                   className="layProps"
-                  checked={!LayoutProperties.layoutProperties.randomize}
+                  checked={!this.internalLayoutProperties.randomize}
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.randomize = !LayoutProperties
-                      .layoutProperties.randomize;
+                    this.updateInternalLayoutProperty("randomize", !this.internalLayoutProperties.randomize);
                   }}
                 ></Checkbox>
               </Col>
             </InputGroup>
             <InputGroup>
-              <Col sm={4}>
+              <Col className="rightAlignText" sm={6}>
                 <ControlLabel>Incremental Cooling Factor:</ControlLabel>
               </Col>
 
-              <Col sm={8}>
+              <Col sm={6}>
                 <FormControl
-                  type="text"
+                  type="number"
                   value={
-                    LayoutProperties.layoutProperties
-                      .initialEnergyOnIncremental + ""
+                    this.internalLayoutProperties
+                      .initialEnergyOnIncremental.toString()
                   }
                   onChange={(e: any) => {
-                    LayoutProperties.layoutProperties.initialEnergyOnIncremental =
-                      e.target.value;
+                    this.updateInternalLayoutProperty("initialEnergyOnIncremental", Number(e.target.value));
                   }}
                 />
               </Col>
@@ -331,6 +327,7 @@ export default class LayoutProperties extends React.Component<
         <Modal.Footer>
           <Button
             onClick={() => {
+              LayoutProperties.layoutProperties = _.clone(this.internalLayoutProperties);
               this.props.pathwayActions.setLayoutProperties(
                 LayoutProperties.layoutProperties
               );
@@ -342,11 +339,12 @@ export default class LayoutProperties extends React.Component<
 
           <Button
             onClick={() => {
-              LayoutProperties.layoutProperties = _.clone(
+              this.internalLayoutProperties = _.clone(
                 EditorActionsManager.defaultLayoutProperties
               );
+              LayoutProperties.layoutProperties = _.clone(this.internalLayoutProperties);
               this.props.pathwayActions.setLayoutProperties(
-                LayoutProperties.layoutProperties
+                this.internalLayoutProperties
               );
             }}
           >
