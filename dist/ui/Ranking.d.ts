@@ -23,6 +23,7 @@ export default class Ranking extends React.Component<IRankingProps, {}> {
     setBestPathwayMethod(i: number): void;
     onPathwayClick(pathway: string): void;
     onApplyClick(): void;
+    filterBestPathwaysByTCGAPanPathways(): void;
     toggleConsiderOnlyTCGAPanPathways(): void;
     componentDidMount(): void;
     render(): JSX.Element;

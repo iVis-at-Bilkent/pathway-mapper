@@ -6765,7 +6765,7 @@ function (_super) {
         closeButton: true
       }, external_react_default.a.createElement(external_react_bootstrap_["Modal"].Title, null, "About")), external_react_default.a.createElement(external_react_bootstrap_["Modal"].Body, null, external_react_default.a.createElement("h3", {
         id: "about-model-header"
-      }, "PathwayMapper 2.0"), external_react_default.a.createElement("div", {
+      }, "PathwayMapper 2.1"), external_react_default.a.createElement("div", {
         className: "aboutImageContent"
       }, external_react_default.a.createElement("img", {
         src: __webpack_require__(55),
@@ -12518,13 +12518,6 @@ function (_super) {
 
     _this.setBestPathwayMethod(0);
 
-    _this.shownPathways = _this.bestPathways.filter(function (data) {
-      if (_this.considerOnlyTCGAPanPathways) {
-        return TCGA_PANCAN_PATHWAY_NAMES.indexOf(data.pathwayName) > -1;
-      }
-
-      return true;
-    });
     _this.selectedPathway = _this.shownPathways[0].pathwayName;
     return _this;
   }
@@ -12534,8 +12527,8 @@ function (_super) {
     configurable: true,
     writable: true,
     value: function (i) {
-      this.bestPathways = this.props.bestPathwaysAlgos[i]; //this.selectedPathway = this.bestPathways[0].pathwayName;
-      //this.props.pathwayActions.changePathway(this.selectedPathway);
+      this.bestPathways = this.props.bestPathwaysAlgos[i];
+      this.filterBestPathwaysByTCGAPanPathways();
     }
   });
   Object.defineProperty(Ranking.prototype, "onPathwayClick", {
@@ -12556,14 +12549,13 @@ function (_super) {
       this.setBestPathwayMethod(2 * this.isAlterationEnabled + this.isPercentageMatch);
     }
   });
-  Object.defineProperty(Ranking.prototype, "toggleConsiderOnlyTCGAPanPathways", {
+  Object.defineProperty(Ranking.prototype, "filterBestPathwaysByTCGAPanPathways", {
     enumerable: false,
     configurable: true,
     writable: true,
     value: function () {
       var _this = this;
 
-      this.considerOnlyTCGAPanPathways = !this.considerOnlyTCGAPanPathways;
       this.shownPathways = this.bestPathways.filter(function (data) {
         if (_this.considerOnlyTCGAPanPathways) {
           return TCGA_PANCAN_PATHWAY_NAMES.indexOf(data.pathwayName) > -1;
@@ -12576,6 +12568,15 @@ function (_super) {
         this.selectedPathway = this.shownPathways[0].pathwayName;
         this.props.pathwayActions.changePathway(this.selectedPathway);
       }
+    }
+  });
+  Object.defineProperty(Ranking.prototype, "toggleConsiderOnlyTCGAPanPathways", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.considerOnlyTCGAPanPathways = !this.considerOnlyTCGAPanPathways;
+      this.filterBestPathwaysByTCGAPanPathways();
     }
   });
   Object.defineProperty(Ranking.prototype, "componentDidMount", {
@@ -12704,6 +12705,8 @@ function (_super) {
   Ranking_decorate([external_autobind_decorator_default.a], Ranking.prototype, "onPathwayClick", null);
 
   Ranking_decorate([external_autobind_decorator_default.a], Ranking.prototype, "onApplyClick", null);
+
+  Ranking_decorate([external_mobx_["action"].bound], Ranking.prototype, "filterBestPathwaysByTCGAPanPathways", null);
 
   Ranking_decorate([external_mobx_["action"].bound], Ranking.prototype, "toggleConsiderOnlyTCGAPanPathways", null);
 
