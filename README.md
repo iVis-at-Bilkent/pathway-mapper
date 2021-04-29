@@ -1,6 +1,10 @@
 # PathwayMapper
 
 PathwayMapper is a web based pathway curation tool for interactive creation, editing, and sharing of cancer pathways. The tool supports remote users to collaborate and concurrently modify pathways using [ShareDB](https://github.com/share/sharedb) with built-in conflict resolution implemented as a [ReactJS](https://reactjs.org/) component.
+
+#### How to Cite Usage
+Bahceci et al. (2017) "[PathwayMapper: a collaborative visual web editor for cancer pathways and genomic data](https://doi.org/10.1093/bioinformatics/btx149)", Bioinformatics.
+
 <p align="center">
   <img src="assets/sample-screenshot.png" width="600"/>
 </p>
@@ -12,9 +16,6 @@ A special, viewer edition of PathwayMapper was built for use in cBioPortal ([exa
 
 Below is a video tutorial on basics of PathwayMapper:
 <a href="https://youtu.be/jvEueUqZZPI" target="_blank"><p align="center"><img src="assets/basics-of-PM.jpg" width="340" title="Click to watch video"/></p></a>
-
-#### How to Cite Usage
-Bahceci et al. (2017) "[PathwayMapper: a collaborative visual web editor for cancer pathways and genomic data](https://doi.org/10.1093/bioinformatics/btx149)", Bioinformatics.
 
 #### Feedback
 Send any feedback and error reports to at pathwaymapper@gmail.com.
@@ -265,8 +266,8 @@ Icons made by [Freepik](http://www.freepik.com),
 
 ## Team
 
-  * [Ziya Erkoc](https://github.com/Rgtemze), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and [S. Onur Sumer](https://github.com/onursumer), Konnor C. La, [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [The Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
+  * [M. Salih Altun](https://github.com/msalihaltun), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and [S. Onur Sumer](https://github.com/onursumer), [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [The Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
 
 #### Alumni
 
-  * [Kaan Sancak](https://github.com/kaansancak), [Leonard Dervishi](https://github.com/leonarddrv), and [Istemi Bahceci](https://github.com/istemi-bahceci)
+  * [Ziya Erkoc](https://github.com/Rgtemze), [Kaan Sancak](https://github.com/kaansancak), [Leonard Dervishi](https://github.com/leonarddrv), [Istemi Bahceci](https://github.com/istemi-bahceci), and Konnor C. La
