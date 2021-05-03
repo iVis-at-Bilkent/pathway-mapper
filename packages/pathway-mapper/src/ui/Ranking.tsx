@@ -63,20 +63,13 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
         this.dropDownTitle = "Match count";
         this.isExpanded = false;
         this.setBestPathwayMethod(0);
-        this.shownPathways = this.bestPathways.filter((data: any) => {
-            if (this.considerOnlyTCGAPanPathways) {
-                return TCGA_PANCAN_PATHWAY_NAMES.indexOf(data.pathwayName) > -1;
-            }
-            return true;
-        });
         this.selectedPathway = this.shownPathways[0].pathwayName;
     }
 
     @autobind
     setBestPathwayMethod(i: number){
         this.bestPathways = this.props.bestPathwaysAlgos[i];
-        //this.selectedPathway = this.bestPathways[0].pathwayName;
-        //this.props.pathwayActions.changePathway(this.selectedPathway);
+        this.filterBestPathwaysByTCGAPanPathways();
     }
 
     @autobind
@@ -91,9 +84,8 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
         this.setBestPathwayMethod(2 * this.isAlterationEnabled + this.isPercentageMatch);
     }
 
-    @action.bound
-    toggleConsiderOnlyTCGAPanPathways() {
-        this.considerOnlyTCGAPanPathways = !this.considerOnlyTCGAPanPathways;
+    @action.bound 
+    filterBestPathwaysByTCGAPanPathways() {
         this.shownPathways = this.bestPathways.filter((data: any) => {
             if (this.considerOnlyTCGAPanPathways) {
                 return TCGA_PANCAN_PATHWAY_NAMES.indexOf(data.pathwayName) > -1;
@@ -106,6 +98,12 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
             this.selectedPathway = this.shownPathways[0].pathwayName;
             this.props.pathwayActions.changePathway(this.selectedPathway);
         }
+    }
+
+    @action.bound
+    toggleConsiderOnlyTCGAPanPathways() {
+        this.considerOnlyTCGAPanPathways = !this.considerOnlyTCGAPanPathways;
+        this.filterBestPathwaysByTCGAPanPathways();
     }
 
 
