@@ -48,7 +48,7 @@
     "file-saver": "^2.0.2",
     "jquery-ui-dist": "^1.12.1",
     "konva": "^7.0.3",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "oncoprintjs": "^4.2.3",
     "react-loader-spinner": "^2.3.0",
     "react-scrollbar": "^0.5.6",
