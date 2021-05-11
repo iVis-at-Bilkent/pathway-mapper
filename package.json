@@ -13,6 +13,9 @@
     "yarn": ">=1.21.1",
     "node": ">=8.12.0"
   },
+  "resolutions": {
+    "lodash": "^4.17.21"
+  },
   "scripts": {
     "build": "yarn buildApp:prod",
     "buildApp:dev": "yarn workspace pathway-mapper-standalone build:dev",
