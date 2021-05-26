@@ -42,6 +42,7 @@
     "cytoscape-navigator": "^1.3.3",
     "cytoscape-node-editing": "github:iVis-at-Bilkent/cytoscape.js-node-editing#master",
     "cytoscape-panzoom": "~2.5.2",
+    "cytoscape-popper": "^2.0.0",
     "cytoscape-qtip": "iVis-at-Bilkent/cytoscape.js-qtip#master",
     "cytoscape-undo-redo": "github:iVis-at-Bilkent/cytoscape.js-undo-redo#master",
     "cytoscape-view-utilities": "github:iVis-at-Bilkent/cytoscape.js-view-utilities#master",
@@ -55,7 +56,8 @@
     "react-table": "^6.10.0",
     "react-toastify": "^5.3.1",
     "react-tooltip": "^3.10.0",
-    "sharedb": "^1.1.0"
+    "sharedb": "^1.1.0",
+    "tippy.js": "^6.3.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",

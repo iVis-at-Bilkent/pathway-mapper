@@ -195,3 +195,13 @@ transform: scale(0.86);
 .rightAlignText {
     text-align: right;
 }
+
+.pathwayMapper .tooltip-text-style {
+    font-size: 12px;
+    font-weight: bold;
+    font-family: 'Lucida Grande',sans-serif;
+}
+
+.pathwayMapper .node-tooltip-header {
+    margin-left: 0px;
+}

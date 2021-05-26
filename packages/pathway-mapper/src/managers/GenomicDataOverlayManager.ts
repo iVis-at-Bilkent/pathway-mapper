@@ -1,6 +1,7 @@
-import $ from 'jquery'
-import { GeneticAlterationRuleSet, shapeToSvg } from 'oncoprintjs'
-
+import $ from 'jquery';
+import { GeneticAlterationRuleSet, shapeToSvg } from 'oncoprintjs';
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css'; // optional for styling
 export default class GenomicDataOverlayManager {
   public genomicDataMap: {}
   public visibleGenomicDataMapByType: {}
@@ -522,31 +523,46 @@ export default class GenomicDataOverlayManager {
       .update()
 
     this.cy.on('mouseover', 'node[type="GENE"]', function(event) {
-      var node = event.target || event.cyTarget
+      const node = event.target || event.cyTarget
       const nodeLabel = node.data('name')
       if (!data[nodeLabel]) {
         return
       }
-      node.qtip(
-        {
-          content: {
-            text: function() {
-              return self.generateHTMLContentForNodeTooltip(node, data)
-            }
-          },
-          style: {
-            classes: 'qtip-light qtip-rounded'
-          },
-          show: {
-            event: 'showqtipevent'
-          },
-          hide: {
-            event: 'mouseout'
-          }
+      
+      let ref = node.popperRef();
+      let dummyDomEle = document.createElement('div');
+      document.body.appendChild(dummyDomEle);
+      
+      let tip = tippy(dummyDomEle, { // tippy props:
+        getReferenceClientRect: ref.getBoundingClientRect, // https://atomiks.github.io/tippyjs/v6/all-props/#getreferenceclientrect
+        trigger: 'manual', // mandatory, we cause the tippy to show programmatically.
+        placement: 'bottom',
+        interactive: true,
+        theme: 'cbioportal',
+        // your own custom props
+        // content prop can be used when the target is a single element https://atomiks.github.io/tippyjs/v6/constructor/#prop
+        content: () => {
+           let content = self.generateHTMLContentForNodeTooltip(node, data).get(0);
+     
+           return content;
         },
-        event
-      )
-      node.trigger('showqtipevent')
+        onHidden(instance) {
+          instance.destroy()
+          dummyDomEle.remove()
+        }
+      });
+      
+      node.one("showqtipevent", function()  {
+        tip.show()
+      });
+
+      node.on("mouseout", function() {
+        if (dummyDomEle && dummyDomEle["_tippy"]) {
+          tip.hide()
+        }
+      });
+      
+      node.trigger("showqtipevent")
     })
   }
 

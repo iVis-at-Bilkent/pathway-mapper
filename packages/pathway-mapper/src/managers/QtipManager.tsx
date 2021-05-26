@@ -1,4 +1,5 @@
-import $ from 'jquery';
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css'; // optional for styling
 import EditorActionsManager from "./EditorActionsManager";
 export default class QtipManager{
   private cy: any;
@@ -9,222 +10,251 @@ export default class QtipManager{
     this.editor = editor;
   }
 
-  generateEdgeQtipContentHTML(edge)
-  {
-    var self = this;
-    var textInput = $('<div class="col-xs-6 inputCol"><input type="text" class="form-control" edgeid="' + edge.id() + '"value=""></div>');
-    var pubmedIDList = $('<div class="pubmedIDList"></div>');
-    var pubmedURL = 'https://www.ncbi.nlm.nih.gov/pubmed/';
-    var pubmedData = edge.data('pubmedIDs');
-    var edgeLabelInput = $('<div class="col-xs-6 inputCol"><input type="text" class="form-control" edgeid="' + edge.id() + '"value="'+ edge.data('name') +'"></div>');
+  generateEdgeQtip(edge) {
+    const self = this;
+    const pubmedURL = 'https://www.ncbi.nlm.nih.gov/pubmed/';
+    const pubmedData = edge.data('pubmedIDs');
 
-    function generatePubmedLinks(argData)
-    {
+    const wrapper = document.createElement('div');
+
+    // header
+    const header = document.createElement('div');
+    header.classList.add('row', 'node-tooltip-header');
+    header.innerHTML = "INTERACTION DETAILS";
+
+    wrapper.append(header);
+
+    // edge label input
+    const textInputWrapper = document.createElement('div');
+    textInputWrapper.classList.add('col-xs-6', 'inputCol');
+
+    const inputElement = document.createElement('input');
+    inputElement.type = 'text';
+    inputElement.value = edge.data('name');
+    inputElement.classList.add('form-control');
+
+    inputElement.addEventListener("change", function(event) {
+      // @ts-ignore
+      const value = event.target.value;
+      self.editor.changeName(edge, value);
+    });
+
+    textInputWrapper.appendChild(inputElement);
+
+    const edgeLabelRowElement = document.createElement('div');
+    edgeLabelRowElement.classList.add('row', 'geneDetails');
+    const colElement = document.createElement('div');
+    colElement.classList.add('col-xs-6', 'qtipLabel');
+    colElement.innerHTML = "Label:";
+
+    edgeLabelRowElement.appendChild(colElement);
+    edgeLabelRowElement.appendChild(textInputWrapper);
+
+    wrapper.appendChild(edgeLabelRowElement);
+    
+    wrapper.appendChild(document.createElement('hr'));
+
+    // pubmed id input
+    const pubmedTextInputWrapper = document.createElement('div');
+    pubmedTextInputWrapper.classList.add('col-xs-6', 'inputCol');
+
+    const pubmedIdInputElement = document.createElement('input');
+    pubmedIdInputElement.type = 'text';
+    pubmedIdInputElement.classList.add('form-control');
+
+    pubmedIdInputElement.addEventListener("change", function(event) {
+      // @ts-ignore
+      const value = event.target.value;
+      const pubmedIdsToAdd = value.split(';');
+      
+      // @ts-ignore
+      event.target.value = "";
+
+      self.editor.addPubmedIDs(edge, pubmedIdsToAdd);
+
+      const pubmedIds = edge.data("pubmedIDs")
+      generatePubmedLinks(pubmedIds);
+    });
+
+    pubmedTextInputWrapper.appendChild(pubmedIdInputElement);
+
+    const pubmedIdRowElement = document.createElement('div');
+    pubmedIdRowElement.classList.add('row', 'geneDetails');
+    const pubmedIdColElement = document.createElement('div');
+    pubmedIdColElement.classList.add('col-xs-6', 'qtipLabel');
+    pubmedIdColElement.innerHTML = "Add Pubmed ID(s):";
+
+    pubmedIdRowElement.appendChild(pubmedIdColElement);
+    pubmedIdRowElement.appendChild(pubmedTextInputWrapper);
+
+    wrapper.appendChild(pubmedIdRowElement);
+
+    if (pubmedData.length > 0) {
+      generatePubmedLinks(pubmedData);
+    }
+
+    function generatePubmedLinks(argData) {
+      if (document.getElementsByClassName("pubmedIDList").length > 0) {
+        document.getElementsByClassName("pubmedIDList").item(0).remove();
+      }
+      const pubmedIdListWrapper = document.createElement('div');
+      pubmedIdListWrapper.classList.add("pubmedIDList");
+
+      pubmedIdListWrapper.appendChild(document.createElement('hr'));
+
+      const pubmedIdLabel = document.createElement('label');
+      pubmedIdLabel.classList.add("col-xs-12", "pubmedIDLabel");
+      pubmedIdLabel.innerHTML = "Pubmed IDs";
+
+      pubmedIdListWrapper.appendChild(pubmedIdLabel);
+
       for (var key in argData)
       {
         if(!argData.hasOwnProperty(key)){
           continue;
         }
-        var pubmedID = argData[key];
+        const pubmedId = argData[key];
 
-        if (isNaN(pubmedID))
+        if (isNaN(pubmedId))
           continue;
 
-        const pubmedIDRemoveButton = $("<i edgeID='"+ edge.id() +"' class='fa fa-times qtipRemovePmedID' aria-hidden='true'></i>");
-        pubmedIDRemoveButton.on('click', function(event)
-        {
-          $(event.target).parent().remove();
-          var edge = self.cy.$('#'+$(event.target).attr('edgeId'));
-          var pubmedId = [$(event.target).parent().find('a').text()];
-          self.editor.removePubmedID(edge, pubmedId);
-          if($('.pubmedIDList').children().length < 3)
-          {
-            $('.pubmedIDList').children().remove();
+        const pubmedIdListElement = document.createElement('div');
+
+        const pubmedIdRemoveButton = document.createElement('i');
+        pubmedIdRemoveButton.classList.add('fa', 'fa-times', 'qtipRemovePmedID');
+        pubmedIdRemoveButton.setAttribute('aria-hidden', 'true');
+        pubmedIdRemoveButton.setAttribute('pubmedId', pubmedId);
+
+        pubmedIdRemoveButton.addEventListener("click", function(event) {
+          (event.target as HTMLElement).parentElement.remove();
+          const pubmedId = (event.target as HTMLElement).getAttribute('pubmedId');
+          self.editor.removePubmedID(edge, [pubmedId]);
+          const pubmedIds = edge.data('pubmedIDs');
+          if (pubmedIds.length === 0) {
+            document.getElementsByClassName("pubmedIDList").item(0).remove();
           }
         });
+        
+        const pubmedContent = document.createElement('div');
+        const pubmedIdLabel = document.createElement('label');
+        const pubmedIdLink = document.createElement('a');
+        pubmedIdLink.setAttribute('target', '_blank');
+        const pubmedLink = pubmedURL + pubmedId;
+        pubmedIdLink.setAttribute('href', pubmedLink);
+        pubmedIdLink.innerHTML = pubmedId.toString();
 
-        const pubmedContent = $("<div>\
-                              <label>\
-                                <a target='_blank' href="
-                                  + pubmedURL
-                                  + pubmedID +">"+
-                                  + pubmedID +
-                                "</a>" +
-                              "</label>\
-                              </div>");
-        pubmedContent.first().append(pubmedIDRemoveButton);
-        pubmedIDList.append(pubmedContent);
+        pubmedIdLabel.appendChild(pubmedIdLink);
+        pubmedContent.appendChild(pubmedIdLabel);
+        pubmedContent.appendChild(pubmedIdRemoveButton);
+        pubmedIdListElement.appendChild(pubmedContent);
+
+        pubmedIdListWrapper.appendChild(pubmedIdListElement);
+      }
+      if (edge.data('pubmedIDs').length > 0) {
+        wrapper.appendChild(pubmedIdListWrapper);
       }
     }
 
-    function generatePubmedLinksHeader()
-    {
-      pubmedIDList.append($('<hr/>'));
-      pubmedIDList.append($('<label class="col-xs-12 pubmedIDLabel">Pubmed IDs</label>'));
-    }
-
-    if (pubmedData.length > 0)
-    {
-      generatePubmedLinksHeader();
-      generatePubmedLinks(pubmedData);
-    }
-
-    textInput.change(function()
-    {
-      var edgeID = $(this).find('input').attr('edgeid');
-      const val: string = $(this).find('input').val() as string;
-      var pumbedIDs = val.split(';');
-      $(this).find('input').val("");
-
-      if($('.pubmedIDList').children().length === 0)
-      {
-        generatePubmedLinksHeader();
-      }
-
-      self.editor.addPubmedIDs(edge, pumbedIDs);
-
-      generatePubmedLinks(pumbedIDs);
-
-    });
-
-    edgeLabelInput.change(function()
-    {
-        var edgeID = $(this).find('input').attr('edgeid');
-
-        var cyEdge = self.cy.$('#'+edgeID)[0];
-        var newName = $(this).find('input').val();
-        $(this).find('input').val("");
-
-        //TODO call associated Editor Actions Manager function
-        self.editor.changeName(cyEdge, newName);
-    });
-
-    var wrapper = $('<div></div>');
-    var pubmedRow = $('<div class="row">\
-                 <div class="col-xs-6 qtipLabel">Add  PubmedID(s):</div>\
-              </div>');
-
-    pubmedRow.append(textInput);
-    var labelRow = $('<div class="row">\
-               <div class="col-xs-6 qtipLabel">Label:</div>\
-            </div>');
-
-    labelRow.append(edgeLabelInput);
-    wrapper.append(labelRow);
-    wrapper.append('<hr/>');
-    pubmedRow.append(textInput);
-    wrapper.append(pubmedRow);
-    wrapper.append(pubmedIDList);
+    wrapper.classList.add("tooltip-text-style");
     return wrapper;
   }
 
-  generateNodeQtipContentHTML(ele)
-  {
+  generateNodeQtip(node) {
     const self = this;
-    const nodeData = ele.data();
-    const textInput = $('<div class="col-xs-8 inputCol"><input type="text" class="form-control" nodeid="' + ele.id() + '" value="' + nodeData.name + '"></div>');
-    textInput.change(function()
-    {
-      const nodeID = $(this).find('input').attr('nodeid');
 
-      const cyNode = self.cy.$('#'+nodeID)[0];
-      const newName = $(this).find('input').val();
-      self.editor.changeName(cyNode, newName);
+    const header = document.createElement('div');
+    header.classList.add('row', 'node-tooltip-header');
+    header.innerHTML = node.data('type').toUpperCase() + " DETAILS";
+
+    const textInputWrapper = document.createElement('div');
+    textInputWrapper.classList.add('col-xs-8', 'inputCol');
+
+    const inputElement = document.createElement('input');
+    inputElement.type = 'text';
+    inputElement.value = node.data('name');
+    inputElement.classList.add('form-control');
+
+    inputElement.addEventListener("change", function(event) {
+      // @ts-ignore
+      const value = event.target.value;
+      self.editor.changeName(node, value);
     });
 
-    var wrapper = $('<div></div>');
-    var row = $('<div class="row">\
-                 <div class="col-xs-4 qtipLabel">Name:</div>\
-              </div>');
+    textInputWrapper.appendChild(inputElement);
 
-    row.append(textInput);
-    wrapper.append(row);
+    const wrapper = document.createElement('div');
+    const rowElement = document.createElement('div');
+    rowElement.classList.add('row', 'geneDetails');
+    const colElement = document.createElement('div');
+    colElement.classList.add('col-xs-4', 'qtipLabel');
+    colElement.innerHTML = "Name:";
 
-    if (ele.data().type === "GENE")
-    {
-      var entrezGeneButton = $('<div class="row centerText geneDetails"><button nodeid="' + ele.id() + '" type="button" class="btn btn-default">My Cancer Genome</button></div>');
-      entrezGeneButton.find('button').on('click', function(event)
-      {
+    rowElement.appendChild(colElement);
+    rowElement.appendChild(textInputWrapper);
+
+    wrapper.append(header);
+    wrapper.append(rowElement);
+
+    if (node.data('type') === "GENE") {
+      const buttonWrapper = document.createElement('div');
+      buttonWrapper.classList.add('row', 'centerText', 'geneDetails');
+      
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.classList.add('btn', 'btn-default');
+      button.innerHTML = "My Cancer Genome";
+      button.addEventListener("click", function (event) {
         event.preventDefault();
-        var nodeID = $(this).attr('nodeid');
-        var nodeSymbol = self.cy.$('#'+nodeID)[0]._private.data['name'];
-        var parent = $(this).parent();
-        window.open('https://www.mycancergenome.org/content/gene/' + nodeSymbol);
+        const name = node.data('name');
+        window.open("https://www.mycancergenome.org/content/gene/" + name);
+      })
 
-
-      });
-      wrapper.append(entrezGeneButton);
+      buttonWrapper.append(button);
+      wrapper.append(buttonWrapper)
     }
 
+    wrapper.classList.add("tooltip-text-style");
     return wrapper;
   }
 
   addQtipToElements(eles)
   {
-    var self = this;
-    eles.forEach(function(ele,)
+    const self = this;
+    eles.forEach(function(ele)
     {
-      var qTipOpts = {};
-      if (ele.isNode())
-      {
-          qTipOpts =
-          {
-            content:
-            {
-              text:  function()
-              {
-                return self.generateNodeQtipContentHTML(this);
-              },
-              title: function()
-              {
-                return ele.data().type.toUpperCase() + ' DETAILS';
-              }
-            },
-            position: {
-              my: 'top center',
-              at: 'bottom center'
-            },
-            style:
-            {
-              classes: 'qtip-tipsy qtip-rounded',
-              width: 400
-            } ,
-            show:{
-              event :"showqtipevent"
-            } 
-          };
+      let ref = ele.popperRef();
+      let dummyDomEle = document.createElement('div');
+      document.body.appendChild(dummyDomEle);
+      let tip = tippy(dummyDomEle, { // tippy props:
+        getReferenceClientRect: ref.getBoundingClientRect, // https://atomiks.github.io/tippyjs/v6/all-props/#getreferenceclientrect
+        trigger: 'manual', // mandatory, we cause the tippy to show programmatically.
+        placement: 'bottom',
+        interactive: true,
+        theme: 'pathwaymapper',
+        // your own custom props
+        // content prop can be used when the target is a single element https://atomiks.github.io/tippyjs/v6/constructor/#prop
+        content: () => {
+           let content = ele.isNode() ? 
+                        self.generateNodeQtip(ele) :
+                        self.generateEdgeQtip(ele);
+     
+           return content;
+        },
+        onHidden(instance) {
+          instance.destroy();
+          dummyDomEle.remove();
+        }
+      });
+      
+      self.cy.one("pan zoom", function() {
+        if (dummyDomEle && dummyDomEle["_tippy"]) {
+          tip.hide();
+        }
+      });
 
-      }
-      else if(ele.isEdge())
-      {
-          qTipOpts =
-          {
-            content:
-            {
-              text:  function()
-              {
-                return self.generateEdgeQtipContentHTML(this);
-              },
-              title: function()
-              {
-                return 'INTERACTION DETAILS';
-              }
-            },
-            position: {
-              my: 'top center',
-              at: 'bottom center'
-            },
-            style:
-            {
-              classes: 'qtip-tipsy qtip-rounded',
-              width: 400
-            } ,
-            show:{
-              event :"showqtipevent"
-            } 
-          };
-      }
-      ele.qtip(qTipOpts);
+      ele.one("showqtipevent", function()  {
+        tip.show();
+      });
     });
   }
 

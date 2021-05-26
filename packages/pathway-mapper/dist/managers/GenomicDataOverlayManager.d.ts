@@ -1,4 +1,5 @@
 /// <reference types="jquery" />
+import 'tippy.js/dist/tippy.css';
 export default class GenomicDataOverlayManager {
     genomicDataMap: {};
     visibleGenomicDataMapByType: {};
