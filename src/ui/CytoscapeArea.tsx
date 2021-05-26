@@ -42,6 +42,7 @@ const konva = require('konva');
 const viewUtilities = require('cytoscape-view-utilities');
 const grid_guide = require('cytoscape-grid-guide');
 const cyqtip = require('cytoscape-qtip');
+const popper = require('cytoscape-popper');
 
 type PathwayMapperType = {
   isCollaborative: boolean;
@@ -265,6 +266,11 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     try { 
       edgeHandles(cytoscape, $);
     } catch(err){
+      console.log(err);
+    }
+    try {
+      popper(cytoscape);
+    } catch (err) {
       console.log(err);
     }
 
@@ -625,14 +631,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
         // @ts-ignore TODO AMENDMENTsa
         tappedTimeout = setTimeout(function () {
           tappedBefore = -1;
-        },                         300);
+        }, 300);
 
-        if(tappedNow && tappedNow.isNode && tappedNow.isNode()){
-          $(".qtip").remove();
-        }
-        if(tappedNow && tappedNow.isEdge && tappedNow.isEdge()){
-          $(".qtip").remove();
-        }
         tappedBefore = tappedNow;
       }
     });
@@ -644,8 +644,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
        const eventIsDirect = (e.target === this);
  
-       if (eventIsDirect) {       
-         $(".qtip").remove();
+       if (eventIsDirect) {
          that.qtipManager.addQtipToElements(e.target);        
          e.target.trigger("showqtipevent");
        }
@@ -659,7 +658,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
        const eventIsDirect = (e.target === this);
  
        if (eventIsDirect) {
-           $(".qtip").remove();
            that.qtipManager.addQtipToElements(e.target);         
            e.target.trigger("showqtipevent");
        }

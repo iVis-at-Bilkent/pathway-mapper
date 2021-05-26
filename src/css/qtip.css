@@ -621,3 +621,20 @@
 .qtipmodal-ie6fix{
 	position: absolute !important;
 }
+
+.tippy-box[data-theme~='pathwaymapper'] {
+	background-color: #2f4154;
+}
+
+.tippy-box[data-theme~='pathwaymapper'] a {
+	color: #1abc9c;
+}
+
+.tippy-box[data-theme~='cbioportal'] {
+	background-color: white;
+	color: black;
+	font-size: 12px;
+	max-height: 250px;
+	overflow-y: auto;
+	border: 2px solid black;
+}

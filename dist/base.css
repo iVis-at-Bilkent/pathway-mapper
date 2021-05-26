@@ -623,6 +623,24 @@
 .qtipmodal-ie6fix{
 	position: absolute !important;
 }
+
+.tippy-box[data-theme~='pathwaymapper'] {
+	background-color: #2f4154;
+}
+
+.tippy-box[data-theme~='pathwaymapper'] a {
+	color: #1abc9c;
+}
+
+.tippy-box[data-theme~='cbioportal'] {
+	background-color: white;
+	color: black;
+	font-size: 12px;
+	max-height: 250px;
+	overflow-y: auto;
+	border: 2px solid black;
+}
+
 .pathwayMapper .list-group {
 margin-bottom: 0px;
 }
@@ -807,6 +825,16 @@ transform: scale(0.86);
 
 .pathwayMapper #search-gene-input-group-addon:hover {
     background-color: #fff;
+}
+
+.pathwayMapper .tooltip-text-style {
+    font-size: 12px;
+    font-weight: bold;
+    font-family: 'Lucida Grande',sans-serif;
+}
+
+.pathwayMapper .node-tooltip-header {
+    margin-left: 0px;
 }
 
 

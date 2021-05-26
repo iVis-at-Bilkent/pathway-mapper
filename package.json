@@ -80,6 +80,7 @@
     "cytoscape-navigator": "^1.3.3",
     "cytoscape-node-resize": "^3.2.0",
     "cytoscape-panzoom": "~2.5.2",
+    "cytoscape-popper": "^2.0.0",
     "cytoscape-qtip": "iVis-at-Bilkent/cytoscape.js-qtip#master",
     "cytoscape-undo-redo": "^1.3.2",
     "cytoscape-view-utilities": "^2.0.6",
@@ -93,7 +94,8 @@
     "react-table": "^6.10.0",
     "react-toastify": "^5.3.1",
     "react-tooltip": "^3.10.0",
-    "sharedb": "^1.1.0"
+    "sharedb": "^1.1.0",
+    "tippy.js": "^6.3.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",
