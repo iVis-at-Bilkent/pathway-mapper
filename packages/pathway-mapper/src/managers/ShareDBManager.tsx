@@ -286,25 +286,25 @@ export default class ShareDBManager {
         // Addition of pubmed id field on server if legacy collaborative
         // pathways does not have !
         for (const key of Object.keys(edgeMap)) {
-            var tmpEdge = edgeMap[key];
+            const tmpEdge = edgeMap[key];
 
             if (tmpEdge.pubmedIDs == undefined 
                 || tmpEdge.name == undefined 
                 || tmpEdge.bendPoint == undefined 
                 || tmpEdge.anchorPoints == undefined
                 || tmpEdge.edgeCurveStyle == undefined) {
-                var pubmedIDs = (tmpEdge.pubmedIDs == undefined) ? [] : tmpEdge.pubmedID;
-                var edgeLabel = (tmpEdge.name == undefined) ? "" : tmpEdge.name;
-                var anchorPoints = [];
+                const pubmedIDs = (tmpEdge.pubmedIDs == undefined) ? [] : tmpEdge.pubmedID;
+                const edgeLabel = (tmpEdge.name == undefined) ? "" : tmpEdge.name;
+                let anchorPoints = [];
                 if (tmpEdge.bendPoint) {
                     anchorPoints = tmpEdge.bendPoint;
                 }
                 else if (tmpEdge.anchorPoints) {
                     anchorPoints = tmpEdge.anchorPoints;
                 }
-                var edgeCurveStyle = tmpEdge.edgeCurveStyle ? "bezier" : tmpEdge.edgeCurveStyle;
+                const edgeCurveStyle = tmpEdge.edgeCurveStyle ? tmpEdge.edgeCurveStyle : "bezier";
 
-                var param = {
+                const param = {
                     type: tmpEdge.type,
                     source: tmpEdge.source,
                     id: self.getCustomObjId(),
@@ -315,13 +315,13 @@ export default class ShareDBManager {
                     edgeCurveStyle: edgeCurveStyle
                 };
 
-                var newEdge: any = self.edgeInitializer(param);
+                const newEdge: any = self.edgeInitializer(param);
 
 
-                var tmpEdgeID = tmpEdge.id;
-                var newEdgeID = newEdge.id;
+                const tmpEdgeID = tmpEdge.id;
+                const newEdgeID = newEdge.id;
 
-                var ops = [
+                const ops = [
                     {p: [self.EDGEMAP_NAME, tmpEdgeID], od: tmpEdge},
                     {p: [self.EDGEMAP_NAME, newEdgeID], oi: newEdge}
                 ]
