@@ -243,7 +243,10 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
           <Modal.Title>Profile Data from cBioPortal</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div id="cancerDropDown">
+          <div id="cancerDropDown" 
+              style={{
+                textAlign: "left"
+              }}>
             <h4>Select Cancer Study</h4>
             <form>
             <FormControl
