@@ -3,7 +3,12 @@ import { action, computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 import {
-  Button, Checkbox, FormControl, ListGroup, ListGroupItem, Modal
+  Button,
+  Checkbox,
+  FormControl,
+  ListGroup,
+  ListGroupItem,
+  Modal,
 } from "react-bootstrap";
 import { EModalType, IDataTypeMetaData } from "../ui/react-pathway-mapper";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
@@ -17,24 +22,24 @@ interface IStudyModalProps {
 @observer
 export default class StudyModal extends React.Component<IStudyModalProps, {}> {
   @observable
-  dataTypes: {[dataType: string]: IDataTypeMetaData} = {};
+  dataTypes: { [dataType: string]: IDataTypeMetaData } = {};
 
-  @observable 
+  @observable
   dataTypeFetchResultsReady: boolean = false;
 
   currentlySelectedItemIndex = -1;
 
   @observable
   selectedStudies: {
-    data: any[],
-    dataTypes: {[dataType: string]: IDataTypeMetaData} 
+    data: any[];
+    dataTypes: { [dataType: string]: IDataTypeMetaData };
   }[] = [];
 
   checkboxModalPosition: {
-    bottom: number,
+    bottom: number;
   } = {
     bottom: 0,
-  }
+  };
 
   @observable
   selectedDataTypesPerStudy: string[] = [];
@@ -53,7 +58,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
 
   @observable
   selectedStudyData: any[];
-  
+
   @observable
   portalAccessor: CBioPortalAccessor;
 
@@ -65,17 +70,17 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     this.fetchStudy();
   }
 
-  @action.bound 
+  @action.bound
   setDataTypeFetchResultsReady(ready: boolean) {
     this.dataTypeFetchResultsReady = ready;
   }
 
-  @action.bound 
+  @action.bound
   setItemArray(itemArray: any[]) {
     this.itemArray = itemArray;
   }
 
-  @action.bound 
+  @action.bound
   setSearchQuery(query: string) {
     this.searchQuery = query;
   }
@@ -95,35 +100,38 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     this.studyListItemCheckboxChecked = Array(studyCount).fill(false);
   }
 
-  @action.bound 
+  @action.bound
   initSelectedDataTypesPerStudy(studyCount: number) {
     this.selectedDataTypesPerStudy = Array(studyCount).fill("");
   }
 
   @action.bound
   toggleStudyListItemCheckboxChecked(studyIndex: number) {
-    this.studyListItemCheckboxChecked[studyIndex] = !this.studyListItemCheckboxChecked[studyIndex];
+    this.studyListItemCheckboxChecked[studyIndex] = !this
+      .studyListItemCheckboxChecked[studyIndex];
   }
 
   @action.bound
   addSelectedStudy(selectedStudy: {
-    data: any[],
-    dataTypes: {[dataType: string]: IDataTypeMetaData} 
+    data: any[];
+    dataTypes: { [dataType: string]: IDataTypeMetaData };
   }) {
     this.selectedStudies.push(selectedStudy);
   }
 
-  @action.bound 
+  @action.bound
   removeSelectedStudy(selectedStudyData: any[]) {
-    this.selectedStudies = this.selectedStudies.filter(study => study.data[0] != selectedStudyData[0]);
+    this.selectedStudies = this.selectedStudies.filter(
+      (study) => study.data[0] != selectedStudyData[0]
+    );
   }
 
-  @action.bound 
+  @action.bound
   clearSelectedStudies() {
     this.selectedStudies = [];
   }
 
-  @action.bound 
+  @action.bound
   setShowDataTypeSelectionModal(show: boolean) {
     this.showDataTypeSelectionModal = show;
   }
@@ -134,13 +142,13 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     this.studyListItemCheckboxChecked = Array(length).fill(false);
   }
 
-  @action.bound 
+  @action.bound
   clearSelectedDataTypesPerStudy() {
     const length = this.studyListItemCheckboxChecked.length;
     this.selectedDataTypesPerStudy = Array(length).fill("");
   }
 
-  @action.bound 
+  @action.bound
   unselectDataTypesForStudy(index: number) {
     this.selectedDataTypesPerStudy[index] = "";
   }
@@ -175,7 +183,6 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
   }
 
   fetchStudy() {
-
     this.portalAccessor.getDataTypes().forEach((dataType) => {
       this.setDataTypeProperties(dataType, {
         enabled: false,
@@ -185,7 +192,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     });
 
     this.portalAccessor.fetchCancerStudies((cancerStudies: any) => {
-      let temp = []
+      let temp = [];
       for (const studyTitle in cancerStudies) {
         if (!cancerStudies.hasOwnProperty(studyTitle)) {
           continue;
@@ -196,7 +203,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
       const numOfStudies = temp.length;
       this.initStudyListItemCheckboxChecked(numOfStudies);
       this.initSelectedDataTypesPerStudy(numOfStudies);
-      
+
       this.setItemArray(temp);
     });
   }
@@ -243,159 +250,180 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
           <Modal.Title>Profile Data from cBioPortal</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div id="cancerDropDown" 
-              style={{
-                textAlign: "left"
-              }}>
+          <div
+            id="cancerDropDown"
+            style={{
+              textAlign: "left",
+            }}
+          >
             <h4>Select Cancer Study</h4>
             <form>
-            <FormControl
-              type="text"
-              placeholder="Search studies"
-              // @ts-ignore
-              onChange={(event) => this.setSearchQuery(event.target.value)}
-            />
+              <FormControl
+                type="text"
+                placeholder="Search studies"
+                // @ts-ignore
+                onChange={(event) => this.setSearchQuery(event.target.value)}
+              />
             </form>
             <ListGroup
               style={{
-                maxHeight: '200px',
-                overflow: 'auto',
-                marginTop: '10px',
-                border: '1px solid #ccc',
-                borderRadius: '4px'
+                maxHeight: "200px",
+                overflow: "auto",
+                marginTop: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
               }}
             >
-              {this.itemArray.length < 1 ? 
-              <span>Fetching studies from cBioPortal...</span> 
-              :
-              this.itemArray.map((item, index) => {return {item: item, index: index}})
-                            .filter(obj => obj.item[1].toLowerCase().includes(this.searchQuery.toLowerCase()))
-                            .map((obj)  => {
-                const item = obj.item;
-                const index = obj.index;
-                
-                const studyTitle = item[1];
-                const studyId = item[0];
-                return (
-                  <ListGroupItem
-                    id={"listgroupitem" + index}
-                    key={studyId}
-                    style={{
-                      padding: "5px 5px"
-                    }}>
-                      <Checkbox
-                        checked={this.studyListItemCheckboxChecked[index]}
-                        style={{
-                          marginTop: '0px',
-                          marginBottom: '0px'
-                        }}
-                        onClick={() => {
-                          const boundingRect = document.getElementById("listgroupitem" + index).getBoundingClientRect();
-                          const modalMargin = 30;
-                          this.checkboxModalPosition = {
-                            bottom: boundingRect.bottom - modalMargin,
-                          }
-                          this.setSelectedStudyData(item);
-                          this.preparePortalAccess(studyId);
-                          this.toggleStudyListItemCheckboxChecked(index);
-                          this.currentlySelectedItemIndex = index;
+              {this.itemArray.length < 1 ? (
+                <span>Fetching studies from cBioPortal...</span>
+              ) : (
+                this.itemArray
+                  .map((item, index) => {
+                    return { item: item, index: index };
+                  })
+                  .filter((obj) =>
+                    obj.item[1]
+                      .toLowerCase()
+                      .includes(this.searchQuery.toLowerCase())
+                  )
+                  .map((obj) => {
+                    const item = obj.item;
+                    const index = obj.index;
 
-                          if (this.studyListItemCheckboxChecked[index]) {
-                            this.setShowDataTypeSelectionModal(true);
-                          }
-                          else {
-                            this.removeSelectedStudy(item);
-                            this.unselectDataTypesForStudy(index);
-                          }
+                    const studyTitle = item[1];
+                    const studyId = item[0];
+                    return (
+                      <ListGroupItem
+                        id={"listgroupitem" + index}
+                        key={studyId}
+                        style={{
+                          padding: "5px 5px",
                         }}
+                      >
+                        <Checkbox
+                          checked={this.studyListItemCheckboxChecked[index]}
+                          style={{
+                            marginTop: "0px",
+                            marginBottom: "0px",
+                          }}
+                          onClick={() => {
+                            const boundingRect = document
+                              .getElementById("listgroupitem" + index)
+                              .getBoundingClientRect();
+                            const modalMargin = 30;
+                            this.checkboxModalPosition = {
+                              bottom: boundingRect.bottom - modalMargin,
+                            };
+                            this.setSelectedStudyData(item);
+                            this.preparePortalAccess(studyId);
+                            this.toggleStudyListItemCheckboxChecked(index);
+                            this.currentlySelectedItemIndex = index;
+
+                            if (this.studyListItemCheckboxChecked[index]) {
+                              this.setShowDataTypeSelectionModal(true);
+                            } else {
+                              this.removeSelectedStudy(item);
+                              this.unselectDataTypesForStudy(index);
+                            }
+                          }}
                         >
-                        {studyTitle}
-                      </Checkbox> 
-                      {this.selectedDataTypesPerStudy[index] != "" && 
-                      <span
-                      style={{
-                        fontSize: "12px",
-                        marginLeft: "25px",
-                      }
-                      }>
-                        {this.selectedDataTypesPerStudy[index]}
-                      </span>}
-                  </ListGroupItem>
-                )
-              })}
+                          {studyTitle}
+                        </Checkbox>
+                        {this.selectedDataTypesPerStudy[index] != "" && (
+                          <span
+                            style={{
+                              fontSize: "12px",
+                              marginLeft: "25px",
+                            }}
+                          >
+                            {this.selectedDataTypesPerStudy[index]}
+                          </span>
+                        )}
+                      </ListGroupItem>
+                    );
+                  })
+              )}
             </ListGroup>
-            
           </div>
           <Modal
             style={{
-              position: 'absolute',
-              top: this.checkboxModalPosition.bottom + 'px'
+              position: "absolute",
+              top: this.checkboxModalPosition.bottom + "px",
             }}
             dialogClassName="fitContent"
             show={this.showDataTypeSelectionModal}
             onHide={() => {
               this.setShowDataTypeSelectionModal(false);
-            }
-            }>
+            }}
+          >
             <Modal.Body>
-            {this.dataTypeFetchResultsReady === false ?
-            <span>Fetching data types from cBioPortal...</span>  
-            :
-            Object.keys(this.dataTypes).map((dataType: string) => {
-              return (
-                <Checkbox
-                  inline 
-                  key={dataType}
-                  disabled={!this.dataTypes[dataType].enabled}
-                  onClick={() => {
-                    this.handleCheckboxClick(dataType);
-                  }}
-                  checked={this.dataTypes[dataType].checked}
-                >
-                  {dataType}
-                </Checkbox>
-              );
-            })}
+              {this.dataTypeFetchResultsReady === false ? (
+                <span>Fetching data types from cBioPortal...</span>
+              ) : (
+                Object.keys(this.dataTypes).map((dataType: string) => {
+                  return (
+                    <Checkbox
+                      inline
+                      key={dataType}
+                      disabled={!this.dataTypes[dataType].enabled}
+                      onClick={() => {
+                        this.handleCheckboxClick(dataType);
+                      }}
+                      checked={this.dataTypes[dataType].checked}
+                    >
+                      {dataType}
+                    </Checkbox>
+                  );
+                })
+              )}
             </Modal.Body>
             <Modal.Footer>
-            <Button
+              <Button
                 onClick={() => {
-                  const currentDataTypes = {...this.dataTypes};
-                  const selectedCount = Object.keys(currentDataTypes).filter(dataType => {
-                    return currentDataTypes[dataType].checked;
-                  }).length;
+                  const currentDataTypes = { ...this.dataTypes };
+                  const selectedCount = Object.keys(currentDataTypes).filter(
+                    (dataType) => {
+                      return currentDataTypes[dataType].checked;
+                    }
+                  ).length;
                   if (selectedCount == 0) {
-                    this.studyListItemCheckboxChecked[this.currentlySelectedItemIndex] = false;
+                    this.studyListItemCheckboxChecked[
+                      this.currentlySelectedItemIndex
+                    ] = false;
                   }
                   this.setShowDataTypeSelectionModal(false);
-                }}>
+                }}
+              >
                 Cancel
               </Button>
               <Button
                 onClick={() => {
-                  const currentDataTypes = {...this.dataTypes}
+                  const currentDataTypes = { ...this.dataTypes };
                   this.addSelectedStudy({
                     data: this.selectedStudyData,
-                    dataTypes: currentDataTypes
+                    dataTypes: currentDataTypes,
                   });
-                  this.selectedDataTypesPerStudy[this.currentlySelectedItemIndex] = Object.keys(currentDataTypes).filter(dataType => {
-                    return currentDataTypes[dataType].checked;
-                  }).join(", ");
+                  this.selectedDataTypesPerStudy[
+                    this.currentlySelectedItemIndex
+                  ] = Object.keys(currentDataTypes)
+                    .filter((dataType) => {
+                      return currentDataTypes[dataType].checked;
+                    })
+                    .join(", ");
                   this.setShowDataTypeSelectionModal(false);
-                }}>
+                }}
+              >
                 Add
               </Button>
             </Modal.Footer>
           </Modal>
-
-          <br />
         </Modal.Body>
 
         <Modal.Footer>
           <Button
             bsClass="success"
             onClick={() => {
-              this.selectedStudies.forEach(study => {
+              this.selectedStudies.forEach((study) => {
                 this.props.loadFromCBio(study.dataTypes, study.data);
               });
               this.props.handleClose(EModalType.STUDY);

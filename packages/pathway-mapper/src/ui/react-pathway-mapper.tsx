@@ -117,7 +117,8 @@ export interface IPathwayMapperTable{
 export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   static readonly CBIO_PROFILE_NAME = "cBioPortal_data";
 
-  readonly NUMBER_OF_PATHWAYS_TO_SHOW = 10;
+
+  readonly MAX_ALLOWED_PROFILES_ENABLED = 6;
   
   @observable
   selectedPathway: string;
@@ -132,7 +133,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   @observable
   isModalShown: boolean[];
 
-  portalAcessor: CBioPortalAccessor;
+  portalAccessor: CBioPortalAccessor;
 
   @observable
   alterationData: IAlterationData;
@@ -419,13 +420,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     this.editor.addPortalGenomicData(this.props.alterationData, this.editor.getEmptyGroupID());
   }
 
-  @computed get profileEnabledMap(){
-    const profileEnabledMap = {};
-    this.profiles.forEach((profile: IProfileMetaData) => {profileEnabledMap[profile.profileId] = profile.enabled;});
-    return profileEnabledMap;
-  }
-
-  doesProfileExist(profileId: string){
+  exists(profileId: string){
 
     let exists = false;
     this.profiles.forEach((profile: IProfileMetaData) => {
@@ -438,29 +433,35 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   }
 
   @autobind
-  loadFromCBio(dataTypes: {[dataType: string]: IDataTypeMetaData}, selectedStudyData: any[]){
+  loadFromCBio(dataTypes: {[dataType: string]: IDataTypeMetaData}, studyData: any[]){
       if(!this.pathwayActions.doesCyHaveElements()){
         toast.warn('Your pathway is empty!');
         return;
       }
 
-      for (const dataType of Object.keys(dataTypes))
+      for (const metadata of Object.values(dataTypes))
       {
-        if(!dataTypes[dataType].checked) continue;
-        if(this.doesProfileExist(dataTypes[dataType].profile)){
-          toast.warn(dataTypes[dataType].profile + " already exists.");
+        if(!metadata.checked) {
+          continue;
+        } 
+        if(this.exists(metadata.profile)){
+          toast.warn(metadata.profile + " already exists.");
           continue;
         }
 
+        const studyId = studyData[0];
+        const profileId = metadata.profile;
 
-        this.addProfile({studyId: selectedStudyData[0], profileId: dataTypes[dataType].profile, enabled: true});
-        const currentMapNodeNames = this.editor.cy.nodes()
-                                          .filter((node) => (node.data("type") === "GENE"))
-                                          .map((node) => (node.data("name")));
-        this.portalAcessor.getProfileData({
-            caseSetId: selectedStudyData[0],
-            geneticProfileId: dataTypes[dataType].profile,
-            genes: currentMapNodeNames
+        this.addProfile({studyId: studyId, profileId: profileId, enabled: true});
+
+        const genes = this.editor.cy.nodes()
+                                        .filter(node => node.data("type") === "GENE")
+                                        .map(node => node.data("name"));
+
+        this.portalAccessor.getProfileData({
+            caseSetId: studyId,
+            geneticProfileId: profileId,
+            genes: genes
         },
           (data: any) => {
           this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID());
@@ -666,7 +667,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
       this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
       }
     } else {
-      this.portalAcessor = new CBioPortalAccessor();
+      this.portalAccessor = new CBioPortalAccessor();
       this.loadRedirectedPortalData();
     }
 

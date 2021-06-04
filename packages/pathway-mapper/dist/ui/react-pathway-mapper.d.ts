@@ -84,13 +84,13 @@ export interface IPathwayMapperTable {
 }
 export declare class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     static readonly CBIO_PROFILE_NAME = "cBioPortal_data";
-    readonly NUMBER_OF_PATHWAYS_TO_SHOW = 10;
+    readonly MAX_ALLOWED_PROFILES_ENABLED = 6;
     selectedPathway: string;
     fileManager: FileOperationsManager;
     editor: EditorActionsManager;
     pathwayActions: PathwayActions;
     isModalShown: boolean[];
-    portalAcessor: CBioPortalAccessor;
+    portalAccessor: CBioPortalAccessor;
     alterationData: IAlterationData;
     patientData: any[][];
     pathwayGeneMap: {
@@ -123,11 +123,10 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     includePathway(pathwayData?: IPathwayData, pathwayName?: string): void;
     extractAllGenes(): void;
     loadRedirectedPortalData(): void;
-    get profileEnabledMap(): {};
-    doesProfileExist(profileId: string): boolean;
+    exists(profileId: string): boolean;
     loadFromCBio(dataTypes: {
         [dataType: string]: IDataTypeMetaData;
-    }, selectedStudyData: any[]): void;
+    }, studyData: any[]): void;
     setActiveEdgeHandler(setActiveEdge: (edgeId: number) => void): void;
     addGenomicData(cBioAlterationData: ICBioData[]): void;
     emphasizeQueryGenes(): void;
