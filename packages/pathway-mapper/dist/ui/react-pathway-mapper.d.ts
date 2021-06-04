@@ -124,6 +124,7 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     extractAllGenes(): void;
     loadRedirectedPortalData(): void;
     exists(profileId: string): boolean;
+    get profileEnabledMap(): {};
     loadFromCBio(dataTypes: {
         [dataType: string]: IDataTypeMetaData;
     }, studyData: any[]): void;

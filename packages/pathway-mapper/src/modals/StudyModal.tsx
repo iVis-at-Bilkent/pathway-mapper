@@ -237,6 +237,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
   }
 
   render() {
+
     return (
       <Modal
         id="cbioPortalModal"
@@ -344,6 +345,15 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
                   })
               )}
             </ListGroup>
+          </div>
+          <div style={{
+            marginTop: "10px"
+          }}>
+            <p style={{
+              textAlign: "left"
+            }}>
+              Warning: At most six different study data will be overlayed on the genes. You can toggle which ones are to be displayed via "Alteration %" -{">"} "View Settings" menu.
+            </p>
           </div>
           <Modal
             style={{

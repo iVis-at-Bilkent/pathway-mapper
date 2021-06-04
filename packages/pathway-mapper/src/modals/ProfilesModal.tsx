@@ -1,7 +1,7 @@
-import { computed, makeObservable } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
-import { Button, Label, Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import EditorActionsManager from "../managers/EditorActionsManager";
 import { EModalType, IProfileMetaData } from "../ui/react-pathway-mapper";
 interface IProfilesModalProps {
@@ -10,6 +10,7 @@ interface IProfilesModalProps {
   isModalShown: boolean;
   handleClose: Function;
   handleProfileLabelClicked: (index: number) => void;
+  enabledProfileCountLimit: number;
 }
 
 @observer
@@ -17,16 +18,35 @@ export default class ProfilesModal extends React.Component<
   IProfilesModalProps,
   {}
 > {
+
+
+  @observable
+  showEnabledProfileWarningModal: boolean = false;
+
   constructor(props: IProfilesModalProps) {
     super(props);
 
     makeObservable(this);
   }
 
+  @action
+  setShowEnabledProfileWarningModal(val: boolean) {
+    this.showEnabledProfileWarningModal = val;
+  }
+
   @computed get profileEnabledMap() {
+
+    const enabledProfiles: IProfileMetaData[] = [];
+    this.props.profiles.forEach(profile => {
+      if (profile.enabled && enabledProfiles.length < this.props.enabledProfileCountLimit) {
+        enabledProfiles.push(profile);
+      }
+    });
+
     const profileEnabledMap = {};
     this.props.profiles.forEach((profile: IProfileMetaData) => {
-      profileEnabledMap[profile.profileId] = profile.enabled;
+      const enabled = enabledProfiles.indexOf(profile) > -1;
+      profileEnabledMap[profile.profileId] = enabled;
     });
     return profileEnabledMap;
   }
@@ -41,10 +61,16 @@ export default class ProfilesModal extends React.Component<
         <React.Fragment key={i}>
           <Button
             onClick={() => {
-              this.handleProfileLabelClicked(i);
-              this.props.editor.updateGenomicDataVisibility(
-                this.profileEnabledMap
-              );
+              const enabledProfileCount = this.props.profiles.filter(profile => profile.enabled).length;
+              if (this.props.profiles[i].enabled || enabledProfileCount < this.props.enabledProfileCountLimit) {
+                this.handleProfileLabelClicked(i);
+                this.props.editor.updateGenomicDataVisibility(
+                  this.profileEnabledMap
+                );
+              }
+              else {
+                this.setShowEnabledProfileWarningModal(true);
+              }
             }}
             style={{
               cursor: "pointer",
@@ -74,6 +100,24 @@ export default class ProfilesModal extends React.Component<
           ) : (
             <h4 className="modal-title">There is currently no data to show</h4>
           )}
+          <Modal
+            show={this.showEnabledProfileWarningModal}
+            onHide={() => this.setShowEnabledProfileWarningModal(false)}>
+            <Modal.Header closeButton>
+              Warning
+            </Modal.Header>
+            <Modal.Body>
+              <p>At most 6 study data can be displayed at the same time, please disable some other study data before enabling this.</p>
+            </Modal.Body>
+            <Modal.Footer>
+            <Button
+                onClick={() => {
+                  this.setShowEnabledProfileWarningModal(false);
+                }}>
+                OK
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </Modal.Body>
       </Modal>
     );

@@ -432,6 +432,14 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     return exists;
   }
 
+  @computed get profileEnabledMap() {
+    const profileEnabledMap = {};
+    this.profiles.forEach((profile: IProfileMetaData) => {
+      profileEnabledMap[profile.profileId] = profile.enabled;
+    });
+    return profileEnabledMap;
+  }
+
   @autobind
   loadFromCBio(dataTypes: {[dataType: string]: IDataTypeMetaData}, studyData: any[]){
       if(!this.pathwayActions.doesCyHaveElements()){
@@ -452,20 +460,25 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
         const studyId = studyData[0];
         const profileId = metadata.profile;
 
-        this.addProfile({studyId: studyId, profileId: profileId, enabled: true});
+        const enableNewProfile = this.profiles.length < this.MAX_ALLOWED_PROFILES_ENABLED;
+
+        this.addProfile({studyId: studyId, profileId: profileId, enabled: enableNewProfile});
 
         const genes = this.editor.cy.nodes()
                                         .filter(node => node.data("type") === "GENE")
                                         .map(node => node.data("name"));
 
+        
         this.portalAccessor.getProfileData({
-            caseSetId: studyId,
-            geneticProfileId: profileId,
-            genes: genes
+          caseSetId: studyId,
+          geneticProfileId: profileId,
+          genes: genes
         },
-          (data: any) => {
+        (data: any) => {
           this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID());
+          this.editor.updateGenomicDataVisibility(this.profileEnabledMap);
         });
+        
       }
   }
 
@@ -571,7 +584,13 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
 
           {
           (<div id="pm-modals">
-            <ProfilesModal profiles={this.profiles} editor={this.editor} isModalShown={this.isModalShown[EModalType.PROFILES]} handleClose={this.handleClose} handleProfileLabelClicked={this.toggleProfileEnabled}/>
+            <ProfilesModal profiles={this.profiles} 
+                            editor={this.editor} 
+                            isModalShown={this.isModalShown[EModalType.PROFILES]} 
+                            handleClose={this.handleClose} 
+                            handleProfileLabelClicked={this.toggleProfileEnabled}
+                            enabledProfileCountLimit={this.MAX_ALLOWED_PROFILES_ENABLED}/>
+                            
             <PathwayDetailsModal isModalShown={this.isModalShown[EModalType.PW_DETAILS]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <GridSettings isModalShown={this.isModalShown[EModalType.GRID]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
             <QuickHelpModal isModalShown={this.isModalShown[EModalType.HELP]} handleClose={this.handleClose}/>
