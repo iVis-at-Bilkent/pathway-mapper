@@ -352,7 +352,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
             <p style={{
               textAlign: "left"
             }}>
-              Warning: At most six different study data will be overlayed on the genes. You can toggle which ones are to be displayed via "Alteration %" -{">"} "View Settings" menu.
+              <b>Warning:</b> At most six different data sets will be overlayed on the genes. You can toggle which ones are to be displayed via "Alteration %" {">"} "View Settings" menu.
             </p>
           </div>
           <Modal

@@ -107,7 +107,7 @@ export default class ProfilesModal extends React.Component<
               Warning
             </Modal.Header>
             <Modal.Body>
-              <p>At most 6 study data can be displayed at the same time, please disable some other study data before enabling this.</p>
+              <p>At most 6 data sets can be displayed at the same time, please disable some other data set before enabling this.</p>
             </Modal.Body>
             <Modal.Footer>
             <Button
