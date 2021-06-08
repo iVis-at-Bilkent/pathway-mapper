@@ -17,7 +17,7 @@ const addAllImage = require("../images/toolbar/add-all.svg");
 
 
 interface ICBioHelpModalProps{
-    isModalShown: boolean;
+    show: boolean;
     handleClose: (modalId: EModalType) => void;
     patientView ?: boolean;
 }
@@ -223,7 +223,7 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
         const legendPadding = '45px';
 
         return( 
-            <Modal bsSize="lg" id="cBioHelpModal" className="pathwayMapper" show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.CHELP)}}>
+            <Modal bsSize="lg" id="cBioHelpModal" className="pathwayMapper" show={this.props.show} onHide={() => {this.props.handleClose(EModalType.CHELP)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>PathwayMapper cBioPortal Edition 2.1</Modal.Title>
                 </Modal.Header>

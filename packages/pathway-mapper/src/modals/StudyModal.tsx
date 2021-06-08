@@ -14,7 +14,7 @@ import { EModalType, IDataTypeMetaData } from "../ui/react-pathway-mapper";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
 
 interface IStudyModalProps {
-  isModalShown: boolean;
+  show: boolean;
   loadFromCBio: Function;
   handleClose: Function;
 }
@@ -241,7 +241,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     return (
       <Modal
         id="cbioPortalModal"
-        show={this.props.isModalShown}
+        show={this.props.show}
         onHide={() => {
           this.props.handleClose(EModalType.STUDY);
           this.resetModal();

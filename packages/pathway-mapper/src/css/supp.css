@@ -205,3 +205,28 @@ transform: scale(0.86);
 .pathwayMapper .node-tooltip-header {
     margin-left: 0px;
 }
+
+.pathwayMapper .horizontal-rule {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    border: 1px solid grey;
+}
+
+.pathwayMapper .icon-small {
+    width: 16px;
+    height: 16px;
+}
+
+.pathwayMapper .icon-enabled {
+    cursor: pointer;
+    opacity: 1;
+}
+
+.pathwayMapper .icon-disabled {
+    cursor: default;
+    opacity: 0.2;
+}
+
+.pathwayMapper .modal-sm {
+    width: 400px;
+}

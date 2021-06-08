@@ -3,7 +3,7 @@ import {Modal, Button} from 'react-bootstrap';
 import { EModalType } from '../ui/react-pathway-mapper';
 
 interface IConfirmationModalProps{
-    isModalShown: boolean;
+    show: boolean;
     handleClose: (modalId: EModalType) => void;
 }
 
@@ -21,7 +21,7 @@ export default class ConfirmationModal extends React.Component<IConfirmationModa
 
         return(
             <Modal
-            show={this.props.isModalShown}
+            show={this.props.show}
             onHide={() => {this.props.handleClose(EModalType.CONFIRMATION);}}
             >
                 <Modal.Header closeButton>

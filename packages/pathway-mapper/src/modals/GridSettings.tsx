@@ -6,7 +6,7 @@ import GridOptionsManager from '../managers/GridOptionsManager';
 import { EModalType } from '../ui/react-pathway-mapper';
 import PathwayActions from '../utils/PathwayActions';
 interface IGridSettingsProps{
-    isModalShown: boolean;
+    show: boolean;
     handleClose: Function;
     pathwayActions: PathwayActions;
 }
@@ -52,7 +52,7 @@ export default class GridSettings extends React.Component<IGridSettingsProps, {}
     render(){
 
         return(
-            <Modal dialogClassName="gridModal" show={this.props.isModalShown} onShow={() => {this.enabledType = this.props.pathwayActions.enabledType;}}
+            <Modal dialogClassName="gridModal" show={this.props.show} onShow={() => {this.enabledType = this.props.pathwayActions.enabledType;}}
                 onHide={() => {
                     this.props.handleClose(EModalType.GRID);
                 }}>

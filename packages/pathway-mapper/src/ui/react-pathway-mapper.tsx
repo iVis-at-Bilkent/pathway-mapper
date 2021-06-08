@@ -22,6 +22,7 @@ import ConfirmationModal from '../modals/ConfirmationModal';
 import GridSettings from '../modals/GridSettings';
 import LayoutProperties from '../modals/LayoutProperties';
 import PathwayDetailsModal from '../modals/PathwayDetailsModal';
+import ProfilesColorSchemeModal from "../modals/ProfilesColorSchemeModal";
 import ProfilesModal from '../modals/ProfilesModal';
 import QuickHelpModal from '../modals/QuickHelpModal';
 import StudyModal from '../modals/StudyModal';
@@ -72,6 +73,13 @@ export interface ISampleIconData {
   sampleColors: { [s: string]: string }
 }
 
+/**
+ * Maps integer values to color code strings
+ */
+export interface IColorValueMap {
+  [value: string]: string
+}
+
 export enum EModalType{
   STUDY,
   CONFIRMATION,
@@ -81,7 +89,8 @@ export enum EModalType{
   GRID,
   HELP,
   LAYOUT,
-  CHELP
+  CHELP,
+  PROFILES_COLOR_SCHEME
 }
 
 export interface IPathwayData{
@@ -133,6 +142,9 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   @observable
   isModalShown: boolean[];
 
+  @observable
+  colorValueMap: IColorValueMap;
+
   portalAccessor: CBioPortalAccessor;
 
   @observable
@@ -169,10 +181,17 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     if(this.props.pathwayName){
       this.pathwayActions.changePathway(this.props.pathwayName);
     }
-    this.isModalShown = [false, false, false, false, false, false, false, false, false];
+    this.isModalShown = [false, false, false, false, false, false, false, false, false, false];
     // TODO: Change below
     this.alterationData = {}; //{"study1_gistic" : {"CDK4": 11, "MDM2": 19, "TP53": 29}, "study2_gistic" : {"MDM2": 99, "TP53": 98}, "study3_mutations": {"MDM2": 1, "TP53": 2}};
     this.extractAllGenes();
+
+    this.colorValueMap = {
+      '-100' : "#0000ff",
+      '0'    : "#ffffff",
+      '100'  : "#ff0000"
+    }
+
     if(this.props.isCBioPortal){
       //this.overlayPortalData();
       
@@ -211,6 +230,16 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     this.profiles.push(profile1, profile2, profile3, profile4, profile5, profile6);
     */
 
+  }
+
+  @action.bound
+  setColorMappingValue(value: string, color: string) {
+    this.colorValueMap[value] = color;
+  }
+
+  @action.bound
+  setColorMapping(colorValueMap: IColorValueMap) {
+    this.colorValueMap = colorValueMap;
   }
 
   @action
@@ -586,23 +615,24 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
           (<div id="pm-modals">
             <ProfilesModal profiles={this.profiles} 
                             editor={this.editor} 
-                            isModalShown={this.isModalShown[EModalType.PROFILES]} 
+                            show={this.isModalShown[EModalType.PROFILES]} 
                             handleClose={this.handleClose} 
                             handleProfileLabelClicked={this.toggleProfileEnabled}
                             enabledProfileCountLimit={this.MAX_ALLOWED_PROFILES_ENABLED}/>
                             
-            <PathwayDetailsModal isModalShown={this.isModalShown[EModalType.PW_DETAILS]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
-            <GridSettings isModalShown={this.isModalShown[EModalType.GRID]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
-            <QuickHelpModal isModalShown={this.isModalShown[EModalType.HELP]} handleClose={this.handleClose}/>
-            <LayoutProperties isModalShown={this.isModalShown[EModalType.LAYOUT]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
-            <ConfirmationModal isModalShown={this.isModalShown[EModalType.CONFIRMATION]} handleClose={this.handleClose} />
-            <CBioHelpModal isModalShown={this.isModalShown[EModalType.CHELP]} handleClose={this.handleClose} patientView ={this.props.patientView}/>
-            <AboutModal isModalShown={this.isModalShown[EModalType.ABOUT]} handleClose={this.handleClose}/>
+            <PathwayDetailsModal show={this.isModalShown[EModalType.PW_DETAILS]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
+            <GridSettings show={this.isModalShown[EModalType.GRID]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
+            <QuickHelpModal show={this.isModalShown[EModalType.HELP]} handleClose={this.handleClose}/>
+            <LayoutProperties show={this.isModalShown[EModalType.LAYOUT]} handleClose={this.handleClose} pathwayActions={this.pathwayActions}/>
+            <ConfirmationModal show={this.isModalShown[EModalType.CONFIRMATION]} handleClose={this.handleClose} />
+            <CBioHelpModal show={this.isModalShown[EModalType.CHELP]} handleClose={this.handleClose} patientView ={this.props.patientView}/>
+            <AboutModal show={this.isModalShown[EModalType.ABOUT]} handleClose={this.handleClose}/>
+            <ProfilesColorSchemeModal show={this.isModalShown[EModalType.PROFILES_COLOR_SCHEME]} handleClose={this.handleClose} colorValueMapping={this.colorValueMap} handleColorMappingChange={this.setColorMapping}/>
           </div>)
           }
           { !this.props.isCBioPortal &&
             <React.Fragment>
-              <StudyModal isModalShown={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
+              <StudyModal show={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
               <ToastContainer
                 position="bottom-left"
                 autoClose={5000}

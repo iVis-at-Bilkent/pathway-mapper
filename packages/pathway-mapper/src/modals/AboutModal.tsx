@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal } from 'react-bootstrap';
 import { EModalType } from '../ui/react-pathway-mapper';
 interface IAboutModalProps{
-    isModalShown: boolean;
+    show: boolean;
     handleClose: Function;
 }
 
@@ -18,7 +18,7 @@ export default class AboutModal extends React.Component<IAboutModalProps, {}> {
         return(
             
           <Modal
-          show={this.props.isModalShown}
+          show={this.props.show}
           onHide={() => {this.props.handleClose(EModalType.ABOUT)}}
           >
             <Modal.Header closeButton>

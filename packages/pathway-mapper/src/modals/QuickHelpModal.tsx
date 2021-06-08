@@ -2,7 +2,7 @@ import React from 'react';
 import { EModalType } from '../ui/react-pathway-mapper';
 import {Modal} from 'react-bootstrap';
 interface IQuickHelpModalProps{
-    isModalShown: boolean;
+    show: boolean;
     handleClose: (modalId: EModalType) => void;
 }
 
@@ -16,7 +16,7 @@ export default class QuickHelpModal extends React.Component<IQuickHelpModalProps
 
 
         return(
-            <Modal id="quickHelpModal" show={this.props.isModalShown} onHide={() => {this.props.handleClose(EModalType.HELP)}}>
+            <Modal id="quickHelpModal" show={this.props.show} onHide={() => {this.props.handleClose(EModalType.HELP)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>Quick Help</Modal.Title>
                 </Modal.Header>

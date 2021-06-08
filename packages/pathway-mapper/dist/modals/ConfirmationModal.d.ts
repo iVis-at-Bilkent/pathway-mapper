@@ -1,7 +1,7 @@
 import React from 'react';
 import { EModalType } from '../ui/react-pathway-mapper';
 interface IConfirmationModalProps {
-    isModalShown: boolean;
+    show: boolean;
     handleClose: (modalId: EModalType) => void;
 }
 export default class ConfirmationModal extends React.Component<IConfirmationModalProps> {

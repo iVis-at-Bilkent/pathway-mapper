@@ -4,7 +4,7 @@ import { IProfileMetaData } from "../ui/react-pathway-mapper";
 interface IProfilesModalProps {
     profiles: IProfileMetaData[];
     editor: EditorActionsManager;
-    isModalShown: boolean;
+    show: boolean;
     handleClose: Function;
     handleProfileLabelClicked: (index: number) => void;
     enabledProfileCountLimit: number;

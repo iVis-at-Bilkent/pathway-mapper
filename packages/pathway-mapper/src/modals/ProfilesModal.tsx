@@ -7,7 +7,7 @@ import { EModalType, IProfileMetaData } from "../ui/react-pathway-mapper";
 interface IProfilesModalProps {
   profiles: IProfileMetaData[];
   editor: EditorActionsManager;
-  isModalShown: boolean;
+  show: boolean;
   handleClose: Function;
   handleProfileLabelClicked: (index: number) => void;
   enabledProfileCountLimit: number;
@@ -86,7 +86,7 @@ export default class ProfilesModal extends React.Component<
 
     return (
       <Modal
-        show={this.props.isModalShown}
+        show={this.props.show}
         onHide={() => {
           this.props.handleClose(EModalType.PROFILES);
         }}

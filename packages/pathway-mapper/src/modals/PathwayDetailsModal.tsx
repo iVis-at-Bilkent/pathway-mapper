@@ -6,7 +6,7 @@ import { EModalType } from '../ui/react-pathway-mapper';
 import PathwayActions from '../utils/PathwayActions';
 
 interface IPathwayDetailsModalProps{
-    isModalShown: boolean;
+    show: boolean;
     handleClose: Function;
     pathwayActions: PathwayActions;
 }
@@ -26,7 +26,7 @@ export default class PathwayDetailsModal extends React.Component<IPathwayDetails
 
         return(
 
-            <Modal id="pathwayDetailsDiv" show={this.props.isModalShown} onHide={() => {this.props.handleClose(4)}}>
+            <Modal id="pathwayDetailsDiv" show={this.props.show} onHide={() => {this.props.handleClose(4)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>Pathway Properties</Modal.Title>
                 </Modal.Header>

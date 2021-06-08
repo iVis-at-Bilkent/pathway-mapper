@@ -1,6 +1,6 @@
 import React from 'react';
 interface IAboutModalProps {
-    isModalShown: boolean;
+    show: boolean;
     handleClose: Function;
 }
 export default class AboutModal extends React.Component<IAboutModalProps, {}> {

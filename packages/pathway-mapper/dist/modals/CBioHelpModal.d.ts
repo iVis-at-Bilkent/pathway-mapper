@@ -1,7 +1,7 @@
 import React from 'react';
 import { EModalType } from '../ui/react-pathway-mapper';
 interface ICBioHelpModalProps {
-    isModalShown: boolean;
+    show: boolean;
     handleClose: (modalId: EModalType) => void;
     patientView?: boolean;
 }

@@ -45,6 +45,12 @@ export interface ISampleIconData {
         [s: string]: string;
     };
 }
+/**
+ * Maps integer values to color code strings
+ */
+export interface IColorValueMap {
+    [value: string]: string;
+}
 export declare enum EModalType {
     STUDY = 0,
     CONFIRMATION = 1,
@@ -54,7 +60,8 @@ export declare enum EModalType {
     GRID = 5,
     HELP = 6,
     LAYOUT = 7,
-    CHELP = 8
+    CHELP = 8,
+    PROFILES_COLOR_SCHEME = 9
 }
 export interface IPathwayData {
     title: string;
@@ -90,6 +97,7 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     editor: EditorActionsManager;
     pathwayActions: PathwayActions;
     isModalShown: boolean[];
+    colorValueMap: IColorValueMap;
     portalAccessor: CBioPortalAccessor;
     alterationData: IAlterationData;
     patientData: any[][];
@@ -105,6 +113,8 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     viewOperationsManager: ViewOperationsManager;
     gridOptionsManager: GridOptionsManager;
     constructor(props: IPathwayMapperProps);
+    setColorMappingValue(value: string, color: string): void;
+    setColorMapping(colorValueMap: IColorValueMap): void;
     setSelectedPathway(pathway: string): void;
     setEditor(editor: EditorActionsManager): void;
     addProfile(profile: IProfileMetaData): void;

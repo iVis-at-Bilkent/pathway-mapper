@@ -2,7 +2,7 @@ import React from "react";
 import { EModalType } from "../ui/react-pathway-mapper";
 import PathwayActions from "../utils/PathwayActions";
 interface ILayoutPropertiesProps {
-    isModalShown: boolean;
+    show: boolean;
     handleClose: (modelId: EModalType) => void;
     pathwayActions: PathwayActions;
 }

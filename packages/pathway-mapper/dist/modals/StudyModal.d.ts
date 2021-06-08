@@ -2,7 +2,7 @@ import React from "react";
 import { IDataTypeMetaData } from "../ui/react-pathway-mapper";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
 interface IStudyModalProps {
-    isModalShown: boolean;
+    show: boolean;
     loadFromCBio: Function;
     handleClose: Function;
 }
