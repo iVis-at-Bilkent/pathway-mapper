@@ -1,5 +1,5 @@
 import React from 'react';
-import { EModalType, IProfileMetaData } from './react-pathway-mapper';
+import { EModalType, IColorValueMap, IProfileMetaData } from './react-pathway-mapper';
 declare type PathwayMapperType = {
     isCollaborative: boolean;
     isCbioPortal: boolean;
@@ -10,6 +10,7 @@ declare type PathwayMapperType = {
     pathwayHandler: (pathwayName: string) => void;
     handleOpen: (modalId: EModalType) => void;
     onPathwayChangeCompleted: () => void;
+    genomicDataOverlayColorScheme: IColorValueMap;
 };
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}> {
     private cy;

@@ -1,5 +1,5 @@
 import { ILayoutProperties } from "../modals/LayoutProperties";
-import { IProfileMetaData } from "../ui/react-pathway-mapper";
+import { IColorValueMap, IProfileMetaData } from "../ui/react-pathway-mapper";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
 import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
 export default class EditorActionsManager {
@@ -76,6 +76,7 @@ export default class EditorActionsManager {
     notifyObservers(): void;
     registerGenomicDataObserver(observer: any): void;
     updateGenomicDataVisibility(dataMap: any): void;
+    updateGenomicDataColorScheme(colorValueMap: IColorValueMap): void;
     getGlobalOptions(): {
         zoomLevel: any;
         panLevel: any;

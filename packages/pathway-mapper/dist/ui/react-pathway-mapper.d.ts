@@ -113,7 +113,6 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     viewOperationsManager: ViewOperationsManager;
     gridOptionsManager: GridOptionsManager;
     constructor(props: IPathwayMapperProps);
-    setColorMappingValue(value: string, color: string): void;
     setColorMapping(colorValueMap: IColorValueMap): void;
     setSelectedPathway(pathway: string): void;
     setEditor(editor: EditorActionsManager): void;

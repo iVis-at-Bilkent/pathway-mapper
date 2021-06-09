@@ -24,7 +24,7 @@ import ViewOperationsManager from "../managers/ViewOperationsManager";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
 import DragDropNodeAddPlugin from "../utils/DragDropNodeAddPlugin";
 import SaveLoadUtility from "../utils/SaveLoadUtility";
-import { EModalType, IProfileMetaData } from './react-pathway-mapper';
+import { EModalType, IColorValueMap, IProfileMetaData } from './react-pathway-mapper';
 
 // @ts-ignore
 window.$ = $;
@@ -55,6 +55,7 @@ type PathwayMapperType = {
   pathwayHandler: (pathwayName: string) => void;
   handleOpen: (modalId: EModalType) => void;
   onPathwayChangeCompleted: () => void;
+  genomicDataOverlayColorScheme: IColorValueMap;
 };
 @observer
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}>{

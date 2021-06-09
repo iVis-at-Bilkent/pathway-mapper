@@ -1,6 +1,6 @@
 import { action, makeObservable, observable } from "mobx";
 import LayoutProperties, { ILayoutProperties } from "../modals/LayoutProperties";
-import { IProfileMetaData } from "../ui/react-pathway-mapper";
+import { IColorValueMap, IProfileMetaData } from "../ui/react-pathway-mapper";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
 import SVGExporter from "../utils/SVGExporter";
 import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
@@ -773,6 +773,19 @@ export default class EditorActionsManager{
             {
                 this.genomicDataOverlayManager.updateGenomicDataVisibility(_key, dataMap[_key]);
             }
+            this.genomicDataOverlayManager.showGenomicData();
+        }
+    }
+
+    updateGenomicDataColorScheme(colorValueMap: IColorValueMap)
+    {
+        if(this.isCollaborative)
+        {
+            // TODO
+        }
+        else
+        {
+            this.genomicDataOverlayManager.updateColorScheme(colorValueMap);
             this.genomicDataOverlayManager.showGenomicData();
         }
     }

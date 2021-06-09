@@ -233,13 +233,9 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   }
 
   @action.bound
-  setColorMappingValue(value: string, color: string) {
-    this.colorValueMap[value] = color;
-  }
-
-  @action.bound
   setColorMapping(colorValueMap: IColorValueMap) {
     this.colorValueMap = colorValueMap;
+    this.editor.updateGenomicDataColorScheme(this.colorValueMap);
   }
 
   @action
@@ -537,7 +533,8 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   setActiveEdge={this.setActiveEdge} editorHandler={this.editorHandler} 
   selectedPathway={this.selectedPathway} pathwayHandler={this.pathwayHandler} 
   handleOpen={this.handleOpen}
-  onPathwayChangeCompleted={this.emphasizeQueryGenes}/>;
+  onPathwayChangeCompleted={this.emphasizeQueryGenes}
+  genomicDataOverlayColorScheme={this.colorValueMap}/>;
 
   return (
 

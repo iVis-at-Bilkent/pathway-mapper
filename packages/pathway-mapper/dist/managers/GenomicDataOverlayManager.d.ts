@@ -1,5 +1,6 @@
 /// <reference types="jquery" />
 import 'tippy.js/dist/tippy.css';
+import { IColorValueMap } from '../ui/react-pathway-mapper';
 export default class GenomicDataOverlayManager {
     genomicDataMap: {};
     visibleGenomicDataMapByType: {};
@@ -9,6 +10,7 @@ export default class GenomicDataOverlayManager {
     private DEFAULT_VISIBLE_GENOMIC_DATA_COUNT;
     private observers;
     private cy;
+    private colorScheme;
     constructor(cy: any);
     getEmptyGroupID(): number;
     addGenomicDataLocally(genomicData: any, groupID: any): void;
@@ -34,6 +36,7 @@ export default class GenomicDataOverlayManager {
     countVisibleGenomicDataByType(): number;
     generateSVGForNode(ele: any): any;
     getRequiredWidthForGenomicData(genomicDataBoxCount: any): number;
+    updateColorScheme(colorValueMap: IColorValueMap): void;
     showGenomicData(): void;
     parseGenomicData(genomicData: any, groupID: any): void;
     registerObserver(observer: any): void;
