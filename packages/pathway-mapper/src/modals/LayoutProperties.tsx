@@ -82,7 +82,7 @@ export default class LayoutProperties extends React.Component<
       >
         <Modal.Header closeButton>
           <Modal.Title>
-            <h3>Layout Properties</h3>
+            Layout Properties
           </Modal.Title>
         </Modal.Header>
         <Modal.Body id="layoutPropsForm" className="leftText">

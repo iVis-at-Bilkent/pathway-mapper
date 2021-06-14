@@ -195,7 +195,11 @@ export default class ProfilesColorSchemeModal extends React.Component<
             onHide={() => this.setShowUniqueValuesWarningModal(false)}
             bsSize="small"
           >
-            <Modal.Header closeButton>Warning</Modal.Header>
+            <Modal.Header closeButton>
+              <Modal.Title>
+                Warning 
+              </Modal.Title>
+            </Modal.Header>
             <Modal.Body>
               <p>Please set at least two unique value-color mappings.</p>
             </Modal.Body>

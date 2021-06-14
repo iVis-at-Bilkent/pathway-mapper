@@ -104,7 +104,9 @@ export default class ProfilesModal extends React.Component<
             show={this.showEnabledProfileWarningModal}
             onHide={() => this.setShowEnabledProfileWarningModal(false)}>
             <Modal.Header closeButton>
-              Warning
+              <Modal.Title>
+                Warning
+              </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <p>At most 6 data sets can be displayed at the same time, please disable some other data set before enabling this.</p>

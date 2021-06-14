@@ -137,11 +137,11 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={4.1} onClick={this.props.pathwayActions.removeAllHighlight}>Remove All Highlights</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={5} title="Alteration %" id="basic-nav-alteration">
-                  <MenuItem eventKey={5.1} onClick={() => {this.props.pathwayActions.uploadOverlay();}}>Load From File...</MenuItem>
                   <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.loadSampleData}>Load Sample Data</MenuItem>
-                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(EModalType.STUDY);}}>Load cBioPortal Data...</MenuItem>
-                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(EModalType.PROFILES);}}>View Settings...</MenuItem>
-                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(EModalType.PROFILES_COLOR_SCHEME);}}>View Color Scheme Settings...</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={() => {this.props.pathwayActions.uploadOverlay();}}>Load From File...</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(EModalType.STUDY);}}>Load from cBioPortal...</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(EModalType.PROFILES);}}>Data Sets...</MenuItem>
+                  <MenuItem eventKey={5.1} onClick={ () => {this.props.handleOpen(EModalType.PROFILES_COLOR_SCHEME);}}>Color Scheme...</MenuItem>
                   <MenuItem eventKey={5.1} onClick={this.props.pathwayActions.removeAllData}>Remove All Data</MenuItem>
                 </NavDropdown>
                 <NavDropdown eventKey={6} title="Layout" id="basic-nav-layout">

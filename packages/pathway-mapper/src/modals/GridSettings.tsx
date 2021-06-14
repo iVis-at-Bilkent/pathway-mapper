@@ -1,7 +1,7 @@
 import { makeObservable, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React from 'react';
-import { Button, Checkbox, Col, ControlLabel, Form, FormControl, InputGroup, Modal } from 'react-bootstrap';
+import { Button, Checkbox, Col, ControlLabel, Form, FormControl, Row, Modal } from 'react-bootstrap';
 import GridOptionsManager from '../managers/GridOptionsManager';
 import { EModalType } from '../ui/react-pathway-mapper';
 import PathwayActions from '../utils/PathwayActions';
@@ -57,11 +57,13 @@ export default class GridSettings extends React.Component<IGridSettingsProps, {}
                     this.props.handleClose(EModalType.GRID);
                 }}>
                 <Modal.Header closeButton>
-                    <Modal.Title><h4>Grid Settings</h4></Modal.Title>
+                    <Modal.Title>
+                        Grid Settings
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <Form id="gripOptionsForm" className="leftText">
-                    <InputGroup>
+                    <Row>
                         <Col sm={8}>
                             <ControlLabel>Enable Grids:</ControlLabel>
                         </Col>
@@ -70,18 +72,18 @@ export default class GridSettings extends React.Component<IGridSettingsProps, {}
                             <Checkbox checked={this.enabledType === EGridType.GRID} 
                             onChange={() => {this.setEnabledType(EGridType.GRID);}}></Checkbox>
                         </Col>
-                    </InputGroup>
-                    <InputGroup>
+                    </Row>
+                    <Row>
                         <Col sm={8}>
-                            <ControlLabel>Enable Guidelines</ControlLabel>
+                            <ControlLabel>Enable Guidelines:</ControlLabel>
                         </Col>
 
                         <Col sm={4}>
                             <Checkbox checked={this.enabledType === EGridType.GUIDE} 
                             onChange={() => {this.setEnabledType(EGridType.GUIDE);}}></Checkbox>
                         </Col>
-                    </InputGroup>
-                    <InputGroup>
+                    </Row>
+                    <Row>
                         <Col sm={8}>
                             <ControlLabel>Grid Size:</ControlLabel>
                         </Col>
@@ -89,8 +91,8 @@ export default class GridSettings extends React.Component<IGridSettingsProps, {}
                         <Col sm={4}>
                             <FormControl type="text" value={this.gridSize} onChange={(e: any) => {this.gridSize = e.target.value;}}/>
                         </Col>
-                    </InputGroup>
-                    <InputGroup>
+                    </Row>
+                    <Row style={{marginTop: "10px"}}>
                         <Col sm={8}>
                             <ControlLabel>Guideline Color:</ControlLabel>
                         </Col>
@@ -99,7 +101,7 @@ export default class GridSettings extends React.Component<IGridSettingsProps, {}
                             <input id="guidelineColor" type="color" className="form-control" value={this.guideColor} 
                             onChange={(e: any) => {this.guideColor = e.target.value;}}/>
                         </Col>
-                    </InputGroup>
+                    </Row>
                 </Form>
                 </Modal.Body>
 
