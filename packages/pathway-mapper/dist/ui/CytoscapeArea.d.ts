@@ -11,6 +11,7 @@ declare type PathwayMapperType = {
     handleOpen: (modalId: EModalType) => void;
     onPathwayChangeCompleted: () => void;
     genomicDataOverlayColorScheme: IColorValueMap;
+    colorSchemeChangeCallback: (IColorValueMap: any) => void;
 };
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}> {
     private cy;

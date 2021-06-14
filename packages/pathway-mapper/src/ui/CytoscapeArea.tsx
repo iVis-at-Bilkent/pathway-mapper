@@ -56,6 +56,7 @@ type PathwayMapperType = {
   handleOpen: (modalId: EModalType) => void;
   onPathwayChangeCompleted: () => void;
   genomicDataOverlayColorScheme: IColorValueMap;
+  colorSchemeChangeCallback: (IColorValueMap) => void;
 };
 @observer
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}>{
@@ -286,7 +287,9 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
                                            this.isCbioPortal,
                                            this.undoRedoManager,
                                            this.portalAccessor,
-                                           this.props.profiles);
+                                           this.props.profiles,
+                                           this.props.genomicDataOverlayColorScheme,
+                                           this.props.colorSchemeChangeCallback);
     this.shareDBManager.setEditor(this.editor);
     if(this.isCollaborative){
       this.shareDBManager.initShareDB();

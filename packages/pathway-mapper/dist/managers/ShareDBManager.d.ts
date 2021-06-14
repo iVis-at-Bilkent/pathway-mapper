@@ -1,3 +1,4 @@
+import { IColorValueMap } from "../ui/react-pathway-mapper";
 import EditorActionsManager from "./EditorActionsManager";
 export default class ShareDBManager {
     readonly NODEMAP_NAME = "nodes";
@@ -8,6 +9,7 @@ export default class ShareDBManager {
     readonly VISIBLE_GENOMIC_DATA_MAP_NAME = "visibleGenomicDataMapByType";
     readonly GENOMIC_DATA_GROUP_NAME = "genomicDataGroupList";
     readonly GENOMIC_DATA_GROUP_COUNT = "genomicDataGroupCount";
+    readonly GENOMIC_DATA_COLOR_SCHEME_NAME = "genomicDataColorScheme";
     doc: any;
     postFileLoad: any;
     editor: EditorActionsManager;
@@ -23,6 +25,7 @@ export default class ShareDBManager {
     initializeShareDBGlobalOptions(): void;
     updateShareDBLayoutProperties(object: any): void;
     updateShareDBGlobalOptions(object: any): void;
+    updateShareDBGenomicDataOverlayColorScheme(object: IColorValueMap): void;
     incrementShareDBGroupCount(): void;
     isShareDBReplaceEvent(op: any): any;
     initializeSharedDBDoc(): void;
@@ -60,6 +63,7 @@ export default class ShareDBManager {
     mergeGraph(nodes: any, edges: any): void;
     updateLayoutProperties(newLayoutProperties: any): void;
     updateGlobalOptions(newOptions: any): void;
+    updateGenomicDataOverlayColorScheme(newColorScheme: IColorValueMap): void;
     createGraphHierarchy(nodes: any): any[];
     edgeInitializer(params: any): any;
     nodeInitializer(params: any): any;

@@ -55,8 +55,14 @@ export default class EditorActionsManager{
     @observable
     private profiles: IProfileMetaData[];
 
+    @observable
+    private genomicDataOverlayColorScheme: IColorValueMap;
+
+    private colorSchemeChangeCallback: (IColorValueMap) => void;
+
     constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean,
-                undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[])
+                undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[],
+                genomicDataOverlayColorScheme: IColorValueMap, colorSchemeChangeCallback: (IColorValueMap) => void)
     {
         // Set cy instance and set real time manager reference if collaborative mode
         makeObservable(this);
@@ -64,6 +70,8 @@ export default class EditorActionsManager{
         this.isCollaborative = isCollaborative;
         this.isCbioPortal = isCBioPortal;
         this.profiles = profiles;
+        this.genomicDataOverlayColorScheme = genomicDataOverlayColorScheme;
+        this.colorSchemeChangeCallback = colorSchemeChangeCallback;
         
         const edgeEditingOptions = {
             bendPositionsFunction: function(ele) {
@@ -129,6 +137,15 @@ export default class EditorActionsManager{
     @action.bound
     removeProfiles() {
         this.profiles.length = 0;
+    }
+
+    @action.bound
+    setGenomicDataOverlayColorScheme(scheme: IColorValueMap) {
+        this.genomicDataOverlayColorScheme = scheme;
+    }
+
+    getGenomicDataOverlayColorScheme() : IColorValueMap {
+        return this.genomicDataOverlayColorScheme;
     }
 
     handleChangePositionByAlignment(movedNodeArr: any)
@@ -779,9 +796,11 @@ export default class EditorActionsManager{
 
     updateGenomicDataColorScheme(colorValueMap: IColorValueMap)
     {
+        this.setGenomicDataOverlayColorScheme(colorValueMap);
+        
         if(this.isCollaborative)
         {
-            // TODO
+            this.shareDBManager.updateGenomicDataOverlayColorScheme(colorValueMap);
         }
         else
         {
@@ -1847,6 +1866,19 @@ export default class EditorActionsManager{
             this.removeProfiles();
         }
 
+        this.genomicDataOverlayManager.showGenomicData();
+        this.genomicDataOverlayManager.notifyObservers();
+    }
+
+    updateGenomicDataColorSchemeHandler(op: any)
+    {
+        let colorScheme = op.li;
+        
+        this.setGenomicDataOverlayColorScheme(colorScheme);
+
+        this.colorSchemeChangeCallback(colorScheme);
+        
+        this.genomicDataOverlayManager.updateColorScheme(colorScheme);
         this.genomicDataOverlayManager.showGenomicData();
         this.genomicDataOverlayManager.notifyObservers();
     }

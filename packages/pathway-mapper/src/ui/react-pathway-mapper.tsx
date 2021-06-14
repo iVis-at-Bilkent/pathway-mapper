@@ -512,6 +512,10 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     this.setActiveEdge = setActiveEdge;
   }
 
+  @autobind
+  colorSchemeChangeCallback(colorScheme: IColorValueMap) {
+    this.colorValueMap = colorScheme;
+  }
 
   @autobind
   addGenomicData(cBioAlterationData: ICBioData[]){
@@ -534,7 +538,8 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   selectedPathway={this.selectedPathway} pathwayHandler={this.pathwayHandler} 
   handleOpen={this.handleOpen}
   onPathwayChangeCompleted={this.emphasizeQueryGenes}
-  genomicDataOverlayColorScheme={this.colorValueMap}/>;
+  genomicDataOverlayColorScheme={this.colorValueMap}
+  colorSchemeChangeCallback={this.colorSchemeChangeCallback}/>;
 
   return (
 

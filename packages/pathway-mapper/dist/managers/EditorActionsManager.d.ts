@@ -18,10 +18,14 @@ export default class EditorActionsManager {
     private shareDBManager;
     private portalAccessor;
     private profiles;
-    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[]);
+    private genomicDataOverlayColorScheme;
+    private colorSchemeChangeCallback;
+    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[], genomicDataOverlayColorScheme: IColorValueMap, colorSchemeChangeCallback: (IColorValueMap: any) => void);
     setProfile(index: number, profile: IProfileMetaData): void;
     addProfile(profile: IProfileMetaData): void;
     removeProfiles(): void;
+    setGenomicDataOverlayColorScheme(scheme: IColorValueMap): void;
+    getGenomicDataOverlayColorScheme(): IColorValueMap;
     handleChangePositionByAlignment(movedNodeArr: any): void;
     doChangePosition(movedNodes: any): any[];
     undoChangePosition(movedNodes: any): any[];
@@ -133,5 +137,6 @@ export default class EditorActionsManager {
     shareDBGenomicDataHandler(op: any): void;
     shareDBGenomicDataGroupChangeHandler(op: any): void;
     shareDBGenomicDataVisibilityHandler(op: any): void;
+    updateGenomicDataColorSchemeHandler(op: any): void;
     resizeNodesToContent(nodes: any[]): void;
 }

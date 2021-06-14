@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { IColorValueMap } from "../ui/react-pathway-mapper";
 import GraphUtilities from "../utils/GraphUtilities";
 import EditorActionsManager from "./EditorActionsManager";
 
@@ -18,6 +19,7 @@ export default class ShareDBManager {
     readonly VISIBLE_GENOMIC_DATA_MAP_NAME = 'visibleGenomicDataMapByType';
     readonly GENOMIC_DATA_GROUP_NAME = 'genomicDataGroupList';
     readonly GENOMIC_DATA_GROUP_COUNT = 'genomicDataGroupCount';
+    readonly GENOMIC_DATA_COLOR_SCHEME_NAME = 'genomicDataColorScheme';
     
     doc: any;
     postFileLoad: any;
@@ -142,6 +144,14 @@ export default class ShareDBManager {
         }], this.shareDBError);
     };
 
+    updateShareDBGenomicDataOverlayColorScheme(object : IColorValueMap) {
+        this.doc.submitOp([{
+            p: [this.GENOMIC_DATA_COLOR_SCHEME_NAME, 0],
+            ld: this.doc.data[this.GENOMIC_DATA_COLOR_SCHEME_NAME][0],
+            li: object
+        }], this.shareDBError);
+    };
+
     //Increments shared data group count
     //Use this function to increment and keep the group count synchronized
     incrementShareDBGroupCount() {
@@ -192,7 +202,12 @@ export default class ShareDBManager {
                 genomicDataMap: {},
                 visibleGenomicDataMapByType: {},
                 genomicDataGroupList: {},
-                genomicDataGroupCount: 0
+                genomicDataGroupCount: 0,
+                genomicDataColorScheme: [{
+                    '-100' : "#0000ff",
+                    '0'    : "#ffffff",
+                    '100'  : "#ff0000"
+                }]
             };
             window.history.pushState(null, null, '?id=' + new_id);
             self.doc = connection.get('cy', new_id);
@@ -248,7 +263,7 @@ export default class ShareDBManager {
         var visDataMap = self.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
         var groupedGenomicDataMap = self.doc.data[this.GENOMIC_DATA_GROUP_NAME];
         var groupedGenomicDataCount = self.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
-
+        let genomicDataColorScheme = self.doc.data[this.GENOMIC_DATA_COLOR_SCHEME_NAME][0];
 
         var invalidGenes = [];
         var highlightedGenes = [];
@@ -361,6 +376,12 @@ export default class ShareDBManager {
             groupedGenomicDataCount = self.doc.data[self.GENOMIC_DATA_GROUP_COUNT];
         }
 
+        if (!genomicDataColorScheme) {
+            self.insertShareDBObject(self.GENOMIC_DATA_COLOR_SCHEME_NAME, '0', this.editor.getGenomicDataOverlayColorScheme());
+            genomicDataColorScheme = self.doc.data[self.GENOMIC_DATA_COLOR_SCHEME_NAME]['0'];
+        }
+
+        this.editor.updateGenomicDataColorSchemeHandler({li: genomicDataColorScheme});
 
         for (const key_g of Object.keys(genomicDataMap)) {
             this.editor.genomicDataOverlayManager.genomicDataMap[key_g] =
@@ -435,6 +456,10 @@ export default class ShareDBManager {
             self.editor.changeGlobalOptions(op);
         };
 
+        var updateGenomicDataColorSchemeHandler = function (op) {
+            self.editor.updateGenomicDataColorSchemeHandler(op);
+        }
+
 
         //Event listeners for maps
         this.doc.on('op', function (op, source) {
@@ -472,6 +497,9 @@ export default class ShareDBManager {
                     }
                     else if (path === self.GLOBAL_OPTS_NAME) {
                         updateGlobalOptionsHandler(handleOp);
+                    }
+                    else if (path === self.GENOMIC_DATA_COLOR_SCHEME_NAME) {
+                        updateGenomicDataColorSchemeHandler(handleOp);
                     }
                 }
             }
@@ -1189,6 +1217,10 @@ export default class ShareDBManager {
     updateGlobalOptions (newOptions) {
         this.updateShareDBGlobalOptions(newOptions);
     };
+
+    updateGenomicDataOverlayColorScheme(newColorScheme: IColorValueMap) {
+        this.updateShareDBGenomicDataOverlayColorScheme(newColorScheme);
+    }
 
     /*
      * Creates graph hierarchy from given flat list of nodes list, nodes list is assumed to have parent-child
