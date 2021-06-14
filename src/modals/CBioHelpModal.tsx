@@ -1,4 +1,4 @@
-import { shapeToSvg } from 'oncoprintjs';
+import {RGBAColor, shapeToSvg} from 'oncoprintjs';
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 // @ts-ignore
@@ -37,15 +37,22 @@ const MUT_COLOR_PROMOTER = '#00B7CE';
 const MUT_COLOR_OTHER = '#cf58bc';
 const MUT_COLOR_GERMLINE = '#FFFFFF';
 
+export function hexToRGBA(str: string): [number, number, number, number] {
+    const r = parseInt(str[1] + str[2], 16);
+    const g = parseInt(str[3] + str[4], 16);
+    const b = parseInt(str[5] + str[6], 16);
+    return [r, g, b, 1];
+}
+
 // always used shape
 const defaultShape = {
     type: 'rectangle',
-    fill: DEFAULT_GREY,
+    fill: hexToRGBA(DEFAULT_GREY),
     x: 0,
     y: 0,
     width: 6,
     height: 20,
-    stroke: 'rgba(0,0,0,0)',
+    stroke: [0,0,0,0] as RGBAColor,
     'stroke-width': 0
 };
 
@@ -65,10 +72,10 @@ const labels = [
 ];
 
 // conditional shapes
-var shapeBank = [
+const shapeBank = [
     {
         type: 'rectangle',
-        fill: CNA_COLOR_AMP,
+        fill: hexToRGBA(CNA_COLOR_AMP),
         x: 0,
         y: 0,
         width: 6,
@@ -76,7 +83,7 @@ var shapeBank = [
     },
     {
         type: 'rectangle',
-        fill: CNA_COLOR_HOMDEL,
+        fill: hexToRGBA(CNA_COLOR_HOMDEL),
         x: 0,
         y: 0,
         width: 6,
@@ -84,7 +91,7 @@ var shapeBank = [
     },
     {
         type: 'rectangle',
-        fill: MUT_COLOR_FUSION,
+        fill: hexToRGBA(MUT_COLOR_FUSION),
         x: 0,
         y: 4,
         width: 6,
@@ -92,7 +99,7 @@ var shapeBank = [
     },
     {
         type: 'rectangle',
-        fill: MUT_COLOR_GERMLINE,
+        fill: hexToRGBA(MUT_COLOR_GERMLINE),
         x: 0,
         y: 8.75,
         width: 6,
@@ -100,7 +107,7 @@ var shapeBank = [
     },
     {
         type: 'rectangle',
-        fill: MUT_COLOR_MISSENSE,
+        fill: hexToRGBA(MUT_COLOR_MISSENSE),
         x: 0,
         y: 6.66,
         width: 6,
@@ -108,7 +115,7 @@ var shapeBank = [
     },
     {
         type: 'rectangle',
-        fill: MUT_COLOR_MISSENSE_PASSENGER,
+        fill: hexToRGBA(MUT_COLOR_MISSENSE_PASSENGER),
         x: 0,
         y: 6.66,
         width: 6,
@@ -116,7 +123,7 @@ var shapeBank = [
     },
     {
         type: 'rectangle',
-        fill: MUT_COLOR_OTHER,
+        fill: hexToRGBA(MUT_COLOR_OTHER),
         x: 0,
         y: 6.66,
         width: 6,
@@ -124,7 +131,7 @@ var shapeBank = [
     },
     {
         type: 'rectangle',
-        fill: MUT_COLOR_PROMOTER,
+        fill: hexToRGBA(MUT_COLOR_PROMOTER),
         x: 0,
         y: 6.66,
         width: 6,
@@ -132,7 +139,7 @@ var shapeBank = [
     },
     {
         type: 'rectangle',
-        fill: MUT_COLOR_TRUNC,
+        fill: hexToRGBA(MUT_COLOR_TRUNC),
         x: 0,
         y: 6.66,
         width: 6,
@@ -140,7 +147,7 @@ var shapeBank = [
     },
     {
         type: 'rectangle',
-        fill: MUT_COLOR_TRUNC_PASSENGER,
+        fill: hexToRGBA(MUT_COLOR_TRUNC_PASSENGER),
         x: 0,
         y: 6.66,
         width: 6,
@@ -148,7 +155,7 @@ var shapeBank = [
     },
     {
         type: 'rectangle',
-        fill: MUT_COLOR_INFRAME,
+        fill: hexToRGBA(MUT_COLOR_INFRAME),
         x: 0,
         y: 6.66,
         width: 6,
@@ -156,7 +163,7 @@ var shapeBank = [
     },
     {
         type: 'rectangle',
-        fill: MUT_COLOR_INFRAME_PASSENGER,
+        fill: hexToRGBA(MUT_COLOR_INFRAME_PASSENGER),
         x: 0,
         y: 6.66,
         width: 6,
@@ -189,7 +196,7 @@ export default class CBioHelpModal extends React.Component<ICBioHelpModalProps>{
             const textOffsetY = offsetY + 15
             const g = document.createElementNS(svgNameSpace, 'g')
             if (!shape["stroke"]) {
-                shape["stroke"] = 'rgba(0,0,0,0)';
+                shape["stroke"] = [0,0,0,0];
                 shape["stroke-width"] = 0;
             }
             g.appendChild(shapeToSvg(defaultShape, offsetX, offsetY))
