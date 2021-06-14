@@ -238,7 +238,7 @@ When the user unchecks the experiment data for "lung" through Alteration % > Dat
   <img src="assets/sample-data-no-lung.png" width="400"/>
 </p>
 
-The user may also fetch alteration frequencies available on cBioPortal database through Alteration % > Load from cBioPortal... dialog. The dialog will let the user select a cancer study followed by data type(s) available for that studey in the database, and overlay the related data set(s) on the pathway in addition to any currently available data set.
+The user may also fetch alteration frequencies available on cBioPortal database through Alteration % > Load From cBioPortal... dialog. The dialog will let the user select a cancer study followed by data type(s) available for that studey in the database, and overlay the related data set(s) on the pathway in addition to any currently available data set.
 <p align="center">
   <img src="assets/sample-from-cbioportal.png" width="350"/>
 </p>
