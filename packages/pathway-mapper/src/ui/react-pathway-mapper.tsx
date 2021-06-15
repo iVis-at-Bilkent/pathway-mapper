@@ -457,14 +457,6 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     return exists;
   }
 
-  @computed get profileEnabledMap() {
-    const profileEnabledMap = {};
-    this.profiles.forEach((profile: IProfileMetaData) => {
-      profileEnabledMap[profile.profileId] = profile.enabled;
-    });
-    return profileEnabledMap;
-  }
-
   @autobind
   loadFromCBio(dataTypes: {[dataType: string]: IDataTypeMetaData}, studyData: any[]){
       if(!this.pathwayActions.doesCyHaveElements()){
@@ -487,7 +479,13 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
 
         const enableNewProfile = this.profiles.length < this.MAX_ALLOWED_PROFILES_ENABLED;
 
-        this.addProfile({studyId: studyId, profileId: profileId, enabled: enableNewProfile});
+        const newProfile = {
+          studyId: studyId,
+          profileId: profileId,
+          enabled: enableNewProfile
+        }
+
+        this.addProfile(newProfile);
 
         const genes = this.editor.cy.nodes()
                                         .filter(node => node.data("type") === "GENE")
@@ -501,7 +499,9 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
         },
         (data: any) => {
           this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID());
-          this.editor.updateGenomicDataVisibility(this.profileEnabledMap);
+          let visibilityObject = {};
+          visibilityObject[newProfile.profileId] = newProfile.enabled;
+          this.editor.updateGenomicDataVisibility(visibilityObject);
         });
         
       }
