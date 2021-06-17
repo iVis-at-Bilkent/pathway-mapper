@@ -13,7 +13,8 @@ module.exports = {
     new HtmlWebPackPlugin({
       hash: true,
       filename: "index.html",  //target html
-      template: "./src/index.html" //source html
+      template: "./src/index.html", //source html
+      favicon: "./src/pm-favicon.ico"
     }),
     new MiniCssExtractPlugin({filename: './styles.css'}),
     new CleanWebpackPlugin()
