@@ -1,6 +1,6 @@
 /// <reference types="jquery" />
-import 'tippy.js/dist/tippy.css';
-import { IColorValueMap } from '../ui/react-pathway-mapper';
+import "tippy.js/dist/tippy.css";
+import { IColorValueMap } from "../ui/react-pathway-mapper";
 export default class GenomicDataOverlayManager {
     genomicDataMap: {};
     visibleGenomicDataMapByType: {};
