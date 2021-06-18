@@ -5,6 +5,7 @@ interface ICBioHelpModalProps {
     handleClose: (modalId: EModalType) => void;
     patientView?: boolean;
 }
+export declare function hexToRGBA(str: string): [number, number, number, number];
 export default class CBioHelpModal extends React.Component<ICBioHelpModalProps> {
     constructor(props: ICBioHelpModalProps);
     generateOncoprintLegend(): SVGSVGElement;

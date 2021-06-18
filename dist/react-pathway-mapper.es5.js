@@ -6883,100 +6883,106 @@ var MUT_COLOR_TRUNC_PASSENGER = '#708090';
 var MUT_COLOR_FUSION = '#8B00C9';
 var MUT_COLOR_PROMOTER = '#00B7CE';
 var MUT_COLOR_OTHER = '#cf58bc';
-var MUT_COLOR_GERMLINE = '#FFFFFF'; // always used shape
+var MUT_COLOR_GERMLINE = '#FFFFFF';
+function hexToRGBA(str) {
+  var r = parseInt(str[1] + str[2], 16);
+  var g = parseInt(str[3] + str[4], 16);
+  var b = parseInt(str[5] + str[6], 16);
+  return [r, g, b, 1];
+} // always used shape
 
 var defaultShape = {
   type: 'rectangle',
-  fill: DEFAULT_GREY,
+  fill: hexToRGBA(DEFAULT_GREY),
   x: 0,
   y: 0,
   width: 6,
   height: 20,
-  stroke: 'rgba(0,0,0,0)',
+  stroke: [0, 0, 0, 0],
   'stroke-width': 0
 };
 var labels = ['Amplification', 'Deep Deletion', 'Fusion', 'Germline Mutation', 'Missense Mutation (putative driver)', 'Missense Mutation (unknown significance)', 'Other Mutation', 'Promoter Mutation', 'Truncating Mutation (putative driver)', 'Truncating Mutation (unknown significance)', 'Inframe Mutation (putative driver)', 'Inframe Mutation (unknown significance)']; // conditional shapes
 
 var shapeBank = [{
   type: 'rectangle',
-  fill: CNA_COLOR_AMP,
+  fill: hexToRGBA(CNA_COLOR_AMP),
   x: 0,
   y: 0,
   width: 6,
   height: 20
 }, {
   type: 'rectangle',
-  fill: CNA_COLOR_HOMDEL,
+  fill: hexToRGBA(CNA_COLOR_HOMDEL),
   x: 0,
   y: 0,
   width: 6,
   height: 20
 }, {
   type: 'rectangle',
-  fill: MUT_COLOR_FUSION,
+  fill: hexToRGBA(MUT_COLOR_FUSION),
   x: 0,
   y: 4,
   width: 6,
   height: 12
 }, {
   type: 'rectangle',
-  fill: MUT_COLOR_GERMLINE,
+  fill: hexToRGBA(MUT_COLOR_GERMLINE),
   x: 0,
   y: 8.75,
   width: 6,
   height: 1.6
 }, {
   type: 'rectangle',
-  fill: MUT_COLOR_MISSENSE,
+  fill: hexToRGBA(MUT_COLOR_MISSENSE),
   x: 0,
   y: 6.66,
   width: 6,
   height: 6.66
 }, {
   type: 'rectangle',
-  fill: MUT_COLOR_MISSENSE_PASSENGER,
+  fill: hexToRGBA(MUT_COLOR_MISSENSE_PASSENGER),
   x: 0,
   y: 6.66,
   width: 6,
   height: 6.66
 }, {
   type: 'rectangle',
-  fill: MUT_COLOR_OTHER,
+  fill: hexToRGBA(MUT_COLOR_OTHER),
   x: 0,
   y: 6.66,
   width: 6,
   height: 6.66
 }, {
   type: 'rectangle',
-  fill: MUT_COLOR_PROMOTER,
+  fill: hexToRGBA(MUT_COLOR_PROMOTER),
   x: 0,
   y: 6.66,
   width: 6,
   height: 6.66
 }, {
   type: 'rectangle',
-  fill: MUT_COLOR_TRUNC,
+  fill: hexToRGBA(MUT_COLOR_TRUNC),
   x: 0,
   y: 6.66,
   width: 6,
   height: 6.66
 }, {
   type: 'rectangle',
-  fill: MUT_COLOR_TRUNC_PASSENGER,
+  fill: hexToRGBA(MUT_COLOR_TRUNC_PASSENGER),
   x: 0,
   y: 6.66,
   width: 6,
   height: 6.66
 }, {
   type: 'rectangle',
-  fill: MUT_COLOR_INFRAME,
+  fill: hexToRGBA(MUT_COLOR_INFRAME),
   x: 0,
   y: 6.66,
   width: 6,
   height: 6.66
 }, {
   type: 'rectangle',
-  fill: MUT_COLOR_INFRAME_PASSENGER,
+  fill: hexToRGBA(MUT_COLOR_INFRAME_PASSENGER),
   x: 0,
   y: 6.66,
   width: 6,
@@ -7012,7 +7018,7 @@ function (_super) {
         var g = document.createElementNS(svgNameSpace, 'g');
 
         if (!shape["stroke"]) {
-          shape["stroke"] = 'rgba(0,0,0,0)';
+          shape["stroke"] = [0, 0, 0, 0];
           shape["stroke-width"] = 0;
         }
 
@@ -8193,9 +8199,9 @@ function () {
         var cancerTypes = [];
         var visibleGenomicDataMapByType = {}; // By lines
 
-        var lines = genomicData.split('\n'); // First line is meta data !
+        var lines = genomicData.split("\n"); // First line is meta data !
 
-        var metaLineColumns = lines[0].split('\t'); // Parse cancer types
+        var metaLineColumns = lines[0].split("\t"); // Parse cancer types
 
         for (var i = 1; i < metaLineColumns.length; i++) {
           cancerTypes.push(metaLineColumns[i]); // Update initially visible genomic data boxes !
@@ -8215,7 +8221,7 @@ function () {
           } // Split each line by tab and parse genomic data content
 
 
-          var lineContent = lines[i].split('\t');
+          var lineContent = lines[i].split("\t");
           var geneSymbol = lineContent[0]; // If current gene entry is not  in genomic data map create new hashmap entry
 
           if (!(geneSymbol in genomicDataMap)) {
@@ -8250,10 +8256,10 @@ function () {
       configurable: true,
       writable: true,
       value: function () {
-        this.cy.style().selector('node[type="GENE"]').style('text-margin-y', 0).style('width', function (ele) {
+        this.cy.style().selector('node[type="GENE"]').style("text-margin-y", 0).style("width", function (ele) {
           return 150;
-        }).style('background-image', function (ele) {
-          var dataURI = 'data:image/svg+xml;utf8,';
+        }).style("background-image", function (ele) {
+          var dataURI = "data:image/svg+xml;utf8,";
           return dataURI;
         }).update();
       }
@@ -8368,7 +8374,7 @@ function () {
       } //This parameter is used as flag for PatientView PathwayMapper Functions
 
 
-      if (data['PatientView'] == 1) {
+      if (data["PatientView"] == 1) {
         this.patientData = data;
         this.showPatientData();
       } else {
@@ -8426,9 +8432,9 @@ function () {
     value: function (ele) {
       var genomicDataBoxCount = this.countVisibleGenomicDataByType(); // Experimental data overlay part !
 
-      var dataURI = 'data:image/svg+xml;utf8,';
-      var svgNameSpace = 'http://www.w3.org/2000/svg';
-      var nodeLabel = ele.data('name'); // If there is no genomic data for this node return !
+      var dataURI = "data:image/svg+xml;utf8,";
+      var svgNameSpace = "http://www.w3.org/2000/svg";
+      var nodeLabel = ele.data("name"); // If there is no genomic data for this node return !
 
       if (!(nodeLabel in this.genomicDataMap)) {
         return dataURI;
@@ -8438,12 +8444,12 @@ function () {
       var reqWidth = this.getRequiredWidthForGenomicData(genomicDataBoxCount);
       var overlayRecBoxW = reqWidth - 10;
       var overlayRecBoxH = 25;
-      var svg = document.createElementNS(svgNameSpace, 'svg'); // It seems this should be set according to the node size !
+      var svg = document.createElementNS(svgNameSpace, "svg"); // It seems this should be set according to the node size !
 
-      svg.setAttribute('width', reqWidth);
-      svg.setAttribute('height', eleBBox.h); // This is important you need to include this to succesfully render in cytoscape.js!
+      svg.setAttribute("width", reqWidth);
+      svg.setAttribute("height", eleBBox.h); // This is important you need to include this to succesfully render in cytoscape.js!
 
-      svg.setAttribute('xmlns', svgNameSpace); // Overlay Data Rect
+      svg.setAttribute("xmlns", svgNameSpace); // Overlay Data Rect
 
       var overLayRectBBox = {
         w: overlayRecBoxW,
@@ -8476,7 +8482,7 @@ function () {
       }
 
       function genomicDataRectangleGenerator(x, y, w, h, percent, parentSVG) {
-        var colorString = '';
+        var colorString = "";
 
         if (percent) {
           var isNegativePercent = percent < 0;
@@ -8491,45 +8497,45 @@ function () {
           var percentColor = 255 - (-7.118 + 53.9765 * Math.log(_percent + 0.8));
 
           if (_percent === 0 || percent == -101) {
-            colorString = 'rgb(255,255,255)';
+            colorString = "rgb(255,255,255)";
           } else if (isNegativePercent) {
-            colorString = 'rgb(' + Math.round(percentColor) + ',' + Math.round(percentColor) + ',255)';
+            colorString = "rgb(" + Math.round(percentColor) + "," + Math.round(percentColor) + ",255)";
             percent = percent.substring(1);
           } else {
-            colorString = 'rgb(255,' + Math.round(percentColor) + ',' + Math.round(percentColor) + ')';
+            colorString = "rgb(255," + Math.round(percentColor) + "," + Math.round(percentColor) + ")";
           } // Rectangle Part
 
 
-          var overlayRect = document.createElementNS(svgNameSpace, 'rect');
-          overlayRect.setAttribute('x', x);
-          overlayRect.setAttribute('y', y);
-          overlayRect.setAttribute('width', w);
-          overlayRect.setAttribute('height', h);
-          overlayRect.setAttribute('style', 'stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:' + colorString + ';'); // Text Part
+          var overlayRect = document.createElementNS(svgNameSpace, "rect");
+          overlayRect.setAttribute("x", x);
+          overlayRect.setAttribute("y", y);
+          overlayRect.setAttribute("width", w);
+          overlayRect.setAttribute("height", h);
+          overlayRect.setAttribute("style", "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";"); // Text Part
 
-          var textPercent = percent < 0.5 && percent > 0 ? '<0.5' : Number(percent).toFixed(1);
-          var text = percent == -101 ? 'N/P' : textPercent + '%';
+          var textPercent = percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
+          var text = percent == -101 ? "N/P" : textPercent + "%";
           var fontSize = 14;
           var textLength = text.length;
           var xOffset = w / 2 - textLength * 4;
           var yOffset = fontSize / 3;
-          var svgText = document.createElementNS(svgNameSpace, 'text');
-          svgText.setAttribute('x', x + xOffset);
-          svgText.setAttribute('y', y + h / 2 + yOffset);
-          svgText.setAttribute('font-family', 'Arial');
-          svgText.setAttribute('font-size', fontSize + '');
+          var svgText = document.createElementNS(svgNameSpace, "text");
+          svgText.setAttribute("x", x + xOffset);
+          svgText.setAttribute("y", y + h / 2 + yOffset);
+          svgText.setAttribute("font-family", "Arial");
+          svgText.setAttribute("font-size", fontSize + "");
           svgText.innerHTML = text;
           parentSVG.appendChild(overlayRect);
           parentSVG.appendChild(svgText);
         } else {
-          colorString = 'rgb(210,210,210)'; // Rectangle Part
+          colorString = "rgb(210,210,210)"; // Rectangle Part
 
-          var overlayRect = document.createElementNS(svgNameSpace, 'rect');
-          overlayRect.setAttribute('x', x);
-          overlayRect.setAttribute('y', y);
-          overlayRect.setAttribute('width', w);
-          overlayRect.setAttribute('height', h);
-          overlayRect.setAttribute('style', 'stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:' + colorString + ';');
+          var overlayRect = document.createElementNS(svgNameSpace, "rect");
+          overlayRect.setAttribute("x", x);
+          overlayRect.setAttribute("y", y);
+          overlayRect.setAttribute("width", w);
+          overlayRect.setAttribute("height", h);
+          overlayRect.setAttribute("style", "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";");
           parentSVG.appendChild(overlayRect);
         }
       }
@@ -8564,10 +8570,10 @@ function () {
       }
 
       this.cy.style().selector('node[type="GENE"]') // It used to change the width of nodes only locally
-      .style('width', function (ele) {
+      .style("width", function (ele) {
         return _this.getRequiredWidthForGenomicData(genomicDataBoxCount);
-      }).style('text-margin-y', function (ele) {
-        var nodeLabel = ele.data('name'); // If there is no genomic data for this node return !
+      }).style("text-margin-y", function (ele) {
+        var nodeLabel = ele.data("name"); // If there is no genomic data for this node return !
 
         if (!(nodeLabel in self.genomicDataMap)) {
           return 0;
@@ -8575,14 +8581,14 @@ function () {
 
 
         return -15;
-      }).style('background-image', function (ele) {
+      }).style("background-image", function (ele) {
         var x = encodeURIComponent(self.generateSVGForNode(ele).outerHTML);
 
-        if (x === 'undefined') {
-          return 'none';
+        if (x === "undefined") {
+          return "none";
         }
 
-        var dataURI = 'data:image/svg+xml;utf8,' + x;
+        var dataURI = "data:image/svg+xml;utf8," + x;
         return dataURI;
       }).update();
     }
@@ -8597,9 +8603,9 @@ function () {
       this.groupedGenomicDataMap = this.groupedGenomicDataMap || {};
       var cancerTypes = []; // By lines
 
-      var lines = genomicData.split('\n'); // First line is meta data !
+      var lines = genomicData.split("\n"); // First line is meta data !
 
-      var metaLineColumns = lines[0].split('\t'); // Parse cancer types
+      var metaLineColumns = lines[0].split("\t"); // Parse cancer types
 
       for (var i = 1; i < metaLineColumns.length; i++) {
         cancerTypes.push(metaLineColumns[i]); // Update initially visible genomic data boxes !
@@ -8625,7 +8631,7 @@ function () {
         } // Split each line by tab and parse genomic data content
 
 
-        var lineContent = lines[i].split('\t');
+        var lineContent = lines[i].split("\t");
         var geneSymbol = lineContent[0]; // If current gene entry is not  in genomic data map create new map
 
         if (!(geneSymbol in this.genomicDataMap)) {
@@ -8695,10 +8701,10 @@ function () {
       }
 
       this.cy.style().selector('node[type="GENE"]') // It used to change the width of nodes only locally
-      .style('width', function (ele) {
+      .style("width", function (ele) {
         return _this.getRequiredWidthForGenomicData(genomicDataBoxCount);
-      }).style('text-margin-y', function (ele) {
-        var nodeLabel = ele.data('name'); // If there is no genomic data for this node return !
+      }).style("text-margin-y", function (ele) {
+        var nodeLabel = ele.data("name"); // If there is no genomic data for this node return !
 
         if (!(nodeLabel in data)) {
           return 0;
@@ -8706,34 +8712,35 @@ function () {
 
 
         return -15;
-      }).style('background-image', function (ele) {
+      }).style("background-image", function (ele) {
         var x = encodeURIComponent( // self.generateSVGForPatientNode(ele, data).outerHTML
         self.generateOncoprintForPatientNode(ele).outerHTML);
 
-        if (x === 'undefined') {
-          return 'none';
+        if (x === "undefined") {
+          return "none";
         }
 
-        var dataURI = 'data:image/svg+xml;utf8,' + x;
+        var dataURI = "data:image/svg+xml;utf8," + x;
         return dataURI;
       }).update();
-      this.cy.on('mouseover', 'node[type="GENE"]', function (event) {
+      this.cy.on("mouseover", 'node[type="GENE"]', function (event) {
         var node = event.target || event.cyTarget;
-        var nodeLabel = node.data('name');
+        var nodeLabel = node.data("name");
 
         if (!data[nodeLabel]) {
           return;
         }
 
         var ref = node.popperRef();
-        var dummyDomEle = document.createElement('div');
+        var dummyDomEle = document.createElement("div");
         document.body.appendChild(dummyDomEle);
         var tip = external_tippy_js_default()(dummyDomEle, {
+          // tippy props:
           getReferenceClientRect: ref.getBoundingClientRect,
-          trigger: 'manual',
-          placement: 'bottom',
+          trigger: "manual",
+          placement: "bottom",
           interactive: true,
-          theme: 'cbioportal',
+          theme: "cbioportal",
           arrow: false,
           // your own custom props
           // content prop can be used when the target is a single element https://atomiks.github.io/tippyjs/v6/constructor/#prop
@@ -8765,24 +8772,24 @@ function () {
     writable: true,
     value: function (selectedGene) {
       var oncoprintColors = {
-        Missense_Mutation: 'rgb(0,128,0)',
-        inframe: '#993404',
-        truncating: '#000000',
-        Fusion: 'rgb(139,0,201)',
-        AMP: 'rgb(255,0,0)',
-        gain: '#ffb6c1',
-        heatloss: '#8fd8d8',
-        homdel: 'rgb(0,0,255)',
-        DeepDel: 'rgb(0,0,255)',
-        "5'Flank": 'rgb(207,88,188)',
-        in_frame_del: 'rgb(166,128,40)'
+        Missense_Mutation: "rgb(0,128,0)",
+        inframe: "#993404",
+        truncating: "#000000",
+        Fusion: "rgb(139,0,201)",
+        AMP: "rgb(255,0,0)",
+        gain: "#ffb6c1",
+        heatloss: "#8fd8d8",
+        homdel: "rgb(0,0,255)",
+        DeepDel: "rgb(0,0,255)",
+        "5'Flank": "rgb(207,88,188)",
+        in_frame_del: "rgb(166,128,40)"
       };
 
       if (oncoprintColors[selectedGene] !== undefined) {
         return oncoprintColors[selectedGene];
       } else {
         //Types are not on the list corresponds to black
-        return 'rgb(0,0,0)';
+        return "rgb(0,0,0)";
       }
     }
   });
@@ -8794,10 +8801,10 @@ function () {
       //Here we should use the parameter patientData when calculating the expressions
       var genomicDataBoxCount = this.countVisibleGenomicDataByType(); // Experimental data overlay part !
 
-      var dataURI = 'data:image/svg+xml;utf8,';
-      var svgNameSpace = 'http://www.w3.org/2000/svg'; //nodeLabel refers to the nodeLabels in the overlay data
+      var dataURI = "data:image/svg+xml;utf8,";
+      var svgNameSpace = "http://www.w3.org/2000/svg"; //nodeLabel refers to the nodeLabels in the overlay data
 
-      var nodeLabel = ele.data('name'); // If there is no genomic data for this node return !
+      var nodeLabel = ele.data("name"); // If there is no genomic data for this node return !
 
       if (!(nodeLabel in patientData)) {
         return dataURI;
@@ -8806,17 +8813,17 @@ function () {
 
       var alterationBoxCount = this.getAlterationCountForPatient(patientData[nodeLabel]);
       var eleBBox = ele.boundingBox();
-      var svg = document.createElementNS(svgNameSpace, 'svg'); //this parameter is set to 12 since there are 12 different possiblities for types
+      var svg = document.createElementNS(svgNameSpace, "svg"); //this parameter is set to 12 since there are 12 different possiblities for types
 
       var term = alterationBoxCount > 12 ? alterationBoxCount - 12 : 0;
       var reqWidth = 150 + term * 35;
       var overlayRecBoxW = reqWidth - 10;
       var overlayRecBoxH = 25; // It seems this should be set according to the node size !
 
-      svg.setAttribute('width', reqWidth);
-      svg.setAttribute('height', eleBBox.h); // This is important you need to include this to succesfully render in cytoscape.js!
+      svg.setAttribute("width", reqWidth);
+      svg.setAttribute("height", eleBBox.h); // This is important you need to include this to succesfully render in cytoscape.js!
 
-      svg.setAttribute('xmlns', svgNameSpace); // Overlay Data Rect
+      svg.setAttribute("xmlns", svgNameSpace); // Overlay Data Rect
 
       var overLayRectBBox = {
         w: overlayRecBoxW,
@@ -8840,7 +8847,7 @@ function () {
         if (genomicAlterationData[alterationType] !== undefined) {
           genomicDataRectangleGeneratorPatient(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / alterationBoxCount, overLayRectBBox.y, overLayRectBBox.w / alterationBoxCount, overLayRectBBox.h, 100, svg, alterationType, colorString);
         } else {
-          genomicDataRectangleGeneratorPatient(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / alterationBoxCount, overLayRectBBox.y, overLayRectBBox.w / alterationBoxCount, overLayRectBBox.h, null, svg, '', null);
+          genomicDataRectangleGeneratorPatient(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / alterationBoxCount, overLayRectBBox.y, overLayRectBBox.w / alterationBoxCount, overLayRectBBox.h, null, svg, "", null);
         }
 
         genomicBoxCounter++;
@@ -8853,34 +8860,34 @@ function () {
         if (percent) {
           var isNegativePercent = percent < 0; // Rectangle Part
 
-          var overlayRect = document.createElementNS(svgNameSpace, 'rect');
-          overlayRect.setAttribute('x', x);
-          overlayRect.setAttribute('y', y);
-          overlayRect.setAttribute('width', w);
-          overlayRect.setAttribute('height', h);
-          overlayRect.setAttribute('style', 'stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:' + colorString + ';'); // Text Part
+          var overlayRect = document.createElementNS(svgNameSpace, "rect");
+          overlayRect.setAttribute("x", x);
+          overlayRect.setAttribute("y", y);
+          overlayRect.setAttribute("width", w);
+          overlayRect.setAttribute("height", h);
+          overlayRect.setAttribute("style", "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";"); // Text Part
 
           var fontSize = 14;
           var textLength = 4;
           var xOffset = w / 2 - textLength * 4;
           var yOffset = fontSize / 3;
-          var svgText = document.createElementNS(svgNameSpace, 'text');
+          var svgText = document.createElementNS(svgNameSpace, "text");
 
-          if (colorString === 'rgb(0,0,0)') {
-            svgText.setAttribute('fill', 'white');
+          if (colorString === "rgb(0,0,0)") {
+            svgText.setAttribute("fill", "white");
           }
 
-          svgText.setAttribute('x', x + xOffset);
-          svgText.setAttribute('y', y + h / 2 + yOffset);
-          svgText.setAttribute('font-family', 'Arial');
-          svgText.setAttribute('font-size', fontSize + ''); //first 4 letters of the alterationTypes are used
+          svgText.setAttribute("x", x + xOffset);
+          svgText.setAttribute("y", y + h / 2 + yOffset);
+          svgText.setAttribute("font-family", "Arial");
+          svgText.setAttribute("font-size", fontSize + ""); //first 4 letters of the alterationTypes are used
 
           svgText.innerHTML = text.substring(0, 4);
           parentSVG.appendChild(overlayRect);
           parentSVG.appendChild(svgText);
         } else {
           //Normally
-          colorString = 'rgb(210,210,210)';
+          colorString = "rgb(210,210,210)";
         }
       }
 
@@ -8895,14 +8902,14 @@ function () {
       // const dataURI = 'data:image/svg+xml;utf8,'
       // nodeLabel refers to the nodeLabels in the overlay data
       var patientData = this.patientData;
-      var nodeLabel = ele.data('name');
+      var nodeLabel = ele.data("name");
       var genomicData = patientData[nodeLabel];
-      var svgNameSpace = 'http://www.w3.org/2000/svg';
-      var svgElement = document.createElementNS(svgNameSpace, 'svg');
+      var svgNameSpace = "http://www.w3.org/2000/svg";
+      var svgElement = document.createElementNS(svgNameSpace, "svg");
 
       if (!genomicData) {
         return {
-          outerHTML: ''
+          outerHTML: ""
         };
       }
 
@@ -8911,22 +8918,27 @@ function () {
       var cellPadding = 3;
       var cellHeight = 23;
       var cellVerticalPadding = 8;
-      var shapesPerDatum = ruleset.apply(genomicData.geneticTrackData, cellWidth, cellHeight);
+      var universalShapes = ruleset.getUniversalShapes(cellWidth, cellHeight);
+      var specificShapesPerDatum = ruleset.getSpecificShapesForDatum(genomicData.geneticTrackData, cellWidth, cellHeight);
+      var shapesPerDatum = specificShapesPerDatum.map(function (shapes) {
+        return universalShapes.concat(shapes);
+      }); // _.fill(Array(shapesPerDatum.length), universalShapes)
+
       shapesPerDatum.forEach(function (shapes, index) {
         var offsetX = index * (cellWidth + cellPadding); // width + padding
 
         var offsetY = cellVerticalPadding;
-        var g = document.createElementNS(svgNameSpace, 'g');
+        var g = document.createElementNS(svgNameSpace, "g");
         shapes.forEach(function (shape) {
           return g.appendChild(Object(external_oncoprintjs_["shapeToSvg"])(shape, offsetX, offsetY));
         });
         svgElement.appendChild(g);
       }); // It seems this should be set according to the node size !
 
-      svgElement.setAttribute('width', ((cellWidth + cellPadding) * shapesPerDatum.length).toString());
-      svgElement.setAttribute('height', (cellHeight + cellVerticalPadding).toString()); // This is important you need to include this to succesfully render in cytoscape.js!
+      svgElement.setAttribute("width", ((cellWidth + cellPadding) * shapesPerDatum.length).toString());
+      svgElement.setAttribute("height", (cellHeight + cellVerticalPadding).toString()); // This is important you need to include this to succesfully render in cytoscape.js!
 
-      svgElement.setAttribute('xmlns', svgNameSpace);
+      svgElement.setAttribute("xmlns", svgNameSpace);
       return svgElement;
     }
   }); // Mapping of alteration type keys to strings
@@ -8938,10 +8950,10 @@ function () {
     writable: true,
     value: function (alterationTypeKey) {
       var disp_cna = {
-        '-2': 'HOMODELETED',
-        '-1': 'HETLOSS',
-        '1': 'GAIN',
-        '2': 'AMPLIFIED'
+        "-2": "HOMODELETED",
+        "-1": "HETLOSS",
+        "1": "GAIN",
+        "2": "AMPLIFIED"
       };
       return disp_cna[alterationTypeKey];
     }
@@ -8951,7 +8963,7 @@ function () {
     configurable: true,
     writable: true,
     value: function (iconColor, iconText) {
-      var html = '<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">' + '<g transform="translate(6,6)">' + '<circle r="6" fill="' + iconColor + '" fill-opacity="1"></circle>' + '</g>' + '<g transform="translate(6,5.5)">' + '<text y="4" text-anchor="middle" font-size="10" fill="white" style="cursor: default;">' + iconText + '</text>' + '</g>' + '</svg>';
+      var html = '<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">' + '<g transform="translate(6,6)">' + '<circle r="6" fill="' + iconColor + '" fill-opacity="1"></circle>' + "</g>" + '<g transform="translate(6,5.5)">' + '<text y="4" text-anchor="middle" font-size="10" fill="white" style="cursor: default;">' + iconText + "</text>" + "</g>" + "</svg>";
       return html;
     }
   });
@@ -8962,20 +8974,20 @@ function () {
     value: function (ele, patientData) {
       var _this = this;
 
-      var tooltipMaxHeight = '200px';
-      var tooltipMaxWidth = '200px';
-      var marginBetweenSamples = '10px';
+      var tooltipMaxHeight = "200px";
+      var tooltipMaxWidth = "200px";
+      var marginBetweenSamples = "10px";
       var sampleIconColorMap = patientData.sampleColors;
       var sampleIndexMap = patientData.sampleIndex;
-      var nodeLabel = ele.data('name');
+      var nodeLabel = ele.data("name");
       var data = patientData[nodeLabel]; // Outer wrapper for the entire tooltip
 
-      var wrapper = external_jquery_default()('<div></div>');
+      var wrapper = external_jquery_default()("<div></div>");
       wrapper.css({
-        'max-width': tooltipMaxWidth,
-        'max-height': tooltipMaxHeight,
-        'word-wrap': 'break-word',
-        'overflow-y': 'auto'
+        "max-width": tooltipMaxWidth,
+        "max-height": tooltipMaxHeight,
+        "word-wrap": "break-word",
+        "overflow-y": "auto"
       });
       data.geneticTrackData.forEach(function (sample, sampleIndex) {
         var sampleId = sample.sample;
@@ -8984,11 +8996,11 @@ function () {
 
         var sampleIconSvgHTML = _this.generateSvgIconForSample(iconColor, iconText);
 
-        var margin = sampleIndex > 0 ? marginBetweenSamples : '0px'; // Inner wrapper for a single sample
+        var margin = sampleIndex > 0 ? marginBetweenSamples : "0px"; // Inner wrapper for a single sample
 
-        var sampleWrapper = external_jquery_default()('<div></div>');
+        var sampleWrapper = external_jquery_default()("<div></div>");
         sampleWrapper.css({
-          'margin-top': margin
+          "margin-top": margin
         });
         var sampleData = sample.data;
         var mutationInfo = [];
@@ -8997,7 +9009,7 @@ function () {
         sampleData.forEach(function (data) {
           var geneSymbol = data.gene.hugoGeneSymbol;
 
-          if (sample.disp_mut && data.proteinChange && data.mutationType !== 'Fusion') {
+          if (sample.disp_mut && data.proteinChange && data.mutationType !== "Fusion") {
             var proteinChange = data.proteinChange;
             mutationInfo.push({
               gene: geneSymbol,
@@ -9016,7 +9028,7 @@ function () {
             });
           }
 
-          if (sample.disp_fusion && data.proteinChange && data.mutationType === 'Fusion') {
+          if (sample.disp_fusion && data.proteinChange && data.mutationType === "Fusion") {
             var proteinChange = data.proteinChange;
             fusionInfo.push({
               gene: geneSymbol,
@@ -9025,38 +9037,38 @@ function () {
           }
         }); // Prepare HTML for tooltip
 
-        var mutationInfoHTML = mutationInfo.length > 0 ? 'Mutation: ' : '';
-        var cnaInfoHTML = cnaInfo.length > 0 ? 'CNA: ' : '';
-        var fusionInfoHTML = fusionInfo.length > 0 ? 'Fusion: ' : '';
+        var mutationInfoHTML = mutationInfo.length > 0 ? "Mutation: " : "";
+        var cnaInfoHTML = cnaInfo.length > 0 ? "CNA: " : "";
+        var fusionInfoHTML = fusionInfo.length > 0 ? "Fusion: " : "";
         mutationInfo.forEach(function (mutation, index) {
-          mutationInfoHTML += '<b>' + mutation.gene + ' ' + mutation.proteinChange + '</b>';
+          mutationInfoHTML += "<b>" + mutation.gene + " " + mutation.proteinChange + "</b>";
 
           if (index !== mutationInfo.length - 1) {
-            mutationInfoHTML += ', ';
+            mutationInfoHTML += ", ";
           } else {
-            mutationInfoHTML += '<br>';
+            mutationInfoHTML += "<br>";
           }
         });
         cnaInfo.forEach(function (cna, index) {
-          cnaInfoHTML += '<b>' + cna.gene + ' ' + cna.cnaLabel + '</b>';
+          cnaInfoHTML += "<b>" + cna.gene + " " + cna.cnaLabel + "</b>";
 
           if (index !== cnaInfo.length - 1) {
-            cnaInfoHTML += ', ';
+            cnaInfoHTML += ", ";
           } else {
-            cnaInfoHTML += '<br>';
+            cnaInfoHTML += "<br>";
           }
         });
         fusionInfo.forEach(function (fusion, index) {
-          fusionInfoHTML += '<b>' + fusion.gene + ' ' + fusion.proteinChange + '</b>';
+          fusionInfoHTML += "<b>" + fusion.gene + " " + fusion.proteinChange + "</b>";
 
           if (index !== fusionInfo.length - 1) {
-            fusionInfoHTML += ', ';
+            fusionInfoHTML += ", ";
           } else {
-            fusionInfoHTML += '<br>';
+            fusionInfoHTML += "<br>";
           }
         });
-        var sampleIdHTML = '<b> ' + sampleId + '</b>' + '<br>';
-        sampleWrapper.append(external_jquery_default()('<div>' + sampleIconSvgHTML + sampleIdHTML + mutationInfoHTML + cnaInfoHTML + fusionInfoHTML + +'</div>'));
+        var sampleIdHTML = "<b> " + sampleId + "</b>" + "<br>";
+        sampleWrapper.append(external_jquery_default()("<div>" + sampleIconSvgHTML + sampleIdHTML + mutationInfoHTML + cnaInfoHTML + fusionInfoHTML + +"</div>"));
         wrapper.append(sampleWrapper);
       });
       return wrapper;
