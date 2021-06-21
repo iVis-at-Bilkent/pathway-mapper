@@ -42,7 +42,6 @@ const contextMenus = require('cytoscape-context-menus');
 const konva = require('konva');
 const viewUtilities = require('cytoscape-view-utilities');
 const gridGuide = require('cytoscape-grid-guide');
-const cyqtip = require('cytoscape-qtip');
 const popper = require('cytoscape-popper');
 const layoutUtilities = require('cytoscape-layout-utilities');
 
@@ -239,11 +238,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     }
     try { 
       viewUtilities(cytoscape, $); // register extension
-    } catch(err){
-      console.log(err);
-    }
-    try { 
-      cyqtip(cytoscape, $); // register extension
     } catch(err){
       console.log(err);
     }

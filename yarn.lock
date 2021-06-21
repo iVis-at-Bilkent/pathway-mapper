@@ -6558,13 +6558,13 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
-"cytoscape-context-menus@github:iVis-at-Bilkent/cytoscape.js-context-menus#master":
-  version "4.0.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-context-menus/tar.gz/af53cb96cc4d58496c91d09aa56c405fcbaa23bb"
+"cytoscape-context-menus@github:iVis-at-Bilkent/cytoscape.js-context-menus#unstable":
+  version "3.1.0"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-context-menus/tar.gz/81b590760a7cd18ab2506b03a7eb99b9c5ef9675"
 
-"cytoscape-edge-editing@github:iVis-at-Bilkent/cytoscape.js-edge-editing#master":
+"cytoscape-edge-editing@github:iVis-at-Bilkent/cytoscape.js-edge-editing#unstable":
   version "3.0.2"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-edge-editing/tar.gz/149c0aa59b0f5d2a39a3150b81f85f0f01105333"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-edge-editing/tar.gz/373557e6ef9306cbc64454c433e0529a9e01ee20"
 
 cytoscape-edgehandles@^3.5.1:
   version "3.5.1"
@@ -6580,9 +6580,9 @@ cytoscape-edgehandles@^3.5.1:
   dependencies:
     cose-base "https://github.com/iVis-at-Bilkent/cose-base#unstable"
 
-"cytoscape-grid-guide@github:iVis-at-Bilkent/cytoscape.js-grid-guide#master":
+"cytoscape-grid-guide@github:iVis-at-Bilkent/cytoscape.js-grid-guide#unstable":
   version "2.3.2"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-grid-guide/tar.gz/6a4f832ee552f9523efdffe6bb2fce4925fa81c9"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-grid-guide/tar.gz/8828c30beb0ba5836e088c49f790281f0ce46072"
   dependencies:
     functional-red-black-tree "^1.0.1"
 
@@ -6603,9 +6603,9 @@ cytoscape-navigator@^1.3.3:
   dependencies:
     jquery "^2.0.0 || ^1.4.0"
 
-"cytoscape-node-editing@github:iVis-at-Bilkent/cytoscape.js-node-editing#master":
-  version "4.0.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-node-editing/tar.gz/23b21d7fb1094409989da70264cb8890aa2c4740"
+"cytoscape-node-editing@github:iVis-at-Bilkent/cytoscape.js-node-editing#unstable":
+  version "3.2.0"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-node-editing/tar.gz/e84805c0a16789a56eb7f429c82753a0ff75313a"
 
 cytoscape-panzoom@~2.5.2:
   version "2.5.3"
@@ -6621,20 +6621,13 @@ cytoscape-popper@^2.0.0:
   dependencies:
     "@popperjs/core" "^2.0.0"
 
-cytoscape-qtip@iVis-at-Bilkent/cytoscape.js-qtip#master:
-  version "2.7.1"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-qtip/tar.gz/38959658a3cac45c0b377387b06ba353570c86de"
-  dependencies:
-    jquery "^2.0 || ^1.10.0"
-    qtip2 "^3.0 || ^2.2.0"
+"cytoscape-undo-redo@github:iVis-at-Bilkent/cytoscape.js-undo-redo#unstable":
+  version "1.3.2"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-undo-redo/tar.gz/3d8e02f5fbbe7ec95444fb9df5ee3e14586b5a2f"
 
-"cytoscape-undo-redo@github:iVis-at-Bilkent/cytoscape.js-undo-redo#master":
-  version "1.3.3"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-undo-redo/tar.gz/77cfc823f78f91fb85cdbb57ab7c980d32ce9d8f"
-
-"cytoscape-view-utilities@github:iVis-at-Bilkent/cytoscape.js-view-utilities#master":
-  version "5.0.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-view-utilities/tar.gz/efe978e225b8894e65f1476d11a6c55a5928bc2f"
+"cytoscape-view-utilities@github:iVis-at-Bilkent/cytoscape.js-view-utilities#unstable":
+  version "4.1.0"
+  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-view-utilities/tar.gz/804bbdfb31234faa99f3ce72067b2555f062ca98"
   dependencies:
     geometric "^2.2.3"
 
@@ -7748,11 +7741,6 @@ etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
-
-ev-emitter@^1.0.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/ev-emitter/-/ev-emitter-1.1.1.tgz#8f18b0ce5c76a5d18017f71c0a795c65b9138f2a"
-  integrity sha512-ipiDYhdQSCZ4hSbX4rMW+XzNKMD1prg/sTvoVmSLkuQ1MVlwjJQQA+sW8tMYR3BLUr9KjodFV4pvzunvRhd33Q==
 
 event-emitter@~0.3.5:
   version "0.3.5"
@@ -9584,13 +9572,6 @@ ignore@^5.1.1:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.2.tgz#e28e584d43ad7e92f96995019cc43b9e1ac49558"
   integrity sha512-vdqWBp7MyzdmHkkRWV5nY+PfGRbYbahfuvsBCh277tq+w9zyNi7h5CYJCK0kmzti9kU+O/cB7sE8HvKv6aXAKQ==
 
-imagesloaded@>=3.0.0:
-  version "4.1.4"
-  resolved "https://registry.yarnpkg.com/imagesloaded/-/imagesloaded-4.1.4.tgz#1376efcd162bb768c34c3727ac89cc04051f3cc7"
-  integrity sha512-ltiBVcYpc/TYTF5nolkMNsnREHW+ICvfQ3Yla2Sgr71YFwQ86bDwV9hgpFhFtrGPuwEx5+LqOHIrdXBdoWwwsA==
-  dependencies:
-    ev-emitter "^1.0.0"
-
 immer@1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/immer/-/immer-1.10.0.tgz#bad67605ba9c810275d91e1c2a47d4582e98286d"
@@ -11173,12 +11154,12 @@ jquery-ui-dist@^1.12.1:
   resolved "https://registry.yarnpkg.com/jquery-ui-dist/-/jquery-ui-dist-1.12.1.tgz#5c0815d3cc6f90ff5faaf5b268a6e23b4ca904fa"
   integrity sha1-XAgV08xvkP9fqvWyaKbiO0ypBPo=
 
-jquery@>=1.6.0, "jquery@^1.4 || ^2.0 || ^3.0":
+"jquery@^1.4 || ^2.0 || ^3.0":
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
   integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
 
-"jquery@^2.0 || ^1.10.0", "jquery@^2.0.0 || ^1.4.0":
+"jquery@^2.0.0 || ^1.4.0":
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.4.tgz#2c89d6889b5eac522a7eea32c14521559c6cbf02"
   integrity sha1-LInWiJterFIqfuoywUUhVZxsvwI=
@@ -12054,12 +12035,7 @@ lodash.without@~4.4.0:
   resolved "https://registry.yarnpkg.com/lodash.without/-/lodash.without-4.4.0.tgz#3cd4574a00b67bae373a94b748772640507b7aac"
   integrity sha1-PNRXSgC2e643OpS3SHcmQFB7eqw=
 
-lodash@4.17.11:
-  version "4.17.11"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
-  integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
-
-"lodash@>=3.5 <5", lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.15, lodash@^4.17.2, lodash@^4.17.21, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.1, lodash@^4.3.0:
+lodash@4.17.11, "lodash@>=3.5 <5", lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.15, lodash@^4.17.2, lodash@^4.17.21, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.1, lodash@^4.3.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -15304,14 +15280,6 @@ qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
   integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
-
-"qtip2@^3.0 || ^2.2.0":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/qtip2/-/qtip2-3.0.3.tgz#7df088ae4412c24a4064de69e824cb3cf76210dc"
-  integrity sha1-ffCIrkQSwkpAZN5p6CTLPPdiENw=
-  dependencies:
-    imagesloaded ">=3.0.0"
-    jquery ">=1.6.0"
 
 query-string@^4.1.0:
   version "4.3.4"
