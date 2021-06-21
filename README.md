@@ -5,18 +5,25 @@ PathwayMapper is a web based pathway curation tool for interactive creation, edi
 #### How to Cite Usage
 Bahceci et al. (2017) "[PathwayMapper: a collaborative visual web editor for cancer pathways and genomic data](https://doi.org/10.1093/bioinformatics/btx149)", Bioinformatics.
 
+Here is a screenshot from the PathwayMapper editor:
 <p align="center">
-  <img src="assets/sample-screenshot.png" width="600"/>
+  <img src="assets/sample-screenshot.png" width="680"/>
 </p>
 
-A special, viewer edition of PathwayMapper was built for use in cBioPortal ([example](https://www.cbioportal.org/results/pathways?Action=Submit&Z_SCORE_THRESHOLD=1.0&cancer_study_id=gbm_tcga_pub&cancer_study_list=gbm_tcga_pub&case_set_id=gbm_tcga_pub_sequenced&gene_list=TP53%20MDM2%20MDM4&gene_set_choice=user-defined_list&genetic_profile_ids_PROFILE_COPY_NUMBER_ALTERATION=gbm_tcga_pub_cna_rae&genetic_profile_ids_PROFILE_MUTATION_EXTENDED=gbm_tcga_pub_mutations), [tutorial](https://www.cbioportal.org/tutorials)).
+Click on the video tutorial below to see the basics of the PathwayMapper editor:
+<a href="https://youtu.be/jvEueUqZZPI" target="_blank"><p align="center"><img src="assets/basics-of-PM.jpg" width="280" title="Click to watch video"/></p></a>
+
+A special, viewer edition of PathwayMapper was built for use in cBioPortal ([tutorial](https://www.cbioportal.org/tutorials)). PathwayMapper is used in Results view ([example](https://www.cbioportal.org/results/pathways?Action=Submit&Z_SCORE_THRESHOLD=1.0&cancer_study_id=gbm_tcga_pub&cancer_study_list=gbm_tcga_pub&case_set_id=gbm_tcga_pub_sequenced&gene_list=TP53%20MDM2%20MDM4&gene_set_choice=user-defined_list&genetic_profile_ids_PROFILE_COPY_NUMBER_ALTERATION=gbm_tcga_pub_cna_rae&genetic_profile_ids_PROFILE_MUTATION_EXTENDED=gbm_tcga_pub_mutations "xyz")):
 <p align="center">
-  <img src="assets/sample-screenshot-cBioPortal.png" width="600"/>
+  <img src="assets/sample-screenshot-cBioPortal-results.png" width="680"/>
 </p>
 
-Below is a video tutorial on basics of PathwayMapper:
-<a href="https://youtu.be/jvEueUqZZPI" target="_blank"><p align="center"><img src="assets/basics-of-PM.jpg" width="340" title="Click to watch video"/></p></a>
-
+ as well as in Patient view ([example](https://www.cbioportal.org/patient/pathways?studyId=ucec_tcga_pub&caseId=TCGA-BK-A0CC)):
+<p align="center">
+  <img src="assets/sample-screenshot-cBioPortal-patient.png" width="680"/>
+</p>
+ 
+ 
 #### Feedback
 Send any feedback and error reports to at pathwaymapper@gmail.com.
 
@@ -129,7 +136,7 @@ Assuming a gene symbol is valid, you may inspect its properties from [MyCancerGe
 
 One can associate any number of PubMed IDs with an interaction by simply double-clicking on that interaction and entering the PubMed IDs. These IDs have hyperlinks to the associated PubMed web page:
 <p align="center">
-  <img src="assets/sample-PubMed-IDs.png" width="420"/>
+  <img src="assets/sample-PubMed-IDs.png" width="460"/>
 </p>
 
 ## Editing Pathways
@@ -142,14 +149,10 @@ Nodes may be resized manually using the resize handles that appear on the edge o
 
 Alignment guidelines help us align nodes manually in a vertical or horizontal manner. Alternatively, one may select two or more nodes and align using View > Align Selected menu item. Alignment is performed with respect to the firstly selected node.
 
-Before vertical center alignment of four nodes with respect to the firstly selected gene KRAS:
+Before vertical center alignment of four nodes with respect to the firstly selected gene KRAS (left) and after alignment (right):
 <p align="center">
-  <img src="assets/align-before.png" width="360"/>
-</p>
-
-After alignment:
-<p align="center">
-  <img src="assets/align-after.png" width="360"/>
+  <img src="assets/align-before.png" width="420"/>
+  <img src="assets/align-after.png" width="420"/>
 </p>
 
 ### Editing and Reconnecting Interactions
@@ -162,14 +165,10 @@ One may also reconnect an interaction through its reconnection handles that appe
 
 At any point, the user may want to rearrange the layout of the pathway. By default, automatic layout is performed incrementally, starting with the current positions of nodes. If you'd rather perform a static layout from scratch, you may check the Incremental option under Layout > Layout Properties.
 
-A pathway randomly laid out:
+A pathway randomly laid out and the same pathway after automatic layout:
 <p align="center">
-  <img src="assets/layout-before.png" width="400"/>
-</p>
-
-The same pathway after automatic layout:
-<p align="center">
-  <img src="assets/layout-after.png" width="400"/>
+  <img src="assets/layout-before.png" width="460"/>
+  <img src="assets/layout-after.png" width="460"/>
 </p>
 
 ### Hide and Show
@@ -226,21 +225,22 @@ PIK3CA	18	40	-50
 ...
 ```
 
-Here positive value signify activation percentage and are shown with a white-red color scale, whereas negative values signify inactivation shown with a white-blue color scale. The experiment file may contain an arbitrary number of data sets, and its view can be customized through Alteration % > Data View Settings dialog.
+Here, by default, a positive value signifies an activation percentage and is shown with a white-red color scale, whereas negative values signify inactivation shown with a white-blue color scale. The experiment file may contain an arbitrary number of data sets, and its view can be customized through Alteration % > Data Sets dialog.
 
-Below is a screenshot showing sample experiment data overlaid on our sample data:
+Below is a screenshot showing sample experiment data overlaid on our sample data (left), the same map after the user unchecks the experiment data for "lung" through Alteration % > Data Sets (right):
 <p align="center">
   <img src="assets/sample-data.png" width="400"/>
-</p>
-
-When the user unchecks the experiment data for "lung" through Alteration % > Data View Settings (first of the set of three), we get:
-<p align="center">
   <img src="assets/sample-data-no-lung.png" width="400"/>
 </p>
 
-The user may also fetch alteration frequencies available on cBioPortal database through Alteration % > Load From cBioPortal... dialog. The dialog will let the user select a cancer study followed by data type(s) available for that studey in the database, and overlay the related data set(s) on the pathway in addition to any currently available data set.
+Due to the limited space within a node's graphical representation, up to six data sets can be shown *simultaneously*. The user may also fetch alteration frequencies available on cBioPortal database through Alteration % > Load From cBioPortal... dialog. The dialog will let the user select a cancer study followed by data type(s) available for that studey in the database, and overlay the related data set(s) on the pathway in addition to any currently available data set.
 <p align="center">
   <img src="assets/sample-from-cbioportal.png" width="350"/>
+</p>
+
+The default color scheme may be changed and particular value ranges could be mapped to specified colors through the Alteration % > Color Scheme dialog. Value-color mapping is performed using a log-scale (i.e. if 40 is mapped to yellow and 80 is mapped to red, 60 will be a lot closer to red than yellow).
+<p align="center">
+  <img src="assets/sample-data-scheme.png" width="320"/>
 </p>
 
 ## Collaborative Editing
