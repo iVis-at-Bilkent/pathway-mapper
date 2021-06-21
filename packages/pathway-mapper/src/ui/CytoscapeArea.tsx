@@ -31,7 +31,7 @@ window.$ = $;
 
 const edgeHandles = require('cytoscape-edgehandles');
 const edgeEditing = require('cytoscape-edge-editing');
-const regCose = require('cytoscape-cose-bilkent');
+const fcose = require('cytoscape-fcose');
 const nodeEditing = require('cytoscape-node-editing');
 const undoRedo = require('cytoscape-undo-redo');
 const panzoom = require('cytoscape-panzoom');
@@ -44,6 +44,7 @@ const viewUtilities = require('cytoscape-view-utilities');
 const gridGuide = require('cytoscape-grid-guide');
 const cyqtip = require('cytoscape-qtip');
 const popper = require('cytoscape-popper');
+const layoutUtilities = require('cytoscape-layout-utilities');
 
 type PathwayMapperType = {
   isCollaborative: boolean;
@@ -207,11 +208,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       console.log(err);
     }
     try { 
-      regCose(cytoscape); // register extension
-    } catch(err){
-      console.log(err);
-    }
-    try { 
       navigator(cytoscape); // register extension
     } catch(err){
       console.log(err);
@@ -261,6 +257,16 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     } catch (err) {
       console.log(err);
     }
+    try {
+      fcose(cytoscape);
+    } catch (err) {
+      console.log(err);
+    }
+    try {
+      layoutUtilities(cytoscape);
+    } catch (err) {
+      console.log(err);
+    }
 
     this.cy = cytoscape({
       container: this.cyDiv,
@@ -307,6 +313,10 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
     // Initialize panzoom
     this.cy.panzoom(panzoomOpts);
+
+    this.cy.layoutUtilities({
+      desiredAspectRatio: this.cy.width() / this.cy.height()
+    });
 
     // Node Add initialization
     this.cy.nodeadd(

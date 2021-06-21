@@ -12,7 +12,7 @@ export default class EditorActionsManager{
 
     public static defaultLayoutProperties: ILayoutProperties =
     {
-        name: 'cose-bilkent',
+        name: 'fcose',
         nodeRepulsion: 4500,
         idealEdgeLength: 50,
         edgeElasticity: 0.45,
