@@ -6099,9 +6099,9 @@ core-util-is@1.0.2, core-util-is@~1.0.0:
 
 "cose-base@https://github.com/iVis-at-Bilkent/cose-base#unstable":
   version "1.0.2"
-  resolved "https://github.com/iVis-at-Bilkent/cose-base#bfcca2c55084443fda32adb4431254b7f8ca9ce8"
+  resolved "https://github.com/iVis-at-Bilkent/cose-base#0567d253224b94aeef4a9ef4be8adfd7dcb84cd6"
   dependencies:
-    layout-base "https://github.com/iVis-at-Bilkent/layout-base#unstable"
+    layout-base "git+https://github.com/iVis-at-Bilkent/layout-base.git#unstable"
 
 cosmiconfig@^2.1.0, cosmiconfig@^2.1.1:
   version "2.2.2"
@@ -11496,9 +11496,9 @@ latest-version@^3.0.0:
   dependencies:
     package-json "^4.0.0"
 
-"layout-base@https://github.com/iVis-at-Bilkent/layout-base#unstable":
+"layout-base@git+https://github.com/iVis-at-Bilkent/layout-base.git#unstable":
   version "1.0.0"
-  resolved "https://github.com/iVis-at-Bilkent/layout-base#980a6c17cd24afc9358a305638f29bf4be4437bf"
+  resolved "git+https://github.com/iVis-at-Bilkent/layout-base.git#1dac005611056844dbb6fa0444b624fc2249ab34"
 
 lazy-cache@^0.2.3:
   version "0.2.7"
