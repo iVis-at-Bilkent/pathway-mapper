@@ -1516,8 +1516,6 @@ export default class EditorActionsManager{
 
             if (this.cy.filter('node[name = "'+ele.data.name+'"]').length <= 0)
             {
-                delete ele.data.id;
-                //TODO need to update parent ?
                 nodesToBeAdded.push(ele);
             }
         }

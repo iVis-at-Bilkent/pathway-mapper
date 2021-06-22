@@ -351,6 +351,10 @@ export default class ShareDBManager {
         this.editor.highlightElementsInitially(invalidHighlightedGenes, invalidGenes, highlightedGenes, highlightedEdges, hiddenGenes);
 
         //Update layout properties & global options!!
+        if (shareDBLayoutProperties.name == "cose-bilkent") {
+            shareDBLayoutProperties.name = "fcose";
+            this.updateLayoutProperties(shareDBLayoutProperties);
+        }
         this.editor.updateLayoutPropertiesCallback({li: shareDBLayoutProperties});
         this.editor.changeGlobalOptions({li: globalOptions});
 
