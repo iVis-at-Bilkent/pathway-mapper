@@ -203,9 +203,6 @@ export default class GenomicDataOverlayManager {
       .style()
       .selector('node[type="GENE"]')
       .style("text-margin-y", 0)
-      .style("width", function(ele) {
-        return 150;
-      })
       .style("background-image", function(ele) {
         const dataURI = "data:image/svg+xml;utf8,";
         return dataURI;
@@ -529,13 +526,13 @@ export default class GenomicDataOverlayManager {
       return;
     }
 
+    this.cy.nodes('[type="GENE"]').forEach(node => {
+      node.data('w', this.getRequiredWidthForGenomicData(genomicDataBoxCount));
+    })
+
     this.cy
       .style()
       .selector('node[type="GENE"]')
-      // It used to change the width of nodes only locally
-      .style("width", (ele) => {
-        return this.getRequiredWidthForGenomicData(genomicDataBoxCount);
-      })
       .style("text-margin-y", function(ele) {
         const nodeLabel = ele.data("name");
         // If there is no genomic data for this node return !

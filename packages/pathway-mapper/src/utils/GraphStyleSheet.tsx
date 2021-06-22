@@ -10,17 +10,12 @@ module.exports = (function()
         'color': '#1e2829',
         'width': function (ele)
         {
-          return nodeWFunc(ele);
+          return ele.data('w') || 0;
         },
         'height': function (ele)
         {
-          return nodeHFunc(ele);
+          return ele.data('h') || 0;
         },
-        // 'background-image-opacity': 1,
-        // 'background-image': function (ele)
-        // {
-        //   return backgroundImageHandler(ele);
-        // },
         'background-color': 'white',
         'shape': function(ele)
         {
@@ -395,26 +390,6 @@ module.exports = (function()
       case "BINDS": return "solid";
       default: return "solid";
     }
-  };
-
-  var nodeWFunc = function( ele )
-  {
-    if (ele._private.data['w'])
-    {
-      return ele._private.data['w'];
-    }
-    else
-      return 0;
-  };
-
-  var nodeHFunc = function( ele )
-  {
-      if (ele._private.data['h'])
-      {
-          return ele._private.data['h'];
-      }
-      else
-          return 0;
   };
 
   return styleSheet;
