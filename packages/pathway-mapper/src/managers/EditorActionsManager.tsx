@@ -1,3 +1,4 @@
+import autobind from "autobind-decorator";
 import { action, makeObservable, observable } from "mobx";
 import LayoutProperties, { ILayoutProperties } from "../modals/LayoutProperties";
 import { IColorValueMap, IProfileMetaData } from "../ui/react-pathway-mapper";
@@ -51,6 +52,7 @@ export default class EditorActionsManager{
     private isCollaborative: boolean;
     private shareDBManager: ShareDBManager;
     private portalAccessor: CBioPortalAccessor;
+    private viewUtilities: any;
 
     @observable
     private profiles: IProfileMetaData[];
@@ -142,6 +144,11 @@ export default class EditorActionsManager{
     @action.bound
     setGenomicDataOverlayColorScheme(scheme: IColorValueMap) {
         this.genomicDataOverlayColorScheme = scheme;
+    }
+
+    @autobind
+    setViewUtilities(viewUtilitiesRef: any) {
+        this.viewUtilities = viewUtilitiesRef;
     }
 
     getGenomicDataOverlayColorScheme() : IColorValueMap {
@@ -341,15 +348,17 @@ export default class EditorActionsManager{
     /*
      * Undo redo for hiding nodes
      * **/
+    @autobind
     doHide(args: any)
     {
-        args.hide();
+        this.viewUtilities.hide(args);
         return args;
     };
 
+    @autobind
     undoHide(args: any)
     {
-        args.show();
+        this.viewUtilities.show(args);
         return args;
     };
 
@@ -365,15 +374,17 @@ export default class EditorActionsManager{
     /*
      * Undo redo for showing all nodes
      * **/
+    @autobind
     doShow(args: any)
     {
-        args.show();
+        this.viewUtilities.show(args);
         return args;
     };
 
+    @autobind
     undoShow(args: any)
     {
-        args.hide();
+        this.viewUtilities.hide(args);
         return args;
     };
 
@@ -398,7 +409,7 @@ export default class EditorActionsManager{
         }
         for (var i in hiddenGenesIDs)
         {
-            this.cy.$('#'+hiddenGenesIDs[i]).hide();
+            this.viewUtilities.hide(this.cy.$('#'+hiddenGenesIDs[i]))
         }
     };
 
@@ -1635,12 +1646,13 @@ export default class EditorActionsManager{
     };
 
 
+    @autobind
     updateVisibility(ele: any, isHidden: boolean)
     {
         if (isHidden)
-            ele.hide();
+            this.viewUtilities.hide(ele);
         else
-            ele.show();
+            this.viewUtilities.show(ele);
     };
 
     updateElementCallback(op: any)

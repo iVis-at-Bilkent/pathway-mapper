@@ -568,6 +568,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
     this.viewUtilities = this.cy.viewUtilities(viewUtilitiesOpts);
 
+    this.editor.setViewUtilities(this.viewUtilities);
+
     this.placePanzoomAndOverlay();
   }
 

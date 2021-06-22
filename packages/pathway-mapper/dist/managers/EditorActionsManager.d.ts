@@ -17,6 +17,7 @@ export default class EditorActionsManager {
     private isCollaborative;
     private shareDBManager;
     private portalAccessor;
+    private viewUtilities;
     private profiles;
     private genomicDataOverlayColorScheme;
     private colorSchemeChangeCallback;
@@ -25,6 +26,7 @@ export default class EditorActionsManager {
     addProfile(profile: IProfileMetaData): void;
     removeProfiles(): void;
     setGenomicDataOverlayColorScheme(scheme: IColorValueMap): void;
+    setViewUtilities(viewUtilitiesRef: any): void;
     getGenomicDataOverlayColorScheme(): IColorValueMap;
     handleChangePositionByAlignment(movedNodeArr: any): void;
     doChangePosition(movedNodes: any): any[];
