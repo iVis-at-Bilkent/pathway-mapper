@@ -151,8 +151,8 @@ Alignment guidelines help us align nodes manually in a vertical or horizontal ma
 
 Before vertical center alignment of four nodes with respect to the firstly selected gene KRAS (left) and after alignment (right):
 <p align="center">
-  <img src="assets/align-before.png" width="420"/>
-  <img src="assets/align-after.png" width="420"/>
+  <img src="assets/align-before.png" width="400"/>
+  <img src="assets/align-after.png" width="400"/>
 </p>
 
 ### Editing and Reconnecting Interactions
@@ -163,12 +163,12 @@ One may also reconnect an interaction through its reconnection handles that appe
 
 ### Performing Automatic Layout
 
-At any point, the user may want to rearrange the layout of the pathway. By default, automatic layout is performed incrementally, starting with the current positions of nodes. If you'd rather perform a static layout from scratch, you may check the Incremental option under Layout > Layout Properties.
+At any point, the user may want to rearrange the layout of the pathway. By default, automatic layout is performed incrementally, starting with the current positions of nodes. If you'd rather perform a static layout from scratch, you may uncheck the Incremental option under Layout > Layout Properties.
 
 A pathway randomly laid out and the same pathway after automatic layout:
 <p align="center">
-  <img src="assets/layout-before.png" width="460"/>
-  <img src="assets/layout-after.png" width="460"/>
+  <img src="assets/layout-before.png" width="400"/>
+  <img src="assets/layout-after.png" width="400"/>
 </p>
 
 ### Hide and Show
@@ -235,7 +235,7 @@ Below is a screenshot showing sample experiment data overlaid on our sample data
 
 Due to the limited space within a node's graphical representation, up to six data sets can be shown *simultaneously*. The user may also fetch alteration frequencies available on cBioPortal database through Alteration % > Load From cBioPortal... dialog. The dialog will let the user select a cancer study followed by data type(s) available for that studey in the database, and overlay the related data set(s) on the pathway in addition to any currently available data set.
 <p align="center">
-  <img src="assets/sample-from-cbioportal.png" width="350"/>
+  <img src="assets/sample-from-cbioportal.png" width="380"/>
 </p>
 
 The default color scheme may be changed and particular value ranges could be mapped to specified colors through the Alteration % > Color Scheme dialog. Value-color mapping is performed using a log-scale (i.e. if 40 is mapped to yellow and 80 is mapped to red, 60 will be a lot closer to red than yellow).
