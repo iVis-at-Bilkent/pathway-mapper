@@ -1296,8 +1296,8 @@ export default class EditorActionsManager{
                 var parameters =
                     {
                         id: ele.id(),
-                        width: ele.style("width"),
-                        height: ele.style("height")
+                        width: ele.data("w"),
+                        height: ele.data("h")
                     };
                 dim.push(parameters);
                 id.push(ele.id());
@@ -1325,8 +1325,8 @@ export default class EditorActionsManager{
             collection.forEach(function (ele: any, i: number)
             {
                 if (ele.id() == dim[i].id)
-                    ele.style("width", dim[i].width);
-                ele.style("height", dim[i].height);
+                    ele.data("w", dim[i].width);
+                ele.data("h", dim[i].height);
             });
         }
     };
