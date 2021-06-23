@@ -1711,12 +1711,16 @@ export default class EditorActionsManager{
                 };
                 cyEle.move(location);
                 //make sure that bend points are same
-                this.updateEdgeAnchorPoints(cyEle);
+                this.edgeEditing.initAnchorPoints(cyEle);
             }
             else {
                 if (ele.edgeCurveStyle === "bezier") {
-                    cyEle.data('controlPointPositions', []);
-                    cyEle.data('bendPointPositions', []);
+                    const anchors = this.edgeEditing.getAnchorsAsArray(cyEle);
+                    if (anchors && anchors.length > 0) {
+                        for (let i = 0; i < anchors.length / 2; i++) {
+                            this.edgeEditing.deleteSelectedAnchor(cyEle, 0);
+                        }
+                    }
                 }
                 else if (ele.edgeCurveStyle === "unbundled-bezier") {
                     cyEle.data('controlPointPositions', anchorPoints);
