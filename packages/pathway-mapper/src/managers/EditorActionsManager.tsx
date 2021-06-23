@@ -1123,8 +1123,6 @@ export default class EditorActionsManager{
                         },
                     style:
                         {
-                            'width': nodeWidth,
-                            'height': nodeHeight,
                             'min-width': compoundMinWidth,
                             'min-width-bias-left': compoundMinWidthBiasLeft,
                             'min-width-bias-right': compoundMinWidthBiasRight,
@@ -1674,10 +1672,8 @@ export default class EditorActionsManager{
             }
             else
             {
-                cyEle.data.w = ele.w;
-                cyEle.data.h = ele.h;
-                cyEle.style("width", ele.w);
-                cyEle.style("height", ele.h);
+                cyEle.data('w', ele.w);
+                cyEle.data('h', ele.h);
                 //Position is changed only for simple nodes because the
                 //position of compounds is defined by simple nodes' position
                 cyEle.position({x: ele.x, y: ele.y});
