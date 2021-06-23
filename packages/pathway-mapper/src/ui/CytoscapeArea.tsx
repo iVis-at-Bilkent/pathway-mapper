@@ -89,7 +89,11 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   }
 
   componentWillUpdate(nextProps: PathwayMapperType) {
-    this.getPathway(nextProps.selectedPathway);
+
+    if (this.props.selectedPathway !== nextProps.selectedPathway) {
+      this.getPathway(nextProps.selectedPathway);
+    }
+    
   }
 
   componentDidUpdate(prevProps: PathwayMapperType) {
@@ -712,7 +716,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.cy.on('nodeediting.moveend', () => {
       this.editor.changeNodePositionsByArrows(this.cy.nodes(":selected"));
     });
-
 
   }
 
