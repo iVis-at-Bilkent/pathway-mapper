@@ -485,10 +485,10 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
         // so that a data field or something like that will be used to set node dimentions instead of directly calling node.css()
         // is highly recommended (Of course this will require a proper setting in the stylesheet).
         setWidth: function (node, width) {
-            node.style('width', width);
+            node.data('w', width)
         },
         setHeight: function (node, height) {
-            node.style('height', height);
+            node.data('h', height);
         },
         setCompoundMinWidth: function (node, minWidth) {
             node.style('min-width', minWidth);
@@ -686,15 +686,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     this.cy.on('layoutstop', () => {
       this.editor.postLayout();
     });
-
-    // //TODO fix this when cytoscape is updated !!!
-    // //Due to cytoscape.js bug, only workaround that worked :(
-    // this.cy.on('add', 'node', function(event)
-    // {
-    //     // event.target.select();
-    //     this.cy.style().update();
-    //     this.cy.forceRender();
-    // });
 
     this.cy.on("nodeediting.resizeend", (_e: any, _type: any, node: any) => {
       

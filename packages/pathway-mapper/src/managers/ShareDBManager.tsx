@@ -53,7 +53,7 @@ export default class ShareDBManager {
         var genomicDataGroupCount = this.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
         //Reset all genomic maps
         for (const key of Object.keys(genomicMap)) {
-            ops.push({p: [this.GENOMIC_DATA_GROUP_NAME, key], od: genomicMap[key]});
+            ops.push({p: [this.GENOMIC_DATA_MAP_NAME, key], od: genomicMap[key]});
         }
         for (const key of Object.keys(visMap)) {
             ops.push({p: [this.VISIBLE_GENOMIC_DATA_MAP_NAME, key], od: visMap[key]});
@@ -415,6 +415,7 @@ export default class ShareDBManager {
 
         this.editor.genomicDataOverlayManager.showGenomicData();
         this.editor.genomicDataOverlayManager.notifyObservers();
+        this.editor.cy.style().update();
         this.editor.cy.fit(50);
     };
 

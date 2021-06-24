@@ -199,6 +199,11 @@ export default class GenomicDataOverlayManager {
   };
 
   hideGenomicData = function() {
+
+    this.cy.nodes('[type="GENE"]').forEach(node => {
+      node.data('w', this.getRequiredWidthForGenomicData(0));
+    })
+
     this.cy
       .style()
       .selector('node[type="GENE"]')
@@ -528,7 +533,7 @@ export default class GenomicDataOverlayManager {
 
     this.cy.nodes('[type="GENE"]').forEach(node => {
       node.data('w', this.getRequiredWidthForGenomicData(genomicDataBoxCount));
-    })
+    });
 
     this.cy
       .style()
@@ -568,8 +573,9 @@ export default class GenomicDataOverlayManager {
     // Parse cancer types
     for (let i = 1; i < metaLineColumns.length; i++) {
       cancerTypes.push(metaLineColumns[i]);
+      const visibleGenomicDataCount = Object.keys(this.visibleGenomicDataMapByType).length;
       // Update initially visible genomic data boxes !
-      if (i - 1 < this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT) {
+      if (visibleGenomicDataCount < this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT) {
         this.visibleGenomicDataMapByType[cancerTypes[i - 1]] = true;
       } else {
         this.visibleGenomicDataMapByType[cancerTypes[i - 1]] = false;

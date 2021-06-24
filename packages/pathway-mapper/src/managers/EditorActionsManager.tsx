@@ -216,8 +216,6 @@ export default class EditorActionsManager{
     {
         args.ele.data('w', args.newWidth);
         args.ele.data('h', args.newHeight);
-        args.ele.style('width', args.newWidth);
-        args.ele.style('height', args.newHeight);
 
         return args;
     };
@@ -226,9 +224,6 @@ export default class EditorActionsManager{
     {
         args.ele.data('w', args.oldWidth);
         args.ele.data('h', args.oldHeight);
-        args.ele.style('width', args.oldWidth);
-        args.ele.style('height', args.oldHeight);
-
         return args;
     };
 
@@ -955,9 +950,6 @@ export default class EditorActionsManager{
         //his.cy.add(newNode);
         this.cy.nodes().updateCompoundBounds();
         this.undoRedoManager.do("add", newNode);
-        //Width was not properly updated only by changing data property
-        var thatEle = this.cy.getElementById(nodeData.id);
-        thatEle.style('width', thatEle.data('w'));
     };
 
     shareDBNodeAddRemoveEventCallBack(op: any)
@@ -1767,6 +1759,17 @@ export default class EditorActionsManager{
             this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
             this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
                 groupID);
+            
+            let currentVisibleGenomicDataCount = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
+            Object.keys(parsedGenomicData.visibilityMap).forEach(study => {
+                if (parsedGenomicData.visibilityMap[study] && (currentVisibleGenomicDataCount >= 6)) {
+                    parsedGenomicData.visibilityMap[study] = false;
+                }
+                else if(parsedGenomicData.visibilityMap[study]) {
+                    currentVisibleGenomicDataCount++;
+                }
+            });
+
             this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
         }
         else

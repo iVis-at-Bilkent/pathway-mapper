@@ -64,6 +64,7 @@ export default class PathwayActions {
     processFile(file: File, isMerge: boolean): void;
     saveAs(type: string): void;
     editorHandler(editor: any, eh: any, undoRedoManager: any, viewOperationsManager: ViewOperationsManager, gridOptionsManager: GridOptionsManager): void;
+    exists(profileId: string): boolean;
     loadSampleData(): void;
     performLayout(): void;
 }

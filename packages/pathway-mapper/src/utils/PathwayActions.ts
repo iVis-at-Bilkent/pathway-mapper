@@ -419,23 +419,44 @@ export default class PathwayActions {
   }
 
   @autobind
+  exists(profileId: string){
+
+    let exists = false;
+    this.profiles.forEach((profile: IProfileMetaData) => {
+      if(profile.profileId === profileId){
+        exists = true;
+      }
+    });
+
+    return exists;
+  }
+
+  @autobind
   loadSampleData() {
     const data =
-      "gene\tlung\tovarian\tbreast\ty\n" +
-      "PTEN\t-7\t-20\t10\t20\n" +
-      "NF1\t-12\t-4\t30\t20\n" +
-      "PIK3CA\t18\t40\t-50\t20\n" +
-      "KRAS\t11\t-5\t0\t20\n" +
-      "ZIYA\t0\t-2\t0\t20\n" +
-      "AKT1\t3\t30\t-10\t20\n" +
-      "AKT2\t6\t-3\t20\t20\n" +
-      "AKT3\t6\t-3\t20\t20\n" +
+      "gene\tlung\tovarian\tbreast\n" +
+      "PTEN\t-7\t-20\t10\n" +
+      "NF1\t-12\t-4\t30\n" +
+      "PIK3CA\t18\t40\t-50\n" +
+      "KRAS\t11\t-5\t0\n" +
+      "ZIYA\t0\t-2\t0\n" +
+      "AKT1\t3\t30\t-10\n" +
+      "AKT2\t6\t-3\t20\n" +
+      "AKT3\t6\t-3\t20\n" +
       "\n";
+
+    if (this.exists("lung") || this.exists("ovarian") || this.exists("breast")) {
+      return;
+    }    
+
     this.editor.addGenomicData(data);
 
-    this.addProfile({ profileId: "lung", enabled: true });
-    this.addProfile({ profileId: "ovarian", enabled: true });
-    this.addProfile({ profileId: "breast", enabled: true });
+    if (!this.isCollaborative) {
+      this.addProfile({ profileId: "lung", enabled: this.profiles.length < 6 ? true : false });
+      this.addProfile({ profileId: "ovarian", enabled: this.profiles.length < 6 ? true : false });
+      this.addProfile({ profileId: "breast", enabled: this.profiles.length < 6 ? true : false });
+    }
+    
   }
 
   @autobind
