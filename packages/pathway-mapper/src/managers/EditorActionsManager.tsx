@@ -1851,11 +1851,9 @@ export default class EditorActionsManager{
             }
             data.forEach((profileId: any) => {this.addToProfiles(profileId)});
         }
-        // //Removal
-        // else
-        // {
-        //
-        // }
+        else if (!data) {
+            this.genomicDataOverlayManager.clearAllGenomicData();
+        }
         this.genomicDataOverlayManager.showGenomicData((node: any) => {
             this.resizeElements(node);
         } );
