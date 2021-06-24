@@ -520,7 +520,7 @@ export default class GenomicDataOverlayManager {
     this.colorScheme = colorValueMap;
   }
 
-  showGenomicData() {
+  showGenomicData(resizeNodeCallback?: (node: any) => void) {
     const self = this;
 
     const genomicDataBoxCount = this.countVisibleGenomicDataByType();
@@ -533,6 +533,9 @@ export default class GenomicDataOverlayManager {
 
     this.cy.nodes('[type="GENE"]').forEach(node => {
       node.data('w', this.getRequiredWidthForGenomicData(genomicDataBoxCount));
+      if (resizeNodeCallback) {
+        resizeNodeCallback(node);
+      }
     });
 
     this.cy

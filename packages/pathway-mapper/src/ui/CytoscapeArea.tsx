@@ -660,16 +660,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       this.editor.pushSelectedNodeStack(e.target);
     });
 
-    // this.cy.on('select', 'edge', function( e )
-    // {
-    //   var eventIsDirect = (e.target === this);
-    //   $(".qtip").remove();
-    //
-    //   if( eventIsDirect ) {
-    //       that.qtipManager.addQtipToElements(e.target);
-    //   }
-    // });
-
     this.cy.on('unselect', 'node', (e: any) => {
       this.editor.removeElementFromSelectedNodeStack(e.target);
     });

@@ -37,7 +37,7 @@ export default class GenomicDataOverlayManager {
     generateSVGForNode(ele: any): any;
     getRequiredWidthForGenomicData(genomicDataBoxCount: any): number;
     updateColorScheme(colorValueMap: IColorValueMap): void;
-    showGenomicData(): void;
+    showGenomicData(resizeNodeCallback?: (node: any) => void): void;
     parseGenomicData(genomicData: any, groupID: any): void;
     registerObserver(observer: any): void;
     notifyObservers(): void;

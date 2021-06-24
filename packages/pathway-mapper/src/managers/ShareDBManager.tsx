@@ -413,7 +413,9 @@ export default class ShareDBManager {
         //Does not seem necessary for not but just for sake of completeness
         this.editor.genomicDataOverlayManager.groupedGenomicDataCount = groupedGenomicDataCount;
 
-        this.editor.genomicDataOverlayManager.showGenomicData();
+        this.editor.genomicDataOverlayManager.showGenomicData((node: any) => {
+            this.editor.resizeElements(node);
+        });
         this.editor.genomicDataOverlayManager.notifyObservers();
         this.editor.cy.style().update();
         this.editor.cy.fit(50);
@@ -537,7 +539,9 @@ export default class ShareDBManager {
                 groupedGenomicDataMap[key];
         }
         this.editor.genomicDataOverlayManager.groupedGenomicDataCount = groupedGenomicDataCount;
-        this.editor.genomicDataOverlayManager.showGenomicData();
+        this.editor.genomicDataOverlayManager.showGenomicData((node: any) => {
+            this.editor.resizeElements(node);
+        });
         this.editor.genomicDataOverlayManager.notifyObservers();
     };
     

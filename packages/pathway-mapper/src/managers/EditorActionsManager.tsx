@@ -1856,7 +1856,9 @@ export default class EditorActionsManager{
         // {
         //
         // }
-        this.genomicDataOverlayManager.showGenomicData();
+        this.genomicDataOverlayManager.showGenomicData((node: any) => {
+            this.resizeElements(node);
+        } );
         this.genomicDataOverlayManager.notifyObservers();
     }
 
@@ -1879,7 +1881,9 @@ export default class EditorActionsManager{
             this.removeProfiles();
         }
 
-        this.genomicDataOverlayManager.showGenomicData();
+        this.genomicDataOverlayManager.showGenomicData((node: any) => {
+            this.resizeElements(node);
+        } );
         this.genomicDataOverlayManager.notifyObservers();
     }
 
@@ -1892,7 +1896,9 @@ export default class EditorActionsManager{
         this.colorSchemeChangeCallback(colorScheme);
         
         this.genomicDataOverlayManager.updateColorScheme(colorScheme);
-        this.genomicDataOverlayManager.showGenomicData();
+        this.genomicDataOverlayManager.showGenomicData((node: any) => {
+            this.resizeElements(node);
+        } );
         this.genomicDataOverlayManager.notifyObservers();
     }
 
