@@ -151,8 +151,9 @@ Alignment guidelines help us align nodes manually in a vertical or horizontal ma
 
 Before vertical center alignment of four nodes with respect to the firstly selected gene KRAS (left) and after alignment (right):
 <p align="center">
-  <img src="assets/align-before.png" width="400"/>
-  <img src="assets/align-after.png" width="400"/>
+  <img src="assets/align-before.png" width="340"/>
+  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+  <img src="assets/align-after.png" width="280"/>
 </p>
 
 ### Editing and Reconnecting Interactions
@@ -172,7 +173,8 @@ At any point, the user may want to rearrange the layout of the pathway. By defau
 
 A pathway randomly laid out and the same pathway after automatic layout:
 <p align="center">
-  <img src="assets/layout-before.png" width="400"/>
+  <img src="assets/layout-before.png" width="340"/>
+  &emsp;&emsp;&emsp;&emsp;
   <img src="assets/layout-after.png" width="400"/>
 </p>
 
@@ -235,6 +237,7 @@ Here, by default, a positive value signifies an activation percentage and is sho
 Below is a screenshot showing sample experiment data overlaid on our sample data (left), the same map after the user unchecks the experiment data for "lung" through Alteration % > Data Sets (right):
 <p align="center">
   <img src="assets/sample-data.png" width="400"/>
+  &emsp;&emsp;&emsp;&emsp;
   <img src="assets/sample-data-no-lung.png" width="400"/>
 </p>
 
