@@ -236,9 +236,9 @@ Here, by default, a positive value signifies an activation percentage and is sho
 
 Below is a screenshot showing sample experiment data overlaid on our sample data (left), the same map after the user unchecks the experiment data for "lung" through Alteration % > Data Sets (right):
 <p align="center">
-  <img src="assets/sample-data.png" width="400"/>
+  <img src="assets/sample-data.png" width="360"/>
   &emsp;&emsp;&emsp;&emsp;
-  <img src="assets/sample-data-no-lung.png" width="400"/>
+  <img src="assets/sample-data-no-lung.png" width="360"/>
 </p>
 
 Due to the limited space within a node's graphical representation, up to six data sets can be shown *simultaneously*. The user may also fetch alteration frequencies available on cBioPortal database through Alteration % > Load From cBioPortal... dialog. The dialog will let the user select a cancer study followed by data type(s) available for that studey in the database, and overlay the related data set(s) on the pathway in addition to any currently available data set.
