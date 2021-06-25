@@ -235,7 +235,7 @@ Below is a screenshot showing sample experiment data overlaid on our sample data
 
 Due to the limited space within a node's graphical representation, up to six data sets can be shown *simultaneously*. The user may also fetch alteration frequencies available on cBioPortal database through Alteration % > Load From cBioPortal... dialog. The dialog will let the user select a cancer study followed by data type(s) available for that studey in the database, and overlay the related data set(s) on the pathway in addition to any currently available data set.
 <p align="center">
-  <img src="assets/sample-from-cbioportal.png" width="380"/>
+  <img src="assets/sample-from-cbioportal.png" width="420"/>
 </p>
 
 The default color scheme may be changed and particular value ranges could be mapped to specified colors through the Alteration % > Color Scheme dialog. Value-color mapping is performed using a log-scale (i.e. if 40 is mapped to yellow and 80 is mapped to red, 60 will be a lot closer to red than yellow).
