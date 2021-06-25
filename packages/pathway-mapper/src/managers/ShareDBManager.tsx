@@ -263,7 +263,10 @@ export default class ShareDBManager {
         var visDataMap = self.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
         var groupedGenomicDataMap = self.doc.data[this.GENOMIC_DATA_GROUP_NAME];
         var groupedGenomicDataCount = self.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
-        let genomicDataColorScheme = self.doc.data[this.GENOMIC_DATA_COLOR_SCHEME_NAME][0];
+        let genomicDataColorScheme;
+        if (self.doc.data[this.GENOMIC_DATA_COLOR_SCHEME_NAME]) {
+            genomicDataColorScheme = self.doc.data[this.GENOMIC_DATA_COLOR_SCHEME_NAME][0];
+        }
 
         var invalidGenes = [];
         var highlightedGenes = [];
@@ -381,8 +384,12 @@ export default class ShareDBManager {
         }
 
         if (!genomicDataColorScheme) {
-            self.insertShareDBObject(self.GENOMIC_DATA_COLOR_SCHEME_NAME, '0', this.editor.getGenomicDataOverlayColorScheme());
-            genomicDataColorScheme = self.doc.data[self.GENOMIC_DATA_COLOR_SCHEME_NAME]['0'];
+            genomicDataColorScheme = this.editor.getGenomicDataOverlayColorScheme();
+            const op = [{
+                p: [self.GENOMIC_DATA_COLOR_SCHEME_NAME],
+                oi: [genomicDataColorScheme]
+            }];
+            this.applyShareDBOperation(op);
         }
 
         this.editor.updateGenomicDataColorSchemeHandler({li: genomicDataColorScheme});
