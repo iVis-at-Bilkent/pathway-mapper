@@ -25,6 +25,7 @@ export interface ILayoutProperties {
     tile: boolean;
     animate: boolean;
     randomize: boolean;
+    nodeDimensionsIncludeLabels: boolean;
 }
 export default class LayoutProperties extends React.Component<ILayoutPropertiesProps> {
     static layoutProperties: ILayoutProperties;

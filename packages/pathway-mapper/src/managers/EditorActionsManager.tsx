@@ -36,6 +36,7 @@ export default class EditorActionsManager{
         initialEnergyOnIncremental: 0.5,
         animationDuration: 2000,
         animationEasing: 'cubic-bezier(0.17,0.72,0.41,0.98)',
+        nodeDimensionsIncludeLabels: true
     };
     
     public cy: any;

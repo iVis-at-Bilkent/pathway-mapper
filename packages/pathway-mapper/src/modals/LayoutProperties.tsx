@@ -41,6 +41,7 @@ export interface ILayoutProperties {
   tile: boolean;
   animate: boolean;
   randomize: boolean;
+  nodeDimensionsIncludeLabels: boolean
 }
 
 @observer
