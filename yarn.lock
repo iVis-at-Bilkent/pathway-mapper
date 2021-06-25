@@ -6097,11 +6097,12 @@ core-util-is@1.0.2, core-util-is@~1.0.0:
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
   integrity sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=
 
-"cose-base@https://github.com/iVis-at-Bilkent/cose-base#unstable":
-  version "1.0.2"
-  resolved "https://github.com/iVis-at-Bilkent/cose-base#0567d253224b94aeef4a9ef4be8adfd7dcb84cd6"
+cose-base@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/cose-base/-/cose-base-2.1.0.tgz#89b2d4a59d7bd0cde3138a4689825f3e8a5abd6a"
+  integrity sha512-HTMm07dhxq1dIPGWwpiVrIk9n+DH7KYmqWA786mLe8jDS+1ZjGtJGIIsJVKoseZXS6/FxiUWCJ2B7XzqUCuhPw==
   dependencies:
-    layout-base "git+https://github.com/iVis-at-Bilkent/layout-base.git#unstable"
+    layout-base "^2.0.0"
 
 cosmiconfig@^2.1.0, cosmiconfig@^2.1.1:
   version "2.2.2"
@@ -6558,13 +6559,15 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
-"cytoscape-context-menus@github:iVis-at-Bilkent/cytoscape.js-context-menus#unstable":
-  version "3.1.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-context-menus/tar.gz/81b590760a7cd18ab2506b03a7eb99b9c5ef9675"
+cytoscape-context-menus@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/cytoscape-context-menus/-/cytoscape-context-menus-4.1.0.tgz#4727bf3538f718fe50547fb4c6d50ffc8228c471"
+  integrity sha512-qbrdRfz8JQuZBZamhzmExPpJvUNR4VA3rcN4qChu4eVplWYU4n8N98A0ksrr2kfmUvCAL529N04KzwZd8xra7w==
 
-"cytoscape-edge-editing@github:iVis-at-Bilkent/cytoscape.js-edge-editing#unstable":
-  version "3.0.2"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-edge-editing/tar.gz/373557e6ef9306cbc64454c433e0529a9e01ee20"
+cytoscape-edge-editing@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/cytoscape-edge-editing/-/cytoscape-edge-editing-4.0.0.tgz#7a0dfce7418a8734583c87a4ec1440677c50d706"
+  integrity sha512-27/yyhmZHPz0DE206CyK/ZZjVVQOn9cVC8AMxvq4QDVNQAkvlWwcmR8N1BEKlLfRINyG8ctW5nTtx4mGVzDUaA==
 
 cytoscape-edgehandles@^3.5.1:
   version "3.5.1"
@@ -6574,21 +6577,24 @@ cytoscape-edgehandles@^3.5.1:
     lodash.memoize "^4.1.2"
     lodash.throttle "^4.1.1"
 
-"cytoscape-fcose@github:iVis-at-Bilkent/cytoscape.js-fcose#unstable":
-  version "1.2.3"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-fcose/tar.gz/e0e05fa50d37e0369ded31906074001e76e940b7"
+cytoscape-fcose@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/cytoscape-fcose/-/cytoscape-fcose-2.1.0.tgz#04c3093776ea6b71787009de641607db7d4edf55"
+  integrity sha512-Q3apPl66jf8/2sMsrCjNP247nbDkyIPjA9g5iPMMWNLZgP3/mn9aryF7EFY/oRPEpv7bKJ4jYmCoU5r5/qAc1Q==
   dependencies:
-    cose-base "https://github.com/iVis-at-Bilkent/cose-base#unstable"
+    cose-base "^2.0.0"
 
-"cytoscape-grid-guide@github:iVis-at-Bilkent/cytoscape.js-grid-guide#unstable":
-  version "2.3.2"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-grid-guide/tar.gz/8828c30beb0ba5836e088c49f790281f0ce46072"
+cytoscape-grid-guide@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/cytoscape-grid-guide/-/cytoscape-grid-guide-2.3.3.tgz#00658f8a5e64cf767fa74876dd51988fda692430"
+  integrity sha512-7EuqZgOYJY+8K9a9Tm1aFydzyA0dvZ3OLQ8ACEEuE1VgxuGala82bHfyR7B5e8kLeOloX/r4YAPoK8mYkPYcFg==
   dependencies:
     functional-red-black-tree "^1.0.1"
 
-"cytoscape-layout-utilities@github:iVis-at-Bilkent/cytoscape.js-layout-utilities#unstable":
-  version "1.0.2"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-layout-utilities/tar.gz/9f092e24e6cf73aff5ad67861eeb5cc465468029"
+cytoscape-layout-utilities@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/cytoscape-layout-utilities/-/cytoscape-layout-utilities-1.1.1.tgz#fad663acaa19338483732ee25ff693682313f8db"
+  integrity sha512-JnTAVGMsNtYjmUiDvFYKN/5MHkHOrEvuK9rOt7bhYvSfUrOFziTdrZM/8B2tSQ9iwcMEX3nzNiZjUoYIJxWb4w==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@turf/turf" "^5.1.6"
@@ -6603,9 +6609,10 @@ cytoscape-navigator@^1.3.3:
   dependencies:
     jquery "^2.0.0 || ^1.4.0"
 
-"cytoscape-node-editing@github:iVis-at-Bilkent/cytoscape.js-node-editing#unstable":
-  version "3.2.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-node-editing/tar.gz/e84805c0a16789a56eb7f429c82753a0ff75313a"
+cytoscape-node-editing@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/cytoscape-node-editing/-/cytoscape-node-editing-4.1.0.tgz#a0b1b7570c5d3f60b50e57a83a57406931dd3eef"
+  integrity sha512-8YBRhRwOYIhCQ053UBV3dZAZrwotQDkxYGwBy+J6YNAc/zcSDwm8vu1KoVNWh/g/BbChoaCyV9ho3f/5x5IOhQ==
 
 cytoscape-panzoom@~2.5.2:
   version "2.5.3"
@@ -6621,13 +6628,15 @@ cytoscape-popper@^2.0.0:
   dependencies:
     "@popperjs/core" "^2.0.0"
 
-"cytoscape-undo-redo@github:iVis-at-Bilkent/cytoscape.js-undo-redo#unstable":
-  version "1.3.2"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-undo-redo/tar.gz/3d8e02f5fbbe7ec95444fb9df5ee3e14586b5a2f"
+cytoscape-undo-redo@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/cytoscape-undo-redo/-/cytoscape-undo-redo-1.3.3.tgz#63431a0b22f639f3bb594c6060b4ab641eea0a05"
+  integrity sha512-BjTXe0Oiytj4+UtYkkwYHG3BILi6MZD1MuZ+06kopgEtiyumcMEqX53zHMhY90kqJMPwLfpcrlmKmJtNAa2v2Q==
 
-"cytoscape-view-utilities@github:iVis-at-Bilkent/cytoscape.js-view-utilities#unstable":
-  version "4.1.0"
-  resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-view-utilities/tar.gz/804bbdfb31234faa99f3ce72067b2555f062ca98"
+cytoscape-view-utilities@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/cytoscape-view-utilities/-/cytoscape-view-utilities-6.0.0.tgz#ce6e3fcea4b07ab189a9cc38d954f0078d4db828"
+  integrity sha512-R4rErfwkW/68Bz5CmM6RbKYvaj3gASl0rnuQl7H1ahv4TNJz9fD9vOX21485HYpe4Sw+7cVjwD+03KJLFjZVPg==
   dependencies:
     geometric "^2.2.3"
 
@@ -11496,9 +11505,10 @@ latest-version@^3.0.0:
   dependencies:
     package-json "^4.0.0"
 
-"layout-base@git+https://github.com/iVis-at-Bilkent/layout-base.git#unstable":
-  version "1.0.0"
-  resolved "git+https://github.com/iVis-at-Bilkent/layout-base.git#1dac005611056844dbb6fa0444b624fc2249ab34"
+layout-base@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/layout-base/-/layout-base-2.0.1.tgz#d0337913586c90f9c2c075292069f5c2da5dd285"
+  integrity sha512-dp3s92+uNI1hWIpPGH3jK2kxE2lMjdXdr+DH8ynZHpd6PUlH6x6cbuXnoMmiNumznqaNO31xu9e79F0uuZ0JFg==
 
 lazy-cache@^0.2.3:
   version "0.2.7"

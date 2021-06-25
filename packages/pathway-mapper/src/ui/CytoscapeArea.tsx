@@ -265,11 +265,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     } catch (err) {
       console.log(err);
     }
-    try {
-      popper(cytoscape);
-    } catch (err) {
-      console.log(err);
-    }
 
     this.cy = cytoscape({
       container: this.cyDiv,
