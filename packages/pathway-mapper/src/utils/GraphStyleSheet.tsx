@@ -29,7 +29,11 @@ module.exports = (function()
         {
           return nodeBorderColorFunction(ele);
         },
-        'font-size': 14
+        'font-size': 14,
+        'background-opacity': function(ele)
+        {
+          return nodeBackgroundOpacityFunction(ele);
+        },
       }
     },
     {
@@ -69,6 +73,13 @@ module.exports = (function()
         }
       }
     },
+    /*{ 
+      selector: 'node[type = FAMILY ]',
+      style: 
+      {
+        'background-opacity': 0.5,
+      }
+    },*/
     {
       selector: 'edge',
       style:
@@ -206,6 +217,7 @@ module.exports = (function()
           'color': '#e94332',
       }
     },
+   
     {
         selector: 'node:selected',
         style:
@@ -249,6 +261,17 @@ module.exports = (function()
       case "COMPARTMENT": return 10;
       case "PROCESS": return 10;
       default: return 5;
+    }
+  };
+
+  var nodeBackgroundOpacityFunction = function( ele )
+  {
+    switch (ele._private.data['type'])
+    {
+      case "FAMILY": return 0.5;
+      case "COMPLEX": return 0.5;
+      case "COMPARTMENT": return 0.5;
+      default: return 1;
     }
   };
 
