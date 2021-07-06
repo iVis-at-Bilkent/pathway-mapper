@@ -13700,6 +13700,10 @@ var Menubar_extends = undefined && undefined.__extends || function () {
 
 
 
+function truncatePathwayTitle(pathwayTitle) {
+  if (pathwayTitle.length > 30) return pathwayTitle.substr(0, 30) + "...";else return pathwayTitle;
+}
+
 var Menubar_Menubar =
 /** @class */
 function (_super) {
@@ -14007,7 +14011,11 @@ function (_super) {
         onClick: function () {
           _this.props.handleOpen(EModalType.ABOUT);
         }
-      }, "About"))), external_react_default.a.createElement(external_react_bootstrap_["Nav"], {
+      }, "About")), external_react_default.a.createElement(external_react_bootstrap_["NavItem"], {
+        title: this.props.pathwayActions.getPathwayInfo.pathwayTitle
+      }, external_react_default.a.createElement("span", {
+        className: "pathwayTitle"
+      }, truncatePathwayTitle(this.props.pathwayActions.getPathwayInfo.pathwayTitle)))), external_react_default.a.createElement(external_react_bootstrap_["Nav"], {
         pullRight: true
       }, external_react_default.a.createElement(external_react_bootstrap_["Navbar"].Brand, null, external_react_default.a.createElement("a", {
         href: "#"
