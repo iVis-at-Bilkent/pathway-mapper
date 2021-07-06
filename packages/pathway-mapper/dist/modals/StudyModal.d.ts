@@ -51,6 +51,10 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     unselectDataTypesForStudy(index: number): void;
     preparePortalAccess(studyId: string): void;
     disableAllDataTypes(): void;
+    getSelectedStudiesCount(): number;
+    getCheckedDatas(dataTypes: {
+        [dataType: string]: IDataTypeMetaData;
+    }): number;
     fetchStudy(): void;
     resetModal(): void;
     handleCheckboxClick(dataType: any): void;
