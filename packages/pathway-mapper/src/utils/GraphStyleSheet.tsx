@@ -264,6 +264,16 @@ module.exports = (function()
     }
   };
 
+
+  var contentFunction = function( ele )
+  {
+    if (ele._private.data.name) {
+      return ele._private.data.name;
+    }
+    return 'newNode';
+  };
+
+  
   var nodeBackgroundOpacityFunction = function( ele )
   {
     switch (ele._private.data['type'])
@@ -273,14 +283,6 @@ module.exports = (function()
       case "COMPARTMENT": return 0.5;
       default: return 1;
     }
-  };
-
-  var contentFunction = function( ele )
-  {
-    if (ele._private.data.name) {
-      return ele._private.data.name;
-    }
-    return 'newNode';
   };
 
   var vTextPositionFunction = function( ele )

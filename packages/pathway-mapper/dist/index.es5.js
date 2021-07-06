@@ -736,6 +736,14 @@ module.exports = function () {
     }
   };
 
+  var contentFunction = function (ele) {
+    if (ele._private.data.name) {
+      return ele._private.data.name;
+    }
+
+    return 'newNode';
+  };
+
   var nodeBackgroundOpacityFunction = function (ele) {
     switch (ele._private.data['type']) {
       case "FAMILY":
@@ -750,14 +758,6 @@ module.exports = function () {
       default:
         return 1;
     }
-  };
-
-  var contentFunction = function (ele) {
-    if (ele._private.data.name) {
-      return ele._private.data.name;
-    }
-
-    return 'newNode';
   };
 
   var vTextPositionFunction = function (ele) {
