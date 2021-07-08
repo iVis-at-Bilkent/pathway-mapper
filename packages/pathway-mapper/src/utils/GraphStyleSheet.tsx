@@ -73,13 +73,6 @@ module.exports = (function()
         }
       }
     },
-    /*{ 
-      selector: 'node[type = FAMILY ]',
-      style: 
-      {
-        'background-opacity': 0.5,
-      }
-    },*/
     {
       selector: 'edge',
       style:
