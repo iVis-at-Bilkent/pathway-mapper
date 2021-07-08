@@ -155,7 +155,7 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={6.1} onClick={this.props.pathwayActions.performLayout}>Perform Layout</MenuItem>
                   <MenuItem eventKey={6.1} onClick={() => {this.props.handleOpen(EModalType.LAYOUT);}}>Layout Properties...</MenuItem>
                 </NavDropdown>
-                <NavDropdown eventKey={7} title="Help" id="basic-nav-help" >
+                <NavDropdown eventKey={7} title="Help" id="basic-nav-help">
                   <MenuItem eventKey={7.1} onClick={ () => {this.props.handleOpen(EModalType.HELP);}}>Quick Help</MenuItem>
                   <MenuItem eventKey={7.1} onClick={ () => {window.open("https://github.com/iVis-at-Bilkent/pathway-mapper");}}>How To Use</MenuItem>
                   <MenuItem eventKey={7.1} onClick={ () => {this.props.handleOpen(EModalType.ABOUT);}}>About</MenuItem>
@@ -171,15 +171,6 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <a href="#">PathwayMapper</a>
                 </Navbar.Brand>
               </Nav>
-
-             
-                           
-
-              
-              
-              
-
-
             </Navbar>
         );
     }

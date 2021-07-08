@@ -217,7 +217,6 @@ module.exports = (function()
           'color': '#e94332',
       }
     },
-   
     {
         selector: 'node:selected',
         style:
@@ -275,7 +274,6 @@ module.exports = (function()
     }
   };
 
-
   var contentFunction = function( ele )
   {
     if (ele._private.data.name) {
@@ -283,8 +281,6 @@ module.exports = (function()
     }
     return 'newNode';
   };
-
-  
 
   var vTextPositionFunction = function( ele )
   {

@@ -1,249 +1,249 @@
 .pathwayMapper .list-group {
-    margin-bottom: 0px;
-    }
-    .pathwayMapper .toolbar .toolbar-button {
-    margin-right: 1px;
-    margin-left: 1px;
-    }
-    .pathwayMapper tbody tr:hover {
-    background: #97bfdb !important;
-    }
-    .pathwayMapper .cBioMode .cytoscape-navigatorView {
-    background: #4389c0;
-    }
-    .pathwayMapper .ui-cytoscape-nodeadd-nodediv {
-    background: #fbfbfb none repeat scroll 0% 0%;
-    border: 0px solid white;
-    border-radius: 5px;
-    font-size: 1.3em !important;
-    cursor: pointer;
-    text-align: center;
-    }
-    .pathwayMapper #ranking-bar .info-entry {
-    margin-bottom: 10px;
-    }
-    .pathwayMapper #ranking-bar .info-entry .indent {
-    margin-left: 20px;
-    margin-top: 6px;
-    }
-    .pathwayMapper #ranking-bar:first-child {
-    margin-top: 20px;
-    }
-    .pathwayMapper #ranking-bar .info-title {
-    background-color: white;
-    width: 100%;
-    color: black;
-    font-weight: bold;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    border-radius: 4px;
-    }
-    .pathwayMapper #cy {
-    margin-top: 10px;
-    }
-    .pathwayMapper #ranking-table {
-    /*margin-left: 20px; */
-    margin-top: 6px;
-    margin-right: 6px;
-    }
-    .pathwayMapper #toolbar {
-    margin-top: 10px;
-    margin-left: 13px;
-    }
-    .pathwayMapper .ui-cytoscape-nodeadd img {
-    width: 110px;
-    height: 28.5px;
-    }
-    .pathwayMapper .label:hover {
-    background-color: #97bfdb !important;
-    }
-    .pathwayMapper .label-default {
-    background-color: #adadad !important;
-    }
-    .pathwayMapper .checkbox.disabled {
-    color: #adadad !important;
-    }
-    .pathwayMapper #ranking-bar .table tbody tr td {
-    padding: 5px !important;
-    }
-    .pathwayMapper #ranking-bar .label {
-    padding-top: 6px;
-    padding-bottom: 6px;
-    margin-bottom: 4px;
-    display: inline-block;
-    margin-right: 4px;
-    font-size: 11px;
-    }
-    .pathwayMapper .label:hover {
-    cursor: pointer;
-    }
-    .pathwayMapper .dropdown-submenu .caret {
-    display: none;
-    }
-    .pathwayMapper #ranking-bar .fa-question-circle {
-    cursor: pointer;
-    }
-    .pathwayMapper .__react_component_tooltip {
-    max-width: 350px;
-    z-index: 1040;
-    }
-    .pathwayMapper .__react_component_tooltip.type-light.border {
-    border: 1px solid #878686;
-    }
-    .pathwayMapper .__react_component_tooltip.show {
-    opacity: 1;
-    }
-    .pathwayMapper #ranking-bar thead td {
-    font-size: 12px;
-    }
-    .pathwayMapper #ranking-bar tbody td {
-    font-size: 11px;
-    }
-    .pathwayMapper #about-model-header {
-    margin-bottom: 15px !important;
-    }
-    .pathwayMapper .list-group-item:focus {
-    background-color: white;
-    }
-    .pathwayMapper .qtip-tipsy {
-    background: rgba(47, 65, 84, 0.92) !important;
-    }
-    .pathwayMapper #dropdown-study {
-    width: 500px;
-    text-align: left;
-    }
-    .pathwayMapper #searchGeneToolbar {
-    max-width: 200px;
-    }
-    .pathwayMapper #compartmentNodeDiv img {
-    height: 30.26px;
-    }
-    .pathwayMapper .pmTip {
-    background-color: #2f4154 !important;
-    font-family: arial, sans-serif;
-    font-size: 12px;
-    border-radius: 7px;
-    }
-    .pathwayMapper .checkbox.layProps {
-    margin-top: 0;
-    }
-    .pathwayMapper #alterationCheckBox {
-    margin-top: 0;
-    }
-    .pathwayMapper #toolbar img {
-    cursor: pointer;
-    margin-left: 5px;
-    }
-    .pathwayMapper table .radio {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    }
-    .pathwayMapper .cBioMode #showMoreButton {
-    width: 100px !important;
-    }
-    #cBioHelpModal table td {
-    padding: 4px;
-    }
-    
-    #cBioHelpModal .modal-header {
-        background-color: #ececec;
-        border-top-left-radius: 6px;
-        border-top-right-radius: 6px;
-        text-align: center;
-    }
-    
-    .pathwayMapper .cytoscape-navigator-wrapper {
-    transform: scale(0.86);
-    }
-    
-    .pathwayMapper .pathway-toolbar.navbar{
-        border-radius: 6px;
-    }
-    
-    .pathwayMapper #search-gene-input-group-addon:hover {
-        background-color: #fff;
-    }
-    
-    .hidden {
-        display: none;
-    }
-    
-    .fitContent {
-        width: fit-content;
-    }
-    
-    .Toastify__toast--success {
-        background: #1abc9c;
-        color: #000;
-    }
-    .Toastify__toast--warning {
-        color: #000;
-    }
-    .Toastify__toast--error {
-        background: #F84F31;
-        color: #000
-    }
-    
-    .Toastify__close-button {
-        color: #000
-    }
-    
-    .Toastify__toast {
-        border-radius: 4px;
-    }
-    
-    .rightAlignText {
-        text-align: right;
-    }
-    
-    .pathwayMapper .tooltip-text-style {
-        font-size: 12px;
-        font-weight: bold;
-        font-family: 'Lucida Grande',sans-serif;
-    }
-    
-    .pathwayMapper .node-tooltip-header {
-        margin-left: 0px;
-    }
-    
-    .pathwayMapper .horizontal-rule {
-        margin-top: 0px;
-        margin-bottom: 10px;
-        border: 1px solid grey;
-    }
-    
-    .pathwayMapper .icon-small {
-        width: 16px;
-        height: 16px;
-    }
-    
-    .pathwayMapper .icon-enabled {
-        cursor: pointer;
-        opacity: 1;
-    }
-    
-    .pathwayMapper .icon-disabled {
-        cursor: default;
-        opacity: 0.2;
-    }
-    
-    .pathwayMapper .modal-sm {
-        width: 400px;
-    }
-    
-    .pathwayMapper .pathwayTitle {
-        color:white;
-        /*
-        margin-right: 100px;
-        margin-left: 100px;
-        background-color: #0ff;
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
-        border-bottom-left-radius: 12px;
-        text-align: center;
-        border-bottom-right-radius: 12px;*/
-        height: 50px;
-        display: inline;
-        
-        font-size: 14px;
-    }
+ margin-bottom: 0px;
+ }
+ .pathwayMapper .toolbar .toolbar-button {
+ margin-right: 1px;
+ margin-left: 1px;
+ }
+ .pathwayMapper tbody tr:hover {
+ background: #97bfdb !important;
+ }
+ .pathwayMapper .cBioMode .cytoscape-navigatorView {
+ background: #4389c0;
+ }
+ .pathwayMapper .ui-cytoscape-nodeadd-nodediv {
+ background: #fbfbfb none repeat scroll 0% 0%;
+ border: 0px solid white;
+ border-radius: 5px;
+ font-size: 1.3em !important;
+ cursor: pointer;
+ text-align: center;
+ }
+ .pathwayMapper #ranking-bar .info-entry {
+ margin-bottom: 10px;
+ }
+ .pathwayMapper #ranking-bar .info-entry .indent {
+ margin-left: 20px;
+ margin-top: 6px;
+ }
+ .pathwayMapper #ranking-bar:first-child {
+ margin-top: 20px;
+ }
+ .pathwayMapper #ranking-bar .info-title {
+ background-color: white;
+ width: 100%;
+ color: black;
+ font-weight: bold;
+ padding-top: 3px;
+ padding-bottom: 3px;
+ border-radius: 4px;
+ }
+ .pathwayMapper #cy {
+ margin-top: 10px;
+ }
+ .pathwayMapper #ranking-table {
+ /*margin-left: 20px; */
+ margin-top: 6px;
+ margin-right: 6px;
+ }
+ .pathwayMapper #toolbar {
+ margin-top: 10px;
+ margin-left: 13px;
+ }
+ .pathwayMapper .ui-cytoscape-nodeadd img {
+ width: 110px;
+ height: 28.5px;
+ }
+ .pathwayMapper .label:hover {
+ background-color: #97bfdb !important;
+ }
+ .pathwayMapper .label-default {
+ background-color: #adadad !important;
+ }
+ .pathwayMapper .checkbox.disabled {
+ color: #adadad !important;
+ }
+ .pathwayMapper #ranking-bar .table tbody tr td {
+ padding: 5px !important;
+ }
+ .pathwayMapper #ranking-bar .label {
+ padding-top: 6px;
+ padding-bottom: 6px;
+ margin-bottom: 4px;
+ display: inline-block;
+ margin-right: 4px;
+ font-size: 11px;
+ }
+ .pathwayMapper .label:hover {
+ cursor: pointer;
+ }
+ .pathwayMapper .dropdown-submenu .caret {
+ display: none;
+ }
+ .pathwayMapper #ranking-bar .fa-question-circle {
+ cursor: pointer;
+ }
+ .pathwayMapper .__react_component_tooltip {
+ max-width: 350px;
+ z-index: 1040;
+ }
+ .pathwayMapper .__react_component_tooltip.type-light.border {
+ border: 1px solid #878686;
+ }
+ .pathwayMapper .__react_component_tooltip.show {
+ opacity: 1;
+ }
+ .pathwayMapper #ranking-bar thead td {
+ font-size: 12px;
+ }
+ .pathwayMapper #ranking-bar tbody td {
+ font-size: 11px;
+ }
+ .pathwayMapper #about-model-header {
+ margin-bottom: 15px !important;
+ }
+ .pathwayMapper .list-group-item:focus {
+ background-color: white;
+ }
+ .pathwayMapper .qtip-tipsy {
+ background: rgba(47, 65, 84, 0.92) !important;
+ }
+ .pathwayMapper #dropdown-study {
+ width: 500px;
+ text-align: left;
+ }
+ .pathwayMapper #searchGeneToolbar {
+ max-width: 200px;
+ }
+ .pathwayMapper #compartmentNodeDiv img {
+ height: 30.26px;
+ }
+ .pathwayMapper .pmTip {
+ background-color: #2f4154 !important;
+ font-family: arial, sans-serif;
+ font-size: 12px;
+ border-radius: 7px;
+ }
+ .pathwayMapper .checkbox.layProps {
+ margin-top: 0;
+ }
+ .pathwayMapper #alterationCheckBox {
+ margin-top: 0;
+ }
+ .pathwayMapper #toolbar img {
+ cursor: pointer;
+ margin-left: 5px;
+ }
+ .pathwayMapper table .radio {
+ margin-top: 0 !important;
+ margin-bottom: 0 !important;
+ }
+ .pathwayMapper .cBioMode #showMoreButton {
+ width: 100px !important;
+ }
+ #cBioHelpModal table td {
+ padding: 4px;
+ }
+ 
+ #cBioHelpModal .modal-header {
+     background-color: #ececec;
+     border-top-left-radius: 6px;
+     border-top-right-radius: 6px;
+     text-align: center;
+ }
+ 
+ .pathwayMapper .cytoscape-navigator-wrapper {
+ transform: scale(0.86);
+ }
+ 
+ .pathwayMapper .pathway-toolbar.navbar{
+     border-radius: 6px;
+ }
+ 
+ .pathwayMapper #search-gene-input-group-addon:hover {
+     background-color: #fff;
+ }
+ 
+ .hidden {
+     display: none;
+ }
+ 
+ .fitContent {
+     width: fit-content;
+ }
+ 
+ .Toastify__toast--success {
+     background: #1abc9c;
+     color: #000;
+ }
+ .Toastify__toast--warning {
+     color: #000;
+ }
+ .Toastify__toast--error {
+     background: #F84F31;
+     color: #000
+ }
+ 
+ .Toastify__close-button {
+     color: #000
+ }
+ 
+ .Toastify__toast {
+     border-radius: 4px;
+ }
+ 
+ .rightAlignText {
+     text-align: right;
+ }
+ 
+ .pathwayMapper .tooltip-text-style {
+     font-size: 12px;
+     font-weight: bold;
+     font-family: 'Lucida Grande',sans-serif;
+ }
+ 
+ .pathwayMapper .node-tooltip-header {
+     margin-left: 0px;
+ }
+ 
+ .pathwayMapper .horizontal-rule {
+     margin-top: 0px;
+     margin-bottom: 10px;
+     border: 1px solid grey;
+ }
+ 
+ .pathwayMapper .icon-small {
+     width: 16px;
+     height: 16px;
+ }
+ 
+ .pathwayMapper .icon-enabled {
+     cursor: pointer;
+     opacity: 1;
+ }
+ 
+ .pathwayMapper .icon-disabled {
+     cursor: default;
+     opacity: 0.2;
+ }
+ 
+ .pathwayMapper .modal-sm {
+     width: 400px;
+ }
+
+ .pathwayMapper .pathwayTitle {
+  color:white;
+  /*
+  margin-right: 100px;
+  margin-left: 100px;
+  background-color: #0ff;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom-left-radius: 12px;
+  text-align: center;
+  border-bottom-right-radius: 12px;*/
+  height: 50px;
+  display: inline;
+  
+  font-size: 14px;
+}

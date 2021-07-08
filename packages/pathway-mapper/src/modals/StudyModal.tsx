@@ -188,9 +188,8 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     for (const study of Object.values(this.selectedStudies))
     {
          //toast.warn( "aaaaaa: " +  selectedStudiesCount);
-         for( const dataTypee of Object.values( study.dataTypes ) ){
-              toast.warn( "aaaaaa: " +  selectedStudiesCount);
-              selectedStudiesCount += dataTypee.checked === true ? 1 : 0;
+         for( const dataTypeOfStudy of Object.values( study.dataTypes ) ){
+              selectedStudiesCount += dataTypeOfStudy.checked === true ? 1 : 0;
          }
     }
     return selectedStudiesCount;

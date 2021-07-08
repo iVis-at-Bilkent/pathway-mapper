@@ -645,7 +645,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
           }
           { !this.props.isCBioPortal &&
             <React.Fragment>
-              <StudyModal show={this.isModalShown[EModalType.STUDY]}  loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
+              <StudyModal show={this.isModalShown[EModalType.STUDY]} loadFromCBio={this.loadFromCBio} handleClose={this.handleClose}/>
               <ToastContainer
                 position="bottom-left"
                 autoClose={5000}
