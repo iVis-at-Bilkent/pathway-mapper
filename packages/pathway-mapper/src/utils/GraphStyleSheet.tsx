@@ -29,7 +29,11 @@ module.exports = (function()
         {
           return nodeBorderColorFunction(ele);
         },
-        'font-size': 14
+        'font-size': 14,
+        'background-opacity': function(ele)
+        {
+          return nodeBackgroundOpacityFunction(ele);
+        },
       }
     },
     {
@@ -238,6 +242,17 @@ module.exports = (function()
     },
   ];
 
+
+  var nodeBackgroundOpacityFunction = function( ele )
+  {
+    switch (ele._private.data['type'])
+    {
+      case "FAMILY": return 0.5;
+      case "COMPLEX": return 0.5;
+      case "COMPARTMENT": return 0.5;
+      default: return 1;
+    }
+  };
 
 
   var compoundPaddingFunction = function( ele )

@@ -230,3 +230,19 @@ transform: scale(0.86);
 .pathwayMapper .modal-sm {
     width: 400px;
 }
+
+.pathwayMapper .pathwayTitle {
+color:white;
+/*
+margin-right: 100px;
+margin-left: 100px;
+background-color: #0ff;
+border-top-left-radius: 12px;
+border-top-right-radius: 12px;
+border-bottom-left-radius: 12px;
+text-align: center;
+border-bottom-right-radius: 12px;*/
+height: 50px;
+display: inline; 
+font-size: 14px;
+}

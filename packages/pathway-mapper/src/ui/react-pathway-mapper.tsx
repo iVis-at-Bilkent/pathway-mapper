@@ -458,12 +458,22 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   }
 
   @autobind
+  getCountOfEnabledProfiles(){
+    let countOfEnabledProfiles = 0;
+    for( const profile of Object.values(this.profiles) ){
+         countOfEnabledProfiles += ( profile.enabled === true ? 1 : 0 );
+    }
+    return countOfEnabledProfiles;
+  }
+
+  @autobind
   loadFromCBio(dataTypes: {[dataType: string]: IDataTypeMetaData}, studyData: any[]){
       if(!this.pathwayActions.doesCyHaveElements()){
         toast.warn('Your pathway is empty!');
         return;
       }
 
+      let numberOfEnabledProfiles = this.getCountOfEnabledProfiles();
       for (const metadata of Object.values(dataTypes))
       {
         if(!metadata.checked) {
@@ -476,8 +486,9 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
 
         const studyId = studyData[0];
         const profileId = metadata.profile;
-
-        const enableNewProfile = this.profiles.length < this.MAX_ALLOWED_PROFILES_ENABLED;
+        const enableNewProfile =  numberOfEnabledProfiles < this.MAX_ALLOWED_PROFILES_ENABLED;
+        if( enableNewProfile === true)
+            numberOfEnabledProfiles++;
 
         const newProfile = {
           studyId: studyId,

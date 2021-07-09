@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuItem, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { MenuItem, Nav, Navbar, NavDropdown, NavItem } from 'react-bootstrap';
 import pathways from "../data/pathways.json";
 import ConfirmationModal from '../modals/ConfirmationModal';
 import PathwayActions from '../utils/PathwayActions';
@@ -9,6 +9,13 @@ interface IMenubarProps{
     pathwayActions: PathwayActions;
     handleOpen: (modalId: EModalType) => void;
     setActiveEdge: Function;
+}
+
+function truncatePathwayTitle( pathwayTitle : string){
+     if( pathwayTitle.length > 30)
+         return   pathwayTitle.substr(0, 30) + "...";
+     else  
+         return   pathwayTitle;
 }
 
 
@@ -153,6 +160,11 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                   <MenuItem eventKey={7.1} onClick={ () => {window.open("https://github.com/iVis-at-Bilkent/pathway-mapper");}}>How To Use</MenuItem>
                   <MenuItem eventKey={7.1} onClick={ () => {this.props.handleOpen(EModalType.ABOUT);}}>About</MenuItem>
                 </NavDropdown>
+                <NavItem   title = {this.props.pathwayActions.getPathwayInfo.pathwayTitle}  >
+                 <span className = "pathwayTitle" >
+                   {truncatePathwayTitle(this.props.pathwayActions.getPathwayInfo.pathwayTitle)}
+                   </span>
+                </NavItem>
               </Nav>
               <Nav pullRight>
                 <Navbar.Brand>
