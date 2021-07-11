@@ -274,7 +274,7 @@ Icons made by [Freepik](http://www.freepik.com),
 
 ## Team
 
-  * [M. Salih Altun](https://github.com/msalihaltun), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and [S. Onur Sumer](https://github.com/onursumer), [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [The Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
+  * [M. Salih Altun](https://github.com/msalihaltun), [Yusuf Ziya Ozgul](https://github.com/YusufZiyaOzgul), [Ugur Dogrusoz](https://github.com/ugurdogrusoz) of [i-Vis at Bilkent University](http://www.cs.bilkent.edu.tr/~ivis), [Ozgun Babur](https://github.com/ozgunbabur) of OHSU, and [S. Onur Sumer](https://github.com/onursumer), [Jianjiong Gao](https://github.com/jjgao), Nikolaus Schultz of [The Nikolaus Schultz lab at MSKCC](https://www.mskcc.org/research-areas/labs/nikolaus-schultz).
 
 #### Alumni
 
