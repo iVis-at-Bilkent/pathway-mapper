@@ -1,5 +1,6 @@
-import _ from "lodash";
-import { IColorValueMap } from "../ui/react-pathway-mapper";
+import _, { add } from "lodash";
+import { toast, ToastContainer } from "react-toastify";
+import { ChatMessageMetaData, IColorValueMap } from "../ui/react-pathway-mapper";
 import GraphUtilities from "../utils/GraphUtilities";
 import EditorActionsManager from "./EditorActionsManager";
 
@@ -20,6 +21,11 @@ export default class ShareDBManager {
     readonly GENOMIC_DATA_GROUP_NAME = 'genomicDataGroupList';
     readonly GENOMIC_DATA_GROUP_COUNT = 'genomicDataGroupCount';
     readonly GENOMIC_DATA_COLOR_SCHEME_NAME = 'genomicDataColorScheme';
+    readonly CHAT_APPLICATION_NAME = 'chatMessages';
+    readonly CHAT_MESSAGES_COUNT = 'chatMessagesCount';
+    readonly PATHWAY_TITLE = 'pathwayTitle';
+    readonly NUMBER_OF_USERS = 'numberOfUsers';
+    readonly WORK_ID = 'id';
     
     doc: any;
     postFileLoad: any;
@@ -136,6 +142,27 @@ export default class ShareDBManager {
      * @param object: new global options object
      *
     */
+
+    getUserId() {
+        console.log(this.doc.data[this.NUMBER_OF_USERS]);
+      return this.doc.data[this.NUMBER_OF_USERS];
+    }
+
+    incrementMessageCount(){
+        this.doc.submitOp([{p: [this.CHAT_MESSAGES_COUNT], na: 1}], this.shareDBError);
+    }
+
+    incrementNumberOfUsers(){
+        this.doc.submitOp([{p: [this.NUMBER_OF_USERS], na: 1}], this.shareDBError);
+    }
+
+    
+
+    addNewMessage( object : ChatMessageMetaData, chatMessageKey : number){
+        this.doc.submitOp([{p: [this.CHAT_APPLICATION_NAME, chatMessageKey], oi: object}], this.shareDBError);
+    };
+
+
     updateShareDBGlobalOptions(object) {
         this.doc.submitOp([{
             p: [this.GLOBAL_OPTS_NAME, 0],
@@ -195,6 +222,7 @@ export default class ShareDBManager {
         var createNewDocument = () => {
             var new_id = self.getCustomObjId();
             var data = {
+                id: new_id,
                 nodes: {},
                 edges: {},
                 layoutProperties: [this.editor.layoutProperties],
@@ -203,11 +231,14 @@ export default class ShareDBManager {
                 visibleGenomicDataMapByType: {},
                 genomicDataGroupList: {},
                 genomicDataGroupCount: 0,
+                chatMessagesCount: 0,
+                numberOfUsers: 0,
+                pathwayTitle: [],
                 genomicDataColorScheme: [{
                     '-100' : "#0000ff",
                     '0'    : "#ffffff",
                     '100'  : "#ff0000"
-                }]
+                }], chatMessages : {}
             };
             window.history.pushState(null, null, '?id=' + new_id);
             self.doc = connection.get('cy', new_id);
@@ -263,11 +294,16 @@ export default class ShareDBManager {
         var visDataMap = self.doc.data[this.VISIBLE_GENOMIC_DATA_MAP_NAME];
         var groupedGenomicDataMap = self.doc.data[this.GENOMIC_DATA_GROUP_NAME];
         var groupedGenomicDataCount = self.doc.data[this.GENOMIC_DATA_GROUP_COUNT];
+        var chatMessages = self.doc.data[this.CHAT_APPLICATION_NAME];
+        var chatMessageCount = self.doc.data[this.CHAT_MESSAGES_COUNT];
         let genomicDataColorScheme;
+        
         if (self.doc.data[this.GENOMIC_DATA_COLOR_SCHEME_NAME]) {
             genomicDataColorScheme = self.doc.data[this.GENOMIC_DATA_COLOR_SCHEME_NAME][0];
         }
 
+        self.editor.loadMessages( chatMessages );
+        self.editor.updateMessageCount( chatMessageCount );
         var invalidGenes = [];
         var highlightedGenes = [];
         var invalidHighlightedGenes = [];
@@ -481,6 +517,25 @@ export default class ShareDBManager {
                 var handleOp = op[i];
                 var path = handleOp.p[0];
                 var isReplaceEvent = self.isShareDBReplaceEvent(handleOp);
+
+                if( path === self.CHAT_APPLICATION_NAME){
+                   // toast.warn("ziyaaa");
+                    //toast.warn(op.length);
+                    self.editor.updateMessages( self.doc.data[self.CHAT_APPLICATION_NAME][handleOp.p[1]]);
+                       
+                    
+                   
+                }
+                if( path === self.CHAT_MESSAGES_COUNT){
+                    console.log("Step 1");
+                    //toast.warn("ziyaaaa");
+                    self.editor.updateMessageCount(self.doc.data[self.CHAT_MESSAGES_COUNT]);
+                    //toast.warn(op.length);
+                }
+                
+                if( path === self.PATHWAY_TITLE ){
+                    self.editor.updatePathwayTitleBack( self.doc.data[self.PATHWAY_TITLE][0])
+                }
 
                 if (!isReplaceEvent) {
                     if (path === self.NODEMAP_NAME) {

@@ -7,6 +7,7 @@ import { Col, Row } from "react-bootstrap";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import ReactTooltip from 'react-tooltip';
+import { IgnorePlugin } from "webpack";
 import "../css/pmv1.css";
 import "../css/pmv2.css";
 import '../css/qtip.css';
@@ -43,6 +44,8 @@ interface IPathwayMapperProps{
   isCBioPortal: boolean;
   genes: any[];
   isCollaborative?: boolean;
+  userName: string;
+  userId: number;
   cBioAlterationData?: ICBioData[];
   sampleIconData?: ISampleIconData,
   pathwayName? : string;
@@ -116,6 +119,14 @@ export interface IDataTypeMetaData{
   profile: string;
 }
 
+export interface ChatMessageMetaData{
+  message : string;
+  username : string;
+  id: number;
+  userId: number;
+  date: string;
+}
+
 export interface IPathwayMapperTable{
   name: string;
   score: number;
@@ -159,15 +170,22 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   bestPathwaysAlgos: any[][] = [];
 
   @observable
+  userId: number=   -1;
+
+  @observable
   oldName = "";
   
   @observable
   profiles: IProfileMetaData[] = [];
 
+  @observable 
+  chatMessages: ChatMessageMetaData[] = [];
+  
+  @observable 
+  chatMessagesCount: number;
   setActiveEdge: (edgeId: number) => void;
   viewOperationsManager: ViewOperationsManager;
   gridOptionsManager: GridOptionsManager;
-
 
 
   constructor(props: IPathwayMapperProps){
@@ -191,6 +209,10 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
       '0'    : "#ffffff",
       '100'  : "#ff0000"
     }
+
+    this.chatMessagesCount = 0;
+
+    this.userId = this.props.userId ;
 
     if(this.props.isCBioPortal){
       //this.overlayPortalData();
@@ -298,6 +320,125 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
       this.patientData[geneAltData.gene]["geneticTrackRuleSetParams"] = geneAltData.geneticTrackRuleSetParams;
     });
 
+  }
+
+  simplifyDate(date: string){
+    let gapCount = 0;
+    let simplifiedDate = "";
+    for( let i  = 0; i < date.length; i++){
+         if( date.charAt(i) === ' ') {
+             gapCount = gapCount + 1;
+             if( gapCount === 5)
+                 break;
+             if( gapCount === 4)
+                 simplifiedDate = simplifiedDate + "\n";
+             else
+                 simplifiedDate = simplifiedDate + " "; 
+         }
+         else
+            simplifiedDate = simplifiedDate + date.charAt(i);
+    }
+    return simplifiedDate;
+  }
+  @action.bound
+  addMessage( Message: string){
+    console.log(Message);
+    console.log(this.simplifyDate(Date().toLocaleString()));
+    if( this.userId === -1 ){
+      let db_id = this.editor.getDBId();
+      if(localStorage.getItem( "chat" + db_id + "numberOfUsers") === null )
+         localStorage.setItem( "chat" + db_id + "numberOfUsers", "" + 0);
+      let numberOfUsersInLocal = localStorage.getItem( "chat" + db_id + "numberOfUsers");
+      
+      console.log(numberOfUsersInLocal);
+      //return ;
+
+      let numberOfUsersConverted = this.convertToNumber( numberOfUsersInLocal );
+
+      this.userId = this.editor.getUserId();
+      this.userId += 1;
+      this.editor.incrementNumberOfUsers();  
+      
+      //numberOfUsersiInLocal = this.incrementByOne( numberOfUsersInLocal) ;
+     
+      console.log(numberOfUsersConverted);
+
+      localStorage.setItem( "chat" + db_id + numberOfUsersConverted, this.props.userName);
+      numberOfUsersConverted += 1;
+      //var newUserId = convertString(this.userId );
+      localStorage.setItem( "chat" + db_id + numberOfUsersConverted,  "" + this.userId );
+      numberOfUsersConverted += 1;
+
+      localStorage.setItem( "chat" + db_id + "numberOfUsers",  "" + numberOfUsersConverted) ;
+
+      console.log( this.userId + " " + numberOfUsersInLocal );
+      
+
+  }
+    console.log(this.userId);
+    const newMessage = {
+      message : Message,
+      username : this.props.userName,
+     
+      id: this.chatMessagesCount,
+      userId : this.userId,
+      date: this.simplifyDate(Date().toLocaleString())
+    };
+
+    console.log(newMessage);
+    this.addChatMessage(newMessage);
+    setTimeout(this.updateScroll,50);
+  }
+  updateScroll(){
+    document.getElementById('chatBoxxheader').children[1].scrollTop = document.getElementById('chatBoxxheader').children[1].scrollHeight;
+  }
+
+  convertCharacter( character ){
+    if( character === '0')
+        return 0;
+        if( character === '1')
+        return 1;
+        if( character === '2')
+        return 2;
+        if( character === '3')
+        return 3;
+        if( character === '4')
+        return 4;
+        if( character === '5')
+        return 5;
+        if( character === '6')
+        return 6;
+        if( character === '7')
+        return 7;
+        if( character === '8')
+        return 8;
+        if( character === '9')
+        return 9;
+    return -1;
+  }
+  convertToNumber(value: string) {
+    let converted : number = 0;
+    let powOf10 = 1;
+    for( let i = value.length - 1; i >= 0; i--){
+         converted = converted + powOf10 * ( this.convertCharacter(value.charAt(i)));
+         powOf10 *= 10;
+    }
+    return converted;
+  }
+
+  @action.bound
+  addChatMessage( newMessage : ChatMessageMetaData){
+    console.log(newMessage);
+    console.log(this.userId);
+  
+    this.editor.addNewMessage( newMessage, this.chatMessagesCount);
+    this.editor.incrementMessageCount();
+   // this.displayMessages();
+  }
+  
+
+  updatePathwayTitleCallback( pathwayTitle: string){
+    this.pathwayActions.changePathwayTitle( pathwayTitle)
   }
 
   addSampleIconData(sampleIconData: any) {
@@ -529,6 +670,16 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   }
 
   @autobind
+  incrementChatMessageCountCallback( chatMessageCount: number) {
+    this.chatMessagesCount = chatMessageCount;
+  }
+
+  @autobind
+  newMessageCallback( message : ChatMessageMetaData ){
+    this.chatMessages.push(message);
+  }
+
+  @autobind
   addGenomicData(cBioAlterationData: ICBioData[]){
 
     this.calculateAlterationData(cBioAlterationData);
@@ -550,7 +701,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   handleOpen={this.handleOpen}
   onPathwayChangeCompleted={this.emphasizeQueryGenes}
   genomicDataOverlayColorScheme={this.colorValueMap}
-  colorSchemeChangeCallback={this.colorSchemeChangeCallback}/>;
+  colorSchemeChangeCallback={this.colorSchemeChangeCallback} incrementChatMessageCountCallback = {this.incrementChatMessageCountCallback} newMessageCallback = {this.newMessageCallback} updatePathwayTitleCallback = {this.updatePathwayTitleCallback}/>;
 
   return (
 
@@ -597,7 +748,8 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
             {
             (!isCBioPortal && 
             <div>
-              <Sidebar pathwayActions={this.pathwayActions} setActiveEdgeHandler={this.setActiveEdgeHandler} handleOpen={this.handleOpen}/>
+              <Sidebar pathwayActions={this.pathwayActions} setActiveEdgeHandler={this.setActiveEdgeHandler} handleOpen={this.handleOpen} messages = {this.chatMessages} addMessage = {this.addMessage} username = {this.props.userName} userId = {this.userId} isCollaborative = {
+                this.props.isCollaborative}/>
             </div>)
             }
 

@@ -1,7 +1,7 @@
 import autobind from "autobind-decorator";
 import { action, makeObservable, observable } from "mobx";
 import LayoutProperties, { ILayoutProperties } from "../modals/LayoutProperties";
-import { IColorValueMap, IProfileMetaData } from "../ui/react-pathway-mapper";
+import { ChatMessageMetaData, IColorValueMap, IProfileMetaData } from "../ui/react-pathway-mapper";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
 import SVGExporter from "../utils/SVGExporter";
 import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
@@ -62,10 +62,14 @@ export default class EditorActionsManager{
     private genomicDataOverlayColorScheme: IColorValueMap;
 
     private colorSchemeChangeCallback: (IColorValueMap) => void;
+    private incrementChatMessageCountCallback: (number) => void;
+    private newMessageCallback: (ChatMessageMetaData) => void;
+    private updatePathwayTitleCallback: (string) => void;
 
     constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean,
                 undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[],
-                genomicDataOverlayColorScheme: IColorValueMap, colorSchemeChangeCallback: (IColorValueMap) => void)
+                genomicDataOverlayColorScheme: IColorValueMap, colorSchemeChangeCallback: (IColorValueMap) => void,  incrementChatMessageCountCallback: (number) => void
+                , newMessageCallback: (ChatMessageMetaData) => void, updatePathwayTitleCallback : (string) => void)
     {
         // Set cy instance and set real time manager reference if collaborative mode
         makeObservable(this);
@@ -75,6 +79,8 @@ export default class EditorActionsManager{
         this.profiles = profiles;
         this.genomicDataOverlayColorScheme = genomicDataOverlayColorScheme;
         this.colorSchemeChangeCallback = colorSchemeChangeCallback;
+        this.incrementChatMessageCountCallback = incrementChatMessageCountCallback;
+        this.newMessageCallback = newMessageCallback;
         
         const edgeEditingOptions = {
             bendPositionsFunction: function(ele) {
@@ -202,6 +208,44 @@ export default class EditorActionsManager{
 
         return newMovedNodes;
     };
+
+
+    getDBId(){
+        console.log( this.shareDBManager.doc.data[this.shareDBManager.WORK_ID] );
+        return this.shareDBManager.doc.data[this.shareDBManager.WORK_ID];
+    }
+    updatePathwayTitleBack( pathwayTitle : string){
+        this.updatePathwayTitleCallback( pathwayTitle);
+
+    }
+    updateMessages( message : ChatMessageMetaData ){
+       this.newMessageCallback( message );
+    }
+
+    loadMessages( messages: ChatMessageMetaData[] ){
+        for( const message of Object.values( messages) ){
+            const newMessage = {
+                username : message.username,
+                message : message.message,
+                id: message.id,
+                userId: message.userId,
+                date: message.date
+              };
+            this.newMessageCallback(newMessage);
+        }
+    }
+
+    getMessageCount(){
+        return this.shareDBManager.doc.data[this.shareDBManager.CHAT_MESSAGES_COUNT];
+    }
+
+    incrementMessageCount(){
+        this.shareDBManager.incrementMessageCount();
+    }
+
+    addNewMessage( chatMessage : ChatMessageMetaData, chatMessageKey: number ){
+        this.shareDBManager.addNewMessage( chatMessage, chatMessageKey );
+    }
 
     changeNodePositionsByArrows(selectedNodes: any)
     {
@@ -1886,6 +1930,24 @@ export default class EditorActionsManager{
         this.genomicDataOverlayManager.notifyObservers();
     }
 
+
+    incrementNumberOfUsers(){
+        this.shareDBManager.incrementNumberOfUsers();
+    }
+    getUserId(){
+        console.log("aaaa");
+        console.log(this.shareDBManager.doc.data[this.shareDBManager.NUMBER_OF_USERS]);
+        console.log( this.shareDBManager.doc.data[this.shareDBManager.CHAT_MESSAGES_COUNT]);
+        let userId = this.shareDBManager.doc.data[this.shareDBManager.NUMBER_OF_USERS];
+        return userId;
+        return 1;
+    }
+
+    updateMessageCount( messageCount : number){
+        console.log("Step 2");
+        console.log(messageCount);
+        this.incrementChatMessageCountCallback( messageCount);
+    }
     updateGenomicDataColorSchemeHandler(op: any)
     {
         let colorScheme = op.li;

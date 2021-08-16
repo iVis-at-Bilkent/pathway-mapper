@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuItem, Nav, Navbar, NavDropdown, NavItem } from 'react-bootstrap';
+import { MenuItem, Nav, Navbar, NavDropdown, NavItem,Button, InputGroup,Form, FormGroup, FormControl, ControlLabel, ButtonGroup } from 'react-bootstrap';
 import pathways from "../data/pathways.json";
 import ConfirmationModal from '../modals/ConfirmationModal';
 import PathwayActions from '../utils/PathwayActions';
@@ -166,6 +166,9 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                    </span>
                 </NavItem>
               </Nav>
+
+
+
               <Nav pullRight>
                 <Navbar.Brand>
                   <a href="#">PathwayMapper</a>

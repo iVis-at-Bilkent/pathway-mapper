@@ -15,6 +15,8 @@ interface IPathwayMapperProps {
     isCBioPortal: boolean;
     genes: any[];
     isCollaborative?: boolean;
+    userName: string;
+    userId: number;
     cBioAlterationData?: ICBioData[];
     sampleIconData?: ISampleIconData;
     pathwayName?: string;
@@ -84,6 +86,13 @@ export interface IDataTypeMetaData {
     checked: boolean;
     profile: string;
 }
+export interface ChatMessageMetaData {
+    message: string;
+    username: string;
+    id: number;
+    userId: number;
+    date: string;
+}
 export interface IPathwayMapperTable {
     name: string;
     score: number;
@@ -107,8 +116,11 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
         };
     };
     bestPathwaysAlgos: any[][];
+    userId: number;
     oldName: string;
     profiles: IProfileMetaData[];
+    chatMessages: ChatMessageMetaData[];
+    chatMessagesCount: number;
     setActiveEdge: (edgeId: number) => void;
     viewOperationsManager: ViewOperationsManager;
     gridOptionsManager: GridOptionsManager;
@@ -120,6 +132,13 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     toggleProfileEnabled(index: number): void;
     calculateAlterationData(cBioAlterationData: ICBioData[]): void;
     calculatePatientData(cBioAlterationData: ICBioData[]): void;
+    simplifyDate(date: string): string;
+    addMessage(Message: string): void;
+    updateScroll(): void;
+    convertCharacter(character: any): 6 | 1 | -1 | 0 | 2 | 3 | 5 | 4 | 7 | 8 | 9;
+    convertToNumber(value: string): number;
+    addChatMessage(newMessage: ChatMessageMetaData): void;
+    updatePathwayTitleCallback(pathwayTitle: string): void;
     addSampleIconData(sampleIconData: any): void;
     getGeneStudyMap(studyGeneMap: any): any;
     getAlterationAveragePerGene(genomicDataMap: any): any;
@@ -139,6 +158,8 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     }, studyData: any[]): void;
     setActiveEdgeHandler(setActiveEdge: (edgeId: number) => void): void;
     colorSchemeChangeCallback(colorScheme: IColorValueMap): void;
+    incrementChatMessageCountCallback(chatMessageCount: number): void;
+    newMessageCallback(message: ChatMessageMetaData): void;
     addGenomicData(cBioAlterationData: ICBioData[]): void;
     emphasizeQueryGenes(): void;
     render(): JSX.Element;
