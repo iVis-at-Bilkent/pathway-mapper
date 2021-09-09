@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Bahceci"
+  given-names: "Istemi"
+- family-names: "Dogrusoz"
+  given-names: "Ugur"
+  orcid: "https://orcid.org/0000-0002-7153-0784"
+- family-names: "La"
+  given-names: "Connor C"
+- family-names: "Babur"
+  given-names: "Özgün"
+- family-names: "Gao"
+  given-names: "Jianjiong"
+- family-names: "Schultz"
+  given-names: "Nikolaus" 
+title: "pathway-mapper"
+version: 22.2.1
+date-released: 2021-06-25
+url: "https://github.com/iVis-at-Bilkent/pathway-mapper"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Bahceci"
+    given-names: "Istemi"
+  - family-names: "Dogrusoz"
+    given-names: "Ugur"
+    orcid: "https://orcid.org/0000-0002-7153-0784"
+  - family-names: "La"
+    given-names: "Connor C"
+  - family-names: "Babur"
+    given-names: "Özgün"
+  - family-names: "Gao"
+    given-names: "Jianjiong"
+  - family-names: "Schultz"
+    given-names: "Nikolaus" 
+  doi: "10.1093/bioinformatics/btx149"
+  journal: "Bioinformatics"
+  month: 7
+  start: 2238 # First page number
+  end: 2240 # Last page number
+  title: "PathwayMapper: a collaborative visual web editor for cancer pathways and genomic data"
+  issue: 14
+  volume: 33
+  year: 2017
