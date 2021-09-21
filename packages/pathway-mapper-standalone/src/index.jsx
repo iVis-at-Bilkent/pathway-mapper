@@ -22,25 +22,10 @@ window.onload = () => {
   
   let a = 127;
   localStorage.setItem(a, 10);
-  //console.log(localStorage.getItem(127));
-  //console.log(localStorage.getItem(a));
 
   if( localStorage.getItem("numberOfUsersSoFar") === undefined )
       localStorage.setItem("numberOfUsersSoFar", 0);
   localStorage.setItem("chat" + 12345, 5);
-  //console.log(localStorage.getItem("chat12345"));
-
-  /*if( localStorage.getItem("datas") === undefined)
-      localStorage.setItem("datas", [] );
-  localStorage.setItem("datas", [1 , 2, 3, 4, 5, 6, 7, 819] );
-  let arr = localStorage.getItem("datas");
-
-  console.log(arr[0]);
-  
-  console.log(arr[1] + " " + arr[2] +  " " + arr[3] + " " + arr[8] + " " + arr.length ) ;
-
-  console.log(username);*/
-
 
   let genes = [];
   if(genesParam){
@@ -108,10 +93,8 @@ window.onload = () => {
         let chatId = "chat" + id;
         if( localStorage.getItem(chatId + "numberOfUsers") === undefined || localStorage.getItem(chatId + "numberOfUsers") === null)
             localStorage.setItem(chatId + "numberOfUsers", 0);
-        console.log(localStorage.getItem(chatId + "numberOfUsers"));
         let numberOfUsers =  localStorage.getItem(chatId + "numberOfUsers");
         for( let i = 0; i < numberOfUsers; i+=2 ){
-             console.log( i ); 
              let userNameinStorage = localStorage.getItem(chatId + i);
              if( userNameinStorage === username) {
                  let j = i + 1;
@@ -127,7 +110,6 @@ window.onload = () => {
       let userId = -1 ;
       if( isCollaborative && id !== null){
         let chatId = "chat" + id;
-        //console.log(chatId)
         if( localStorage.getItem(chatId + "numberOfUsers") === undefined)
             localStorage.setItem(chatId + "numberOfUsers", 0);
         let numberOfUsers =  localStorage.getItem(chatId + "numberOfUsers");
@@ -137,11 +119,9 @@ window.onload = () => {
                  let j = i + 1;
                  userId = localStorage.getItem(chatId + j);
                  userId = convertToNumber( userId);
-                 console.log(userId);
              }
         }  
       }
-      //toast.warn(username + "ssssss");
       render(<PathwayMapper isCBioPortal={false} isCollaborative={isCollaborative} genes={genes} pathwayName={pathwayName} alterationData={alterationData} userName = {username} userId = {userId}/>, rootEl);
     }
     if (module.hot) {

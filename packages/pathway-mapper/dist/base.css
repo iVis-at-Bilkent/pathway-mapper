@@ -890,10 +890,6 @@ font-size: 14px;
 
 .ChatBox {
     width: 250px;
-    /*height: 400px;
-    background-color: lightblue;
-    border-radius: 10px;
-    border: 3px solid grey;*/
     position: absolute;
     margin-top:  0px;
     cursor: move;
@@ -901,23 +897,27 @@ font-size: 14px;
     background-color: #C0C0C0;
     border-style: solid;
     border-color:#1abc9c;
-    
-    
-   
-    /*top: 35px;
-    left: 748px;*/
 }
 
+.chatBoxBody {
+  resize:vertical;
+  overflow: auto;
+  max-height: 200px;
+}
 
 /*.chatBoxBorder{
   border-style: solid;
   border-color: red;
+  resize:both;
+  overflow: auto;
 }*/
+
 .closeChat{
   width: 10px;
   height: 10px;
   text-align: center;
 }
+
 .messageText {
    width :200px;
    white-space: 'pre-line';
@@ -925,6 +925,7 @@ font-size: 14px;
    margin-left: 4px;
    margin-top: 2px;
    margin-bottom: 2px;
+   font-family: monospace;
 }
 
 .ChatBoxHidden {
@@ -940,8 +941,9 @@ font-size: 14px;
   width: 100px;
   text-align: right;
   white-space: pre-line;
-  font-size: 8px;
+  font-size: 9px;
   font-weight: normal;
+  font-family: monospace;
 }
 
 .OtherMessageDate{
@@ -953,64 +955,32 @@ font-size: 14px;
   width: 100px;
   text-align: left;
   white-space: pre-line;
-  font-size: 8px;
+  font-size: 9px;
   font-weight: normal;
+  font-family: monospace;
 }
 
-
 .MyMessage{
-
-    
     background-color: #DCDCDC;
     text-emphasis-color: white;
     min-height: 10px;
     padding-left: 2px;
-    /*border-radius: 5px;
-    text-align: left;
-    margin-right: 0px;
-    /*width: 120px;
- 
-    /*display: flex;
-    border-bottom: 1px solid #ebe7fb;
-    padding-bottom: 10px;
-    cursor: pointer;
-    font-size: 10px;
-    margin-left: 0px;
-    padding: 0px 0px 0px 0px;
-    padding-left: 0px;*/
-    
     border-radius: 5px;
     width: 150px;
     text-align: left;
     font-size: 10px;
     margin-right: 5px;
     margin-top: 5px;
-    
-    /*width : 120px;
-
-    /*display: flex;*/
+    font-family: monospace;
     border-bottom: 1px solid #ebe7fb;
     cursor: pointer;
-
-
     transition: all 0.3s cubic-bezier(0.88, 0.19, 0.37, 1.11);
     transform: scale(0);
     animation-name: showIn;
-    animation-duration: 0.2s; /* or: Xms 
-    animation-iteration-count: 1;
-    animation-direction: normal; /* or: normal 
-    animation-timing-function: cubic-bezier(
-      0.88,
-      0.19,
-      0.37,
-      1.11
-    ); /* or: ease, ease-in, ease-in-out, linear, cubic-bezier(x1, y1, x2, y2) */
+    animation-duration: 0.2s;
     animation-fill-mode: both; /* or: backwards, both, none */
     animation-delay: 0.1s;
-
-
 }
-
 
 .OtherMessage{
     margin-left: 5px;
@@ -1020,28 +990,12 @@ font-size: 14px;
     background-color: #808080;
     font-size: 10px;
     margin-top: 5px;
-    /*width : 120px;
-
-    /*display: flex;*/
+    font-family: monospace;
     border-bottom: 1px solid #ebe7fb;
     cursor: pointer;
     color : white;
     border-color: #808080;
     padding-left: 2px;
-
-    /*padding: 10px 10px 10px 20px;
-    transition: all 0.3s cubic-bezier(0.88, 0.19, 0.37, 1.11);
-    transform: scale(0);
-    animation-name: showIn;
-    animation-duration: 0.2s; /* or: Xms 
-    animation-iteration-count: 1;
-    animation-direction: normal; /* or: normal 
-    animation-timing-function: cubic-bezier(
-      0.88,
-      0.19,
-      0.37,
-      1.11
-    ); /* or: ease, ease-in, ease-in-out, linear, cubic-bezier(x1, y1, x2, y2) */
     animation-fill-mode: both; /* or: backwards, both, none */
     animation-delay: 0.1s;
 
@@ -1050,7 +1004,6 @@ font-size: 14px;
 .chatBoxButton{
   height: 25px;
 }
-
 
 .chatButtons{
   margin-left:5px;
@@ -1072,7 +1025,7 @@ font-size: 14px;
 
 .ChatBoxTitle{
   text-align: center;
-  height: 10px;
+  height: 15px;
 }
 
 .ChatBoxTitle2{
@@ -1081,17 +1034,11 @@ font-size: 14px;
 }
 
 .MessageButton {
-    /*height: 400px;
-    background-color: lightblue;
-    border-radius: 10px;
-    border: 3px solid grey;*/
     cursor: pointer;
     position: absolute;
     user-select: text;
     z-index: 1041;
     display:inline-flex;
-    /*top: 35px;
-    left: 748px;*/
 }
 
 .main__chatlist {
@@ -1206,29 +1153,6 @@ font-size: 14px;
     border: 0px solid transparent;
     text-shadow: 0px 0px 0px transparent;
   }
-  
-  /*.chatlist__item .userMeta p {
-    margin: 0;
-    padding: 0;
-    color: #000;
-    font-weight: 600;
-    font-size: 14px;
-  }
-  .chatlist__item .userMeta span {
-    margin: 0;
-    padding: 0;
-    color: #ceccd3;
-    font-weight: 400;
-    font-size: 12px;
-    display: block;
-  }
-  .chatlist__item:hover,
-  .chatlist__item.active {
-    background: #fff;
-  
-    border-radius: 10px;
-  }*/
-
   .MessageDate {
     font-weight: bold;
     display: flex;

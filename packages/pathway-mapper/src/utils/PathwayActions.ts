@@ -191,7 +191,6 @@ export default class PathwayActions {
 
   @autobind
   setPathwayInfo(other: IPathwayInfo) {
-    toast.warn("ziyaaaaaaaaaaaaaaaaa");
     this.fileManager.setPathwayInfo(other);
   }
 
@@ -245,9 +244,7 @@ changePathwayTitle(pathwayTitle : string){
   @autobind
   changePathway(pathwayName: string) {
     this.pathwayHandler(pathwayName);
-    toast.warn("ziyaaaaaaa");
     if (!this.isCBioPortal) {
-      this.updatePathwayTitle(pathwayName);
       this.fileManager.setPathwayInfo({
         pathwayTitle: pathwayName,
         pathwayDetails: "",

@@ -211,12 +211,10 @@ export default class EditorActionsManager{
 
 
     getDBId(){
-        console.log( this.shareDBManager.doc.data[this.shareDBManager.WORK_ID] );
         return this.shareDBManager.doc.data[this.shareDBManager.WORK_ID];
     }
     updatePathwayTitleBack( pathwayTitle : string){
         this.updatePathwayTitleCallback( pathwayTitle);
-
     }
     updateMessages( message : ChatMessageMetaData ){
        this.newMessageCallback( message );
@@ -233,8 +231,11 @@ export default class EditorActionsManager{
               };
             this.newMessageCallback(newMessage);
         }
+        setTimeout(this.updateChatBoxHeight,850 );
     }
-
+    updateChatBoxHeight(){
+        document.getElementById('chatBoxxheader').children[0].scrollTop = document.getElementById('chatBoxxheader').children[0].scrollHeight;
+    }
     getMessageCount(){
         return this.shareDBManager.doc.data[this.shareDBManager.CHAT_MESSAGES_COUNT];
     }
@@ -1935,17 +1936,11 @@ export default class EditorActionsManager{
         this.shareDBManager.incrementNumberOfUsers();
     }
     getUserId(){
-        console.log("aaaa");
-        console.log(this.shareDBManager.doc.data[this.shareDBManager.NUMBER_OF_USERS]);
-        console.log( this.shareDBManager.doc.data[this.shareDBManager.CHAT_MESSAGES_COUNT]);
         let userId = this.shareDBManager.doc.data[this.shareDBManager.NUMBER_OF_USERS];
         return userId;
-        return 1;
     }
 
     updateMessageCount( messageCount : number){
-        console.log("Step 2");
-        console.log(messageCount);
         this.incrementChatMessageCountCallback( messageCount);
     }
     updateGenomicDataColorSchemeHandler(op: any)

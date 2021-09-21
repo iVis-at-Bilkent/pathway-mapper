@@ -69,17 +69,13 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
     }
 
     changeScroll(){
-      document.getElementById('chatBoxxheader').children[1].scrollTop = document.getElementById('chatBoxxheader').children[1].scrollHeight;
+      document.getElementById('chatBoxxheader').children[0].scrollTop = document.getElementById('chatBoxxheader').children[0].scrollHeight;
     }
     @action.bound
     openChat(){
       this.showChat = !this.showChat;
       setTimeout(this.changeScroll, 50);
-      
     }
-
-   
-
 
 
     render(){
@@ -156,8 +152,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
               
                 
               <div id = "chat-box" className = "chatBoxBorder">
-              <ChatBox  messages = {this.props.messages} addMessage = {this.props.addMessage} showChat = {this.showChat} username = {this.props.username} openChat = {this.openChat} userId = {this.props.userId}/>
-              
+              <ChatBox  messages = {this.props.messages} addMessage = {this.props.addMessage} showChat = {this.showChat} username = {this.props.username} openChat = {this.openChat} userId = {this.props.userId}  />   
               </div>
               </Panel>
               </div>
@@ -172,7 +167,6 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                   Network
                 </Panel.Heading>
                 <Panel.Body className="pnl-body pathwayPanel">
-                    
                     <div className="buttonContainer">
                         <Button onClick={() => {this.props.handleOpen(EModalType.PW_DETAILS)}}>Properties</Button>
                     </div>

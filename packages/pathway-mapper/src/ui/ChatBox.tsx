@@ -1,4 +1,4 @@
-import autobind from "autobind-decorator";
+import autobind, { boundMethod } from "autobind-decorator";
 import { action, computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React ,{Component} from "react";
@@ -32,6 +32,7 @@ export default class ChatBox extends React.Component<ChatBoxProps, {}>{
 
   
   message: string = "";
+  charactersPerLine: number = 20;
 
   constructor(props: ChatBoxProps) {
     super(props);
@@ -48,11 +49,50 @@ export default class ChatBox extends React.Component<ChatBoxProps, {}>{
 
   convertMessage( message: string){
     let convertedMessage = "";
-    for( let i = 0; i < message.length; i++){
-        if( i > 0 && i %30 === 0)
+    let index = 0;
+    
+    while(index < message.length) {
+      let lastIndexinLine = index + this.charactersPerLine - 1;
+      if( lastIndexinLine >= message.length - 1 ){
+          lastIndexinLine = message.length - 1;
+      }
+
+      else if( message.charAt( lastIndexinLine +  1 ) === " " ) {
+          
+      }
+      else {
+        while( lastIndexinLine >= 0 ) {
+          if( message.charAt( lastIndexinLine) === " "  ){
+              break;
+          }
+          lastIndexinLine = lastIndexinLine - 1;
+        }
+      }
+      if( index > lastIndexinLine ){
+          for( let i = index ;  i < index + this.charactersPerLine; i++){
+               convertedMessage = convertedMessage + message.charAt( i );
+          }
+          convertedMessage = convertedMessage + "-";
+          convertedMessage = convertedMessage + "\n";
+          index = index + this.charactersPerLine;
+      }                      
+      else {
+        for( let i = index ;  i <= lastIndexinLine; i++){
+          convertedMessage = convertedMessage + message.charAt( i );
+     }
+     convertedMessage = convertedMessage + "\n";
+     index = lastIndexinLine + 1;
+      }                                                                                                                                     
+    }  
+    /*for( let i = 0; i < message.length; i++){
+        if( i > 0 && i % 20 === 0){
+            if( message.charAt(i - 1 ) !== " " && message.charAt( i ) !== " " )
+            convertedMessage = convertedMessage + "-" + "\n";
+            else 
             convertedMessage = convertedMessage + "\n";
+        }
         convertedMessage = convertedMessage + message.charAt(i);
-    }
+    }*/
     return convertedMessage;
   }
 
@@ -72,26 +112,16 @@ export default class ChatBox extends React.Component<ChatBoxProps, {}>{
     this.handleElement(document.getElementById("message-text"));
     this.props.addMessage(this.convertMessage(this.message));
     this.message = "";
-
  }
  
  handleChange(event){
     this.message = event.target.value;
  }
 
-
-dragElement(elmnt) {
+ @autobind
+ dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  if( elmnt.id === "chatBoxxbutton"){
-    return ;
-  }
-  if (document.getElementById(elmnt.id + "header")) {
-    /* if present, the header is where you move the DIV from:*/
-    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-  } else {
-    /* otherwise, move the DIV from anywhere inside the DIV:*/
-    elmnt.onmousedown = dragMouseDown;
-  }
+  document.getElementById("chatBoxxDrag").onmousedown = dragMouseDown;
 
   function dragMouseDown(e) {
     e = e || window.event;
@@ -104,8 +134,6 @@ dragElement(elmnt) {
     document.onmousemove = elementDrag;
   }
 
-
-  
   function elementDrag(e) {
     e = e || window.event;
     e.preventDefault();
@@ -119,7 +147,7 @@ dragElement(elmnt) {
     elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
   }
 
-  function closeDragElement() {
+   function closeDragElement() {
     /* stop moving when mouse button is released:  <div className = {this.props.showChat ? "ChatBox" : "ChatBoxHidden"}  style={this.state.styles} onMouseDown={this._dragStart} onMouseMove={this._dragging} onMouseUp={this._dragEnd}>
     */
     document.onmouseup = null;
@@ -127,28 +155,24 @@ dragElement(elmnt) {
   }
 }
 
+
   render() {
     return (
-      <div id = "chatBoxx" className = {this.props.showChat ? "ChatBox" : "ChatBoxHidden"}   onMouseDown={()=>this.dragElement(document.getElementById("chatBoxx"))} >
-           
-           <div id = "chatBoxxheader">
-               <div className = "ChatBoxTitle" ></div>
-            <ListGroup
+      <div id = "chatBoxx" className = {this.props.showChat ? "ChatBox" : "ChatBoxHidden"}   onMouseEnter = {()=> this.dragElement(document.getElementById("chatBoxx"))} onMouseDown={()=>{this.dragElement(document.getElementById("chatBoxx"))}} >
+            <div id = "chatBoxxDrag" className = "ChatBoxTitle" > </div>
+           <div id = "chatBoxxheader" >
+              
+           <ListGroup
               style={{
-                maxHeight: "200px",
+                height: "200px"  ,
                 overflow: "auto",
+                resize: "vertical"
               }}
             >
               { 
                 this.props.messages
                   .map( (message) => {
                      const id = message.id;
-                     console.log(id + " " + message.message + " " + message.username + " " + message.userId + " " + this.props.userId + " " + (this.props.userId === message.userId) );
-                     console.log(this.props.userId);
-                     //console.log(message.userId);
-                     console.log(message.message);
-                     if( this.props.userId !== message.userId)
-                         console.log( this.props.userId + " " + message.userId + " " + ( this.props.userId - message.userId))
                      if( message.username === this.props.username &&  this.props.userId === message.userId ) {
                     return (
                         <div className = "MessageDate">
@@ -162,14 +186,13 @@ dragElement(elmnt) {
                         <div className = "MessageDate">
                         <ChatMessage message = {message} username = {this.props.username} userId = {this.props.userId} />
                         <div  className = "OtherMessageDate"  > {message.date} </div>
-                       </div>
-                    );
+                        </div>
+                        );
                     }
 
                       })
               }
-             </ListGroup> 
-
+             </ListGroup>            
             </div>          
 
              <div className = "ChatBoxTitle2" ></div>  
@@ -182,9 +205,6 @@ dragElement(elmnt) {
             </form>
             </div>
             <div className = "ChatBoxTitle2" ></div>
-                                              
-               
-
       </div>
     );
   }

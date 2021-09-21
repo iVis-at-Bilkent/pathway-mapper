@@ -342,40 +342,30 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   }
   @action.bound
   addMessage( Message: string){
-    console.log(Message);
-    console.log(this.simplifyDate(Date().toLocaleString()));
+    if( Message === "" ){
+        return ;
+    }
     if( this.userId === -1 ){
       let db_id = this.editor.getDBId();
       if(localStorage.getItem( "chat" + db_id + "numberOfUsers") === null )
          localStorage.setItem( "chat" + db_id + "numberOfUsers", "" + 0);
       let numberOfUsersInLocal = localStorage.getItem( "chat" + db_id + "numberOfUsers");
-      
-      console.log(numberOfUsersInLocal);
-      //return ;
-
       let numberOfUsersConverted = this.convertToNumber( numberOfUsersInLocal );
 
       this.userId = this.editor.getUserId();
       this.userId += 1;
       this.editor.incrementNumberOfUsers();  
-      
-      //numberOfUsersiInLocal = this.incrementByOne( numberOfUsersInLocal) ;
-     
-      console.log(numberOfUsersConverted);
 
       localStorage.setItem( "chat" + db_id + numberOfUsersConverted, this.props.userName);
       numberOfUsersConverted += 1;
-      //var newUserId = convertString(this.userId );
       localStorage.setItem( "chat" + db_id + numberOfUsersConverted,  "" + this.userId );
       numberOfUsersConverted += 1;
 
       localStorage.setItem( "chat" + db_id + "numberOfUsers",  "" + numberOfUsersConverted) ;
 
-      console.log( this.userId + " " + numberOfUsersInLocal );
       
 
   }
-    console.log(this.userId);
     const newMessage = {
       message : Message,
       username : this.props.userName,
@@ -385,12 +375,11 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
       date: this.simplifyDate(Date().toLocaleString())
     };
 
-    console.log(newMessage);
     this.addChatMessage(newMessage);
     setTimeout(this.updateScroll,50);
   }
   updateScroll(){
-    document.getElementById('chatBoxxheader').children[1].scrollTop = document.getElementById('chatBoxxheader').children[1].scrollHeight;
+    document.getElementById('chatBoxxheader').children[0].scrollTop = document.getElementById('chatBoxxheader').children[0].scrollHeight;
   }
 
   convertCharacter( character ){
@@ -428,12 +417,8 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
 
   @action.bound
   addChatMessage( newMessage : ChatMessageMetaData){
-    console.log(newMessage);
-    console.log(this.userId);
-  
     this.editor.addNewMessage( newMessage, this.chatMessagesCount);
     this.editor.incrementMessageCount();
-   // this.displayMessages();
   }
   
 
@@ -677,6 +662,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   @autobind
   newMessageCallback( message : ChatMessageMetaData ){
     this.chatMessages.push(message);
+    setTimeout(this.updateScroll,50);
   }
 
   @autobind

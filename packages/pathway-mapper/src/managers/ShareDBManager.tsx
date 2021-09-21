@@ -144,7 +144,6 @@ export default class ShareDBManager {
     */
 
     getUserId() {
-        console.log(this.doc.data[this.NUMBER_OF_USERS]);
       return this.doc.data[this.NUMBER_OF_USERS];
     }
 
@@ -156,12 +155,9 @@ export default class ShareDBManager {
         this.doc.submitOp([{p: [this.NUMBER_OF_USERS], na: 1}], this.shareDBError);
     }
 
-    
-
     addNewMessage( object : ChatMessageMetaData, chatMessageKey : number){
         this.doc.submitOp([{p: [this.CHAT_APPLICATION_NAME, chatMessageKey], oi: object}], this.shareDBError);
     };
-
 
     updateShareDBGlobalOptions(object) {
         this.doc.submitOp([{
@@ -519,18 +515,10 @@ export default class ShareDBManager {
                 var isReplaceEvent = self.isShareDBReplaceEvent(handleOp);
 
                 if( path === self.CHAT_APPLICATION_NAME){
-                   // toast.warn("ziyaaa");
-                    //toast.warn(op.length);
                     self.editor.updateMessages( self.doc.data[self.CHAT_APPLICATION_NAME][handleOp.p[1]]);
-                       
-                    
-                   
                 }
                 if( path === self.CHAT_MESSAGES_COUNT){
-                    console.log("Step 1");
-                    //toast.warn("ziyaaaa");
                     self.editor.updateMessageCount(self.doc.data[self.CHAT_MESSAGES_COUNT]);
-                    //toast.warn(op.length);
                 }
                 
                 if( path === self.PATHWAY_TITLE ){

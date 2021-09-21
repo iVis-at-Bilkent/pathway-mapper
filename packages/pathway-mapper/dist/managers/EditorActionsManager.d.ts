@@ -38,6 +38,7 @@ export default class EditorActionsManager {
     updatePathwayTitleBack(pathwayTitle: string): void;
     updateMessages(message: ChatMessageMetaData): void;
     loadMessages(messages: ChatMessageMetaData[]): void;
+    updateChatBoxHeight(): void;
     getMessageCount(): any;
     incrementMessageCount(): void;
     addNewMessage(chatMessage: ChatMessageMetaData, chatMessageKey: number): void;

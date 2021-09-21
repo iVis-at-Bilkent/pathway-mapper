@@ -11,6 +11,7 @@ interface ChatBoxProps {
 }
 export default class ChatBox extends React.Component<ChatBoxProps, {}> {
     message: string;
+    charactersPerLine: number;
     constructor(props: ChatBoxProps);
     convertMessage(message: string): string;
     handleClose(): void;
