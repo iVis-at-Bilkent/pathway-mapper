@@ -554,9 +554,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
               this.includePathway(pathwayData);
           }
       }
-     
     }
-
 
   loadRedirectedPortalData(){
 
@@ -844,7 +842,6 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   handleOpen(modalId: EModalType){
     this.isModalShown[modalId] = true;
   }
-
 
   @action.bound
   handleClose(modalId: EModalType){

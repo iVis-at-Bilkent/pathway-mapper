@@ -11,10 +11,8 @@ interface LoginPageProps{
     userName: string;
 }
 
-
 @observer
 export default class LoginPage extends React.Component<LoginPageProps, {}>{
-
 
     username :string = "";
 
@@ -34,7 +32,7 @@ export default class LoginPage extends React.Component<LoginPageProps, {}>{
     }
 
     render(){
-
+        
         return (
         <div className="pathwayMapper ">
             <div className="welcomePageContainer centerText">
@@ -53,7 +51,6 @@ export default class LoginPage extends React.Component<LoginPageProps, {}>{
                              <input style = {{marginLeft: "5px"}} type="submit" value="Continue" />
                              </form>
                         </Row>
-
                     </Grid>
                 </div>
                 <ReactTooltip className="pmTip" />
@@ -61,6 +58,4 @@ export default class LoginPage extends React.Component<LoginPageProps, {}>{
         </div>
         );
     }
-
-
 }

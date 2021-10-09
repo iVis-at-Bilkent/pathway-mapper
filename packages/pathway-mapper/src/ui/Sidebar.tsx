@@ -215,7 +215,6 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
                 </Panel.Body>
               </Panel>
               </div>
-              
         );
       }
     }

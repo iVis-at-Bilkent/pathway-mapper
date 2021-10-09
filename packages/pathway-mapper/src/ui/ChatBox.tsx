@@ -4,7 +4,6 @@ import { observer } from "mobx-react";
 import React ,{Component} from "react";
 import ChatMessage from "./ChatMessage";
 import "../css/supp.css";
-
 import {
   Button,
   Checkbox,
@@ -30,9 +29,8 @@ interface ChatBoxProps {
 @observer
 export default class ChatBox extends React.Component<ChatBoxProps, {}>{
 
-  
   message: string = "";
-  charactersPerLine: number = 20;
+  charactersPerLine: number = 21;
 
   constructor(props: ChatBoxProps) {
     super(props);
@@ -57,8 +55,7 @@ export default class ChatBox extends React.Component<ChatBoxProps, {}>{
           lastIndexinLine = message.length - 1;
       }
 
-      else if( message.charAt( lastIndexinLine +  1 ) === " " ) {
-          
+      else if( message.charAt( lastIndexinLine +  1 ) === " " ) {          
       }
       else {
         while( lastIndexinLine >= 0 ) {
@@ -84,19 +81,8 @@ export default class ChatBox extends React.Component<ChatBoxProps, {}>{
      index = lastIndexinLine + 1;
       }                                                                                                                                     
     }  
-    /*for( let i = 0; i < message.length; i++){
-        if( i > 0 && i % 20 === 0){
-            if( message.charAt(i - 1 ) !== " " && message.charAt( i ) !== " " )
-            convertedMessage = convertedMessage + "-" + "\n";
-            else 
-            convertedMessage = convertedMessage + "\n";
-        }
-        convertedMessage = convertedMessage + message.charAt(i);
-    }*/
     return convertedMessage;
   }
-
- 
 
   handleClose(){
     this.props.openChat();
@@ -159,14 +145,14 @@ export default class ChatBox extends React.Component<ChatBoxProps, {}>{
   render() {
     return (
       <div id = "chatBoxx" className = {this.props.showChat ? "ChatBox" : "ChatBoxHidden"}   onMouseEnter = {()=> this.dragElement(document.getElementById("chatBoxx"))} onMouseDown={()=>{this.dragElement(document.getElementById("chatBoxx"))}} >
-            <div id = "chatBoxxDrag" className = "ChatBoxTitle" > </div>
-           <div id = "chatBoxxheader" >
-              
+          <div id = "chatBoxxDrag" className = "ChatBoxTitle" > </div>
+           <div id = "chatBoxxheader" >    
            <ListGroup
               style={{
                 height: "200px"  ,
                 overflow: "auto",
                 resize: "vertical"
+                //color:  "#C0C0C0"
               }}
             >
               { 

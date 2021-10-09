@@ -6,12 +6,9 @@ import { toast } from 'react-toastify';
 import WelcomePage from "./WelcomePage";
 import LoginPage from "./LoginPage"
 
-
 window.onload = () => {
   const rootEl = document.getElementById('app');
   const placeHolderGenes = [/*{hugoGeneSymbol: "TP53"}, {hugoGeneSymbol: "CDKN2A"}, {hugoGeneSymbol: "CCNE1"}, {hugoGeneSymbol: "MDM4"}*/];
-
-
   const pathwayName = findGetParameter("pathwayName");
 
   const alterationJSON = findGetParameter("q");
@@ -74,8 +71,6 @@ window.onload = () => {
     }
     return converted;
   }
-
-
 
   function postWelcome(isCollaborative, userName ){
     //username = userName;

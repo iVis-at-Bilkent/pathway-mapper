@@ -9,7 +9,6 @@ interface IWelcomePageProps{
     postWelcome: Function;
 }
 
-
 @observer
 export default class WelcomePage extends React.Component<IWelcomePageProps, {}>{
 

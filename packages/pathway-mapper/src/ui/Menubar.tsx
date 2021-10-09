@@ -18,9 +18,7 @@ function truncatePathwayTitle( pathwayTitle : string){
          return   pathwayTitle;
 }
 
-
 export default class Menubar extends React.Component<IMenubarProps, {}>{
-
 
     constructor(props: IMenubarProps){
         super(props);
@@ -166,9 +164,6 @@ export default class Menubar extends React.Component<IMenubarProps, {}>{
                    </span>
                 </NavItem>
               </Nav>
-
-
-
               <Nav pullRight>
                 <Navbar.Brand>
                   <a href="#">PathwayMapper</a>
