@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuItem, Nav, Navbar, NavDropdown, NavItem } from 'react-bootstrap';
+import { MenuItem, Nav, Navbar, NavDropdown, NavItem,Button, InputGroup,Form, FormGroup, FormControl, ControlLabel, ButtonGroup } from 'react-bootstrap';
 import pathways from "../data/pathways.json";
 import ConfirmationModal from '../modals/ConfirmationModal';
 import PathwayActions from '../utils/PathwayActions';
@@ -18,9 +18,7 @@ function truncatePathwayTitle( pathwayTitle : string){
          return   pathwayTitle;
 }
 
-
 export default class Menubar extends React.Component<IMenubarProps, {}>{
-
 
     constructor(props: IMenubarProps){
         super(props);

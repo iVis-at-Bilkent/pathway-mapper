@@ -12,6 +12,9 @@ declare type PathwayMapperType = {
     onPathwayChangeCompleted: () => void;
     genomicDataOverlayColorScheme: IColorValueMap;
     colorSchemeChangeCallback: (IColorValueMap: any) => void;
+    incrementChatMessageCountCallback: (number: any) => void;
+    newMessageCallback: (ChatMessageMetaData: any) => void;
+    updatePathwayTitleCallback: (string: any) => void;
 };
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}> {
     private cy;

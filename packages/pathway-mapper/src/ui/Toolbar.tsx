@@ -19,7 +19,6 @@ const addAllImage = require("../images/toolbar/add-all.svg");
 // @ts-ignore
 const aboutImage = require("../images/toolbar/about.svg");
 
-
 interface IToolbarProps {
   pathwayActions: PathwayActions;
   selectedPathway: string;
@@ -36,7 +35,6 @@ interface IToolbarProps {
 @observer
 export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
-
     @observable
     selectedGenes: string[];
 
@@ -48,10 +46,8 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
 
       this.selectedGenes = [];
     }
-
     
     render(){
-
 
       const studyQuery = "q=" + JSON.stringify(this.props.alterationData) + "&g=" + this.props.genes.map(gene => gene.hugoGeneSymbol).join("+");
       return (

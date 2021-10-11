@@ -24,7 +24,7 @@ import ViewOperationsManager from "../managers/ViewOperationsManager";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
 import DragDropNodeAddPlugin from "../utils/DragDropNodeAddPlugin";
 import SaveLoadUtility from "../utils/SaveLoadUtility";
-import { EModalType, IColorValueMap, IProfileMetaData } from './react-pathway-mapper';
+import { ChatMessageMetaData, EModalType, IColorValueMap, IProfileMetaData } from './react-pathway-mapper';
 
 // @ts-ignore
 window.$ = $;
@@ -57,6 +57,9 @@ type PathwayMapperType = {
   onPathwayChangeCompleted: () => void;
   genomicDataOverlayColorScheme: IColorValueMap;
   colorSchemeChangeCallback: (IColorValueMap) => void;
+  incrementChatMessageCountCallback:( number) => void;
+  newMessageCallback: (ChatMessageMetaData) => void;
+  updatePathwayTitleCallback: (string) => void;
 };
 @observer
 export default class CytoscapeArea extends React.Component<PathwayMapperType, {}>{
@@ -293,7 +296,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
                                            this.portalAccessor,
                                            this.props.profiles,
                                            this.props.genomicDataOverlayColorScheme,
-                                           this.props.colorSchemeChangeCallback);
+                                           this.props.colorSchemeChangeCallback, this.props.incrementChatMessageCountCallback,this.props.newMessageCallback, this.props.updatePathwayTitleCallback);
     this.shareDBManager.setEditor(this.editor);
     if(this.isCollaborative){
       this.shareDBManager.initShareDB();
