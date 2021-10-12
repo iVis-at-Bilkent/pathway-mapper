@@ -874,18 +874,282 @@ transform: scale(0.86);
 
 .pathwayMapper .pathwayTitle {
 color:white;
-/*
-margin-right: 100px;
-margin-left: 100px;
-background-color: #0ff;
-border-top-left-radius: 12px;
-border-top-right-radius: 12px;
-border-bottom-left-radius: 12px;
-text-align: center;
-border-bottom-right-radius: 12px;*/
 height: 50px;
 display: inline; 
 font-size: 14px;
 }
+
+.ChatBox {
+    width: 250px;
+    position: absolute;
+    margin-top:  0px;
+    cursor: move;
+    z-index: 1040;
+    background-color: #C0C0C0;
+    border-style: solid;
+    border-color:#1abc9c;
+}
+
+.chatBoxBody {
+  resize:vertical;
+  overflow: auto;
+  max-height: 200px;
+}
+
+/*.chatBoxBorder{
+  border-style: solid;
+  border-color: red;
+  resize:both;
+  overflow: auto;
+}*/
+
+.closeChat{
+  width: 10px;
+  height: 10px;
+  text-align: center;
+}
+
+.messageText {
+   width :200px;
+   white-space: 'pre-line';
+   z-index: 1041;
+   margin-left: 4px;
+   margin-top: 2px;
+   margin-bottom: 2px;
+   font-family: monospace;
+}
+
+.ChatBoxHidden {
+    display:none;
+}
+
+.MyMessageDate{
+  margin-left: 0px;
+  margin-right: 2px;
+  margin-top: 8px;
+  margin-bottom: 0px;
+  padding: 0px 0px 0px 0px;
+  width: 100px;
+  text-align: right;
+  white-space: pre-line;
+  font-size: 9px;
+  font-weight: normal;
+  font-family: monospace;
+}
+
+.OtherMessageDate{
+  margin-left: 2px;
+  margin-right: 0px;
+  margin-top: 8px;
+  margin-bottom: 0px;
+  padding: 0px 0px 0px 0px;
+  width: 100px;
+  text-align: left;
+  white-space: pre-line;
+  font-size: 9px;
+  font-weight: normal;
+  font-family: monospace;
+}
+
+.MyMessage{
+    background-color: #DCDCDC;
+    text-emphasis-color: white;
+    min-height: 10px;
+    padding-left: 2px;
+    border-radius: 5px;
+    width: 150px;
+    text-align: left;
+    font-size: 10px;
+    margin-right: 5px;
+    margin-top: 5px;
+    font-family: monospace;
+    border-bottom: 1px solid #ebe7fb;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.88, 0.19, 0.37, 1.11);
+    transform: scale(0);
+    animation-name: showIn;
+    animation-duration: 0.2s;
+    animation-fill-mode: both; /* or: backwards, both, none */
+    animation-delay: 0.1s;
+}
+
+.OtherMessage{
+    margin-left: 5px;
+    border-radius: 5px;
+    width: 150px;
+    text-align: left;
+    background-color: #808080;
+    font-size: 10px;
+    margin-top: 5px;
+    font-family: monospace;
+    border-bottom: 1px solid #ebe7fb;
+    cursor: pointer;
+    color : white;
+    border-color: #808080;
+    padding-left: 2px;
+    animation-fill-mode: both; /* or: backwards, both, none */
+    animation-delay: 0.1s;
+
+}
+
+.chatBoxButton{
+  height: 25px;
+}
+
+.chatButtons{
+  margin-left:5px;
+  width :20px;
+  height: 20px;
+  white-space: 'pre-line';
+  margin-left: 16px;
+  margin-right: 0px;
+  padding: 0px 0px 0px 0px;
+  padding-right: 0px;
+  background-color: #C0C0C0;
+  border-radius: 50%;
+  outline:none;
+  background: transparent;
+  box-shadow: 0px 0px 0px transparent;
+  border: 0px solid transparent;
+  text-shadow: 0px 0px 0px transparent;
+}
+
+.ChatBoxTitle{
+  text-align: center;
+  height: 15px;
+}
+
+.ChatBoxTitle2{
+  text-align: center;
+  height: 2px;
+}
+
+.MessageButton {
+    cursor: pointer;
+    position: absolute;
+    user-select: text;
+    z-index: 1041;
+    display:inline-flex;
+}
+
+.main__chatlist {
+    border-right: 1px solid #ebe7fb;
+    padding: 0 40px 0 0px;
+    border-right: 1px solid #ebe7fb;
+    padding: 0 40px 0 0px;
+  }
+  .chatlist__heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .btn-nobg {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 10px;
+    color: #dad9dd;
+    outline: none;
+  }
+  .search_wrap {
+    background-color: #e6e5ea;
+    border-radius: 5px;
+  }
+  .search_wrap input {
+    background-color: transparent;
+    border: none;
+    padding: 15px 15px;
+    outline: none;
+    width: 80%;
+    padding-right: 0;
+  }
+  .search-btn {
+    height: 46px;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    width: 20%;
+    cursor: pointer;
+    font-size: 20px;
+  }
+  .chatlist__items {
+    margin-top: 30px;
+    overflow: auto;
+    max-height: calc(100vh - calc(100vh / 2));
+    border-right: 1px solid #ebe7fb;
+    padding: 0 40px 0 0px;
+  }
+  
+  .chatlist__item {
+    display: flex;
+    border-bottom: 1px solid #ebe7fb;
+    padding-bottom: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    padding: 10px 10px 10px 20px;
+    transition: all 0.3s cubic-bezier(0.88, 0.19, 0.37, 1.11);
+    transform: scale(0);
+    animation-name: showIn;
+    animation-duration: 0.2s; /* or: Xms */
+    animation-iteration-count: 1;
+    animation-direction: normal; /* or: normal */
+    animation-timing-function: cubic-bezier(
+      0.88,
+      0.19,
+      0.37,
+      1.11
+    ); /* or: ease, ease-in, ease-in-out, linear, cubic-bezier(x1, y1, x2, y2) */
+    animation-fill-mode: both; /* or: backwards, both, none */
+    animation-delay: 0.1s; /* or: Xms */
+  }
+  @keyframes showIn {
+    0% {
+      transform: scale(0);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  .chatlist__item:first-child {
+    margin-top: 0;
+  }
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  
+    margin-right: 20px;
+    position: relative;
+  }
+  .avatar img {
+    max-width: 100%;
+    object-fit: cover;
+  }
+
+  .chatButton{
+    margin: 0;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    /*width:49px;
+    height:27px;*/
+    background-color : #1abc9c;
+    border-color: #1abc9c;
+    outline:none;
+    background: transparent;
+    box-shadow: 0px 0px 0px transparent;
+    border: 0px solid transparent;
+    text-shadow: 0px 0px 0px transparent;
+  }
+  .MessageDate {
+    font-weight: bold;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0px;
+  }
 
 /*# sourceMappingURL=base.css.map*/

@@ -22,6 +22,7 @@ export default class PathwayActions {
     viewOperationsManager: ViewOperationsManager;
     overlayUploader: any;
     enabledType: EGridType;
+    private updatePathwayTitle;
     constructor(pathwayHandler: (pathwayName: string) => void, profiles: IProfileMetaData[], fileManager: FileOperationsManager, handleOpen: (modalId: EModalType) => void, isCBioPortal: boolean, isCollaborative: boolean);
     addProfile(profile: IProfileMetaData): void;
     clearProfiles(): void;
@@ -48,6 +49,7 @@ export default class PathwayActions {
     export(isSIFNX: boolean): void;
     resetUndoStack(): void;
     newPathway(): void;
+    changePathwayTitle(pathwayTitle: string): void;
     changePathway(pathwayName: string): void;
     highlightNeighbours(): void;
     highlightSelected(): void;

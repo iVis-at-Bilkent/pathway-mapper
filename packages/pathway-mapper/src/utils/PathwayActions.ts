@@ -1,5 +1,6 @@
 import autobind from "autobind-decorator";
 import { action, computed, makeObservable, observable } from "mobx";
+import { toast } from "react-toastify";
 import EditorActionsManager from "../managers/EditorActionsManager";
 import FileOperationsManager, {
   IPathwayInfo
@@ -35,6 +36,8 @@ export default class PathwayActions {
 
   @observable
   enabledType: EGridType;
+
+  private updatePathwayTitle :(string) => void;
 
   constructor(
     pathwayHandler: (pathwayName: string) => void,
@@ -234,10 +237,13 @@ export default class PathwayActions {
     }
   }
 
+changePathwayTitle(pathwayTitle : string){
+   this.updatePathwayTitle( pathwayTitle);
+}
+
   @autobind
   changePathway(pathwayName: string) {
     this.pathwayHandler(pathwayName);
-
     if (!this.isCBioPortal) {
       this.fileManager.setPathwayInfo({
         pathwayTitle: pathwayName,

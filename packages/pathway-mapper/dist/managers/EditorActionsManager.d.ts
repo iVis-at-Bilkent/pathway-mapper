@@ -1,5 +1,5 @@
 import { ILayoutProperties } from "../modals/LayoutProperties";
-import { IColorValueMap, IProfileMetaData } from "../ui/react-pathway-mapper";
+import { ChatMessageMetaData, IColorValueMap, IProfileMetaData } from "../ui/react-pathway-mapper";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
 import GenomicDataOverlayManager from "./GenomicDataOverlayManager";
 export default class EditorActionsManager {
@@ -21,7 +21,10 @@ export default class EditorActionsManager {
     private profiles;
     private genomicDataOverlayColorScheme;
     private colorSchemeChangeCallback;
-    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[], genomicDataOverlayColorScheme: IColorValueMap, colorSchemeChangeCallback: (IColorValueMap: any) => void);
+    private incrementChatMessageCountCallback;
+    private newMessageCallback;
+    private updatePathwayTitleCallback;
+    constructor(isCollaborative: boolean, shareDBManager: any, cyInst: any, isCBioPortal: boolean, undoRedoManager: any, portalAccessor: CBioPortalAccessor, profiles: IProfileMetaData[], genomicDataOverlayColorScheme: IColorValueMap, colorSchemeChangeCallback: (IColorValueMap: any) => void, incrementChatMessageCountCallback: (number: any) => void, newMessageCallback: (ChatMessageMetaData: any) => void, updatePathwayTitleCallback: (string: any) => void);
     setProfile(index: number, profile: IProfileMetaData): void;
     addProfile(profile: IProfileMetaData): void;
     removeProfiles(): void;
@@ -31,6 +34,14 @@ export default class EditorActionsManager {
     handleChangePositionByAlignment(movedNodeArr: any): void;
     doChangePosition(movedNodes: any): any[];
     undoChangePosition(movedNodes: any): any[];
+    getDBId(): any;
+    updatePathwayTitleBack(pathwayTitle: string): void;
+    updateMessages(message: ChatMessageMetaData): void;
+    loadMessages(messages: ChatMessageMetaData[]): void;
+    updateChatBoxHeight(): void;
+    getMessageCount(): any;
+    incrementMessageCount(): void;
+    addNewMessage(chatMessage: ChatMessageMetaData, chatMessageKey: number): void;
     changeNodePositionsByArrows(selectedNodes: any): void;
     doChangeNodeSize(args: any): any;
     undoChangeNodeSize(args: any): any;
@@ -139,6 +150,9 @@ export default class EditorActionsManager {
     shareDBGenomicDataHandler(op: any): void;
     shareDBGenomicDataGroupChangeHandler(op: any): void;
     shareDBGenomicDataVisibilityHandler(op: any): void;
+    incrementNumberOfUsers(): void;
+    getUserId(): any;
+    updateMessageCount(messageCount: number): void;
     updateGenomicDataColorSchemeHandler(op: any): void;
     resizeNodesToContent(nodes: any[]): void;
 }

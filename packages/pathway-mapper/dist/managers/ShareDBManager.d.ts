@@ -1,4 +1,4 @@
-import { IColorValueMap } from "../ui/react-pathway-mapper";
+import { ChatMessageMetaData, IColorValueMap } from "../ui/react-pathway-mapper";
 import EditorActionsManager from "./EditorActionsManager";
 export default class ShareDBManager {
     readonly NODEMAP_NAME = "nodes";
@@ -10,6 +10,11 @@ export default class ShareDBManager {
     readonly GENOMIC_DATA_GROUP_NAME = "genomicDataGroupList";
     readonly GENOMIC_DATA_GROUP_COUNT = "genomicDataGroupCount";
     readonly GENOMIC_DATA_COLOR_SCHEME_NAME = "genomicDataColorScheme";
+    readonly CHAT_APPLICATION_NAME = "chatMessages";
+    readonly CHAT_MESSAGES_COUNT = "chatMessagesCount";
+    readonly PATHWAY_TITLE = "pathwayTitle";
+    readonly NUMBER_OF_USERS = "numberOfUsers";
+    readonly WORK_ID = "id";
     doc: any;
     postFileLoad: any;
     editor: EditorActionsManager;
@@ -24,6 +29,10 @@ export default class ShareDBManager {
     initializeShareDBLayoutProperties(): void;
     initializeShareDBGlobalOptions(): void;
     updateShareDBLayoutProperties(object: any): void;
+    getUserId(): any;
+    incrementMessageCount(): void;
+    incrementNumberOfUsers(): void;
+    addNewMessage(object: ChatMessageMetaData, chatMessageKey: number): void;
     updateShareDBGlobalOptions(object: any): void;
     updateShareDBGenomicDataOverlayColorScheme(object: IColorValueMap): void;
     incrementShareDBGroupCount(): void;

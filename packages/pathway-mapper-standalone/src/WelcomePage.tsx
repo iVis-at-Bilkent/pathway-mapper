@@ -9,7 +9,6 @@ interface IWelcomePageProps{
     postWelcome: Function;
 }
 
-
 @observer
 export default class WelcomePage extends React.Component<IWelcomePageProps, {}>{
 
@@ -71,7 +70,7 @@ export default class WelcomePage extends React.Component<IWelcomePageProps, {}>{
 
                         <Row className="continueRow" style={{visibility: this.continueButtonVisibility}}>
                             <Col md={12} className="centerText">
-                            <div className="continueButton" onClick={() => {this.props.postWelcome(this.activeType === 1);}}>
+                            <div className="continueButton" onClick={() => {this.props.postWelcome(this.activeType === 1, null );}}>
                                 Continue
                             </div>
                             </Col>
