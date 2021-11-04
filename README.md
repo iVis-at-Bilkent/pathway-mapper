@@ -84,6 +84,8 @@ Then, it can be run using `yarn start`.
 
 Please note that the app runs on the port 3000 by default. To change the port follow the same steps in previous section.
 
+#### Running in Docker
+In the root folder, execute `docker build . -t pathway-mapper` to build a docker image. Then execute `docker run -p 3000:3000 -d pathway-mapper` to run a container from generated image.
 ## Sample TCGA Pathways
 
 A number of pathways from the manuscripts of The Cancer Genome Atlas (TCGA) studies and those resulting from TCGA PanCanAtlas Project are available under Network > TCGA menu items sorted alphabetically by cancer type or pathway name. For instance, following is the PI3K pathway in Glioblastoma:

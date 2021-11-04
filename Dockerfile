@@ -22,3 +22,4 @@ ENV PORT 3000
 WORKDIR /pathway-mapper
 RUN yarn build
 ENTRYPOINT yarn start
+EXPOSE 3000
