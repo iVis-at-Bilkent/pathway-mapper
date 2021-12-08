@@ -72,7 +72,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
   private isCollaborative: boolean;
   private isCbioPortal: boolean;
   private shareDBManager: ShareDBManager;
-  private cxtMenuManager: ContextMenuManager;
+  private cxtMenuManager: ContextMenuManager | undefined;
   private dragDropNodeAddManager: DragDropNodeAddPlugin;
   private undoRedoManager: any;
   private portalAccessor: CBioPortalAccessor;
@@ -301,11 +301,13 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
 
     this.qtipManager = new QtipManager(this.cy, this.editor);
     
-    this.cxtMenuManager = new ContextMenuManager(this.cy, 
-                                                this.editor,
-                                                this.props.handleOpen, 
-                                                this.undoRedoManager, 
-                                                this.props.isCollaborative);
+    this.cxtMenuManager = !this.isCbioPortal ?
+        new ContextMenuManager(this.cy,
+          this.editor,
+          this.props.handleOpen,
+          this.undoRedoManager,
+          this.props.isCollaborative
+        ) : undefined;
                                                 
     this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editor, this.cy, this.props.pathwayHandler);
 
