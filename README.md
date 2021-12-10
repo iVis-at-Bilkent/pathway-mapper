@@ -52,7 +52,10 @@ git clone https://github.com/iVis-at-Bilkent/pathway-mapper.git
 cd pathway-mapper
 yarn install
 ```
-
+- Building
+```
+yarn buildApp:dev
+```
 - Running the tool
 ```
 yarn start
