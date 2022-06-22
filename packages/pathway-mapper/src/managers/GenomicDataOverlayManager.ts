@@ -453,7 +453,7 @@ export default class GenomicDataOverlayManager {
       }
 
       let colorString = "";
-      if (percent) {
+      if (percent && Number(percent.substr(1)) !== 101 ) {
         colorString = `rgb(${Math.round(color.r)}, ${Math.round(
           color.g
         )}, ${Math.round(color.b)})`;
