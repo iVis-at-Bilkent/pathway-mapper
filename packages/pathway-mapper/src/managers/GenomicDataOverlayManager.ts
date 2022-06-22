@@ -454,7 +454,7 @@ export default class GenomicDataOverlayManager {
 
       let colorString = "";
       if (percent) {
-        colorString = `rgb(${Math.round(color.r)}, ${Math.round(
+        colorString = (percent[0] === '-' || Number(percent) > 100 )  ? "rgb(210,210,210)" : `rgb(${Math.round(color.r)}, ${Math.round(
           color.g
         )}, ${Math.round(color.b)})`;
         // Rectangle Part
@@ -474,7 +474,7 @@ export default class GenomicDataOverlayManager {
         }
         const textPercent =
           percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
-        const text = percent == -101 ? "N/P" : textPercent + "%";
+        const text = Number(percent) > 100 ? "N/P" : textPercent + "%";
         const fontSize = 14;
         const textLength = text.length;
         const xOffset = w / 2 - textLength * 4;
