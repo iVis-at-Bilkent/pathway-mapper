@@ -1,12 +1,13 @@
 /// <reference types="jquery" />
 import "tippy.js/dist/tippy.css";
-import { IColorValueMap } from "../ui/react-pathway-mapper";
+import { groupComparisonData, IColorValueMap } from "../ui/react-pathway-mapper";
 export default class GenomicDataOverlayManager {
     genomicDataMap: {};
     visibleGenomicDataMapByType: {};
     groupedGenomicDataCount: number;
     groupedGenomicDataMap: {};
     patientData: any;
+    groupComparisonData: groupComparisonData;
     private DEFAULT_VISIBLE_GENOMIC_DATA_COUNT;
     private observers;
     private cy;
@@ -22,7 +23,7 @@ export default class GenomicDataOverlayManager {
     removeGenomicVisData(): void;
     addGenomicDataWithGeneSymbol(geneSymbol: any, data: any): void;
     addGenomicGroupData(groupID: any, data: any): void;
-    addPortalGenomicData(data: any, groupID: any): void;
+    addPortalGenomicData(data: any, groupID: any, groupsToBeRendered?: any): void;
     clearAllGenomicData: () => void;
     removeGenomicData(): void;
     removeGenomicDataWithGeneSymbol(geneSymbol: any): void;
@@ -35,9 +36,11 @@ export default class GenomicDataOverlayManager {
     hideGenomicData: () => void;
     countVisibleGenomicDataByType(): number;
     generateSVGForNode(ele: any): any;
+    generateSVGForGroupComparisonNode(ele: any, groupsToBeRendered?: any): any;
     getRequiredWidthForGenomicData(genomicDataBoxCount: any): number;
     updateColorScheme(colorValueMap: IColorValueMap): void;
     showGenomicData(resizeNodeCallback?: (node: any) => void): void;
+    showGroupComparisonData(groupsToBeRendered: any[], resizeNodeCallback?: (node: any) => void): void;
     parseGenomicData(genomicData: any, groupID: any): void;
     registerObserver(observer: any): void;
     notifyObservers(): void;

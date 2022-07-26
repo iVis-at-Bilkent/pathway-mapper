@@ -237,6 +237,7 @@ export default class PathwayActions {
   @autobind
   changePathway(pathwayName: string) {
     this.pathwayHandler(pathwayName);
+    console.log("new pathway found");
 
     if (!this.isCBioPortal) {
       this.fileManager.setPathwayInfo({

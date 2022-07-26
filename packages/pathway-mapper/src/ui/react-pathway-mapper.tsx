@@ -1,6 +1,7 @@
 import autobind from "autobind-decorator";
 import { action, computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
+import { getPlainObjectKeys } from "mobx/dist/internal";
 import { IGeneticAlterationRuleSetParams } from 'oncoprintjs';
 import React from 'react';
 import { Col, Row } from "react-bootstrap";
@@ -56,6 +57,8 @@ interface IPathwayMapperProps{
   showMessage: (message: string) => void;
   //PatientView variable
   patientView ?: boolean;
+  groupComparisonView ?: boolean;
+  activeGroups ?: any[];
   messageBanner? : () => JSX.Element;
 }
 
@@ -66,7 +69,14 @@ export interface ICBioData{
   sequenced: number;
   geneticTrackData?: any[]; // TODO GeneticTrackDatum[]: this is currently a private type within cbioportal repo
   geneticTrackRuleSetParams?: IGeneticAlterationRuleSetParams;
+  groupsSet?: { [id: string]: CountSummary & { alteredPercentage: number } };
 }
+
+interface CountSummary  {
+  'alteredCount': number;
+  'name': string;
+  'profiledCount': number;
+};
 
 export interface ISampleIconData {
   sampleIndex: { [s: string]: number },
@@ -102,6 +112,10 @@ export interface IPathwayData{
 
 export interface IAlterationData{
   [key: string]: {[key: string]: number};
+}
+
+export interface groupComparisonData{
+   [key:string]: {[key:string]: number };
 }
 
 export interface IProfileMetaData{
@@ -154,6 +168,9 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   patientData: any [][] = [];
 
   @observable
+  groupComparisonData: groupComparisonData ={} ;
+
+  @observable
   pathwayGeneMap: {[key: string]: {[key: string]: string}} = {};
 
   bestPathwaysAlgos: any[][] = [];
@@ -198,11 +215,14 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
       // If cBioPortal mode is 'on' it is very likely to have cBioALterationData
       // but to be on the safe side below assertion is made.
       if(this.props.cBioAlterationData ){
-        if( this.props.patientView){
+        if( this.props.patientView === true){
           //PatientView PathwayMapper has a different functionality
           //Alteration types are overlayed instead of alterationpercentage
           this.calculatePatientData(this.props.cBioAlterationData);
           this.addSampleIconData(this.props.sampleIconData);
+        }
+        else if( this.props.groupComparisonView === true){
+          this.calculateGroupComparisonData();
         }
         else{
           this.calculateAlterationData(this.props.cBioAlterationData);
@@ -273,6 +293,40 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     });
   }
   
+  calculateGroupComparisonData(){
+    this.alterationData[PathwayMapper.CBIO_PROFILE_NAME] = {};
+    
+   /* const allTypes = cBioAlterationData.map(x => x.gene); 
+    //const allTypes = cBioAlterationData.map(x => x.percentAltered);
+    const uniqueTypes = allTypes.filter((x, i, a) => a.indexOf(x) == i)
+    //This is a flag for GenomicDataOverlayManager showPatientData*/
+    //this.groupComparisonData["groupComparisonView"] =  ;
+
+   /* uniqueTypes.forEach(x => {
+      this.patientData[x]= {};
+    });
+
+    cBioAlterationData.forEach((geneAltData: ICBioData) => {
+      const perc = (geneAltData.altered / geneAltData.sequenced) * 100;
+
+      this.alterationData[PathwayMapper.CBIO_PROFILE_NAME][geneAltData.gene] = ((Object.is(perc, NaN) ? -101 : perc));
+
+      this.patientData[geneAltData.gene][geneAltData.percentAltered] = ((Object.is(perc, NaN) ? -101 : perc));
+      this.patientData[geneAltData.gene]["geneticTrackData"] = geneAltData.geneticTrackData;
+      this.patientData[geneAltData.gene]["geneticTrackRuleSetParams"] = geneAltData.geneticTrackRuleSetParams;
+    });*/
+    let i : number = 0;
+    let j : number = 0;                                                         //groupsSet[this.store.activeGroups?.result[0].nameWithOrdinal
+    for( i = 0; i < this.props.genes.length; i++){
+      this.groupComparisonData[this.props.genes[i].hugoGeneSymbol] = {};
+         for( j = 0; j < this.props.activeGroups.length; j++){
+         this.groupComparisonData[this.props.genes[i].hugoGeneSymbol][
+          this.props.activeGroups[j].nameWithOrdinal] = this.props.genes[i].groupsSet[
+            this.props.activeGroups[j].nameWithOrdinal].alteredPercentage;
+          }
+    }
+  }
+
   calculatePatientData(cBioAlterationData: ICBioData[]){
     // Transform cBioDataAlteration into Patient Data every alteration is accepted 100% altered
 
@@ -363,13 +417,16 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
           const genesMatching = [];
             // Calculate sum of all alterations
             let sumOfAlterations = 0;
+            let geneIndex = 0;
             for(const gene of this.props.genes){
               
                 if(this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) 
                     && this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE"){
                   genesMatching.push(gene.hugoGeneSymbol);
-                  sumOfAlterations += alterationPerGene[gene.hugoGeneSymbol];
+                  sumOfAlterations += (this.props.groupComparisonView === true ?  
+                    this.props.genes[geneIndex].groupsSet[this.props.genes[geneIndex].enrichedGroup].alteredPercentage : alterationPerGene[gene.hugoGeneSymbol] ) ;
                 }
+                geneIndex++;
             }
             matchedGenesMap[pathwayName] = genesMatching;
             let geneCount = 0;
@@ -400,6 +457,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
       this.setSelectedPathway(bestPathways[0].pathwayName);
     this.bestPathwaysAlgos.push(bestPathways);
+    console.log(bestPathways);
   }
   
   // This method extracts all genes of a pathway and adds it to the pathwayGeneMap
@@ -409,11 +467,12 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   includePathway(pathwayData?: IPathwayData, pathwayName?: string){
     const genes = pathwayData.nodes;
     const geneHash: any = {};
-
+    
     for(const gene of genes){
 
-      if(gene.data.type === "GENE")
+      if(gene.data.type === "GENE"){
         geneHash[gene.data.name] = gene.data.type;
+      }
     }
 
     this.pathwayGeneMap[pathwayData.title] = geneHash;
@@ -713,6 +772,9 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     if(this.props.isCBioPortal){
       if(this.props.patientView){
         this.editor.addPortalGenomicData(this.patientData, this.editor.getEmptyGroupID());
+      }
+      else if( this.props.groupComparisonView === true){
+        this.editor.addPortalGenomicData(this.groupComparisonData, this.editor.getEmptyGroupID(), this.props.activeGroups);
       }
       else{
       this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());

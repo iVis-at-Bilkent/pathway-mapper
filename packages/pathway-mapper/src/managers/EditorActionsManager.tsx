@@ -1801,7 +1801,7 @@ export default class EditorActionsManager {
         });
     }
 
-    addPortalGenomicData(genomicData: any, groupID: any)
+    addPortalGenomicData(genomicData: any, groupID: any, activeGroups?: any[])
     {
         
         if(this.isCollaborative)
@@ -1814,6 +1814,9 @@ export default class EditorActionsManager {
         }
         else
         {
+            if( activeGroups !== undefined)
+            this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID, activeGroups);
+            else
             this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
         }
     }

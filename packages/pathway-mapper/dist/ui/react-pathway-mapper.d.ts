@@ -27,6 +27,8 @@ interface IPathwayMapperProps {
     toast: any;
     showMessage: (message: string) => void;
     patientView?: boolean;
+    groupComparisonView?: boolean;
+    activeGroups?: any[];
     messageBanner?: () => JSX.Element;
 }
 export interface ICBioData {
@@ -36,6 +38,16 @@ export interface ICBioData {
     sequenced: number;
     geneticTrackData?: any[];
     geneticTrackRuleSetParams?: IGeneticAlterationRuleSetParams;
+    groupsSet?: {
+        [id: string]: CountSummary & {
+            alteredPercentage: number;
+        };
+    };
+}
+interface CountSummary {
+    'alteredCount': number;
+    'name': string;
+    'profiledCount': number;
 }
 export interface ISampleIconData {
     sampleIndex: {
@@ -74,6 +86,11 @@ export interface IAlterationData {
         [key: string]: number;
     };
 }
+export interface groupComparisonData {
+    [key: string]: {
+        [key: string]: number;
+    };
+}
 export interface IProfileMetaData {
     profileId: string;
     studyId?: string;
@@ -101,6 +118,7 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     portalAccessor: CBioPortalAccessor;
     alterationData: IAlterationData;
     patientData: any[][];
+    groupComparisonData: groupComparisonData;
     pathwayGeneMap: {
         [key: string]: {
             [key: string]: string;
@@ -119,6 +137,7 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     addProfile(profile: IProfileMetaData): void;
     toggleProfileEnabled(index: number): void;
     calculateAlterationData(cBioAlterationData: ICBioData[]): void;
+    calculateGroupComparisonData(): void;
     calculatePatientData(cBioAlterationData: ICBioData[]): void;
     addSampleIconData(sampleIconData: any): void;
     getGeneStudyMap(studyGeneMap: any): any;

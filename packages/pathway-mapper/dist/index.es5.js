@@ -3222,6 +3222,12 @@ function () {
       writable: true,
       value: void 0
     });
+    Object.defineProperty(this, "groupComparisonData", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
     Object.defineProperty(this, "DEFAULT_VISIBLE_GENOMIC_DATA_COUNT", {
       enumerable: true,
       configurable: true,
@@ -3429,7 +3435,9 @@ function () {
     enumerable: false,
     configurable: true,
     writable: true,
-    value: function (data, groupID) {
+    value: function (data, groupID, groupsToBeRendered) {
+      this.groupComparisonData = data;
+
       for (var _i = 0, _a = Object.keys(data); _i < _a.length; _i++) {
         var cancerStudy = _a[_i];
         this.visibleGenomicDataMapByType[cancerStudy] = true; // Group current cancer study according to the groupID
@@ -3452,6 +3460,8 @@ function () {
       if (data["PatientView"] == 1) {
         this.patientData = data;
         this.showPatientData();
+      } else if (groupsToBeRendered !== undefined) {
+        this.showGroupComparisonData(groupsToBeRendered);
       } else {
         this.showGenomicData();
       }
@@ -3731,6 +3741,236 @@ function () {
 
       return svg;
     }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "generateSVGForGroupComparisonNode", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (ele, groupsToBeRendered) {
+      var genomicDataBoxCount = 0; // Experimental data overlay part !
+
+      var dataURI = "data:image/svg+xml;utf8,";
+      var svgNameSpace = "http://www.w3.org/2000/svg";
+      var nodeLabel = ele.data("name"); // If there is no genomic data for this node return !
+
+      if (!Object.keys(this.groupComparisonData).includes(nodeLabel)) {
+        return dataURI;
+      }
+
+      var eleBBox = ele.boundingBox();
+      var reqWidth = this.getRequiredWidthForGenomicData(groupsToBeRendered.length);
+      var overlayRecBoxW = reqWidth - 10;
+      var overlayRecBoxH = 25;
+      var svg = document.createElementNS(svgNameSpace, "svg"); // It seems this should be set according to the node size !
+
+      svg.setAttribute("width", reqWidth);
+      svg.setAttribute("height", eleBBox.h); // This is important you need to include this to succesfully render in cytoscape.js!
+
+      svg.setAttribute("xmlns", svgNameSpace);
+      ele.style("width", reqWidth + 10); // Overlay Data Rect
+
+      var overLayRectBBox = {
+        w: overlayRecBoxW,
+        h: overlayRecBoxH,
+        x: reqWidth / 2 - overlayRecBoxW / 2,
+        y: eleBBox.h / 2 + overlayRecBoxH / 2 - 18
+      };
+      var maxGenomicDataBoxCount = groupsToBeRendered.length;
+      var genomicBoxCounter = 0;
+
+      for (var i in this.groupComparisonData) {
+        for (var j in this.groupComparisonData[i]) {
+          var percentageInGroup = this.groupComparisonData[i][j];
+
+          if (percentageInGroup !== undefined && i === nodeLabel) {
+            genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount - 2, overLayRectBBox.h, percentageInGroup, svg, this.colorScheme, groupsToBeRendered[genomicBoxCounter].color);
+            genomicBoxCounter++;
+          } else if (i === nodeLabel) {
+            genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount - 4, overLayRectBBox.h, 0, svg, this.colorScheme, groupsToBeRendered[genomicBoxCounter].color);
+            genomicBoxCounter++;
+          }
+        }
+      } //ele.scratch("w", 200);
+
+
+      function hexToRGB(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16)
+        } : null;
+      }
+
+      function swap(a, b) {
+        var temp = a;
+        a = b;
+        b = temp;
+      }
+
+      function findValueColorInterval(colorScheme, value) {
+        var pairs = Object.entries(colorScheme).map(function (_a) {
+          var value = _a[0],
+              color = _a[1];
+          return {
+            value: Number(value),
+            color: hexToRGB(color)
+          };
+        }).sort(function (o1, o2) {
+          return o1.value - o2.value;
+        });
+
+        if (value < pairs[0].value) {
+          return {
+            lower: {
+              value: -Infinity,
+              color: pairs[0].color
+            },
+            upper: {
+              value: pairs[0].value,
+              color: pairs[0].color
+            }
+          };
+        } else if (value > pairs[pairs.length - 1].value) {
+          return {
+            lower: {
+              value: pairs[pairs.length - 1].value,
+              color: pairs[pairs.length - 1].color
+            },
+            upper: {
+              value: Infinity,
+              color: pairs[pairs.length - 1].color
+            }
+          };
+        } else {
+          for (var i = 0; i < pairs.length - 1; i++) {
+            if (value >= pairs[i].value && value < pairs[i + 1].value) {
+              return {
+                lower: {
+                  value: pairs[i].value,
+                  color: pairs[i].color
+                },
+                upper: {
+                  value: pairs[i + 1].value,
+                  color: pairs[i + 1].color
+                }
+              };
+            }
+          }
+
+          return {
+            lower: {
+              value: -Infinity,
+              color: pairs[0].color
+            },
+            upper: {
+              value: Infinity,
+              color: pairs[pairs.length - 1].color
+            }
+          };
+        }
+      }
+      /**
+       * Map the percentage value to r,g,b values using a log scale, i.e instead of taking the ratio linearly by taking differences
+       * between the lower and upper color r,g,b values, take the differences between their Math.log values. This makes the color
+       * scale up to the upper value much quicker, i.e in a 0-100 mapping a value of 20 doesn't map to 1/5 way between two colors
+       * but closer to half way. This is done because high numbers in alteration values are extremely rare and even small numbers
+       * are usually significant.
+       */
+
+
+      function getMappedColor(lowerColor, upperColor, lowerValue, upperValue, percent) {
+        var up = Math.log(1 + upperValue);
+        var low = Math.log(1 + lowerValue);
+        var p = Math.log(1 + (percent >= 0 ? percent : percent * -1)); // arbitrary value used to slow down the scaling of log instead of getting too much into math
+
+        var scalingFactor = percent >= 0 ? 0.8 : 1.2;
+        var ratio = (p - low) / (up - low) * scalingFactor;
+        return {
+          r: lowerColor.r + ratio * (upperColor.r - lowerColor.r),
+          g: lowerColor.g + ratio * (upperColor.g - lowerColor.g),
+          b: lowerColor.b + ratio * (upperColor.b - lowerColor.b)
+        };
+      }
+
+      function genomicDataRectangleGenerator(x, y, w, h, percent, parentSVG, colorScheme, groupColor) {
+        console.log(x + " " + y + " " + w + " " + h + " " + percent);
+        var limits = findValueColorInterval(colorScheme, Number(percent));
+        var color = {
+          r: 255,
+          g: 255,
+          b: 255
+        };
+
+        if (limits.lower.value === -Infinity) {
+          color = limits.upper.color;
+        } else if (limits.upper.value === Infinity) {
+          color = limits.lower.color;
+        } else {
+          var upperValue = limits.upper.value;
+          var lowerValue = limits.lower.value;
+          var upperColor = limits.upper.color;
+          var lowerColor = limits.lower.color;
+
+          if (lowerValue < 0 && upperValue <= 0) {
+            lowerValue *= -1;
+            upperValue *= -1;
+            swap(lowerValue, upperValue);
+          } else if (lowerValue < 0 && upperValue > 0) {
+            upperValue += lowerValue * -1;
+            lowerValue = 0;
+          }
+
+          color = getMappedColor(lowerColor, upperColor, lowerValue, upperValue, Number(percent));
+        }
+
+        var colorString = "";
+
+        if (percent || percent === 0) {
+          colorString = percent[0] === '-' || Number(percent) > 100 ? "rgb(210,210,210)" : "rgb(" + Math.round(color.r) + ", " + Math.round(color.g) + ", " + Math.round(color.b) + ")"; // Rectangle Part
+
+          var overlayRect = document.createElementNS(svgNameSpace, "rect");
+          overlayRect.setAttribute("x", x);
+          overlayRect.setAttribute("y", y);
+          overlayRect.setAttribute("width", w);
+          overlayRect.setAttribute("height", h);
+          overlayRect.setAttribute("style", "stroke-width:2;stroke:" + groupColor + ";" + "opacity:1;fill:" + colorString + ";");
+          overlayRect.setAttribute("border-color", "#ffffff"); // Text Part
+
+          if (percent[0] === "-") {
+            percent = percent.substr(1);
+          }
+
+          var textPercent = percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
+          var text = Number(percent) > 100 ? "N/P" : textPercent + "%";
+          var fontSize = 14;
+          var textLength = text.length;
+          var xOffset = w / 2 - textLength * 4;
+          var yOffset = fontSize / 3;
+          var svgText = document.createElementNS(svgNameSpace, "text");
+          svgText.setAttribute("x", x + xOffset);
+          svgText.setAttribute("y", y + h / 2 + yOffset);
+          svgText.setAttribute("font-family", "Arial");
+          svgText.setAttribute("font-size", fontSize + "");
+          svgText.setAttribute("border-color", "red");
+          svgText.innerHTML = text;
+          parentSVG.appendChild(overlayRect);
+          parentSVG.appendChild(svgText);
+        } else {
+          colorString = "rgb(210,210,210)"; // Rectangle Part
+
+          var overlayRect = document.createElementNS(svgNameSpace, "rect");
+          overlayRect.setAttribute("x", x);
+          overlayRect.setAttribute("y", y);
+          overlayRect.setAttribute("width", w);
+          overlayRect.setAttribute("height", h);
+          overlayRect.setAttribute("style", "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";");
+          parentSVG.appendChild(overlayRect);
+        }
+      }
+
+      return svg;
+    }
   }); // Just an utility function to calculate required width for genes for genomic data !
 
   Object.defineProperty(GenomicDataOverlayManager.prototype, "getRequiredWidthForGenomicData", {
@@ -3784,6 +4024,47 @@ function () {
         return -15;
       }).style("background-image", function (ele) {
         var x = encodeURIComponent(self.generateSVGForNode(ele).outerHTML);
+
+        if (x === "undefined") {
+          return "none";
+        }
+
+        var dataURI = "data:image/svg+xml;utf8," + x;
+        return dataURI;
+      }).update();
+    }
+  });
+  Object.defineProperty(GenomicDataOverlayManager.prototype, "showGroupComparisonData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (groupsToBeRendered, resizeNodeCallback) {
+      var self = this;
+      var genomicDataBoxCount = 0;
+
+      if (genomicDataBoxCount < 1) {// Hide all genomic data and return
+        //this.hideGenomicData();
+        //return;
+      }
+
+      this.cy.nodes().forEach(function (node) {
+        node.data('w', 1000);
+
+        if (resizeNodeCallback) {
+          resizeNodeCallback(node);
+        }
+      });
+      this.cy.style().selector('node[type="GENE"]').style("text-margin-y", function (ele) {
+        var nodeLabel = ele.data("name"); // If there is no genomic data for this node return !
+
+        if (!Object.keys(self.groupComparisonData).includes(nodeLabel)) {
+          return 0;
+        } // Else shift label in Y axis
+
+
+        return -15;
+      }).style("background-image", function (ele) {
+        var x = encodeURIComponent(self.generateSVGForGroupComparisonNode(ele, groupsToBeRendered).outerHTML);
 
         if (x === "undefined") {
           return "none";
@@ -6326,14 +6607,14 @@ function () {
     enumerable: false,
     configurable: true,
     writable: true,
-    value: function (genomicData, groupID) {
+    value: function (genomicData, groupID, activeGroups) {
       if (this.isCollaborative) {
         var parsedGenomicData = this.genomicDataOverlayManager.preparePortalGenomicDataShareDB(genomicData);
         this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
         this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap), groupID);
         this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
       } else {
-        this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
+        if (activeGroups !== undefined) this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID, activeGroups);else this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
       }
     }
   });
@@ -9438,6 +9719,7 @@ function () {
     writable: true,
     value: function (pathwayName) {
       this.pathwayHandler(pathwayName);
+      console.log("new pathway found");
 
       if (!this.isCBioPortal) {
         this.fileManager.setPathwayInfo({
@@ -14250,6 +14532,7 @@ var react_pathway_mapper_decorate = undefined && undefined.__decorate || functio
 var maxHeapFn = __webpack_require__(79);
 
 var maxHeap = maxHeapFn();
+;
 var EModalType;
 
 (function (EModalType) {
@@ -14333,6 +14616,12 @@ function (_super) {
       writable: true,
       value: []
     });
+    Object.defineProperty(_this, "groupComparisonData", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: {}
+    });
     Object.defineProperty(_this, "pathwayGeneMap", {
       enumerable: true,
       configurable: true,
@@ -14401,12 +14690,14 @@ function (_super) {
       // If cBioPortal mode is 'on' it is very likely to have cBioALterationData
       // but to be on the safe side below assertion is made.
       if (_this.props.cBioAlterationData) {
-        if (_this.props.patientView) {
+        if (_this.props.patientView === true) {
           //PatientView PathwayMapper has a different functionality
           //Alteration types are overlayed instead of alterationpercentage
           _this.calculatePatientData(_this.props.cBioAlterationData);
 
           _this.addSampleIconData(_this.props.sampleIconData);
+        } else if (_this.props.groupComparisonView === true) {
+          _this.calculateGroupComparisonData();
         } else {
           _this.calculateAlterationData(_this.props.cBioAlterationData);
         }
@@ -14500,6 +14791,41 @@ function (_super) {
 
         _this.alterationData[PathwayMapper_1.CBIO_PROFILE_NAME][geneAltData.gene] = Object.is(perc, NaN) ? -101 : perc;
       });
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "calculateGroupComparisonData", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      this.alterationData[PathwayMapper_1.CBIO_PROFILE_NAME] = {};
+      /* const allTypes = cBioAlterationData.map(x => x.gene);
+       //const allTypes = cBioAlterationData.map(x => x.percentAltered);
+       const uniqueTypes = allTypes.filter((x, i, a) => a.indexOf(x) == i)
+       //This is a flag for GenomicDataOverlayManager showPatientData*/
+      //this.groupComparisonData["groupComparisonView"] =  ;
+
+      /* uniqueTypes.forEach(x => {
+         this.patientData[x]= {};
+       });
+                 cBioAlterationData.forEach((geneAltData: ICBioData) => {
+         const perc = (geneAltData.altered / geneAltData.sequenced) * 100;
+                   this.alterationData[PathwayMapper.CBIO_PROFILE_NAME][geneAltData.gene] = ((Object.is(perc, NaN) ? -101 : perc));
+                   this.patientData[geneAltData.gene][geneAltData.percentAltered] = ((Object.is(perc, NaN) ? -101 : perc));
+         this.patientData[geneAltData.gene]["geneticTrackData"] = geneAltData.geneticTrackData;
+         this.patientData[geneAltData.gene]["geneticTrackRuleSetParams"] = geneAltData.geneticTrackRuleSetParams;
+       });*/
+
+      var i = 0;
+      var j = 0; //groupsSet[this.store.activeGroups?.result[0].nameWithOrdinal
+
+      for (i = 0; i < this.props.genes.length; i++) {
+        this.groupComparisonData[this.props.genes[i].hugoGeneSymbol] = {};
+
+        for (j = 0; j < this.props.activeGroups.length; j++) {
+          this.groupComparisonData[this.props.genes[i].hugoGeneSymbol][this.props.activeGroups[j].nameWithOrdinal] = this.props.genes[i].groupsSet[this.props.activeGroups[j].nameWithOrdinal].alteredPercentage;
+        }
+      }
     }
   });
   Object.defineProperty(PathwayMapper.prototype, "calculatePatientData", {
@@ -14614,14 +14940,17 @@ function (_super) {
           var genesMatching = []; // Calculate sum of all alterations
 
           var sumOfAlterations = 0;
+          var geneIndex = 0;
 
           for (var _i = 0, _a = this.props.genes; _i < _a.length; _i++) {
             var gene = _a[_i];
 
             if (this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) && this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE") {
               genesMatching.push(gene.hugoGeneSymbol);
-              sumOfAlterations += alterationPerGene[gene.hugoGeneSymbol];
+              sumOfAlterations += this.props.groupComparisonView === true ? this.props.genes[geneIndex].groupsSet[this.props.genes[geneIndex].enrichedGroup].alteredPercentage : alterationPerGene[gene.hugoGeneSymbol];
             }
+
+            geneIndex++;
           }
 
           matchedGenesMap[pathwayName] = genesMatching;
@@ -14668,6 +14997,7 @@ function (_super) {
       if (this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
         this.setSelectedPathway(bestPathways[0].pathwayName);
       this.bestPathwaysAlgos.push(bestPathways);
+      console.log(bestPathways);
     }
   }); // This method extracts all genes of a pathway and adds it to the pathwayGeneMap
   // so that it can be used by percentage calculation and genomic data 
@@ -14683,7 +15013,10 @@ function (_super) {
 
       for (var _i = 0, genes_1 = genes; _i < genes_1.length; _i++) {
         var gene = genes_1[_i];
-        if (gene.data.type === "GENE") geneHash[gene.data.name] = gene.data.type;
+
+        if (gene.data.type === "GENE") {
+          geneHash[gene.data.name] = gene.data.type;
+        }
       }
 
       this.pathwayGeneMap[pathwayData.title] = geneHash;
@@ -15096,6 +15429,8 @@ function (_super) {
       if (this.props.isCBioPortal) {
         if (this.props.patientView) {
           this.editor.addPortalGenomicData(this.patientData, this.editor.getEmptyGroupID());
+        } else if (this.props.groupComparisonView === true) {
+          this.editor.addPortalGenomicData(this.groupComparisonData, this.editor.getEmptyGroupID(), this.props.activeGroups);
         } else {
           this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
         }
@@ -15137,6 +15472,8 @@ function (_super) {
   react_pathway_mapper_decorate([external_mobx_["observable"]], PathwayMapper.prototype, "alterationData", void 0);
 
   react_pathway_mapper_decorate([external_mobx_["observable"]], PathwayMapper.prototype, "patientData", void 0);
+
+  react_pathway_mapper_decorate([external_mobx_["observable"]], PathwayMapper.prototype, "groupComparisonData", void 0);
 
   react_pathway_mapper_decorate([external_mobx_["observable"]], PathwayMapper.prototype, "pathwayGeneMap", void 0);
 
