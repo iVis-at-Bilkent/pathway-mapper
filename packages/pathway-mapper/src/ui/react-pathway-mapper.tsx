@@ -438,13 +438,13 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
             }
 
             if(rankingMode === 0){
-              maxHeap.insert(genesMatching.length, {pathwayName: pathwayName});
+              maxHeap.insert( genesMatching.length, {pathwayName: pathwayName});
             } else if(rankingMode === 1){
-              maxHeap.insert(genesMatching.length / geneCount * 100, {pathwayName: pathwayName}); 
+              maxHeap.insert( genesMatching.length / geneCount * 100, {pathwayName: pathwayName}); 
             } else if(rankingMode === 2){
-              maxHeap.insert(sumOfAlterations, {pathwayName: pathwayName}); 
+              maxHeap.insert( sumOfAlterations, {pathwayName: pathwayName}); 
             } else if(rankingMode === 3){
-              maxHeap.insert(genesMatching.length * sumOfAlterations / geneCount, {pathwayName: pathwayName});
+              maxHeap.insert( genesMatching.length * sumOfAlterations / geneCount, {pathwayName: pathwayName});
             }
 
         }

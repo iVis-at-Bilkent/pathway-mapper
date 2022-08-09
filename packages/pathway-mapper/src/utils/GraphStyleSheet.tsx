@@ -278,9 +278,7 @@ module.exports = (function()
     {
       case "GENE": return 1;
       case "PROCESS": return 0;
-      case "FAMILY": return 2;
-      case "COMPARTMENT": return 4;
-      default: return 1;
+      default: return 2;
     }
   };
 
@@ -316,8 +314,8 @@ module.exports = (function()
             case "GENE": return 2;
             case "PROCESS": return 1;
             case "FAMILY": return 3;
-            case "COMPARTMENT": return 5;
-            default: return 2;
+            case "COMPARTMENT": return 3;
+            default: return 3;
         }
     };
     var selectedHighlightedBorderWidthFunction = function( ele )
@@ -334,14 +332,14 @@ module.exports = (function()
 
 
   var parentNodeShapeFunc = function( ele )
-  {
+  {  
     switch (ele._private.data['type'])
     {
       case "GENE": return "roundrectangle";
       case "PROCESS": return "roundrectangle";
       case "FAMILY": return "rectangle";
-      case "COMPARTMENT": return "roundrectangle";
-      case "COMPLEX": return "rectangle";
+      case "COMPARTMENT": return "barrel";
+      case "COMPLEX": return "cutrectangle";
       default: return "roundrectangle";
     }
   };
@@ -355,8 +353,8 @@ module.exports = (function()
   {
     switch (ele._private.data['type'])
     {
-      case "GENE": return "#00000a";
-      case "FAMILY": return "#a3a3a3";
+      case "GENE": return "#000000";
+      case "FAMILY": return "#000000";
       case "COMPLEX": return "#000000";
       case "COMPARTMENT": return "#000000";
       default: return "#000000";

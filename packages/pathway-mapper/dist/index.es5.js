@@ -760,14 +760,8 @@ module.exports = function () {
       case "PROCESS":
         return 0;
 
-      case "FAMILY":
-        return 2;
-
-      case "COMPARTMENT":
-        return 4;
-
       default:
-        return 1;
+        return 2;
     }
   };
 
@@ -824,10 +818,10 @@ module.exports = function () {
         return 3;
 
       case "COMPARTMENT":
-        return 5;
+        return 3;
 
       default:
-        return 2;
+        return 3;
     }
   };
 
@@ -862,10 +856,10 @@ module.exports = function () {
         return "rectangle";
 
       case "COMPARTMENT":
-        return "roundrectangle";
+        return "barrel";
 
       case "COMPLEX":
-        return "rectangle";
+        return "cutrectangle";
 
       default:
         return "roundrectangle";
@@ -879,10 +873,10 @@ module.exports = function () {
   var nodeBorderColorFunction = function (ele) {
     switch (ele._private.data['type']) {
       case "GENE":
-        return "#00000a";
+        return "#000000";
 
       case "FAMILY":
-        return "#a3a3a3";
+        return "#000000";
 
       case "COMPLEX":
         return "#000000";
