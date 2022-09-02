@@ -12,6 +12,7 @@ interface IToolbarProps {
     pathwayGenes: string[];
     onAddGenes: (selectedGenes: string[]) => void;
     patientView?: boolean;
+    genesSelectionComponent?: () => JSX.Element;
 }
 export default class Toolbar extends React.Component<IToolbarProps, {}> {
     selectedGenes: string[];

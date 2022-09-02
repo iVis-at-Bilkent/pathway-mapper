@@ -3888,7 +3888,6 @@ function () {
       }
 
       function genomicDataRectangleGenerator(x, y, w, h, percent, parentSVG, colorScheme, groupColor) {
-        console.log(x + " " + y + " " + w + " " + h + " " + percent);
         var limits = findValueColorInterval(colorScheme, Number(percent));
         var color = {
           r: 255,
@@ -8797,14 +8796,16 @@ function (_super) {
   Ranking_extends(Ranking, _super);
 
   function Ranking(props) {
-    var _this = _super.call(this, props) || this;
+    var _this = _super.call(this, props) || this; // @observable
+
 
     Object.defineProperty(_this, "bestPathways", {
       enumerable: true,
       configurable: true,
       writable: true,
       value: void 0
-    });
+    }); // @observable
+
     Object.defineProperty(_this, "shownPathways", {
       enumerable: true,
       configurable: true,
@@ -8846,6 +8847,12 @@ function (_super) {
       configurable: true,
       writable: true,
       value: void 0
+    });
+    Object.defineProperty(_this, "rankingCriteria", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 0
     });
     Object.defineProperty(_this, "COUNT_PERC_EXPLANATION", {
       enumerable: true,
@@ -8902,7 +8909,10 @@ function (_super) {
     writable: true,
     value: function () {
       // Mapping from dropdown + checkbox selection to pathway method.
+      console.log("ranking logic changed " + 2 * this.isAlterationEnabled + this.isPercentageMatch);
       this.setBestPathwayMethod(2 * this.isAlterationEnabled + this.isPercentageMatch);
+      this.rankingCriteria = 2 * this.isAlterationEnabled + this.isPercentageMatch;
+      console.log(this.rankingCriteria);
     }
   });
   Object.defineProperty(Ranking.prototype, "filterBestPathwaysByTCGAPanPathways", {
@@ -8918,7 +8928,8 @@ function (_super) {
         }
 
         return true;
-      }); // change selected pathway if we are filtered and doesn't exist
+      });
+      console.log(this.shownPathways); // change selected pathway if we are filtered and doesn't exist
 
       if (this.considerOnlyTCGAPanPathways && TCGA_PANCAN_PATHWAY_NAMES.indexOf(this.selectedPathway) < 0) {
         this.selectedPathway = this.shownPathways[0].pathwayName;
@@ -8951,6 +8962,8 @@ function (_super) {
       var _this = this;
 
       var lengthThreshold = 13;
+      this.setBestPathwayMethod(this.rankingCriteria);
+      console.log("Re ranked pathways are: " + this.bestPathways[0] + this.bestPathways[1]);
       return external_react_default.a.createElement("div", {
         id: "ranking-bar"
       }, this.props.tableComponent && this.props.tableComponent(this.shownPathways.map(function (data) {
@@ -9044,10 +9057,6 @@ function (_super) {
     }
   });
 
-  Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "bestPathways", void 0);
-
-  Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "shownPathways", void 0);
-
   Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "dropDownTitle", void 0);
 
   Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "selectedPathway", void 0);
@@ -9055,6 +9064,8 @@ function (_super) {
   Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "considerOnlyTCGAPanPathways", void 0);
 
   Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "isExpanded", void 0);
+
+  Ranking_decorate([external_mobx_["observable"]], Ranking.prototype, "rankingCriteria", void 0);
 
   Ranking_decorate([external_autobind_decorator_default.a], Ranking.prototype, "setBestPathwayMethod", null);
 
@@ -9290,7 +9301,7 @@ function (_super) {
         onClick: function () {
           _this.props.handleOpen(EModalType.CHELP);
         }
-      }));
+      }), this.props.genesSelectionComponent && this.props.genesSelectionComponent());
     }
   });
 
@@ -9450,6 +9461,7 @@ function () {
     configurable: true,
     writable: true,
     value: function (queryGenes) {
+      console.log("Query Genes emphasized");
       if (this.editor) this.editor.cy.nodes().forEach(function (node) {
         var nodeName = node.data().name;
         var nodeType = node.data().type;
@@ -9458,6 +9470,11 @@ function () {
           node.style({
             "border-width": "4px",
             "font-weight": "bold"
+          });
+        } else {
+          node.style({
+            "border-width": "2px",
+            "font-weight": "solid"
           });
         }
       });
@@ -14640,6 +14657,18 @@ function (_super) {
       writable: true,
       value: []
     });
+    Object.defineProperty(_this, "genes", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: []
+    });
+    Object.defineProperty(_this, "renderTimes", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 0
+    });
     Object.defineProperty(_this, "setActiveEdge", {
       enumerable: true,
       configurable: true,
@@ -14659,6 +14688,8 @@ function (_super) {
       value: void 0
     });
     Object(external_mobx_["makeObservable"])(_this);
+    console.log("Pathway Mapper rerendered");
+    _this.genes = _this.props.genes;
     _this.fileManager = new managers_FileOperationsManager();
     _this.pathwayActions = new utils_PathwayActions(_this.pathwayHandler, _this.profiles, _this.fileManager, _this.handleOpen, _this.props.isCBioPortal, _this.props.isCollaborative);
     _this.selectedPathway = "";
@@ -14813,11 +14844,11 @@ function (_super) {
       var i = 0;
       var j = 0; //groupsSet[this.store.activeGroups?.result[0].nameWithOrdinal
 
-      for (i = 0; i < this.props.genes.length; i++) {
-        this.groupComparisonData[this.props.genes[i].hugoGeneSymbol] = {};
+      for (i = 0; i < this.props.genomicData.length; i++) {
+        this.groupComparisonData[this.props.genomicData[i].hugoGeneSymbol] = {};
 
         for (j = 0; j < this.props.activeGroups.length; j++) {
-          this.groupComparisonData[this.props.genes[i].hugoGeneSymbol][this.props.activeGroups[j].nameWithOrdinal] = this.props.genes[i].groupsSet[this.props.activeGroups[j].nameWithOrdinal].alteredPercentage;
+          this.groupComparisonData[this.props.genomicData[i].hugoGeneSymbol][this.props.activeGroups[j].nameWithOrdinal] = this.props.genomicData[i].groupsSet[this.props.activeGroups[j].nameWithOrdinal].alteredPercentage;
         }
       }
     }
@@ -14925,7 +14956,8 @@ function (_super) {
     value: function (rankingMode) {
       var genomicDataMap = this.getGeneStudyMap(this.alterationData);
       var alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
-      maxHeap = maxHeapFn();
+      maxHeap = maxHeapFn(); //this.bestPathwaysAlgos = [];
+
       var matchedGenesMap = {};
       var bestPathways = [];
 
@@ -14991,7 +15023,83 @@ function (_super) {
       if (this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
         this.setSelectedPathway(bestPathways[0].pathwayName);
       this.bestPathwaysAlgos.push(bestPathways);
-      console.log(bestPathways);
+      console.log(this.bestPathwaysAlgos);
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "getBestPathwayReRank", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (rankingMode) {
+      var genomicDataMap = this.getGeneStudyMap(this.alterationData);
+      var alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
+      maxHeap = maxHeapFn();
+      var matchedGenesMap = {};
+      var bestPathways = [];
+
+      for (var pathwayName in this.pathwayGeneMap) {
+        if (this.pathwayGeneMap.hasOwnProperty(pathwayName)) {
+          var genesMatching = []; // Calculate sum of all alterations
+
+          var sumOfAlterations = 0;
+          var geneIndex = 0;
+
+          for (var _i = 0, _a = this.props.genes; _i < _a.length; _i++) {
+            var gene = _a[_i];
+
+            if (this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) && this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE") {
+              genesMatching.push(gene.hugoGeneSymbol);
+              sumOfAlterations += this.props.groupComparisonView === true ? this.props.genes[geneIndex].groupsSet[this.props.genes[geneIndex].enrichedGroup].alteredPercentage : alterationPerGene[gene.hugoGeneSymbol];
+            }
+
+            geneIndex++;
+          }
+
+          matchedGenesMap[pathwayName] = genesMatching;
+          var geneCount = 0; // Count number of genes *not processess* in a pathway
+
+          for (var _b = 0, _c = Object.values(this.pathwayGeneMap[pathwayName]); _b < _c.length; _b++) {
+            var geneType = _c[_b];
+
+            if (geneType === "GENE") {
+              geneCount++;
+            }
+          }
+
+          if (rankingMode === 0) {
+            maxHeap.insert(genesMatching.length, {
+              pathwayName: pathwayName
+            });
+          } else if (rankingMode === 1) {
+            maxHeap.insert(genesMatching.length / geneCount * 100, {
+              pathwayName: pathwayName
+            });
+          } else if (rankingMode === 2) {
+            maxHeap.insert(sumOfAlterations, {
+              pathwayName: pathwayName
+            });
+          } else if (rankingMode === 3) {
+            maxHeap.insert(genesMatching.length * sumOfAlterations / geneCount, {
+              pathwayName: pathwayName
+            });
+          }
+        }
+      }
+
+      while (maxHeap.size() > 0) {
+        var top_2 = maxHeap.extractMax();
+        var pathwayName = top_2.getValue().pathwayName;
+        bestPathways.push({
+          score: top_2.getKey(),
+          genesMatched: matchedGenesMap[pathwayName],
+          pathwayName: pathwayName
+        });
+      } //if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
+      //this.setSelectedPathway(bestPathways[0].pathwayName);
+
+
+      this.bestPathwaysAlgos.push(bestPathways);
+      console.log(this.bestPathwaysAlgos);
     }
   }); // This method extracts all genes of a pathway and adds it to the pathwayGeneMap
   // so that it can be used by percentage calculation and genomic data 
@@ -15027,6 +15135,21 @@ function (_super) {
           this.includePathway(pathwayData);
         }
       }
+    }
+  });
+  Object.defineProperty(PathwayMapper.prototype, "rankPathways", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+      console.log("pathways reranked");
+      this.bestPathwaysAlgos = [];
+      this.getBestPathwayReRank(0);
+      this.getBestPathwayReRank(1);
+      this.getBestPathwayReRank(2);
+      this.getBestPathwayReRank(3);
+      this.genes = this.props.genes;
+      console.log(this.bestPathwaysAlgos);
     }
   });
   Object.defineProperty(PathwayMapper.prototype, "loadRedirectedPortalData", {
@@ -15169,7 +15292,17 @@ function (_super) {
     value: function () {
       var _this = this;
 
+      console.log("PM rpm.tsx rendered");
       var isCBioPortal = this.props.isCBioPortal;
+      console.log(this.props.genes);
+      console.log(this.genes);
+
+      if (this.renderTimes > 1 && this.props.groupComparisonView === true && this.props.genes !== this.genes) {
+        console.log("not equal so re rank");
+        this.rankPathways();
+      }
+
+      this.renderTimes++;
       var cytoComp = external_react_default.a.createElement(ui_CytoscapeArea, {
         profiles: this.profiles,
         isCbioPortal: this.props.isCBioPortal,
@@ -15217,7 +15350,8 @@ function (_super) {
         showMessage: this.props.showMessage,
         pathwayGenes: Object.keys(this.pathwayGeneMap[this.selectedPathway]),
         onAddGenes: this.props.onAddGenes,
-        patientView: this.props.patientView
+        patientView: this.props.patientView,
+        genesSelectionComponent: this.props.genesSelectionComponent
       })), this.props.messageBanner ? external_react_default.a.createElement(external_react_bootstrap_["Col"], {
         xs: 4,
         style: {
@@ -15470,6 +15604,8 @@ function (_super) {
   react_pathway_mapper_decorate([external_mobx_["observable"]], PathwayMapper.prototype, "groupComparisonData", void 0);
 
   react_pathway_mapper_decorate([external_mobx_["observable"]], PathwayMapper.prototype, "pathwayGeneMap", void 0);
+
+  react_pathway_mapper_decorate([external_mobx_["observable"]], PathwayMapper.prototype, "bestPathwaysAlgos", void 0);
 
   react_pathway_mapper_decorate([external_mobx_["observable"]], PathwayMapper.prototype, "oldName", void 0);
 

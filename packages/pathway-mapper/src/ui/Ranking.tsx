@@ -29,10 +29,10 @@ const TCGA_PANCAN_PATHWAY_NAMES = [
 
 @observer
 export default class Ranking extends React.Component<IRankingProps, {}>{
-    @observable
+   // @observable
     bestPathways: any[];
 
-    @observable
+   // @observable
     shownPathways: any[];
 
     @observable
@@ -48,6 +48,9 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
     @observable
     isExpanded: boolean;
+
+    @observable
+    rankingCriteria : number = 0;
 
     readonly COUNT_PERC_EXPLANATION = "Whether we should favor the number of genes of interest matching the ones in a pathway or the percentage of such genes in that pathway. For instance, suppose genes of interest are A, B, and C, and the pathway contains genes B, C, D, and E. When we consider count, the score is 2 (for the two genes that match). However, when we consider percentage the score will be 50% as 2 of the 4 genes in the pathway are among genes of interest.";
     readonly ALTERATION_EXPLANATION = "When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and 50% for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (0.2+0.3)/4=12.5% for match count and percentage, respectively.";
@@ -81,7 +84,10 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     @autobind
     onApplyClick(){
         // Mapping from dropdown + checkbox selection to pathway method.
+        console.log("ranking logic changed "  + 2 * this.isAlterationEnabled + this.isPercentageMatch);
         this.setBestPathwayMethod(2 * this.isAlterationEnabled + this.isPercentageMatch);
+        this.rankingCriteria = 2 * this.isAlterationEnabled + this.isPercentageMatch;
+        console.log(this.rankingCriteria);
     }
 
     @action.bound 
@@ -92,6 +98,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
             }
             return true;
         });
+        console.log(this.shownPathways);
         // change selected pathway if we are filtered and doesn't exist
         if (this.considerOnlyTCGAPanPathways 
             && TCGA_PANCAN_PATHWAY_NAMES.indexOf(this.selectedPathway) < 0) {
@@ -113,6 +120,8 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
     render(){
         const lengthThreshold = 13;
+        this.setBestPathwayMethod(this.rankingCriteria);
+        console.log("Re ranked pathways are: " + this.bestPathways[0] + this.bestPathways[1]);
          
         return (
           <div id="ranking-bar">

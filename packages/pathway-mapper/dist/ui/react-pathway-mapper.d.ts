@@ -14,6 +14,8 @@ import PathwayActions from '../utils/PathwayActions';
 interface IPathwayMapperProps {
     isCBioPortal: boolean;
     genes: any[];
+    newGenes?: any[];
+    genomicData?: any[];
     isCollaborative?: boolean;
     cBioAlterationData?: ICBioData[];
     sampleIconData?: ISampleIconData;
@@ -23,6 +25,7 @@ interface IPathwayMapperProps {
     changePathwayHandler?: (pathwayGenes: string[]) => void;
     addGenomicDataHandler?: (addGenomicData: (alterationData: ICBioData[]) => void) => void;
     tableComponent?: (data: IPathwayMapperTable[], selectedPathway: string, onPathwaySelect: (pathway: string) => void) => JSX.Element;
+    genesSelectionComponent?: () => JSX.Element;
     validGenes?: any;
     toast: any;
     showMessage: (message: string) => void;
@@ -127,6 +130,8 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     bestPathwaysAlgos: any[][];
     oldName: string;
     profiles: IProfileMetaData[];
+    genes: any[];
+    renderTimes: number;
     setActiveEdge: (edgeId: number) => void;
     viewOperationsManager: ViewOperationsManager;
     gridOptionsManager: GridOptionsManager;
@@ -148,8 +153,10 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
      *
      */
     getBestPathway(rankingMode: number): void;
+    getBestPathwayReRank(rankingMode: number): void;
     includePathway(pathwayData?: IPathwayData, pathwayName?: string): void;
     extractAllGenes(): void;
+    rankPathways(): void;
     loadRedirectedPortalData(): void;
     exists(profileId: string): boolean;
     loadFromCBio(dataTypes: {

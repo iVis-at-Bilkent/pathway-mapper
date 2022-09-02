@@ -718,7 +718,6 @@ export default class GenomicDataOverlayManager {
       colorScheme,
       groupColor
     ) {
-      console.log(x + " " + y + " " + w + " " + h + " " + percent);
       const limits = findValueColorInterval(colorScheme, Number(percent));
       let color: Color = { r: 255, g: 255, b: 255 };
       if (limits.lower.value === -Infinity) {

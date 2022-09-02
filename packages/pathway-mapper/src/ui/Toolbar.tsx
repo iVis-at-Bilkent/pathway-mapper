@@ -10,7 +10,7 @@ import savePNGImage from "../images/toolbar/save_png.svg";
 // @ts-ignore
 import saveSVGImage from "../images/toolbar/save_svg.svg";
 import EditorActionsManager from "../managers/EditorActionsManager";
-import { EModalType, IAlterationData } from '../ui/react-pathway-mapper';
+import { EModalType, IAlterationData, IPathwayMapperTable } from '../ui/react-pathway-mapper';
 import PathwayActions from '../utils/PathwayActions';
 // @ts-ignore
 const addSelImage = require("../images/toolbar/add-selected.svg");
@@ -31,6 +31,7 @@ interface IToolbarProps {
   pathwayGenes: string[];
   onAddGenes: (selectedGenes: string[]) => void;
   patientView ?: boolean;
+  genesSelectionComponent?: () => JSX.Element;
 }
 
 @observer
@@ -111,6 +112,10 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Edit pathway" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://pathwaymapper.org/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
           ])}
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Help" data-place="right" data-effect="solid" src={aboutImage} onClick={() => {this.props.handleOpen(EModalType.CHELP); }}/>
+          { this.props.genesSelectionComponent &&
+            this.props.genesSelectionComponent(
+                )
+            }
           
     </div>);
   }
