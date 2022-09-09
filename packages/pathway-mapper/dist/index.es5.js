@@ -3771,20 +3771,24 @@ function () {
       };
       var maxGenomicDataBoxCount = groupsToBeRendered.length;
       var genomicBoxCounter = 0;
+      /*  for (let i in this.groupComparisonData) {
+             if( i !== nodeLabel)
+                 continue;*/
 
-      for (var i in this.groupComparisonData) {
-        for (var j in this.groupComparisonData[i]) {
-          var percentageInGroup = this.groupComparisonData[i][j];
+      var i = nodeLabel;
 
-          if (percentageInGroup !== undefined && i === nodeLabel) {
-            genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount - 2, overLayRectBBox.h, percentageInGroup, svg, this.colorScheme, groupsToBeRendered[genomicBoxCounter].color);
-            genomicBoxCounter++;
-          } else if (i === nodeLabel) {
-            genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount - 4, overLayRectBBox.h, 0, svg, this.colorScheme, groupsToBeRendered[genomicBoxCounter].color);
-            genomicBoxCounter++;
-          }
+      for (var j in this.groupComparisonData[i]) {
+        var percentageInGroup = this.groupComparisonData[i][j];
+
+        if (percentageInGroup !== undefined && i === nodeLabel) {
+          genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount - 2, overLayRectBBox.h, percentageInGroup, svg, this.colorScheme, groupsToBeRendered[genomicBoxCounter].color);
+          genomicBoxCounter++;
+        } else if (i === nodeLabel) {
+          genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount - 4, overLayRectBBox.h, 0, svg, this.colorScheme, groupsToBeRendered[genomicBoxCounter].color);
+          genomicBoxCounter++;
         }
-      } //ele.scratch("w", 200);
+      } //}
+      //ele.scratch("w", 200);
 
 
       function hexToRGB(hex) {
@@ -3837,16 +3841,16 @@ function () {
             }
           };
         } else {
-          for (var i = 0; i < pairs.length - 1; i++) {
-            if (value >= pairs[i].value && value < pairs[i + 1].value) {
+          for (var i_1 = 0; i_1 < pairs.length - 1; i_1++) {
+            if (value >= pairs[i_1].value && value < pairs[i_1 + 1].value) {
               return {
                 lower: {
-                  value: pairs[i].value,
-                  color: pairs[i].color
+                  value: pairs[i_1].value,
+                  color: pairs[i_1].color
                 },
                 upper: {
-                  value: pairs[i + 1].value,
-                  color: pairs[i + 1].color
+                  value: pairs[i_1 + 1].value,
+                  color: pairs[i_1 + 1].color
                 }
               };
             }
@@ -9210,7 +9214,7 @@ function (_super) {
         "data-effect": "solid",
         src: layout_cose_default.a,
         onClick: this.props.pathwayActions.performLayout
-      }), !this.props.patientView && [external_react_default.a.createElement("img", {
+      }), !this.props.patientView && !this.props.groupComparisonView && [external_react_default.a.createElement("img", {
         height: "22px",
         width: "22px",
         "data-border": "true",
@@ -9275,7 +9279,7 @@ function (_super) {
             _this.props.onAddGenes(_this.selectedGenes);
           }
         }
-      }), external_react_default.a.createElement("img", {
+      }), !this.props.groupComparisonView && external_react_default.a.createElement("img", {
         height: "22px",
         width: "22px",
         "data-border": "true",
@@ -9474,7 +9478,7 @@ function () {
         } else {
           node.style({
             "border-width": "2px",
-            "font-weight": "solid"
+            "font-weight": "normal"
           });
         }
       });
@@ -15097,6 +15101,12 @@ function (_super) {
       } //if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
       //this.setSelectedPathway(bestPathways[0].pathwayName);
 
+      /*if(this.bestPathwaysAlgos.length === 0){ // First pathway of the first method is shown as the default pathway.
+        this.setSelectedPathway(bestPathways[0].pathwayName);
+        this.selectedPathway = bestPathways[0].pathwayName;
+        this.pathwayActions.changePathway(bestPathways[0].pathwayName);
+      }*/
+
 
       this.bestPathwaysAlgos.push(bestPathways);
       console.log(this.bestPathwaysAlgos);
@@ -15351,7 +15361,8 @@ function (_super) {
         pathwayGenes: Object.keys(this.pathwayGeneMap[this.selectedPathway]),
         onAddGenes: this.props.onAddGenes,
         patientView: this.props.patientView,
-        genesSelectionComponent: this.props.genesSelectionComponent
+        genesSelectionComponent: this.props.genesSelectionComponent,
+        groupComparisonView: this.props.groupComparisonView
       })), this.props.messageBanner ? external_react_default.a.createElement(external_react_bootstrap_["Col"], {
         xs: 4,
         style: {

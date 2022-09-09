@@ -74,7 +74,7 @@ export default class PathwayActions {
           node.style({ "border-width": "4px", "font-weight": "bold" });
         }
         else{
-          node.style({"border-width": "2px", "font-weight": "solid"});
+          node.style({"border-width": "2px", "font-weight": "normal"});
         }
       });
   }

@@ -521,6 +521,11 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     }
     //if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
       //this.setSelectedPathway(bestPathways[0].pathwayName);
+    /*if(this.bestPathwaysAlgos.length === 0){ // First pathway of the first method is shown as the default pathway.
+      this.setSelectedPathway(bestPathways[0].pathwayName);
+      this.selectedPathway = bestPathways[0].pathwayName;
+      this.pathwayActions.changePathway(bestPathways[0].pathwayName);
+    }*/
     this.bestPathwaysAlgos.push(bestPathways);
     console.log(this.bestPathwaysAlgos);
   }
@@ -712,6 +717,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
                 onAddGenes={this.props.onAddGenes}
                 patientView = {this.props.patientView}
                 genesSelectionComponent = {this.props.genesSelectionComponent}
+                groupComparisonView = {this.props.groupComparisonView}
               />
             </Col>
             {this.props.messageBanner ?

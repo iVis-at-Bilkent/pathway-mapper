@@ -556,7 +556,10 @@ export default class GenomicDataOverlayManager {
     let maxGenomicDataBoxCount = groupsToBeRendered.length;
     let genomicBoxCounter = 0;
 
-    for (let i in this.groupComparisonData) {
+  /*  for (let i in this.groupComparisonData) {
+         if( i !== nodeLabel)
+             continue;*/
+      let i = nodeLabel;
       for (let j in this.groupComparisonData[i]) {
         const percentageInGroup = this.groupComparisonData[i][j];
         if (percentageInGroup !== undefined && i === nodeLabel) {
@@ -591,7 +594,7 @@ export default class GenomicDataOverlayManager {
        
       }
     
-    }
+    //}
     //ele.scratch("w", 200);
 
     function hexToRGB(hex: string) {

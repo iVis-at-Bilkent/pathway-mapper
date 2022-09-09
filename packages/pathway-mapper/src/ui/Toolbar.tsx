@@ -32,6 +32,7 @@ interface IToolbarProps {
   onAddGenes: (selectedGenes: string[]) => void;
   patientView ?: boolean;
   genesSelectionComponent?: () => JSX.Element;
+  groupComparisonView?: boolean;
 }
 
 @observer
@@ -62,7 +63,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Save as SVG" data-place="right" data-effect="solid" src={saveSVGImage} onClick={() => {this.props.pathwayActions.saveAs("SVG");}}/>
 
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Perform layout" data-place="right" data-effect="solid" src={layoutImage} onClick={this.props.pathwayActions.performLayout} />              
-          {(!this.props.patientView && [
+          {(!this.props.patientView && !this.props.groupComparisonView &&[
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Add selected genes to query" data-place="right" data-effect="solid" src={addSelImage} onClick={() => {
             this.selectedGenes = this.props.pathwayActions.getSelectedNodes()
                                                           .filter((node: any) => node.data().type === "GENE")
@@ -109,7 +110,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
           }}/>,
       
 
-          <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Edit pathway" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://pathwaymapper.org/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
+          !this.props.groupComparisonView && <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Edit pathway" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://pathwaymapper.org/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
           ])}
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Help" data-place="right" data-effect="solid" src={aboutImage} onClick={() => {this.props.handleOpen(EModalType.CHELP); }}/>
           { this.props.genesSelectionComponent &&
