@@ -406,6 +406,64 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     return geneAlterationMap;
   }
 
+  getBestPathways(rankingMode: number) {
+    const genomicDataMap = this.getGeneStudyMap(this.alterationData);
+    const alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
+    maxHeap = maxHeapFn();
+    const matchedGenesMap: any = {};
+    const bestPathways: any[] = [];
+    for (const pathwayName in this.pathwayGeneMap){
+      if (this.pathwayGeneMap.hasOwnProperty(pathwayName)) {
+        const genesMatching = [];
+        // Calculate sum of all alterations
+        let sumOfAlterations = 0;
+        this.props.genes.forEach(gene => {
+          if(this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) &&
+             this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE") {
+            genesMatching.push(gene.hugoGeneSymbol);
+            if (this.props.groupComparisonView) {
+              // if enriched group exists use the alteration percentage of the enriched group
+              if (gene.enrichedGroup && gene.groupsSet[gene.enrichedGroup]) {
+                sumOfAlterations += gene.groupsSet[gene.enrichedGroup].alteredPercentage || 0;
+              }
+              // else use the max value
+              else {
+                sumOfAlterations += Math.max(...Object.values(gene.groupsSet).map(v => (v as any).alteredPercentage || 0));
+              }
+            }
+            else {
+              sumOfAlterations += alterationPerGene[gene.hugoGeneSymbol] || 0;
+            }
+          }
+        });
+        matchedGenesMap[pathwayName] = genesMatching;
+        let geneCount = 0;
+        // Count number of genes *not processess* in a pathway
+        for(const geneType of Object.values(this.pathwayGeneMap[pathwayName])){
+          if(geneType === "GENE"){
+            geneCount++;
+          }
+        }
+
+        if(rankingMode === 0){
+          maxHeap.insert( genesMatching.length, {pathwayName: pathwayName});
+        } else if(rankingMode === 1){
+          maxHeap.insert( genesMatching.length / geneCount * 100, {pathwayName: pathwayName});
+        } else if(rankingMode === 2){
+          maxHeap.insert( sumOfAlterations, {pathwayName: pathwayName});
+        } else if(rankingMode === 3){
+          maxHeap.insert( genesMatching.length * sumOfAlterations / geneCount, {pathwayName: pathwayName});
+        }
+
+      }
+    }
+    while(maxHeap.size() > 0) {
+      const top = maxHeap.extractMax();
+      const pathwayName = top.getValue().pathwayName;
+      bestPathways.push({score: top.getKey(), genesMatched: matchedGenesMap[pathwayName], pathwayName: pathwayName});
+    }
+    return bestPathways;
+  }
 
   /**
    * 
@@ -413,56 +471,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
    * 
    */
   getBestPathway(rankingMode: number) {
-    
-    const genomicDataMap = this.getGeneStudyMap(this.alterationData);
-    const alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
-    maxHeap =  maxHeapFn();
-    //this.bestPathwaysAlgos = [];
-    const matchedGenesMap: any = {};
-    const bestPathways: any[] = [];
-    for(const pathwayName in this.pathwayGeneMap){
-        if(this.pathwayGeneMap.hasOwnProperty(pathwayName)){
-          
-          const genesMatching = [];
-            // Calculate sum of all alterations
-            let sumOfAlterations = 0;
-            let geneIndex = 0;
-            for(const gene of this.props.genes){
-              
-                if(this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) 
-                    && this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE"){
-                  genesMatching.push(gene.hugoGeneSymbol);
-                  sumOfAlterations += (this.props.groupComparisonView === true ?  
-                    this.props.genes[geneIndex].groupsSet[this.props.genes[geneIndex].enrichedGroup].alteredPercentage : alterationPerGene[gene.hugoGeneSymbol] ) ;
-                }
-                geneIndex++;
-            }
-            matchedGenesMap[pathwayName] = genesMatching;
-            let geneCount = 0;
-            // Count number of genes *not processess* in a pathway
-            for(const geneType of Object.values(this.pathwayGeneMap[pathwayName])){
-              if(geneType === "GENE"){
-                geneCount++;
-              }
-            }
-
-            if(rankingMode === 0){
-              maxHeap.insert( genesMatching.length, {pathwayName: pathwayName});
-            } else if(rankingMode === 1){
-              maxHeap.insert( genesMatching.length / geneCount * 100, {pathwayName: pathwayName}); 
-            } else if(rankingMode === 2){
-              maxHeap.insert( sumOfAlterations, {pathwayName: pathwayName}); 
-            } else if(rankingMode === 3){
-              maxHeap.insert( genesMatching.length * sumOfAlterations / geneCount, {pathwayName: pathwayName});
-            }
-
-        }
-    }
-    while(maxHeap.size() > 0){
-        const top = maxHeap.extractMax();
-        const pathwayName = top.getValue().pathwayName;
-        bestPathways.push({score: top.getKey(), genesMatched: matchedGenesMap[pathwayName], pathwayName: pathwayName});
-    }
+    const bestPathways = this.getBestPathways(rankingMode);
     if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
       this.setSelectedPathway(bestPathways[0].pathwayName);
     this.bestPathwaysAlgos.push(bestPathways);
@@ -470,55 +479,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   }
 
   getBestPathwayReRank(rankingMode: number) {
-    
-    const genomicDataMap = this.getGeneStudyMap(this.alterationData);
-    const alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
-    maxHeap =  maxHeapFn();
-    const matchedGenesMap: any = {};
-    const bestPathways: any[] = [];
-    for(const pathwayName in this.pathwayGeneMap){
-        if(this.pathwayGeneMap.hasOwnProperty(pathwayName)){
-          
-          const genesMatching = [];
-            // Calculate sum of all alterations
-            let sumOfAlterations = 0;
-            let geneIndex = 0;
-            for(const gene of this.props.genes){
-              
-                if(this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) 
-                    && this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE"){
-                  genesMatching.push(gene.hugoGeneSymbol);
-                  sumOfAlterations += (this.props.groupComparisonView === true ?  
-                    this.props.genes[geneIndex].groupsSet[this.props.genes[geneIndex].enrichedGroup].alteredPercentage : alterationPerGene[gene.hugoGeneSymbol] ) ;
-                }
-                geneIndex++;
-            }
-            matchedGenesMap[pathwayName] = genesMatching;
-            let geneCount = 0;
-            // Count number of genes *not processess* in a pathway
-            for(const geneType of Object.values(this.pathwayGeneMap[pathwayName])){
-              if(geneType === "GENE"){
-                geneCount++;
-              }
-            }
-
-            if(rankingMode === 0){
-              maxHeap.insert( genesMatching.length, {pathwayName: pathwayName});
-            } else if(rankingMode === 1){
-              maxHeap.insert( genesMatching.length / geneCount * 100, {pathwayName: pathwayName}); 
-            } else if(rankingMode === 2){
-              maxHeap.insert( sumOfAlterations, {pathwayName: pathwayName}); 
-            } else if(rankingMode === 3){
-              maxHeap.insert( genesMatching.length * sumOfAlterations / geneCount, {pathwayName: pathwayName});
-            }
-
-        }
-    }
-    while(maxHeap.size() > 0){
-        const top = maxHeap.extractMax();
-        const pathwayName = top.getValue().pathwayName;
-        bestPathways.push({score: top.getKey(), genesMatched: matchedGenesMap[pathwayName], pathwayName: pathwayName});
-    }
+    const bestPathways = this.getBestPathways(rankingMode);
     //if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
       //this.setSelectedPathway(bestPathways[0].pathwayName);
     /*if(this.bestPathwaysAlgos.length === 0){ // First pathway of the first method is shown as the default pathway.
