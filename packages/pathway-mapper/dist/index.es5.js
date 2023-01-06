@@ -14947,47 +14947,48 @@ function (_super) {
       return geneAlterationMap;
     }
   });
-  /**
-   *
-   * @param rankingMode: number => 0 = Count, 1 = Percentage, 2 = Count with Alteration, 3 = Percentage with Alteration
-   *
-   */
-
-  Object.defineProperty(PathwayMapper.prototype, "getBestPathway", {
+  Object.defineProperty(PathwayMapper.prototype, "getBestPathways", {
     enumerable: false,
     configurable: true,
     writable: true,
     value: function (rankingMode) {
+      var _this = this;
+
       var genomicDataMap = this.getGeneStudyMap(this.alterationData);
       var alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
-      maxHeap = maxHeapFn(); //this.bestPathwaysAlgos = [];
-
+      maxHeap = maxHeapFn();
       var matchedGenesMap = {};
       var bestPathways = [];
 
-      for (var pathwayName in this.pathwayGeneMap) {
-        if (this.pathwayGeneMap.hasOwnProperty(pathwayName)) {
-          var genesMatching = []; // Calculate sum of all alterations
+      var _loop_1 = function (pathwayName) {
+        if (this_1.pathwayGeneMap.hasOwnProperty(pathwayName)) {
+          var genesMatching_1 = []; // Calculate sum of all alterations
 
-          var sumOfAlterations = 0;
-          var geneIndex = 0;
+          var sumOfAlterations_1 = 0;
+          this_1.props.genes.forEach(function (gene) {
+            if (_this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) && _this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE") {
+              genesMatching_1.push(gene.hugoGeneSymbol);
 
-          for (var _i = 0, _a = this.props.genes; _i < _a.length; _i++) {
-            var gene = _a[_i];
-
-            if (this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) && this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE") {
-              genesMatching.push(gene.hugoGeneSymbol);
-              sumOfAlterations += this.props.groupComparisonView === true ? this.props.genes[geneIndex].groupsSet[this.props.genes[geneIndex].enrichedGroup].alteredPercentage : alterationPerGene[gene.hugoGeneSymbol];
+              if (_this.props.groupComparisonView) {
+                // if enriched group exists use the alteration percentage of the enriched group
+                if (gene.enrichedGroup && gene.groupsSet[gene.enrichedGroup]) {
+                  sumOfAlterations_1 += gene.groupsSet[gene.enrichedGroup].alteredPercentage || 0;
+                } // else use the max value
+                else {
+                    sumOfAlterations_1 += Math.max.apply(Math, Object.values(gene.groupsSet).map(function (v) {
+                      return v.alteredPercentage || 0;
+                    }));
+                  }
+              } else {
+                sumOfAlterations_1 += alterationPerGene[gene.hugoGeneSymbol] || 0;
+              }
             }
-
-            geneIndex++;
-          }
-
-          matchedGenesMap[pathwayName] = genesMatching;
+          });
+          matchedGenesMap[pathwayName] = genesMatching_1;
           var geneCount = 0; // Count number of genes *not processess* in a pathway
 
-          for (var _b = 0, _c = Object.values(this.pathwayGeneMap[pathwayName]); _b < _c.length; _b++) {
-            var geneType = _c[_b];
+          for (var _i = 0, _a = Object.values(this_1.pathwayGeneMap[pathwayName]); _i < _a.length; _i++) {
+            var geneType = _a[_i];
 
             if (geneType === "GENE") {
               geneCount++;
@@ -14995,23 +14996,29 @@ function (_super) {
           }
 
           if (rankingMode === 0) {
-            maxHeap.insert(genesMatching.length, {
+            maxHeap.insert(genesMatching_1.length, {
               pathwayName: pathwayName
             });
           } else if (rankingMode === 1) {
-            maxHeap.insert(genesMatching.length / geneCount * 100, {
+            maxHeap.insert(genesMatching_1.length / geneCount * 100, {
               pathwayName: pathwayName
             });
           } else if (rankingMode === 2) {
-            maxHeap.insert(sumOfAlterations, {
+            maxHeap.insert(sumOfAlterations_1, {
               pathwayName: pathwayName
             });
           } else if (rankingMode === 3) {
-            maxHeap.insert(genesMatching.length * sumOfAlterations / geneCount, {
+            maxHeap.insert(genesMatching_1.length * sumOfAlterations_1 / geneCount, {
               pathwayName: pathwayName
             });
           }
         }
+      };
+
+      var this_1 = this;
+
+      for (var pathwayName in this.pathwayGeneMap) {
+        _loop_1(pathwayName);
       }
 
       while (maxHeap.size() > 0) {
@@ -15024,6 +15031,21 @@ function (_super) {
         });
       }
 
+      return bestPathways;
+    }
+  });
+  /**
+   *
+   * @param rankingMode: number => 0 = Count, 1 = Percentage, 2 = Count with Alteration, 3 = Percentage with Alteration
+   *
+   */
+
+  Object.defineProperty(PathwayMapper.prototype, "getBestPathway", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function (rankingMode) {
+      var bestPathways = this.getBestPathways(rankingMode);
       if (this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
         this.setSelectedPathway(bestPathways[0].pathwayName);
       this.bestPathwaysAlgos.push(bestPathways);
@@ -15035,70 +15057,7 @@ function (_super) {
     configurable: true,
     writable: true,
     value: function (rankingMode) {
-      var genomicDataMap = this.getGeneStudyMap(this.alterationData);
-      var alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
-      maxHeap = maxHeapFn();
-      var matchedGenesMap = {};
-      var bestPathways = [];
-
-      for (var pathwayName in this.pathwayGeneMap) {
-        if (this.pathwayGeneMap.hasOwnProperty(pathwayName)) {
-          var genesMatching = []; // Calculate sum of all alterations
-
-          var sumOfAlterations = 0;
-          var geneIndex = 0;
-
-          for (var _i = 0, _a = this.props.genes; _i < _a.length; _i++) {
-            var gene = _a[_i];
-
-            if (this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) && this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE") {
-              genesMatching.push(gene.hugoGeneSymbol);
-              sumOfAlterations += this.props.groupComparisonView === true ? this.props.genes[geneIndex].groupsSet[this.props.genes[geneIndex].enrichedGroup].alteredPercentage : alterationPerGene[gene.hugoGeneSymbol];
-            }
-
-            geneIndex++;
-          }
-
-          matchedGenesMap[pathwayName] = genesMatching;
-          var geneCount = 0; // Count number of genes *not processess* in a pathway
-
-          for (var _b = 0, _c = Object.values(this.pathwayGeneMap[pathwayName]); _b < _c.length; _b++) {
-            var geneType = _c[_b];
-
-            if (geneType === "GENE") {
-              geneCount++;
-            }
-          }
-
-          if (rankingMode === 0) {
-            maxHeap.insert(genesMatching.length, {
-              pathwayName: pathwayName
-            });
-          } else if (rankingMode === 1) {
-            maxHeap.insert(genesMatching.length / geneCount * 100, {
-              pathwayName: pathwayName
-            });
-          } else if (rankingMode === 2) {
-            maxHeap.insert(sumOfAlterations, {
-              pathwayName: pathwayName
-            });
-          } else if (rankingMode === 3) {
-            maxHeap.insert(genesMatching.length * sumOfAlterations / geneCount, {
-              pathwayName: pathwayName
-            });
-          }
-        }
-      }
-
-      while (maxHeap.size() > 0) {
-        var top_2 = maxHeap.extractMax();
-        var pathwayName = top_2.getValue().pathwayName;
-        bestPathways.push({
-          score: top_2.getKey(),
-          genesMatched: matchedGenesMap[pathwayName],
-          pathwayName: pathwayName
-        });
-      } //if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
+      var bestPathways = this.getBestPathways(rankingMode); //if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
       //this.setSelectedPathway(bestPathways[0].pathwayName);
 
       /*if(this.bestPathwaysAlgos.length === 0){ // First pathway of the first method is shown as the default pathway.
@@ -15106,7 +15065,6 @@ function (_super) {
         this.selectedPathway = bestPathways[0].pathwayName;
         this.pathwayActions.changePathway(bestPathways[0].pathwayName);
       }*/
-
 
       this.bestPathwaysAlgos.push(bestPathways);
       console.log(this.bestPathwaysAlgos);
@@ -15212,31 +15170,31 @@ function (_super) {
         return;
       }
 
-      var _loop_1 = function (metadata) {
+      var _loop_2 = function (metadata) {
         if (!metadata.checked) {
           return "continue";
         }
 
-        if (this_1.exists(metadata.profile)) {
+        if (this_2.exists(metadata.profile)) {
           external_react_toastify_["toast"].warn(metadata.profile + " already exists.");
           return "continue";
         }
 
         var studyId = studyData[0];
         var profileId = metadata.profile;
-        var enableNewProfile = this_1.profiles.length < this_1.MAX_ALLOWED_PROFILES_ENABLED;
+        var enableNewProfile = this_2.profiles.length < this_2.MAX_ALLOWED_PROFILES_ENABLED;
         var newProfile = {
           studyId: studyId,
           profileId: profileId,
           enabled: enableNewProfile
         };
-        this_1.addProfile(newProfile);
-        var genes = this_1.editor.cy.nodes().filter(function (node) {
+        this_2.addProfile(newProfile);
+        var genes = this_2.editor.cy.nodes().filter(function (node) {
           return node.data("type") === "GENE";
         }).map(function (node) {
           return node.data("name");
         });
-        this_1.portalAccessor.getProfileData({
+        this_2.portalAccessor.getProfileData({
           caseSetId: studyId,
           geneticProfileId: profileId,
           genes: genes
@@ -15250,12 +15208,12 @@ function (_super) {
         });
       };
 
-      var this_1 = this;
+      var this_2 = this;
 
       for (var _i = 0, _a = Object.values(dataTypes); _i < _a.length; _i++) {
         var metadata = _a[_i];
 
-        _loop_1(metadata);
+        _loop_2(metadata);
       }
     }
   });

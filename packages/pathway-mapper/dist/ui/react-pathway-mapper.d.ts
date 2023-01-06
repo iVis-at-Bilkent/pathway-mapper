@@ -147,6 +147,7 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     addSampleIconData(sampleIconData: any): void;
     getGeneStudyMap(studyGeneMap: any): any;
     getAlterationAveragePerGene(genomicDataMap: any): any;
+    getBestPathways(rankingMode: number): any[];
     /**
      *
      * @param rankingMode: number => 0 = Count, 1 = Percentage, 2 = Count with Alteration, 3 = Percentage with Alteration
