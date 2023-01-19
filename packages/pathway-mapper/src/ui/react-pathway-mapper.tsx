@@ -63,8 +63,17 @@ interface IPathwayMapperProps{
   groupComparisonView ?: boolean;
   activeGroups ?: any[];
   messageBanner? : () => JSX.Element;
+  currentPathway ?: string;
+  rankingChoices ?: PMParameters;
+  updateRankingChoices ?: (drowDownTitle : string, isAlterationEnabled: number, considerOnlyTCGAPanPathways : boolean, isPercentageMatch : number, selectedPathway : string) =>void;
 }
 
+export interface PMParameters{
+  dropDownTitle: string;
+  isPercentageMatch: number;
+  isAlterationEnabled: number;
+  considerOnlyTCGAPanPathways: boolean;
+}
 export interface ICBioData{
   altered: number;
   gene: string;
@@ -188,6 +197,8 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   genes: any[] = [];
 
   renderTimes : number = 0;
+
+  currentRankingScheme = (this.props.rankingChoices !== undefined ? 2 * this.props.rankingChoices.isAlterationEnabled + this.props.rankingChoices.isPercentageMatch : 0);
 
   setActiveEdge: (edgeId: number) => void;
   viewOperationsManager: ViewOperationsManager;
@@ -472,8 +483,13 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
    */
   getBestPathway(rankingMode: number) {
     const bestPathways = this.getBestPathways(rankingMode);
-    if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
-      this.setSelectedPathway(bestPathways[0].pathwayName);
+    console.log( this.props.currentPathway);
+    if(this.bestPathwaysAlgos.length === this.currentRankingScheme && this.props.currentPathway !== undefined && this.props.currentPathway === "") // First pathway of the first method is shown as the default pathway.
+       this.setSelectedPathway(bestPathways[0].pathwayName);
+    else if ( this.bestPathwaysAlgos.length === this.currentRankingScheme && this.props.currentPathway !== undefined && this.props.currentPathway.length > 0)
+       this.setSelectedPathway(this.props.currentPathway);
+    else if ( this.bestPathwaysAlgos.length === this.currentRankingScheme)
+       this.setSelectedPathway(bestPathways[0].pathwayName);
     this.bestPathwaysAlgos.push(bestPathways);
     console.log(this.bestPathwaysAlgos);
   }
@@ -710,7 +726,8 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
             {
             (isCBioPortal &&
             <Col xs={3} style={{paddingLeft: "0px"}}>
-              <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} tableComponent={this.props.tableComponent} patientView={this.props.patientView}/>
+              <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} tableComponent={this.props.tableComponent} patientView={this.props.patientView} currentPathway = {this.props.currentPathway} 
+              rankingChoices = {this.props.rankingChoices} updateRankingChoices = {this.props.updateRankingChoices}/>
             </Col>)
             }
           </div>

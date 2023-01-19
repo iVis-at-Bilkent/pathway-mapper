@@ -33,6 +33,15 @@ interface IPathwayMapperProps {
     groupComparisonView?: boolean;
     activeGroups?: any[];
     messageBanner?: () => JSX.Element;
+    currentPathway?: string;
+    rankingChoices?: PMParameters;
+    updateRankingChoices?: (drowDownTitle: string, isAlterationEnabled: number, considerOnlyTCGAPanPathways: boolean, isPercentageMatch: number, selectedPathway: string) => void;
+}
+export interface PMParameters {
+    dropDownTitle: string;
+    isPercentageMatch: number;
+    isAlterationEnabled: number;
+    considerOnlyTCGAPanPathways: boolean;
 }
 export interface ICBioData {
     altered: number;
@@ -132,6 +141,7 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     profiles: IProfileMetaData[];
     genes: any[];
     renderTimes: number;
+    currentRankingScheme: number;
     setActiveEdge: (edgeId: number) => void;
     viewOperationsManager: ViewOperationsManager;
     gridOptionsManager: GridOptionsManager;

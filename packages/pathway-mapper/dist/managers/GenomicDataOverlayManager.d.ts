@@ -40,6 +40,7 @@ export default class GenomicDataOverlayManager {
     getRequiredWidthForGenomicData(genomicDataBoxCount: any): number;
     updateColorScheme(colorValueMap: IColorValueMap): void;
     showGenomicData(resizeNodeCallback?: (node: any) => void): void;
+    generateHTMLContentForComparisonNodeTooltip(ele: any, groupsToBeRendered: any): JQuery<HTMLElement>;
     showGroupComparisonData(groupsToBeRendered: any[], resizeNodeCallback?: (node: any) => void): void;
     parseGenomicData(genomicData: any, groupID: any): void;
     registerObserver(observer: any): void;

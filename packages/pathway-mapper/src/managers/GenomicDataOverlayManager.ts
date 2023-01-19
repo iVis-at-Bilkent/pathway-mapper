@@ -1,4 +1,5 @@
 import $ from "jquery";
+import { forEach } from "lodash";
 import { GeneticAlterationRuleSet, shapeToSvg } from "oncoprintjs";
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css"; // optional for styling
@@ -863,8 +864,92 @@ export default class GenomicDataOverlayManager {
       .update();
   }
 
+  generateHTMLContentForComparisonNodeTooltip(ele, groupsToBeRendered) {
+    const tooltipMaxHeight = "200px";
+    const tooltipMaxWidth = "200px";
+    const marginBetweenSamples = "10px";
+  
+    const nodeLabel = ele.data("name");
+    const data = this.groupComparisonData[nodeLabel];
+  
+    // Outer wrapper for the entire tooltip
+    var wrapper = $("<div></div>");
+    wrapper.css({
+      "max-width": tooltipMaxWidth,
+      "max-height": tooltipMaxHeight,
+      "word-wrap": "break-word",
+      "overflow-y": "auto",
+    });
+  
+    
+  
+  
+      // Inner wrapper for a single sample
+      var sampleWrapper = $("<div></div>");
+      sampleWrapper.css({
+        "margin-top": 0,
+      });
+
+      /*groupsToBeRendered.forEach( group => {
+        group.
+        sampleWrapper.append(
+        $(
+          "<div>" +
+            data[group]
+            +"</div>"
+        )
+      );
+      wrapper.append(sampleWrapper);});
+      */
+     let counter = 0;
+      for ( let j in data ){
+        var sampleWrapper = $("<div></div>");
+        sampleWrapper.css({
+          "margin-top": 0,
+          "color": groupsToBeRendered[counter].color
+        });
+        counter++;
+        sampleWrapper.append(
+          $(
+            "<div>" +
+              j + ": " +  data[j].toFixed(1)
+              +"</div>"
+              
+          )),
+          /*sampleWrapper.append(
+            $(
+              "<div>" +
+                data[j]
+                +"</div>"
+                
+            )),*/
+            wrapper.append(sampleWrapper);
+      }
+      
+  
+      
+  
+        
+      // Prepare HTML for tooltip
+      
+      
+      const sampleIdHTML = "<b> " + 1 + "</b>" + "<br>";
+      sampleWrapper.append(
+        $(
+          "<div>" +
+            //sampleIconSvgHTML +
+            //sampleIdHTML +
+            +"</div>"
+        )
+      );
+     // wrapper.append(sampleWrapper);
+  
+    return wrapper;
+  }
+
   showGroupComparisonData(groupsToBeRendered : any[],resizeNodeCallback?: (node: any) => void,  ) {
     const self = this;
+    const data = this.groupComparisonData;
     const genomicDataBoxCount = 0;
       if (genomicDataBoxCount < 1) {
       // Hide all genomic data and return
@@ -904,6 +989,52 @@ export default class GenomicDataOverlayManager {
         return dataURI;
       })
       .update();
+
+    this.cy.on("mouseover", 'node[type="GENE"]', function(event) {
+      const node = event.target || event.cyTarget;
+      const nodeLabel = node.data("name");
+      console.log("ziyaaaaa");
+      if (!data[nodeLabel]) {
+        return;
+      }
+
+      let ref = node.popperRef();
+      let dummyDomEle = document.createElement("div");
+      document.body.appendChild(dummyDomEle);
+
+      let tip = tippy(dummyDomEle, {
+        // tippy props:
+        getReferenceClientRect: ref.getBoundingClientRect, // https://atomiks.github.io/tippyjs/v6/all-props/#getreferenceclientrect
+        trigger: "manual", // mandatory, we cause the tippy to show programmatically.
+        placement: "bottom",
+        interactive: true,
+        theme: "cbioportal",
+        // your own custom props
+        // content prop can be used when the target is a single element https://atomiks.github.io/tippyjs/v6/constructor/#prop
+        content: () => {
+          let content = self.generateHTMLContentForComparisonNodeTooltip(node, groupsToBeRendered)
+            .get(0);
+
+          return content;
+        },
+        onHidden(instance) {
+          instance.destroy();
+          dummyDomEle.remove();
+        },
+      });
+
+      node.one("showqtipevent", function() {
+        tip.show();
+      });
+
+      node.on("mouseout", function() {
+        if (dummyDomEle && dummyDomEle["_tippy"]) {
+          tip.hide();
+        }
+      });
+
+      node.trigger("showqtipevent");
+    });
   }
 
   parseGenomicData(genomicData, groupID) {
@@ -981,6 +1112,7 @@ export default class GenomicDataOverlayManager {
   //in ResultView Page or PathwayMapper Editor
 
   showPatientData() {
+    console.log( "patient data entered ......");
     const self = this;
 
     const data = this.patientData;
@@ -1029,6 +1161,7 @@ export default class GenomicDataOverlayManager {
     this.cy.on("mouseover", 'node[type="GENE"]', function(event) {
       const node = event.target || event.cyTarget;
       const nodeLabel = node.data("name");
+      console.log("ziyaaaa");
       if (!data[nodeLabel]) {
         return;
       }
