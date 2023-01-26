@@ -208,7 +208,6 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     super(props);
     makeObservable(this);
 
-    console.log("Pathway Mapper rerendered");
     this.genes = this.props.genes;
     
     this.fileManager = new FileOperationsManager();
@@ -483,7 +482,6 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
    */
   getBestPathway(rankingMode: number) {
     const bestPathways = this.getBestPathways(rankingMode);
-    console.log( this.props.currentPathway);
     if(this.bestPathwaysAlgos.length === this.currentRankingScheme && this.props.currentPathway !== undefined && this.props.currentPathway === "") // First pathway of the first method is shown as the default pathway.
        this.setSelectedPathway(bestPathways[0].pathwayName);
     else if ( this.bestPathwaysAlgos.length === this.currentRankingScheme && this.props.currentPathway !== undefined && this.props.currentPathway.length > 0)
@@ -491,20 +489,11 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     else if ( this.bestPathwaysAlgos.length === this.currentRankingScheme)
        this.setSelectedPathway(bestPathways[0].pathwayName);
     this.bestPathwaysAlgos.push(bestPathways);
-    console.log(this.bestPathwaysAlgos);
   }
 
   getBestPathwayReRank(rankingMode: number) {
     const bestPathways = this.getBestPathways(rankingMode);
-    //if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
-      //this.setSelectedPathway(bestPathways[0].pathwayName);
-    /*if(this.bestPathwaysAlgos.length === 0){ // First pathway of the first method is shown as the default pathway.
-      this.setSelectedPathway(bestPathways[0].pathwayName);
-      this.selectedPathway = bestPathways[0].pathwayName;
-      this.pathwayActions.changePathway(bestPathways[0].pathwayName);
-    }*/
     this.bestPathwaysAlgos.push(bestPathways);
-    console.log(this.bestPathwaysAlgos);
   }
   
   // This method extracts all genes of a pathway and adds it to the pathwayGeneMap
@@ -538,14 +527,12 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     }
   
   rankPathways(){
-    console.log("pathways reranked");
     this.bestPathwaysAlgos = [];
     this.getBestPathwayReRank(0);
       this.getBestPathwayReRank(1);
       this.getBestPathwayReRank(2);
       this.getBestPathwayReRank(3);
       this.genes = this.props.genes;
-      console.log(this.bestPathwaysAlgos);
   }
 
   loadRedirectedPortalData(){
@@ -647,12 +634,8 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   }
 
   render() {
-  console.log("PM rpm.tsx rendered");
   const isCBioPortal = this.props.isCBioPortal;     
-  console.log(this.props.genes);
-  console.log(this.genes);
   if( this.renderTimes > 1 && this.props.groupComparisonView === true && this.props.genes !== this.genes ){
-      console.log("not equal so re rank");
       this.rankPathways();
   }
   this.renderTimes++;

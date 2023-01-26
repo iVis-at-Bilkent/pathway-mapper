@@ -993,7 +993,6 @@ export default class GenomicDataOverlayManager {
     this.cy.on("mouseover", 'node[type="GENE"]', function(event) {
       const node = event.target || event.cyTarget;
       const nodeLabel = node.data("name");
-      console.log("ziyaaaaa");
       if (!data[nodeLabel]) {
         return;
       }
@@ -1112,7 +1111,6 @@ export default class GenomicDataOverlayManager {
   //in ResultView Page or PathwayMapper Editor
 
   showPatientData() {
-    console.log( "patient data entered ......");
     const self = this;
 
     const data = this.patientData;
@@ -1161,7 +1159,6 @@ export default class GenomicDataOverlayManager {
     this.cy.on("mouseover", 'node[type="GENE"]', function(event) {
       const node = event.target || event.cyTarget;
       const nodeLabel = node.data("name");
-      console.log("ziyaaaa");
       if (!data[nodeLabel]) {
         return;
       }

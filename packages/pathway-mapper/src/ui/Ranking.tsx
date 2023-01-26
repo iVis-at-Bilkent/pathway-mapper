@@ -67,12 +67,9 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
         this.isAlterationEnabled = (this.props.rankingChoices !== undefined ? this.props.rankingChoices.isAlterationEnabled : 0 );
         this.considerOnlyTCGAPanPathways = (this.props.rankingChoices !== undefined ? this.props.rankingChoices.considerOnlyTCGAPanPathways : true );
         this.dropDownTitle =  (this.props.rankingChoices !== undefined ? this.props.rankingChoices.dropDownTitle : "Match count" );
-        console.log("percentage " + this.isPercentageMatch, "alteration " + this.isAlterationEnabled, this.considerOnlyTCGAPanPathways, this.dropDownTitle);
         this.isExpanded = false;
         this.rankingCriteria = 2 * this.isAlterationEnabled + this.isPercentageMatch;
-        console.log( "initial " + 2 * this.isAlterationEnabled + this.isPercentageMatch);
         this.setBestPathwayMethod(2 * this.isAlterationEnabled + this.isPercentageMatch);
-        console.log("ranking " + this.props.currentPathway);
         if( this.props.currentPathway !== undefined && this.props.currentPathway.length > 0)
         this.selectedPathway = this.props.currentPathway;
         else 
@@ -88,9 +85,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     @autobind
     setBestPathwayMethod(i: number){
         this.bestPathways = this.props.bestPathwaysAlgos[i];
-        console.log("start " + i);
         this.filterBestPathwaysByTCGAPanPathways();
-        console.log(this.shownPathways);
     }
 
     @autobind
@@ -103,10 +98,8 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     @autobind
     onApplyClick(){
         // Mapping from dropdown + checkbox selection to pathway method.
-        console.log("ranking logic changed "  + 2 * this.isAlterationEnabled + this.isPercentageMatch);
         this.setBestPathwayMethod(2 * this.isAlterationEnabled + this.isPercentageMatch);
         this.rankingCriteria = 2 * this.isAlterationEnabled + this.isPercentageMatch;
-        console.log(this.rankingCriteria);
     }
 
     @action.bound 
@@ -117,7 +110,6 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
             }
             return true;
         });
-        console.log(this.shownPathways);
         // change selected pathway if we are filtered and doesn't exist
         if (this.considerOnlyTCGAPanPathways 
             && TCGA_PANCAN_PATHWAY_NAMES.indexOf(this.selectedPathway) < 0) {
@@ -141,7 +133,6 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     render(){
         const lengthThreshold = 13;
         this.setBestPathwayMethod(this.rankingCriteria);
-        console.log("Re ranked pathways are: " + this.bestPathways[0] + this.bestPathways[1]);
          
         return (
           <div id="ranking-bar">
