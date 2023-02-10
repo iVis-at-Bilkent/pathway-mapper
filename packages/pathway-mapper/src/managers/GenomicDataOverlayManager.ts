@@ -867,7 +867,7 @@ export default class GenomicDataOverlayManager {
   generateHTMLContentForComparisonNodeTooltip(ele, groupsToBeRendered) {
     const tooltipMaxHeight = "200px";
     const tooltipMaxWidth = "200px";
-    const marginBetweenSamples = "10px";
+    const marginBetweenSamples = "12px";
   
     const nodeLabel = ele.data("name");
     const data = this.groupComparisonData[nodeLabel];
@@ -879,6 +879,7 @@ export default class GenomicDataOverlayManager {
       "max-height": tooltipMaxHeight,
       "word-wrap": "break-word",
       "overflow-y": "auto",
+      "font-size" : "12px",
     });
   
     
@@ -903,19 +904,39 @@ export default class GenomicDataOverlayManager {
       */
      let counter = 0;
       for ( let j in data ){
+        var sampleWrapper2 = $("<div></div>");
+        sampleWrapper2.css({
+          "margin-top": 0,
+        });
         var sampleWrapper = $("<div></div>");
         sampleWrapper.css({
-          "margin-top": 0,
-          "color": groupsToBeRendered[counter].color
+          "margin-top": 0
+          //"display" : "inline-flex"
         });
+        var sampleWrapperSquare = $("<div></div>");
+        sampleWrapperSquare.css({
+          "height": "12px",
+          "width": "12px",
+          "background-color": groupsToBeRendered[counter].color,
+        });
+
         counter++;
-        sampleWrapper.append(
-          $(
-            "<div>" +
-              j + ": " +  data[j].toFixed(1)
-              +"</div>"
-              
-          )),
+          /*sampleWrapper.append( sampleWrapperSquare);
+          sampleWrapper.append(
+            $(
+              "<div>" + " " +  "</div>" + "<div>" + 
+                j + ": " +  data[j].toFixed(1)
+                +"</div>"
+                
+            )),*/
+            sampleWrapper.append(
+            $(
+              "<div style = 'display:inline-flex'>" +  "<div style = 'color:" + groupsToBeRendered[counter-1].color + "'>" + "&#9632" + "</div>" 
+              + j + ": " +  data[j].toFixed(1)
+                +"</div>"
+                
+            ));
+          sampleWrapper2.append(sampleWrapper);
           /*sampleWrapper.append(
             $(
               "<div>" +
@@ -1445,6 +1466,20 @@ export default class GenomicDataOverlayManager {
       "</text>" +
       "</g>" +
       "</svg>";
+
+    return html;
+  }
+
+  generateSquareForComparisonView(groupColor: string) {
+    var html =
+    '<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">' +
+    '<g transform="translate(6,6)">' +
+      '<g transform="translate(6,6)">' +
+      '<circle r="6" fill="' +
+      groupColor +
+      '" fill-opacity="1"></circle>' ;
+      "</g>"
+      "</svg";
 
     return html;
   }
