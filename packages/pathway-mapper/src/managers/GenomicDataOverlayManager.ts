@@ -931,8 +931,8 @@ export default class GenomicDataOverlayManager {
             )),*/
             sampleWrapper.append(
             $(
-              "<div style = 'display:inline-flex'>" +  "<div style = 'color:" + groupsToBeRendered[counter-1].color + "'>" + "&#9632" + "</div>" 
-              + j + ": " +  data[j].toFixed(1)
+              "<div style = 'display:inline-flex;font-size: 15px'>" +  "<div style = 'color:" + groupsToBeRendered[counter-1].color + ";font-size: 15px'>" + "&#9632" + "</div>" 
+              + "&nbsp" + j + ": " +  data[j].toFixed(1)
                 +"</div>"
                 
             ));
