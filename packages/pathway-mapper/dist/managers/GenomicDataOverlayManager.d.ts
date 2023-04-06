@@ -52,6 +52,5 @@ export default class GenomicDataOverlayManager {
     generateOncoprintForPatientNode(ele: any): any;
     getCNADisplayString(alterationTypeKey: number): string;
     generateSvgIconForSample(iconColor: string, iconText: string): string;
-    generateSquareForComparisonView(groupColor: string): string;
     generateHTMLContentForNodeTooltip(ele: any, patientData: any): JQuery<HTMLElement>;
 }

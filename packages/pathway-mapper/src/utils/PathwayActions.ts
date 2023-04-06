@@ -65,7 +65,6 @@ export default class PathwayActions {
   }
 
   emphasizeQueryGenes(queryGenes: string[]) {
-    console.log("Query Genes emphasized");
     if (this.editor)
       this.editor.cy.nodes().forEach((node: any) => {
         const nodeName = node.data().name;
@@ -241,7 +240,6 @@ export default class PathwayActions {
   @autobind
   changePathway(pathwayName: string) {
     this.pathwayHandler(pathwayName);
-    console.log("new pathway found");
 
     if (!this.isCBioPortal) {
       this.fileManager.setPathwayInfo({

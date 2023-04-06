@@ -1814,10 +1814,12 @@ export default class EditorActionsManager {
         }
         else
         {
-            if( activeGroups !== undefined)
-            this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID, activeGroups);
-            else
-            this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
+            if( activeGroups !== undefined){
+                this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID, activeGroups);
+            }
+            else {
+                this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
+            }
         }
     }
 

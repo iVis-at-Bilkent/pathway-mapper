@@ -185,12 +185,6 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset + 24 - 0.5 + 0.35);
       $('.cytoscape-navigator-wrapper').css('z-index', 1039);
     }
-    else {
-      /*$('.cytoscape-navigator-wrapper').css('bottom', 10.5);
-      $('.cytoscape-navigator-wrapper').css('right', 0);
-      $('.cytoscape-navigator-wrapper').css('z-index', 1039);*/
-    }
-    //$('.cytoscape-navigator-wrapper').css('z-index', 1039);
 
     //Relative is used so that its position depends on the below properties
     $('.cy-panzoom').css('position', 'relative');
@@ -543,8 +537,9 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     };
 
     //TODO: AMENDMENT declaration removed
-    if( !this.isCbioPortal)
-    this.cy.navigator(navDefaults); // get navigator instance, nav
+    if( !this.isCbioPortal){
+        this.cy.navigator(navDefaults); // get navigator instance, nav
+    }
 
     const viewUtilitiesOpts = {
       node: {

@@ -113,11 +113,7 @@ export default class Toolbar extends React.Component<IToolbarProps, {}>{
           !this.props.groupComparisonView && <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Edit pathway" data-place="right" data-effect="solid" src={openImage} onClick={() => {{window.open("http://pathwaymapper.org/?pathwayName=" + this.props.selectedPathway +"&"+ studyQuery )}}}/>
           ])}
           <img height="22px" width="22px" data-border="true" data-type="light" data-tip="Help" data-place="right" data-effect="solid" src={aboutImage} onClick={() => {this.props.handleOpen(EModalType.CHELP); }}/>
-          { this.props.genesSelectionComponent &&
-            this.props.genesSelectionComponent(
-                )
-            }
-          
+          { this.props.genesSelectionComponent && this.props.genesSelectionComponent()}  
     </div>);
   }
 }

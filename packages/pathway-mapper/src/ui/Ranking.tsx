@@ -68,18 +68,20 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
         this.considerOnlyTCGAPanPathways = (this.props.rankingChoices !== undefined ? this.props.rankingChoices.considerOnlyTCGAPanPathways : true );
         this.dropDownTitle =  (this.props.rankingChoices !== undefined ? this.props.rankingChoices.dropDownTitle : "Match count" );
         this.isExpanded = false;
-        this.rankingCriteria = 2 * this.isAlterationEnabled + this.isPercentageMatch;
-        this.setBestPathwayMethod(2 * this.isAlterationEnabled + this.isPercentageMatch);
-        if( this.props.currentPathway !== undefined && this.props.currentPathway.length > 0)
-        this.selectedPathway = this.props.currentPathway;
-        else 
-        this.selectedPathway = this.shownPathways[0].pathwayName;
+        this.onApplyClick();
+        if( this.props.currentPathway !== undefined && this.props.currentPathway.length > 0){
+            this.selectedPathway = this.props.currentPathway;
+        }
+        else {
+            this.selectedPathway = this.shownPathways[0].pathwayName;
+        }
     }
 
     @autobind 
     updateRankingChoices(){
-        if( this.props.updateRankingChoices !== undefined)
+        if( this.props.updateRankingChoices !== undefined){
             this.props.updateRankingChoices(this.dropDownTitle, this.isAlterationEnabled, this.considerOnlyTCGAPanPathways, this.isPercentageMatch, this.selectedPathway);
+        }
     };
 
     @autobind

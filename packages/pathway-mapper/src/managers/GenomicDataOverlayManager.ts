@@ -15,6 +15,276 @@ interface ValueColorPair {
   value: number;
   color: Color;
 }
+
+const svgNameSpace = "http://www.w3.org/2000/svg";
+
+function hexToRGB(hex: string) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
+}
+function swap(a, b) {
+  let temp = a;
+  a = b;
+  b = temp;
+}
+
+function findValueColorInterval(
+  colorScheme: IColorValueMap,
+  value: number
+): { lower: ValueColorPair; upper: ValueColorPair } {
+  const pairs = Object.entries(colorScheme)
+    .map(([value, color]) => {
+      return {
+        value: Number(value),
+        color: hexToRGB(color),
+      };
+    })
+    .sort((o1, o2) => {
+      return o1.value - o2.value;
+    });
+
+  if (value < pairs[0].value) {
+    return {
+      lower: {
+        value: -Infinity,
+        color: pairs[0].color,
+      },
+      upper: {
+        value: pairs[0].value,
+        color: pairs[0].color,
+      },
+    };
+  } else if (value > pairs[pairs.length - 1].value) {
+    return {
+      lower: {
+        value: pairs[pairs.length - 1].value,
+        color: pairs[pairs.length - 1].color,
+      },
+      upper: {
+        value: Infinity,
+        color: pairs[pairs.length - 1].color,
+      },
+    };
+  } else {
+    for (let i = 0; i < pairs.length - 1; i++) {
+      if (value >= pairs[i].value && value < pairs[i + 1].value) {
+        return {
+          lower: {
+            value: pairs[i].value,
+            color: pairs[i].color,
+          },
+          upper: {
+            value: pairs[i + 1].value,
+            color: pairs[i + 1].color,
+          },
+        };
+      }
+    }
+
+    return {
+      lower: {
+        value: -Infinity,
+        color: pairs[0].color,
+      },
+      upper: {
+        value: Infinity,
+        color: pairs[pairs.length - 1].color,
+      },
+    };
+  }
+}
+
+/**
+ * Map the percentage value to r,g,b values using a log scale, i.e instead of taking the ratio linearly by taking differences
+ * between the lower and upper color r,g,b values, take the differences between their Math.log values. This makes the color
+ * scale up to the upper value much quicker, i.e in a 0-100 mapping a value of 20 doesn't map to 1/5 way between two colors
+ * but closer to half way. This is done because high numbers in alteration values are extremely rare and even small numbers
+ * are usually significant.
+ */
+function getMappedColor(
+  lowerColor: Color,
+  upperColor: Color,
+  lowerValue: number,
+  upperValue: number,
+  percent: number
+): Color {
+  const up = Math.log(1 + upperValue);
+  const low = Math.log(1 + lowerValue);
+  const p = Math.log(1 + (percent >= 0 ? percent : percent * -1));
+
+  // arbitrary value used to slow down the scaling of log instead of getting too much into math
+  const scalingFactor = percent >= 0 ? 0.8 : 1.2;
+
+  const ratio = ((p - low) / (up - low)) * scalingFactor;
+
+  return {
+    r: lowerColor.r + ratio * (upperColor.r - lowerColor.r),
+    g: lowerColor.g + ratio * (upperColor.g - lowerColor.g),
+    b: lowerColor.b + ratio * (upperColor.b - lowerColor.b),
+  };
+}
+
+function genomicDataRectangleGenerator(
+  x,
+  y,
+  w,
+  h,
+  percent,
+  parentSVG,
+  colorScheme,
+  groupColor?
+) {
+  const limits = findValueColorInterval(colorScheme, Number(percent));
+  let color: Color = { r: 255, g: 255, b: 255 };
+  if (limits.lower.value === -Infinity) {
+    color = limits.upper.color;
+  } else if (limits.upper.value === Infinity) {
+    color = limits.lower.color;
+  } else {
+    let upperValue = limits.upper.value;
+    let lowerValue = limits.lower.value;
+    let upperColor = limits.upper.color;
+    let lowerColor = limits.lower.color;
+
+    if (lowerValue < 0 && upperValue <= 0) {
+      lowerValue *= -1;
+      upperValue *= -1;
+      swap(lowerValue, upperValue);
+    } else if (lowerValue < 0 && upperValue > 0) {
+      upperValue += lowerValue * -1;
+      lowerValue = 0;
+    }
+
+    color = getMappedColor(
+      lowerColor,
+      upperColor,
+      lowerValue,
+      upperValue,
+      Number(percent)
+    );
+  }
+
+  if( groupColor !== undefined ){
+  let colorString = "";
+  if (percent || percent === 0 ) {
+    colorString = (percent[0] === '-' || Number(percent) > 100 )  ? "rgb(210,210,210)" : `rgb(${Math.round(color.r)}, ${Math.round(
+      color.g
+    )}, ${Math.round(color.b)})`;
+    // Rectangle Part
+    const overlayRect = document.createElementNS(svgNameSpace, "rect");
+    overlayRect.setAttribute("x", x);
+    overlayRect.setAttribute("y", y);
+    overlayRect.setAttribute("width", w);
+    overlayRect.setAttribute("height", h);
+    overlayRect.setAttribute(
+      "style",
+      "stroke-width:2;stroke:" + groupColor + ";" + "opacity:1;fill:" + colorString + ";"
+    );
+    overlayRect.setAttribute("border-color", "#ffffff");
+
+    // Text Part
+    if (percent[0] === "-") {
+      percent = percent.substr(1);
+    }
+    const textPercent =
+      percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
+    const text = Number(percent) > 100 ? "N/P" : textPercent + "%";
+    const fontSize = 14;
+    const textLength = text.length;
+    const xOffset = w / 2 - textLength * 4;
+    const yOffset = fontSize / 3;
+
+    const svgText = document.createElementNS(svgNameSpace, "text");
+    svgText.setAttribute("x", x + xOffset);
+    svgText.setAttribute("y", y + h / 2 + yOffset);
+    svgText.setAttribute("font-family", "Arial");
+    svgText.setAttribute("font-size", fontSize + "");
+    svgText.setAttribute("border-color", "red");
+    svgText.innerHTML = text;
+
+    parentSVG.appendChild(overlayRect);
+    parentSVG.appendChild(svgText);
+  } else {
+    colorString = "rgb(210,210,210)";
+
+    // Rectangle Part
+    const overlayRect = document.createElementNS(svgNameSpace, "rect");
+    overlayRect.setAttribute("x", x);
+    overlayRect.setAttribute("y", y);
+    overlayRect.setAttribute("width", w);
+    overlayRect.setAttribute("height", h);
+    overlayRect.setAttribute(
+      "style",
+      "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";"
+    );
+
+    parentSVG.appendChild(overlayRect);
+  }
+  }
+  else {
+     let colorString = "";
+      if (percent) {
+        colorString = (percent[0] === '-' || Number(percent) > 100 )  ? "rgb(210,210,210)" : `rgb(${Math.round(color.r)}, ${Math.round(
+          color.g
+        )}, ${Math.round(color.b)})`;
+        // Rectangle Part
+        const overlayRect = document.createElementNS(svgNameSpace, "rect");
+        overlayRect.setAttribute("x", x);
+        overlayRect.setAttribute("y", y);
+        overlayRect.setAttribute("width", w);
+        overlayRect.setAttribute("height", h);
+        overlayRect.setAttribute(
+          "style",
+          "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";"
+        );
+
+        // Text Part
+        if (percent[0] === "-") {
+          percent = percent.substr(1);
+        }
+        const textPercent =
+          percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
+        const text = Number(percent) > 100 ? "N/P" : textPercent + "%";
+        const fontSize = 14;
+        const textLength = text.length;
+        const xOffset = w / 2 - textLength * 4;
+        const yOffset = fontSize / 3;
+
+        const svgText = document.createElementNS(svgNameSpace, "text");
+        svgText.setAttribute("x", x + xOffset);
+        svgText.setAttribute("y", y + h / 2 + yOffset);
+        svgText.setAttribute("font-family", "Arial");
+        svgText.setAttribute("font-size", fontSize + "");
+        svgText.innerHTML = text;
+
+        parentSVG.appendChild(overlayRect);
+        parentSVG.appendChild(svgText);
+      } else {
+        colorString = "rgb(210,210,210)";
+
+        // Rectangle Part
+        const overlayRect = document.createElementNS(svgNameSpace, "rect");
+        overlayRect.setAttribute("x", x);
+        overlayRect.setAttribute("y", y);
+        overlayRect.setAttribute("width", w);
+        overlayRect.setAttribute("height", h);
+        overlayRect.setAttribute(
+          "style",
+          "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";"
+        );
+
+        parentSVG.appendChild(overlayRect);
+  }
+ }
+}
+
 export default class GenomicDataOverlayManager {
   public genomicDataMap: {};
   public visibleGenomicDataMapByType: {};
@@ -309,217 +579,10 @@ export default class GenomicDataOverlayManager {
       }
     }
 
-    function hexToRGB(hex: string) {
-      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-
-      return result
-        ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16),
-          }
-        : null;
-    }
-
-    function swap(a, b) {
-      let temp = a;
-      a = b;
-      b = temp;
-    }
-
-    function findValueColorInterval(
-      colorScheme: IColorValueMap,
-      value: number
-    ): { lower: ValueColorPair; upper: ValueColorPair } {
-      const pairs = Object.entries(colorScheme)
-        .map(([value, color]) => {
-          return {
-            value: Number(value),
-            color: hexToRGB(color),
-          };
-        })
-        .sort((o1, o2) => {
-          return o1.value - o2.value;
-        });
-
-      if (value < pairs[0].value) {
-        return {
-          lower: {
-            value: -Infinity,
-            color: pairs[0].color,
-          },
-          upper: {
-            value: pairs[0].value,
-            color: pairs[0].color,
-          },
-        };
-      } else if (value > pairs[pairs.length - 1].value) {
-        return {
-          lower: {
-            value: pairs[pairs.length - 1].value,
-            color: pairs[pairs.length - 1].color,
-          },
-          upper: {
-            value: Infinity,
-            color: pairs[pairs.length - 1].color,
-          },
-        };
-      } else {
-        for (let i = 0; i < pairs.length - 1; i++) {
-          if (value >= pairs[i].value && value < pairs[i + 1].value) {
-            return {
-              lower: {
-                value: pairs[i].value,
-                color: pairs[i].color,
-              },
-              upper: {
-                value: pairs[i + 1].value,
-                color: pairs[i + 1].color,
-              },
-            };
-          }
-        }
-
-        return {
-          lower: {
-            value: -Infinity,
-            color: pairs[0].color,
-          },
-          upper: {
-            value: Infinity,
-            color: pairs[pairs.length - 1].color,
-          },
-        };
-      }
-    }
-
-    /**
-     * Map the percentage value to r,g,b values using a log scale, i.e instead of taking the ratio linearly by taking differences
-     * between the lower and upper color r,g,b values, take the differences between their Math.log values. This makes the color
-     * scale up to the upper value much quicker, i.e in a 0-100 mapping a value of 20 doesn't map to 1/5 way between two colors
-     * but closer to half way. This is done because high numbers in alteration values are extremely rare and even small numbers
-     * are usually significant.
-     */
-    function getMappedColor(
-      lowerColor: Color,
-      upperColor: Color,
-      lowerValue: number,
-      upperValue: number,
-      percent: number
-    ): Color {
-      const up = Math.log(1 + upperValue);
-      const low = Math.log(1 + lowerValue);
-      const p = Math.log(1 + (percent >= 0 ? percent : percent * -1));
-
-      // arbitrary value used to slow down the scaling of log instead of getting too much into math
-      const scalingFactor = percent >= 0 ? 0.8 : 1.2;
-
-      const ratio = ((p - low) / (up - low)) * scalingFactor;
-
-      return {
-        r: lowerColor.r + ratio * (upperColor.r - lowerColor.r),
-        g: lowerColor.g + ratio * (upperColor.g - lowerColor.g),
-        b: lowerColor.b + ratio * (upperColor.b - lowerColor.b),
-      };
-    }
-
-    function genomicDataRectangleGenerator(
-      x,
-      y,
-      w,
-      h,
-      percent,
-      parentSVG,
-      colorScheme
-    ) {
-      const limits = findValueColorInterval(colorScheme, Number(percent));
-      let color: Color = { r: 255, g: 255, b: 255 };
-      if (limits.lower.value === -Infinity) {
-        color = limits.upper.color;
-      } else if (limits.upper.value === Infinity) {
-        color = limits.lower.color;
-      } else {
-        let upperValue = limits.upper.value;
-        let lowerValue = limits.lower.value;
-        let upperColor = limits.upper.color;
-        let lowerColor = limits.lower.color;
-
-        if (lowerValue < 0 && upperValue <= 0) {
-          lowerValue *= -1;
-          upperValue *= -1;
-          swap(lowerValue, upperValue);
-        } else if (lowerValue < 0 && upperValue > 0) {
-          upperValue += lowerValue * -1;
-          lowerValue = 0;
-        }
-
-        color = getMappedColor(
-          lowerColor,
-          upperColor,
-          lowerValue,
-          upperValue,
-          Number(percent)
-        );
-      }
-
-      let colorString = "";
-      if (percent) {
-        colorString = (percent[0] === '-' || Number(percent) > 100 )  ? "rgb(210,210,210)" : `rgb(${Math.round(color.r)}, ${Math.round(
-          color.g
-        )}, ${Math.round(color.b)})`;
-        // Rectangle Part
-        const overlayRect = document.createElementNS(svgNameSpace, "rect");
-        overlayRect.setAttribute("x", x);
-        overlayRect.setAttribute("y", y);
-        overlayRect.setAttribute("width", w);
-        overlayRect.setAttribute("height", h);
-        overlayRect.setAttribute(
-          "style",
-          "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";"
-        );
-
-        // Text Part
-        if (percent[0] === "-") {
-          percent = percent.substr(1);
-        }
-        const textPercent =
-          percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
-        const text = Number(percent) > 100 ? "N/P" : textPercent + "%";
-        const fontSize = 14;
-        const textLength = text.length;
-        const xOffset = w / 2 - textLength * 4;
-        const yOffset = fontSize / 3;
-
-        const svgText = document.createElementNS(svgNameSpace, "text");
-        svgText.setAttribute("x", x + xOffset);
-        svgText.setAttribute("y", y + h / 2 + yOffset);
-        svgText.setAttribute("font-family", "Arial");
-        svgText.setAttribute("font-size", fontSize + "");
-        svgText.innerHTML = text;
-
-        parentSVG.appendChild(overlayRect);
-        parentSVG.appendChild(svgText);
-      } else {
-        colorString = "rgb(210,210,210)";
-
-        // Rectangle Part
-        const overlayRect = document.createElementNS(svgNameSpace, "rect");
-        overlayRect.setAttribute("x", x);
-        overlayRect.setAttribute("y", y);
-        overlayRect.setAttribute("width", w);
-        overlayRect.setAttribute("height", h);
-        overlayRect.setAttribute(
-          "style",
-          "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";"
-        );
-
-        parentSVG.appendChild(overlayRect);
-      }
-    }
 
     return svg;
   }
-
+  
   generateSVGForGroupComparisonNode(ele, groupsToBeRendered? ) {
     const genomicDataBoxCount = 0;
 
@@ -598,216 +661,11 @@ export default class GenomicDataOverlayManager {
     //}
     //ele.scratch("w", 200);
 
-    function hexToRGB(hex: string) {
-      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    
 
-      return result
-        ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16),
-          }
-        : null;
-    }
+   
 
-    function swap(a, b) {
-      let temp = a;
-      a = b;
-      b = temp;
-    }
-
-    function findValueColorInterval(
-      colorScheme: IColorValueMap,
-      value: number
-    ): { lower: ValueColorPair; upper: ValueColorPair } {
-      const pairs = Object.entries(colorScheme)
-        .map(([value, color]) => {
-          return {
-            value: Number(value),
-            color: hexToRGB(color),
-          };
-        })
-        .sort((o1, o2) => {
-          return o1.value - o2.value;
-        });
-
-      if (value < pairs[0].value) {
-        return {
-          lower: {
-            value: -Infinity,
-            color: pairs[0].color,
-          },
-          upper: {
-            value: pairs[0].value,
-            color: pairs[0].color,
-          },
-        };
-      } else if (value > pairs[pairs.length - 1].value) {
-        return {
-          lower: {
-            value: pairs[pairs.length - 1].value,
-            color: pairs[pairs.length - 1].color,
-          },
-          upper: {
-            value: Infinity,
-            color: pairs[pairs.length - 1].color,
-          },
-        };
-      } else {
-        for (let i = 0; i < pairs.length - 1; i++) {
-          if (value >= pairs[i].value && value < pairs[i + 1].value) {
-            return {
-              lower: {
-                value: pairs[i].value,
-                color: pairs[i].color,
-              },
-              upper: {
-                value: pairs[i + 1].value,
-                color: pairs[i + 1].color,
-              },
-            };
-          }
-        }
-
-        return {
-          lower: {
-            value: -Infinity,
-            color: pairs[0].color,
-          },
-          upper: {
-            value: Infinity,
-            color: pairs[pairs.length - 1].color,
-          },
-        };
-      }
-    }
-
-    /**
-     * Map the percentage value to r,g,b values using a log scale, i.e instead of taking the ratio linearly by taking differences
-     * between the lower and upper color r,g,b values, take the differences between their Math.log values. This makes the color
-     * scale up to the upper value much quicker, i.e in a 0-100 mapping a value of 20 doesn't map to 1/5 way between two colors
-     * but closer to half way. This is done because high numbers in alteration values are extremely rare and even small numbers
-     * are usually significant.
-     */
-    function getMappedColor(
-      lowerColor: Color,
-      upperColor: Color,
-      lowerValue: number,
-      upperValue: number,
-      percent: number
-    ): Color {
-      const up = Math.log(1 + upperValue);
-      const low = Math.log(1 + lowerValue);
-      const p = Math.log(1 + (percent >= 0 ? percent : percent * -1));
-
-      // arbitrary value used to slow down the scaling of log instead of getting too much into math
-      const scalingFactor = percent >= 0 ? 0.8 : 1.2;
-
-      const ratio = ((p - low) / (up - low)) * scalingFactor;
-
-      return {
-        r: lowerColor.r + ratio * (upperColor.r - lowerColor.r),
-        g: lowerColor.g + ratio * (upperColor.g - lowerColor.g),
-        b: lowerColor.b + ratio * (upperColor.b - lowerColor.b),
-      };
-    }
-
-    function genomicDataRectangleGenerator(
-      x,
-      y,
-      w,
-      h,
-      percent,
-      parentSVG,
-      colorScheme,
-      groupColor
-    ) {
-      const limits = findValueColorInterval(colorScheme, Number(percent));
-      let color: Color = { r: 255, g: 255, b: 255 };
-      if (limits.lower.value === -Infinity) {
-        color = limits.upper.color;
-      } else if (limits.upper.value === Infinity) {
-        color = limits.lower.color;
-      } else {
-        let upperValue = limits.upper.value;
-        let lowerValue = limits.lower.value;
-        let upperColor = limits.upper.color;
-        let lowerColor = limits.lower.color;
-
-        if (lowerValue < 0 && upperValue <= 0) {
-          lowerValue *= -1;
-          upperValue *= -1;
-          swap(lowerValue, upperValue);
-        } else if (lowerValue < 0 && upperValue > 0) {
-          upperValue += lowerValue * -1;
-          lowerValue = 0;
-        }
-
-        color = getMappedColor(
-          lowerColor,
-          upperColor,
-          lowerValue,
-          upperValue,
-          Number(percent)
-        );
-      }
-
-      let colorString = "";
-      if (percent || percent === 0 ) {
-        colorString = (percent[0] === '-' || Number(percent) > 100 )  ? "rgb(210,210,210)" : `rgb(${Math.round(color.r)}, ${Math.round(
-          color.g
-        )}, ${Math.round(color.b)})`;
-        // Rectangle Part
-        const overlayRect = document.createElementNS(svgNameSpace, "rect");
-        overlayRect.setAttribute("x", x);
-        overlayRect.setAttribute("y", y);
-        overlayRect.setAttribute("width", w);
-        overlayRect.setAttribute("height", h);
-        overlayRect.setAttribute(
-          "style",
-          "stroke-width:2;stroke:" + groupColor + ";" + "opacity:1;fill:" + colorString + ";"
-        );
-        overlayRect.setAttribute("border-color", "#ffffff");
-
-        // Text Part
-        if (percent[0] === "-") {
-          percent = percent.substr(1);
-        }
-        const textPercent =
-          percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
-        const text = Number(percent) > 100 ? "N/P" : textPercent + "%";
-        const fontSize = 14;
-        const textLength = text.length;
-        const xOffset = w / 2 - textLength * 4;
-        const yOffset = fontSize / 3;
-
-        const svgText = document.createElementNS(svgNameSpace, "text");
-        svgText.setAttribute("x", x + xOffset);
-        svgText.setAttribute("y", y + h / 2 + yOffset);
-        svgText.setAttribute("font-family", "Arial");
-        svgText.setAttribute("font-size", fontSize + "");
-        svgText.setAttribute("border-color", "red");
-        svgText.innerHTML = text;
-
-        parentSVG.appendChild(overlayRect);
-        parentSVG.appendChild(svgText);
-      } else {
-        colorString = "rgb(210,210,210)";
-
-        // Rectangle Part
-        const overlayRect = document.createElementNS(svgNameSpace, "rect");
-        overlayRect.setAttribute("x", x);
-        overlayRect.setAttribute("y", y);
-        overlayRect.setAttribute("width", w);
-        overlayRect.setAttribute("height", h);
-        overlayRect.setAttribute(
-          "style",
-          "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";"
-        );
-
-        parentSVG.appendChild(overlayRect);
-      }
-    }
+  
 
     return svg;
   }
@@ -873,7 +731,7 @@ export default class GenomicDataOverlayManager {
     const data = this.groupComparisonData[nodeLabel];
   
     // Outer wrapper for the entire tooltip
-    var wrapper = $("<div></div>");
+    let wrapper = $("<div></div>");
     wrapper.css({
       "max-width": tooltipMaxWidth,
       "max-height": tooltipMaxHeight,
@@ -886,34 +744,23 @@ export default class GenomicDataOverlayManager {
   
   
       // Inner wrapper for a single sample
-      var sampleWrapper = $("<div></div>");
+      let sampleWrapper = $("<div></div>");
       sampleWrapper.css({
         "margin-top": 0,
       });
 
-      /*groupsToBeRendered.forEach( group => {
-        group.
-        sampleWrapper.append(
-        $(
-          "<div>" +
-            data[group]
-            +"</div>"
-        )
-      );
-      wrapper.append(sampleWrapper);});
-      */
      let counter = 0;
       for ( let j in data ){
-        var sampleWrapper2 = $("<div></div>");
+        let sampleWrapper2 = $("<div></div>");
         sampleWrapper2.css({
           "margin-top": 0,
         });
-        var sampleWrapper = $("<div></div>");
+        let sampleWrapper = $("<div></div>");
         sampleWrapper.css({
           "margin-top": 0
           //"display" : "inline-flex"
         });
-        var sampleWrapperSquare = $("<div></div>");
+        let sampleWrapperSquare = $("<div></div>");
         sampleWrapperSquare.css({
           "height": "12px",
           "width": "12px",
@@ -946,25 +793,6 @@ export default class GenomicDataOverlayManager {
             )),*/
             wrapper.append(sampleWrapper);
       }
-      
-  
-      
-  
-        
-      // Prepare HTML for tooltip
-      
-      
-      const sampleIdHTML = "<b> " + 1 + "</b>" + "<br>";
-      sampleWrapper.append(
-        $(
-          "<div>" +
-            //sampleIconSvgHTML +
-            //sampleIdHTML +
-            +"</div>"
-        )
-      );
-     // wrapper.append(sampleWrapper);
-  
     return wrapper;
   }
 
@@ -1466,20 +1294,6 @@ export default class GenomicDataOverlayManager {
       "</text>" +
       "</g>" +
       "</svg>";
-
-    return html;
-  }
-
-  generateSquareForComparisonView(groupColor: string) {
-    var html =
-    '<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">' +
-    '<g transform="translate(6,6)">' +
-      '<g transform="translate(6,6)">' +
-      '<circle r="6" fill="' +
-      groupColor +
-      '" fill-opacity="1"></circle>' ;
-      "</g>"
-      "</svg";
 
     return html;
   }

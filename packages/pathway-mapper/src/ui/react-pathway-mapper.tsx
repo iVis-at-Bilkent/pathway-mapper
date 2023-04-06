@@ -148,6 +148,13 @@ export interface IPathwayMapperTable{
   genes: string[];
 }
 
+enum RankingMode {
+  Count = 0,
+  Percentage = 1,
+  CountWithAlteration = 2,
+  PercentageWithAlteration = 3,
+}
+
 @observer
 export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   static readonly CBIO_PROFILE_NAME = "cBioPortal_data";
@@ -254,10 +261,10 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
       }
 
       this.profiles.push({profileId: PathwayMapper.CBIO_PROFILE_NAME, enabled: true});
-      this.getBestPathway(0);
-      this.getBestPathway(1);
-      this.getBestPathway(2);
-      this.getBestPathway(3);
+      this.getBestPathway(RankingMode.Count);
+      this.getBestPathway(RankingMode.Percentage);
+      this.getBestPathway(RankingMode.CountWithAlteration);
+      this.getBestPathway(RankingMode.PercentageWithAlteration);
     }
     /*
     const profile1 = {profileId: "study1_gistic", studyId: "study1", enabled: true};
@@ -314,36 +321,12 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   
   calculateGroupComparisonData(){
     this.alterationData[PathwayMapper.CBIO_PROFILE_NAME] = {};
-    
-   /* const allTypes = cBioAlterationData.map(x => x.gene); 
-    //const allTypes = cBioAlterationData.map(x => x.percentAltered);
-    const uniqueTypes = allTypes.filter((x, i, a) => a.indexOf(x) == i)
-    //This is a flag for GenomicDataOverlayManager showPatientData*/
-    //this.groupComparisonData["groupComparisonView"] =  ;
-
-   /* uniqueTypes.forEach(x => {
-      this.patientData[x]= {};
-    });
-
-    cBioAlterationData.forEach((geneAltData: ICBioData) => {
-      const perc = (geneAltData.altered / geneAltData.sequenced) * 100;
-
-      this.alterationData[PathwayMapper.CBIO_PROFILE_NAME][geneAltData.gene] = ((Object.is(perc, NaN) ? -101 : perc));
-
-      this.patientData[geneAltData.gene][geneAltData.percentAltered] = ((Object.is(perc, NaN) ? -101 : perc));
-      this.patientData[geneAltData.gene]["geneticTrackData"] = geneAltData.geneticTrackData;
-      this.patientData[geneAltData.gene]["geneticTrackRuleSetParams"] = geneAltData.geneticTrackRuleSetParams;
-    });*/
-    let i : number = 0;
-    let j : number = 0;                                                         //groupsSet[this.store.activeGroups?.result[0].nameWithOrdinal
-    for( i = 0; i < this.props.genomicData.length; i++){
-      this.groupComparisonData[this.props.genomicData[i].hugoGeneSymbol] = {};
-         for( j = 0; j < this.props.activeGroups.length; j++){
-         this.groupComparisonData[this.props.genomicData[i].hugoGeneSymbol][
-          this.props.activeGroups[j].nameWithOrdinal] = this.props.genomicData[i].groupsSet[
-            this.props.activeGroups[j].nameWithOrdinal].alteredPercentage;
-          }
-    }
+    this.props.genomicData.forEach(datum => {
+         this.groupComparisonData[datum.hugoGeneSymbol] = {};
+         this.props.activeGroups.forEach( datum2 => {this.groupComparisonData[datum.hugoGeneSymbol][datum2.nameWithOrdinal] = 
+          datum.groupsSet[datum2.nameWithOrdinal].alteredPercentage;
+        });   
+    })
   }
 
   calculatePatientData(cBioAlterationData: ICBioData[]){
@@ -416,7 +399,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     return geneAlterationMap;
   }
 
-  getBestPathways(rankingMode: number) {
+  getBestPathways(rankingMode: RankingMode) {
     const genomicDataMap = this.getGeneStudyMap(this.alterationData);
     const alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
     maxHeap = maxHeapFn();
@@ -447,13 +430,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
           }
         });
         matchedGenesMap[pathwayName] = genesMatching;
-        let geneCount = 0;
-        // Count number of genes *not processess* in a pathway
-        for(const geneType of Object.values(this.pathwayGeneMap[pathwayName])){
-          if(geneType === "GENE"){
-            geneCount++;
-          }
-        }
+        const geneCount = Object.values(this.pathwayGeneMap[pathwayName]).filter(geneType => geneType === "GENE").length;
 
         if(rankingMode === 0){
           maxHeap.insert( genesMatching.length, {pathwayName: pathwayName});
@@ -480,7 +457,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
    * @param rankingMode: number => 0 = Count, 1 = Percentage, 2 = Count with Alteration, 3 = Percentage with Alteration
    * 
    */
-  getBestPathway(rankingMode: number) {
+  getBestPathway(rankingMode: RankingMode) {
     const bestPathways = this.getBestPathways(rankingMode);
     if(this.bestPathwaysAlgos.length === this.currentRankingScheme && this.props.currentPathway !== undefined && this.props.currentPathway === "") // First pathway of the first method is shown as the default pathway.
        this.setSelectedPathway(bestPathways[0].pathwayName);
@@ -491,7 +468,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     this.bestPathwaysAlgos.push(bestPathways);
   }
 
-  getBestPathwayReRank(rankingMode: number) {
+  getBestPathwayReRank(rankingMode: RankingMode) {
     const bestPathways = this.getBestPathways(rankingMode);
     this.bestPathwaysAlgos.push(bestPathways);
   }
@@ -527,12 +504,12 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     }
   
   rankPathways(){
-    this.bestPathwaysAlgos = [];
-    this.getBestPathwayReRank(0);
-      this.getBestPathwayReRank(1);
-      this.getBestPathwayReRank(2);
-      this.getBestPathwayReRank(3);
-      this.genes = this.props.genes;
+     this.bestPathwaysAlgos = [];
+     this.getBestPathwayReRank(RankingMode.Count);
+     this.getBestPathwayReRank(RankingMode.Percentage);
+     this.getBestPathwayReRank(RankingMode.CountWithAlteration);
+     this.getBestPathwayReRank(RankingMode.PercentageWithAlteration);
+     this.genes = this.props.genes;
   }
 
   loadRedirectedPortalData(){
@@ -635,7 +612,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
 
   render() {
   const isCBioPortal = this.props.isCBioPortal;     
-  if( this.renderTimes > 1 && this.props.groupComparisonView === true && this.props.genes !== this.genes ){
+  if( this.renderTimes > 1 && this.props.groupComparisonView === true && this.props.genes !== this.genes) {
       this.rankPathways();
   }
   this.renderTimes++;
@@ -709,8 +686,15 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
             {
             (isCBioPortal &&
             <Col xs={3} style={{paddingLeft: "0px"}}>
-              <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} tableComponent={this.props.tableComponent} patientView={this.props.patientView} currentPathway = {this.props.currentPathway} 
-              rankingChoices = {this.props.rankingChoices} updateRankingChoices = {this.props.updateRankingChoices}/>
+              <Ranking 
+                  pathwayActions={this.pathwayActions} 
+                  bestPathwaysAlgos={this.bestPathwaysAlgos} 
+                  tableComponent={this.props.tableComponent} 
+                  patientView={this.props.patientView} 
+                  currentPathway = {this.props.currentPathway} 
+                  rankingChoices = {this.props.rankingChoices} 
+                  updateRankingChoices = {this.props.updateRankingChoices}
+              />
             </Col>)
             }
           </div>
@@ -824,7 +808,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
       if(this.props.patientView){
         this.editor.addPortalGenomicData(this.patientData, this.editor.getEmptyGroupID());
       }
-      else if( this.props.groupComparisonView === true){
+      else if( this.props.groupComparisonView === true) {
         this.editor.addPortalGenomicData(this.groupComparisonData, this.editor.getEmptyGroupID(), this.props.activeGroups);
       }
       else{

@@ -118,6 +118,12 @@ export interface IPathwayMapperTable {
     score: number;
     genes: string[];
 }
+declare enum RankingMode {
+    Count = 0,
+    Percentage = 1,
+    CountWithAlteration = 2,
+    PercentageWithAlteration = 3
+}
 export declare class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     static readonly CBIO_PROFILE_NAME = "cBioPortal_data";
     readonly MAX_ALLOWED_PROFILES_ENABLED = 6;
@@ -157,14 +163,14 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     addSampleIconData(sampleIconData: any): void;
     getGeneStudyMap(studyGeneMap: any): any;
     getAlterationAveragePerGene(genomicDataMap: any): any;
-    getBestPathways(rankingMode: number): any[];
+    getBestPathways(rankingMode: RankingMode): any[];
     /**
      *
      * @param rankingMode: number => 0 = Count, 1 = Percentage, 2 = Count with Alteration, 3 = Percentage with Alteration
      *
      */
-    getBestPathway(rankingMode: number): void;
-    getBestPathwayReRank(rankingMode: number): void;
+    getBestPathway(rankingMode: RankingMode): void;
+    getBestPathwayReRank(rankingMode: RankingMode): void;
     includePathway(pathwayData?: IPathwayData, pathwayName?: string): void;
     extractAllGenes(): void;
     rankPathways(): void;
