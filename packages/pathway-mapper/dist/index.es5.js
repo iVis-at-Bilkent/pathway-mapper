@@ -3314,93 +3314,46 @@ function genomicDataRectangleGenerator(x, y, w, h, percent, parentSVG, colorSche
     color = getMappedColor(lowerColor, upperColor, lowerValue, upperValue, Number(percent));
   }
 
-  if (groupColor !== undefined) {
-    var colorString = "";
+  var colorString = "";
+  colorString = percent === undefined || percent[0] === '-' || Number(percent) > 100 ? "rgb(210,210,210)" : "rgb(" + Math.round(color.r) + ", " + Math.round(color.g) + ", \n  " + Math.round(color.b) + ")"; // Rectangle Part
 
-    if (percent || percent === 0) {
-      colorString = percent[0] === '-' || Number(percent) > 100 ? "rgb(210,210,210)" : "rgb(" + Math.round(color.r) + ", " + Math.round(color.g) + ", " + Math.round(color.b) + ")"; // Rectangle Part
+  var overlayRect = document.createElementNS(GenomicDataOverlayManager_svgNameSpace, "rect");
+  overlayRect.setAttribute("x", x);
+  overlayRect.setAttribute("y", y);
+  overlayRect.setAttribute("width", w);
+  overlayRect.setAttribute("height", h);
 
-      var overlayRect = document.createElementNS(GenomicDataOverlayManager_svgNameSpace, "rect");
-      overlayRect.setAttribute("x", x);
-      overlayRect.setAttribute("y", y);
-      overlayRect.setAttribute("width", w);
-      overlayRect.setAttribute("height", h);
-      overlayRect.setAttribute("style", "stroke-width:2;stroke:" + groupColor + ";" + "opacity:1;fill:" + colorString + ";");
-      overlayRect.setAttribute("border-color", "#ffffff"); // Text Part
-
-      if (percent[0] === "-") {
-        percent = percent.substr(1);
-      }
-
-      var textPercent = percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
-      var text = Number(percent) > 100 ? "N/P" : textPercent + "%";
-      var fontSize = 14;
-      var textLength = text.length;
-      var xOffset = w / 2 - textLength * 4;
-      var yOffset = fontSize / 3;
-      var svgText = document.createElementNS(GenomicDataOverlayManager_svgNameSpace, "text");
-      svgText.setAttribute("x", x + xOffset);
-      svgText.setAttribute("y", y + h / 2 + yOffset);
-      svgText.setAttribute("font-family", "Arial");
-      svgText.setAttribute("font-size", fontSize + "");
-      svgText.setAttribute("border-color", "red");
-      svgText.innerHTML = text;
-      parentSVG.appendChild(overlayRect);
-      parentSVG.appendChild(svgText);
-    } else {
-      colorString = "rgb(210,210,210)"; // Rectangle Part
-
-      var overlayRect = document.createElementNS(GenomicDataOverlayManager_svgNameSpace, "rect");
-      overlayRect.setAttribute("x", x);
-      overlayRect.setAttribute("y", y);
-      overlayRect.setAttribute("width", w);
-      overlayRect.setAttribute("height", h);
-      overlayRect.setAttribute("style", "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";");
-      parentSVG.appendChild(overlayRect);
-    }
+  if (groupColor !== undefined && percent !== undefined) {
+    overlayRect.setAttribute("style", "stroke-width:2;stroke:" + groupColor + ";" + "opacity:1;fill:" + colorString + ";");
+    overlayRect.setAttribute("border-color", "#ffffff");
   } else {
-    var colorString = "";
+    overlayRect.setAttribute("style", "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";");
+  } // Text Part
 
-    if (percent) {
-      colorString = percent[0] === '-' || Number(percent) > 100 ? "rgb(210,210,210)" : "rgb(" + Math.round(color.r) + ", " + Math.round(color.g) + ", " + Math.round(color.b) + ")"; // Rectangle Part
 
-      var overlayRect = document.createElementNS(GenomicDataOverlayManager_svgNameSpace, "rect");
-      overlayRect.setAttribute("x", x);
-      overlayRect.setAttribute("y", y);
-      overlayRect.setAttribute("width", w);
-      overlayRect.setAttribute("height", h);
-      overlayRect.setAttribute("style", "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";"); // Text Part
-
-      if (percent[0] === "-") {
-        percent = percent.substr(1);
-      }
-
-      var textPercent = percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
-      var text = Number(percent) > 100 ? "N/P" : textPercent + "%";
-      var fontSize = 14;
-      var textLength = text.length;
-      var xOffset = w / 2 - textLength * 4;
-      var yOffset = fontSize / 3;
-      var svgText = document.createElementNS(GenomicDataOverlayManager_svgNameSpace, "text");
-      svgText.setAttribute("x", x + xOffset);
-      svgText.setAttribute("y", y + h / 2 + yOffset);
-      svgText.setAttribute("font-family", "Arial");
-      svgText.setAttribute("font-size", fontSize + "");
-      svgText.innerHTML = text;
-      parentSVG.appendChild(overlayRect);
-      parentSVG.appendChild(svgText);
-    } else {
-      colorString = "rgb(210,210,210)"; // Rectangle Part
-
-      var overlayRect = document.createElementNS(GenomicDataOverlayManager_svgNameSpace, "rect");
-      overlayRect.setAttribute("x", x);
-      overlayRect.setAttribute("y", y);
-      overlayRect.setAttribute("width", w);
-      overlayRect.setAttribute("height", h);
-      overlayRect.setAttribute("style", "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";");
-      parentSVG.appendChild(overlayRect);
-    }
+  if (percent[0] === "-") {
+    percent = percent.substr(1);
   }
+
+  var textPercent = percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
+  var text = Number(percent) > 100 ? "N/P" : textPercent + "%";
+  var fontSize = 14;
+  var textLength = text.length;
+  var xOffset = w / 2 - textLength * 4;
+  var yOffset = fontSize / 3;
+  var svgText = document.createElementNS(GenomicDataOverlayManager_svgNameSpace, "text");
+  svgText.setAttribute("x", x + xOffset);
+  svgText.setAttribute("y", y + h / 2 + yOffset);
+  svgText.setAttribute("font-family", "Arial");
+  svgText.setAttribute("font-size", fontSize + "");
+
+  if (groupColor !== undefined && percent !== undefined && percent >= 0 && percent <= 100) {
+    svgText.setAttribute("border-color", "red");
+  }
+
+  svgText.innerHTML = text;
+  parentSVG.appendChild(overlayRect);
+  if (percent != undefined && percent !== undefined) parentSVG.appendChild(svgText);
 }
 
 var GenomicDataOverlayManager_GenomicDataOverlayManager =
@@ -3771,12 +3724,7 @@ function () {
             continue;
           }
 
-          if (genomicFrequencyData[cancerType] !== undefined) {
-            genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.h, genomicFrequencyData[cancerType], svg, this.colorScheme);
-          } else {
-            genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.h, null, svg, this.colorScheme);
-          }
-
+          genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.h, genomicFrequencyData[cancerType] !== undefined ? genomicFrequencyData[cancerType] : null, svg, this.colorScheme);
           genomicBoxCounter++;
         }
       }
@@ -3835,9 +3783,7 @@ function () {
           genomicDataRectangleGenerator(overLayRectBBox.x + genomicBoxCounter * overLayRectBBox.w / maxGenomicDataBoxCount, overLayRectBBox.y, overLayRectBBox.w / maxGenomicDataBoxCount - 4, overLayRectBBox.h, 0, svg, this.colorScheme, groupsToBeRendered[genomicBoxCounter].color);
           genomicBoxCounter++;
         }
-      } //}
-      //ele.scratch("w", 200);
-
+      }
 
       return svg;
     }
@@ -3935,8 +3881,8 @@ function () {
         sampleWrapper2.css({
           "margin-top": 0
         });
-        var sampleWrapper = external_jquery_default()("<div></div>");
-        sampleWrapper.css({
+        var sampleWrapper_1 = external_jquery_default()("<div></div>");
+        sampleWrapper_1.css({
           "margin-top": 0 //"display" : "inline-flex"
 
         });
@@ -3947,26 +3893,9 @@ function () {
           "background-color": groupsToBeRendered[counter].color
         });
         counter++;
-        /*sampleWrapper.append( sampleWrapperSquare);
-        sampleWrapper.append(
-          $(
-            "<div>" + " " +  "</div>" + "<div>" +
-              j + ": " +  data[j].toFixed(1)
-              +"</div>"
-              
-          )),*/
-
-        sampleWrapper.append(external_jquery_default()("<div style = 'display:inline-flex;font-size: 15px'>" + "<div style = 'color:" + groupsToBeRendered[counter - 1].color + ";font-size: 15px'>" + "&#9632" + "</div>" + "&nbsp" + j + ": " + data[j].toFixed(1) + "</div>"));
-        sampleWrapper2.append(sampleWrapper);
-        /*sampleWrapper.append(
-          $(
-            "<div>" +
-              data[j]
-              +"</div>"
-              
-          )),*/
-
-        wrapper.append(sampleWrapper);
+        sampleWrapper_1.append(external_jquery_default()("<div style = 'display:inline-flex;font-size: 15px'>" + "<div style = 'color:" + groupsToBeRendered[counter - 1].color + ";font-size: 15px'>" + "&#9632" + "</div>" + "&nbsp" + j + ": " + data[j].toFixed(1) + "</div>"));
+        sampleWrapper2.append(sampleWrapper_1);
+        wrapper.append(sampleWrapper_1);
       }
 
       return wrapper;
@@ -14849,17 +14778,6 @@ function (_super) {
       var _this = this;
 
       this.alterationData[PathwayMapper_1.CBIO_PROFILE_NAME] = {};
-      var i = 0;
-      var j = 0;
-
-      for (i = 0; i < this.props.genomicData.length; i++) {
-        this.groupComparisonData[this.props.genomicData[i].hugoGeneSymbol] = {};
-
-        for (j = 0; j < this.props.activeGroups.length; j++) {
-          this.groupComparisonData[this.props.genomicData[i].hugoGeneSymbol][this.props.activeGroups[j].nameWithOrdinal] = this.props.genomicData[i].groupsSet[this.props.activeGroups[j].nameWithOrdinal].alteredPercentage;
-        }
-      }
-
       this.props.genomicData.forEach(function (datum) {
         _this.groupComparisonData[datum.hugoGeneSymbol] = {};
 

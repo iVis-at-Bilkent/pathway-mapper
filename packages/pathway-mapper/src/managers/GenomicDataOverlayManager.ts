@@ -171,118 +171,44 @@ function genomicDataRectangleGenerator(
     );
   }
 
-  if( groupColor !== undefined ){
   let colorString = "";
-  if (percent || percent === 0 ) {
-    colorString = (percent[0] === '-' || Number(percent) > 100 )  ? "rgb(210,210,210)" : `rgb(${Math.round(color.r)}, ${Math.round(
-      color.g
-    )}, ${Math.round(color.b)})`;
-    // Rectangle Part
-    const overlayRect = document.createElementNS(svgNameSpace, "rect");
-    overlayRect.setAttribute("x", x);
-    overlayRect.setAttribute("y", y);
-    overlayRect.setAttribute("width", w);
-    overlayRect.setAttribute("height", h);
-    overlayRect.setAttribute(
-      "style",
-      "stroke-width:2;stroke:" + groupColor + ";" + "opacity:1;fill:" + colorString + ";"
-    );
-    overlayRect.setAttribute("border-color", "#ffffff");
-
-    // Text Part
-    if (percent[0] === "-") {
-      percent = percent.substr(1);
-    }
-    const textPercent =
-      percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
-    const text = Number(percent) > 100 ? "N/P" : textPercent + "%";
-    const fontSize = 14;
-    const textLength = text.length;
-    const xOffset = w / 2 - textLength * 4;
-    const yOffset = fontSize / 3;
-
-    const svgText = document.createElementNS(svgNameSpace, "text");
-    svgText.setAttribute("x", x + xOffset);
-    svgText.setAttribute("y", y + h / 2 + yOffset);
-    svgText.setAttribute("font-family", "Arial");
-    svgText.setAttribute("font-size", fontSize + "");
-    svgText.setAttribute("border-color", "red");
-    svgText.innerHTML = text;
-
-    parentSVG.appendChild(overlayRect);
-    parentSVG.appendChild(svgText);
-  } else {
-    colorString = "rgb(210,210,210)";
-
-    // Rectangle Part
-    const overlayRect = document.createElementNS(svgNameSpace, "rect");
-    overlayRect.setAttribute("x", x);
-    overlayRect.setAttribute("y", y);
-    overlayRect.setAttribute("width", w);
-    overlayRect.setAttribute("height", h);
-    overlayRect.setAttribute(
-      "style",
-      "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";"
-    );
-
-    parentSVG.appendChild(overlayRect);
-  }
-  }
-  else {
-     let colorString = "";
-      if (percent) {
-        colorString = (percent[0] === '-' || Number(percent) > 100 )  ? "rgb(210,210,210)" : `rgb(${Math.round(color.r)}, ${Math.round(
-          color.g
-        )}, ${Math.round(color.b)})`;
-        // Rectangle Part
-        const overlayRect = document.createElementNS(svgNameSpace, "rect");
-        overlayRect.setAttribute("x", x);
-        overlayRect.setAttribute("y", y);
-        overlayRect.setAttribute("width", w);
-        overlayRect.setAttribute("height", h);
-        overlayRect.setAttribute(
-          "style",
-          "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";"
-        );
-
-        // Text Part
-        if (percent[0] === "-") {
-          percent = percent.substr(1);
-        }
-        const textPercent =
-          percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
-        const text = Number(percent) > 100 ? "N/P" : textPercent + "%";
-        const fontSize = 14;
-        const textLength = text.length;
-        const xOffset = w / 2 - textLength * 4;
-        const yOffset = fontSize / 3;
-
-        const svgText = document.createElementNS(svgNameSpace, "text");
-        svgText.setAttribute("x", x + xOffset);
-        svgText.setAttribute("y", y + h / 2 + yOffset);
-        svgText.setAttribute("font-family", "Arial");
-        svgText.setAttribute("font-size", fontSize + "");
-        svgText.innerHTML = text;
-
-        parentSVG.appendChild(overlayRect);
-        parentSVG.appendChild(svgText);
-      } else {
-        colorString = "rgb(210,210,210)";
-
-        // Rectangle Part
-        const overlayRect = document.createElementNS(svgNameSpace, "rect");
-        overlayRect.setAttribute("x", x);
-        overlayRect.setAttribute("y", y);
-        overlayRect.setAttribute("width", w);
-        overlayRect.setAttribute("height", h);
-        overlayRect.setAttribute(
-          "style",
-          "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";"
-        );
-
-        parentSVG.appendChild(overlayRect);
-  }
- }
+  colorString = ( percent === undefined || percent[0] === '-' || Number(percent) > 100 )  ? "rgb(210,210,210)" : `rgb(${Math.round(color.r)}, ${Math.round(color.g )}, 
+  ${Math.round(color.b)})`;
+   // Rectangle Part
+   const overlayRect = document.createElementNS(svgNameSpace, "rect");
+   overlayRect.setAttribute("x", x);
+   overlayRect.setAttribute("y", y);
+   overlayRect.setAttribute("width", w);
+   overlayRect.setAttribute("height", h);
+   if( groupColor !== undefined && percent !== undefined ){
+       overlayRect.setAttribute("style", "stroke-width:2;stroke:" + groupColor + ";" + "opacity:1;fill:" + colorString + ";" );
+       overlayRect.setAttribute("border-color", "#ffffff");
+   }
+   else {
+       overlayRect.setAttribute("style", "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";");
+   }
+   // Text Part
+   if (percent[0] === "-") {
+       percent = percent.substr(1);
+   }
+   const textPercent = percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
+   const text = Number(percent) > 100 ? "N/P" : textPercent + "%";
+   const fontSize = 14;
+   const textLength = text.length;
+   const xOffset = w / 2 - textLength * 4;
+   const yOffset = fontSize / 3;
+   const svgText = document.createElementNS(svgNameSpace, "text");
+   svgText.setAttribute("x", x + xOffset);
+   svgText.setAttribute("y", y + h / 2 + yOffset);
+   svgText.setAttribute("font-family", "Arial");
+   svgText.setAttribute("font-size", fontSize + "");
+   if( groupColor !== undefined && percent !== undefined && percent >= 0 && percent <= 100 ){
+       svgText.setAttribute("border-color", "red");
+   }
+   svgText.innerHTML = text;
+   parentSVG.appendChild(overlayRect);
+   if( percent != undefined && percent !== undefined )
+   parentSVG.appendChild(svgText);
 }
 
 export default class GenomicDataOverlayManager {
@@ -550,36 +476,19 @@ export default class GenomicDataOverlayManager {
         if (!this.visibleGenomicDataMapByType[cancerType]) {
           continue;
         }
-
-        if (genomicFrequencyData[cancerType] !== undefined) {
-          genomicDataRectangleGenerator(
+        genomicDataRectangleGenerator(
             overLayRectBBox.x +
-              (genomicBoxCounter * overLayRectBBox.w) / maxGenomicDataBoxCount,
+            (genomicBoxCounter * overLayRectBBox.w) / maxGenomicDataBoxCount,
             overLayRectBBox.y,
             overLayRectBBox.w / maxGenomicDataBoxCount,
             overLayRectBBox.h,
-            genomicFrequencyData[cancerType],
+            genomicFrequencyData[cancerType] !== undefined ? genomicFrequencyData[cancerType] : null,
             svg,
             this.colorScheme
           );
-        } else {
-          genomicDataRectangleGenerator(
-            overLayRectBBox.x +
-              (genomicBoxCounter * overLayRectBBox.w) / maxGenomicDataBoxCount,
-            overLayRectBBox.y,
-            overLayRectBBox.w / maxGenomicDataBoxCount,
-            overLayRectBBox.h,
-            null,
-            svg,
-            this.colorScheme
-          );
-        }
-
         genomicBoxCounter++;
       }
     }
-
-
     return svg;
   }
   
@@ -657,16 +566,6 @@ export default class GenomicDataOverlayManager {
 
        
       }
-    
-    //}
-    //ele.scratch("w", 200);
-
-    
-
-   
-
-  
-
     return svg;
   }
 
@@ -739,18 +638,14 @@ export default class GenomicDataOverlayManager {
       "overflow-y": "auto",
       "font-size" : "12px",
     });
-  
-    
-  
-  
-      // Inner wrapper for a single sample
-      let sampleWrapper = $("<div></div>");
-      sampleWrapper.css({
-        "margin-top": 0,
-      });
 
-     let counter = 0;
-      for ( let j in data ){
+    // Inner wrapper for a single sample
+    let sampleWrapper = $("<div></div>");
+    sampleWrapper.css({
+    "margin-top": 0,
+    });
+    let counter = 0;
+    for ( let j in data ){
         let sampleWrapper2 = $("<div></div>");
         sampleWrapper2.css({
           "margin-top": 0,
@@ -768,30 +663,14 @@ export default class GenomicDataOverlayManager {
         });
 
         counter++;
-          /*sampleWrapper.append( sampleWrapperSquare);
-          sampleWrapper.append(
-            $(
-              "<div>" + " " +  "</div>" + "<div>" + 
-                j + ": " +  data[j].toFixed(1)
-                +"</div>"
-                
-            )),*/
-            sampleWrapper.append(
-            $(
-              "<div style = 'display:inline-flex;font-size: 15px'>" +  "<div style = 'color:" + groupsToBeRendered[counter-1].color + ";font-size: 15px'>" + "&#9632" + "</div>" 
-              + "&nbsp" + j + ": " +  data[j].toFixed(1)
-                +"</div>"
-                
-            ));
-          sampleWrapper2.append(sampleWrapper);
-          /*sampleWrapper.append(
-            $(
-              "<div>" +
-                data[j]
-                +"</div>"
-                
-            )),*/
-            wrapper.append(sampleWrapper);
+        sampleWrapper.append(
+        $(
+        "<div style = 'display:inline-flex;font-size: 15px'>" +  "<div style = 'color:" + groupsToBeRendered[counter-1].color + ";font-size: 15px'>" + "&#9632" + "</div>" 
+        + "&nbsp" + j + ": " +  data[j].toFixed(1)
+        + "</div>"      
+        ));
+        sampleWrapper2.append(sampleWrapper);
+        wrapper.append(sampleWrapper);
       }
     return wrapper;
   }
@@ -812,9 +691,6 @@ export default class GenomicDataOverlayManager {
         resizeNodeCallback(node);
       }
     });
-
-
-
 
     this.cy
       .style()
