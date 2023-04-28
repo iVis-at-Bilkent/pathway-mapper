@@ -129,7 +129,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
                   style={{"border": `3px solid ${this.isCbioPortal ? "#4389c0" : "#1abc9c"}` }}>
         <div ref={this.cyDivHandler} id="cy" 
         style={{"height": this.isCbioPortal ? "800px" : "100%","borderRadius": "6px", marginTop: "0px"}}/>
-        <div className="cytoscape-navigator-wrapper"></div>
+        {!this.isCbioPortal && <div className="cytoscape-navigator-wrapper"></div>}
       </div>);
   }
 
@@ -176,19 +176,15 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     var heightCy = $(this.cyDiv).outerHeight();
     // @ts-ignore
     var widthCy = $(this.cyDiv).outerWidth();
-    var heightNavigator = $('.cytoscape-navigator-wrapper').outerHeight();
-    var widthNavigator = $('.cytoscape-navigator-wrapper').outerWidth();
+    var heightNavigator = !this.isCbioPortal ? $('.cytoscape-navigator-wrapper').outerHeight() : 0;
+    var widthNavigator =  !this.isCbioPortal ? $('.cytoscape-navigator-wrapper').outerWidth() : 0;
 
     if(!this.isCbioPortal) {
       
       $('.cytoscape-navigator-wrapper').css('top', heightCy + topCy - heightNavigator - offset + 16);
       $('.cytoscape-navigator-wrapper').css('left', widthCy + leftCy - widthNavigator - offset + 24 - 0.5 + 0.35);
+      $('.cytoscape-navigator-wrapper').css('z-index', 1039);
     }
-    else {
-      $('.cytoscape-navigator-wrapper').css('bottom', 10.5);
-      $('.cytoscape-navigator-wrapper').css('right', 0);
-    }
-    $('.cytoscape-navigator-wrapper').css('z-index', 1039);
 
     //Relative is used so that its position depends on the below properties
     $('.cy-panzoom').css('position', 'relative');
@@ -211,7 +207,8 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
       console.log(err);
     }
     try { 
-      navigator(cytoscape); // register extension
+      if( !this.isCbioPortal)
+          navigator(cytoscape); // register extension
     } catch(err){
       console.log(err);
     }
@@ -540,7 +537,9 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     };
 
     //TODO: AMENDMENT declaration removed
-    this.cy.navigator(navDefaults); // get navigator instance, nav
+    if( !this.isCbioPortal){
+        this.cy.navigator(navDefaults); // get navigator instance, nav
+    }
 
     const viewUtilitiesOpts = {
       node: {

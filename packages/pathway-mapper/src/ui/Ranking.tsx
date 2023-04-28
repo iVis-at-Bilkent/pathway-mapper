@@ -4,13 +4,16 @@ import { observer } from "mobx-react";
 import React from 'react';
 import { Checkbox, DropdownButton, MenuItem } from "react-bootstrap";
 import PathwayActions from '../utils/PathwayActions.js';
-import { IPathwayMapperTable } from "./react-pathway-mapper";
+import { IPathwayMapperTable, PMParameters } from "./react-pathway-mapper";
 
 interface IRankingProps{
     pathwayActions: PathwayActions;
     bestPathwaysAlgos: any[][];
     tableComponent: (data: IPathwayMapperTable[], selectedPathway: string, onPathwaySelect: (pathway: string) => void) => JSX.Element;
     patientView ?: boolean;
+    currentPathway?: string;
+    rankingChoices?: PMParameters;
+    updateRankingChoices ?: (drowDownTitle : string, isAlterationEnabled: number, considerOnlyTCGAPanPathways : boolean, isPercentageMatch : number, selectedPathway : string) =>void;
 }
 
 const TCGA_PANCAN_PATHWAY_NAMES = [
@@ -29,10 +32,10 @@ const TCGA_PANCAN_PATHWAY_NAMES = [
 
 @observer
 export default class Ranking extends React.Component<IRankingProps, {}>{
-    @observable
+   // @observable
     bestPathways: any[];
 
-    @observable
+   // @observable
     shownPathways: any[];
 
     @observable
@@ -49,6 +52,9 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     @observable
     isExpanded: boolean;
 
+    @observable
+    rankingCriteria : number = 0;
+
     readonly COUNT_PERC_EXPLANATION = "Whether we should favor the number of genes of interest matching the ones in a pathway or the percentage of such genes in that pathway. For instance, suppose genes of interest are A, B, and C, and the pathway contains genes B, C, D, and E. When we consider count, the score is 2 (for the two genes that match). However, when we consider percentage the score will be 50% as 2 of the 4 genes in the pathway are among genes of interest.";
     readonly ALTERATION_EXPLANATION = "When this is checked, each matching gene will not directly contribute to the score as 1 unit but with the alteration frequency percentage of that gene. For instance, suppose genes of interest are A, B, and C with alteration frequencies of 0.5, 0.2, and 0.3, respectively, and the pathway contains genes B, C, D, and E. When this is option isn't checked, the score will be 2 for match count and 50% for the match percentage. However, when this option is checked, the scores will be 0.2+0.3=0.5 and (0.2+0.3)/4=12.5% for match count and percentage, respectively.";
     readonly TCGA_PANCAN_EXPLANATION = "The pathways listed above were retrieved from <a href='http://www.pathwaymapper.org' target='_blank'>PathwayMapper</a>. When this option is checked, only the pathways under TCGA > PanCanAtlas will be shown. Uncheck to show all.";
@@ -57,14 +63,26 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
         super(props);
         makeObservable(this);
         
-        this.isPercentageMatch = 0;
-        this.isAlterationEnabled = 0;
-        this.considerOnlyTCGAPanPathways = true;
-        this.dropDownTitle = "Match count";
+        this.isPercentageMatch = (this.props.rankingChoices !== undefined ? this.props.rankingChoices.isPercentageMatch : 0 );
+        this.isAlterationEnabled = (this.props.rankingChoices !== undefined ? this.props.rankingChoices.isAlterationEnabled : 0 );
+        this.considerOnlyTCGAPanPathways = (this.props.rankingChoices !== undefined ? this.props.rankingChoices.considerOnlyTCGAPanPathways : true );
+        this.dropDownTitle =  (this.props.rankingChoices !== undefined ? this.props.rankingChoices.dropDownTitle : "Match count" );
         this.isExpanded = false;
-        this.setBestPathwayMethod(0);
-        this.selectedPathway = this.shownPathways[0].pathwayName;
+        this.onApplyClick();
+        if( this.props.currentPathway !== undefined && this.props.currentPathway.length > 0){
+            this.selectedPathway = this.props.currentPathway;
+        }
+        else {
+            this.selectedPathway = this.shownPathways[0].pathwayName;
+        }
     }
+
+    @autobind 
+    updateRankingChoices(){
+        if( this.props.updateRankingChoices !== undefined){
+            this.props.updateRankingChoices(this.dropDownTitle, this.isAlterationEnabled, this.considerOnlyTCGAPanPathways, this.isPercentageMatch, this.selectedPathway);
+        }
+    };
 
     @autobind
     setBestPathwayMethod(i: number){
@@ -75,6 +93,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     @autobind
     onPathwayClick(pathway: string){
         this.selectedPathway = pathway;
+        this.updateRankingChoices();
         this.props.pathwayActions.changePathway(this.selectedPathway);
     }
 
@@ -82,6 +101,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     onApplyClick(){
         // Mapping from dropdown + checkbox selection to pathway method.
         this.setBestPathwayMethod(2 * this.isAlterationEnabled + this.isPercentageMatch);
+        this.rankingCriteria = 2 * this.isAlterationEnabled + this.isPercentageMatch;
     }
 
     @action.bound 
@@ -103,6 +123,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
     @action.bound
     toggleConsiderOnlyTCGAPanPathways() {
         this.considerOnlyTCGAPanPathways = !this.considerOnlyTCGAPanPathways;
+        this.updateRankingChoices();
         this.filterBestPathwaysByTCGAPanPathways();
     }
 
@@ -113,6 +134,7 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
 
     render(){
         const lengthThreshold = 13;
+        this.setBestPathwayMethod(this.rankingCriteria);
          
         return (
           <div id="ranking-bar">
@@ -165,14 +187,14 @@ export default class Ranking extends React.Component<IRankingProps, {}>{
                         id="0"
                         style={{fontSize: "13px"}}
                         >
-                        <MenuItem style={{fontSize: "13px"}} onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match count"; this.onApplyClick();} }>Match count</MenuItem>
-                        <MenuItem style={{fontSize: "13px"}} onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match percentage"; this.onApplyClick();}}>Match percentage</MenuItem>
+                        <MenuItem style={{fontSize: "13px"}} onClick={ () => {this.isPercentageMatch = 0; this.dropDownTitle = "Match count"; this.onApplyClick(); this.updateRankingChoices();} }>Match count</MenuItem>
+                        <MenuItem style={{fontSize: "13px"}} onClick={ () => {this.isPercentageMatch = 1; this.dropDownTitle = "Match percentage"; this.onApplyClick(); this.updateRankingChoices();}}>Match percentage</MenuItem>
                     </DropdownButton>  
                     &nbsp; 
                     <div data-tip={this.COUNT_PERC_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></div>
 
-                    <Checkbox id="alterationCheckBox" onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1; this.onApplyClick();}}
-                            style={{fontSize: "13px", marginTop: "18px", bottom: "4px"}}>
+                    <Checkbox id="alterationCheckBox" onClick={() => {this.isAlterationEnabled = (this.isAlterationEnabled === 1) ? 0 : 1; this.onApplyClick(); this.updateRankingChoices();}}
+                            style={{fontSize: "13px", marginTop: "18px", bottom: "4px"}} checked = {this.isAlterationEnabled === 1}>
                         Consider alteration frequency&nbsp;            
                         <span data-tip={this.ALTERATION_EXPLANATION} data-border="true" data-type="light" data-place="left" data-effect="solid" className="fa fa-question-circle styles-module__infoIcon__zMiog"></span>
                     </Checkbox>

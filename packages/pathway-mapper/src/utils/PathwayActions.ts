@@ -72,6 +72,9 @@ export default class PathwayActions {
         if (queryGenes.includes(nodeName) && nodeType === "GENE") {
           node.style({ "border-width": "4px", "font-weight": "bold" });
         }
+        else{
+          node.style({"border-width": "2px", "font-weight": "normal"});
+        }
       });
   }
 
