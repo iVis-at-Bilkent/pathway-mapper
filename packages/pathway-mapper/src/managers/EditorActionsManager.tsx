@@ -96,16 +96,17 @@ export default class EditorActionsManager {
             anchorShapeSizeFactor: 6,
             // whether to start the plugin in the enabled state
             enabled: !this.isCbioPortal,
-
-            handleReconnectEdge: this.isCollaborative ?
+        
+            handleReconnectEdge: this.isCollaborative ?  
                                 this.reconnectEdge.bind(this) :
                                 undefined,
 
             enableMultipleAnchorRemovalOption: true
         };
         
-        if (!this.isCbioPortal) {
-            this.edgeEditing = this.cy.edgeEditing(edgeEditingOptions);
+        if(!this.isCbioPortal){
+           this.edgeEditing = this.cy.edgeEditing(edgeEditingOptions);
+
         }
         this.portalAccessor = portalAccessor;
         if(this.isCollaborative) {
@@ -1641,9 +1642,9 @@ export default class EditorActionsManager {
             //Local usage file load
             this.loadFileCy(nodes,edges);
         }
-
+        
         this.edgeEditing?.initAnchorPoints(this.cy.edges());
-
+        
         this.fitGraph();
     };
 
@@ -1764,7 +1765,6 @@ export default class EditorActionsManager {
                 else {
                     cyEle.data('bendPointPositions', anchorPoints);
                 }
-
                 this.edgeEditing?.initAnchorPoints(cyEle);
             }
         }
@@ -1846,7 +1846,7 @@ export default class EditorActionsManager {
         });
     }
 
-    addPortalGenomicData(genomicData: any, groupID: any)
+    addPortalGenomicData(genomicData: any, groupID: any, activeGroups?: any[])
     {
         
         if(this.isCollaborative)
@@ -1859,7 +1859,12 @@ export default class EditorActionsManager {
         }
         else
         {
-            this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
+            if( activeGroups !== undefined){
+                this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID, activeGroups);
+            }
+            else {
+                this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
+            }
         }
     }
 
