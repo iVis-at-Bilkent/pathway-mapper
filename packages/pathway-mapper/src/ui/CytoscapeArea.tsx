@@ -305,6 +305,7 @@ export default class CytoscapeArea extends React.Component<PathwayMapperType, {}
     
     this.cxtMenuManager = !this.isCbioPortal ? new ContextMenuManager(this.cy, this.editor, this.props.handleOpen, 
       this.undoRedoManager, this.props.isCollaborative) : undefined;
+
                                                 
     this.dragDropNodeAddManager = new DragDropNodeAddPlugin(this.editor, this.cy, this.props.pathwayHandler);
 

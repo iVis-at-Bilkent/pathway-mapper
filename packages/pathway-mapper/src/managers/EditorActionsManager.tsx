@@ -9,7 +9,7 @@ import ShareDBManager from "./ShareDBManager";
 
 const _ = require('lodash');
 
-export default class EditorActionsManager{
+export default class EditorActionsManager {
 
     public static defaultLayoutProperties: ILayoutProperties =
     {
@@ -38,13 +38,13 @@ export default class EditorActionsManager{
         animationEasing: 'cubic-bezier(0.17,0.72,0.41,0.98)',
         nodeDimensionsIncludeLabels: true
     };
-    
+
     public cy: any;
     public genomicDataOverlayManager: GenomicDataOverlayManager;
     public edgeEditing: any;
     public selectedNodeStack: any;
     public layoutProperties: ILayoutProperties;
-    
+
     private FIT_CONSTANT: number;
     private observers: any[];
     private svgExporter: SVGExporter;
@@ -81,7 +81,7 @@ export default class EditorActionsManager{
         this.colorSchemeChangeCallback = colorSchemeChangeCallback;
         this.incrementChatMessageCountCallback = incrementChatMessageCountCallback;
         this.newMessageCallback = newMessageCallback;
-        
+
         const edgeEditingOptions = {
             bendPositionsFunction: function(ele) {
                 return ele.data('bendPointPositions');
@@ -106,6 +106,7 @@ export default class EditorActionsManager{
         
         if(!this.isCbioPortal){
            this.edgeEditing = this.cy.edgeEditing(edgeEditingOptions);
+
         }
         this.portalAccessor = portalAccessor;
         if(this.isCollaborative) {
@@ -782,7 +783,7 @@ export default class EditorActionsManager{
                         y: anchors[2*j+1]
                     }
                 );
-            }   
+            }
             this.shareDBManager.updateEdgeAnchorPoints(edge.id(), anchorPointsArray, edgeCurveStyle);
         }
     }
@@ -851,7 +852,7 @@ export default class EditorActionsManager{
     updateGenomicDataColorScheme(colorValueMap: IColorValueMap)
     {
         this.setGenomicDataOverlayColorScheme(colorValueMap);
-        
+
         if(this.isCollaborative)
         {
             this.shareDBManager.updateGenomicDataOverlayColorScheme(colorValueMap);
@@ -1764,7 +1765,6 @@ export default class EditorActionsManager{
                 else {
                     cyEle.data('bendPointPositions', anchorPoints);
                 }
-                
                 this.edgeEditing?.initAnchorPoints(cyEle);
             }
         }
