@@ -85,9 +85,7 @@ export default class Sidebar extends React.Component<ISideBarProps, {}>{
         const edgeImgs = [acImg, inhImg, indImg, repImg, bindImg];
 
         const nodeIds = ["simpleNodeDiv", "familyNodeDiv", "complexNodeDiv", "compartmentNodeDiv", "processNodeDiv"];
-        console.log("ziyaaa");
         if( this.props.isCollaborative){
-          console.log("ziyaaa2");
           return(
           <div id="pathway-sidebar" className="sideBarWrapper">
             <Panel className="pnl">

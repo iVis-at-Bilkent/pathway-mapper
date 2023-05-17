@@ -769,7 +769,6 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
       this.rankPathways();
   }
   this.renderTimes++;
-  console.log("dsdasdsadsadsadsdsdsaadsadsadssad");
 
   const cytoComp = <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative} 
   setActiveEdge={this.setActiveEdge} editorHandler={this.editorHandler} 
