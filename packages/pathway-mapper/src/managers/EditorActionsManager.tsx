@@ -97,14 +97,16 @@ export default class EditorActionsManager{
             // whether to start the plugin in the enabled state
             enabled: !this.isCbioPortal,
         
-            handleReconnectEdge: this.isCollaborative ? 
+            handleReconnectEdge: this.isCollaborative ?  
                                 this.reconnectEdge.bind(this) :
                                 undefined,
 
             enableMultipleAnchorRemovalOption: true
         };
         
-        this.edgeEditing = this.cy.edgeEditing(edgeEditingOptions);
+        if(!this.isCbioPortal){
+           this.edgeEditing = this.cy.edgeEditing(edgeEditingOptions);
+        }
         this.portalAccessor = portalAccessor;
         if(this.isCollaborative) {
           this.shareDBManager = shareDBManager;
@@ -768,7 +770,7 @@ export default class EditorActionsManager{
         {
             var edgeCurveStyle = edge.css('curve-style')
             var numberOfAnchorPoints = 0;
-            var anchors = this.edgeEditing.getAnchorsAsArray(edge);
+            var anchors = this.edgeEditing?.getAnchorsAsArray(edge);
             if (anchors !== undefined)
                 numberOfAnchorPoints = anchors.length / 2;
             var anchorPointsArray = [];
@@ -1226,7 +1228,7 @@ export default class EditorActionsManager{
         this.cy.add(nodeList);
         this.cy.add(edgeList);
 
-        this.edgeEditing.initAnchorPoints(this.cy.edges());
+        this.edgeEditing?.initAnchorPoints(this.cy.edges());
 
         this.cy.nodes().updateCompoundBounds();
     }
@@ -1248,7 +1250,7 @@ export default class EditorActionsManager{
             edgeData['bendPointPositions'] = edge.anchorPoints;
         }
         this.addNewEdgetoCy(edgeData);
-        this.edgeEditing.initAnchorPoints(this.cy.getElementById( edge.id ));
+        this.edgeEditing?.initAnchorPoints(this.cy.getElementById( edge.id ));
     };
 
     reconnectEdge(sourceID: string, targetID: string, edgeData: any) {
@@ -1640,7 +1642,7 @@ export default class EditorActionsManager{
             this.loadFileCy(nodes,edges);
         }
         
-        this.edgeEditing.initAnchorPoints(this.cy.edges());
+        this.edgeEditing?.initAnchorPoints(this.cy.edges());
         
         this.fitGraph();
     };
@@ -1745,14 +1747,14 @@ export default class EditorActionsManager{
                 };
                 cyEle.move(location);
                 //make sure that bend points are same
-                this.edgeEditing.initAnchorPoints(cyEle);
+                this.edgeEditing?.initAnchorPoints(cyEle);
             }
             else {
                 if (ele.edgeCurveStyle === "bezier") {
-                    const anchors = this.edgeEditing.getAnchorsAsArray(cyEle);
+                    const anchors = this.edgeEditing?.getAnchorsAsArray(cyEle);
                     if (anchors && anchors.length > 0) {
                         for (let i = 0; i < anchors.length / 2; i++) {
-                            this.edgeEditing.deleteSelectedAnchor(cyEle, 0);
+                            this.edgeEditing?.deleteSelectedAnchor(cyEle, 0);
                         }
                     }
                 }
@@ -1763,7 +1765,7 @@ export default class EditorActionsManager{
                     cyEle.data('bendPointPositions', anchorPoints);
                 }
                 
-                this.edgeEditing.initAnchorPoints(cyEle);
+                this.edgeEditing?.initAnchorPoints(cyEle);
             }
         }
     };
@@ -1844,7 +1846,7 @@ export default class EditorActionsManager{
         });
     }
 
-    addPortalGenomicData(genomicData: any, groupID: any)
+    addPortalGenomicData(genomicData: any, groupID: any, activeGroups?: any[])
     {
         
         if(this.isCollaborative)
@@ -1857,7 +1859,12 @@ export default class EditorActionsManager{
         }
         else
         {
-            this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
+            if( activeGroups !== undefined){
+                this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID, activeGroups);
+            }
+            else {
+                this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
+            }
         }
     }
 

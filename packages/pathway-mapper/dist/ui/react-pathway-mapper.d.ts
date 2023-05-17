@@ -14,6 +14,8 @@ import PathwayActions from '../utils/PathwayActions';
 interface IPathwayMapperProps {
     isCBioPortal: boolean;
     genes: any[];
+    newGenes?: any[];
+    genomicData?: any[];
     isCollaborative?: boolean;
     userName: string;
     userId: number;
@@ -25,11 +27,23 @@ interface IPathwayMapperProps {
     changePathwayHandler?: (pathwayGenes: string[]) => void;
     addGenomicDataHandler?: (addGenomicData: (alterationData: ICBioData[]) => void) => void;
     tableComponent?: (data: IPathwayMapperTable[], selectedPathway: string, onPathwaySelect: (pathway: string) => void) => JSX.Element;
+    genesSelectionComponent?: () => JSX.Element;
     validGenes?: any;
     toast: any;
     showMessage: (message: string) => void;
     patientView?: boolean;
+    groupComparisonView?: boolean;
+    activeGroups?: any[];
     messageBanner?: () => JSX.Element;
+    currentPathway?: string;
+    rankingChoices?: PMParameters;
+    updateRankingChoices?: (drowDownTitle: string, isAlterationEnabled: number, considerOnlyTCGAPanPathways: boolean, isPercentageMatch: number, selectedPathway: string) => void;
+}
+export interface PMParameters {
+    dropDownTitle: string;
+    isPercentageMatch: number;
+    isAlterationEnabled: number;
+    considerOnlyTCGAPanPathways: boolean;
 }
 export interface ICBioData {
     altered: number;
@@ -38,6 +52,16 @@ export interface ICBioData {
     sequenced: number;
     geneticTrackData?: any[];
     geneticTrackRuleSetParams?: IGeneticAlterationRuleSetParams;
+    groupsSet?: {
+        [id: string]: CountSummary & {
+            alteredPercentage: number;
+        };
+    };
+}
+interface CountSummary {
+    'alteredCount': number;
+    'name': string;
+    'profiledCount': number;
 }
 export interface ISampleIconData {
     sampleIndex: {
@@ -76,6 +100,11 @@ export interface IAlterationData {
         [key: string]: number;
     };
 }
+export interface groupComparisonData {
+    [key: string]: {
+        [key: string]: number;
+    };
+}
 export interface IProfileMetaData {
     profileId: string;
     studyId?: string;
@@ -98,6 +127,12 @@ export interface IPathwayMapperTable {
     score: number;
     genes: string[];
 }
+declare enum RankingMode {
+    Count = 0,
+    Percentage = 1,
+    CountWithAlteration = 2,
+    PercentageWithAlteration = 3
+}
 export declare class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     static readonly CBIO_PROFILE_NAME = "cBioPortal_data";
     readonly MAX_ALLOWED_PROFILES_ENABLED = 6;
@@ -110,6 +145,7 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     portalAccessor: CBioPortalAccessor;
     alterationData: IAlterationData;
     patientData: any[][];
+    groupComparisonData: groupComparisonData;
     pathwayGeneMap: {
         [key: string]: {
             [key: string]: string;
@@ -121,6 +157,9 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     profiles: IProfileMetaData[];
     chatMessages: ChatMessageMetaData[];
     chatMessagesCount: number;
+    genes: any[];
+    renderTimes: number;
+    currentRankingScheme: number;
     setActiveEdge: (edgeId: number) => void;
     viewOperationsManager: ViewOperationsManager;
     gridOptionsManager: GridOptionsManager;
@@ -131,25 +170,29 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     addProfile(profile: IProfileMetaData): void;
     toggleProfileEnabled(index: number): void;
     calculateAlterationData(cBioAlterationData: ICBioData[]): void;
+    calculateGroupComparisonData(): void;
     calculatePatientData(cBioAlterationData: ICBioData[]): void;
     simplifyDate(date: string): string;
     addMessage(Message: string): void;
     updateScroll(): void;
-    convertCharacter(character: any): 6 | 1 | -1 | 0 | 2 | 3 | 5 | 4 | 7 | 8 | 9;
+    convertCharacter(character: any): 6 | 1 | -1 | 0 | 2 | 5 | 4 | 3 | 7 | 8 | 9;
     convertToNumber(value: string): number;
     addChatMessage(newMessage: ChatMessageMetaData): void;
     updatePathwayTitleCallback(pathwayTitle: string): void;
     addSampleIconData(sampleIconData: any): void;
     getGeneStudyMap(studyGeneMap: any): any;
     getAlterationAveragePerGene(genomicDataMap: any): any;
+    getBestPathways(rankingMode: RankingMode): any[];
     /**
      *
      * @param rankingMode: number => 0 = Count, 1 = Percentage, 2 = Count with Alteration, 3 = Percentage with Alteration
      *
      */
-    getBestPathway(rankingMode: number): void;
+    getBestPathway(rankingMode: RankingMode): void;
+    getBestPathwayReRank(rankingMode: RankingMode): void;
     includePathway(pathwayData?: IPathwayData, pathwayName?: string): void;
     extractAllGenes(): void;
+    rankPathways(): void;
     loadRedirectedPortalData(): void;
     exists(profileId: string): boolean;
     getCountOfEnabledProfiles(): number;

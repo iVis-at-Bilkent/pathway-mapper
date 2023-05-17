@@ -1,6 +1,7 @@
 import autobind from "autobind-decorator";
 import { action, computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
+import { getPlainObjectKeys } from "mobx/dist/internal";
 import { IGeneticAlterationRuleSetParams } from 'oncoprintjs';
 import React from 'react';
 import { Col, Row } from "react-bootstrap";
@@ -43,6 +44,8 @@ let maxHeap = maxHeapFn();
 interface IPathwayMapperProps{
   isCBioPortal: boolean;
   genes: any[];
+  newGenes? : any[];
+  genomicData?: any[];
   isCollaborative?: boolean;
   userName: string;
   userId: number;
@@ -54,14 +57,26 @@ interface IPathwayMapperProps{
   changePathwayHandler?: (pathwayGenes: string[]) => void;
   addGenomicDataHandler?: (addGenomicData: (alterationData: ICBioData[]) => void) => void;
   tableComponent?: (data: IPathwayMapperTable[], selectedPathway: string, onPathwaySelect: (pathway: string) => void) => JSX.Element;
+  genesSelectionComponent?: () => JSX.Element;
   validGenes?: any;
   toast: any;
   showMessage: (message: string) => void;
   //PatientView variable
   patientView ?: boolean;
+  groupComparisonView ?: boolean;
+  activeGroups ?: any[];
   messageBanner? : () => JSX.Element;
+  currentPathway ?: string;
+  rankingChoices ?: PMParameters;
+  updateRankingChoices ?: (drowDownTitle : string, isAlterationEnabled: number, considerOnlyTCGAPanPathways : boolean, isPercentageMatch : number, selectedPathway : string) =>void;
 }
 
+export interface PMParameters{
+  dropDownTitle: string;
+  isPercentageMatch: number;
+  isAlterationEnabled: number;
+  considerOnlyTCGAPanPathways: boolean;
+}
 export interface ICBioData{
   altered: number;
   gene: string;
@@ -69,7 +84,14 @@ export interface ICBioData{
   sequenced: number;
   geneticTrackData?: any[]; // TODO GeneticTrackDatum[]: this is currently a private type within cbioportal repo
   geneticTrackRuleSetParams?: IGeneticAlterationRuleSetParams;
+  groupsSet?: { [id: string]: CountSummary & { alteredPercentage: number } };
 }
+
+interface CountSummary  {
+  'alteredCount': number;
+  'name': string;
+  'profiledCount': number;
+};
 
 export interface ISampleIconData {
   sampleIndex: { [s: string]: number },
@@ -107,6 +129,10 @@ export interface IAlterationData{
   [key: string]: {[key: string]: number};
 }
 
+export interface groupComparisonData{
+  [key:string]: {[key:string]: number };
+}
+
 export interface IProfileMetaData{
   profileId: string;
   studyId?: string;
@@ -131,6 +157,13 @@ export interface IPathwayMapperTable{
   name: string;
   score: number;
   genes: string[];
+}
+
+enum RankingMode {
+  Count = 0,
+  Percentage = 1,
+  CountWithAlteration = 2,
+  PercentageWithAlteration = 3,
 }
 
 @observer
@@ -165,8 +198,12 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   patientData: any [][] = [];
 
   @observable
+  groupComparisonData: groupComparisonData ={} ;
+
+  @observable
   pathwayGeneMap: {[key: string]: {[key: string]: string}} = {};
 
+  @observable
   bestPathwaysAlgos: any[][] = [];
 
   @observable
@@ -183,6 +220,13 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   
   @observable 
   chatMessagesCount: number;
+
+  genes: any[] = [];
+
+  renderTimes : number = 0;
+
+  currentRankingScheme = (this.props.rankingChoices !== undefined ? 2 * this.props.rankingChoices.isAlterationEnabled + this.props.rankingChoices.isPercentageMatch : 0);
+
   setActiveEdge: (edgeId: number) => void;
   viewOperationsManager: ViewOperationsManager;
   gridOptionsManager: GridOptionsManager;
@@ -191,6 +235,8 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   constructor(props: IPathwayMapperProps){
     super(props);
     makeObservable(this);
+
+    this.genes = this.props.genes;
     
     this.fileManager = new FileOperationsManager();
     this.pathwayActions = new PathwayActions(this.pathwayHandler, this.profiles, this.fileManager, 
@@ -220,11 +266,14 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
       // If cBioPortal mode is 'on' it is very likely to have cBioALterationData
       // but to be on the safe side below assertion is made.
       if(this.props.cBioAlterationData ){
-        if( this.props.patientView){
+        if( this.props.patientView === true){
           //PatientView PathwayMapper has a different functionality
           //Alteration types are overlayed instead of alterationpercentage
           this.calculatePatientData(this.props.cBioAlterationData);
           this.addSampleIconData(this.props.sampleIconData);
+        }
+        else if( this.props.groupComparisonView === true){
+          this.calculateGroupComparisonData();
         }
         else{
           this.calculateAlterationData(this.props.cBioAlterationData);
@@ -237,10 +286,10 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
       }
 
       this.profiles.push({profileId: PathwayMapper.CBIO_PROFILE_NAME, enabled: true});
-      this.getBestPathway(0);
-      this.getBestPathway(1);
-      this.getBestPathway(2);
-      this.getBestPathway(3);
+      this.getBestPathway(RankingMode.Count);
+      this.getBestPathway(RankingMode.Percentage);
+      this.getBestPathway(RankingMode.CountWithAlteration);
+      this.getBestPathway(RankingMode.PercentageWithAlteration);
     }
     /*
     const profile1 = {profileId: "study1_gistic", studyId: "study1", enabled: true};
@@ -295,6 +344,16 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     });
   }
   
+  calculateGroupComparisonData(){
+    this.alterationData[PathwayMapper.CBIO_PROFILE_NAME] = {};
+    this.props.genomicData.forEach(datum => {
+         this.groupComparisonData[datum.hugoGeneSymbol] = {};
+         this.props.activeGroups.forEach( datum2 => {this.groupComparisonData[datum.hugoGeneSymbol][datum2.nameWithOrdinal] = 
+          datum.groupsSet[datum2.nameWithOrdinal].alteredPercentage;
+        });   
+    })
+  }
+
   calculatePatientData(cBioAlterationData: ICBioData[]){
     // Transform cBioDataAlteration into Patient Data every alteration is accepted 100% altered
 
@@ -321,6 +380,8 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     });
 
   }
+
+
 
   simplifyDate(date: string){
     let gapCount = 0;
@@ -470,61 +531,77 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   }
 
 
+  getBestPathways(rankingMode: RankingMode) {
+    const genomicDataMap = this.getGeneStudyMap(this.alterationData);
+    const alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
+    maxHeap = maxHeapFn();
+    const matchedGenesMap: any = {};
+    const bestPathways: any[] = [];
+    for (const pathwayName in this.pathwayGeneMap){
+      if (this.pathwayGeneMap.hasOwnProperty(pathwayName)) {
+        const genesMatching = [];
+        // Calculate sum of all alterations
+        let sumOfAlterations = 0;
+        this.props.genes.forEach(gene => {
+          if(this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) &&
+             this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE") {
+            genesMatching.push(gene.hugoGeneSymbol);
+            if (this.props.groupComparisonView) {
+              // if enriched group exists use the alteration percentage of the enriched group
+              if (gene.enrichedGroup && gene.groupsSet[gene.enrichedGroup]) {
+                sumOfAlterations += gene.groupsSet[gene.enrichedGroup].alteredPercentage || 0;
+              }
+              // else use the max value
+              else {
+                sumOfAlterations += Math.max(...Object.values(gene.groupsSet).map(v => (v as any).alteredPercentage || 0));
+              }
+            }
+            else {
+              sumOfAlterations += alterationPerGene[gene.hugoGeneSymbol] || 0;
+            }
+          }
+        });
+        matchedGenesMap[pathwayName] = genesMatching;
+        const geneCount = Object.values(this.pathwayGeneMap[pathwayName]).filter(geneType => geneType === "GENE").length;
+
+        if(rankingMode === 0){
+          maxHeap.insert( genesMatching.length, {pathwayName: pathwayName});
+        } else if(rankingMode === 1){
+          maxHeap.insert( genesMatching.length / geneCount * 100, {pathwayName: pathwayName});
+        } else if(rankingMode === 2){
+          maxHeap.insert( sumOfAlterations, {pathwayName: pathwayName});
+        } else if(rankingMode === 3){
+          maxHeap.insert( genesMatching.length * sumOfAlterations / geneCount, {pathwayName: pathwayName});
+        }
+
+      }
+    }
+    while(maxHeap.size() > 0) {
+      const top = maxHeap.extractMax();
+      const pathwayName = top.getValue().pathwayName;
+      bestPathways.push({score: top.getKey(), genesMatched: matchedGenesMap[pathwayName], pathwayName: pathwayName});
+    }
+    return bestPathways;
+  }
+
   /**
    * 
    * @param rankingMode: number => 0 = Count, 1 = Percentage, 2 = Count with Alteration, 3 = Percentage with Alteration
    * 
    */
-  getBestPathway(rankingMode: number) {
-    
-    const genomicDataMap = this.getGeneStudyMap(this.alterationData);
-    const alterationPerGene = this.getAlterationAveragePerGene(genomicDataMap);
-    maxHeap =  maxHeapFn();
+  getBestPathway(rankingMode: RankingMode) {
+    const bestPathways = this.getBestPathways(rankingMode);
+    if(this.bestPathwaysAlgos.length === this.currentRankingScheme && this.props.currentPathway !== undefined && this.props.currentPathway === "") // First pathway of the first method is shown as the default pathway.
+       this.setSelectedPathway(bestPathways[0].pathwayName);
+    else if ( this.bestPathwaysAlgos.length === this.currentRankingScheme && this.props.currentPathway !== undefined && this.props.currentPathway.length > 0)
+       this.setSelectedPathway(this.props.currentPathway);
+    else if ( this.bestPathwaysAlgos.length === this.currentRankingScheme)
+       this.setSelectedPathway(bestPathways[0].pathwayName);
+    this.bestPathwaysAlgos.push(bestPathways);
+  }
 
-    const matchedGenesMap: any = {};
-    const bestPathways: any[] = [];
-    for(const pathwayName in this.pathwayGeneMap){
-        if(this.pathwayGeneMap.hasOwnProperty(pathwayName)){
-          
-          const genesMatching = [];
-            // Calculate sum of all alterations
-            let sumOfAlterations = 0;
-            for(const gene of this.props.genes){
-              
-                if(this.pathwayGeneMap[pathwayName].hasOwnProperty(gene.hugoGeneSymbol) 
-                    && this.pathwayGeneMap[pathwayName][gene.hugoGeneSymbol] === "GENE"){
-                  genesMatching.push(gene.hugoGeneSymbol);
-                  sumOfAlterations += alterationPerGene[gene.hugoGeneSymbol];
-                }
-            }
-            matchedGenesMap[pathwayName] = genesMatching;
-            let geneCount = 0;
-            // Count number of genes *not processess* in a pathway
-            for(const geneType of Object.values(this.pathwayGeneMap[pathwayName])){
-              if(geneType === "GENE"){
-                geneCount++;
-              }
-            }
-
-            if(rankingMode === 0){
-              maxHeap.insert(genesMatching.length, {pathwayName: pathwayName});
-            } else if(rankingMode === 1){
-              maxHeap.insert(genesMatching.length / geneCount * 100, {pathwayName: pathwayName}); 
-            } else if(rankingMode === 2){
-              maxHeap.insert(sumOfAlterations, {pathwayName: pathwayName}); 
-            } else if(rankingMode === 3){
-              maxHeap.insert(genesMatching.length * sumOfAlterations / geneCount, {pathwayName: pathwayName});
-            }
-
-        }
-    }
-    while(maxHeap.size() > 0){
-        const top = maxHeap.extractMax();
-        const pathwayName = top.getValue().pathwayName;
-        bestPathways.push({score: top.getKey(), genesMatched: matchedGenesMap[pathwayName], pathwayName: pathwayName});
-    }
-    if(this.bestPathwaysAlgos.length === 0) // First pathway of the first method is shown as the default pathway.
-      this.setSelectedPathway(bestPathways[0].pathwayName);
+  getBestPathwayReRank(rankingMode: RankingMode) {
+    const bestPathways = this.getBestPathways(rankingMode);
     this.bestPathwaysAlgos.push(bestPathways);
   }
   
@@ -538,8 +615,9 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
 
     for(const gene of genes){
 
-      if(gene.data.type === "GENE")
+      if(gene.data.type === "GENE"){
         geneHash[gene.data.name] = gene.data.type;
+      }
     }
 
     this.pathwayGeneMap[pathwayData.title] = geneHash;
@@ -555,6 +633,15 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
           }
       }
     }
+
+  rankPathways(){
+    this.bestPathwaysAlgos = [];
+    this.getBestPathwayReRank(RankingMode.Count);
+    this.getBestPathwayReRank(RankingMode.Percentage);
+    this.getBestPathwayReRank(RankingMode.CountWithAlteration);
+    this.getBestPathwayReRank(RankingMode.PercentageWithAlteration);
+    this.genes = this.props.genes;
+  }
 
   loadRedirectedPortalData(){
 
@@ -678,6 +765,11 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
 
   render() {
   const isCBioPortal = this.props.isCBioPortal;     
+  if( this.renderTimes > 1 && this.props.groupComparisonView === true && this.props.genes !== this.genes) {
+      this.rankPathways();
+  }
+  this.renderTimes++;
+  console.log("dsdasdsadsadsadsdsdsaadsadsadssad");
 
   const cytoComp = <CytoscapeArea profiles={this.profiles} isCbioPortal={this.props.isCBioPortal} isCollaborative={this.props.isCollaborative} 
   setActiveEdge={this.setActiveEdge} editorHandler={this.editorHandler} 
@@ -747,7 +839,15 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
             {
             (isCBioPortal &&
             <Col xs={3} style={{paddingLeft: "0px"}}>
-              <Ranking pathwayActions={this.pathwayActions} bestPathwaysAlgos={this.bestPathwaysAlgos} tableComponent={this.props.tableComponent} patientView={this.props.patientView}/>
+              <Ranking 
+                  pathwayActions={this.pathwayActions} 
+                  bestPathwaysAlgos={this.bestPathwaysAlgos} 
+                  tableComponent={this.props.tableComponent} 
+                  patientView={this.props.patientView} 
+                  currentPathway = {this.props.currentPathway} 
+                  rankingChoices = {this.props.rankingChoices} 
+                  updateRankingChoices = {this.props.updateRankingChoices}
+              />
             </Col>)
             }
           </div>
@@ -859,6 +959,9 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     if(this.props.isCBioPortal){
       if(this.props.patientView){
         this.editor.addPortalGenomicData(this.patientData, this.editor.getEmptyGroupID());
+      }
+      else if( this.props.groupComparisonView === true) {
+        this.editor.addPortalGenomicData(this.groupComparisonData, this.editor.getEmptyGroupID(), this.props.activeGroups);
       }
       else{
       this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
