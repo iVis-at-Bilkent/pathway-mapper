@@ -1,7 +1,7 @@
 {
   "name": "pathway-mapper-standalone",
   "description": "PathwayMapper for pathway visualization",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "author": "i-Vis at Bilkent <ivisatbilkent@gmail.com>",
   "repository": {
     "type": "git",
@@ -73,7 +73,7 @@
     "replace-in-file": "^3.4.2",
     "rimraf": "^2.6.2",
     "semantic-release": "^15.9.16",
-    "sharedb-mongo": "latest",
+    "sharedb-mongo": "3.0.1",
     "shelljs": "^0.8.3",
     "source-map-loader": "^0.1.6",
     "travis-deploy-once": "^5.0.9",
