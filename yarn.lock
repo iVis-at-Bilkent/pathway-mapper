@@ -16869,7 +16869,7 @@ shallow-clone@^1.0.0:
     kind-of "^5.0.0"
     mixin-object "^2.0.1"
 
-sharedb-mongo@latest:
+sharedb-mongo@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/sharedb-mongo/-/sharedb-mongo-3.0.1.tgz#7a9ff5062dac95e32968d9b66555818648720426"
   integrity sha512-IXoSjPgZ+pCgybUHcUXPwSX597W2qGi/DKfN9MRABw6GKS+EALLkvG5PgFdpxHXNXoDJpEjDXAY0D78rdhrGMg==
