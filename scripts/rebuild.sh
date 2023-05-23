@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-PATH=/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/home/ivis/pathwayMapper/pathway-mapper
+PATH=/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/home/ivis/.nvm/versions/node/v15.14.0/bin:/home/ivis/pathwayMapper/pathway-mapper
 
 #Seperator
 echo -e "\n--------------" >> /home/ivis/pathwayMapper/pathway-mapper/rebuild.log
