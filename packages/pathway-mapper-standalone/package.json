@@ -1,7 +1,7 @@
 {
   "name": "pathway-mapper-standalone",
   "description": "PathwayMapper for pathway visualization",
-  "version": "2.3.0",
+  "version": "2.2.2",
   "author": "i-Vis at Bilkent <ivisatbilkent@gmail.com>",
   "repository": {
     "type": "git",
