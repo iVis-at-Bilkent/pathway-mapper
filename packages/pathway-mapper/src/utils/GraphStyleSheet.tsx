@@ -34,6 +34,8 @@ module.exports = (function()
         {
           return nodeBackgroundOpacityFunction(ele);
         },
+        'overlay-opacity': 0,
+        'overlay-color': '#ffc90e'
       }
     },
     {
@@ -99,7 +101,8 @@ module.exports = (function()
           return edgeLineTypeHandler(ele);
         },
         'opacity': 1,
-
+        'overlay-opacity': 0,
+        'overlay-color': '#ffc90e'
       }
     },
     {
@@ -218,7 +221,8 @@ module.exports = (function()
                 {
                     return selectedBorderWidthFunction( ele );
                 },
-                'border-color' : '#ffc90e', /*#f1c40f'*/
+                'overlay-opacity': 0.25,
+                'overlay-color': '#ffc90e'
             }
     },
     {
@@ -236,8 +240,8 @@ module.exports = (function()
         style:
             {
                 'width' : 3,
-                'line-color' : '#ffc90e',
-                'target-arrow-color': '#ffc90e'
+                'overlay-opacity': 0.25,
+                'overlay-color': '#ffc90e'
             }
     },
   ];
