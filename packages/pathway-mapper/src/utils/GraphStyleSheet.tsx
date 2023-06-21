@@ -34,8 +34,8 @@ module.exports = (function()
         {
           return nodeBackgroundOpacityFunction(ele);
         },
-        'overlay-opacity': 0,
-        'overlay-color': '#ffc90e'
+        'underlay-opacity': 0,
+        'underlay-color': '#ffc90e'
       }
     },
     {
@@ -101,8 +101,8 @@ module.exports = (function()
           return edgeLineTypeHandler(ele);
         },
         'opacity': 1,
-        'overlay-opacity': 0,
-        'overlay-color': '#ffc90e'
+        'underlay-opacity': 0,
+        'underlay-color': '#ffc90e'
       }
     },
     {
@@ -221,8 +221,8 @@ module.exports = (function()
                 {
                     return selectedBorderWidthFunction( ele );
                 },
-                'overlay-opacity': 0.25,
-                'overlay-color': '#ffc90e'
+                'underlay-opacity': 0.25,
+                'underlay-color': '#ffc90e'
             }
     },
     {
@@ -240,8 +240,8 @@ module.exports = (function()
         style:
             {
                 'width' : 3,
-                'overlay-opacity': 0.25,
-                'overlay-color': '#ffc90e'
+                'underlay-opacity': 0.25,
+                'underlay-color': '#ffc90e'
             }
     },
   ];
