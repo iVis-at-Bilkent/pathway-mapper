@@ -1,3 +1,4 @@
+import { forEach } from "lodash";
 import { EModalType } from "../ui/react-pathway-mapper";
 import EditorActionsManager from "./EditorActionsManager";
 
@@ -112,11 +113,27 @@ export default class ContextMenuManager {
               return;
             }
           }
+          
 
+          let childsToBeRemoved = [];
+          selectedNodes.forEach(function (tmpNode1) {
+            selectedNodes.forEach(function(tmpNode2) {
+              if (classRef.isChildren(tmpNode1, tmpNode2)) {
+                childsToBeRemoved.push(tmpNode2);
+              }
+            });
+          });
+          
+          childsToBeRemoved.forEach(function (tmpNode) {
+            tmpNode.unselect();
+            selectedNodes = selectedNodes.filter(function (element) {
+              return element != tmpNode;
+            });
+          });
 
           selectedNodes.forEach(function (tmpNode, i)
           {
-
+            
             if(containerType == "FAMILY" || containerType == "COMPLEX")
             {
               if(tmpNode.data('type') != "COMPARTMENT" && tmpNode.data('type') != "PROCESS")
@@ -135,7 +152,7 @@ export default class ContextMenuManager {
           classRef.editor.changeParents(validNodes, compId);
           //Unselecting nodes to remove them from selectedNodeStack
           selectedNodes.unselect();
-
+          
         },
         disabled: false,
         hasTrailingDivider: false, 

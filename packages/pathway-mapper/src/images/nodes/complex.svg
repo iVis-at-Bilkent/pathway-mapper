@@ -2,20 +2,20 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="174"
-   height="44.442822"
-   viewBox="0 0 163.125 41.665146"
+   height="44.443001"
+   viewBox="0 0 163.125 41.665314"
    id="svg4399"
    version="1.1"
-   inkscape:version="0.92.1 r15371"
-   sodipodi:docname="complex.svg">
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   sodipodi:docname="complex.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4401" />
   <sodipodi:namedview
@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="55.823353"
-     inkscape:cy="93.511166"
+     inkscape:zoom="5.6568543"
+     inkscape:cx="60.811183"
+     inkscape:cy="23.157747"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -36,11 +36,15 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1920"
-     inkscape:window-height="1017"
+     inkscape:window-height="1009"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     units="px" />
+     units="px"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="false"
+     inkscape:deskcolor="#d1d1d1"
+     borderlayer="true" />
   <metadata
      id="metadata4404">
     <rdf:RDF>
@@ -49,7 +53,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -59,10 +62,10 @@
      id="layer1"
      transform="translate(-276.06497,-317.66897)">
     <rect
-       style="fill:none;stroke:#000000;stroke-width:3.23126984;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:none;stroke:#000000;stroke-width:3.23127;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect2985"
        width="159.89374"
-       height="38.433876"
+       height="38.43404"
        x="277.6806"
        y="319.28461"
        ry="0"
@@ -80,5 +83,66 @@
          x="324.71609"
          y="342.69101"
          style="font-size:15px;stroke-width:0.9375px">Complex</tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:0.9375;stroke-opacity:1"
+       id="rect6235"
+       width="8.4375"
+       height="8.4375"
+       x="276.06497"
+       y="317.66898"
+       transform="translate(-1.2549868e-6)" />
+    <rect
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:0.9375;stroke-opacity:1"
+       id="rect5577"
+       width="8.4375"
+       height="8.4375"
+       x="430.75247"
+       y="317.66898" />
+    <rect
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:0.9375;stroke-opacity:1"
+       id="rect6221"
+       width="8.4375"
+       height="8.4375"
+       x="430.75247"
+       y="350.89679" />
+    <rect
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:0.9375;stroke-opacity:1"
+       id="rect6223"
+       width="8.4375"
+       height="8.4375"
+       x="276.06497"
+       y="350.89679" />
+    <rect
+       style="fill:#000000;stroke:#000000;stroke-width:0.9375"
+       id="rect6233"
+       width="2.34375"
+       height="11.671875"
+       x="555.52472"
+       y="-62.302437"
+       transform="rotate(45,1.3431051e-6,-2.3311517e-6)" />
+    <rect
+       style="fill:#000000;stroke:#000000;stroke-width:0.9375"
+       id="rect6231"
+       width="2.34375"
+       height="11.671875"
+       x="-79.154884"
+       y="-541.01605"
+       transform="rotate(135)" />
+    <rect
+       style="fill:#000000;stroke:#000000;stroke-width:0.9375"
+       id="rect6237"
+       width="2.34375"
+       height="11.671875"
+       x="426.60675"
+       y="23.582537"
+       transform="rotate(45)" />
+    <rect
+       style="fill:#000000;stroke:#000000;stroke-width:0.9375"
+       id="rect3700"
+       width="2.34375"
+       height="11.671875"
+       x="49.763111"
+       y="-455.13107"
+       transform="rotate(135)" />
   </g>
 </svg>
