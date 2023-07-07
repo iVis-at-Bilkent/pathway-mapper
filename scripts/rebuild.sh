@@ -7,6 +7,9 @@ echo -e "\n--------------" >> /home/ivis/pathwayMapper/pathway-mapper/rebuild.lo
 #Logging rebuild time
 date >> /home/ivis/pathwayMapper/pathway-mapper/rebuild.log
 
+#Fix dubious ownership problem
+git config --global --add safe.directory /home/ivis/pathwayMapper/pathway-mapper
+
 #update PM
 echo -e "\nUpdating PathwayMapper..." &>> /home/ivis/pathwayMapper/pathway-mapper/rebuild.log
 git fetch --all &>> /home/ivis/pathwayMapper/pathway-mapper/rebuild.log
