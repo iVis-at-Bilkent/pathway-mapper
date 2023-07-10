@@ -653,7 +653,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
     redirectedProfiles.forEach((redirectedProfile) => {
       this.addProfile(redirectedProfile);
     });
-    this.editor.addPortalGenomicData(this.props.alterationData, this.editor.getEmptyGroupID());
+    this.editor.addGenomicData(this.props.alterationData, true, this.editor.getEmptyGroupID());
   }
 
   exists(profileId: string){
@@ -719,8 +719,8 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
           geneticProfileId: profileId,
           genes: genes
         },
-        (data: any) => {
-          this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID());
+        (genomicData: any) => {
+          this.editor.addGenomicData(genomicData, true, this.editor.getEmptyGroupID());
           let visibilityObject = {};
           visibilityObject[newProfile.profileId] = newProfile.enabled;
           this.editor.updateGenomicDataVisibility(visibilityObject);
@@ -747,7 +747,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   @autobind
   newMessageCallback( message : ChatMessageMetaData ){
     this.chatMessages.push(message);
-    setTimeout(this.updateScroll,50);
+    setTimeout(this.updateScroll, 50);
   }
 
   @autobind
@@ -755,7 +755,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
 
     this.calculateAlterationData(cBioAlterationData);
     this.editor.removeGenomicData();
-    this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
+    this.editor.addGenomicData(this.alterationData, true, this.editor.getEmptyGroupID());
   }
 
   @autobind
@@ -948,28 +948,46 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   }
 
   @autobind
-  editorHandler(editor, eh, undoRedoManager){
-
+  editorHandler(editor, eh, undoRedoManager) {
     this.setEditor(editor);
     this.gridOptionsManager = new GridOptionsManager(this.editor.cy);
-    this.viewOperationsManager = new ViewOperationsManager(this.editor, this.editor.cy);
-    this.pathwayActions.editorHandler(editor, eh, undoRedoManager, this.viewOperationsManager, this.gridOptionsManager);
-    
-    if(this.props.isCBioPortal){
-      if(this.props.patientView){
-        this.editor.addPortalGenomicData(this.patientData, this.editor.getEmptyGroupID());
-      }
-      else if( this.props.groupComparisonView === true) {
-        this.editor.addPortalGenomicData(this.groupComparisonData, this.editor.getEmptyGroupID(), this.props.activeGroups);
-      }
-      else{
-      this.editor.addPortalGenomicData(this.alterationData, this.editor.getEmptyGroupID());
+    this.viewOperationsManager = new ViewOperationsManager(
+      this.editor,
+      this.editor.cy,
+    );
+    this.pathwayActions.editorHandler(
+      editor,
+      eh,
+      undoRedoManager,
+      this.viewOperationsManager,
+      this.gridOptionsManager,
+    );
+  
+    if (this.props.isCBioPortal) {
+      if (this.props.patientView) {
+        this.editor.addGenomicData(
+          this.patientData,
+          true,
+          this.editor.getEmptyGroupID(),
+        );
+      } else if (this.props.groupComparisonView === true) {
+        this.editor.addGenomicData(
+          this.groupComparisonData,
+          true,
+          this.editor.getEmptyGroupID(),
+          this.props.activeGroups,
+        );
+      } else {
+        this.editor.addGenomicData(
+          this.alterationData,
+          true,
+          this.editor.getEmptyGroupID(),
+        );
       }
     } else {
       this.portalAccessor = new CBioPortalAccessor();
       this.loadRedirectedPortalData();
     }
-
   }
 
   @autobind

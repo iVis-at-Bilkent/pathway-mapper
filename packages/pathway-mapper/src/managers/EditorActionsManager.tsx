@@ -1797,34 +1797,52 @@ export default class EditorActionsManager {
 
     }
 
-    addGenomicData(genomicData: any)
+    addGenomicData(genomicData: any, isFromPortal: boolean, groupID?: any, activeGroups?: any[])
     {
-        const groupID = this.getEmptyGroupID();
-
-        if(this.isCollaborative)
-        {
-            var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicDataShareDB(genomicData);
-            this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
-            this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
-                groupID);
-            
-            let currentVisibleGenomicDataCount = this.genomicDataOverlayManager.countVisibleGenomicDataByType();
-            Object.keys(parsedGenomicData.visibilityMap).forEach(study => {
-                if (parsedGenomicData.visibilityMap[study] && (currentVisibleGenomicDataCount >= 6)) {
-                    parsedGenomicData.visibilityMap[study] = false;
-                }
-                else if(parsedGenomicData.visibilityMap[study]) {
-                    currentVisibleGenomicDataCount++;
-                }
+        if (!isFromPortal) {
+            groupID = this.getEmptyGroupID();
+        }
+      
+        if (this.isCollaborative) {
+          var parsedGenomicData = this.genomicDataOverlayManager.prepareGenomicData(
+            genomicData,
+            null,
+            this.isCollaborative,
+            isFromPortal
+          );
+          this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
+          this.shareDBManager.groupGenomicData(
+            Object.keys(parsedGenomicData.visibilityMap),
+            groupID
+          );
+      
+          if (!isFromPortal) {
+            let currentVisibleGenomicDataCount =
+              this.genomicDataOverlayManager.countVisibleGenomicDataByType();
+            Object.keys(parsedGenomicData.visibilityMap).forEach((study) => {
+              if (
+                parsedGenomicData.visibilityMap[study] &&
+                currentVisibleGenomicDataCount >= 6
+              ) {
+                parsedGenomicData.visibilityMap[study] = false;
+              } else if (parsedGenomicData.visibilityMap[study]) {
+                currentVisibleGenomicDataCount++;
+              }
             });
-
-            this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
+          }
+      
+          this.shareDBManager.addGenomicVisibilityData(
+            parsedGenomicData.visibilityMap
+          );
+        } else {
+            if (activeGroups !== undefined) {
+                this.genomicDataOverlayManager.addGenomicDataLocally(genomicData, groupID, isFromPortal, activeGroups);
+            } else {
+                this.genomicDataOverlayManager.addGenomicDataLocally(genomicData, groupID, isFromPortal);
+            }
+          
         }
-        else
-        {
-            this.genomicDataOverlayManager.addGenomicDataLocally(genomicData, groupID);
-        }
-    }
+    }     
 
     adjustVisibilityShareDB(profileId: string, isEnabled: boolean){
         const targetProfileIndex = this.profiles.map(profile => profile.profileId).indexOf(profileId);
@@ -1844,28 +1862,6 @@ export default class EditorActionsManager {
             profileId: profileId, 
             enabled: true
         });
-    }
-
-    addPortalGenomicData(genomicData: any, groupID: any, activeGroups?: any[])
-    {
-        
-        if(this.isCollaborative)
-        {
-            var parsedGenomicData = this.genomicDataOverlayManager.preparePortalGenomicDataShareDB(genomicData);
-            this.shareDBManager.addGenomicData(parsedGenomicData.genomicDataMap);
-            this.shareDBManager.groupGenomicData(Object.keys(parsedGenomicData.visibilityMap),
-                groupID);
-            this.shareDBManager.addGenomicVisibilityData(parsedGenomicData.visibilityMap);
-        }
-        else
-        {
-            if( activeGroups !== undefined){
-                this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID, activeGroups);
-            }
-            else {
-                this.genomicDataOverlayManager.addPortalGenomicData(genomicData, groupID);
-            }
-        }
     }
 
     shareDBGenomicDataHandler(op: any)

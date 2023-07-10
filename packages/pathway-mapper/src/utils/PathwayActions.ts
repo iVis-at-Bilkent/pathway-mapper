@@ -1,6 +1,5 @@
 import autobind from "autobind-decorator";
 import { action, computed, makeObservable, observable } from "mobx";
-import { toast } from "react-toastify";
 import EditorActionsManager from "../managers/EditorActionsManager";
 import FileOperationsManager, {
   IPathwayInfo
@@ -153,7 +152,7 @@ export default class PathwayActions {
         } else {
           console.log("Error: No valid data");
         }
-        this.editor.addGenomicData(request.responseText);
+        this.editor.addGenomicData(request.responseText, false);
       }
     };
     request.open("POST", "/loadGraph");
@@ -458,7 +457,7 @@ changePathwayTitle(pathwayTitle : string){
       return;
     }    
 
-    this.editor.addGenomicData(data);
+    this.editor.addGenomicData(data, false);
 
     if (!this.isCollaborative) {
       this.addProfile({ profileId: "lung", enabled: this.profiles.length < 6 ? true : false });

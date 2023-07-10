@@ -10,7 +10,6 @@ import {
   ListGroupItem,
   Modal,
 } from "react-bootstrap";
-import { toast } from "react-toastify";
 import { EModalType, IDataTypeMetaData } from "../ui/react-pathway-mapper";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
 
@@ -183,25 +182,23 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     }
   }
 
-  getSelectedStudiesCount(){
+  getSelectedStudiesCount() {
     let selectedStudiesCount = 0;
-    for (const study of Object.values(this.selectedStudies))
-    {
-         for( const dataTypeOfStudy of Object.values( study.dataTypes ) ){
-              selectedStudiesCount += dataTypeOfStudy.checked === true ? 1 : 0;
-         }
+    for (const study of Object.values(this.selectedStudies)) {
+      for (const dataTypeOfStudy of Object.values(study.dataTypes)) {
+        selectedStudiesCount += dataTypeOfStudy.checked === true ? 1 : 0;
+      }
     }
     return selectedStudiesCount;
   }
 
-  getCheckedDatas( dataTypes: { [dataType: string]: IDataTypeMetaData }){
+  getCheckedDatas(dataTypes: { [dataType: string]: IDataTypeMetaData }) {
     let checkedDatasCount = 0;
-         for( const dataTypee of Object.values( dataTypes ) ){
-              checkedDatasCount += dataTypee.checked === true ? 1 : 0;
-         }
+    for (const dataTypee of Object.values(dataTypes)) {
+      checkedDatasCount += dataTypee.checked === true ? 1 : 0;
+    }
     return checkedDatasCount;
   }
-
 
   fetchStudy() {
     this.portalAccessor.getDataTypes().forEach((dataType) => {
@@ -258,7 +255,6 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
   }
 
   render() {
-
     return (
       <Modal
         id="cbioPortalModal"
@@ -367,13 +363,19 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
               )}
             </ListGroup>
           </div>
-          <div style={{
-            marginTop: "10px"
-          }}>
-            <p style={{
-              textAlign: "left"
-            }}>
-              <b>Warning:</b> At most six different data sets will be overlayed on the genes. You can toggle which ones are to be displayed via "Alteration %" {">"} "View Settings" menu.
+          <div
+            style={{
+              marginTop: "10px",
+            }}
+          >
+            <p
+              style={{
+                textAlign: "left",
+              }}
+            >
+              <b>Warning:</b> At most six different data sets will be overlayed
+              on the genes. You can toggle which ones are to be displayed via
+              "Alteration %" {">"} "View Settings" menu.
             </p>
           </div>
           <Modal
