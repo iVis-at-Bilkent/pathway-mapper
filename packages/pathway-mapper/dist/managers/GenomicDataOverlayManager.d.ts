@@ -14,24 +14,15 @@ export default class GenomicDataOverlayManager {
     private colorScheme;
     constructor(cy: any);
     getEmptyGroupID(): number;
-    addGenomicDataLocally(genomicData: any, groupID: any): void;
-    preparePortalGenomicDataShareDB(genomicData: any): {
-        genomicDataMap: {};
-        visibilityMap: {};
-    };
+    addGenomicDataLocally(genomicData: any, groupID: any, isFromPortal: boolean, activeGroups?: any[]): void;
     addGenomicData(data: any): void;
     removeGenomicVisData(): void;
     addGenomicDataWithGeneSymbol(geneSymbol: any, data: any): void;
     addGenomicGroupData(groupID: any, data: any): void;
-    addPortalGenomicData(data: any, groupID: any, groupsToBeRendered?: any): void;
     clearAllGenomicData: () => void;
     removeGenomicData(): void;
     removeGenomicDataWithGeneSymbol(geneSymbol: any): void;
     addGenomicVisData(key: any, data: any): void;
-    prepareGenomicDataShareDB: (genomicData: any) => {
-        genomicDataMap: {};
-        visibilityMap: {};
-    };
     updateGenomicDataVisibility: (_key: any, isVisible: any) => void;
     hideGenomicData: () => void;
     countVisibleGenomicDataByType(): number;
@@ -42,7 +33,10 @@ export default class GenomicDataOverlayManager {
     showGenomicData(resizeNodeCallback?: (node: any) => void): void;
     generateHTMLContentForComparisonNodeTooltip(ele: any, groupsToBeRendered: any): JQuery<HTMLElement>;
     showGroupComparisonData(groupsToBeRendered: any[], resizeNodeCallback?: (node: any) => void): void;
-    parseGenomicData(genomicData: any, groupID: any): void;
+    prepareGenomicData: (genomicData: any, groupID: any, isCollaborative: boolean, isFromPortal: boolean) => {
+        genomicDataMap: any;
+        visibilityMap: any;
+    };
     registerObserver(observer: any): void;
     notifyObservers(): void;
     getAlterationCountForPatient(geneData: any): number;

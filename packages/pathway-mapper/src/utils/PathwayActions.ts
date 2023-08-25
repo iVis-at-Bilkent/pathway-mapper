@@ -1,9 +1,8 @@
 import autobind from "autobind-decorator";
 import { action, computed, makeObservable, observable } from "mobx";
-import { toast } from "react-toastify";
 import EditorActionsManager from "../managers/EditorActionsManager";
 import FileOperationsManager, {
-  IPathwayInfo
+  IPathwayInfo,
 } from "../managers/FileOperationsManager";
 import GridOptionsManager from "../managers/GridOptionsManager";
 import ViewOperationsManager from "../managers/ViewOperationsManager";
@@ -11,7 +10,9 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 import { EGridType } from "../modals/GridSettings";
 import { ILayoutProperties } from "../modals/LayoutProperties";
 import {
-  EModalType, IPathwayData, IProfileMetaData
+  EModalType,
+  IPathwayData,
+  IProfileMetaData,
 } from "../ui/react-pathway-mapper";
 import SaveLoadUtility from "./SaveLoadUtility";
 
@@ -37,7 +38,7 @@ export default class PathwayActions {
   @observable
   enabledType: EGridType;
 
-  private updatePathwayTitle :(string) => void;
+  private updatePathwayTitle: (string) => void;
 
   constructor(
     pathwayHandler: (pathwayName: string) => void,
@@ -74,9 +75,8 @@ export default class PathwayActions {
         const nodeType = node.data().type;
         if (queryGenes.includes(nodeName) && nodeType === "GENE") {
           node.style({ "border-width": "4px", "font-weight": "bold" });
-        }
-        else{
-          node.style({"border-width": "2px", "font-weight": "normal"});
+        } else {
+          node.style({ "border-width": "2px", "font-weight": "normal" });
         }
       });
   }
@@ -147,13 +147,13 @@ export default class PathwayActions {
         const linesOfData = request.responseText.split("\n");
         if (linesOfData.length > 0) {
           const profileIdsFromFile = linesOfData[0].split("\t").slice(1);
-          profileIdsFromFile.forEach(id =>
+          profileIdsFromFile.forEach((id) =>
             this.addProfile({ profileId: id, enabled: true })
           );
         } else {
           console.log("Error: No valid data");
         }
-        this.editor.addGenomicData(request.responseText);
+        this.editor.addGenomicData(request.responseText, false);
       }
     };
     request.open("POST", "/loadGraph");
@@ -225,7 +225,7 @@ export default class PathwayActions {
       this.editor.removeAllElements();
       this.fileManager.setPathwayInfo({
         pathwayTitle: "New Pathway",
-        pathwayDetails: ""
+        pathwayDetails: "",
       });
       //this.removeAllData()
       this.resetUndoStack();
@@ -240,9 +240,9 @@ export default class PathwayActions {
     }
   }
 
-changePathwayTitle(pathwayTitle : string){
-   this.updatePathwayTitle( pathwayTitle);
-}
+  changePathwayTitle(pathwayTitle: string) {
+    this.updatePathwayTitle(pathwayTitle);
+  }
 
   @autobind
   changePathway(pathwayName: string) {
@@ -317,12 +317,12 @@ changePathwayTitle(pathwayTitle : string){
       type: nodeType.toUpperCase(),
       name: "New " + nodeType,
       w: "150",
-      h: "52"
+      h: "52",
     };
     const extent = this.editor.cy.extent();
     const posData = {
       x: (extent.x1 + extent.x2) / 2,
-      y: (extent.y1 + extent.y2) / 2
+      y: (extent.y1 + extent.y2) / 2,
     };
 
     this.editor.addNode(nodeData, posData);
@@ -382,7 +382,7 @@ changePathwayTitle(pathwayTitle : string){
             this.editor.loadFile(pathwayData.nodes, pathwayData.edges);
             this.fileManager.setPathwayInfo({
               pathwayTitle: pathwayData.title,
-              pathwayDetails: pathwayData.description
+              pathwayDetails: pathwayData.description,
             });
           }
 
@@ -428,11 +428,10 @@ changePathwayTitle(pathwayTitle : string){
   }
 
   @autobind
-  exists(profileId: string){
-
+  exists(profileId: string) {
     let exists = false;
     this.profiles.forEach((profile: IProfileMetaData) => {
-      if(profile.profileId === profileId){
+      if (profile.profileId === profileId) {
         exists = true;
       }
     });
@@ -454,18 +453,30 @@ changePathwayTitle(pathwayTitle : string){
       "AKT3\t6\t-3\t20\n" +
       "\n";
 
-    if (this.exists("lung") || this.exists("ovarian") || this.exists("breast")) {
+    if (
+      this.exists("lung") ||
+      this.exists("ovarian") ||
+      this.exists("breast")
+    ) {
       return;
-    }    
+    }
 
-    this.editor.addGenomicData(data);
+    this.editor.addGenomicData(data, false);
 
     if (!this.isCollaborative) {
-      this.addProfile({ profileId: "lung", enabled: this.profiles.length < 6 ? true : false });
-      this.addProfile({ profileId: "ovarian", enabled: this.profiles.length < 6 ? true : false });
-      this.addProfile({ profileId: "breast", enabled: this.profiles.length < 6 ? true : false });
+      this.addProfile({
+        profileId: "lung",
+        enabled: this.profiles.length < 6 ? true : false,
+      });
+      this.addProfile({
+        profileId: "ovarian",
+        enabled: this.profiles.length < 6 ? true : false,
+      });
+      this.addProfile({
+        profileId: "breast",
+        enabled: this.profiles.length < 6 ? true : false,
+      });
     }
-    
   }
 
   @autobind

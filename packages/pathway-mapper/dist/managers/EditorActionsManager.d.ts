@@ -143,10 +143,9 @@ export default class EditorActionsManager {
     getGenomicDataSVG(node: any): any;
     getOncoprintDataSVG(node: any): any;
     removeGenomicData(): void;
-    addGenomicData(genomicData: any): void;
+    addGenomicData(genomicData: any, isFromPortal: boolean, groupID?: any, activeGroups?: any[]): void;
     adjustVisibilityShareDB(profileId: string, isEnabled: boolean): void;
     addToProfiles(profileId: string): void;
-    addPortalGenomicData(genomicData: any, groupID: any, activeGroups?: any[]): void;
     shareDBGenomicDataHandler(op: any): void;
     shareDBGenomicDataGroupChangeHandler(op: any): void;
     shareDBGenomicDataVisibilityHandler(op: any): void;

@@ -1,9 +1,11 @@
 import $ from "jquery";
-import { forEach } from "lodash";
 import { GeneticAlterationRuleSet, shapeToSvg } from "oncoprintjs";
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css"; // optional for styling
-import { groupComparisonData, IColorValueMap } from "../ui/react-pathway-mapper";
+import {
+  groupComparisonData,
+  IColorValueMap,
+} from "../ui/react-pathway-mapper";
 
 interface Color {
   r: number;
@@ -172,43 +174,62 @@ function genomicDataRectangleGenerator(
   }
 
   let colorString = "";
-  colorString = ( percent === undefined || percent[0] === '-' || Number(percent) > 100 )  ? "rgb(210,210,210)" : `rgb(${Math.round(color.r)}, ${Math.round(color.g )}, 
+  colorString =
+    percent === undefined || percent[0] === "-" || Number(percent) > 100
+      ? "rgb(210,210,210)"
+      : `rgb(${Math.round(color.r)}, ${Math.round(color.g)}, 
   ${Math.round(color.b)})`;
-   // Rectangle Part
-   const overlayRect = document.createElementNS(svgNameSpace, "rect");
-   overlayRect.setAttribute("x", x);
-   overlayRect.setAttribute("y", y);
-   overlayRect.setAttribute("width", w);
-   overlayRect.setAttribute("height", h);
-   if( groupColor !== undefined && percent !== undefined ){
-       overlayRect.setAttribute("style", "stroke-width:2;stroke:" + groupColor + ";" + "opacity:1;fill:" + colorString + ";" );
-       overlayRect.setAttribute("border-color", "#ffffff");
-   }
-   else {
-       overlayRect.setAttribute("style", "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";");
-   }
-   // Text Part
-   if (percent[0] === "-") {
-       percent = percent.substr(1);
-   }
-   const textPercent = percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
-   const text = Number(percent) > 100 ? "N/P" : textPercent + "%";
-   const fontSize = 14;
-   const textLength = text.length;
-   const xOffset = w / 2 - textLength * 4;
-   const yOffset = fontSize / 3;
-   const svgText = document.createElementNS(svgNameSpace, "text");
-   svgText.setAttribute("x", x + xOffset);
-   svgText.setAttribute("y", y + h / 2 + yOffset);
-   svgText.setAttribute("font-family", "Arial");
-   svgText.setAttribute("font-size", fontSize + "");
-   if( groupColor !== undefined && percent !== undefined && percent >= 0 && percent <= 100 ){
-       svgText.setAttribute("border-color", "red");
-   }
-   svgText.innerHTML = text;
-   parentSVG.appendChild(overlayRect);
-   if( percent != undefined && percent !== undefined )
-   parentSVG.appendChild(svgText);
+  // Rectangle Part
+  const overlayRect = document.createElementNS(svgNameSpace, "rect");
+  overlayRect.setAttribute("x", x);
+  overlayRect.setAttribute("y", y);
+  overlayRect.setAttribute("width", w);
+  overlayRect.setAttribute("height", h);
+  if (groupColor !== undefined && percent !== undefined) {
+    overlayRect.setAttribute(
+      "style",
+      "stroke-width:2;stroke:" +
+        groupColor +
+        ";" +
+        "opacity:1;fill:" +
+        colorString +
+        ";"
+    );
+    overlayRect.setAttribute("border-color", "#ffffff");
+  } else {
+    overlayRect.setAttribute(
+      "style",
+      "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";"
+    );
+  }
+  // Text Part
+  if (percent[0] === "-") {
+    percent = percent.substr(1);
+  }
+  const textPercent =
+    percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
+  const text = Number(percent) > 100 ? "N/P" : textPercent + "%";
+  const fontSize = 14;
+  const textLength = text.length;
+  const xOffset = w / 2 - textLength * 4;
+  const yOffset = fontSize / 3;
+  const svgText = document.createElementNS(svgNameSpace, "text");
+  svgText.setAttribute("x", x + xOffset);
+  svgText.setAttribute("y", y + h / 2 + yOffset);
+  svgText.setAttribute("font-family", "Arial");
+  svgText.setAttribute("font-size", fontSize + "");
+  if (
+    groupColor !== undefined &&
+    percent !== undefined &&
+    percent >= 0 &&
+    percent <= 100
+  ) {
+    svgText.setAttribute("border-color", "red");
+  }
+  svgText.innerHTML = text;
+  parentSVG.appendChild(overlayRect);
+  if (percent != undefined && percent !== undefined)
+    parentSVG.appendChild(svgText);
 }
 
 export default class GenomicDataOverlayManager {
@@ -246,29 +267,28 @@ export default class GenomicDataOverlayManager {
     return oldCount;
   }
 
-  addGenomicDataLocally(genomicData, groupID) {
-    this.parseGenomicData(genomicData, groupID);
-    this.showGenomicData();
-    this.notifyObservers();
-  }
+  addGenomicDataLocally(
+    genomicData: any,
+    groupID: any,
+    isFromPortal: boolean,
+    activeGroups?: any[]
+  ) {
+    this.prepareGenomicData(genomicData, groupID, false, isFromPortal);
 
-  preparePortalGenomicDataShareDB(genomicData) {
-    const geneMap = {};
-    const visMap = {};
-
-    for (const cancerKey in genomicData) {
-      for (const geneSymbol in genomicData[cancerKey]) {
-        geneMap[geneSymbol] = {};
-        geneMap[geneSymbol][cancerKey] = genomicData[cancerKey][geneSymbol];
+    if (isFromPortal) {
+      if (genomicData["PatientView"] == 1) {
+        this.patientData = genomicData;
+        this.showPatientData();
+      } else if (activeGroups !== undefined) {
+        this.showGroupComparisonData(activeGroups);
+      } else {
+        this.showGenomicData();
       }
-
-      visMap[cancerKey] = true;
+    } else {
+      this.showGenomicData();
     }
 
-    return {
-      genomicDataMap: geneMap,
-      visibilityMap: visMap,
-    };
+    this.notifyObservers();
   }
 
   addGenomicData(data) {
@@ -285,45 +305,6 @@ export default class GenomicDataOverlayManager {
 
   addGenomicGroupData(groupID, data) {
     this.groupedGenomicDataMap[groupID] = data;
-  }
-
-  addPortalGenomicData(data, groupID, groupsToBeRendered?) {
-
-    this.groupComparisonData = data;
-    for (const cancerStudy of Object.keys(data)) {
-      this.visibleGenomicDataMapByType[cancerStudy] = true;
-      // Group current cancer study according to the groupID
-      if (this.groupedGenomicDataMap[groupID] === undefined) {
-        this.groupedGenomicDataMap[groupID] = [];
-      }
-
-      this.groupedGenomicDataMap[groupID].push(cancerStudy);
-
-      var cancerData = data[cancerStudy];
-
-      for (const geneSymbol of Object.keys(cancerData)) {
-        if (this.genomicDataMap[geneSymbol] === undefined)
-          this.genomicDataMap[geneSymbol] = {};
-
-        this.genomicDataMap[geneSymbol][cancerStudy] = data[cancerStudy][
-          geneSymbol
-        ].toFixed
-          ? data[cancerStudy][geneSymbol].toFixed(2)
-          : data[cancerStudy][geneSymbol];
-      }
-    }
-    //This parameter is used as flag for PatientView PathwayMapper Functions
-    if (data["PatientView"] == 1) {
-      this.patientData = data;
-      this.showPatientData();
-    }
-    else if( groupsToBeRendered !== undefined){
-      this.showGroupComparisonData(groupsToBeRendered);
-    } 
-    else {
-      this.showGenomicData();
-    }
-    this.notifyObservers();
   }
 
   clearAllGenomicData = function() {
@@ -345,57 +326,6 @@ export default class GenomicDataOverlayManager {
     this.visibleGenomicDataMapByType[key] = data;
   }
 
-  prepareGenomicDataShareDB = function(genomicData) {
-    const genomicDataMap = {};
-    const cancerTypes = [];
-    const visibleGenomicDataMapByType = {};
-
-    // By lines
-    const lines = genomicData.split("\n");
-    // First line is meta data !
-    const metaLineColumns = lines[0].split("\t");
-
-    // Parse cancer types
-    for (let i = 1; i < metaLineColumns.length; i++) {
-      cancerTypes.push(metaLineColumns[i]);
-      // Update initially visible genomic data boxes !
-      if (i - 1 < this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT) {
-        visibleGenomicDataMapByType[cancerTypes[i - 1]] = true;
-      } else {
-        visibleGenomicDataMapByType[cancerTypes[i - 1]] = false;
-      }
-    }
-
-    // parse genomic data
-    for (let i = 1; i < lines.length; i++) {
-      // EOF check
-      if (lines[i].length === 0) {
-        break;
-      }
-
-      // Split each line by tab and parse genomic data content
-      const lineContent = lines[i].split("\t");
-      const geneSymbol = lineContent[0];
-
-      // If current gene entry is not  in genomic data map create new hashmap entry
-      if (!(geneSymbol in genomicDataMap)) {
-        genomicDataMap[geneSymbol] = {};
-      }
-
-      // Add each entry of genomic data
-      for (let j = 1; j < lineContent.length; j++) {
-        genomicDataMap[geneSymbol][cancerTypes[j - 1]] = lineContent[j];
-      }
-    }
-
-    const returnObj = {
-      genomicDataMap: genomicDataMap,
-      visibilityMap: visibleGenomicDataMapByType,
-    };
-
-    return returnObj;
-  };
-
   updateGenomicDataVisibility = function(_key, isVisible) {
     if (_key in this.visibleGenomicDataMapByType) {
       this.visibleGenomicDataMapByType[_key] = isVisible;
@@ -403,10 +333,9 @@ export default class GenomicDataOverlayManager {
   };
 
   hideGenomicData = function() {
-
-    this.cy.nodes('[type="GENE"]').forEach(node => {
-      node.data('w', this.getRequiredWidthForGenomicData(0));
-    })
+    this.cy.nodes('[type="GENE"]').forEach((node) => {
+      node.data("w", this.getRequiredWidthForGenomicData(0));
+    });
 
     this.cy
       .style()
@@ -463,49 +392,51 @@ export default class GenomicDataOverlayManager {
       y: eleBBox.h / 2 + overlayRecBoxH / 2 - 18,
     };
 
-    const genomicFrequencyData = this.genomicDataMap[nodeLabel];
-
     let maxGenomicDataBoxCount = /*(genomicDataBoxCount > 3) ? 3:*/ genomicDataBoxCount;
     let genomicBoxCounter = 0;
 
     for (let i in this.groupedGenomicDataMap) {
       for (let j in this.groupedGenomicDataMap[i]) {
-        const cancerType = this.groupedGenomicDataMap[i][j];
-        if (!this.visibleGenomicDataMapByType[cancerType]) {
+        if (
+          !this.visibleGenomicDataMapByType[this.groupedGenomicDataMap[i][j]]
+        ) {
           continue;
         }
-
-          genomicDataRectangleGenerator(
-            overLayRectBBox.x +
-              (genomicBoxCounter * overLayRectBBox.w) / maxGenomicDataBoxCount,
-            overLayRectBBox.y,
-            overLayRectBBox.w / maxGenomicDataBoxCount,
-            overLayRectBBox.h,
-            genomicFrequencyData[cancerType] !== undefined ? genomicFrequencyData[cancerType] : null,
-            svg,
-            this.colorScheme
-          );
+        if (!this.genomicDataMap[nodeLabel][this.groupedGenomicDataMap[i][j]]) {
+          this.genomicDataMap[nodeLabel][this.groupedGenomicDataMap[i][j]] =
+            "0.00";
+        }
+        genomicDataRectangleGenerator(
+          overLayRectBBox.x +
+            (genomicBoxCounter * overLayRectBBox.w) / maxGenomicDataBoxCount,
+          overLayRectBBox.y,
+          overLayRectBBox.w / maxGenomicDataBoxCount,
+          overLayRectBBox.h,
+          this.genomicDataMap[nodeLabel][this.groupedGenomicDataMap[i][j]],
+          svg,
+          this.colorScheme
+        );
 
         genomicBoxCounter++;
       }
-    }    
+    }
     return svg;
   }
-  generateSVGForGroupComparisonNode(ele, groupsToBeRendered? ) {
-    const genomicDataBoxCount = 0;
-
+  generateSVGForGroupComparisonNode(ele, groupsToBeRendered?) {
     // Experimental data overlay part !
     const dataURI = "data:image/svg+xml;utf8,";
     const svgNameSpace = "http://www.w3.org/2000/svg";
 
     const nodeLabel = ele.data("name");
     // If there is no genomic data for this node return !
-    if (!(Object.keys(this.groupComparisonData).includes(nodeLabel) )) {
+    if (!Object.keys(this.groupComparisonData).includes(nodeLabel)) {
       return dataURI;
     }
 
     const eleBBox = ele.boundingBox();
-    const reqWidth = this.getRequiredWidthForGenomicData(groupsToBeRendered.length);
+    const reqWidth = this.getRequiredWidthForGenomicData(
+      groupsToBeRendered.length
+    );
     const overlayRecBoxW = reqWidth - 10;
     const overlayRecBoxH = 25;
     const svg: any = document.createElementNS(svgNameSpace, "svg");
@@ -514,7 +445,7 @@ export default class GenomicDataOverlayManager {
     svg.setAttribute("height", eleBBox.h);
     // This is important you need to include this to succesfully render in cytoscape.js!
     svg.setAttribute("xmlns", svgNameSpace);
-    ele.style("width", reqWidth + 10 );
+    ele.style("width", reqWidth + 10);
 
     // Overlay Data Rect
     const overLayRectBBox = {
@@ -524,47 +455,29 @@ export default class GenomicDataOverlayManager {
       y: eleBBox.h / 2 + overlayRecBoxH / 2 - 18,
     };
 
-
     let maxGenomicDataBoxCount = groupsToBeRendered.length;
     let genomicBoxCounter = 0;
 
-  /*  for (let i in this.groupComparisonData) {
-         if( i !== nodeLabel)
-             continue;*/
-      let i = nodeLabel;
-      for (let j in this.groupComparisonData[i]) {
-        const percentageInGroup = this.groupComparisonData[i][j];
-        if (percentageInGroup !== undefined && i === nodeLabel) {
-          genomicDataRectangleGenerator(
-            overLayRectBBox.x +
-              (genomicBoxCounter * overLayRectBBox.w) / maxGenomicDataBoxCount,
-            overLayRectBBox.y,
-            (overLayRectBBox.w  ) / maxGenomicDataBoxCount - 2,
-            overLayRectBBox.h,
-            percentageInGroup,
-            svg,
-            this.colorScheme,
-            groupsToBeRendered[genomicBoxCounter].color
-          );
-          genomicBoxCounter++;
-        } else if( i === nodeLabel ){
-          genomicDataRectangleGenerator(
-            overLayRectBBox.x +
+    let i = nodeLabel;
+    for (let j in this.groupComparisonData[i]) {
+      if (!this.groupComparisonData[i][j]) {
+        this.groupComparisonData[i][j] = 0;
+      }
+      if (i === nodeLabel) {
+        genomicDataRectangleGenerator(
+          overLayRectBBox.x +
             (genomicBoxCounter * overLayRectBBox.w) / maxGenomicDataBoxCount,
           overLayRectBBox.y,
-          (overLayRectBBox.w  ) / maxGenomicDataBoxCount - 4,
+          overLayRectBBox.w / maxGenomicDataBoxCount - 2,
           overLayRectBBox.h,
-          0,
+          this.groupComparisonData[i][j],
           svg,
           this.colorScheme,
           groupsToBeRendered[genomicBoxCounter].color
-          );
-          genomicBoxCounter++;
-        }
-        
-
-       
+        );
+        genomicBoxCounter++;
       }
+    }
     return svg;
   }
 
@@ -589,8 +502,8 @@ export default class GenomicDataOverlayManager {
       return;
     }
 
-    this.cy.nodes('[type="GENE"]').forEach(node => {
-      node.data('w', this.getRequiredWidthForGenomicData(genomicDataBoxCount));
+    this.cy.nodes('[type="GENE"]').forEach((node) => {
+      node.data("w", this.getRequiredWidthForGenomicData(genomicDataBoxCount));
       if (resizeNodeCallback) {
         resizeNodeCallback(node);
       }
@@ -624,10 +537,10 @@ export default class GenomicDataOverlayManager {
     const tooltipMaxHeight = "200px";
     const tooltipMaxWidth = "200px";
     const marginBetweenSamples = "12px";
-  
+
     const nodeLabel = ele.data("name");
     const data = this.groupComparisonData[nodeLabel];
-  
+
     // Outer wrapper for the entire tooltip
     let wrapper = $("<div></div>");
     wrapper.css({
@@ -635,57 +548,69 @@ export default class GenomicDataOverlayManager {
       "max-height": tooltipMaxHeight,
       "word-wrap": "break-word",
       "overflow-y": "auto",
-      "font-size" : "12px",
+      "font-size": "12px",
     });
 
     // Inner wrapper for a single sample
     let sampleWrapper = $("<div></div>");
     sampleWrapper.css({
-    "margin-top": 0,
+      "margin-top": 0,
     });
     let counter = 0;
-    for ( let j in data ){
-        let sampleWrapper2 = $("<div></div>");
-        sampleWrapper2.css({
-          "margin-top": 0,
-        });
-        let sampleWrapper = $("<div></div>");
-        sampleWrapper.css({
-          "margin-top": 0
-          //"display" : "inline-flex"
-        });
-        let sampleWrapperSquare = $("<div></div>");
-        sampleWrapperSquare.css({
-          "height": "12px",
-          "width": "12px",
-          "background-color": groupsToBeRendered[counter].color,
-        });
+    for (let j in data) {
+      let sampleWrapper2 = $("<div></div>");
+      sampleWrapper2.css({
+        "margin-top": 0,
+      });
+      let sampleWrapper = $("<div></div>");
+      sampleWrapper.css({
+        "margin-top": 0,
+        //"display" : "inline-flex"
+      });
+      let sampleWrapperSquare = $("<div></div>");
+      sampleWrapperSquare.css({
+        height: "12px",
+        width: "12px",
+        "background-color": groupsToBeRendered[counter].color,
+      });
 
-        counter++;
-        sampleWrapper.append(
+      counter++;
+      sampleWrapper.append(
         $(
-        "<div style = 'display:inline-flex;font-size: 15px'>" +  "<div style = 'color:" + groupsToBeRendered[counter-1].color + ";font-size: 15px'>" + "&#9632" + "</div>" 
-        + "&nbsp" + j + ": " +  data[j].toFixed(1)
-        + "</div>"      
-        ));
-        sampleWrapper2.append(sampleWrapper);
-        wrapper.append(sampleWrapper);
-      }
+          "<div style = 'display:inline-flex;font-size: 15px'>" +
+            "<div style = 'color:" +
+            groupsToBeRendered[counter - 1].color +
+            ";font-size: 15px'>" +
+            "&#9632" +
+            "</div>" +
+            "&nbsp" +
+            j +
+            ": " +
+            data[j].toFixed(1) +
+            "</div>"
+        )
+      );
+      sampleWrapper2.append(sampleWrapper);
+      wrapper.append(sampleWrapper);
+    }
     return wrapper;
   }
 
-  showGroupComparisonData(groupsToBeRendered : any[],resizeNodeCallback?: (node: any) => void,  ) {
+  showGroupComparisonData(
+    groupsToBeRendered: any[],
+    resizeNodeCallback?: (node: any) => void
+  ) {
     const self = this;
     const data = this.groupComparisonData;
     const genomicDataBoxCount = 0;
-      if (genomicDataBoxCount < 1) {
+    if (genomicDataBoxCount < 1) {
       // Hide all genomic data and return
       //this.hideGenomicData();
       //return;
     }
 
-    this.cy.nodes().forEach(node => {
-      node.data('w', 1000);
+    this.cy.nodes().forEach((node) => {
+      node.data("w", 1000);
       if (resizeNodeCallback) {
         resizeNodeCallback(node);
       }
@@ -697,15 +622,18 @@ export default class GenomicDataOverlayManager {
       .style("text-margin-y", function(ele) {
         const nodeLabel = ele.data("name");
         // If there is no genomic data for this node return !
-        if ( !(Object.keys(self.groupComparisonData).includes(nodeLabel))) {
+        if (!Object.keys(self.groupComparisonData).includes(nodeLabel)) {
           return 0;
         }
-        
+
         // Else shift label in Y axis
         return -15;
       })
       .style("background-image", function(ele) {
-        const x = encodeURIComponent(self.generateSVGForGroupComparisonNode(ele,groupsToBeRendered).outerHTML);
+        const x = encodeURIComponent(
+          self.generateSVGForGroupComparisonNode(ele, groupsToBeRendered)
+            .outerHTML
+        );
         if (x === "undefined") {
           return "none";
         }
@@ -735,7 +663,11 @@ export default class GenomicDataOverlayManager {
         // your own custom props
         // content prop can be used when the target is a single element https://atomiks.github.io/tippyjs/v6/constructor/#prop
         content: () => {
-          let content = self.generateHTMLContentForComparisonNodeTooltip(node, groupsToBeRendered)
+          let content = self
+            .generateHTMLContentForComparisonNodeTooltip(
+              node,
+              groupsToBeRendered
+            )
             .get(0);
 
           return content;
@@ -760,56 +692,111 @@ export default class GenomicDataOverlayManager {
     });
   }
 
-  parseGenomicData(genomicData, groupID) {
-    this.genomicDataMap = this.genomicDataMap || {};
-    this.visibleGenomicDataMapByType = this.visibleGenomicDataMapByType || {};
-    this.groupedGenomicDataMap = this.groupedGenomicDataMap || {};
-    const cancerTypes = [];
-
-    // By lines
-    const lines = genomicData.split("\n");
-    // First line is meta data !
-    const metaLineColumns = lines[0].split("\t");
-
-    // Parse cancer types
-    for (let i = 1; i < metaLineColumns.length; i++) {
-      cancerTypes.push(metaLineColumns[i]);
-      const visibleGenomicDataCount = Object.keys(this.visibleGenomicDataMapByType).length;
-      // Update initially visible genomic data boxes !
-      if (visibleGenomicDataCount < this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT) {
-        this.visibleGenomicDataMapByType[cancerTypes[i - 1]] = true;
-      } else {
-        this.visibleGenomicDataMapByType[cancerTypes[i - 1]] = false;
-      }
-
-      if (this.groupedGenomicDataMap[groupID] === undefined) {
-        this.groupedGenomicDataMap[groupID] = [];
-      }
-      this.groupedGenomicDataMap[groupID].push(cancerTypes[i - 1]);
+  prepareGenomicData = function(
+    genomicData: any,
+    groupID: any,
+    isCollaborative: boolean,
+    isFromPortal: boolean
+  ) {
+    if (isCollaborative) {
+      this.genomicDataMap = {};
+      this.visibleGenomicDataMapByType = {};
+    } else {
+      this.genomicDataMap = this.genomicDataMap || {};
+      this.visibleGenomicDataMapByType = this.visibleGenomicDataMapByType || {};
     }
 
-    // parse genomic data
-    for (let i = 1; i < lines.length; i++) {
-      // EOF check
-      if (lines[i].length === 0) {
-        break;
+    if (isFromPortal) {
+      if (!isCollaborative) {
+        this.groupComparisonData = genomicData;
       }
 
-      // Split each line by tab and parse genomic data content
-      const lineContent = lines[i].split("\t");
-      const geneSymbol = lineContent[0];
+      for (const cancerStudy in genomicData) {
+        if (!isCollaborative) {
+          if (this.groupedGenomicDataMap[groupID] === undefined) {
+            this.groupedGenomicDataMap[groupID] = [];
+          }
 
-      // If current gene entry is not  in genomic data map create new map
-      if (!(geneSymbol in this.genomicDataMap)) {
-        this.genomicDataMap[geneSymbol] = {};
+          this.groupedGenomicDataMap[groupID].push(cancerStudy);
+        }
+
+        this.visibleGenomicDataMapByType[cancerStudy] = true;
+
+        for (const geneSymbol in genomicData[cancerStudy]) {
+          if (!isCollaborative) {
+            if (this.genomicDataMap[geneSymbol] === undefined) {
+              this.genomicDataMap[geneSymbol] = {};
+            }
+
+            this.genomicDataMap[geneSymbol][cancerStudy] = genomicData[
+              cancerStudy
+            ][geneSymbol].toFixed
+              ? genomicData[cancerStudy][geneSymbol].toFixed(2)
+              : genomicData[cancerStudy][geneSymbol];
+          } else {
+            this.genomicDataMap[geneSymbol] = {};
+            this.genomicDataMap[geneSymbol][cancerStudy] =
+              genomicData[cancerStudy][geneSymbol];
+          }
+        }
+      }
+    } else {
+      this.groupedGenomicDataMap = this.groupedGenomicDataMap || {};
+      const cancerTypes = [];
+
+      const lines = genomicData.split("\n");
+      // First line is meta data!
+      const metaLineColumns = lines[0].split("\t");
+
+      // Parse cancer types
+      for (let i = 1; i < metaLineColumns.length; i++) {
+        cancerTypes.push(metaLineColumns[i]);
+        const visibleGenomicDataCount = isCollaborative
+          ? i - 1
+          : Object.keys(this.visibleGenomicDataMapByType).length;
+        // Update initially visible genomic data boxes!
+        if (visibleGenomicDataCount < this.DEFAULT_VISIBLE_GENOMIC_DATA_COUNT) {
+          this.visibleGenomicDataMapByType[cancerTypes[i - 1]] = true;
+        } else {
+          this.visibleGenomicDataMapByType[cancerTypes[i - 1]] = false;
+        }
+
+        if (!isCollaborative) {
+          if (this.groupedGenomicDataMap[groupID] === undefined) {
+            this.groupedGenomicDataMap[groupID] = [];
+          }
+          this.groupedGenomicDataMap[groupID].push(cancerTypes[i - 1]);
+        }
       }
 
-      // Add each entry of genomic data
-      for (let j = 1; j < lineContent.length; j++) {
-        this.genomicDataMap[geneSymbol][cancerTypes[j - 1]] = lineContent[j];
+      // parse genomic data
+      for (let i = 1; i < lines.length; i++) {
+        // EOF check
+        if (lines[i].length === 0) {
+          break;
+        }
+
+        // Split each line by tab and parse genomic data content
+        const lineContent = lines[i].split("\t");
+        const geneSymbol = lineContent[0];
+
+        // If current gene entry is not  in genomic data map create new map
+        if (!(geneSymbol in this.genomicDataMap)) {
+          this.genomicDataMap[geneSymbol] = {};
+        }
+
+        // Add each entry of genomic data
+        for (let j = 1; j < lineContent.length; j++) {
+          this.genomicDataMap[geneSymbol][cancerTypes[j - 1]] = lineContent[j];
+        }
       }
     }
-  }
+
+    return {
+      genomicDataMap: this.genomicDataMap,
+      visibilityMap: this.visibleGenomicDataMapByType,
+    };
+  };
 
   // Simple observer-observable pattern for views!!!!!
   registerObserver(observer) {
