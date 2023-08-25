@@ -1,5 +1,4 @@
-import _, { add } from "lodash";
-import { toast, ToastContainer } from "react-toastify";
+import _ from "lodash";
 import { ChatMessageMetaData, IColorValueMap } from "../ui/react-pathway-mapper";
 import GraphUtilities from "../utils/GraphUtilities";
 import EditorActionsManager from "./EditorActionsManager";
@@ -204,6 +203,9 @@ export default class ShareDBManager {
     initShareDB() {
         sharedb = require('sharedb/lib/client');
         socket = new WebSocket('ws://' + window.location.host);
+        if (window.location.protocol === 'https:') {
+            socket = socket.replace('ws:', 'wss:');
+        }
         connection = new sharedb.Connection(socket);
 
         var self = this;
