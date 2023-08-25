@@ -5447,7 +5447,7 @@ cytoscape-navigator@^1.3.3:
   version "3.2.1"
   resolved "https://codeload.github.com/iVis-at-Bilkent/cytoscape.js-node-editing/tar.gz/2ea4f63a0da8f13b5e7462d2380e48964d9c042f"
 
-cytoscape-panzoom@~2.5.3:
+cytoscape-panzoom@~2.5.2:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/cytoscape-panzoom/-/cytoscape-panzoom-2.5.3.tgz#edf041b5aa8be1cbe3c001f16a8b2193b46127a7"
   integrity sha512-//qLOqbbFUCGddarNKHDZArItOJHgnkQ1TvxI9nV2/8aOOl/5wuEOHmra3fL/aWSjB4AYpYTG4LX7w96uWfRTQ==

@@ -33,7 +33,7 @@ export default class GenomicDataOverlayManager {
     showGenomicData(resizeNodeCallback?: (node: any) => void): void;
     generateHTMLContentForComparisonNodeTooltip(ele: any, groupsToBeRendered: any): JQuery<HTMLElement>;
     showGroupComparisonData(groupsToBeRendered: any[], resizeNodeCallback?: (node: any) => void): void;
-    parseGenomicData: (genomicData: any, groupID: any, isCollaborative: boolean, isFromPortal: boolean) => {
+    prepareGenomicData: (genomicData: any, groupID: any, isCollaborative: boolean, isFromPortal: boolean) => {
         genomicDataMap: any;
         visibilityMap: any;
     };

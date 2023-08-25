@@ -366,28 +366,27 @@ export default class GenomicDataOverlayManager {
       y: eleBBox.h / 2 + overlayRecBoxH / 2 - 18,
     };
 
-    const genomicFrequencyData = this.genomicDataMap[nodeLabel];
-
     let maxGenomicDataBoxCount = /*(genomicDataBoxCount > 3) ? 3:*/ genomicDataBoxCount;
     let genomicBoxCounter = 0;
 
     for (let i in this.groupedGenomicDataMap) {
       for (let j in this.groupedGenomicDataMap[i]) {
-        const cancerType = this.groupedGenomicDataMap[i][j];
-        if (!this.visibleGenomicDataMapByType[cancerType]) {
+        if (!this.visibleGenomicDataMapByType[this.groupedGenomicDataMap[i][j]]) {
           continue;
         }
-
-          genomicDataRectangleGenerator(
-            overLayRectBBox.x +
-              (genomicBoxCounter * overLayRectBBox.w) / maxGenomicDataBoxCount,
-            overLayRectBBox.y,
-            overLayRectBBox.w / maxGenomicDataBoxCount,
-            overLayRectBBox.h,
-            genomicFrequencyData[cancerType] !== undefined ? genomicFrequencyData[cancerType] : null,
-            svg,
-            this.colorScheme
-          );
+        if (!this.genomicDataMap[nodeLabel][this.groupedGenomicDataMap[i][j]]) {
+          this.genomicDataMap[nodeLabel][this.groupedGenomicDataMap[i][j]] = "0.00";
+        }
+        genomicDataRectangleGenerator(
+          overLayRectBBox.x +
+            (genomicBoxCounter * overLayRectBBox.w) / maxGenomicDataBoxCount,
+          overLayRectBBox.y,
+          overLayRectBBox.w / maxGenomicDataBoxCount,
+          overLayRectBBox.h,
+          this.genomicDataMap[nodeLabel][this.groupedGenomicDataMap[i][j]],
+          svg,
+          this.colorScheme
+        );
 
         genomicBoxCounter++;
       }
@@ -395,8 +394,6 @@ export default class GenomicDataOverlayManager {
     return svg;
   }
   generateSVGForGroupComparisonNode(ele, groupsToBeRendered? ) {
-    const genomicDataBoxCount = 0;
-
     // Experimental data overlay part !
     const dataURI = "data:image/svg+xml;utf8,";
     const svgNameSpace = "http://www.w3.org/2000/svg";
@@ -431,42 +428,25 @@ export default class GenomicDataOverlayManager {
     let maxGenomicDataBoxCount = groupsToBeRendered.length;
     let genomicBoxCounter = 0;
 
-  /*  for (let i in this.groupComparisonData) {
-         if( i !== nodeLabel)
-             continue;*/
       let i = nodeLabel;
       for (let j in this.groupComparisonData[i]) {
-        const percentageInGroup = this.groupComparisonData[i][j];
-        if (percentageInGroup !== undefined && i === nodeLabel) {
+        if (!this.groupComparisonData[i][j]) {
+          this.groupComparisonData[i][j] = 0;
+        }
+        if (i === nodeLabel) {
           genomicDataRectangleGenerator(
             overLayRectBBox.x +
               (genomicBoxCounter * overLayRectBBox.w) / maxGenomicDataBoxCount,
             overLayRectBBox.y,
             (overLayRectBBox.w  ) / maxGenomicDataBoxCount - 2,
             overLayRectBBox.h,
-            percentageInGroup,
+            this.groupComparisonData[i][j],
             svg,
             this.colorScheme,
             groupsToBeRendered[genomicBoxCounter].color
           );
           genomicBoxCounter++;
-        } else if( i === nodeLabel ){
-          genomicDataRectangleGenerator(
-            overLayRectBBox.x +
-            (genomicBoxCounter * overLayRectBBox.w) / maxGenomicDataBoxCount,
-          overLayRectBBox.y,
-          (overLayRectBBox.w  ) / maxGenomicDataBoxCount - 4,
-          overLayRectBBox.h,
-          0,
-          svg,
-          this.colorScheme,
-          groupsToBeRendered[genomicBoxCounter].color
-          );
-          genomicBoxCounter++;
         }
-        
-
-       
       }
     return svg;
   }
