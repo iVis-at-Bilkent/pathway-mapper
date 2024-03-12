@@ -1,6 +1,7 @@
 import React from "react";
 import { IDataTypeMetaData } from "../ui/react-pathway-mapper";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
+import { CancerStudy } from "cbioportal-ts-api-client";
 interface IStudyModalProps {
     show: boolean;
     loadFromCBio: Function;
@@ -13,7 +14,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     dataTypeFetchResultsReady: boolean;
     currentlySelectedItemIndex: number;
     selectedStudies: {
-        data: any[];
+        data: CancerStudy;
         dataTypes: {
             [dataType: string]: IDataTypeMetaData;
         };
@@ -22,28 +23,28 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
         bottom: number;
     };
     selectedDataTypesPerStudy: string[];
-    itemArray: any[];
+    cancerStudies: CancerStudy[];
     searchQuery: string;
     showDataTypeSelectionModal: boolean;
     studyListItemCheckboxChecked: boolean[];
-    selectedStudyData: any[];
+    selectedStudyData: CancerStudy | undefined;
     portalAccessor: CBioPortalAccessor;
     constructor(props: IStudyModalProps);
     setDataTypeFetchResultsReady(ready: boolean): void;
-    setItemArray(itemArray: any[]): void;
+    setCancerStudies(itemArray: CancerStudy[]): void;
     setSearchQuery(query: string): void;
-    setSelectedStudyData(data: any[]): void;
+    setSelectedStudyData(data: CancerStudy): void;
     setDataTypeProperties(dataType: string, properties: IDataTypeMetaData): void;
     initStudyListItemCheckboxChecked(studyCount: number): void;
     initSelectedDataTypesPerStudy(studyCount: number): void;
     toggleStudyListItemCheckboxChecked(studyIndex: number): void;
     addSelectedStudy(selectedStudy: {
-        data: any[];
+        data: CancerStudy;
         dataTypes: {
             [dataType: string]: IDataTypeMetaData;
         };
     }): void;
-    removeSelectedStudy(selectedStudyData: any[]): void;
+    removeSelectedStudy(selectedStudyData: CancerStudy): void;
     clearSelectedStudies(): void;
     setShowDataTypeSelectionModal(show: boolean): void;
     clearStudyCheckboxesChecked(): void;
@@ -51,10 +52,14 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     unselectDataTypesForStudy(index: number): void;
     preparePortalAccess(studyId: string): void;
     disableAllDataTypes(): void;
+    getSelectedStudiesCount(): number;
+    getCheckedDatas(dataTypes: {
+        [dataType: string]: IDataTypeMetaData;
+    }): number;
     fetchStudy(): void;
     resetModal(): void;
     handleCheckboxClick(dataType: any): void;
-    get selectedStudyDataTitle(): any;
+    get selectedStudyDataTitle(): string;
     render(): JSX.Element;
 }
 export {};
