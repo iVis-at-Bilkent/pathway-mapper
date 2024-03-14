@@ -133,30 +133,27 @@ export default class CBioPortalAccessor{
     
       const sampleListId = studyId + "_sequenced";
       this.cBioPortalAPIClient.getSampleListUsingGET({sampleListId: sampleListId})
-      .then( data => {
-        const sampleCount = data.sampleCount;
-        this.cBioPortalAPIClient.fetchGenesUsingPOST({geneIdType : "HUGO_GENE_SYMBOL", projection : "SUMMARY", geneIds : geneList})
-      .then( genes => {
-          const entrezGeneIds = genes.map(gene => gene.entrezGeneId);
-          const entrezGeneIdToGene = _.keyBy(genes, g => g.entrezGeneId)
-          const molecularProfileType = CBioPortalAccessor.getDataType(molecularProfileId);
-          if( molecularProfileType === CBioPortalAccessor.GENE_EXPRESSION){
-              this.cBioPortalAPIClient.fetchAllMolecularDataInMolecularProfileUsingPOST({molecularProfileId: molecularProfileId, molecularDataFilter: {entrezGeneIds, sampleListId} as MolecularDataFilter})
-             .then( data => self.calcExpressionAlterationPercentages( data, molecularProfileId,entrezGeneIdToGene, sampleCount, callbackFunction));
-          }
-          else if( molecularProfileType === CBioPortalAccessor.CNA){
-            this.cBioPortalAPIClient.fetchDiscreteCopyNumbersInMolecularProfileUsingPOST({molecularProfileId: molecularProfileId, discreteCopyNumberFilter: {entrezGeneIds, sampleListId} as DiscreteCopyNumberFilter})
-            .then( data => self.calcCNAAlterationPercentages(data, molecularProfileId, entrezGeneIdToGene, sampleCount, callbackFunction ));
-
-          }
-          else if( molecularProfileType === CBioPortalAccessor.MUTATION){
-             this.cBioPortalAPIClient.fetchMutationsInMolecularProfileUsingPOST( {molecularProfileId: molecularProfileId, projection : "ID", mutationFilter: {entrezGeneIds, sampleListId} as MutationFilter})
-             .then( data => self.calcMutationPercentages( data, molecularProfileId, entrezGeneIdToGene, sampleCount, callbackFunction ));
-            }
-
-
-          
-    } );
+       .then( data => {
+          const sampleCount = data.sampleCount;
+          this.cBioPortalAPIClient.fetchGenesUsingPOST({geneIdType : "HUGO_GENE_SYMBOL", projection : "SUMMARY", geneIds : geneList})
+             .then( genes => {
+                const entrezGeneIds = genes.map(gene => gene.entrezGeneId);
+                const entrezGeneIdToGene = _.keyBy(genes, g => g.entrezGeneId)
+                const molecularProfileType = CBioPortalAccessor.getDataType(molecularProfileId);
+                if( molecularProfileType === CBioPortalAccessor.GENE_EXPRESSION){
+                    this.cBioPortalAPIClient.fetchAllMolecularDataInMolecularProfileUsingPOST({molecularProfileId: molecularProfileId, molecularDataFilter: {entrezGeneIds, sampleListId} as MolecularDataFilter})
+                      .then( data => self.calcExpressionAlterationPercentages( data, molecularProfileId,entrezGeneIdToGene, sampleCount, callbackFunction));
+                }
+                else if( molecularProfileType === CBioPortalAccessor.CNA){
+                  this.cBioPortalAPIClient.fetchDiscreteCopyNumbersInMolecularProfileUsingPOST({molecularProfileId: molecularProfileId, discreteCopyNumberFilter: {entrezGeneIds, sampleListId} as DiscreteCopyNumberFilter})
+                    .then( data => self.calcCNAAlterationPercentages(data, molecularProfileId, entrezGeneIdToGene, sampleCount, callbackFunction ));
+                }
+                else if( molecularProfileType === CBioPortalAccessor.MUTATION){
+                  this.cBioPortalAPIClient.fetchMutationsInMolecularProfileUsingPOST( {molecularProfileId: molecularProfileId, projection : "ID", mutationFilter: {entrezGeneIds, sampleListId} as MutationFilter})
+                    .then( data => self.calcMutationPercentages( data, molecularProfileId, entrezGeneIdToGene, sampleCount, callbackFunction ));
+                }
+   
+            });
     });
   };
 

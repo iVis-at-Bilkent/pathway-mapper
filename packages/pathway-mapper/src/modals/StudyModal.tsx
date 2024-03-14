@@ -182,24 +182,6 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     }
   }
 
-  getSelectedStudiesCount() {
-    let selectedStudiesCount = 0;
-    for (const study of Object.values(this.selectedStudies)) {
-      for (const dataTypeOfStudy of Object.values(study.dataTypes)) {
-        selectedStudiesCount += dataTypeOfStudy.checked === true ? 1 : 0;
-      }
-    }
-    return selectedStudiesCount;
-  }
-
-  getCheckedDatas(dataTypes: { [dataType: string]: IDataTypeMetaData }) {
-    let checkedDatasCount = 0;
-    for (const dataTypee of Object.values(dataTypes)) {
-      checkedDatasCount += dataTypee.checked === true ? 1 : 0;
-    }
-    return checkedDatasCount;
-  }
-
   fetchStudy() {
     this.portalAccessor.getDataTypes().forEach((dataType) => {
       this.setDataTypeProperties(dataType, {
