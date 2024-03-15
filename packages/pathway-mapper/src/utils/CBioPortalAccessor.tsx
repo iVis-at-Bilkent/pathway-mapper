@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { toast } from 'react-toastify';
 import EditorActionsManager from "../managers/EditorActionsManager";
+import { CBioPortalAPI, DiscreteCopyNumberFilter, MolecularDataFilter, Mutation, NumericGeneMolecularData, DiscreteCopyNumberData, MutationFilter } from 'cbioportal-ts-api-client';
 
 
 export default class CBioPortalAccessor{
@@ -21,6 +22,8 @@ export default class CBioPortalAccessor{
   static readonly MUTATION = "Mutation";
   static readonly GENE_EXPRESSION = "Gene Expression";
   static readonly CNA = "Copy Number Alteration";
+  cBioPortalAPIClient = new CBioPortalAPI("https://www.cbioportal.org");
+
 
   getDataTypes(){
       return [CBioPortalAccessor.MUTATION, CBioPortalAccessor.GENE_EXPRESSION, CBioPortalAccessor.CNA];
@@ -31,35 +34,10 @@ export default class CBioPortalAccessor{
   * **/
   fetchCancerStudies(callbackFunction)
   {
-    var cancerStudies = {};
-    var request = new XMLHttpRequest();
-    request.onreadystatechange = function ()
-    {
-        if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
-        {
-            // By lines
-            // Match all new line character representations
-            var seperator = /\r?\n|\r/;
-            var lines = request.responseText.split(seperator);
-
-            // start from first line skip node meta data
-            for(var i = 1; i < lines.length; i++)
-            {
-                if (lines[i].length <= 0)
-                    continue;
-
-                var lineData = lines[i].split('\t');
-                cancerStudies[lineData[0]] = lineData;
-            }
-            callbackFunction(cancerStudies);
-        }
-        else if  (request.readyState === XMLHttpRequest.DONE && request.status !== 200)
-        {
-            toast.error("Could not retrieve studies!");
-        }
-    };
-    request.open("GET", CBioPortalAccessor.GET_ALL_CANCER_STUDIES_URL);
-    request.send();
+    this.cBioPortalAPIClient.getAllStudiesUsingGET({
+        projection: "SUMMARY",
+    }).then(data => callbackFunction(_.keyBy(data, d => d.name)) )
+      .catch(e => toast.error("Could not retrieve studies") ) ;
   };
 
   /**
@@ -67,41 +45,9 @@ export default class CBioPortalAccessor{
   */
   getSupportedGeneticProfiles(cancerStudy, callbackFunction)
   {
-      var outData = {};
-      var request = new XMLHttpRequest();
       var self = this;
-      request.onreadystatechange = function ()
-      {
-          if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
-          {
-              // By lines
-              // Match all new line character representations
-              var seperator = /\r?\n|\r/;
-              var lines = request.responseText.split(seperator);
-
-              // start from first line skip node meta data
-              for(var i = 1; i < lines.length; i++)
-              {
-                  if (lines[i].length <= 0)
-                      continue;
-
-                  var lineData = lines[i].split('\t');
-                  var cancerProfileName = lineData[0];
-                  if(self.isSupportedCancerProfile(cancerProfileName))
-                  {
-                      outData[cancerProfileName] = lineData;
-                  }
-              }
-
-              callbackFunction(outData);
-          }
-          else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200)
-          {
-            console.error("Error retrieving studies");
-          }
-      };
-      request.open("GET", CBioPortalAccessor.GET_GENETIC_PROFILES_URL + cancerStudy);
-      request.send();
+      this.cBioPortalAPIClient.getAllMolecularProfilesInStudyUsingGET({studyId : cancerStudy})
+      .then( data => callbackFunction(_.keyBy(data.filter( d => self.isSupportedCancerProfile(d.molecularProfileId)), d => d.molecularProfileId )));
   };
 
   isSupportedCancerProfile(cancerProfileName: string)
@@ -128,114 +74,87 @@ export default class CBioPortalAccessor{
 
       return "";
   }
-  
 
-  calcAlterationPercentages(paramLines, geneticProfileId, callbackFunction)
+  calcExpressionAlterationPercentages( molecularData : NumericGeneMolecularData[], geneticProfileId, entrezGeneIdToGene, sampleCount, callbackFunction)
   {
-      // By lines
-      // Match all new line character representations
-      const seperator = /\r?\n|\r/;
-      const lines = paramLines.split(seperator);
-      let startIndex = 0;
-
-      //Find starting index of actual data skip commented lines
-      for (const i in lines)
-      {
-          if(!lines[i].startsWith('#'))
-          {
-              startIndex = parseInt(i);
-              break;
-          }
-      }
-
       //Total number of tumor samples in the response
-      const tumorSamples = lines[startIndex].split('\t');
-      const numOfTumorSamples = tumorSamples.length - 2;
+      const numOfTumorSamples = _.uniq(molecularData.map( d => d.uniqueSampleKey)).length;
       const outData: {} = {};
       outData[geneticProfileId] = {};
 
-      const geneticProfileType = CBioPortalAccessor.getDataType(geneticProfileId);
-      // skip meta line and iterate over tumor sample data
-      for(let i = startIndex + 1; i < lines.length; i++)
-      {
-          if (lines[i].length <= 0)
-              continue;
-
-          //Iterate over samples for each gene to calculate profile data
-          const lineData: string[] = lines[i].split('\t');
-          let profileDataAlteration = 0;
-          for(let j = 2; j < lineData.length; j++)
-          {
-              if(lineData[j] !== 'NaN')
-              {
-                if( geneticProfileType === CBioPortalAccessor.MUTATION )
-                    profileDataAlteration++;
-                else if ( (geneticProfileType === CBioPortalAccessor.CNA) 
-                && ( parseInt(lineData[j]) === CBioPortalAccessor.CNA_GAIN || parseInt(lineData[j]) === CBioPortalAccessor.CNA_DELETION )  ){
-                    profileDataAlteration++;
-                }
-                else if ( (geneticProfileType === CBioPortalAccessor.GENE_EXPRESSION) 
-                && (parseFloat(lineData[j]) >= CBioPortalAccessor.Z_SCORE_UPPER_THRESHOLD 
-                || parseFloat(lineData[j]) <= CBioPortalAccessor.Z_SCORE_LOWER_THRESHOLD)){
-                    profileDataAlteration++;
-                }
-              }
-          }
-
-          //
-          outData[geneticProfileId][lineData[1]] = ( profileDataAlteration / numOfTumorSamples ) * 100;
-      }
-
+      const dataByGenes = _.groupBy( molecularData, d => d.entrezGeneId );
+      _.forEach(dataByGenes, (data, entrezGeneId) => {
+         const alteredCount = data.filter( d => !_.isNaN(d.value) && (d.value >= CBioPortalAccessor.Z_SCORE_UPPER_THRESHOLD  || d.value <= CBioPortalAccessor.Z_SCORE_LOWER_THRESHOLD)).length;
+         outData[geneticProfileId][entrezGeneIdToGene[entrezGeneId].hugoGeneSymbol] = ( alteredCount / numOfTumorSamples ) * 100;
+        } );
       callbackFunction(outData);
   }
 
+  calcMutationPercentages( molecularData : Mutation[], geneticProfileId, entrezGeneIdToGene, sampleCount, callbackFunction)
+  {
+      const outData: {} = {};
+      outData[geneticProfileId] = {};
 
+      const dataByGenes = _.groupBy( molecularData, d => d.entrezGeneId );
+      _.forEach(dataByGenes, (data, entrezGeneId) => {
+         const alteredCount = _.uniq(data.map( d => d.uniqueSampleKey)).length;
+         outData[geneticProfileId][entrezGeneIdToGene[entrezGeneId].hugoGeneSymbol] = ( alteredCount / sampleCount ) * 100;
+        } );
+      callbackFunction(outData);
+  }
+
+  calcCNAAlterationPercentages( molecularData : DiscreteCopyNumberData [], geneticProfileId, entrezGeneIdToGene, sampleCount, callbackFunction)
+  {
+
+      const outData: {} = {};
+      outData[geneticProfileId] = {};
+
+      const dataByGenes = _.groupBy( molecularData, d => d.entrezGeneId );
+      _.forEach(dataByGenes, (data, entrezGeneId) => {
+         const alteredCount = data.filter( d => !_.isNaN(d.alteration) && (d.alteration === CBioPortalAccessor.CNA_GAIN  || d.alteration === CBioPortalAccessor.CNA_DELETION)).length;
+         outData[geneticProfileId][entrezGeneIdToGene[entrezGeneId].hugoGeneSymbol] = ( alteredCount / sampleCount ) * 100;
+        } );
+      callbackFunction(outData);
+  }
   /*
   *
   *    Retrieves profile data associated with the parameters below from cBioPortal
   *    @params
         {
-          caseSetId: "gbm_tcga",
+          studyId: "gbm_tcga",
           geneticProfileId: "gbm_tcga_mutations",
           genes: ["BRCA1", "BRCA2", "TP53"]
         }
   * */
-  getProfileData(params, callbackFunction)
+  getProfileData(studyId: string, molecularProfileId: string, geneList : string [], callbackFunction)
   {
-      //params
-      //caseSetId, geneticProfileId, genes
-
       const outData = {};
-      const request = new XMLHttpRequest();
       const self = this;
-      request.onreadystatechange = function ()
-      {
-          if(request.readyState === XMLHttpRequest.DONE && request.status === 200)
-          {
-              self.calcAlterationPercentages(request.responseText, params.geneticProfileId, callbackFunction);
-              toast.success(params.geneticProfileId + " has been succesfully loaded from cBioPortal.");
-          }
-      };
-
-      //Create query URL
-      let queryURL = CBioPortalAccessor.GET_PROFILE_DATA_URL;
-      //Fetch sequenced case list !!
-      queryURL += "&case_set_id=" + params.caseSetId + "_sequenced";
-      queryURL += "&genetic_profile_id=" + params.geneticProfileId;
-      queryURL += "&gene_list=";
-      let isFirst = true;
-      for(const gene of params.genes)
-      {
-          if(!isFirst){
-            queryURL += "+";
-          } else {
-              isFirst = false;
-          }
-          queryURL += gene;
-          
-      }
-      request.open("GET", queryURL);
-      request.send();
+    
+      const sampleListId = studyId + "_sequenced";
+      this.cBioPortalAPIClient.getSampleListUsingGET({sampleListId: sampleListId})
+       .then( data => {
+          const sampleCount = data.sampleCount;
+          this.cBioPortalAPIClient.fetchGenesUsingPOST({geneIdType : "HUGO_GENE_SYMBOL", projection : "SUMMARY", geneIds : geneList})
+             .then( genes => {
+                const entrezGeneIds = genes.map(gene => gene.entrezGeneId);
+                const entrezGeneIdToGene = _.keyBy(genes, g => g.entrezGeneId)
+                const molecularProfileType = CBioPortalAccessor.getDataType(molecularProfileId);
+                if( molecularProfileType === CBioPortalAccessor.GENE_EXPRESSION){
+                    this.cBioPortalAPIClient.fetchAllMolecularDataInMolecularProfileUsingPOST({molecularProfileId: molecularProfileId, molecularDataFilter: {entrezGeneIds, sampleListId} as MolecularDataFilter})
+                      .then( data => self.calcExpressionAlterationPercentages( data, molecularProfileId,entrezGeneIdToGene, sampleCount, callbackFunction));
+                }
+                else if( molecularProfileType === CBioPortalAccessor.CNA){
+                  this.cBioPortalAPIClient.fetchDiscreteCopyNumbersInMolecularProfileUsingPOST({molecularProfileId: molecularProfileId, discreteCopyNumberFilter: {entrezGeneIds, sampleListId} as DiscreteCopyNumberFilter})
+                    .then( data => self.calcCNAAlterationPercentages(data, molecularProfileId, entrezGeneIdToGene, sampleCount, callbackFunction ));
+                }
+                else if( molecularProfileType === CBioPortalAccessor.MUTATION){
+                  this.cBioPortalAPIClient.fetchMutationsInMolecularProfileUsingPOST( {molecularProfileId: molecularProfileId, projection : "ID", mutationFilter: {entrezGeneIds, sampleListId} as MutationFilter})
+                    .then( data => self.calcMutationPercentages( data, molecularProfileId, entrezGeneIdToGene, sampleCount, callbackFunction ));
+                }
+   
+            });
+    });
   };
 
   validateGenes(nodeSymbols, editor: EditorActionsManager)

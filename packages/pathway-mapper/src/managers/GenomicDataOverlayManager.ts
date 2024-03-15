@@ -188,11 +188,11 @@ function genomicDataRectangleGenerator(
        overlayRect.setAttribute("style", "stroke-width:1;stroke:rgb(0,0,0);opacity:1;fill:" + colorString + ";");
    }
    // Text Part
-   if (percent[0] === "-") {
+   if ( percent !== undefined && percent[0] === "-") {
        percent = percent.substr(1);
    }
-   const textPercent = percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
-   const text = Number(percent) > 100 ? "N/P" : textPercent + "%";
+   const textPercent = percent !== undefined && percent < 0.5 && percent > 0 ? "<0.5" : Number(percent).toFixed(1);
+   const text = percent === undefined || Number(percent) > 100 ? "N/P" : textPercent + "%";
    const fontSize = 14;
    const textLength = text.length;
    const xOffset = w / 2 - textLength * 4;
@@ -482,7 +482,7 @@ export default class GenomicDataOverlayManager {
             overLayRectBBox.y,
             overLayRectBBox.w / maxGenomicDataBoxCount,
             overLayRectBBox.h,
-            genomicFrequencyData[cancerType] !== undefined ? genomicFrequencyData[cancerType] : null,
+            genomicFrequencyData[cancerType] !== undefined ? genomicFrequencyData[cancerType] : undefined,
             svg,
             this.colorScheme
           );

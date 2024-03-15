@@ -1,4 +1,5 @@
 import EditorActionsManager from "../managers/EditorActionsManager";
+import { CBioPortalAPI, Mutation, NumericGeneMolecularData, DiscreteCopyNumberData } from 'cbioportal-ts-api-client';
 export default class CBioPortalAccessor {
     static readonly CNA_GAIN = 2;
     static readonly GET_ALL_CANCER_STUDIES_URL = "https://www.cbioportal.org/webservice.do?cmd=getCancerStudies";
@@ -14,6 +15,7 @@ export default class CBioPortalAccessor {
     static readonly MUTATION = "Mutation";
     static readonly GENE_EXPRESSION = "Gene Expression";
     static readonly CNA = "Copy Number Alteration";
+    cBioPortalAPIClient: CBioPortalAPI;
     getDataTypes(): string[];
     fetchCancerStudies(callbackFunction: any): void;
     /**
@@ -22,7 +24,9 @@ export default class CBioPortalAccessor {
     getSupportedGeneticProfiles(cancerStudy: any, callbackFunction: any): void;
     isSupportedCancerProfile(cancerProfileName: string): boolean;
     static getDataType(cancerProfileName: string): "" | "Mutation" | "Gene Expression" | "Copy Number Alteration";
-    calcAlterationPercentages(paramLines: any, geneticProfileId: any, callbackFunction: any): void;
-    getProfileData(params: any, callbackFunction: any): void;
+    calcExpressionAlterationPercentages(molecularData: NumericGeneMolecularData[], geneticProfileId: any, entrezGeneIdToGene: any, sampleCount: any, callbackFunction: any): void;
+    calcMutationPercentages(molecularData: Mutation[], geneticProfileId: any, entrezGeneIdToGene: any, sampleCount: any, callbackFunction: any): void;
+    calcCNAAlterationPercentages(molecularData: DiscreteCopyNumberData[], geneticProfileId: any, entrezGeneIdToGene: any, sampleCount: any, callbackFunction: any): void;
+    getProfileData(studyId: string, molecularProfileId: string, geneList: string[], callbackFunction: any): void;
     validateGenes(nodeSymbols: any, editor: EditorActionsManager): void;
 }

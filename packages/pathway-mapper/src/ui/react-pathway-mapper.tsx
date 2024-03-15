@@ -36,6 +36,7 @@ import Buttonbar from "./Buttonbar";
 import CytoscapeArea from "./CytoscapeArea";
 import Menubar from './Menubar';
 import Sidebar from './Sidebar';
+import { CancerStudy } from "cbioportal-ts-api-client";
 
 const maxHeapFn = require('@datastructures-js/max-heap');
 let maxHeap = maxHeapFn();
@@ -538,7 +539,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
   }
 
   @autobind
-  loadFromCBio(dataTypes: {[dataType: string]: IDataTypeMetaData}, studyData: any[]){
+  loadFromCBio(dataTypes: {[dataType: string]: IDataTypeMetaData}, studyData: CancerStudy){
       if(!this.pathwayActions.doesCyHaveElements()){
         toast.warn('Your pathway is empty!');
         return;
@@ -554,7 +555,7 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
           continue;
         }
 
-        const studyId = studyData[0];
+        const studyId = studyData.studyId;
         const profileId = metadata.profile;
 
         const enableNewProfile = this.profiles.length < this.MAX_ALLOWED_PROFILES_ENABLED;
@@ -572,13 +573,12 @@ export class PathwayMapper extends React.Component<IPathwayMapperProps, {}> {
                                         .map(node => node.data("name"));
 
         
-        this.portalAccessor.getProfileData({
-          caseSetId: studyId,
-          geneticProfileId: profileId,
-          genes: genes
-        },
-        (data: any) => {
-          this.editor.addPortalGenomicData(data, this.editor.getEmptyGroupID());
+        this.portalAccessor.getProfileData(
+          studyId,
+          profileId,
+          genes ,
+        (genomicData: any) => {
+          this.editor.addPortalGenomicData(genomicData, this.editor.getEmptyGroupID());
           let visibilityObject = {};
           visibilityObject[newProfile.profileId] = newProfile.enabled;
           this.editor.updateGenomicDataVisibility(visibilityObject);
