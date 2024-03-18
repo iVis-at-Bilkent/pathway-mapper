@@ -10,9 +10,9 @@ import {
   ListGroupItem,
   Modal,
 } from "react-bootstrap";
-import { toast } from "react-toastify";
 import { EModalType, IDataTypeMetaData } from "../ui/react-pathway-mapper";
 import CBioPortalAccessor from "../utils/CBioPortalAccessor";
+import { CancerStudy } from "cbioportal-ts-api-client";
 
 interface IStudyModalProps {
   show: boolean;
@@ -32,7 +32,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
 
   @observable
   selectedStudies: {
-    data: any[];
+    data: CancerStudy;
     dataTypes: { [dataType: string]: IDataTypeMetaData };
   }[] = [];
 
@@ -44,9 +44,8 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
 
   @observable
   selectedDataTypesPerStudy: string[] = [];
-
   @observable
-  itemArray: any[] = [];
+  cancerStudies: CancerStudy[] = [];
 
   @observable
   searchQuery: string = "";
@@ -58,7 +57,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
   studyListItemCheckboxChecked: boolean[] = [];
 
   @observable
-  selectedStudyData: any[];
+  selectedStudyData: CancerStudy | undefined;
 
   @observable
   portalAccessor: CBioPortalAccessor;
@@ -66,7 +65,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
   constructor(props: IStudyModalProps) {
     super(props);
     makeObservable(this);
-    this.selectedStudyData = [];
+    //this.selectedStudyData = [];
     this.portalAccessor = new CBioPortalAccessor();
     this.fetchStudy();
   }
@@ -77,8 +76,8 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
   }
 
   @action.bound
-  setItemArray(itemArray: any[]) {
-    this.itemArray = itemArray;
+  setCancerStudies(itemArray: CancerStudy[]) {
+    this.cancerStudies = itemArray;
   }
 
   @action.bound
@@ -87,7 +86,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
   }
 
   @action.bound
-  setSelectedStudyData(data: any[]) {
+  setSelectedStudyData(data: CancerStudy) {
     this.selectedStudyData = data;
   }
 
@@ -114,14 +113,14 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
 
   @action.bound
   addSelectedStudy(selectedStudy: {
-    data: any[];
+    data: CancerStudy;
     dataTypes: { [dataType: string]: IDataTypeMetaData };
   }) {
     this.selectedStudies.push(selectedStudy);
   }
 
   @action.bound
-  removeSelectedStudy(selectedStudyData: any[]) {
+  removeSelectedStudy(selectedStudyData: CancerStudy) {
     this.selectedStudies = this.selectedStudies.filter(
       (study) => study.data[0] != selectedStudyData[0]
     );
@@ -183,26 +182,6 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
     }
   }
 
-  getSelectedStudiesCount(){
-    let selectedStudiesCount = 0;
-    for (const study of Object.values(this.selectedStudies))
-    {
-         for( const dataTypeOfStudy of Object.values( study.dataTypes ) ){
-              selectedStudiesCount += dataTypeOfStudy.checked === true ? 1 : 0;
-         }
-    }
-    return selectedStudiesCount;
-  }
-
-  getCheckedDatas( dataTypes: { [dataType: string]: IDataTypeMetaData }){
-    let checkedDatasCount = 0;
-         for( const dataTypee of Object.values( dataTypes ) ){
-              checkedDatasCount += dataTypee.checked === true ? 1 : 0;
-         }
-    return checkedDatasCount;
-  }
-
-
   fetchStudy() {
     this.portalAccessor.getDataTypes().forEach((dataType) => {
       this.setDataTypeProperties(dataType, {
@@ -212,7 +191,7 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
       });
     });
 
-    this.portalAccessor.fetchCancerStudies((cancerStudies: any) => {
+    this.portalAccessor.fetchCancerStudies((cancerStudies: {[name: string]: CancerStudy} ) => {
       let temp = [];
       for (const studyTitle in cancerStudies) {
         if (!cancerStudies.hasOwnProperty(studyTitle)) {
@@ -225,14 +204,14 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
       this.initStudyListItemCheckboxChecked(numOfStudies);
       this.initSelectedDataTypesPerStudy(numOfStudies);
 
-      this.setItemArray(temp);
+      this.setCancerStudies(temp);
     });
   }
 
   @autobind
   resetModal() {
     this.disableAllDataTypes();
-    this.setSelectedStudyData([]);
+    this.setSelectedStudyData(undefined);
     this.clearSelectedStudies();
     this.clearStudyCheckboxesChecked();
     this.clearSelectedDataTypesPerStudy();
@@ -250,15 +229,14 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
 
   @computed
   get selectedStudyDataTitle() {
-    if (this.selectedStudyData.length > 1) {
-      return this.selectedStudyData[1] || "Choose study";
+    if ( this.selectedStudyData ) {
+      return this.selectedStudyData.name || "Choose study";
     } else {
       return "Choose study";
     }
   }
 
   render() {
-
     return (
       <Modal
         id="cbioPortalModal"
@@ -296,15 +274,15 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
                 borderRadius: "4px",
               }}
             >
-              {this.itemArray.length < 1 ? (
+              {this.cancerStudies.length < 1 ? (
                 <span>Fetching studies from cBioPortal...</span>
               ) : (
-                this.itemArray
+                this.cancerStudies
                   .map((item, index) => {
                     return { item: item, index: index };
                   })
                   .filter((obj) =>
-                    obj.item[1]
+                    obj.item.name
                       .toLowerCase()
                       .includes(this.searchQuery.toLowerCase())
                   )
@@ -312,8 +290,8 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
                     const item = obj.item;
                     const index = obj.index;
 
-                    const studyTitle = item[1];
-                    const studyId = item[0];
+                    const studyTitle = item.name;
+                    const studyId = item.studyId;
                     return (
                       <ListGroupItem
                         id={"listgroupitem" + index}
@@ -367,13 +345,19 @@ export default class StudyModal extends React.Component<IStudyModalProps, {}> {
               )}
             </ListGroup>
           </div>
-          <div style={{
-            marginTop: "10px"
-          }}>
-            <p style={{
-              textAlign: "left"
-            }}>
-              <b>Warning:</b> At most six different data sets will be overlayed on the genes. You can toggle which ones are to be displayed via "Alteration %" {">"} "View Settings" menu.
+          <div
+            style={{
+              marginTop: "10px",
+            }}
+          >
+            <p
+              style={{
+                textAlign: "left",
+              }}
+            >
+              <b>Warning:</b> At most six different data sets will be overlayed
+              on the genes. You can toggle which ones are to be displayed via
+              "Alteration %" {">"} "View Settings" menu.
             </p>
           </div>
           <Modal

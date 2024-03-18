@@ -11,6 +11,7 @@ import GridOptionsManager from '../managers/GridOptionsManager';
 import ViewOperationsManager from '../managers/ViewOperationsManager';
 import CBioPortalAccessor from '../utils/CBioPortalAccessor';
 import PathwayActions from '../utils/PathwayActions';
+import { CancerStudy } from "cbioportal-ts-api-client";
 interface IPathwayMapperProps {
     isCBioPortal: boolean;
     genes: any[];
@@ -198,7 +199,7 @@ export declare class PathwayMapper extends React.Component<IPathwayMapperProps, 
     getCountOfEnabledProfiles(): number;
     loadFromCBio(dataTypes: {
         [dataType: string]: IDataTypeMetaData;
-    }, studyData: any[]): void;
+    }, studyData: CancerStudy): void;
     setActiveEdgeHandler(setActiveEdge: (edgeId: number) => void): void;
     colorSchemeChangeCallback(colorScheme: IColorValueMap): void;
     incrementChatMessageCountCallback(chatMessageCount: number): void;

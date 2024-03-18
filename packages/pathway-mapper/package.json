@@ -57,7 +57,8 @@
     "react-toastify": "^5.3.1",
     "react-tooltip": "^3.10.0",
     "sharedb": "^1.1.0",
-    "tippy.js": "^6.3.1"
+    "tippy.js": "^6.3.1",
+    "cbioportal-ts-api-client": "^0.9.67"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",
