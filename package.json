@@ -9,7 +9,7 @@
     "url": "https://github.com/iVis-at-Bilkent/pathway-mapper"
   },
   "version": "2.3.0",
-  "license": "AGPL-3.0-only",
+  "license": "Apache-2.0",
   "engines": {
     "yarn": "1.x",
     "node": "15.x"
