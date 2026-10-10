@@ -29,8 +29,6 @@ Send any feedback and error reports to at pathwaymapper@gmail.com.
 
 ## Software
 
-PathwayMapper is distributed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html).
-
 A sample deployment can be found [here](http://pathwaymapper.org).
 
 <!---
